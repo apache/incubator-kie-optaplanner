@@ -94,7 +94,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
     private Supply createSupply(Demand<?> demand) {
         Supply supply = demand.createExternalizedSupply(this);
         if (supply instanceof SourcedVariableListener) {
-            SourcedVariableListener<Solution_, ?> variableListener = (SourcedVariableListener<Solution_, ?>) supply;
+            SourcedVariableListener<Solution_> variableListener = (SourcedVariableListener<Solution_>) supply;
             // An external ScoreDirector can be created before the working solution is set
             if (scoreDirector.getWorkingSolution() != null) {
                 variableListener.resetWorkingSolution(scoreDirector);

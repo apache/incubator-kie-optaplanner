@@ -20,6 +20,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.optaplanner.core.api.domain.variable.ListVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -28,8 +29,10 @@ import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListene
 /**
  * Alternative to {@link SingletonListInverseVariableListener}.
  */
-public class ExternalizedSingletonListInverseVariableSupply<Solution_>
-        implements SourcedVariableListener<Solution_, Object>, SingletonInverseVariableSupply {
+public class ExternalizedSingletonListInverseVariableSupply<Solution_> implements
+        SourcedVariableListener<Solution_>,
+        ListVariableListener<Solution_, Object>,
+        SingletonInverseVariableSupply {
 
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;
 

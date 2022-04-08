@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.optaplanner.core.api.domain.variable.ListVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -29,8 +30,10 @@ import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListene
 /**
  * Alternative to {@link IndexVariableListener}.
  */
-public class ExternalizedIndexVariableSupply<Solution_>
-        implements SourcedVariableListener<Solution_, Object>, IndexVariableSupply {
+public class ExternalizedIndexVariableSupply<Solution_> implements
+        SourcedVariableListener<Solution_>,
+        ListVariableListener<Solution_, Object>,
+        IndexVariableSupply {
 
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;
 
