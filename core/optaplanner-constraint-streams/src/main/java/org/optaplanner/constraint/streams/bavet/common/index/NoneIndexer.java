@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
@@ -51,8 +51,8 @@ public final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<
     }
 
     @Override
-    public void visit(Object[] indexProperties, BiConsumer<Tuple_, Value_> visitor) {
-        tupleMap.forEach(visitor);
+    public void visit(Object[] indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
+        tupleValueMapVisitor.accept(tupleMap);
     }
 
     @Override

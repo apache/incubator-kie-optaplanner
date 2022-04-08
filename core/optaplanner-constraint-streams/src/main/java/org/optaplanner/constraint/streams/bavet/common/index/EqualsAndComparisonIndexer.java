@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.TreeMap;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
@@ -88,11 +87,7 @@ public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> impl
     }
 
     @Override
-    public void visit(Object[] indexProperties, BiConsumer<Tuple_, Value_> visitor) {
-        visit(indexProperties, map -> map.forEach(visitor));
-    }
-
-    private void visit(Object[] indexProperties, Consumer<Map<Tuple_, Value_>> visitor) {
+    public void visit(Object[] indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
         int indexPropertyCount = indexProperties.length;
         IndexerKey equalsIndexKey = new IndexerKey(indexProperties, indexPropertyCount - 1);
         NavigableMap<Object, Map<Tuple_, Value_>> comparisonMap = equalsMap.get(equalsIndexKey);
@@ -121,7 +116,7 @@ public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> impl
         if (selectedComparisonMap.isEmpty()) {
             return;
         }
-        selectedComparisonMap.values().forEach(visitor);
+        selectedComparisonMap.values().forEach(tupleValueMapVisitor);
     }
 
     @Override

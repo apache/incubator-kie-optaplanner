@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
@@ -63,17 +63,17 @@ public final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexe
     }
 
     @Override
-    public void visit(Object[] indexProperties, BiConsumer<Tuple_, Value_> visitor) {
+    public void visit(Object[] indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
         Map<Tuple_, Value_> tupleMap = map.get(new IndexerKey(indexProperties));
         if (tupleMap == null) {
             return;
         }
-        tupleMap.forEach(visitor);
+        tupleValueMapVisitor.accept(tupleMap);
     }
 
     @Override
     public int countValues(Object[] indexProperties) {
-        Map<Tuple_, Value_> tupleMap =  map.get(new IndexerKey(indexProperties));
+        Map<Tuple_, Value_> tupleMap = map.get(new IndexerKey(indexProperties));
         if (tupleMap == null) {
             return 0;
         }
