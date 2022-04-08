@@ -24,6 +24,7 @@ import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.core.impl.score.stream.JoinerType;
@@ -88,6 +89,10 @@ public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> impl
 
     @Override
     public void visit(Object[] indexProperties, BiConsumer<Tuple_, Value_> visitor) {
+        visit(indexProperties, map -> map.forEach(visitor));
+    }
+
+    private void visit(Object[] indexProperties, Consumer<Map<Tuple_, Value_>> visitor) {
         int indexPropertyCount = indexProperties.length;
         IndexerKey equalsIndexKey = new IndexerKey(indexProperties, indexPropertyCount - 1);
         NavigableMap<Object, Map<Tuple_, Value_>> comparisonMap = equalsMap.get(equalsIndexKey);
@@ -117,8 +122,15 @@ public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> impl
             return;
         }
         for (Map<Tuple_, Value_> map : selectedComparisonMap.values()) {
-            map.forEach(visitor);
+            visitor.accept(map);
         }
+    }
+
+    @Override
+    public int countValues(Object[] indexProperties) {
+        int[] count = new int[1];
+        visit(indexProperties, map -> count[0] += map.size());
+        return count[0];
     }
 
 }

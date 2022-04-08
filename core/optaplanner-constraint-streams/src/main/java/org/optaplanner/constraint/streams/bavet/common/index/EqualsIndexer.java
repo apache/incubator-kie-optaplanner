@@ -71,4 +71,13 @@ public final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexe
         tupleMap.forEach(visitor);
     }
 
+    @Override
+    public int countValues(Object[] indexProperties) {
+        Map<Tuple_, Value_> tupleMap =  map.get(new IndexerKey(indexProperties));
+        if (tupleMap == null) {
+            return 0;
+        }
+        return tupleMap.size();
+    }
+
 }

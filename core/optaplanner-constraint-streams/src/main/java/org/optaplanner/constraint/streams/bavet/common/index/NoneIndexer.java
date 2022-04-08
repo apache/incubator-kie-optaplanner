@@ -55,4 +55,9 @@ public final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<
         tupleMap.forEach(visitor);
     }
 
+    @Override
+    public int countValues(Object[] indexProperties) {
+        return tupleMap.size();
+    }
+
 }
