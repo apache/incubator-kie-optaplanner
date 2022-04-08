@@ -121,9 +121,7 @@ public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> impl
         if (selectedComparisonMap.isEmpty()) {
             return;
         }
-        for (Map<Tuple_, Value_> map : selectedComparisonMap.values()) {
-            visitor.accept(map);
-        }
+        selectedComparisonMap.values().forEach(visitor);
     }
 
     @Override
