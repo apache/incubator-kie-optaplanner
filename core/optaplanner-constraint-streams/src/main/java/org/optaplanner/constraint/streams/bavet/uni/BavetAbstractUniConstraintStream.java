@@ -18,7 +18,6 @@ package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -29,6 +28,7 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.bi.BavetJoinBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bi.BiJoinerComber;
 import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
@@ -166,21 +166,13 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
 
     private final <B> UniConstraintStream<A> ifExistsOrNot(boolean shouldExist, UniConstraintStream<B> otherStream,
             BiJoiner<A, B>[] joiners) {
-        // TODO support FilteringBiJoiner like join() which probably should do it either?
         BavetAbstractUniConstraintStream<Solution_, B> other = assertBavetUniConstraintStream(otherStream);
-
-        DefaultBiJoiner<A, B>[] castedJoiners = Arrays.stream(joiners).map(joiner -> {
-            if (!(joiner instanceof DefaultBiJoiner)) {
-                throw new IllegalArgumentException("The joiner class (" + joiner.getClass() + ") is not supported.");
-            }
-            return (DefaultBiJoiner<A, B>) joiner;
-        }).toArray(DefaultBiJoiner[]::new);
-        DefaultBiJoiner<A, B> mergedJoiner = DefaultBiJoiner.merge(castedJoiners);
+        BiJoinerComber<A, B> joinerMerger = BiJoinerComber.comb(joiners);
         BavetIfExistsBridgeUniConstraintStream<Solution_, A, B> parentBridgeB = other.shareAndAddChild(
                 new BavetIfExistsBridgeUniConstraintStream<>(constraintFactory, other));
         return constraintFactory.share(
                 new BavetIfExistsUniConstraintStream<>(constraintFactory, this, parentBridgeB,
-                        shouldExist, mergedJoiner),
+                        shouldExist, joinerMerger.getMergedJoiner(), joinerMerger.getMergedFiltering()),
                 ifExistsStream_ -> {
                     childStreamList.add(ifExistsStream_);
                     parentBridgeB.setIfExistsStream(ifExistsStream_);

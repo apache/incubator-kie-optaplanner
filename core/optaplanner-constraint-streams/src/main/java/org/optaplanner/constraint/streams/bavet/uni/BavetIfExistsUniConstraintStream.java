@@ -17,6 +17,7 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -37,17 +38,19 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
 
     private final boolean shouldExist;
     private final DefaultBiJoiner<A, B> joiner;
+    private final BiPredicate<A, B> filtering;
 
     public BavetIfExistsUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractUniConstraintStream<Solution_, A> parentA,
             BavetIfExistsBridgeUniConstraintStream<Solution_, A, B> parentBridgeB,
             boolean shouldExist,
-            DefaultBiJoiner<A, B> joiner) {
+            DefaultBiJoiner<A, B> joiner, BiPredicate<A, B> filtering) {
         super(constraintFactory, parentA.getRetrievalSemantics());
         this.parentA = parentA;
         this.parentBridgeB = parentBridgeB;
         this.shouldExist = shouldExist;
         this.joiner = joiner;
+        this.filtering = filtering;
     }
 
     @Override
@@ -82,10 +85,13 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
         Indexer<UniTuple<A>, IfExistsUniWithUniNode.Counter<A>> indexerA = indexerFactory.buildIndexer(true);
         Indexer<UniTuple<B>, Set<IfExistsUniWithUniNode.Counter<A>>> indexerB = indexerFactory.buildIndexer(false);
+        if (!shouldExist) {
+            throw new UnsupportedOperationException();
+        }
         IfExistsUniWithUniNode<A, B> node = new IfExistsUniWithUniNode<>(
-                shouldExist, mappingA, mappingB, inputStoreIndexA, inputStoreIndexB,
+                mappingA, mappingB, inputStoreIndexA, inputStoreIndexB,
                 insert, retract,
-                indexerA, indexerB);
+                indexerA, indexerB, filtering);
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(this, node::insertA, node::retractA);
         buildHelper.putInsertRetract(parentBridgeB, node::insertB, node::retractB);

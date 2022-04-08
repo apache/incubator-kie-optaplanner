@@ -17,6 +17,7 @@
 package org.optaplanner.constraint.streams.bi;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -43,12 +44,20 @@ public final class DefaultBiJoiner<A, B> extends AbstractJoiner<B> implements Bi
     }
 
     @SafeVarargs
+    @Deprecated // Use BiJoinerComber or merge(List) instead
     public static <A, B> DefaultBiJoiner<A, B> merge(DefaultBiJoiner<A, B>... joiners) {
         if (joiners.length == 1) {
             return joiners[0];
         }
         return Arrays.stream(joiners)
                 .reduce(NONE, DefaultBiJoiner::and);
+    }
+
+    public static <A, B> DefaultBiJoiner<A, B> merge(List<DefaultBiJoiner<A, B>> joinerList) {
+        if (joinerList.size() == 1) {
+            return joinerList.get(0);
+        }
+        return joinerList.stream().reduce(NONE, DefaultBiJoiner::and);
     }
 
     @Override

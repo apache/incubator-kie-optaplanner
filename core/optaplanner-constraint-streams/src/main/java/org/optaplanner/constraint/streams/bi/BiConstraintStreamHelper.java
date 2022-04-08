@@ -26,6 +26,7 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
+// TODO remove in favor of BiJoinerComber which also does the merge() already, but leaves the filter() calls to the Stream.join() code (responsibility principle)
 public final class BiConstraintStreamHelper<A, B, C>
         extends AbstractConstraintStreamHelper<C, TriConstraintStream<A, B, C>, TriJoiner<A, B, C>, TriPredicate<A, B, C>> {
 
