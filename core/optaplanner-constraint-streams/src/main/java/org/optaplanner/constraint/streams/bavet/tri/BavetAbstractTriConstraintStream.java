@@ -103,7 +103,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
             return ifExists(constraintFactory.forEach(otherClass), joiners);
         } else {
-            return ifExists(constraintFactory.from(otherClass), joiners);
+            // Calls fromUnfiltered() for backward compatibility only
+            return ifExists(constraintFactory.fromUnfiltered(otherClass), joiners);
         }
     }
 
@@ -130,7 +131,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
             return ifNotExists(constraintFactory.forEach(otherClass), joiners);
         } else {
-            return ifNotExists(constraintFactory.from(otherClass), joiners);
+            // Calls fromUnfiltered() for backward compatibility only
+            return ifNotExists(constraintFactory.fromUnfiltered(otherClass), joiners);
         }
     }
 
