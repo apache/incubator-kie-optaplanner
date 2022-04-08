@@ -183,7 +183,7 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
     /**
      * @return never null
      */
-    SupplyManager<Solution_> getSupplyManager();
+    SupplyManager getSupplyManager();
 
     /**
      * Clones this {@link ScoreDirector} and its {@link PlanningSolution working solution}.

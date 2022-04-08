@@ -38,11 +38,11 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public final class VariableListenerSupport<Solution_> implements SupplyManager<Solution_> {
+public final class VariableListenerSupport<Solution_> implements SupplyManager {
 
     private final InnerScoreDirector<Solution_, ?> scoreDirector;
     private final NotifiableRegistry<Solution_> notifiableRegistry;
-    private final Map<Demand<Solution_, ?>, Supply> supplyMap;
+    private final Map<Demand<?>, Supply> supplyMap;
 
     private boolean notificationQueuesAreEmpty;
     private int nextGlobalOrder = 0;
@@ -50,7 +50,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     VariableListenerSupport(
             InnerScoreDirector<Solution_, ?> scoreDirector,
             NotifiableRegistry<Solution_> notifiableRegistry,
-            Map<Demand<Solution_, ?>, Supply> supplyMap) {
+            Map<Demand<?>, Supply> supplyMap) {
         this.scoreDirector = scoreDirector;
         this.notifiableRegistry = notifiableRegistry;
         this.supplyMap = supplyMap;
@@ -87,12 +87,12 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     }
 
     @Override
-    public <Supply_ extends Supply> Supply_ demand(Demand<Solution_, Supply_> demand) {
+    public <Supply_ extends Supply> Supply_ demand(Demand<Supply_> demand) {
         return (Supply_) supplyMap.computeIfAbsent(demand, this::createSupply);
     }
 
-    private Supply createSupply(Demand<Solution_, ?> demand) {
-        Supply supply = demand.createExternalizedSupply(scoreDirector);
+    private Supply createSupply(Demand<?> demand) {
+        Supply supply = demand.createExternalizedSupply(this);
         if (supply instanceof SourcedVariableListener) {
             SourcedVariableListener<Solution_, ?> variableListener = (SourcedVariableListener<Solution_, ?>) supply;
             // An external ScoreDirector can be created before the working solution is set

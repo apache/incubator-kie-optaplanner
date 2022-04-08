@@ -72,7 +72,7 @@ public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescri
     /**
      * @return never null
      */
-    public abstract Demand<Solution_, ?> getProvidedDemand();
+    public abstract Demand<?> getProvidedDemand();
 
     public boolean hasVariableListener() {
         return true;

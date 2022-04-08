@@ -163,7 +163,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     // ************************************************************************
 
     @Override
-    public Demand<Solution_, ?> getProvidedDemand() {
+    public Demand<?> getProvidedDemand() {
         if (singleton) {
             if (chained) {
                 return new SingletonInverseVariableDemand<>(sourceVariableDescriptor);
