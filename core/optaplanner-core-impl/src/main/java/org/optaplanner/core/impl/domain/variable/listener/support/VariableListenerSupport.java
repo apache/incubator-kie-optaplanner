@@ -25,6 +25,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
@@ -148,6 +149,21 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager<S
     }
 
     public void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
+        // beforeVariableChanged() has already added it to the notificationQueue
+    }
+
+    public void beforeVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity) {
+        Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
+        if (!notifiables.isEmpty()) {
+            ListVariableNotification<Solution_> notification = ListVariableNotification.variableChanged(entity);
+            for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
+                notifiable.addNotification(notification);
+            }
+        }
+        notificationQueuesAreEmpty = false;
+    }
+
+    public void afterVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity) {
         // beforeVariableChanged() has already added it to the notificationQueue
     }
 

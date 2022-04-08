@@ -395,8 +395,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     public void beforeVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         if (variableDescriptor.isGenuineAndUninitialized(entity)) {
             workingInitScore++;
-        } else if (variableDescriptor.isGenuineListVariable()) {
-            workingInitScore -= ((ListVariableDescriptor<Solution_>) variableDescriptor).getListSize(entity);
         }
         variableListenerSupport.beforeVariableChanged(variableDescriptor, entity);
     }
@@ -405,8 +403,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     public void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
         if (variableDescriptor.isGenuineAndUninitialized(entity)) {
             workingInitScore--;
-        } else if (variableDescriptor.isGenuineListVariable()) {
-            workingInitScore += ((ListVariableDescriptor<Solution_>) variableDescriptor).getListSize(entity);
         }
         variableListenerSupport.afterVariableChanged(variableDescriptor, entity);
     }
@@ -416,6 +412,18 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         beforeVariableChanged(variableDescriptor, entity);
         variableDescriptor.setValue(entity, newValue);
         afterVariableChanged(variableDescriptor, entity);
+    }
+
+    @Override
+    public void beforeVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity) {
+        workingInitScore -= variableDescriptor.getListSize(entity);
+        variableListenerSupport.beforeVariableChanged(variableDescriptor, entity);
+    }
+
+    @Override
+    public void afterVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity) {
+        workingInitScore += variableDescriptor.getListSize(entity);
+        variableListenerSupport.afterVariableChanged(variableDescriptor, entity);
     }
 
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {

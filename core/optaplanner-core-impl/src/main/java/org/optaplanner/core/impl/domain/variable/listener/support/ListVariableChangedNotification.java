@@ -16,24 +16,30 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
-import java.util.function.BiConsumer;
-
 import org.optaplanner.core.api.domain.variable.ListVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
-public interface ListVariableNotification<Solution_>
-        extends BiConsumer<ListVariableListener<Solution_, Object>, ScoreDirector<Solution_>> {
+final class ListVariableChangedNotification<Solution_> extends AbstractListVariableListenerNotification
+        implements ListVariableNotification<Solution_> {
 
-    void triggerBefore(ListVariableListener<Solution_, Object> variableListener, ScoreDirector<Solution_> scoreDirector);
-
-    void triggerAfter(ListVariableListener<Solution_, Object> variableListener, ScoreDirector<Solution_> scoreDirector);
-
-    @Override
-    default void accept(ListVariableListener<Solution_, Object> variableListener, ScoreDirector<Solution_> scoreDirector) {
-        triggerAfter(variableListener, scoreDirector);
+    ListVariableChangedNotification(Object entity) {
+        super(entity, -1);
     }
 
-    static <Solution_> ListVariableNotification<Solution_> variableChanged(Object entity) {
-        return new ListVariableChangedNotification<>(entity);
+    @Override
+    public void triggerBefore(ListVariableListener<Solution_, Object> variableListener,
+            ScoreDirector<Solution_> scoreDirector) {
+        variableListener.beforeVariableChanged(scoreDirector, entity);
+    }
+
+    @Override
+    public void triggerAfter(ListVariableListener<Solution_, Object> variableListener,
+            ScoreDirector<Solution_> scoreDirector) {
+        variableListener.afterVariableChanged(scoreDirector, entity);
+    }
+
+    @Override
+    public String toString() {
+        return "ListVariableChanged(" + entity + ")";
     }
 }

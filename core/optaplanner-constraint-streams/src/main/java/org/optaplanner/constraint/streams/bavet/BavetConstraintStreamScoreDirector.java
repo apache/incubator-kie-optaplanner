@@ -131,6 +131,8 @@ public final class BavetConstraintStreamScoreDirector<Solution_, Score_ extends 
         super.afterVariableChanged(variableDescriptor, entity);
     }
 
+    // TODO override list variable methods
+
     // public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) // Do nothing
 
     @Override

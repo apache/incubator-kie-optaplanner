@@ -177,6 +177,8 @@ public class IncrementalScoreDirector<Solution_, Score_ extends Score<Score_>>
         super.afterVariableChanged(variableDescriptor, entity);
     }
 
+    // TODO override list variable methods
+
     @Override
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         incrementalScoreCalculator.beforeEntityRemoved(entity);
