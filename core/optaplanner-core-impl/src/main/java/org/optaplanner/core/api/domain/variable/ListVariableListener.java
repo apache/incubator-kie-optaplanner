@@ -16,6 +16,19 @@
 
 package org.optaplanner.core.api.domain.variable;
 
+import org.optaplanner.core.api.score.director.ScoreDirector;
+
 public interface ListVariableListener<Solution_, Entity_> extends AbstractVariableListener<Solution_, Entity_> {
 
+    /**
+     * @param scoreDirector never null
+     * @param entity never null
+     */
+    void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Entity_ entity);
+
+    /**
+     * @param scoreDirector never null
+     * @param entity never null
+     */
+    void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Entity_ entity);
 }

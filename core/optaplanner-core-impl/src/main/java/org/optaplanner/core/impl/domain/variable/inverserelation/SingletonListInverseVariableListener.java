@@ -18,13 +18,13 @@ package org.optaplanner.core.impl.domain.variable.inverserelation;
 
 import java.util.List;
 
-import org.optaplanner.core.api.domain.variable.VariableListener;
+import org.optaplanner.core.api.domain.variable.ListVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public class SingletonListInverseVariableListener<Solution_>
-        implements VariableListener<Solution_, Object>, SingletonInverseVariableSupply {
+        implements ListVariableListener<Solution_, Object>, SingletonInverseVariableSupply {
 
     protected final InverseRelationShadowVariableDescriptor<Solution_> shadowVariableDescriptor;
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;
