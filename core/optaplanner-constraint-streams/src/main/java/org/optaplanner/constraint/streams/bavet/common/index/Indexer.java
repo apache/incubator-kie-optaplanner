@@ -36,7 +36,8 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
  * to avoid doing the same hash lookup twice in the client.
  * For example {@link JoinBiNode} uses the value to store a set of child tuples justified by the X instance.
  * <p>
- * The fact X is wrapped in a Tuple, because the {@link BavetTupleState} is needed by clients of {@link #visit(IndexProperties, Consumer)}.
+ * The fact X is wrapped in a Tuple, because the {@link BavetTupleState} is needed by clients of
+ * {@link #visit(IndexProperties, Consumer)}.
  *
  * @param <Tuple_> For example for {@code from(A).join(B)}, the tuple is {@code UniTuple<A>} xor {@code UniTuple<B>}.
  *        For example for {@code Bi<A, B>.join(C)}, the tuple is {@code BiTuple<A, B>} xor {@code UniTuple<C>}.
@@ -51,9 +52,10 @@ public interface Indexer<Tuple_ extends Tuple, Value_> {
      * @param indexProperties never null
      * @param tuple never null
      * @param value never null
+     * @return previous value if any
      * @throws IllegalStateException if the indexProperties-tuple key already exists
      */
-    void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value);
+    Value_ put(IndexProperties indexProperties, Tuple_ tuple, Value_ value);
 
     /**
      * Differs from {@link Map#remove(Object)} because it fails if the key does not exist.

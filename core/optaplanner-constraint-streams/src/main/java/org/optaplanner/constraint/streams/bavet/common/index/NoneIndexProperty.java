@@ -25,13 +25,13 @@ final class NoneIndexProperty implements IndexProperties {
     }
 
     @Override
-    public int getLength() {
-        return 0;
+    public <Type_> Type_ getProperty(int index) {
+        throw new IllegalStateException("Impossible state: none index property requested");
     }
 
     @Override
-    public <Type_> Type_ getProperty(int index) {
-        throw new IllegalStateException("Impossible state: none index property requested");
+    public <Type_> Type_ getIndexerKey(int fromInclusive, int toExclusive) {
+        throw new IllegalStateException("Impossible state: none indexer key requested");
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,11 @@
  */
 
 package org.optaplanner.constraint.streams.bavet.common.index;
+
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
+import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.constraint.streams.common.AbstractJoiner;
@@ -56,14 +61,45 @@ public class IndexerFactory {
     public <Tuple_ extends Tuple, Value_> Indexer<Tuple_, Value_> buildIndexer(boolean isLeftBridge) {
         if (joinerTypes.length == 0) {
             return new NoneIndexer<>();
+        } else if (joinerTypes.length == 1) {
+            JoinerType joinerType = joinerTypes[0];
+            if (joinerType == JoinerType.EQUAL) {
+                return new EqualsIndexer<>(s -> s.getIndexerKey(0, 1), NoneIndexer::new);
+            } else {
+                return new ComparisonIndexer<>(isLeftBridge ? joinerType : joinerType.flip(), s -> s.getProperty(0),
+                        NoneIndexer::new);
+            }
         }
-        JoinerType lastJoinerType = joinerTypes[joinerTypes.length - 1];
-        if (lastJoinerType == JoinerType.EQUAL) {
-            return new EqualsIndexer<>();
-        } else {
-            // Use flip() to model A < B as B > A
-            return new EqualsAndComparisonIndexer<>(isLeftBridge ? lastJoinerType : lastJoinerType.flip());
+        NavigableMap<Integer, JoinerType> joinerTypeMap = new TreeMap<>();
+        for (int i = 1; i <= joinerTypes.length; i++) {
+            JoinerType joinerType = i < joinerTypes.length ? joinerTypes[i] : null;
+            JoinerType previousJoinerType = joinerTypes[i - 1];
+            if (joinerType != JoinerType.EQUAL || previousJoinerType != joinerType) {
+                joinerTypeMap.put(i, previousJoinerType);
+            }
         }
+        NavigableMap<Integer, JoinerType> descendingJoinerTypeMap = joinerTypeMap.descendingMap();
+        Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier = NoneIndexer::new;
+        for (Map.Entry<Integer, JoinerType> entry : descendingJoinerTypeMap.entrySet()) {
+            Integer endingPropertyExclusive = entry.getKey();
+            Integer previousEndingPropertyExclusive = descendingJoinerTypeMap.higherKey(endingPropertyExclusive);
+            JoinerType joinerType = entry.getValue();
+            Supplier<Indexer<Tuple_, Value_>> actualDownstreamIndexerSupplier = downstreamIndexerSupplier;
+            if (joinerType == JoinerType.EQUAL) {
+                downstreamIndexerSupplier = () -> new EqualsIndexer<>(
+                        indexProperties -> indexProperties.getIndexerKey(
+                                previousEndingPropertyExclusive == null ? 0 : previousEndingPropertyExclusive,
+                                endingPropertyExclusive),
+                        actualDownstreamIndexerSupplier);
+            } else {
+                JoinerType possiblyFlippedJoinerType = isLeftBridge ? joinerType : joinerType.flip();
+                downstreamIndexerSupplier = () -> new ComparisonIndexer<>(possiblyFlippedJoinerType,
+                        indexProperties -> indexProperties.getProperty(
+                                previousEndingPropertyExclusive == null ? 0 : previousEndingPropertyExclusive),
+                        actualDownstreamIndexerSupplier);
+            }
+        }
+        return downstreamIndexerSupplier.get();
     }
 
 }

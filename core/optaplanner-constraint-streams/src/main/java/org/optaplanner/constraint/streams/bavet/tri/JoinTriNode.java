@@ -52,10 +52,10 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
     private final Queue<TriTuple<A, B, C>> dirtyTupleQueue;
 
     public JoinTriNode(BiFunction<A, B, IndexProperties> mappingAB, Function<C, IndexProperties> mappingC,
-                       int inputStoreIndexAB, int inputStoreIndexC,
-                       Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
-                       int outputStoreSize,
-                       Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB, Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC) {
+            int inputStoreIndexAB, int inputStoreIndexC,
+            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            int outputStoreSize,
+            Indexer<BiTuple<A, B>, Set<TriTuple<A, B, C>>> indexerAB, Indexer<UniTuple<C>, Set<TriTuple<A, B, C>>> indexerC) {
         this.mappingAB = mappingAB;
         this.mappingC = mappingC;
         this.inputStoreIndexAB = inputStoreIndexAB;

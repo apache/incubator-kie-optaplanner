@@ -17,66 +17,78 @@
 package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
-public final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
+final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
 
-    private final Map<IndexerKey, Map<Tuple_, Value_>> map = new HashMap<>();
+    private final Function<IndexProperties, Object> indexerKeyFunction;
+    private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
+    private final Map<Object, Indexer<Tuple_, Value_>> downstreamIndexerMap = new HashMap<>();
+
+    public EqualsIndexer(Function<IndexProperties, Object> indexerKeyFunction,
+            Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
+        this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
+        this.indexerKeyFunction = Objects.requireNonNull(indexerKeyFunction);
+    }
 
     @Override
-    public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
+    public Value_ put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Objects.requireNonNull(value);
-        Map<Tuple_, Value_> tupleMap = map.computeIfAbsent(new IndexerKey(indexProperties), k -> new LinkedHashMap<>());
-        Value_ old = tupleMap.put(tuple, value);
+        Indexer<Tuple_, Value_> downstreamIndexer =
+                downstreamIndexerMap.computeIfAbsent(indexerKeyFunction.apply(indexProperties),
+                        k -> downstreamIndexerSupplier.get());
+        Value_ old = downstreamIndexer.put(indexProperties, tuple, value);
         if (old != null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
                     + ") with indexProperties (" + indexProperties
                     + ") was already added in the indexer.");
         }
+        return old;
     }
 
     @Override
     public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
-        IndexerKey oldIndexKey = new IndexerKey(indexProperties);
-        Map<Tuple_, Value_> tupleMap = map.get(oldIndexKey);
-        if (tupleMap == null) {
+        Object oldIndexKey = indexerKeyFunction.apply(indexProperties);
+        Indexer<Tuple_, Value_> downstreamIndexer = downstreamIndexerMap.get(oldIndexKey);
+        if (downstreamIndexer == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
                     + ") with indexProperties (" + indexProperties
                     + ") doesn't exist in the indexer.");
         }
-        Value_ value = tupleMap.remove(tuple);
+        Value_ value = downstreamIndexer.remove(indexProperties, tuple);
         if (value == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
                     + ") with indexProperties (" + indexProperties
                     + ") doesn't exist in the indexer.");
         }
-        if (tupleMap.isEmpty()) {
-            map.remove(oldIndexKey);
+        if (downstreamIndexer.countValues(indexProperties) == 0) {
+            downstreamIndexerMap.remove(oldIndexKey);
         }
         return value;
     }
 
     @Override
     public void visit(IndexProperties indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
-        Map<Tuple_, Value_> tupleMap = map.get(new IndexerKey(indexProperties));
-        if (tupleMap == null) {
+        Indexer<Tuple_, Value_> downstreamIndexer = downstreamIndexerMap.get(indexerKeyFunction.apply(indexProperties));
+        if (downstreamIndexer == null) {
             return;
         }
-        tupleValueMapVisitor.accept(tupleMap);
+        downstreamIndexer.visit(indexProperties, tupleValueMapVisitor);
     }
 
     @Override
     public int countValues(IndexProperties indexProperties) {
-        Map<Tuple_, Value_> tupleMap = map.get(new IndexerKey(indexProperties));
-        if (tupleMap == null) {
+        Indexer<Tuple_, Value_> downstreamIndexer = downstreamIndexerMap.get(indexerKeyFunction.apply(indexProperties));
+        if (downstreamIndexer == null) {
             return 0;
         }
-        return tupleMap.size();
+        return downstreamIndexer.countValues(indexProperties);
     }
 
 }

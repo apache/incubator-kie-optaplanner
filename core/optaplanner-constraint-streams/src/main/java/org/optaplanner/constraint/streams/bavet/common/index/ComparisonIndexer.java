@@ -16,82 +16,72 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
-public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
+final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
 
     private final JoinerType comparisonJoinerType;
-    private final Map<IndexerKey, NavigableMap<Object, Map<Tuple_, Value_>>> equalsMap = new HashMap<>();
+    private final Function<IndexProperties, Comparable> comparisonIndexPropertyFunction;
+    private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
+    private final NavigableMap<Object, Indexer<Tuple_, Value_>> comparisonMap = new TreeMap<>();
 
-    public EqualsAndComparisonIndexer(JoinerType comparisonJoinerType) {
-        this.comparisonJoinerType = comparisonJoinerType;
+    public ComparisonIndexer(JoinerType comparisonJoinerType,
+            Function<IndexProperties, Comparable> comparisonIndexPropertyFunction,
+            Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
+        this.comparisonJoinerType = Objects.requireNonNull(comparisonJoinerType);
+        this.comparisonIndexPropertyFunction = Objects.requireNonNull(comparisonIndexPropertyFunction);
+        this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
     }
 
     @Override
-    public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
+    public Value_ put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Objects.requireNonNull(value);
-        IndexerKey equalsIndexKey = new IndexerKey(indexProperties, indexProperties.getLength() - 1);
-        Object comparisonIndexProperty = indexProperties.getLastProperty();
-        NavigableMap<Object, Map<Tuple_, Value_>> comparisonMap =
-                equalsMap.computeIfAbsent(equalsIndexKey, k -> new TreeMap<>());
-        Map<Tuple_, Value_> tupleMap = comparisonMap.computeIfAbsent(comparisonIndexProperty, k -> new LinkedHashMap<>());
-        Value_ old = tupleMap.put(tuple, value);
+        Comparable comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
+        Indexer<Tuple_, Value_> downstreamIndexer =
+                comparisonMap.computeIfAbsent(comparisonIndexProperty, k -> downstreamIndexerSupplier.get());
+        Value_ old = downstreamIndexer.put(indexProperties, tuple, value);
         if (old != null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
                     + ") with indexProperties (" + indexProperties
                     + ") was already added in the indexer.");
         }
+        return old;
     }
 
     @Override
     public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
-        IndexerKey equalsIndexKey = new IndexerKey(indexProperties, indexProperties.getLength() - 1);
-        NavigableMap<Object, Map<Tuple_, Value_>> comparisonMap = equalsMap.get(equalsIndexKey);
-        if (comparisonMap == null) {
+        Comparable comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
+        Indexer<Tuple_, Value_> downstreamIndexer = comparisonMap.get(comparisonIndexProperty);
+        if (downstreamIndexer == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
                     + ") with indexProperties (" + indexProperties
                     + ") doesn't exist in the indexer.");
         }
-        Object comparisonIndexProperty = indexProperties.getLastProperty();
-        Map<Tuple_, Value_> tupleMap = comparisonMap.get(comparisonIndexProperty);
-        if (tupleMap == null) {
-            throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + indexProperties
-                    + ") doesn't exist in the indexer.");
-        }
-        Value_ value = tupleMap.remove(tuple);
+        Value_ value = downstreamIndexer.remove(indexProperties, tuple);
         if (value == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
                     + ") with indexProperties (" + indexProperties
                     + ") doesn't exist in the indexer.");
         }
-        if (tupleMap.isEmpty()) {
+        if (downstreamIndexer.countValues(indexProperties) == 0) {
             comparisonMap.remove(comparisonIndexProperty);
-            if (comparisonMap.isEmpty()) {
-                equalsMap.remove(equalsIndexKey);
-            }
         }
         return value;
     }
 
     @Override
     public void visit(IndexProperties indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
-        IndexerKey equalsIndexKey = new IndexerKey(indexProperties, indexProperties.getLength() - 1);
-        NavigableMap<Object, Map<Tuple_, Value_>> comparisonMap = equalsMap.get(equalsIndexKey);
-        if (comparisonMap == null) {
-            return;
-        }
-        Object comparisonIndexProperty = indexProperties.getLastProperty();
-        NavigableMap<Object, Map<Tuple_, Value_>> selectedComparisonMap;
+        Comparable comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
+        NavigableMap<Object, Indexer<Tuple_, Value_>> selectedComparisonMap;
         switch (comparisonJoinerType) {
             case LESS_THAN:
                 selectedComparisonMap = comparisonMap.headMap(comparisonIndexProperty, false);
@@ -112,7 +102,7 @@ public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> impl
         if (selectedComparisonMap.isEmpty()) {
             return;
         }
-        selectedComparisonMap.values().forEach(tupleValueMapVisitor);
+        selectedComparisonMap.values().forEach(v -> v.visit(indexProperties, tupleValueMapVisitor));
     }
 
     @Override

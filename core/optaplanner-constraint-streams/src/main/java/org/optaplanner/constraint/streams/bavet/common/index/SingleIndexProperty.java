@@ -25,16 +25,16 @@ final class SingleIndexProperty implements IndexProperties {
     }
 
     @Override
-    public int getLength() {
-        return 1;
-    }
-
-    @Override
     public <Type_> Type_ getProperty(int index) {
         if (index != 0) {
             throw new IllegalStateException("Impossible state: single index property index (" + index + ") != 0");
         }
         return (Type_) property;
+    }
+
+    @Override
+    public <Type_> Type_ getIndexerKey(int fromInclusive, int toExclusive) {
+        return getProperty(fromInclusive);
     }
 
     @Override

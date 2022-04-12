@@ -16,12 +16,9 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.optaplanner.core.impl.score.stream.JoinerType;
 
 final class ManyIndexProperties implements IndexProperties {
 
@@ -36,67 +33,13 @@ final class ManyIndexProperties implements IndexProperties {
     }
 
     @Override
-    public int getLength() {
-        return properties.size();
-    }
-
-    @Override
     public <Type_> Type_ getProperty(int index) {
         return (Type_) properties.get(index);
     }
 
-    public static final class Builder {
-
-        private final List<Object> finishedChunks = new ArrayList<>(0);
-        private Chunk currentChunk = null;
-
-        void addValue(JoinerType joinerType, Object value) {
-            switch (joinerType) {
-                case EQUAL:
-                    currentChunk = currentChunk == null ? new Chunk() : currentChunk;
-                    currentChunk.addValue(value);
-                case LESS_THAN_OR_EQUAL:
-                case LESS_THAN:
-                case GREATER_THAN:
-                case GREATER_THAN_OR_EQUAL:
-                    if (currentChunk != null) {
-                        finishedChunks.add(currentChunk.properties);
-                        currentChunk = null;
-                    }
-                    finishedChunks.add(value);
-                default:
-            }
-        }
-
-        ManyIndexProperties build() {
-            if (currentChunk != null) {
-                finishedChunks.add(currentChunk.properties);
-                currentChunk = null;
-            }
-            return new ManyIndexProperties(finishedChunks);
-        }
-
-    }
-
-    public static final class Chunk {
-
-        private int count;
-        private Object properties;
-
-        void addValue(Object value) {
-            if (count == 0) {
-                properties = value;
-            } else {
-                if (count == 1) {
-                    Object property = properties;
-                    properties = new ArrayList<>(2);
-                    ((List<Object>) properties).add(property);
-                }
-                ((List<Object>) properties).add(value);
-            }
-            count += 1;
-        }
-
+    @Override
+    public IndexerKey getIndexerKey(int fromInclusive, int toExclusive) {
+        return new IndexerKey(this, fromInclusive, toExclusive);
     }
 
     @Override

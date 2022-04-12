@@ -21,19 +21,24 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.core.impl.score.stream.JoinerType;
+import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
+import org.optaplanner.core.api.score.stream.Joiners;
 
 class EqualsAndComparisonIndexerTest extends AbstractIndexerTest {
 
+    private final DefaultBiJoiner<Person, Person> joiner =
+            (DefaultBiJoiner<Person, Person>) Joiners.equal((Person p) -> p.gender)
+                    .and(Joiners.lessThanOrEqual(a -> a.age));
+
     @Test
     void getEmpty() {
-        Indexer<UniTuple<String>, String> indexer = new EqualsAndComparisonIndexer<>(JoinerType.LESS_THAN_OR_EQUAL);
+        Indexer<UniTuple<String>, String> indexer = new IndexerFactory(joiner).buildIndexer(true);
         assertThat(getTupleMap(indexer, "F", 40)).isEmpty();
     }
 
     @Test
     void putTwice() {
-        Indexer<UniTuple<String>, String> indexer = new EqualsAndComparisonIndexer<>(JoinerType.LESS_THAN_OR_EQUAL);
+        Indexer<UniTuple<String>, String> indexer = new IndexerFactory(joiner).buildIndexer(true);
         UniTuple<String> annTuple = newTuple("Ann-F-40");
         indexer.put(new ManyIndexProperties("F", 40), annTuple, "Ann value");
         assertThatThrownBy(() -> indexer.put(new ManyIndexProperties("F", 40), annTuple, "Ann value"))
@@ -42,7 +47,7 @@ class EqualsAndComparisonIndexerTest extends AbstractIndexerTest {
 
     @Test
     void removeTwice() {
-        Indexer<UniTuple<String>, String> indexer = new EqualsAndComparisonIndexer<>(JoinerType.LESS_THAN_OR_EQUAL);
+        Indexer<UniTuple<String>, String> indexer = new IndexerFactory(joiner).buildIndexer(true);
         UniTuple<String> annTuple = newTuple("Ann-F-40");
         indexer.put(new ManyIndexProperties("F", 40), annTuple, "Ann value");
 
@@ -57,7 +62,7 @@ class EqualsAndComparisonIndexerTest extends AbstractIndexerTest {
 
     @Test
     void visit() {
-        Indexer<UniTuple<String>, String> indexer = new EqualsAndComparisonIndexer<>(JoinerType.LESS_THAN_OR_EQUAL);
+        Indexer<UniTuple<String>, String> indexer = new IndexerFactory(joiner).buildIndexer(true);
 
         UniTuple<String> annTuple = newTuple("Ann-F-40");
         indexer.put(new ManyIndexProperties("F", 40), annTuple, "Ann value");

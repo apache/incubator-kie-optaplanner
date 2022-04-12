@@ -18,18 +18,16 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.Objects;
 
-public final class IndexerKey {
+final class IndexerKey {
 
     private final IndexProperties indexProperties;
-    private final int effectiveLength;
+    private final int fromInclusive;
+    private final int toExclusive;
 
-    public IndexerKey(IndexProperties indexProperties) {
-        this(indexProperties, indexProperties.getLength());
-    }
-
-    public IndexerKey(IndexProperties indexProperties, int effectiveLength) {
+    public IndexerKey(IndexProperties indexProperties, int fromInclusive, int toExclusive) {
         this.indexProperties = indexProperties;
-        this.effectiveLength = effectiveLength;
+        this.fromInclusive = fromInclusive;
+        this.toExclusive = toExclusive;
     }
 
     @Override
@@ -38,7 +36,7 @@ public final class IndexerKey {
             return 0;
         }
         int result = 1;
-        for (int i = 0; i < effectiveLength; i++) {
+        for (int i = fromInclusive; i < toExclusive; i++) {
             Object element = indexProperties.getProperty(i);
             result = 31 * result + (element == null ? 0 : element.hashCode());
         }
@@ -54,7 +52,7 @@ public final class IndexerKey {
             return false;
         }
         IndexerKey other = (IndexerKey) o;
-        for (int i = 0; i < effectiveLength; i++) {
+        for (int i = fromInclusive; i < toExclusive; i++) {
             Object a = indexProperties.getProperty(i);
             Object b = other.indexProperties.getProperty(i);
             if (!Objects.equals(a, b)) {

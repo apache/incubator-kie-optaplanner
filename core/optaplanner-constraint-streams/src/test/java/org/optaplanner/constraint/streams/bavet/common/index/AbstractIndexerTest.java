@@ -23,6 +23,18 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
 abstract class AbstractIndexerTest {
 
+    static final class Person {
+
+        public final String gender;
+        public final int age;
+
+        public Person(String gender, int age) {
+            this.gender = gender;
+            this.age = age;
+        }
+
+    }
+
     protected <Tuple_ extends Tuple, Value_> Map<Tuple_, Value_> getTupleMap(Indexer<Tuple_, Value_> indexer,
             Object... objectProperties) {
         IndexProperties properties = null;

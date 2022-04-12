@@ -40,11 +40,11 @@ public final class JoinerUtils {
             return (A a) -> new SingleIndexProperty(mapping.apply(a));
         } else {
             return (A a) -> {
-                ManyIndexProperties.Builder builder = new ManyIndexProperties.Builder();
+                Object[] mappings = new Object[joinerCount];
                 for (int i = 0; i < joinerCount; i++) {
-                    builder.addValue(joiner.getJoinerType(i), joiner.getLeftMapping(i).apply(a));
+                    mappings[i] = joiner.getLeftMapping(i).apply(a);
                 }
-                return builder.build();
+                return new ManyIndexProperties(mappings);
             };
         }
     }
@@ -58,11 +58,11 @@ public final class JoinerUtils {
             return (A a, B b) -> new SingleIndexProperty(mapping.apply(a, b));
         } else {
             return (A a, B b) -> {
-                ManyIndexProperties.Builder builder = new ManyIndexProperties.Builder();
+                Object[] mappings = new Object[joinerCount];
                 for (int i = 0; i < joinerCount; i++) {
-                    builder.addValue(joiner.getJoinerType(i), joiner.getLeftMapping(i).apply(a, b));
+                    mappings[i] = joiner.getLeftMapping(i).apply(a, b);
                 }
-                return builder.build();
+                return new ManyIndexProperties(mappings);
             };
         }
     }
@@ -76,11 +76,11 @@ public final class JoinerUtils {
             return (Right_ x) -> new SingleIndexProperty(mapping.apply(x));
         } else {
             return (Right_ x) -> {
-                ManyIndexProperties.Builder builder = new ManyIndexProperties.Builder();
+                Object[] mappings = new Object[joinerCount];
                 for (int i = 0; i < joinerCount; i++) {
-                    builder.addValue(joiner.getJoinerType(i), joiner.getRightMapping(i).apply(x));
+                    mappings[i] = joiner.getRightMapping(i).apply(x);
                 }
-                return builder.build();
+                return new ManyIndexProperties(mappings);
             };
         }
     }

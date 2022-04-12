@@ -18,12 +18,8 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 
 public interface IndexProperties {
 
-    int getLength();
-
     <Type_> Type_ getProperty(int index);
 
-    default <Type_> Type_ getLastProperty() {
-        return getProperty(getLength() - 1);
-    }
+    <Type_> Type_ getIndexerKey(int fromInclusive, int toExclusive);
 
 }
