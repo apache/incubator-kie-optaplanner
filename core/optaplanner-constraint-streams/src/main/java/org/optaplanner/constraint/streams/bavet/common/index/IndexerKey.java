@@ -17,6 +17,8 @@
 package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 final class IndexerKey {
 
@@ -62,4 +64,12 @@ final class IndexerKey {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "IndexerKey " + IntStream.range(fromInclusive, toExclusive)
+                .mapToObj(indexProperties::getProperty)
+                .map(Object::toString)
+                .collect(Collectors.joining(",", "[", "]"));
+
+    }
 }

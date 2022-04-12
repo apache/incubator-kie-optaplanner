@@ -52,10 +52,9 @@ public interface Indexer<Tuple_ extends Tuple, Value_> {
      * @param indexProperties never null
      * @param tuple never null
      * @param value never null
-     * @return previous value if any
      * @throws IllegalStateException if the indexProperties-tuple key already exists
      */
-    Value_ put(IndexProperties indexProperties, Tuple_ tuple, Value_ value);
+    void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value);
 
     /**
      * Differs from {@link Map#remove(Object)} because it fails if the key does not exist.

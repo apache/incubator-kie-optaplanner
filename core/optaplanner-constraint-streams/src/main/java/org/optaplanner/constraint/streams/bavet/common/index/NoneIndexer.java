@@ -28,7 +28,7 @@ public final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<
     private final Map<Tuple_, Value_> tupleMap = new LinkedHashMap<>();
 
     @Override
-    public Value_ put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
+    public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Objects.requireNonNull(value);
         Value_ old = tupleMap.put(tuple, value);
         if (old != null) {
@@ -36,7 +36,6 @@ public final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<
                     + ") with indexProperties (" + indexProperties
                     + ") was already added in the indexer.");
         }
-        return old;
     }
 
     @Override

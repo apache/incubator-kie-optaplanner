@@ -44,16 +44,6 @@ public class IndexerFactory {
                 default:
                     throw new UnsupportedOperationException("Unsupported joiner type (" + joinerType + ").");
             }
-            if (joinerType != JoinerType.EQUAL && i != (joinerCount - 1)) {
-                JoinerType nextJoinerType = joiner.getJoinerType(i + 1);
-                throw new IllegalArgumentException("The joinerType (" + joinerType
-                        + ") is currently only supported as the last joinerType.\n"
-                        + ((nextJoinerType == JoinerType.EQUAL)
-                                ? "Maybe move the next joinerType (" + nextJoinerType
-                                        + ") before this joinerType (" + joinerType + ")."
-                                : "Maybe put the next joinerType (" + nextJoinerType
-                                        + ") in a filter() predicate after the join() call for now."));
-            }
             joinerTypes[i] = joiner.getJoinerType(i);
         }
     }
@@ -92,8 +82,7 @@ public class IndexerFactory {
                                 endingPropertyExclusive),
                         actualDownstreamIndexerSupplier);
             } else {
-                JoinerType possiblyFlippedJoinerType = isLeftBridge ? joinerType : joinerType.flip();
-                downstreamIndexerSupplier = () -> new ComparisonIndexer<>(possiblyFlippedJoinerType,
+                downstreamIndexerSupplier = () -> new ComparisonIndexer<>(isLeftBridge ? joinerType : joinerType.flip(),
                         indexProperties -> indexProperties.getProperty(
                                 previousEndingPropertyExclusive == null ? 0 : previousEndingPropertyExclusive),
                         actualDownstreamIndexerSupplier);

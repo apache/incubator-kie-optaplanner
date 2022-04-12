@@ -43,18 +43,12 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<T
     }
 
     @Override
-    public Value_ put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
+    public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Objects.requireNonNull(value);
         Comparable comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
         Indexer<Tuple_, Value_> downstreamIndexer =
                 comparisonMap.computeIfAbsent(comparisonIndexProperty, k -> downstreamIndexerSupplier.get());
-        Value_ old = downstreamIndexer.put(indexProperties, tuple, value);
-        if (old != null) {
-            throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + indexProperties
-                    + ") was already added in the indexer.");
-        }
-        return old;
+        downstreamIndexer.put(indexProperties, tuple, value);
     }
 
     @Override

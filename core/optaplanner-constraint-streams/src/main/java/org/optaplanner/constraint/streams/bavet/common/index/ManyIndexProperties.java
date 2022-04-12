@@ -17,35 +17,30 @@
 package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 final class ManyIndexProperties implements IndexProperties {
 
-    private final List<Object> properties;
-
-    private ManyIndexProperties(List<Object> properties) {
-        this.properties = properties;
-    }
+    private final Object[] properties;
 
     ManyIndexProperties(Object... properties) {
-        this.properties = Arrays.asList(properties);
+        this.properties = properties;
     }
 
     @Override
     public <Type_> Type_ getProperty(int index) {
-        return (Type_) properties.get(index);
+        return (Type_) properties[index];
     }
 
     @Override
-    public IndexerKey getIndexerKey(int fromInclusive, int toExclusive) {
-        return new IndexerKey(this, fromInclusive, toExclusive);
+    public <Type_> Type_ getIndexerKey(int fromInclusive, int toExclusive) {
+        if (toExclusive - fromInclusive == 1) {
+            return getProperty(fromInclusive);
+        }
+        return (Type_) new IndexerKey(this, fromInclusive, toExclusive);
     }
 
     @Override
     public String toString() {
-        return properties.stream()
-                .map(Object::toString)
-                .collect(Collectors.joining(", ", "[", "]"));
+        return Arrays.toString(properties);
     }
 }
