@@ -34,8 +34,8 @@ class EqualsIndexerTest extends AbstractIndexerTest {
     void putTwice() {
         Indexer<UniTuple<String>, String> indexer = new EqualsIndexer<>();
         UniTuple<String> annTuple = newTuple("Ann-F-40");
-        indexer.put(new Object[] { "F", 40 }, annTuple, "Ann value");
-        assertThatThrownBy(() -> indexer.put(new Object[] { "F", 40 }, annTuple, "Ann value"))
+        indexer.put(new ManyIndexProperties("F", 40), annTuple, "Ann value");
+        assertThatThrownBy(() -> indexer.put(new ManyIndexProperties("F", 40), annTuple, "Ann value"))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -43,14 +43,14 @@ class EqualsIndexerTest extends AbstractIndexerTest {
     void removeTwice() {
         Indexer<UniTuple<String>, String> indexer = new EqualsIndexer<>();
         UniTuple<String> annTuple = newTuple("Ann-F-40");
-        indexer.put(new Object[] { "F", 40 }, annTuple, "Ann value");
+        indexer.put(new ManyIndexProperties("F", 40), annTuple, "Ann value");
 
         UniTuple<String> ednaTuple = newTuple("Edna-F-40");
-        assertThatThrownBy(() -> indexer.remove(new Object[] { "F", 40 }, ednaTuple))
+        assertThatThrownBy(() -> indexer.remove(new ManyIndexProperties("F", 40), ednaTuple))
                 .isInstanceOf(IllegalStateException.class);
-        assertThat(indexer.remove(new Object[] { "F", 40 }, annTuple))
+        assertThat(indexer.remove(new ManyIndexProperties("F", 40), annTuple))
                 .isEqualTo("Ann value");
-        assertThatThrownBy(() -> indexer.remove(new Object[] { "F", 40 }, annTuple))
+        assertThatThrownBy(() -> indexer.remove(new ManyIndexProperties("F", 40), annTuple))
                 .isInstanceOf(IllegalStateException.class);
     }
 
@@ -59,22 +59,22 @@ class EqualsIndexerTest extends AbstractIndexerTest {
         Indexer<UniTuple<String>, String> indexer = new EqualsIndexer<>();
 
         UniTuple<String> annTuple = newTuple("Ann-F-40");
-        indexer.put(new Object[] { "F", 40 }, annTuple, "Ann value");
+        indexer.put(new ManyIndexProperties("F", 40), annTuple, "Ann value");
         UniTuple<String> bethTuple = newTuple("Beth-F-30");
-        indexer.put(new Object[] { "F", 30 }, bethTuple, "Beth value");
-        indexer.put(new Object[] { "M", 40 }, newTuple("Carl-M-40"), "Carl value");
-        indexer.put(new Object[] { "M", 30 }, newTuple("Dan-M-30"), "Dan value");
+        indexer.put(new ManyIndexProperties("F", 30), bethTuple, "Beth value");
+        indexer.put(new ManyIndexProperties("M", 40), newTuple("Carl-M-40"), "Carl value");
+        indexer.put(new ManyIndexProperties("M", 30), newTuple("Dan-M-30"), "Dan value");
         UniTuple<String> ednaTuple = newTuple("Edna-F-40");
-        indexer.put(new Object[] { "F", 40 }, ednaTuple, "Edna value");
+        indexer.put(new ManyIndexProperties("F", 40), ednaTuple, "Edna value");
 
         assertThat(getTupleMap(indexer, "F", 40)).containsOnlyKeys(annTuple, ednaTuple);
-        assertThat(indexer.countValues(new Object[] { "F", 40 })).isEqualTo(2);
+        assertThat(indexer.countValues(new ManyIndexProperties("F", 40))).isEqualTo(2);
 
         assertThat(getTupleMap(indexer, "F", 30)).containsOnlyKeys(bethTuple);
-        assertThat(indexer.countValues(new Object[] { "F", 30 })).isEqualTo(1);
+        assertThat(indexer.countValues(new ManyIndexProperties("F", 30))).isEqualTo(1);
 
         assertThat(getTupleMap(indexer, "F", 20)).isEmpty();
-        assertThat(indexer.countValues(new Object[] { "F", 20 })).isZero();
+        assertThat(indexer.countValues(new ManyIndexProperties("F", 20))).isZero();
     }
 
     private static UniTuple<String> newTuple(String factA) {

@@ -16,7 +16,6 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -38,43 +37,41 @@ public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> impl
     }
 
     @Override
-    public void put(Object[] indexProperties, Tuple_ tuple, Value_ value) {
+    public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Objects.requireNonNull(value);
-        int indexPropertyCount = indexProperties.length;
-        IndexerKey equalsIndexKey = new IndexerKey(indexProperties, indexPropertyCount - 1);
-        Object comparisonIndexProperty = indexProperties[indexPropertyCount - 1];
+        IndexerKey equalsIndexKey = new IndexerKey(indexProperties, indexProperties.getLength() - 1);
+        Object comparisonIndexProperty = indexProperties.getLastProperty();
         NavigableMap<Object, Map<Tuple_, Value_>> comparisonMap =
                 equalsMap.computeIfAbsent(equalsIndexKey, k -> new TreeMap<>());
         Map<Tuple_, Value_> tupleMap = comparisonMap.computeIfAbsent(comparisonIndexProperty, k -> new LinkedHashMap<>());
         Value_ old = tupleMap.put(tuple, value);
         if (old != null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + Arrays.toString(indexProperties)
+                    + ") with indexProperties (" + indexProperties
                     + ") was already added in the indexer.");
         }
     }
 
     @Override
-    public Value_ remove(Object[] indexProperties, Tuple_ tuple) {
-        int indexPropertyCount = indexProperties.length;
-        IndexerKey equalsIndexKey = new IndexerKey(indexProperties, indexPropertyCount - 1);
+    public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
+        IndexerKey equalsIndexKey = new IndexerKey(indexProperties, indexProperties.getLength() - 1);
         NavigableMap<Object, Map<Tuple_, Value_>> comparisonMap = equalsMap.get(equalsIndexKey);
         if (comparisonMap == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + Arrays.toString(indexProperties)
+                    + ") with indexProperties (" + indexProperties
                     + ") doesn't exist in the indexer.");
         }
-        Object comparisonIndexProperty = indexProperties[indexPropertyCount - 1];
+        Object comparisonIndexProperty = indexProperties.getLastProperty();
         Map<Tuple_, Value_> tupleMap = comparisonMap.get(comparisonIndexProperty);
         if (tupleMap == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + Arrays.toString(indexProperties)
+                    + ") with indexProperties (" + indexProperties
                     + ") doesn't exist in the indexer.");
         }
         Value_ value = tupleMap.remove(tuple);
         if (value == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + Arrays.toString(indexProperties)
+                    + ") with indexProperties (" + indexProperties
                     + ") doesn't exist in the indexer.");
         }
         if (tupleMap.isEmpty()) {
@@ -87,14 +84,13 @@ public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> impl
     }
 
     @Override
-    public void visit(Object[] indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
-        int indexPropertyCount = indexProperties.length;
-        IndexerKey equalsIndexKey = new IndexerKey(indexProperties, indexPropertyCount - 1);
+    public void visit(IndexProperties indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
+        IndexerKey equalsIndexKey = new IndexerKey(indexProperties, indexProperties.getLength() - 1);
         NavigableMap<Object, Map<Tuple_, Value_>> comparisonMap = equalsMap.get(equalsIndexKey);
         if (comparisonMap == null) {
             return;
         }
-        Object comparisonIndexProperty = indexProperties[indexPropertyCount - 1];
+        Object comparisonIndexProperty = indexProperties.getLastProperty();
         NavigableMap<Object, Map<Tuple_, Value_>> selectedComparisonMap;
         switch (comparisonJoinerType) {
             case LESS_THAN:
@@ -120,7 +116,7 @@ public final class EqualsAndComparisonIndexer<Tuple_ extends Tuple, Value_> impl
     }
 
     @Override
-    public int countValues(Object[] indexProperties) {
+    public int countValues(IndexProperties indexProperties) {
         int[] count = new int[1];
         visit(indexProperties, map -> count[0] += map.size());
         return count[0];

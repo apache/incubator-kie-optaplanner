@@ -25,8 +25,20 @@ abstract class AbstractIndexerTest {
 
     protected <Tuple_ extends Tuple, Value_> Map<Tuple_, Value_> getTupleMap(Indexer<Tuple_, Value_> indexer,
             Object... objectProperties) {
+        IndexProperties properties = null;
+        switch (objectProperties.length) {
+            case 0:
+                properties = NoneIndexProperty.INSTANCE;
+                break;
+            case 1:
+                properties = new SingleIndexProperty(objectProperties[0]);
+                break;
+            default:
+                properties = new ManyIndexProperties(objectProperties);
+                break;
+        }
         Map<Tuple_, Value_> result = new LinkedHashMap<>();
-        indexer.visit(objectProperties, result::put);
+        indexer.visit(properties, result::put);
         return result;
     }
 

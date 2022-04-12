@@ -16,7 +16,6 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,30 +29,30 @@ public final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexe
     private final Map<IndexerKey, Map<Tuple_, Value_>> map = new HashMap<>();
 
     @Override
-    public void put(Object[] indexProperties, Tuple_ tuple, Value_ value) {
+    public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Objects.requireNonNull(value);
         Map<Tuple_, Value_> tupleMap = map.computeIfAbsent(new IndexerKey(indexProperties), k -> new LinkedHashMap<>());
         Value_ old = tupleMap.put(tuple, value);
         if (old != null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + Arrays.toString(indexProperties)
+                    + ") with indexProperties (" + indexProperties
                     + ") was already added in the indexer.");
         }
     }
 
     @Override
-    public Value_ remove(Object[] indexProperties, Tuple_ tuple) {
+    public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
         IndexerKey oldIndexKey = new IndexerKey(indexProperties);
         Map<Tuple_, Value_> tupleMap = map.get(oldIndexKey);
         if (tupleMap == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + Arrays.toString(indexProperties)
+                    + ") with indexProperties (" + indexProperties
                     + ") doesn't exist in the indexer.");
         }
         Value_ value = tupleMap.remove(tuple);
         if (value == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + Arrays.toString(indexProperties)
+                    + ") with indexProperties (" + indexProperties
                     + ") doesn't exist in the indexer.");
         }
         if (tupleMap.isEmpty()) {
@@ -63,7 +62,7 @@ public final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexe
     }
 
     @Override
-    public void visit(Object[] indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
+    public void visit(IndexProperties indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
         Map<Tuple_, Value_> tupleMap = map.get(new IndexerKey(indexProperties));
         if (tupleMap == null) {
             return;
@@ -72,7 +71,7 @@ public final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexe
     }
 
     @Override
-    public int countValues(Object[] indexProperties) {
+    public int countValues(IndexProperties indexProperties) {
         Map<Tuple_, Value_> tupleMap = map.get(new IndexerKey(indexProperties));
         if (tupleMap == null) {
             return 0;
