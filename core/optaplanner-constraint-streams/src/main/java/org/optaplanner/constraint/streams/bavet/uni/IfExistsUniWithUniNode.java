@@ -129,13 +129,18 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
         indexerA.visit(indexProperties, (tupleA, counter) -> {
             if (filtering == null || filtering.test(tupleA.factA, tupleB.factA)) {
                 if (counter.countB == 0) {
-                    if (counter.state != BavetTupleState.DEAD) {
-                        // TODO what if it was retracted before this insert with no calculateScore()?
-                        throw new UnsupportedOperationException();
-                    }
-                    counter.state = BavetTupleState.CREATING;
                     counterSetB.add(counter);
-                    dirtyCounterQueue.add(counter);
+                    if (counter.state == BavetTupleState.DEAD) {
+                        counter.state = BavetTupleState.CREATING;
+                        dirtyCounterQueue.add(counter);
+                    } else if (counter.state == BavetTupleState.DYING) {
+                        counter.state = BavetTupleState.UPDATING;
+                    } else {
+                        throw new IllegalStateException("Impossible state: the counter for facts ("
+                                + tupleA.factA + ", " + tupleB.factA
+                                + ") with indexProperties (" + Arrays.toString(indexProperties)
+                                + ") has an impossible state (" + counter.state + ").");
+                    }
                 }
                 counter.countB++;
             }
