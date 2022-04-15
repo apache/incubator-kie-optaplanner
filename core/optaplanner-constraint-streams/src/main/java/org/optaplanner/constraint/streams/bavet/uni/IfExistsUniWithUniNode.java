@@ -81,7 +81,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
 
         counter.countB = 0;
         indexerB.visit(indexProperties, (tupleB, counterSetB) -> {
-            if (filtering.test(tupleA.factA, tupleB.factA)) {
+            if (filtering == null || filtering.test(tupleA.factA, tupleB.factA)) {
                 counter.countB++;
                 counterSetB.add(counter);
             }
