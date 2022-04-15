@@ -79,21 +79,15 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
         Counter<A> counter = new Counter<>(tupleA);
         indexerA.put(indexProperties, tupleA, counter);
 
-        int countB;
-        if (filtering == null) {
-            countB = indexerB.countValues(indexProperties);
-        } else {
-            countB = 0;
-            indexerB.visit(indexProperties, (tupleB, counterSetB) -> {
-                if (filtering.test(tupleA.factA, tupleB.factA)) {
-                    countB++;
-                }
-            });
-        }
-        counter.countB = countB;
-        if (countB > 0) {
+        counter.countB = 0;
+        indexerB.visit(indexProperties, (tupleB, counterSetB) -> {
+            if (filtering.test(tupleA.factA, tupleB.factA)) {
+                counter.countB++;
+                counterSetB.add(counter);
+            }
+        });
+        if (counter.countB > 0) {
             counter.state = BavetTupleState.CREATING;
-            indexerB.visit(indexProperties, (tuple, counterSetB) -> counterSetB.add(counter));
             dirtyCounterQueue.add(counter);
         }
     }
@@ -107,7 +101,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
         tupleA.store[inputStoreIndexA] = null;
 
         Counter<A> counter = indexerA.remove(indexProperties, tupleA);
-        indexerB.visit(indexProperties, (tuple, counterSet) -> {
+        indexerB.visit(indexProperties, (tupleB, counterSet) -> {
             boolean changed = counterSet.remove(counter);
             if (!changed) {
                 throw new IllegalStateException("Impossible state: the fact (" + tupleA.factA
@@ -128,9 +122,10 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
         Object[] indexProperties = mappingB.apply(tupleB.factA);
         tupleB.store[inputStoreIndexB] = indexProperties;
 
+        // TODO Maybe predict capacity with Math.max(16, counterMapA.size())
         Set<Counter<A>> counterSetB = new LinkedHashSet<>();
         indexerB.put(indexProperties, tupleB, counterSetB);
-        indexerA.visit(indexProperties, (tuple, counter) -> {
+        indexerA.visit(indexProperties, (tupleA, counter) -> {
             if (filtering == null || filtering.test(tupleA.factA, tupleB.factA)) {
                 if (counter.countB == 0) {
                     if (counter.state != BavetTupleState.DEAD) {
@@ -141,8 +136,8 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
                     counterSetB.add(counter);
                     dirtyCounterQueue.add(counter);
                 }
+                counter.countB++;
             }
-            counter.countB++;
         });
     }
 
