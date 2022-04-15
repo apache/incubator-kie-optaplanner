@@ -26,7 +26,6 @@ import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintSt
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
-import org.optaplanner.constraint.streams.quad.DefaultQuadJoiner;
 import org.optaplanner.constraint.streams.tri.InnerTriConstraintStream;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
@@ -79,18 +78,10 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     // ************************************************************************
 
     @Override
-    public <D> QuadConstraintStream<A, B, C, D> actuallyJoin(UniConstraintStream<D> otherStream,
-            DefaultQuadJoiner<A, B, C, D>... joiners) {
+    @SafeVarargs
+    public final <D> QuadConstraintStream<A, B, C, D> join(UniConstraintStream<D> otherStream,
+            QuadJoiner<A, B, C, D>... joiners) {
         throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public <D> QuadConstraintStream<A, B, C, D> join(Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
-        if (getRetrievalSemantics() == RetrievalSemantics.STANDARD) {
-            return join(constraintFactory.forEach(otherClass), joiners);
-        } else {
-            return join(constraintFactory.from(otherClass), joiners);
-        }
     }
 
     // ************************************************************************
