@@ -604,7 +604,6 @@ class UniConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @TestTemplate
     @Deprecated(forRemoval = true)
     public void ifExistsIncludesNullVarsWithFrom() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);

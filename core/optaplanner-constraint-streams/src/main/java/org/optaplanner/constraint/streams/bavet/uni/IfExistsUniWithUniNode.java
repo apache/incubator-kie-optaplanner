@@ -101,15 +101,16 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
         tupleA.store[inputStoreIndexA] = null;
 
         Counter<A> counter = indexerA.remove(indexProperties, tupleA);
-        indexerB.visit(indexProperties, (tupleB, counterSet) -> {
-            boolean changed = counterSet.remove(counter);
-            if (!changed) {
-                throw new IllegalStateException("Impossible state: the fact (" + tupleA.factA
-                        + ") with indexProperties (" + Arrays.toString(indexProperties)
-                        + ") has a counter on the A side that doesn't exist on the B side.");
-            }
-        });
         if (counter.countB > 0) {
+            indexerB.visit(indexProperties, (tupleB, counterSet) -> {
+                boolean changed = counterSet.remove(counter);
+                // If filtering is active, not all counterSets contain the counter and we don't track which ones do
+                if (!changed && filtering == null) {
+                    throw new IllegalStateException("Impossible state: the fact (" + tupleA.factA
+                            + ") with indexProperties (" + Arrays.toString(indexProperties)
+                            + ") has a counter on the A side that doesn't exist on the B side.");
+                }
+            });
             retractCounter(counter);
         }
     }
