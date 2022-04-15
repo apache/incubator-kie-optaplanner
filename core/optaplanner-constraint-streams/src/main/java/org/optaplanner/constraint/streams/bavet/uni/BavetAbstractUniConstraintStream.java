@@ -82,8 +82,13 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     @SafeVarargs
     public final <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream,
             BiJoiner<A, B>... joiners) {
-        BavetAbstractUniConstraintStream<Solution_, B> other = assertBavetUniConstraintStream(otherStream);
         BiJoinerComber<A, B> joinerComber = BiJoinerComber.comb(joiners);
+        return join(otherStream, joinerComber);
+    }
+
+    @Override
+    public final <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream, BiJoinerComber<A, B> joinerComber) {
+        BavetAbstractUniConstraintStream<Solution_, B> other = assertBavetUniConstraintStream(otherStream);
 
         BavetJoinBridgeUniConstraintStream<Solution_, A> leftBridge =
                 new BavetJoinBridgeUniConstraintStream<>(constraintFactory, this, true);

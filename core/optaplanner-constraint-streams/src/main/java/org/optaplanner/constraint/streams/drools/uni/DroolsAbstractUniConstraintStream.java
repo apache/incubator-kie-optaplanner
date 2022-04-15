@@ -67,9 +67,15 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     @SafeVarargs
     public final <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream,
             BiJoiner<A, B>... joiners) {
+        BiJoinerComber<A, B> joinerComber = BiJoinerComber.comb(joiners);
+        return join(otherStream, joinerComber);
+    }
+
+    @Override
+    public final <B> BiConstraintStream<A, B> join(UniConstraintStream<B> otherStream,
+            BiJoinerComber<A, B> joinerComber) {
         DroolsAbstractUniConstraintStream<Solution_, B> castOtherStream =
                 (DroolsAbstractUniConstraintStream<Solution_, B>) otherStream;
-        BiJoinerComber<A, B> joinerComber = BiJoinerComber.comb(joiners);
         DroolsAbstractBiConstraintStream<Solution_, A, B> stream = new DroolsJoinBiConstraintStream<>(constraintFactory,
                 this, castOtherStream, joinerComber.getMergedJoiner());
         addChildStream(stream);

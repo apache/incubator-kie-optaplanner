@@ -101,4 +101,8 @@ public class BiJoinerComber<A, B> {
         return mergedFiltering;
     }
 
+    public void addJoiner(DefaultBiJoiner<A, B> extraJoiner) {
+        mergedJoiner = mergedJoiner.and(extraJoiner);
+    }
+
 }
