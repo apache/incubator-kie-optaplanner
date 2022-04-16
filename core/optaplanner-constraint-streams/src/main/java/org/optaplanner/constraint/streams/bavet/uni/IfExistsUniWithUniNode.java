@@ -107,7 +107,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
                 // If filtering is active, not all counterSets contain the counter and we don't track which ones do
                 if (!changed && filtering == null) {
                     throw new IllegalStateException("Impossible state: the fact (" + tupleA.factA
-                            + ") with indexProperties (" + Arrays.toString(indexProperties)
+                            + ") with indexProperties (" + indexProperties
                             + ") has a counter on the A side that doesn't exist on the B side.");
                 }
             });
@@ -137,7 +137,7 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
                     } else {
                         throw new IllegalStateException("Impossible state: the counter for facts ("
                                 + tupleA.factA + ", " + tupleB.factA
-                                + ") with indexProperties (" + Arrays.toString(indexProperties)
+                                + ") with indexProperties (" + indexProperties
                                 + ") has an impossible state (" + counter.state + ").");
                     }
                 }
