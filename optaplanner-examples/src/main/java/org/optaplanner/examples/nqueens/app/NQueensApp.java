@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,10 @@
 
 package org.optaplanner.examples.nqueens.app;
 
+import java.io.File;
+
 import org.optaplanner.examples.common.app.CommonApp;
+import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO;
 import org.optaplanner.examples.nqueens.swingui.NQueensPanel;
@@ -32,8 +35,20 @@ public class NQueensApp extends CommonApp<NQueens> {
     public static final String DATA_DIR_NAME = "nqueens";
 
     public static void main(String[] args) {
-        prepareSwingEnvironment();
-        new NQueensApp().init();
+        try (SolutionBusiness<NQueens, ?> solutionBusiness = new NQueensApp().createSolutionBusiness()) {
+            NQueens nQueens = solutionBusiness.getSolutionFileIO().read(new File("data/nqueens/unsolved/4queens.xml"));
+
+            // Initialize the simplest known failing problem.
+            nQueens.getQueenList().remove(3);
+            nQueens.setN(3);
+            nQueens.getQueenList().get(0).setRow(nQueens.getRowList().get(0));
+            nQueens.getQueenList().get(1).setRow(nQueens.getRowList().get(2));
+            nQueens.getQueenList().get(2).setRow(nQueens.getRowList().get(0));
+
+            // Throw the error.
+            solutionBusiness.solve(nQueens, solution -> {});
+            System.exit(0);
+        }
     }
 
     public NQueensApp() {
