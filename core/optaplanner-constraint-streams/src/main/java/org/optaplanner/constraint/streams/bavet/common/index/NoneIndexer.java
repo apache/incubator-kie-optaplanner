@@ -55,8 +55,8 @@ public final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<
     }
 
     @Override
-    public int countValues(IndexProperties indexProperties) {
-        return tupleMap.size();
+    public boolean isEmpty() {
+        return tupleMap.isEmpty();
     }
 
 }

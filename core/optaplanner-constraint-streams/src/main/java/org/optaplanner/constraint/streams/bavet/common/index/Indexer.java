@@ -80,10 +80,6 @@ public interface Indexer<Tuple_ extends Tuple, Value_> {
      */
     void visit(IndexProperties indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor);
 
-    /**
-     * @param indexProperties never null
-     * @return number of values across all tuples
-     */
-    int countValues(IndexProperties indexProperties);
+    boolean isEmpty();
 
 }

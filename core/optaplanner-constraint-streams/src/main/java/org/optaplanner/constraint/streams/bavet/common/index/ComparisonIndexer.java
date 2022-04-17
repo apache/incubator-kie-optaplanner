@@ -66,7 +66,7 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<T
                     + ") with indexProperties (" + indexProperties
                     + ") doesn't exist in the indexer.");
         }
-        if (downstreamIndexer.countValues(indexProperties) == 0) {
+        if (downstreamIndexer.isEmpty()) {
             comparisonMap.remove(comparisonIndexProperty);
         }
         return value;
@@ -100,10 +100,8 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<T
     }
 
     @Override
-    public int countValues(IndexProperties indexProperties) {
-        int[] count = new int[1];
-        visit(indexProperties, map -> count[0] += map.size());
-        return count[0];
+    public boolean isEmpty() {
+        return comparisonMap.isEmpty();
     }
 
 }

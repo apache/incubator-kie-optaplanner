@@ -64,7 +64,6 @@ class NoneIndexerTest extends AbstractIndexerTest {
         indexer.put(NoneIndexProperty.INSTANCE, bethTuple, "Beth value");
 
         assertThat(getTupleMap(indexer)).containsOnlyKeys(annTuple, bethTuple);
-        assertThat(indexer.countValues(NoneIndexProperty.INSTANCE)).isEqualTo(2);
     }
 
     private static UniTuple<String> newTuple(String factA) {

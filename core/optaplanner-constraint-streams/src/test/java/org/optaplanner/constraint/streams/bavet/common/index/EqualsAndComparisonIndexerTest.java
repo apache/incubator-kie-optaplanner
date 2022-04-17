@@ -74,16 +74,9 @@ class EqualsAndComparisonIndexerTest extends AbstractIndexerTest {
         indexer.put(new ManyIndexProperties("F", 40), ednaTuple, "Edna value");
 
         assertThat(getTupleMap(indexer, "F", 40)).containsOnlyKeys(annTuple, bethTuple, ednaTuple);
-        assertThat(indexer.countValues(new ManyIndexProperties("F", 40))).isEqualTo(3);
-
         assertThat(getTupleMap(indexer, "F", 35)).containsOnlyKeys(bethTuple);
-        assertThat(indexer.countValues(new ManyIndexProperties("F", 35))).isEqualTo(1);
-
         assertThat(getTupleMap(indexer, "F", 30)).containsOnlyKeys(bethTuple);
-        assertThat(indexer.countValues(new ManyIndexProperties("F", 30))).isEqualTo(1);
-
         assertThat(getTupleMap(indexer, "F", 20)).isEmpty();
-        assertThat(indexer.countValues(new ManyIndexProperties("F", 20))).isZero();
     }
 
     private static UniTuple<String> newTuple(String factA) {

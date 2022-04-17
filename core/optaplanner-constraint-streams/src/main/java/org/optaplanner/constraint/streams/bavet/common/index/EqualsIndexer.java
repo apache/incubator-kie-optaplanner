@@ -53,7 +53,7 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple
         if (downstreamIndexer == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
                     + ") with indexProperties (" + indexProperties
-                    + ") doesn't exist in the indexer.");
+                    + ") doesn't exist in the indexer" + this + ".");
         }
         Value_ value = downstreamIndexer.remove(indexProperties, tuple);
         if (value == null) {
@@ -61,7 +61,7 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple
                     + ") with indexProperties (" + indexProperties
                     + ") doesn't exist in the indexer.");
         }
-        if (downstreamIndexer.countValues(indexProperties) == 0) {
+        if (downstreamIndexer.isEmpty()) {
             downstreamIndexerMap.remove(oldIndexKey);
         }
         return value;
@@ -77,12 +77,8 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple
     }
 
     @Override
-    public int countValues(IndexProperties indexProperties) {
-        Indexer<Tuple_, Value_> downstreamIndexer = downstreamIndexerMap.get(indexerKeyFunction.apply(indexProperties));
-        if (downstreamIndexer == null) {
-            return 0;
-        }
-        return downstreamIndexer.countValues(indexProperties);
+    public boolean isEmpty() {
+        return downstreamIndexerMap.isEmpty();
     }
 
 }
