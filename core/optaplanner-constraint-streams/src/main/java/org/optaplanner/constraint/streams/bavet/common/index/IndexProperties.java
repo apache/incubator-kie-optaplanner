@@ -16,10 +16,28 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
+/**
+ * No instance of implementing classes is expected to equal any instance other than itself.
+ * Index properties are cached in tuples and each tuple carries its unique instance.
+ */
 public interface IndexProperties {
 
+    /**
+     * Retrieves index property at a given position.
+     * 
+     * @param index
+     * @return never null
+     * @param <Type_> {@link ComparisonIndexer} will expect this to implement {@link Comparable}.
+     */
     <Type_> Type_ getProperty(int index);
 
+    /**
+     *
+     * @param fromInclusive position of the first index property to be part of the key, inclusive
+     * @param toExclusive position of the last index property to be part of the key, exclusive
+     * @return never null;
+     * @param <Type_> any type understanding that two keys may point to different tuples unless their instances are equal
+     */
     <Type_> Type_ getIndexerKey(int fromInclusive, int toExclusive);
 
 }

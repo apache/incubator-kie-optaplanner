@@ -34,6 +34,7 @@ final class ManyIndexProperties implements IndexProperties {
     @Override
     public <Type_> Type_ getIndexerKey(int fromInclusive, int toExclusive) {
         if (toExclusive - fromInclusive == 1) {
+            // The property stands on its own; no need to create the extra indexer key instance.
             return getProperty(fromInclusive);
         }
         return (Type_) new IndexerKey(this, fromInclusive, toExclusive);

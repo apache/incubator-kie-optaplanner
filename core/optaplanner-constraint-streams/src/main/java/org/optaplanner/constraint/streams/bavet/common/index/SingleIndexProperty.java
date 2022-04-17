@@ -27,13 +27,16 @@ final class SingleIndexProperty implements IndexProperties {
     @Override
     public <Type_> Type_ getProperty(int index) {
         if (index != 0) {
-            throw new IllegalStateException("Impossible state: single index property index (" + index + ") != 0");
+            throw new IllegalStateException("Impossible state: index (" + index + ") != 0");
         }
         return (Type_) property;
     }
 
     @Override
     public <Type_> Type_ getIndexerKey(int fromInclusive, int toExclusive) {
+        if (toExclusive != 1) {
+            throw new IllegalStateException("Impossible state: final index (" + toExclusive + ") != 1");
+        }
         return getProperty(fromInclusive);
     }
 
