@@ -61,11 +61,6 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<T
                     + ") doesn't exist in the indexer.");
         }
         Value_ value = downstreamIndexer.remove(indexProperties, tuple);
-        if (value == null) {
-            throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + indexProperties
-                    + ") doesn't exist in the indexer.");
-        }
         if (downstreamIndexer.isEmpty()) {
             comparisonMap.remove(comparisonIndexProperty);
         }

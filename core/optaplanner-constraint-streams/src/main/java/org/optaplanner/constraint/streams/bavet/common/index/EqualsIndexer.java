@@ -56,11 +56,6 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple
                     + ") doesn't exist in the indexer" + this + ".");
         }
         Value_ value = downstreamIndexer.remove(indexProperties, tuple);
-        if (value == null) {
-            throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + indexProperties
-                    + ") doesn't exist in the indexer.");
-        }
         if (downstreamIndexer.isEmpty()) {
             downstreamIndexerMap.remove(oldIndexKey);
         }
