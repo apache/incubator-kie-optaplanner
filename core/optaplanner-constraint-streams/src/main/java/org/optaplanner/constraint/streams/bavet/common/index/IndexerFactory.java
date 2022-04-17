@@ -94,7 +94,9 @@ public class IndexerFactory {
         Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier = NoneIndexer::new;
         for (Map.Entry<Integer, JoinerType> entry : descendingJoinerTypeMap.entrySet()) {
             Integer endingPropertyExclusive = entry.getKey();
-            Integer previousEndingPropertyExclusive = descendingJoinerTypeMap.higherKey(endingPropertyExclusive);
+            Integer previousEndingPropertyExclusiveOrNull = descendingJoinerTypeMap.higherKey(endingPropertyExclusive);
+            int previousEndingPropertyExclusive =
+                    previousEndingPropertyExclusiveOrNull == null ? 0 : previousEndingPropertyExclusiveOrNull;
             JoinerType joinerType = entry.getValue();
             Supplier<Indexer<Tuple_, Value_>> actualDownstreamIndexerSupplier = downstreamIndexerSupplier;
             if (joinerType == JoinerType.EQUAL) {
@@ -105,8 +107,7 @@ public class IndexerFactory {
                  * Example 2: For an LESS_THAN+EQUAL+EQUAL joiner, indexer key is of length 2 and starts at position 1.
                  */
                 Function<IndexProperties, Object> indexerKeyFunction =
-                        indexProperties -> indexProperties.getIndexerKey(
-                                previousEndingPropertyExclusive == null ? 0 : previousEndingPropertyExclusive,
+                        indexProperties -> indexProperties.getIndexerKey(previousEndingPropertyExclusive,
                                 endingPropertyExclusive);
                 downstreamIndexerSupplier = () -> new EqualsIndexer<>(indexerKeyFunction, actualDownstreamIndexerSupplier);
             } else {
@@ -120,8 +121,7 @@ public class IndexerFactory {
                  * Example 2: For an EQUAL+EQUAL+LESS_THAN joiner: comparison key is on position 2.
                  */
                 Function<IndexProperties, Comparable> comparisonIndexPropertyFunction =
-                        indexProperties -> indexProperties.getProperty(
-                                previousEndingPropertyExclusive == null ? 0 : previousEndingPropertyExclusive);
+                        indexProperties -> indexProperties.getProperty(previousEndingPropertyExclusive);
                 downstreamIndexerSupplier = () -> new ComparisonIndexer<>(actualJoinerType,
                         comparisonIndexPropertyFunction, actualDownstreamIndexerSupplier);
             }
