@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
@@ -74,19 +73,19 @@ public class IndexerFactory {
         for (Map.Entry<Integer, JoinerType> entry : descendingJoinerTypeMap.entrySet()) {
             Integer endingPropertyExclusive = entry.getKey();
             Integer previousEndingPropertyExclusive = descendingJoinerTypeMap.higherKey(endingPropertyExclusive);
-            int start = previousEndingPropertyExclusive == null ? 0 : previousEndingPropertyExclusive;
             JoinerType joinerType = entry.getValue();
             Supplier<Indexer<Tuple_, Value_>> actualDownstreamIndexerSupplier = downstreamIndexerSupplier;
             if (joinerType == JoinerType.EQUAL) {
-                Function<IndexProperties, Object> indexerKeyFunction =
-                        indexProperties -> indexProperties.getIndexerKey(start, endingPropertyExclusive);
-                downstreamIndexerSupplier = () -> new EqualsIndexer<>(indexerKeyFunction, actualDownstreamIndexerSupplier);
+                downstreamIndexerSupplier = () -> new EqualsIndexer<>(
+                        indexProperties -> indexProperties.getIndexerKey(
+                                previousEndingPropertyExclusive == null ? 0 : previousEndingPropertyExclusive,
+                                endingPropertyExclusive),
+                        actualDownstreamIndexerSupplier);
             } else {
-                Function<IndexProperties, Comparable> comparisonIndexPropertyFunction =
-                        indexProperties -> indexProperties.getProperty(start);
-                JoinerType actualJoinerType = isLeftBridge ? joinerType : joinerType.flip();
-                downstreamIndexerSupplier = () -> new ComparisonIndexer<>(actualJoinerType,
-                        comparisonIndexPropertyFunction, actualDownstreamIndexerSupplier);
+                downstreamIndexerSupplier = () -> new ComparisonIndexer<>(isLeftBridge ? joinerType : joinerType.flip(),
+                        indexProperties -> indexProperties.getProperty(
+                                previousEndingPropertyExclusive == null ? 0 : previousEndingPropertyExclusive),
+                        actualDownstreamIndexerSupplier);
             }
         }
         return downstreamIndexerSupplier.get();
