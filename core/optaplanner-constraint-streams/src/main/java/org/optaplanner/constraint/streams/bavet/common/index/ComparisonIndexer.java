@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -29,7 +30,7 @@ import org.optaplanner.core.impl.score.stream.JoinerType;
 
 final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
 
-    private final JoinerType comparisonJoinerType;
+    private final BiFunction<NavigableMap<Object, Indexer<Tuple_, Value_>>, Comparable, Map<Object, Indexer<Tuple_, Value_>>> submapFunction;
     private final Function<IndexProperties, Comparable> comparisonIndexPropertyFunction;
     private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
     private final NavigableMap<Object, Indexer<Tuple_, Value_>> comparisonMap = new TreeMap<>();
@@ -37,7 +38,7 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<T
     public ComparisonIndexer(JoinerType comparisonJoinerType,
             Function<IndexProperties, Comparable> comparisonIndexPropertyFunction,
             Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
-        this.comparisonJoinerType = Objects.requireNonNull(comparisonJoinerType);
+        this.submapFunction = getSubmapFunction(comparisonJoinerType);
         this.comparisonIndexPropertyFunction = Objects.requireNonNull(comparisonIndexPropertyFunction);
         this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
     }
@@ -67,31 +68,34 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<T
         return value;
     }
 
-    @Override
-    public void visit(IndexProperties indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
-        Comparable comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
-        NavigableMap<Object, Indexer<Tuple_, Value_>> selectedComparisonMap;
+    private BiFunction<NavigableMap<Object, Indexer<Tuple_, Value_>>, Comparable, Map<Object, Indexer<Tuple_, Value_>>>
+            getSubmapFunction(JoinerType comparisonJoinerType) {
         switch (comparisonJoinerType) {
             case LESS_THAN:
-                selectedComparisonMap = comparisonMap.headMap(comparisonIndexProperty, false);
-                break;
+                return (comparisonMap, comparisonIndexProperty) -> comparisonMap.headMap(comparisonIndexProperty, false);
             case LESS_THAN_OR_EQUAL:
-                selectedComparisonMap = comparisonMap.headMap(comparisonIndexProperty, true);
-                break;
+                return (comparisonMap, comparisonIndexProperty) -> comparisonMap.headMap(comparisonIndexProperty, true);
             case GREATER_THAN:
-                selectedComparisonMap = comparisonMap.tailMap(comparisonIndexProperty, false);
-                break;
+                return (comparisonMap, comparisonIndexProperty) -> comparisonMap.tailMap(comparisonIndexProperty, false);
             case GREATER_THAN_OR_EQUAL:
-                selectedComparisonMap = comparisonMap.tailMap(comparisonIndexProperty, true);
-                break;
+                return (comparisonMap, comparisonIndexProperty) -> comparisonMap.tailMap(comparisonIndexProperty, true);
             default:
                 throw new IllegalStateException("Impossible state: the comparisonJoinerType (" + comparisonJoinerType
                         + ") is not one of the 4 comparison types.");
         }
+    }
+
+    @Override
+    public void visit(IndexProperties indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
+        Comparable comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
+        Map<Object, Indexer<Tuple_, Value_>> selectedComparisonMap =
+                submapFunction.apply(comparisonMap, comparisonIndexProperty);
         if (selectedComparisonMap.isEmpty()) {
             return;
         }
-        selectedComparisonMap.values().forEach(v -> v.visit(indexProperties, tupleValueMapVisitor));
+        for (Indexer<Tuple_, Value_> indexer : selectedComparisonMap.values()) {
+            indexer.visit(indexProperties, tupleValueMapVisitor);
+        }
     }
 
     @Override
