@@ -77,13 +77,35 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_> implement
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        retract(entity);
+    public void beforeElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+        throw new UnsupportedOperationException("TODO implement this.");
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        insert(entity);
+    public void afterElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+        throw new UnsupportedOperationException("TODO implement this.");
+    }
+
+    @Override
+    public void beforeElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+        throw new UnsupportedOperationException("TODO implement this.");
+    }
+
+    @Override
+    public void afterElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+        throw new UnsupportedOperationException("TODO implement this.");
+    }
+
+    @Override
+    public void beforeElementMoved(ScoreDirector<Solution_> scoreDirector,
+            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+        throw new UnsupportedOperationException("TODO implement this.");
+    }
+
+    @Override
+    public void afterElementMoved(ScoreDirector<Solution_> scoreDirector,
+            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+        throw new UnsupportedOperationException("TODO implement this.");
     }
 
     @Override

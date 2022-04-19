@@ -59,12 +59,10 @@ class SingletonListInverseVariableListenerTest {
         assertThat(inverseVariableListener.getInverseSingleton(v2)).isEqualTo(e1);
         assertThat(inverseVariableListener.getInverseSingleton(v3)).isEqualTo(e2);
 
-        inverseVariableListener.beforeVariableChanged(scoreDirector, e1);
+        inverseVariableListener.beforeElementMoved(scoreDirector, e1, 0, e2, 1);
         e1.getValueList().remove(v1);
-        inverseVariableListener.afterVariableChanged(scoreDirector, e1);
-        inverseVariableListener.beforeVariableChanged(scoreDirector, e2);
         e2.getValueList().add(v1);
-        inverseVariableListener.afterVariableChanged(scoreDirector, e2);
+        inverseVariableListener.afterElementMoved(scoreDirector, e1, 0, e2, 1);
 
         assertThat(v1.getEntity()).isEqualTo(e2);
         assertThat(inverseVariableListener.getInverseSingleton(v1)).isEqualTo(e2);

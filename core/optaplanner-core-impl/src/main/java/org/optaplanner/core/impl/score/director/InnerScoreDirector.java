@@ -285,14 +285,35 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
     @Override
     void close();
 
+    // ************************************************************************
+    // Basic variable
+    // ************************************************************************
+
+    // TODO BasicVariableDescriptor
     void beforeVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity);
 
     void afterVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity);
 
     void changeVariableFacade(VariableDescriptor<Solution_> variableDescriptor, Object entity, Object newValue);
 
-    void beforeVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity);
+    // ************************************************************************
+    // List variable
+    // ************************************************************************
 
-    void afterVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity);
+    void beforeElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+
+    void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+
+    void beforeElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+
+    void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+
+    void beforeElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object sourceEntity, int sourceIndex,
+            Object destinationEntity, int destinationIndex);
+
+    void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object sourceEntity, int sourceIndex,
+            Object destinationEntity, int destinationIndex);
 
 }

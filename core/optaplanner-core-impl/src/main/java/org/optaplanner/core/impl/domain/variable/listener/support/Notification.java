@@ -33,8 +33,17 @@ public interface Notification<Solution_, T extends AbstractVariableListener<Solu
         return new VariableChangedNotification<>(entity);
     }
 
-    static <Solution_> ListVariableNotification<Solution_> listVariableChanged(Object entity) {
-        return new ListVariableChangedNotification<>(entity);
+    static <Solution_> ListVariableNotification<Solution_> elementAdded(Object entity, int index) {
+        return new ElementAddedNotification<>(entity, index);
+    }
+
+    static <Solution_> ListVariableNotification<Solution_> elementRemoved(Object entity, int index) {
+        return new ElementRemovedNotification<>(entity, index);
+    }
+
+    static <Solution_> ListVariableNotification<Solution_> elementMoved(
+            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+        return new ElementMovedNotification<>(sourceEntity, sourceIndex, destinationEntity, destinationIndex);
     }
 
     void triggerBefore(T variableListener, ScoreDirector<Solution_> scoreDirector);

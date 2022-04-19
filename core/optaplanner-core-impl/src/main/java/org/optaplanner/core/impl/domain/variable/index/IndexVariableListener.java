@@ -37,81 +37,95 @@ public class IndexVariableListener<Solution_> implements ListVariableListener<So
     }
 
     @Override
-    public boolean requiresUniqueEntityEvents() {
-        // A move on a single entity produces multiple before/after variable changed events for the given entity
-        // but the corrupted input problem checks in insert/retract methods require a unique pair of before/after events.
-        return true;
-    }
-
-    @Override
     public void beforeEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // Do nothing
     }
 
     @Override
     public void afterEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        insert((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
-    }
-
-    @Override
-    public void beforeVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        retract((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
-    }
-
-    @Override
-    public void afterVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        insert((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
+        updateIndexes((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, 0);
     }
 
     @Override
     public void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        retract((InnerScoreDirector<Solution_, ?>) scoreDirector, entity);
+        // Do nothing
     }
 
     @Override
     public void afterEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        // Do nothing
-    }
-
-    protected void insert(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity) {
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        int index = 0;
-        for (Object value : listVariable) {
-            // TODO maybe update inverse relation variable (if exists) to avoid an extra loop
-            //  in a dedicated inverse relation listener
-            Integer oldIndex = shadowVariableDescriptor.getValue(value);
-            if (oldIndex != null) {
-                throw new IllegalStateException("The entity (" + entity
-                        + ") has a list variable (" + sourceVariableDescriptor.getVariableName()
-                        + ") and one of its values (" + value
-                        + ") which has a shadow variable (" + shadowVariableDescriptor.getVariableName()
-                        + ") has an oldIndex (" + oldIndex + ") which is not null.\n"
-                        + "Verify the consistency of your input problem for that shadow variable.");
-            }
-            scoreDirector.beforeVariableChanged(shadowVariableDescriptor, value);
-            shadowVariableDescriptor.setValue(value, index);
-            scoreDirector.afterVariableChanged(shadowVariableDescriptor, value);
-            index++;
+        for (Object element : listVariable) {
+            innerScoreDirector.beforeVariableChanged(shadowVariableDescriptor, element);
+            shadowVariableDescriptor.setValue(element, null);
+            innerScoreDirector.afterVariableChanged(shadowVariableDescriptor, element);
         }
     }
 
-    protected void retract(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity) {
-        List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        int index = 0;
-        for (Object value : listVariable) {
-            Integer oldIndex = shadowVariableDescriptor.getValue(value);
-            if (!Objects.equals(oldIndex, index)) {
-                throw new IllegalStateException("The entity (" + entity
-                        + ") has a list variable (" + sourceVariableDescriptor.getVariableName()
-                        + ") and one of its values (" + value
-                        + ") which has a shadow variable (" + shadowVariableDescriptor.getVariableName()
-                        + ") is at index (" + index + ") and has an unexpected oldIndex (" + oldIndex + ").\n"
-                        + "Verify the consistency of your input problem for that shadow variable.");
+    @Override
+    public void beforeElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+        // Do nothing
+    }
+
+    @Override
+    public void afterElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+        updateIndexes((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, index);
+    }
+
+    @Override
+    public void beforeElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
+        Object element = sourceVariableDescriptor.getElement(entity, index);
+        innerScoreDirector.beforeVariableChanged(shadowVariableDescriptor, element);
+        shadowVariableDescriptor.setValue(element, null);
+        innerScoreDirector.afterVariableChanged(shadowVariableDescriptor, element);
+    }
+
+    @Override
+    public void afterElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+        updateIndexes((InnerScoreDirector<Solution_, ?>) scoreDirector, entity, index);
+    }
+
+    @Override
+    public void beforeElementMoved(ScoreDirector<Solution_> scoreDirector,
+            Object sourceEntity, int sourceIndex,
+            Object destinationEntity, int destinationIndex) {
+        // Do nothing
+    }
+
+    @Override
+    public void afterElementMoved(ScoreDirector<Solution_> scoreDirector,
+            Object sourceEntity, int sourceIndex,
+            Object destinationEntity, int destinationIndex) {
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
+        if (sourceEntity == destinationEntity) {
+            if (destinationIndex < sourceIndex) {
+                updateIndexes(innerScoreDirector, sourceEntity, destinationIndex, sourceIndex + 1);
+            } else {
+                updateIndexes(innerScoreDirector, sourceEntity, sourceIndex, destinationIndex + 1);
             }
-            scoreDirector.beforeVariableChanged(shadowVariableDescriptor, value);
-            shadowVariableDescriptor.setValue(value, null);
-            scoreDirector.afterVariableChanged(shadowVariableDescriptor, value);
-            index++;
+        } else {
+            updateIndexes(innerScoreDirector, sourceEntity, sourceIndex);
+            updateIndexes(innerScoreDirector, destinationEntity,
+                    destinationIndex == sourceIndex ? destinationIndex + 1 : destinationIndex);
+        }
+    }
+
+    private void updateIndexes(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity, int index) {
+        updateIndexes(scoreDirector, entity, index, Integer.MAX_VALUE);
+    }
+
+    private void updateIndexes(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity, int startIndex, int endIndex) {
+        List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
+        for (int i = startIndex; i < Math.min(endIndex, listVariable.size()); i++) {
+            Object element = listVariable.get(i);
+            Integer oldIndex = shadowVariableDescriptor.getValue(element);
+            if (Objects.equals(oldIndex, i)) {
+                return;
+            }
+            scoreDirector.beforeVariableChanged(shadowVariableDescriptor, element);
+            shadowVariableDescriptor.setValue(element, i);
+            scoreDirector.afterVariableChanged(shadowVariableDescriptor, element);
         }
     }
 

@@ -168,10 +168,10 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
         // beforeVariableChanged() has already added it to the notificationQueue
     }
 
-    public void beforeVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity) {
+    public void beforeElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
         Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
         if (!notifiables.isEmpty()) {
-            ListVariableNotification<Solution_> notification = Notification.listVariableChanged(entity);
+            ListVariableNotification<Solution_> notification = Notification.elementAdded(entity, index);
             for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
@@ -179,8 +179,29 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
         notificationQueuesAreEmpty = false;
     }
 
-    public void afterVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity) {
-        // beforeVariableChanged() has already added it to the notificationQueue
+    public void beforeElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
+        if (!notifiables.isEmpty()) {
+            ListVariableNotification<Solution_> notification = Notification.elementRemoved(entity, index);
+            for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
+                notifiable.addNotification(notification);
+            }
+        }
+        notificationQueuesAreEmpty = false;
+    }
+
+    public void beforeElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object sourceEntity, int sourceIndex,
+            Object destinationEntity, int destinationIndex) {
+        Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
+        if (!notifiables.isEmpty()) {
+            ListVariableNotification<Solution_> notification =
+                    Notification.elementMoved(sourceEntity, sourceIndex, destinationEntity, destinationIndex);
+            for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
+                notifiable.addNotification(notification);
+            }
+        }
+        notificationQueuesAreEmpty = false;
     }
 
     public void triggerVariableListenersInNotificationQueues() {

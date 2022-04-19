@@ -415,15 +415,39 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     }
 
     @Override
-    public void beforeVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity) {
-        workingInitScore -= variableDescriptor.getListSize(entity);
-        variableListenerSupport.beforeVariableChanged(variableDescriptor, entity);
+    public void beforeElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        variableListenerSupport.beforeElementAdded(variableDescriptor, entity, index);
     }
 
     @Override
-    public void afterVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity) {
-        workingInitScore += variableDescriptor.getListSize(entity);
-        variableListenerSupport.afterVariableChanged(variableDescriptor, entity);
+    public void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        workingInitScore++;
+        // TODO variableListenerSupport
+    }
+
+    @Override
+    public void beforeElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        variableListenerSupport.beforeElementRemoved(variableDescriptor, entity, index);
+    }
+
+    @Override
+    public void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        workingInitScore--;
+        // TODO variableListenerSupport
+    }
+
+    @Override
+    public void beforeElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+        variableListenerSupport.beforeElementMoved(variableDescriptor,
+                sourceEntity, sourceIndex, destinationEntity, destinationIndex);
+    }
+
+    @Override
+    public void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+        // Do nothing
+        // TODO variableListenerSupport
     }
 
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
