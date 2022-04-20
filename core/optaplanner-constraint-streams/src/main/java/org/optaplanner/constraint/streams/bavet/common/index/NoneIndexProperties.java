@@ -16,33 +16,27 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
-final class SingleIndexProperty implements IndexProperties {
+final class NoneIndexProperties implements IndexProperties {
 
-    private final Object property;
+    static final NoneIndexProperties INSTANCE = new NoneIndexProperties();
 
-    SingleIndexProperty(Object property) {
-        this.property = property;
+    private NoneIndexProperties() {
+
     }
 
     @Override
     public <Type_> Type_ getProperty(int index) {
-        if (index != 0) {
-            throw new IllegalStateException("Impossible state: index (" + index + ") != 0");
-        }
-        return (Type_) property;
+        throw new IllegalArgumentException("Impossible state: none index property requested");
     }
 
     @Override
     public <Type_> Type_ getIndexerKey(int fromInclusive, int toExclusive) {
-        if (toExclusive != 1) {
-            throw new IllegalStateException("Impossible state: final index (" + toExclusive + ") != 1");
-        }
-        return getProperty(fromInclusive);
+        throw new IllegalArgumentException("Impossible state: none indexer key requested");
     }
 
     @Override
     public String toString() {
-        return "[" + property + "]";
+        return "[]";
     }
 
 }

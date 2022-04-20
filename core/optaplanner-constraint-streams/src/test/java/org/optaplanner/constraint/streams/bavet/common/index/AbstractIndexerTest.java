@@ -40,10 +40,10 @@ abstract class AbstractIndexerTest {
         IndexProperties properties = null;
         switch (objectProperties.length) {
             case 0:
-                properties = NoneIndexProperty.INSTANCE;
+                properties = NoneIndexProperties.INSTANCE;
                 break;
             case 1:
-                properties = new SingleIndexProperty(objectProperties[0]);
+                properties = new SingleIndexProperties(objectProperties[0]);
                 break;
             default:
                 properties = new ManyIndexProperties(objectProperties);

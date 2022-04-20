@@ -25,7 +25,7 @@ import org.optaplanner.constraint.streams.tri.DefaultTriJoiner;
 
 public final class JoinerUtils {
 
-    private static final NoneIndexProperty NONE_INDEX_PROPERTY = NoneIndexProperty.INSTANCE;
+    private static final NoneIndexProperties NONE_INDEX_PROPERTY = NoneIndexProperties.INSTANCE;
 
     private JoinerUtils() {
 
@@ -37,7 +37,7 @@ public final class JoinerUtils {
             return (A a) -> NONE_INDEX_PROPERTY;
         } else if (joinerCount == 1) {
             Function<A, Object> mapping = joiner.getLeftMapping(0);
-            return (A a) -> new SingleIndexProperty(mapping.apply(a));
+            return (A a) -> new SingleIndexProperties(mapping.apply(a));
         } else {
             return (A a) -> {
                 Object[] mappings = new Object[joinerCount];
@@ -55,7 +55,7 @@ public final class JoinerUtils {
             return (A a, B b) -> NONE_INDEX_PROPERTY;
         } else if (joinerCount == 1) {
             BiFunction<A, B, Object> mapping = joiner.getLeftMapping(0);
-            return (A a, B b) -> new SingleIndexProperty(mapping.apply(a, b));
+            return (A a, B b) -> new SingleIndexProperties(mapping.apply(a, b));
         } else {
             return (A a, B b) -> {
                 Object[] mappings = new Object[joinerCount];
@@ -73,7 +73,7 @@ public final class JoinerUtils {
             return (Right_ x) -> NONE_INDEX_PROPERTY;
         } else if (joinerCount == 1) {
             Function<Right_, Object> mapping = joiner.getRightMapping(0);
-            return (Right_ x) -> new SingleIndexProperty(mapping.apply(x));
+            return (Right_ x) -> new SingleIndexProperties(mapping.apply(x));
         } else {
             return (Right_ x) -> {
                 Object[] mappings = new Object[joinerCount];
