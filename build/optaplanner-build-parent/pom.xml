@@ -221,7 +221,7 @@
                       <!-- Ban forbidden logging deps (we only use SLF4J + Logback) -->
                       <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
                       <exclude>commons-logging:commons-log*</exclude>
-                      <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
+                      <!-- In case of transitive dependency, exclude it and use 'org.apache.logging.log4j:log4j-to-slf4j' instead -->
                       <exclude>log4j:log4j</exclude>
                       <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
                       <exclude>javassist:javassist</exclude>
