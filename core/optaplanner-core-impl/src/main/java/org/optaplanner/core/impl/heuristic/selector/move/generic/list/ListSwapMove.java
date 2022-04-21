@@ -147,21 +147,12 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
         Object leftElement = variableDescriptor.getElement(leftEntity, leftIndex);
         Object rightElement = variableDescriptor.getElement(rightEntity, rightIndex);
 
-        if (leftEntity == rightEntity) {
-            innerScoreDirector.beforeElementMoved(variableDescriptor, leftEntity, leftIndex, leftEntity, leftIndex);
-            innerScoreDirector.beforeElementMoved(variableDescriptor, rightEntity, rightIndex, rightEntity, rightIndex);
-            variableDescriptor.setElement(leftEntity, leftIndex, rightElement);
-            variableDescriptor.setElement(rightEntity, rightIndex, leftElement);
-            innerScoreDirector.afterElementMoved(variableDescriptor, leftEntity, leftIndex, leftEntity, leftIndex);
-            innerScoreDirector.afterElementMoved(variableDescriptor, rightEntity, rightIndex, rightEntity, rightIndex);
-        } else {
-            innerScoreDirector.beforeElementMoved(variableDescriptor, leftEntity, leftIndex, rightEntity, rightIndex);
-            innerScoreDirector.beforeElementMoved(variableDescriptor, rightEntity, rightIndex, leftEntity, leftIndex);
-            variableDescriptor.setElement(leftEntity, leftIndex, rightElement);
-            variableDescriptor.setElement(rightEntity, rightIndex, leftElement);
-            innerScoreDirector.afterElementMoved(variableDescriptor, leftEntity, leftIndex, rightEntity, rightIndex);
-            innerScoreDirector.afterElementMoved(variableDescriptor, rightEntity, rightIndex, leftEntity, leftIndex);
-        }
+        innerScoreDirector.beforeElementMoved(variableDescriptor, leftEntity, leftIndex, rightEntity, rightIndex);
+        innerScoreDirector.beforeElementMoved(variableDescriptor, rightEntity, rightIndex, leftEntity, leftIndex);
+        variableDescriptor.setElement(leftEntity, leftIndex, rightElement);
+        variableDescriptor.setElement(rightEntity, rightIndex, leftElement);
+        innerScoreDirector.afterElementMoved(variableDescriptor, leftEntity, leftIndex, rightEntity, rightIndex);
+        innerScoreDirector.afterElementMoved(variableDescriptor, rightEntity, rightIndex, leftEntity, leftIndex);
     }
 
     @Override

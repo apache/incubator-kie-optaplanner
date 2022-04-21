@@ -98,34 +98,26 @@ public class IndexVariableListener<Solution_> implements ListVariableListener<So
             Object sourceEntity, int sourceIndex,
             Object destinationEntity, int destinationIndex) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
-        if (sourceEntity == destinationEntity) {
-            if (destinationIndex < sourceIndex) {
-                updateIndexes(innerScoreDirector, sourceEntity, destinationIndex, sourceIndex + 1);
-            } else {
-                updateIndexes(innerScoreDirector, sourceEntity, sourceIndex, destinationIndex + 1);
-            }
-        } else {
-            updateIndexes(innerScoreDirector, sourceEntity, sourceIndex);
-            updateIndexes(innerScoreDirector, destinationEntity,
-                    destinationIndex == sourceIndex ? destinationIndex + 1 : destinationIndex);
-        }
+        updateIndexes(innerScoreDirector, sourceEntity, sourceIndex);
+        updateIndexes(innerScoreDirector, destinationEntity, destinationIndex);
     }
 
-    private void updateIndexes(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity, int index) {
-        updateIndexes(scoreDirector, entity, index, Integer.MAX_VALUE);
-    }
-
-    private void updateIndexes(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity, int startIndex, int endIndex) {
+    private void updateIndexes(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity, int startIndex) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        for (int i = startIndex; i < Math.min(endIndex, listVariable.size()); i++) {
+        for (int i = startIndex; i < listVariable.size(); i++) {
             Object element = listVariable.get(i);
             Integer oldIndex = shadowVariableDescriptor.getValue(element);
-            if (Objects.equals(oldIndex, i)) {
+            if (!Objects.equals(oldIndex, i)) {
+                scoreDirector.beforeVariableChanged(shadowVariableDescriptor, element);
+                shadowVariableDescriptor.setValue(element, i);
+                scoreDirector.afterVariableChanged(shadowVariableDescriptor, element);
+            } else if (i != startIndex) {
+                // It is possible to quit early when an element with the expected index is encountered
+                // and **if it's not the moved element**. For example, when X is moved from Ann[3] to Beth[3],
+                // we need to start updating Beth's elements at index 3 where X already has the expected index, but quitting
+                // there would be incorrect because all the elements after X need their indexes incremented.
                 return;
             }
-            scoreDirector.beforeVariableChanged(shadowVariableDescriptor, element);
-            shadowVariableDescriptor.setValue(element, i);
-            scoreDirector.afterVariableChanged(shadowVariableDescriptor, element);
         }
     }
 
