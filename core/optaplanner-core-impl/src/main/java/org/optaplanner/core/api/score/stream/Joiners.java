@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -279,8 +279,11 @@ public final class Joiners {
     public static <A, B, Property_ extends Comparable<Property_>> BiJoiner<A, B> overlapping(
             Function<A, Property_> leftStartMapping, Function<A, Property_> leftEndMapping,
             Function<B, Property_> rightStartMapping, Function<B, Property_> rightEndMapping) {
-        return Joiners.lessThan(leftStartMapping, rightEndMapping)
-                .and(Joiners.greaterThan(leftEndMapping, rightStartMapping));
+        BiJoiner<A, B> start = JoinerSupport.getJoinerService()
+                .newBiJoiner(leftEndMapping, JoinerType.RANGE_GREATER_THAN, rightStartMapping);
+        BiJoiner<A, B> end = JoinerSupport.getJoinerService()
+                .newBiJoiner(leftStartMapping, JoinerType.RANGE_LESS_THAN, rightEndMapping);
+        return start.and(end);
     }
 
     // ************************************************************************
@@ -402,8 +405,11 @@ public final class Joiners {
     public static <A, B, C, Property_ extends Comparable<Property_>> TriJoiner<A, B, C> overlapping(
             BiFunction<A, B, Property_> leftStartMapping, BiFunction<A, B, Property_> leftEndMapping,
             Function<C, Property_> rightStartMapping, Function<C, Property_> rightEndMapping) {
-        return Joiners.lessThan(leftStartMapping, rightEndMapping)
-                .and(Joiners.greaterThan(leftEndMapping, rightStartMapping));
+        TriJoiner<A, B, C> left = JoinerSupport.getJoinerService()
+                .newTriJoiner(leftStartMapping, JoinerType.RANGE_LESS_THAN, rightEndMapping);
+        TriJoiner<A, B, C> right = JoinerSupport.getJoinerService()
+                .newTriJoiner(leftEndMapping, JoinerType.RANGE_GREATER_THAN, rightStartMapping);
+        return left.and(right);
     }
 
     // ************************************************************************
@@ -532,8 +538,11 @@ public final class Joiners {
     public static <A, B, C, D, Property_ extends Comparable<Property_>> QuadJoiner<A, B, C, D> overlapping(
             TriFunction<A, B, C, Property_> leftStartMapping, TriFunction<A, B, C, Property_> leftEndMapping,
             Function<D, Property_> rightStartMapping, Function<D, Property_> rightEndMapping) {
-        return Joiners.lessThan(leftStartMapping, rightEndMapping)
-                .and(Joiners.greaterThan(leftEndMapping, rightStartMapping));
+        QuadJoiner<A, B, C, D> left = JoinerSupport.getJoinerService()
+                .newQuadJoiner(leftStartMapping, JoinerType.RANGE_LESS_THAN, rightEndMapping);
+        QuadJoiner<A, B, C, D> right = JoinerSupport.getJoinerService()
+                .newQuadJoiner(leftEndMapping, JoinerType.RANGE_GREATER_THAN, rightStartMapping);
+        return left.and(right);
     }
 
     // ************************************************************************
@@ -669,8 +678,11 @@ public final class Joiners {
     public static <A, B, C, D, E, Property_ extends Comparable<Property_>> PentaJoiner<A, B, C, D, E> overlapping(
             QuadFunction<A, B, C, D, Property_> leftStartMapping, QuadFunction<A, B, C, D, Property_> leftEndMapping,
             Function<E, Property_> rightStartMapping, Function<E, Property_> rightEndMapping) {
-        return Joiners.lessThan(leftStartMapping, rightEndMapping)
-                .and(Joiners.greaterThan(leftEndMapping, rightStartMapping));
+        PentaJoiner<A, B, C, D, E> left = JoinerSupport.getJoinerService()
+                .newPentaJoiner(leftStartMapping, JoinerType.RANGE_LESS_THAN, rightEndMapping);
+        PentaJoiner<A, B, C, D, E> right = JoinerSupport.getJoinerService()
+                .newPentaJoiner(leftEndMapping, JoinerType.RANGE_GREATER_THAN, rightStartMapping);
+        return left.and(right);
     }
 
     private Joiners() {

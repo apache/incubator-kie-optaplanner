@@ -25,7 +25,8 @@ import java.time.ZoneOffset;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.core.impl.score.stream.JoinerType;
+import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
+import org.optaplanner.core.api.score.stream.Joiners;
 
 class RangeIndexerTest extends AbstractIndexerTest {
 
@@ -33,25 +34,25 @@ class RangeIndexerTest extends AbstractIndexerTest {
     private static final LocalDateTime YESTERDAY = LocalDateTime.now().minusDays(1);
     private static final LocalDateTime TOMORROW = LocalDateTime.now().plusDays(1);
 
-    private Indexer<UniTuple<String>, String> createGtLtIndexer() {
-        return createIndexer(JoinerType.GREATER_THAN, JoinerType.LESS_THAN);
+    private static final class Range {
+
+        public LocalDateTime start;
+        public LocalDateTime end;
+
     }
 
-    private Indexer<UniTuple<String>, String> createIndexer(JoinerType leftJoinerType, JoinerType rightJoinerType) {
-        return new RangeIndexer<>(leftJoinerType, rightJoinerType,
-                indexProperties -> indexProperties.getProperty(0), indexProperties -> indexProperties.getProperty(1),
-                NoneIndexer::new);
-    }
+    private final DefaultBiJoiner<Range, Range> joiner =
+            (DefaultBiJoiner<Range, Range>) Joiners.overlapping((Range r) -> r.start, r -> r.end);
 
     @Test
     void getEmpty() {
-        Indexer<UniTuple<String>, String> indexer = createGtLtIndexer();
+        Indexer<UniTuple<String>, String> indexer = new IndexerFactory(joiner).buildIndexer(true);
         assertThat(getTupleMap(indexer, TODAY, TOMORROW)).isEmpty();
     }
 
     @Test
     void putTwice() {
-        Indexer<UniTuple<String>, String> indexer = createGtLtIndexer();
+        Indexer<UniTuple<String>, String> indexer = new IndexerFactory(joiner).buildIndexer(true);
         UniTuple<String> annTuple = newTuple("Ann-F-40");
         indexer.put(new ManyIndexProperties(TODAY, TOMORROW), annTuple, "Ann value");
         assertThatThrownBy(() -> indexer.put(new ManyIndexProperties(TODAY, TOMORROW), annTuple, "Ann value"))
@@ -60,7 +61,7 @@ class RangeIndexerTest extends AbstractIndexerTest {
 
     @Test
     void removeTwice() {
-        Indexer<UniTuple<String>, String> indexer = createGtLtIndexer();
+        Indexer<UniTuple<String>, String> indexer = new IndexerFactory(joiner).buildIndexer(true);
         UniTuple<String> annTuple = newTuple("Ann-F-40");
         indexer.put(new ManyIndexProperties(TODAY, TOMORROW), annTuple, "Ann value");
 
@@ -74,8 +75,8 @@ class RangeIndexerTest extends AbstractIndexerTest {
     }
 
     @Test
-    void visitLtGt() {
-        Indexer<UniTuple<String>, String> indexer = createGtLtIndexer();
+    void visitGtLt() {
+        Indexer<UniTuple<String>, String> indexer = new IndexerFactory(joiner).buildIndexer(true);
 
         UniTuple<String> annTuple = newTuple("Ann-YESTERDAY-TOMORROW");
         indexer.put(new ManyIndexProperties(YESTERDAY, TOMORROW), annTuple, "Ann value");
@@ -83,14 +84,12 @@ class RangeIndexerTest extends AbstractIndexerTest {
         indexer.put(new ManyIndexProperties(YESTERDAY, TODAY), bethTuple, "Beth value");
         UniTuple<String> carlTuple = newTuple("Carl-TODAY-TOMORROW");
         indexer.put(new ManyIndexProperties(TODAY, TOMORROW), carlTuple, "Carl value");
-        // The following two tuples should be ignored, as nothing can be both > and < the same date.
+        // The following tuple should be ignored, as nothing can be both > and < the same date.
         UniTuple<String> danTuple = newTuple("Dan-TODAY-TODAY");
         indexer.put(new ManyIndexProperties(TODAY, TODAY), danTuple, "Dan value");
-        UniTuple<String> ednaTuple = newTuple("Edna-YESTERDAY-TOMORROW");
-        indexer.put(new ManyIndexProperties(TOMORROW, TOMORROW), ednaTuple, "Edna value");
 
         LocalDateTime beginningOfTime = Instant.EPOCH.atOffset(ZoneOffset.UTC).toLocalDateTime();
-        LocalDateTime muchLater = TOMORROW.plusDays(1);
+        LocalDateTime muchLater = TOMORROW.plusDays(1000);
         assertThat(getTupleMap(indexer, beginningOfTime, muchLater))
                 .containsOnlyKeys(annTuple, bethTuple, carlTuple);
         assertThat(getTupleMap(indexer, beginningOfTime, TOMORROW))
@@ -105,40 +104,10 @@ class RangeIndexerTest extends AbstractIndexerTest {
                 .isEmpty();
         assertThat(getTupleMap(indexer, TOMORROW, muchLater))
                 .isEmpty();
-    }
-
-    @Test
-    void visitLeGe() {
-        Indexer<UniTuple<String>, String> indexer =
-                createIndexer(JoinerType.GREATER_THAN_OR_EQUAL, JoinerType.LESS_THAN_OR_EQUAL);
-
-        UniTuple<String> annTuple = newTuple("Ann-YESTERDAY-TOMORROW");
-        indexer.put(new ManyIndexProperties(YESTERDAY, TOMORROW), annTuple, "Ann value");
-        UniTuple<String> bethTuple = newTuple("Beth-YESTERDAY-TODAY");
-        indexer.put(new ManyIndexProperties(YESTERDAY, TODAY), bethTuple, "Beth value");
-        UniTuple<String> carlTuple = newTuple("Carl-TODAY-TOMORROW");
-        indexer.put(new ManyIndexProperties(TODAY, TOMORROW), carlTuple, "Carl value");
-        UniTuple<String> danTuple = newTuple("Dan-TODAY-TODAY");
-        indexer.put(new ManyIndexProperties(TODAY, TODAY), danTuple, "Dan value");
-        UniTuple<String> ednaTuple = newTuple("Edna-YESTERDAY-TOMORROW");
-        indexer.put(new ManyIndexProperties(TOMORROW, TOMORROW), ednaTuple, "Edna value");
-
-        LocalDateTime beginningOfTime = Instant.EPOCH.atOffset(ZoneOffset.UTC).toLocalDateTime();
-        LocalDateTime muchLater = TOMORROW.plusDays(1);
-        assertThat(getTupleMap(indexer, beginningOfTime, muchLater))
-                .containsOnlyKeys(annTuple, bethTuple, carlTuple, danTuple, ednaTuple);
-        assertThat(getTupleMap(indexer, beginningOfTime, TOMORROW))
-                .containsOnlyKeys(annTuple, bethTuple, carlTuple, danTuple, ednaTuple);
-        assertThat(getTupleMap(indexer, beginningOfTime, TODAY))
-                .containsOnlyKeys(annTuple, bethTuple, carlTuple, danTuple);
-        assertThat(getTupleMap(indexer, beginningOfTime, YESTERDAY))
-                .containsOnlyKeys(annTuple, bethTuple);
-        assertThat(getTupleMap(indexer, YESTERDAY, muchLater))
-                .containsOnlyKeys(annTuple, bethTuple, carlTuple, danTuple, ednaTuple);
-        assertThat(getTupleMap(indexer, TODAY, muchLater))
-                .containsOnlyKeys(carlTuple, danTuple, ednaTuple);
-        assertThat(getTupleMap(indexer, TOMORROW, muchLater))
-                .containsOnlyKeys(ednaTuple);
+        assertThat(getTupleMap(indexer, YESTERDAY, TOMORROW))
+                .containsOnlyKeys(carlTuple);
+        assertThat(getTupleMap(indexer, TODAY, TOMORROW))
+                .isEmpty();
     }
 
     private static UniTuple<String> newTuple(String factA) {

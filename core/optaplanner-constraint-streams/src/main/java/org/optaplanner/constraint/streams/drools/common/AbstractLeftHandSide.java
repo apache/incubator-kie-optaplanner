@@ -40,14 +40,17 @@ abstract class AbstractLeftHandSide {
         this.variableFactory = Objects.requireNonNull(variableFactory);
     }
 
+    // TODO Investigate possible use of Drools range index.
     protected static Index.ConstraintType getConstraintType(JoinerType type) {
         switch (type) {
             case EQUAL:
                 return Index.ConstraintType.EQUAL;
+            case RANGE_LESS_THAN:
             case LESS_THAN:
                 return Index.ConstraintType.LESS_THAN;
             case LESS_THAN_OR_EQUAL:
                 return Index.ConstraintType.LESS_OR_EQUAL;
+            case RANGE_GREATER_THAN:
             case GREATER_THAN:
                 return Index.ConstraintType.GREATER_THAN;
             case GREATER_THAN_OR_EQUAL:

@@ -71,10 +71,12 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_> implements Indexer<T
     private BiFunction<NavigableMap<Object, Indexer<Tuple_, Value_>>, Comparable, Map<Object, Indexer<Tuple_, Value_>>>
             getSubmapFunction(JoinerType comparisonJoinerType) {
         switch (comparisonJoinerType) {
+            case RANGE_LESS_THAN:
             case LESS_THAN:
                 return (comparisonMap, comparisonIndexProperty) -> comparisonMap.headMap(comparisonIndexProperty, false);
             case LESS_THAN_OR_EQUAL:
                 return (comparisonMap, comparisonIndexProperty) -> comparisonMap.headMap(comparisonIndexProperty, true);
+            case RANGE_GREATER_THAN:
             case GREATER_THAN:
                 return (comparisonMap, comparisonIndexProperty) -> comparisonMap.tailMap(comparisonIndexProperty, false);
             case GREATER_THAN_OR_EQUAL:

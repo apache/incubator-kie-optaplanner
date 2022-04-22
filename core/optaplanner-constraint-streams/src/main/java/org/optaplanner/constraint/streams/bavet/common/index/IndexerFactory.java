@@ -41,6 +41,8 @@ public class IndexerFactory {
                 case LESS_THAN_OR_EQUAL:
                 case GREATER_THAN:
                 case GREATER_THAN_OR_EQUAL:
+                case RANGE_LESS_THAN:
+                case RANGE_GREATER_THAN:
                     break;
                 default:
                     throw new UnsupportedOperationException("Unsupported joiner type (" + joinerType + ").");
@@ -65,9 +67,11 @@ public class IndexerFactory {
             JoinerType joinerType = joinerTypes[0];
             if (joinerType == JoinerType.EQUAL) {
                 return new EqualsIndexer<>(s -> s.getIndexerKey(0, 1), NoneIndexer::new);
-            } else {
+            } else if (isComparisonIndex(joinerType)) {
                 return new ComparisonIndexer<>(isLeftBridge ? joinerType : joinerType.flip(), s -> s.getProperty(0),
                         NoneIndexer::new);
+            } else {
+                throw new IllegalStateException("Impossible state: incomplete range index (" + joinerType + ").");
             }
         }
         /*
@@ -91,8 +95,12 @@ public class IndexerFactory {
             }
         }
         NavigableMap<Integer, JoinerType> descendingJoinerTypeMap = joinerTypeMap.descendingMap();
+        Map.Entry<Integer, JoinerType>[] descendingJoinerTypeEntries = descendingJoinerTypeMap
+                .entrySet()
+                .toArray(Map.Entry[]::new);
         Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier = NoneIndexer::new;
-        for (Map.Entry<Integer, JoinerType> entry : descendingJoinerTypeMap.entrySet()) {
+        for (int i = 0; i < descendingJoinerTypeEntries.length; i++) {
+            Map.Entry<Integer, JoinerType> entry = descendingJoinerTypeEntries[i];
             Integer endingPropertyExclusive = entry.getKey();
             Integer previousEndingPropertyExclusiveOrNull = descendingJoinerTypeMap.higherKey(endingPropertyExclusive);
             int previousEndingPropertyExclusive =
@@ -110,7 +118,7 @@ public class IndexerFactory {
                         indexProperties -> indexProperties.getIndexerKey(previousEndingPropertyExclusive,
                                 endingPropertyExclusive);
                 downstreamIndexerSupplier = () -> new EqualsIndexer<>(indexerKeyFunction, actualDownstreamIndexerSupplier);
-            } else {
+            } else if (isComparisonIndex(joinerType)) {
                 JoinerType actualJoinerType = isLeftBridge ? joinerType : joinerType.flip();
                 /*
                  * Comparison indexers only ever have one comparison key.
@@ -124,9 +132,32 @@ public class IndexerFactory {
                         indexProperties -> indexProperties.getProperty(previousEndingPropertyExclusive);
                 downstreamIndexerSupplier = () -> new ComparisonIndexer<>(actualJoinerType,
                         comparisonIndexPropertyFunction, actualDownstreamIndexerSupplier);
+            } else {
+                Map.Entry<Integer, JoinerType> nextEntry = descendingJoinerTypeEntries[i + 1];
+                JoinerType startJoinerType = nextEntry.getValue();
+                JoinerType actualStartJoinerType = isLeftBridge ? startJoinerType : startJoinerType.flip();
+                JoinerType endJoinerType = entry.getValue();
+                JoinerType actualEndJoinerType = isLeftBridge ? endJoinerType : endJoinerType.flip();
+                /*
+                 * Range joiners always come in pairs, one specifying left boundary, the other the right.
+                 * Otherwise the behavior is the same as comparison indexer.
+                 */
+                Function<IndexProperties, Comparable> startComparisonIndexPropertyFunction =
+                        indexProperties -> indexProperties.getProperty(previousEndingPropertyExclusive - 1);
+                Function<IndexProperties, Comparable> endComparisonIndexPropertyFunction =
+                        indexProperties -> indexProperties.getProperty(previousEndingPropertyExclusive);
+                downstreamIndexerSupplier = () -> new RangeIndexer<>(actualStartJoinerType, actualEndJoinerType,
+                        startComparisonIndexPropertyFunction, endComparisonIndexPropertyFunction,
+                        actualDownstreamIndexerSupplier);
+                i++; // Skip the next joiner too, as it was just processed.
             }
         }
         return downstreamIndexerSupplier.get();
+    }
+
+    private boolean isComparisonIndex(JoinerType joinerType) {
+        return joinerType == JoinerType.LESS_THAN || joinerType == JoinerType.LESS_THAN_OR_EQUAL
+                || joinerType == JoinerType.GREATER_THAN || joinerType == JoinerType.GREATER_THAN_OR_EQUAL;
     }
 
 }
