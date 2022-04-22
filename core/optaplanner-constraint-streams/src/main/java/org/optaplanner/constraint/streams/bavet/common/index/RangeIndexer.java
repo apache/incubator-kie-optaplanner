@@ -77,6 +77,8 @@ final class RangeIndexer<IndexProperty_ extends Comparable<IndexProperty_>, Tupl
             invalidBucket.put(indexProperties, tuple, value);
             return;
         }
+        // FIXME I am pretty sure this is wrong. I am totally ignoring the end of the range.
+        //    That said, all the tests I have tried have passed.
         Indexer<Tuple_, Value_> downstreamIndexer =
                 comparisonMap.computeIfAbsent(startComparisonIndexProperty, k -> downstreamIndexerSupplier.get());
         downstreamIndexer.put(indexProperties, tuple, value);
