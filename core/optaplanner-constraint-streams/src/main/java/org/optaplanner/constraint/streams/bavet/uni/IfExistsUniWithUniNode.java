@@ -104,16 +104,16 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
         tupleA.store[inputStoreIndexA] = null;
 
         Counter<A> counter = indexerA.remove(indexProperties, tupleA);
+        indexerB.visit(indexProperties, (tupleB, counterSet) -> {
+            boolean changed = counterSet.remove(counter);
+            // If filtering is active, not all counterSets contain the counter and we don't track which ones do
+            if (!changed && filtering == null) {
+                throw new IllegalStateException("Impossible state: the fact (" + tupleA.factA
+                        + ") with indexProperties (" + indexProperties
+                        + ") has a counter on the A side that doesn't exist on the B side.");
+            }
+        });
         if (shouldExist ? counter.countB > 0 : counter.countB == 0) {
-            indexerB.visit(indexProperties, (tupleB, counterSet) -> {
-                boolean changed = counterSet.remove(counter);
-                // If filtering is active, not all counterSets contain the counter and we don't track which ones do
-                if (!changed && filtering == null) {
-                    throw new IllegalStateException("Impossible state: the fact (" + tupleA.factA
-                            + ") with indexProperties (" + indexProperties
-                            + ") has a counter on the A side that doesn't exist on the B side.");
-                }
-            });
             retractCounter(counter);
         }
     }
@@ -180,67 +180,66 @@ public final class IfExistsUniWithUniNode<A, B> extends AbstractNode {
     }
 
     private void insertCounter(Counter<A> counter) {
-        if (counter.state == BavetTupleState.DEAD) {
-            counter.state = BavetTupleState.CREATING;
-            dirtyCounterQueue.add(counter);
-        } else if (counter.state == BavetTupleState.DYING) {
-            counter.state = BavetTupleState.UPDATING;
-        } else {
-            throw new IllegalStateException("Impossible state: the counter for the fact ("
-                    + counter.tuple.factA + ") has an impossible insert state (" + counter.state + ").");
+        switch (counter.state) {
+            case DYING:
+                counter.state = BavetTupleState.UPDATING;
+                break;
+            case DEAD:
+                counter.state = BavetTupleState.CREATING;
+                dirtyCounterQueue.add(counter);
+                break;
+            case ABORTING:
+                counter.state = BavetTupleState.CREATING;
+                break;
+            default:
+                throw new IllegalStateException("Impossible state: the counter ("
+                        + counter + ") has an impossible insert state (" + counter.state + ").");
         }
     }
 
     private void retractCounter(Counter<A> counter) {
-        // Don't add the tuple to the dirtyTupleQueue twice
-        if (counter.state.isDirty()) {
-            switch (counter.state) {
-                case CREATING:
-                    // Kill it before it propagates
-                    counter.state = BavetTupleState.ABORTING;
-                    break;
-                case UPDATING:
-                    // Kill the original propagation
-                    counter.state = BavetTupleState.DYING;
-                    break;
-                case DYING:
-                    break;
-                default:
-                    throw new IllegalStateException("Impossible state: The counter for the fact ("
-                            + counter.tuple.factA + ") has an impossible retract state (" + counter.state + ").");
-            }
-        } else {
-            counter.state = BavetTupleState.DYING;
-            dirtyCounterQueue.add(counter);
+        switch (counter.state) {
+            case CREATING:
+                // Kill it before it propagates
+                counter.state = BavetTupleState.ABORTING;
+                break;
+            case UPDATING:
+                // Kill the original propagation
+                counter.state = BavetTupleState.DYING;
+                break;
+            case OK:
+                counter.state = BavetTupleState.DYING;
+                dirtyCounterQueue.add(counter);
+                break;
+            default:
+                throw new IllegalStateException("Impossible state: The counter ("
+                        + counter + ") has an impossible retract state (" + counter.state + ").");
         }
     }
 
     @Override
     public void calculateScore() {
         dirtyCounterQueue.forEach(counter -> {
-            // Retract
-            if (counter.state == BavetTupleState.UPDATING || counter.state == BavetTupleState.DYING) {
-                nextNodesRetract.accept(counter.tuple);
-            }
-            // Insert
-            if (counter.state == BavetTupleState.CREATING || counter.state == BavetTupleState.UPDATING) {
-                nextNodesInsert.accept(counter.tuple);
-            }
             switch (counter.state) {
                 case CREATING:
-                case UPDATING:
+                    nextNodesInsert.accept(counter.tuple);
                     counter.state = BavetTupleState.OK;
-                    return;
+                    break;
+                case UPDATING:
+                    nextNodesRetract.accept(counter.tuple);
+                    nextNodesInsert.accept(counter.tuple);
+                    counter.state = BavetTupleState.OK;
+                    break;
                 case DYING:
+                    nextNodesRetract.accept(counter.tuple);
+                    counter.state = BavetTupleState.DEAD;
+                    break;
                 case ABORTING:
                     counter.state = BavetTupleState.DEAD;
-                    return;
-                case DEAD:
-                    throw new IllegalStateException("Impossible state: The counter (" + counter + ") in node (" +
-                            this + ") is already in the dead state (" + counter.state + ").");
+                    break;
                 default:
-                    throw new IllegalStateException("Impossible state: The counter (" + counter + ") in node (" +
-                            this + ") is in an unexpected state (" + counter.state + ").");
+                    throw new IllegalStateException("Impossible state: The dirty counter (" + counter
+                            + ") has an non-dirty state (" + counter.state + ").");
             }
         });
         dirtyCounterQueue.clear();
