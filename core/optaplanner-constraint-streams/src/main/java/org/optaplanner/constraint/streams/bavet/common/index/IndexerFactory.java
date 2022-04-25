@@ -146,9 +146,9 @@ public class IndexerFactory {
                         indexProperties -> indexProperties.getProperty(previousEndingPropertyExclusive - 1);
                 Function<IndexProperties, Comparable> endComparisonIndexPropertyFunction =
                         indexProperties -> indexProperties.getProperty(previousEndingPropertyExclusive);
-                downstreamIndexerSupplier = () -> new RangeIndexer<>(actualStartJoinerType, actualEndJoinerType,
-                        startComparisonIndexPropertyFunction, endComparisonIndexPropertyFunction,
-                        actualDownstreamIndexerSupplier);
+                downstreamIndexerSupplier = () -> new OverlappingIndexer<>(startComparisonIndexPropertyFunction,
+                                                                           endComparisonIndexPropertyFunction,
+                                                                           actualDownstreamIndexerSupplier);
                 i++; // Skip the next joiner too, as it was just processed.
             }
         }

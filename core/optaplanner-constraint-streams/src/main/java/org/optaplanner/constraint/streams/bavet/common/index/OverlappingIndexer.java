@@ -26,16 +26,16 @@ import org.optaplanner.constraint.streams.bavet.common.index.overlapping.impl.In
 import org.optaplanner.constraint.streams.bavet.common.index.overlapping.impl.IntervalTree;
 
 final class OverlappingIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
-    private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
+    private final Supplier<Indexer<Tuple_,Value_>> downstreamIndexerSupplier;
     private final IntervalTree<OverlappingItem<Tuple_, Value_>, ?, ?> intervalTree;
 
-    public OverlappingIndexer(Function<IndexProperties, Value_> startIndexPropertyFunction,
-                              Function<IndexProperties, Value_> endIndexPropertyFunction,
-                              Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
-        intervalTree = new IntervalTree<>(overlappingItem -> (Comparable) startIndexPropertyFunction.apply(overlappingItem.indexProperties),
-                                          overlappingItem -> (Comparable) endIndexPropertyFunction.apply(overlappingItem.indexProperties),
+    public OverlappingIndexer(Function<IndexProperties, Comparable> startComparisonIndexPropertyFunction,
+                                                             Function<IndexProperties, Comparable> endComparisonIndexPropertyFunction,
+                                                             Supplier<Indexer<Tuple_,Value_>> actualDownstreamIndexerSupplier) {
+        intervalTree = new IntervalTree<>(overlappingItem -> (Comparable) startComparisonIndexPropertyFunction.apply(overlappingItem.indexProperties),
+                                          overlappingItem -> (Comparable) endComparisonIndexPropertyFunction.apply(overlappingItem.indexProperties),
                                           (a,b) -> null);
-        this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
+        this.downstreamIndexerSupplier = Objects.requireNonNull(actualDownstreamIndexerSupplier);
     }
 
     @Override
