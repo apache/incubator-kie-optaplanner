@@ -16,11 +16,15 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index.overlapping.impl;
 
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.TreeSet;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 
 public final class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>> {
 
@@ -29,16 +33,31 @@ public final class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Di
     private final TreeSet<IntervalSplitPoint<Interval_, Point_>> splitPointSet;
     private final ConsecutiveIntervalInfoImpl<Interval_, Point_, Difference_> consecutiveIntervalData;
 
+    private final Map<IndexProperties, Interval<Interval_, Point_>> intervalMap;
+
     public IntervalTree(Function<Interval_, Point_> startMapping, Function<Interval_, Point_> endMapping,
             BiFunction<Point_, Point_, Difference_> differenceFunction) {
         this.startMapping = startMapping;
         this.endMapping = endMapping;
         this.splitPointSet = new TreeSet<>();
         this.consecutiveIntervalData = new ConsecutiveIntervalInfoImpl<>(splitPointSet, differenceFunction);
+        this.intervalMap = new HashMap<>();
     }
 
     public Interval<Interval_, Point_> getInterval(Interval_ intervalValue) {
         return new Interval<>(intervalValue, startMapping, endMapping);
+    }
+
+    public Interval<Interval_, Point_> getIntervalByProperties(IndexProperties properties) {
+        return intervalMap.get(properties);
+    }
+
+    public Interval<Interval_, Point_> computeIfAbsent(IndexProperties properties, Function<IndexProperties, Interval_> intervalValueMapper) {
+        return intervalMap.computeIfAbsent(properties, key -> {
+            Interval<Interval_, Point_> out = getInterval(intervalValueMapper.apply(key));
+            add(out);
+            return out;
+        });
     }
 
     public boolean isEmpty() {
@@ -91,7 +110,7 @@ public final class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Di
         return true;
     }
 
-    public boolean remove(Interval<Interval_, Point_> interval) {
+    public boolean remove(IndexProperties indexProperties, Interval<Interval_, Point_> interval) {
         IntervalSplitPoint<Interval_, Point_> startSplitPoint = interval.getStartSplitPoint();
         IntervalSplitPoint<Interval_, Point_> endSplitPoint = interval.getEndSplitPoint();
 
@@ -113,6 +132,7 @@ public final class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Di
         }
 
         consecutiveIntervalData.removeInterval(interval);
+        intervalMap.remove(indexProperties);
         return true;
     }
 
