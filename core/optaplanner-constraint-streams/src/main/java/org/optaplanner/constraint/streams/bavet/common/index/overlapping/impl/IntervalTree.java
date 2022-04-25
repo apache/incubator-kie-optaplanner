@@ -110,7 +110,7 @@ public final class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Di
         return true;
     }
 
-    public boolean remove(IndexProperties indexProperties, Interval<Interval_, Point_> interval) {
+    public boolean remove(IndexProperties indexProperties, Interval interval) {
         IntervalSplitPoint<Interval_, Point_> startSplitPoint = interval.getStartSplitPoint();
         IntervalSplitPoint<Interval_, Point_> endSplitPoint = interval.getEndSplitPoint();
 
@@ -136,7 +136,7 @@ public final class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Di
         return true;
     }
 
-    public void visit(Interval<Interval_, Point_> interval, Consumer<Interval_> consumer) {
+    public void visit(Interval interval, Consumer<Interval_> consumer) {
         consecutiveIntervalData.visit(interval, consumer);
     }
 

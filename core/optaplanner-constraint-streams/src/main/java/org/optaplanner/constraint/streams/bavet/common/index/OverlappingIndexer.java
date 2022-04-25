@@ -24,17 +24,16 @@ import java.util.function.Supplier;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.constraint.streams.bavet.common.index.overlapping.impl.Interval;
 import org.optaplanner.constraint.streams.bavet.common.index.overlapping.impl.IntervalTree;
-import org.optaplanner.core.impl.score.stream.JoinerType;
 
-final class OverlappingIndexer<Tuple_ extends Tuple, Value_ extends Comparable<Value_>> implements Indexer<Tuple_, Value_> {
+final class OverlappingIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
     private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
-    private final IntervalTree<OverlappingItem<Tuple_, Value_>, Value_, ?> intervalTree;
+    private final IntervalTree<OverlappingItem<Tuple_, Value_>, ?, ?> intervalTree;
 
     public OverlappingIndexer(Function<IndexProperties, Value_> startIndexPropertyFunction,
                               Function<IndexProperties, Value_> endIndexPropertyFunction,
                               Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
-        intervalTree = new IntervalTree<>(overlappingItem -> startIndexPropertyFunction.apply(overlappingItem.indexProperties),
-                                           overlappingItem -> endIndexPropertyFunction.apply(overlappingItem.indexProperties),
+        intervalTree = new IntervalTree<>(overlappingItem -> (Comparable) startIndexPropertyFunction.apply(overlappingItem.indexProperties),
+                                          overlappingItem -> (Comparable) endIndexPropertyFunction.apply(overlappingItem.indexProperties),
                                           (a,b) -> null);
         this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
     }
@@ -42,13 +41,13 @@ final class OverlappingIndexer<Tuple_ extends Tuple, Value_ extends Comparable<V
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Objects.requireNonNull(value);
-        Interval<OverlappingItem<Tuple_, Value_>, Value_> interval = intervalTree.computeIfAbsent(indexProperties, properties -> new OverlappingItem<>(properties, tuple, value, downstreamIndexerSupplier.get()));
+        Interval<OverlappingItem<Tuple_, Value_>, ?> interval = intervalTree.computeIfAbsent(indexProperties, properties -> new OverlappingItem<>(properties, tuple, value, downstreamIndexerSupplier.get()));
         interval.getValue().indexer.put(indexProperties, tuple, value);
     }
 
     @Override
     public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
-        Interval<OverlappingItem<Tuple_, Value_>, Value_> interval = intervalTree.getIntervalByProperties(indexProperties);
+        Interval<OverlappingItem<Tuple_, Value_>, ?> interval = intervalTree.getIntervalByProperties(indexProperties);
         Indexer<Tuple_, Value_> downstreamIndexer = interval.getValue().indexer;
         if (downstreamIndexer == null) {
              throw new IllegalStateException("Impossible state: the tuple (" + tuple
@@ -64,7 +63,8 @@ final class OverlappingIndexer<Tuple_ extends Tuple, Value_ extends Comparable<V
 
     @Override
     public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
-        intervalTree.visit(intervalTree.getInterval(new OverlappingItem<>(indexProperties, null, null, null)), overlappingItem -> {
+        intervalTree.visit(intervalTree.getInterval(new OverlappingItem<>(indexProperties, null, null, null)),
+                           overlappingItem -> {
             tupleValueVisitor.accept(overlappingItem.tuple, overlappingItem.value);
             overlappingItem.indexer.visit(indexProperties, tupleValueVisitor);
         });
@@ -75,7 +75,7 @@ final class OverlappingIndexer<Tuple_ extends Tuple, Value_ extends Comparable<V
         return intervalTree.isEmpty();
     }
 
-    private final static class OverlappingItem<Tuple_ extends Tuple, Value_ extends Comparable<Value_>> {
+    private final static class OverlappingItem<Tuple_ extends Tuple, Value_> {
         final IndexProperties indexProperties;
         final Tuple_ tuple;
         final Value_ value;
