@@ -60,13 +60,6 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_> implement
     }
 
     @Override
-    public boolean requiresUniqueEntityEvents() {
-        // A move on a single entity produces multiple before/after variable changed events for the given entity
-        // but the corrupted supply checks in insert/retract methods require a unique pair of before/after events.
-        return true;
-    }
-
-    @Override
     public void beforeEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // Do nothing
     }
@@ -78,78 +71,86 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_> implement
 
     @Override
     public void beforeElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        throw new UnsupportedOperationException("TODO implement this.");
+        // Do nothing
     }
 
     @Override
     public void afterElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        throw new UnsupportedOperationException("TODO implement this.");
+        Object element = sourceVariableDescriptor.getElement(entity, index);
+        Object oldInverseEntity = inverseEntityMap.put(element, entity);
+        if (oldInverseEntity != null) {
+            throw new IllegalStateException("The supply (" + this + ") is corrupted,"
+                    + " because the element (" + element
+                    + ") has an oldInverseEntity (" + oldInverseEntity
+                    + ") which is not null.");
+        }
     }
 
     @Override
     public void beforeElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        throw new UnsupportedOperationException("TODO implement this.");
+        Object element = sourceVariableDescriptor.getElement(entity, index);
+        Object oldInverseEntity = inverseEntityMap.remove(element);
+        if (oldInverseEntity == null) {
+            throw new IllegalStateException("The supply (" + this + ") is corrupted,"
+                    + " because the element (" + element
+                    + ") has an oldInverseEntity (" + oldInverseEntity
+                    + ") which is not set.");
+        }
     }
 
     @Override
     public void afterElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        throw new UnsupportedOperationException("TODO implement this.");
+        // Do nothing
     }
 
     @Override
     public void beforeElementMoved(ScoreDirector<Solution_> scoreDirector,
             Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        throw new UnsupportedOperationException("TODO implement this.");
+        // Do nothing
     }
 
     @Override
     public void afterElementMoved(ScoreDirector<Solution_> scoreDirector,
             Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        throw new UnsupportedOperationException("TODO implement this.");
+        Object element = sourceVariableDescriptor.getElement(destinationEntity, destinationIndex);
+        Object oldInverseEntity = inverseEntityMap.put(element, destinationEntity);
+        if (oldInverseEntity != sourceEntity) {
+            throw new IllegalStateException("The supply (" + this + ") is corrupted,"
+                    + " because the element (" + element
+                    + ") has an oldInverseEntity (" + oldInverseEntity
+                    + ") which is not the sourceEntity (" + sourceEntity + ").");
+        }
     }
 
     @Override
     public void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        // When the entity is removed, its values become unassigned. An unassigned value has no inverse entity and no index.
-        retract(entity);
+        // Do nothing
     }
 
     @Override
     public void afterEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        // Do nothing
-    }
-
-    protected void insert(Object entity) {
-        List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        for (Object value : listVariable) {
-            Object oldInverseEntity = inverseEntityMap.put(value, entity);
-            if (oldInverseEntity != null) {
-                throw new IllegalStateException("The supply (" + this + ") is corrupted,"
-                        + " because the entity (" + entity
-                        + ") for sourceVariable (" + sourceVariableDescriptor.getVariableName()
-                        + ") cannot be inserted: one of its values (" + value
-                        + ") already has a non-null oldInverseEntity (" + oldInverseEntity + ").");
-            }
+        // When the entity is removed, its values become unassigned. An unassigned value has no inverse entity and no index.
+        for (Object element : sourceVariableDescriptor.getListVariable(entity)) {
+            inverseEntityMap.remove(element);
         }
     }
 
-    protected void retract(Object entity) {
+    private void insert(Object entity) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        for (Object value : listVariable) {
-            Object oldInverseEntity = inverseEntityMap.remove(value);
-            if (oldInverseEntity != entity) {
+        for (Object element : listVariable) {
+            Object oldInverseEntity = inverseEntityMap.put(element, entity);
+            if (oldInverseEntity != null) {
                 throw new IllegalStateException("The supply (" + this + ") is corrupted,"
-                        + " because the entity (" + entity
-                        + ") for sourceVariable (" + sourceVariableDescriptor.getVariableName()
-                        + ") cannot be retracted: one of its values (" + value
-                        + ") has an unexpected oldInverseEntity (" + oldInverseEntity + ").");
+                        + " because the element (" + element
+                        + ") has an oldInverseEntity (" + oldInverseEntity
+                        + ") which is not null.");
             }
         }
     }
 
     @Override
-    public Object getInverseSingleton(Object value) {
-        return inverseEntityMap.get(value);
+    public Object getInverseSingleton(Object element) {
+        return inverseEntityMap.get(element);
     }
 
     @Override
