@@ -25,15 +25,15 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.constraint.streams.bavet.common.index.overlapping.impl.Interval;
 import org.optaplanner.constraint.streams.bavet.common.index.overlapping.impl.IntervalTree;
 
-final class RangeIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
+final class RangeIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<Key_>> implements Indexer<Tuple_, Value_> {
     private final Supplier<Indexer<Tuple_,Value_>> downstreamIndexerSupplier;
     private final IntervalTree<OverlappingItem<Tuple_, Value_>, ?, ?> intervalTree;
 
-    public RangeIndexer(Function<IndexProperties, Comparable> startComparisonIndexPropertyFunction,
-                        Function<IndexProperties, Comparable> endComparisonIndexPropertyFunction,
+    public RangeIndexer(Function<IndexProperties, Key_> startComparisonIndexPropertyFunction,
+                        Function<IndexProperties, Key_> endComparisonIndexPropertyFunction,
                         Supplier<Indexer<Tuple_,Value_>> actualDownstreamIndexerSupplier) {
-        intervalTree = new IntervalTree<>(overlappingItem -> (Comparable) startComparisonIndexPropertyFunction.apply(overlappingItem.indexProperties),
-                                          overlappingItem -> (Comparable) endComparisonIndexPropertyFunction.apply(overlappingItem.indexProperties),
+        intervalTree = new IntervalTree<>(overlappingItem -> startComparisonIndexPropertyFunction.apply(overlappingItem.indexProperties),
+                                          overlappingItem -> endComparisonIndexPropertyFunction.apply(overlappingItem.indexProperties),
                                           (a,b) -> null);
         this.downstreamIndexerSupplier = Objects.requireNonNull(actualDownstreamIndexerSupplier);
     }
@@ -41,7 +41,10 @@ final class RangeIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Objects.requireNonNull(value);
-        Interval<OverlappingItem<Tuple_, Value_>, ?> interval = intervalTree.computeIfAbsent(indexProperties, properties -> new OverlappingItem<>(properties, tuple, value, downstreamIndexerSupplier.get()));
+        Interval<OverlappingItem<Tuple_, Value_>, ?> interval = intervalTree.computeIfAbsent(indexProperties,
+                properties -> new OverlappingItem<>(properties, tuple, value, downstreamIndexerSupplier.get()));
+                              // TODO I'd consider if we need to carry the indexProperties here.
+                              //  Why not just use the functions here and store the boundaries directly?
         interval.getValue().indexer.put(indexProperties, tuple, value);
     }
 
@@ -58,14 +61,17 @@ final class RangeIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_
         if (downstreamIndexer.isEmpty()) {
             intervalTree.remove(indexProperties, interval);
         }
-        return null;
+        return value;
     }
 
     @Override
     public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
         intervalTree.visit(intervalTree.getInterval(new OverlappingItem<>(indexProperties, null, null, null)),
                            overlappingItem -> {
-            tupleValueVisitor.accept(overlappingItem.tuple, overlappingItem.value);
+            tupleValueVisitor.accept(overlappingItem.tuple, overlappingItem.value); // TODO why is this necessary? doesn't this result in tuple duplication?
+                                                                                    //  The downstream indexer should already carry all the pairs.
+                                                                                    //  Ideally, the OverlappingItem would just carry the boundaries and downstream indexer.
+                                                                                    //  A test would be nice.
             overlappingItem.indexer.visit(indexProperties, tupleValueVisitor);
         });
     }
@@ -76,6 +82,9 @@ final class RangeIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_
     }
 
     private final static class OverlappingItem<Tuple_ extends Tuple, Value_> {
+                               // TODO I'd consider calling it Range or something like that.
+                               //  This indexer does not deal with overlaps. It deals with ranges.
+                               //  The code *on the outside* will use it to look for overlaps.
         final IndexProperties indexProperties;
         final Tuple_ tuple;
         final Value_ value;
