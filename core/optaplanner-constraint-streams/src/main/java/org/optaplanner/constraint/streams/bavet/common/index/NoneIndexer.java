@@ -16,48 +16,49 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
-public final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
+final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
 
     private final Map<Tuple_, Value_> tupleMap = new LinkedHashMap<>();
 
     @Override
-    public void put(Object[] indexProperties, Tuple_ tuple, Value_ value) {
+    public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Objects.requireNonNull(value);
         Value_ old = tupleMap.put(tuple, value);
         if (old != null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + Arrays.toString(indexProperties)
+                    + ") with indexProperties (" + indexProperties
                     + ") was already added in the indexer.");
         }
     }
 
     @Override
-    public Value_ remove(Object[] indexProperties, Tuple_ tuple) {
+    public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
         Value_ value = tupleMap.remove(tuple);
         if (value == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + Arrays.toString(indexProperties)
+                    + ") with indexProperties (" + indexProperties
                     + ") doesn't exist in the indexer.");
         }
         return value;
     }
 
     @Override
-    public void visit(Object[] indexProperties, Consumer<Map<Tuple_, Value_>> tupleValueMapVisitor) {
-        tupleValueMapVisitor.accept(tupleMap);
+    public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
+        if (!isEmpty()) {
+            tupleMap.forEach(tupleValueVisitor);
+        }
     }
 
     @Override
-    public int countValues(Object[] indexProperties) {
-        return tupleMap.size();
+    public boolean isEmpty() {
+        return tupleMap.isEmpty();
     }
 
 }

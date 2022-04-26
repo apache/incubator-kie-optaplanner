@@ -14,31 +14,29 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet.tri;
+package org.optaplanner.constraint.streams.bavet.common.index;
 
-import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
-import org.optaplanner.constraint.streams.bavet.common.Tuple;
+final class NoneIndexProperties implements IndexProperties {
 
-public final class TriTuple<A, B, C> implements Tuple {
+    static final NoneIndexProperties INSTANCE = new NoneIndexProperties();
 
-    public final A factA;
-    public final B factB;
-    public final C factC;
+    private NoneIndexProperties() {
 
-    public final Object[] store;
+    }
 
-    public BavetTupleState state;
+    @Override
+    public <Type_> Type_ getProperty(int index) {
+        throw new IllegalArgumentException("Impossible state: none index property requested");
+    }
 
-    public TriTuple(A factA, B factB, C factC, int storeSize) {
-        this.factA = factA;
-        this.factB = factB;
-        this.factC = factC;
-        store = (storeSize <= 0) ? null : new Object[storeSize];
+    @Override
+    public <Type_> Type_ getIndexerKey(int fromInclusive, int toExclusive) {
+        throw new IllegalArgumentException("Impossible state: none indexer key requested");
     }
 
     @Override
     public String toString() {
-        return "{" + factA + ", " + factB + ", " + factC + "}";
+        return "[]";
     }
 
 }
