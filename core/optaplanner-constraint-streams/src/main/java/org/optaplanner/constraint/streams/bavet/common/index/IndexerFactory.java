@@ -135,9 +135,7 @@ public class IndexerFactory {
             } else {
                 Map.Entry<Integer, JoinerType> nextEntry = descendingJoinerTypeEntries[i + 1];
                 JoinerType startJoinerType = nextEntry.getValue();
-                JoinerType actualStartJoinerType = isLeftBridge ? startJoinerType : startJoinerType.flip();
                 JoinerType endJoinerType = entry.getValue();
-                JoinerType actualEndJoinerType = isLeftBridge ? endJoinerType : endJoinerType.flip();
                 /*
                  * Range joiners always come in pairs, one specifying left boundary, the other the right.
                  * Otherwise the behavior is the same as comparison indexer.
@@ -146,9 +144,10 @@ public class IndexerFactory {
                         indexProperties -> indexProperties.getProperty(previousEndingPropertyExclusive - 1);
                 Function<IndexProperties, Comparable> endComparisonIndexPropertyFunction =
                         indexProperties -> indexProperties.getProperty(previousEndingPropertyExclusive);
-                downstreamIndexerSupplier = () -> new OverlappingIndexer<>(startComparisonIndexPropertyFunction,
-                                                                           endComparisonIndexPropertyFunction,
-                                                                           actualDownstreamIndexerSupplier);
+                downstreamIndexerSupplier = () -> new RangeIndexer<>(
+                        isLeftBridge ? startComparisonIndexPropertyFunction : endComparisonIndexPropertyFunction,
+                        isLeftBridge ? endComparisonIndexPropertyFunction : startComparisonIndexPropertyFunction,
+                        actualDownstreamIndexerSupplier);
                 i++; // Skip the next joiner too, as it was just processed.
             }
         }

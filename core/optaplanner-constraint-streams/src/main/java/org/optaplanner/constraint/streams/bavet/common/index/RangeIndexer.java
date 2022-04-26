@@ -16,119 +16,78 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
-import static org.optaplanner.constraint.streams.bavet.common.index.ComparisonIndexer.getSubmapFunction;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.NavigableMap;
 import java.util.Objects;
-import java.util.TreeMap;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
-import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.impl.score.stream.JoinerType;
+import org.optaplanner.constraint.streams.bavet.common.index.overlapping.impl.Interval;
+import org.optaplanner.constraint.streams.bavet.common.index.overlapping.impl.IntervalTree;
 
-final class RangeIndexer<IndexProperty_ extends Comparable<IndexProperty_>, Tuple_ extends Tuple, Value_>
-        implements Indexer<Tuple_, Value_> {
+final class RangeIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
+    private final Supplier<Indexer<Tuple_,Value_>> downstreamIndexerSupplier;
+    private final IntervalTree<OverlappingItem<Tuple_, Value_>, ?, ?> intervalTree;
 
-    private final TriFunction<NavigableMap<IndexProperty_, Indexer<Tuple_, Value_>>, IndexProperty_, IndexProperty_, NavigableMap<IndexProperty_, Indexer<Tuple_, Value_>>> submapFunction;
-    private final Function<IndexProperties, IndexProperty_> startComparisonIndexPropertyFunction;
-    private final Function<IndexProperties, IndexProperty_> endComparisonIndexPropertyFunction;
-    private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
-    private final NavigableMap<IndexProperty_, Indexer<Tuple_, Value_>> comparisonMap = new TreeMap<>();
-    private final NoneIndexer<Tuple_, Value_> invalidBucket = new NoneIndexer<>();
-
-    public RangeIndexer(JoinerType startComparisonJoinerType, JoinerType endComparisonJoinerType,
-            Function<IndexProperties, IndexProperty_> startComparisonIndexPropertyFunction,
-            Function<IndexProperties, IndexProperty_> endComparisonIndexPropertyFunction,
-            Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
-        if (startComparisonJoinerType != JoinerType.RANGE_GREATER_THAN ||
-                endComparisonJoinerType != JoinerType.RANGE_LESS_THAN) {
-            throw new IllegalArgumentException("Impossible state: joiners do not make a supported range [" +
-                    startComparisonJoinerType + ", " + endComparisonJoinerType + "].");
-        }
-        BiFunction<NavigableMap<IndexProperty_, Indexer<Tuple_, Value_>>, IndexProperty_, NavigableMap<IndexProperty_, Indexer<Tuple_, Value_>>> headSubmapFunction =
-                getSubmapFunction(startComparisonJoinerType);
-        BiFunction<NavigableMap<IndexProperty_, Indexer<Tuple_, Value_>>, IndexProperty_, NavigableMap<IndexProperty_, Indexer<Tuple_, Value_>>> tailSubmapFunction =
-                getSubmapFunction(endComparisonJoinerType);
-        this.submapFunction = (comparisonMap, startComparisonIndexProperty, endComparisonIndexProperty) -> {
-            NavigableMap<IndexProperty_, Indexer<Tuple_, Value_>> tailSubMap =
-                    tailSubmapFunction.apply(comparisonMap, endComparisonIndexProperty);
-            if (tailSubMap.isEmpty()) {
-                return Collections.emptyNavigableMap();
-            }
-            return headSubmapFunction.apply(tailSubMap, startComparisonIndexProperty);
-        };
-        this.startComparisonIndexPropertyFunction = Objects.requireNonNull(startComparisonIndexPropertyFunction);
-        this.endComparisonIndexPropertyFunction = Objects.requireNonNull(endComparisonIndexPropertyFunction);
-        this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
+    public RangeIndexer(Function<IndexProperties, Comparable> startComparisonIndexPropertyFunction,
+                        Function<IndexProperties, Comparable> endComparisonIndexPropertyFunction,
+                        Supplier<Indexer<Tuple_,Value_>> actualDownstreamIndexerSupplier) {
+        intervalTree = new IntervalTree<>(overlappingItem -> (Comparable) startComparisonIndexPropertyFunction.apply(overlappingItem.indexProperties),
+                                          overlappingItem -> (Comparable) endComparisonIndexPropertyFunction.apply(overlappingItem.indexProperties),
+                                          (a,b) -> null);
+        this.downstreamIndexerSupplier = Objects.requireNonNull(actualDownstreamIndexerSupplier);
     }
 
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
-        IndexProperty_ startComparisonIndexProperty = startComparisonIndexPropertyFunction.apply(indexProperties);
-        IndexProperty_ endComparisonIndexProperty = endComparisonIndexPropertyFunction.apply(indexProperties);
-        int comparison = startComparisonIndexProperty.compareTo(endComparisonIndexProperty);
-        if (comparison >= 0) { // Nothing good comes from this.
-            invalidBucket.put(indexProperties, tuple, value);
-            return;
-        }
-        // FIXME I am pretty sure this is wrong. I am totally ignoring the end of the range.
-        //    That said, all the tests I have tried have passed.
-        Indexer<Tuple_, Value_> downstreamIndexer =
-                comparisonMap.computeIfAbsent(startComparisonIndexProperty, k -> downstreamIndexerSupplier.get());
-        downstreamIndexer.put(indexProperties, tuple, value);
+        Objects.requireNonNull(value);
+        Interval<OverlappingItem<Tuple_, Value_>, ?> interval = intervalTree.computeIfAbsent(indexProperties, properties -> new OverlappingItem<>(properties, tuple, value, downstreamIndexerSupplier.get()));
+        interval.getValue().indexer.put(indexProperties, tuple, value);
     }
 
     @Override
     public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
-        IndexProperty_ startComparisonIndexProperty = startComparisonIndexPropertyFunction.apply(indexProperties);
-        IndexProperty_ endComparisonIndexProperty = endComparisonIndexPropertyFunction.apply(indexProperties);
-        int comparison = startComparisonIndexProperty.compareTo(endComparisonIndexProperty);
-        if (comparison >= 0) {
-            return invalidBucket.remove(indexProperties, tuple);
-        }
-        Indexer<Tuple_, Value_> downstreamIndexer = comparisonMap.get(startComparisonIndexProperty);
+        Interval<OverlappingItem<Tuple_, Value_>, ?> interval = intervalTree.getIntervalByProperties(indexProperties);
+        Indexer<Tuple_, Value_> downstreamIndexer = interval.getValue().indexer;
         if (downstreamIndexer == null) {
-            throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + indexProperties
-                    + ") doesn't exist in the indexer.");
+             throw new IllegalStateException("Impossible state: the tuple (" + tuple
+                                                     + ") with indexProperties (" + indexProperties
+                                                     + ") doesn't exist in the indexer.");
         }
         Value_ value = downstreamIndexer.remove(indexProperties, tuple);
         if (downstreamIndexer.isEmpty()) {
-            comparisonMap.remove(startComparisonIndexProperty);
+            intervalTree.remove(indexProperties, interval);
         }
-        return value;
+        return null;
     }
 
     @Override
-    public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleVisitor) {
-        if (isEmpty()) {
-            return;
-        }
-        IndexProperty_ startComparisonIndexProperty = startComparisonIndexPropertyFunction.apply(indexProperties);
-        IndexProperty_ endComparisonIndexProperty = endComparisonIndexPropertyFunction.apply(indexProperties);
-        int comparison = startComparisonIndexProperty.compareTo(endComparisonIndexProperty);
-        if (comparison >= 0) {
-            return;
-        }
-        Map<IndexProperty_, Indexer<Tuple_, Value_>> selectedComparisonMap =
-                submapFunction.apply(comparisonMap, startComparisonIndexProperty, endComparisonIndexProperty);
-        if (selectedComparisonMap.isEmpty()) {
-            return;
-        }
-        for (Indexer<Tuple_, Value_> indexer : selectedComparisonMap.values()) {
-            indexer.visit(indexProperties, tupleVisitor);
-        }
+    public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
+        intervalTree.visit(intervalTree.getInterval(new OverlappingItem<>(indexProperties, null, null, null)),
+                           overlappingItem -> {
+            tupleValueVisitor.accept(overlappingItem.tuple, overlappingItem.value);
+            overlappingItem.indexer.visit(indexProperties, tupleValueVisitor);
+        });
     }
 
     @Override
     public boolean isEmpty() {
-        return comparisonMap.isEmpty();
+        return intervalTree.isEmpty();
+    }
+
+    private final static class OverlappingItem<Tuple_ extends Tuple, Value_> {
+        final IndexProperties indexProperties;
+        final Tuple_ tuple;
+        final Value_ value;
+
+        final Indexer<Tuple_, Value_> indexer;
+
+        public OverlappingItem(IndexProperties indexProperties, Tuple_ tuple, Value_ value, Indexer<Tuple_, Value_> indexer) {
+            this.indexProperties = indexProperties;
+            this.tuple = tuple;
+            this.value = value;
+            this.indexer = indexer;
+        }
     }
 
 }
