@@ -32,6 +32,8 @@ import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
 public final class JoinBiNode<A, B> extends AbstractNode {
 
+    private static final Object NO_VALUE_HACK = new Object();
+
     private final Function<A, IndexProperties> mappingA;
     private final Function<B, IndexProperties> mappingB;
     private final int inputStoreIndexA;
@@ -47,7 +49,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
     private final int outputStoreSize;
 
     private final Indexer<UniTuple<A>, Map<UniTuple<B>, BiTuple<A, B>>> indexerA;
-    private final Indexer<UniTuple<B>, Map<UniTuple<A>, BiTuple<A, B>>> indexerB;
+    private final Indexer<UniTuple<B>, Object> indexerB;
     private final Queue<BiTuple<A, B>> dirtyTupleQueue;
 
     public JoinBiNode(Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
@@ -55,7 +57,7 @@ public final class JoinBiNode<A, B> extends AbstractNode {
             Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
             int outputStoreSize,
             Indexer<UniTuple<A>, Map<UniTuple<B>, BiTuple<A, B>>> indexerA,
-            Indexer<UniTuple<B>, Map<UniTuple<A>, BiTuple<A, B>>> indexerB) {
+            Indexer<UniTuple<B>, Object> indexerB) {
         this.mappingA = mappingA;
         this.mappingB = mappingB;
         this.inputStoreIndexA = inputStoreIndexA;
@@ -78,11 +80,10 @@ public final class JoinBiNode<A, B> extends AbstractNode {
 
         Map<UniTuple<B>, BiTuple<A, B>> tupleABMapA = new HashMap<>();
         indexerA.put(indexProperties, tupleA, tupleABMapA);
-        indexerB.visit(indexProperties, (tupleB, tupleABMapB) -> {
+        indexerB.visit(indexProperties, (tupleB, noValue) -> {
             BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA, outputStoreSize);
             tupleAB.state = BavetTupleState.CREATING;
             tupleABMapA.put(tupleB, tupleAB);
-            tupleABMapB.put(tupleA, tupleAB);
             dirtyTupleQueue.add(tupleAB);
         });
     }
@@ -95,17 +96,10 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         }
         tupleA.store[inputStoreIndexA] = null;
 
-        indexerA.remove(indexProperties, tupleA);
-        // Remove tupleABs from the other side
-        indexerB.visit(indexProperties, (tupleB, tupleABMapB) -> {
-            BiTuple<A, B> tupleAB = tupleABMapB.remove(tupleA);
-            if (tupleAB == null) {
-                throw new IllegalStateException("Impossible state: the tuple (" + tupleA
-                        + ") with indexProperties (" + indexProperties
-                        + ") has tuples on the A side that didn't exist on the B side.");
-            }
+        Map<UniTuple<B>, BiTuple<A, B>> tupleABMapA = indexerA.remove(indexProperties, tupleA);
+        for (BiTuple<A, B> tupleAB : tupleABMapA.values()) {
             killTuple(tupleAB);
-        });
+        }
     }
 
     public void insertB(UniTuple<B> tupleB) {
@@ -116,12 +110,10 @@ public final class JoinBiNode<A, B> extends AbstractNode {
         IndexProperties indexProperties = mappingB.apply(tupleB.factA);
         tupleB.store[inputStoreIndexB] = indexProperties;
 
-        Map<UniTuple<A>, BiTuple<A, B>> tupleABMapB = new HashMap<>();
-        indexerB.put(indexProperties, tupleB, tupleABMapB);
+        indexerB.put(indexProperties, tupleB, NO_VALUE_HACK);
         indexerA.visit(indexProperties, (tupleA, tupleABMapA) -> {
             BiTuple<A, B> tupleAB = new BiTuple<>(tupleA.factA, tupleB.factA, outputStoreSize);
             tupleAB.state = BavetTupleState.CREATING;
-            tupleABMapB.put(tupleA, tupleAB);
             tupleABMapA.put(tupleB, tupleAB);
             dirtyTupleQueue.add(tupleAB);
         });

@@ -81,7 +81,7 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
         Indexer<UniTuple<A>, Map<UniTuple<B>, BiTuple<A, B>>> indexerA = indexerFactory.buildIndexer(true);
-        Indexer<UniTuple<B>, Map<UniTuple<A>, BiTuple<A, B>>> indexerB = indexerFactory.buildIndexer(false);
+        Indexer<UniTuple<B>, Object> indexerB = indexerFactory.buildIndexer(false);
         JoinBiNode<A, B> node = new JoinBiNode<>(
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexA, inputStoreIndexB, insert, retract,

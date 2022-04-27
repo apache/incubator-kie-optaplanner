@@ -85,7 +85,7 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
         Indexer<BiTuple<A, B>, Map<UniTuple<C>, TriTuple<A, B, C>>> indexerAB = indexerFactory.buildIndexer(true);
-        Indexer<UniTuple<C>, Map<BiTuple<A, B>, TriTuple<A, B, C>>> indexerC = indexerFactory.buildIndexer(false);
+        Indexer<UniTuple<C>, Object> indexerC = indexerFactory.buildIndexer(false);
         JoinTriNode<A, B, C> node = new JoinTriNode<>(
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexAB, inputStoreIndexC, insert, retract,

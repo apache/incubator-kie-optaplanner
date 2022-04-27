@@ -33,6 +33,8 @@ import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
 public final class JoinTriNode<A, B, C> extends AbstractNode {
 
+    private static final Object NO_VALUE_HACK = new Object();
+
     private final BiFunction<A, B, IndexProperties> mappingAB;
     private final Function<C, IndexProperties> mappingC;
     private final int inputStoreIndexAB;
@@ -48,7 +50,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
     private final int outputStoreSize;
 
     private final Indexer<BiTuple<A, B>, Map<UniTuple<C>, TriTuple<A, B, C>>> indexerAB;
-    private final Indexer<UniTuple<C>, Map<BiTuple<A, B>, TriTuple<A, B, C>>> indexerC;
+    private final Indexer<UniTuple<C>, Object> indexerC;
     private final Queue<TriTuple<A, B, C>> dirtyTupleQueue;
 
     public JoinTriNode(BiFunction<A, B, IndexProperties> mappingAB, Function<C, IndexProperties> mappingC,
@@ -56,7 +58,7 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
             Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
             int outputStoreSize,
             Indexer<BiTuple<A, B>, Map<UniTuple<C>, TriTuple<A, B, C>>> indexerAB,
-            Indexer<UniTuple<C>, Map<BiTuple<A, B>, TriTuple<A, B, C>>> indexerC) {
+            Indexer<UniTuple<C>, Object> indexerC) {
         this.mappingAB = mappingAB;
         this.mappingC = mappingC;
         this.inputStoreIndexAB = inputStoreIndexAB;
@@ -79,12 +81,11 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
 
         Map<UniTuple<C>, TriTuple<A, B, C>> tupleABCMapAB = new HashMap<>();
         indexerAB.put(indexProperties, tupleAB, tupleABCMapAB);
-        indexerC.visit(indexProperties, (tupleC, tupleABCMapC) -> {
+        indexerC.visit(indexProperties, (tupleC, noValue) -> {
             TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA,
                     outputStoreSize);
             tupleABC.state = BavetTupleState.CREATING;
             tupleABCMapAB.put(tupleC, tupleABC);
-            tupleABCMapC.put(tupleAB, tupleABC);
             dirtyTupleQueue.add(tupleABC);
         });
     }
@@ -97,17 +98,10 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
         }
         tupleAB.store[inputStoreIndexAB] = null;
 
-        indexerAB.remove(indexProperties, tupleAB);
-        // Remove tupleABCs from the other side
-        indexerC.visit(indexProperties, (tupleC, tupleABCMapC) -> {
-            TriTuple<A, B, C> tupleABC = tupleABCMapC.remove(tupleAB);
-            if (tupleABC == null) {
-                throw new IllegalStateException("Impossible state: the tuple (" + tupleAB
-                        + ") with indexProperties (" + indexProperties
-                        + ") has tuples on the AB side that didn't exist on the C side.");
-            }
+        Map<UniTuple<C>, TriTuple<A, B, C>> tupleABCMapAB = indexerAB.remove(indexProperties, tupleAB);
+        for (TriTuple<A, B, C> tupleABC : tupleABCMapAB.values()) {
             killTuple(tupleABC);
-        });
+        }
     }
 
     public void insertC(UniTuple<C> tupleC) {
@@ -118,13 +112,11 @@ public final class JoinTriNode<A, B, C> extends AbstractNode {
         IndexProperties indexProperties = mappingC.apply(tupleC.factA);
         tupleC.store[inputStoreIndexC] = indexProperties;
 
-        Map<BiTuple<A, B>, TriTuple<A, B, C>> tupleABCMapC = new HashMap<>();
-        indexerC.put(indexProperties, tupleC, tupleABCMapC);
+        indexerC.put(indexProperties, tupleC, NO_VALUE_HACK);
         indexerAB.visit(indexProperties, (tupleAB, tupleABCMapAB) -> {
             TriTuple<A, B, C> tupleABC = new TriTuple<>(tupleAB.factA, tupleAB.factB, tupleC.factA,
                     outputStoreSize);
             tupleABC.state = BavetTupleState.CREATING;
-            tupleABCMapC.put(tupleAB, tupleABC);
             tupleABCMapAB.put(tupleC, tupleABC);
             dirtyTupleQueue.add(tupleABC);
         });
