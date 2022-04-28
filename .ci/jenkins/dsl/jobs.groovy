@@ -33,14 +33,14 @@ Map getMultijobPRConfig(Folder jobFolder) {
                 id: 'kogito-apps',
                 repository: 'kogito-apps',
                 env : [
-                    BUILD_MVN_OPTS_CURRENT: jobFolder.isNative() ? '-Poptaplanner-downstream,native' : '-Poptaplanner-downstream',
-                    ADDITIONAL_TIMEOUT: jobFolder.isNative() ? '360' : '210',
+                    BUILD_MVN_OPTS_CURRENT: jobFolder.isNative() || jobFolder.isMandrel() ? '-Poptaplanner-downstream,native' : '-Poptaplanner-downstream',
+                    ADDITIONAL_TIMEOUT: jobFolder.isNative() || jobFolder.isMandrel() ? '360' : '210',
                 ]
             ], [
                 id: 'kogito-examples',
                 repository: 'kogito-examples',
                 env : [
-                    BUILD_MVN_OPTS_CURRENT: jobFolder.isNative() ? '-Poptaplanner-downstream-native' : '-Poptaplanner-downstream'
+                    BUILD_MVN_OPTS_CURRENT: jobFolder.isNative() || jobFolder.isMandrel() ? '-Poptaplanner-downstream-native' : '-Poptaplanner-downstream'
                 ]
             ], [
                 id: 'optaweb-employee-rostering',
