@@ -37,8 +37,7 @@ $ mvn exec:java
 
 To develop with IntelliJ IDEA, Eclipse or VSCode, open the root `pom.xml` as a new project
 and configure a _Run/Debug configuration_ like this:
-BENCHMARK_JDK
-BENCHMARK_JDK
+
 * Type: Application
 * Main class: `org.optaplanner.examples.app.OptaPlannerExamplesApp`
 * VM options: `-Xmx2G -server` (memory only needed when using the big datasets in the examples)
