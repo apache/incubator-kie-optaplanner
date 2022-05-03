@@ -26,36 +26,49 @@ import org.optaplanner.constraint.streams.bavet.common.index.overlapping.impl.In
 import org.optaplanner.constraint.streams.bavet.common.index.overlapping.impl.IntervalTree;
 
 final class RangeIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<Key_>> implements Indexer<Tuple_, Value_> {
-    private final Supplier<Indexer<Tuple_,Value_>> downstreamIndexerSupplier;
-    private final IntervalTree<OverlappingItem<Tuple_, Value_>, ?, ?> intervalTree;
+    private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
+    private final IntervalTree<TupleInterval<Tuple_, Value_, Key_>, Key_, ?> intervalTree;
+
+    private final Function<IndexProperties, Key_> startComparisonIndexPropertyFunction;
+
+    private final Function<IndexProperties, Key_> endComparisonIndexPropertyFunction;
 
     public RangeIndexer(Function<IndexProperties, Key_> startComparisonIndexPropertyFunction,
-                        Function<IndexProperties, Key_> endComparisonIndexPropertyFunction,
-                        Supplier<Indexer<Tuple_,Value_>> actualDownstreamIndexerSupplier) {
-        intervalTree = new IntervalTree<>(overlappingItem -> startComparisonIndexPropertyFunction.apply(overlappingItem.indexProperties),
-                                          overlappingItem -> endComparisonIndexPropertyFunction.apply(overlappingItem.indexProperties),
-                                          (a,b) -> null);
+            Function<IndexProperties, Key_> endComparisonIndexPropertyFunction,
+            Supplier<Indexer<Tuple_, Value_>> actualDownstreamIndexerSupplier) {
+        intervalTree = new IntervalTree<>((a, b) -> null);
+        this.startComparisonIndexPropertyFunction = startComparisonIndexPropertyFunction;
+        this.endComparisonIndexPropertyFunction = endComparisonIndexPropertyFunction;
         this.downstreamIndexerSupplier = Objects.requireNonNull(actualDownstreamIndexerSupplier);
     }
 
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Objects.requireNonNull(value);
-        Interval<OverlappingItem<Tuple_, Value_>, ?> interval = intervalTree.computeIfAbsent(indexProperties,
-                properties -> new OverlappingItem<>(properties, tuple, value, downstreamIndexerSupplier.get()));
-                              // TODO I'd consider if we need to carry the indexProperties here.
-                              //  Why not just use the functions here and store the boundaries directly?
+        Key_ start = startComparisonIndexPropertyFunction.apply(indexProperties);
+        Key_ end = endComparisonIndexPropertyFunction.apply(indexProperties);
+
+        Interval<TupleInterval<Tuple_, Value_, Key_>, ?> interval = intervalTree.computeIfAbsent(start, end,
+                () -> new TupleInterval<>(start, end, tuple, value, downstreamIndexerSupplier.get()));
         interval.getValue().indexer.put(indexProperties, tuple, value);
     }
 
     @Override
     public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
-        Interval<OverlappingItem<Tuple_, Value_>, ?> interval = intervalTree.getIntervalByProperties(indexProperties);
+        Key_ start = startComparisonIndexPropertyFunction.apply(indexProperties);
+        Key_ end = endComparisonIndexPropertyFunction.apply(indexProperties);
+
+        Interval<TupleInterval<Tuple_, Value_, Key_>, ?> interval = intervalTree.getIntervalByRange(start, end);
+        if (interval == null) {
+            throw new IllegalStateException("Impossible state: the tuple (" + tuple
+                    + ") with indexProperties (" + indexProperties
+                    + ") doesn't exist in the indexer.");
+        }
         Indexer<Tuple_, Value_> downstreamIndexer = interval.getValue().indexer;
         if (downstreamIndexer == null) {
-             throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                                                     + ") with indexProperties (" + indexProperties
-                                                     + ") doesn't exist in the indexer.");
+            throw new IllegalStateException("Impossible state: the tuple (" + tuple
+                    + ") with indexProperties (" + indexProperties
+                    + ") doesn't exist in the indexer.");
         }
         Value_ value = downstreamIndexer.remove(indexProperties, tuple);
         if (downstreamIndexer.isEmpty()) {
@@ -66,14 +79,14 @@ final class RangeIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<K
 
     @Override
     public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
-        intervalTree.visit(intervalTree.getInterval(new OverlappingItem<>(indexProperties, null, null, null)),
-                           overlappingItem -> {
-            tupleValueVisitor.accept(overlappingItem.tuple, overlappingItem.value); // TODO why is this necessary? doesn't this result in tuple duplication?
-                                                                                    //  The downstream indexer should already carry all the pairs.
-                                                                                    //  Ideally, the OverlappingItem would just carry the boundaries and downstream indexer.
-                                                                                    //  A test would be nice.
-            overlappingItem.indexer.visit(indexProperties, tupleValueVisitor);
-        });
+        Key_ start = startComparisonIndexPropertyFunction.apply(indexProperties);
+        Key_ end = endComparisonIndexPropertyFunction.apply(indexProperties);
+
+        intervalTree.visit(intervalTree.getInterval(new TupleInterval<>(start, end, null, null, null),
+                start, end),
+                tupleInterval -> {
+                    tupleInterval.indexer.visit(indexProperties, tupleValueVisitor);
+                });
     }
 
     @Override
@@ -81,18 +94,18 @@ final class RangeIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<K
         return intervalTree.isEmpty();
     }
 
-    private final static class OverlappingItem<Tuple_ extends Tuple, Value_> {
-                               // TODO I'd consider calling it Range or something like that.
-                               //  This indexer does not deal with overlaps. It deals with ranges.
-                               //  The code *on the outside* will use it to look for overlaps.
-        final IndexProperties indexProperties;
+    private final static class TupleInterval<Tuple_ extends Tuple, Value_, Key_ extends Comparable<Key_>> {
+        final Key_ start;
+
+        final Key_ end;
         final Tuple_ tuple;
         final Value_ value;
 
         final Indexer<Tuple_, Value_> indexer;
 
-        public OverlappingItem(IndexProperties indexProperties, Tuple_ tuple, Value_ value, Indexer<Tuple_, Value_> indexer) {
-            this.indexProperties = indexProperties;
+        public TupleInterval(Key_ start, Key_ end, Tuple_ tuple, Value_ value, Indexer<Tuple_, Value_> indexer) {
+            this.start = start;
+            this.end = end;
             this.tuple = tuple;
             this.value = value;
             this.indexer = indexer;

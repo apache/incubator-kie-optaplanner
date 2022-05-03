@@ -16,18 +16,13 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index.overlapping.impl;
 
-import java.util.function.Function;
-
 public final class Interval<Interval_, Point_ extends Comparable<Point_>> {
     private final Interval_ value;
     private final IntervalSplitPoint<Interval_, Point_> startSplitPoint;
     private final IntervalSplitPoint<Interval_, Point_> endSplitPoint;
 
-    public Interval(Interval_ value, Function<Interval_, Point_> startMapping,
-            Function<Interval_, Point_> endMapping) {
+    public Interval(Interval_ value, Point_ start, Point_ end) {
         this.value = value;
-        Point_ start = startMapping.apply(value);
-        Point_ end = endMapping.apply(value);
         this.startSplitPoint = new IntervalSplitPoint<>(start);
         if (start == end) {
             this.endSplitPoint = this.startSplitPoint;

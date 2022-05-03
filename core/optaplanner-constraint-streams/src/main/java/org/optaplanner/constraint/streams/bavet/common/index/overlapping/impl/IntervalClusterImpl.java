@@ -129,7 +129,7 @@ final class IntervalClusterImpl<Interval_, Point_ extends Comparable<Point_>, Di
     }
 
     public Iterator<Interval_> iteratorBetween(IntervalSplitPoint<Interval_, Point_> startSplitPoint, boolean startInclusive,
-                                               IntervalSplitPoint<Interval_, Point_> endSplitPoint, boolean endInclusive) {
+            IntervalSplitPoint<Interval_, Point_> endSplitPoint, boolean endInclusive) {
         return new IntervalTreeIterator<>(splitPointSet.subSet(startSplitPoint, startInclusive, endSplitPoint, endInclusive));
     }
 

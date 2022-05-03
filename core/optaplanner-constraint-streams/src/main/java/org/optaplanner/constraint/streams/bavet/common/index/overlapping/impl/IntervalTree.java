@@ -22,59 +22,44 @@ import java.util.Map;
 import java.util.TreeSet;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
+import org.optaplanner.core.impl.util.Pair;
 
 public final class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>> {
 
-    private final Function<Interval_, Point_> startMapping;
-    private final Function<Interval_, Point_> endMapping;
     private final TreeSet<IntervalSplitPoint<Interval_, Point_>> splitPointSet;
     private final ConsecutiveIntervalInfoImpl<Interval_, Point_, Difference_> consecutiveIntervalData;
 
-    private final Map<IndexProperties, Interval<Interval_, Point_>> intervalMap;
+    private final Map<Pair<Point_, Point_>, Interval<Interval_, Point_>> intervalMap;
 
-    public IntervalTree(Function<Interval_, Point_> startMapping, Function<Interval_, Point_> endMapping,
-            BiFunction<Point_, Point_, Difference_> differenceFunction) {
-        this.startMapping = startMapping;
-        this.endMapping = endMapping;
+    public IntervalTree(BiFunction<Point_, Point_, Difference_> differenceFunction) {
         this.splitPointSet = new TreeSet<>();
         this.consecutiveIntervalData = new ConsecutiveIntervalInfoImpl<>(splitPointSet, differenceFunction);
         this.intervalMap = new HashMap<>();
     }
 
-    public Interval<Interval_, Point_> getInterval(Interval_ intervalValue) {
-        return new Interval<>(intervalValue, startMapping, endMapping);
+    public Interval<Interval_, Point_> getInterval(Interval_ intervalValue, Point_ start, Point_ end) {
+        return new Interval<>(intervalValue, start, end);
     }
 
-    public Interval<Interval_, Point_> getIntervalByProperties(IndexProperties properties) {
-        return intervalMap.get(properties);
+    public Interval<Interval_, Point_> getIntervalByRange(Point_ start, Point_ end) {
+        return intervalMap.get(Pair.of(start, end));
     }
 
-    public Interval<Interval_, Point_> computeIfAbsent(IndexProperties properties, Function<IndexProperties, Interval_> intervalValueMapper) {
-        return intervalMap.computeIfAbsent(properties, key -> {
-            Interval<Interval_, Point_> out = getInterval(intervalValueMapper.apply(key));
-            add(out);
+    public Interval<Interval_, Point_> computeIfAbsent(Point_ start, Point_ end, Supplier<Interval_> intervalValueMapper) {
+        return intervalMap.computeIfAbsent(Pair.of(start, end), key -> {
+            Interval<Interval_, Point_> out = getInterval(intervalValueMapper.get(), start, end);
+            if (start.compareTo(end) < 0) {
+                add(out);
+            }
             return out;
         });
     }
 
     public boolean isEmpty() {
         return splitPointSet.isEmpty();
-    }
-
-    public boolean contains(Interval_ o) {
-        if (null == o || splitPointSet.isEmpty()) {
-            return false;
-        }
-        Interval<Interval_, Point_> interval = getInterval(o);
-        IntervalSplitPoint<Interval_, Point_> floorStartSplitPoint =
-                splitPointSet.floor(interval.getStartSplitPoint());
-        if (floorStartSplitPoint == null) {
-            return false;
-        }
-        return floorStartSplitPoint.containsIntervalStarting(interval);
     }
 
     public Iterator<Interval_> iterator() {

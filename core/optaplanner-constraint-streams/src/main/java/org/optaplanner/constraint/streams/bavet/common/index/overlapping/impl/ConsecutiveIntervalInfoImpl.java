@@ -280,16 +280,16 @@ public final class ConsecutiveIntervalInfoImpl<Interval_, Point_ extends Compara
         NavigableMap<IntervalSplitPoint<Interval_, Point_>, IntervalClusterImpl<Interval_, Point_, Difference_>> intersectedIntervalClusterMap =
                 clusterStartSplitPointToCluster.subMap(
                         Objects.requireNonNullElseGet(clusterStartSplitPointToCluster.floorKey(interval.getStartSplitPoint()),
-                                                      interval::getStartSplitPoint),
+                                interval::getStartSplitPoint),
                         true, interval.getEndSplitPoint(), true);
 
         // Case: the interval cluster before this interval does not intersect this interval
         if (!intersectedIntervalClusterMap.isEmpty()
                 && intersectedIntervalClusterMap.firstEntry().getValue().getEndSplitPoint()
-                .isBefore(interval.getStartSplitPoint())) {
+                        .isBefore(interval.getStartSplitPoint())) {
             // Get the tail map after the first cluster
             intersectedIntervalClusterMap = intersectedIntervalClusterMap.subMap(intersectedIntervalClusterMap.firstKey(),
-                                                                                 false, intersectedIntervalClusterMap.lastKey(), true);
+                    false, intersectedIntervalClusterMap.lastKey(), true);
         }
 
         if (intersectedIntervalClusterMap.isEmpty()) {
@@ -305,20 +305,20 @@ public final class ConsecutiveIntervalInfoImpl<Interval_, Point_ extends Compara
         // Ex:
         //      -----------------
         //  ------  ------  ---   ----
-        IntervalClusterImpl<Interval_, Point_, Difference_> startCluster = intersectedIntervalClusterMap.firstEntry().getValue();
+        IntervalClusterImpl<Interval_, Point_, Difference_> startCluster =
+                intersectedIntervalClusterMap.firstEntry().getValue();
         IntervalClusterImpl<Interval_, Point_, Difference_> endCluster = intersectedIntervalClusterMap.lastEntry().getValue();
 
         if (startCluster == endCluster) {
             // interval only intersect one cluster
-            for (Iterator<Interval_> it = startCluster.iteratorBetween(interval.getStartSplitPoint(), true,
-                                                                       interval.getEndSplitPoint(), false);
-                 it.hasNext(); ) {
+            for (Iterator<Interval_> it = startCluster.iteratorBetween(interval.getStartSplitPoint(), false,
+                    interval.getEndSplitPoint(), false); it.hasNext();) {
                 consumer.accept(it.next());
             }
             return;
         }
 
-        for (Iterator<Interval_> it = startCluster.iteratorAfter(interval.getStartSplitPoint(), true); it.hasNext(); ) {
+        for (Iterator<Interval_> it = startCluster.iteratorAfter(interval.getStartSplitPoint(), false); it.hasNext();) {
             consumer.accept(it.next());
         }
 
@@ -332,7 +332,7 @@ public final class ConsecutiveIntervalInfoImpl<Interval_, Point_ extends Compara
             }
         }
 
-        for (Iterator<Interval_> it = endCluster.iteratorBefore(interval.getEndSplitPoint(), false); it.hasNext(); ) {
+        for (Iterator<Interval_> it = endCluster.iteratorBefore(interval.getEndSplitPoint(), false); it.hasNext();) {
             consumer.accept(it.next());
         }
     }
