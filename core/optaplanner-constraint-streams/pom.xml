@@ -23,7 +23,18 @@
 
   <properties>
     <java.module.name>org.optaplanner.constraint.streams</java.module.name>
+    <interval.tree.version>1.0.0</interval.tree.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.lodborg</groupId>
+        <artifactId>interval-tree</artifactId>
+        <version>${interval.tree.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -53,6 +64,13 @@
       <artifactId>commons-io</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <!-- Interval Tree -->
+    <dependency>
+      <groupId>com.lodborg</groupId>
+      <artifactId>interval-tree</artifactId>
+    </dependency>
+
     <!-- Logging -->
     <dependency>
       <groupId>ch.qos.logback</groupId>

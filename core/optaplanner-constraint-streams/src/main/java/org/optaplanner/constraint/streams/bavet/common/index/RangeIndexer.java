@@ -16,18 +16,23 @@
 
 package org.optaplanner.constraint.streams.bavet.common.index;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import com.lodborg.intervaltree.Interval;
+import com.lodborg.intervaltree.IntervalTree;
+import org.apache.commons.math3.util.Pair;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
-import org.optaplanner.constraint.streams.bavet.common.index.overlapping.impl.Interval;
-import org.optaplanner.constraint.streams.bavet.common.index.overlapping.impl.IntervalTree;
 
 final class RangeIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<Key_>> implements Indexer<Tuple_, Value_> {
     private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
-    private final IntervalTree<TupleInterval<Tuple_, Value_, Key_>, Key_, ?> intervalTree;
+    private final IntervalTree<Key_> intervalTree;
+
+    private final Map<Pair<Key_, Key_>, TupleInterval<Tuple_, Value_, Key_>> intervalMap;
 
     private final Function<IndexProperties, Key_> startComparisonIndexPropertyFunction;
 
@@ -36,7 +41,8 @@ final class RangeIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<K
     public RangeIndexer(Function<IndexProperties, Key_> startComparisonIndexPropertyFunction,
             Function<IndexProperties, Key_> endComparisonIndexPropertyFunction,
             Supplier<Indexer<Tuple_, Value_>> actualDownstreamIndexerSupplier) {
-        intervalTree = new IntervalTree<>((a, b) -> null);
+        intervalTree = new IntervalTree<>();
+        intervalMap = new HashMap<>();
         this.startComparisonIndexPropertyFunction = startComparisonIndexPropertyFunction;
         this.endComparisonIndexPropertyFunction = endComparisonIndexPropertyFunction;
         this.downstreamIndexerSupplier = Objects.requireNonNull(actualDownstreamIndexerSupplier);
@@ -49,9 +55,13 @@ final class RangeIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<K
         Key_ end = startComparisonIndexPropertyFunction.apply(indexProperties);
         Key_ start = endComparisonIndexPropertyFunction.apply(indexProperties);
 
-        Interval<TupleInterval<Tuple_, Value_, Key_>, ?> interval = intervalTree.computeIfAbsent(start, end,
-                () -> new TupleInterval<>(start, end, tuple, value, downstreamIndexerSupplier.get()));
-        interval.getValue().indexer.put(indexProperties, tuple, value);
+        TupleInterval<Tuple_, Value_, Key_> interval = intervalMap.computeIfAbsent(Pair.create(start, end),
+                  startEnd -> new TupleInterval<>(start, end, tuple, value, downstreamIndexerSupplier.get()));
+
+        if (start.compareTo(end) < 0) {
+            intervalTree.add(interval);
+        }
+        interval.indexer.put(indexProperties, tuple, value);
     }
 
     @Override
@@ -59,21 +69,20 @@ final class RangeIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<K
         Key_ end = startComparisonIndexPropertyFunction.apply(indexProperties);
         Key_ start = endComparisonIndexPropertyFunction.apply(indexProperties);
 
-        Interval<TupleInterval<Tuple_, Value_, Key_>, ?> interval = intervalTree.getIntervalByRange(start, end);
+        final Pair<Key_, Key_> startEndPair = Pair.create(start, end);
+        TupleInterval<Tuple_, Value_, Key_> interval = intervalMap.get(startEndPair);
         if (interval == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
                     + ") with indexProperties (" + indexProperties
                     + ") doesn't exist in the indexer.");
         }
-        Indexer<Tuple_, Value_> downstreamIndexer = interval.getValue().indexer;
-        if (downstreamIndexer == null) {
-            throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + indexProperties
-                    + ") doesn't exist in the indexer.");
-        }
+        Indexer<Tuple_, Value_> downstreamIndexer = interval.indexer;
         Value_ value = downstreamIndexer.remove(indexProperties, tuple);
         if (downstreamIndexer.isEmpty()) {
-            intervalTree.remove(interval);
+            if (start.compareTo(end) < 0) {
+                intervalTree.remove(interval);
+            }
+            intervalMap.remove(startEndPair);
         }
         return value;
     }
@@ -83,11 +92,9 @@ final class RangeIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<K
         Key_ start = startComparisonIndexPropertyFunction.apply(indexProperties);
         Key_ end = endComparisonIndexPropertyFunction.apply(indexProperties);
 
-        intervalTree.visit(intervalTree.getInterval(new TupleInterval<>(start, end, null, null, null),
-                start, end),
-                tupleInterval -> {
-                    tupleInterval.indexer.visit(indexProperties, tupleValueVisitor);
-                });
+        intervalTree.query(new QueryInterval<>(start, end)).forEach(interval -> {
+            ((TupleInterval<Tuple_, Value_, Key_>) interval).indexer.visit(indexProperties, tupleValueVisitor);
+        });
     }
 
     @Override
@@ -95,21 +102,44 @@ final class RangeIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<K
         return intervalTree.isEmpty();
     }
 
-    private final static class TupleInterval<Tuple_ extends Tuple, Value_, Key_ extends Comparable<Key_>> {
-        final Key_ start;
+    private final static class QueryInterval<Key_ extends Comparable<Key_>> extends Interval<Key_> {
 
-        final Key_ end;
+        public QueryInterval(Key_ start, Key_ end) {
+            super(start, end, Bounded.OPEN);
+        }
+
+        @Override
+        protected Interval<Key_> create() {
+            return new QueryInterval<>(null, null);
+        }
+
+        @Override
+        public Key_ getMidpoint() {
+            return getStart();
+        }
+    }
+
+    private final static class TupleInterval<Tuple_ extends Tuple, Value_, Key_ extends Comparable<Key_>> extends Interval<Key_> {
         final Tuple_ tuple;
         final Value_ value;
 
         final Indexer<Tuple_, Value_> indexer;
 
         public TupleInterval(Key_ start, Key_ end, Tuple_ tuple, Value_ value, Indexer<Tuple_, Value_> indexer) {
-            this.start = start;
-            this.end = end;
+            super(start, end, Bounded.CLOSED_LEFT);
             this.tuple = tuple;
             this.value = value;
             this.indexer = indexer;
+        }
+
+        @Override
+        protected Interval<Key_> create() {
+            return new TupleInterval<>(null, null, null, null, null);
+        }
+
+        @Override
+        public Key_ getMidpoint() {
+            return getStart();
         }
     }
 
