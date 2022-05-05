@@ -17,8 +17,10 @@
 package org.optaplanner.constraint.streams.bavet.common.index.overlapping.impl;
 
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.NavigableSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 import org.optaplanner.constraint.streams.bavet.common.index.overlapping.api.IntervalCluster;
@@ -120,17 +122,60 @@ final class IntervalClusterImpl<Interval_, Point_ extends Comparable<Point_>, Di
         return new IntervalTreeIterator<>(splitPointSet.subSet(startSplitPoint, true, endSplitPoint, true));
     }
 
-    public Iterator<Interval_> iteratorAfter(IntervalSplitPoint<Interval_, Point_> splitPoint, boolean inclusive) {
-        return new IntervalTreeIterator<>(splitPointSet.subSet(splitPoint, inclusive, endSplitPoint, true));
+    public Iterator<Interval_> iteratorAfter(IntervalSplitPoint<Interval_, Point_> startSplitPoint, boolean inclusive) {
+        NavigableSet<IntervalSplitPoint<Interval_, Point_>> splitPoints =
+                splitPointSet.subSet(this.startSplitPoint, true, this.endSplitPoint, true);
+        Set<Interval<Interval_, Point_>> toIterate = new LinkedHashSet<>();
+        Set<Interval<Interval_, Point_>> potentialsStartingBefore = new LinkedHashSet<>();
+        for (IntervalSplitPoint<Interval_, Point_> splitPoint : splitPoints) {
+            if (splitPoint.isBefore(startSplitPoint)) {
+                potentialsStartingBefore.addAll(splitPoint.intervalsStartingAtSplitPointSet);
+                potentialsStartingBefore.removeAll(splitPoint.intervalsEndingAtSplitPointSet);
+            } else if (splitPoint.equals(startSplitPoint)) {
+                potentialsStartingBefore.removeAll(splitPoint.intervalsEndingAtSplitPointSet);
+                toIterate.addAll(splitPoint.intervalsStartingAtSplitPointSet);
+            } else {
+                toIterate.addAll(splitPoint.intervalsStartingAtSplitPointSet);
+            }
+        }
+        toIterate.addAll(potentialsStartingBefore);
+        return toIterate.stream().map(Interval::getValue).iterator();
     }
 
-    public Iterator<Interval_> iteratorBefore(IntervalSplitPoint<Interval_, Point_> splitPoint, boolean inclusive) {
-        return new IntervalTreeIterator<>(splitPointSet.subSet(startSplitPoint, true, splitPoint, inclusive));
+    public Iterator<Interval_> iteratorBefore(IntervalSplitPoint<Interval_, Point_> endSplitPoint, boolean inclusive) {
+        NavigableSet<IntervalSplitPoint<Interval_, Point_>> splitPoints =
+                splitPointSet.subSet(this.startSplitPoint, true, this.endSplitPoint, true);
+        Set<Interval<Interval_, Point_>> toIterate = new LinkedHashSet<>();
+        for (IntervalSplitPoint<Interval_, Point_> splitPoint : splitPoints) {
+            if (splitPoint.isBefore(endSplitPoint)) {
+                toIterate.addAll(splitPoint.intervalsStartingAtSplitPointSet);
+            } else {
+                break;
+            }
+        }
+        return toIterate.stream().map(Interval::getValue).iterator();
     }
 
     public Iterator<Interval_> iteratorBetween(IntervalSplitPoint<Interval_, Point_> startSplitPoint, boolean startInclusive,
             IntervalSplitPoint<Interval_, Point_> endSplitPoint, boolean endInclusive) {
-        return new IntervalTreeIterator<>(splitPointSet.subSet(startSplitPoint, startInclusive, endSplitPoint, endInclusive));
+        NavigableSet<IntervalSplitPoint<Interval_, Point_>> splitPoints = splitPointSet.subSet(this.startSplitPoint, true, this.endSplitPoint, true);
+        Set<Interval<Interval_, Point_>> toIterate = new LinkedHashSet<>();
+        Set<Interval<Interval_, Point_>> potentialsStartingBefore = new LinkedHashSet<>();
+        for (IntervalSplitPoint<Interval_, Point_> splitPoint : splitPoints) {
+            if (splitPoint.isBefore(startSplitPoint)) {
+                potentialsStartingBefore.addAll(splitPoint.intervalsStartingAtSplitPointSet);
+                potentialsStartingBefore.removeAll(splitPoint.intervalsEndingAtSplitPointSet);
+            } else if (splitPoint.equals(startSplitPoint)) {
+                potentialsStartingBefore.removeAll(splitPoint.intervalsEndingAtSplitPointSet);
+                toIterate.addAll(splitPoint.intervalsStartingAtSplitPointSet);
+            } else if (splitPoint.isBefore(endSplitPoint)) {
+                toIterate.addAll(splitPoint.intervalsStartingAtSplitPointSet);
+            } else {
+                break;
+            }
+        }
+        toIterate.addAll(potentialsStartingBefore);
+        return toIterate.stream().map(Interval::getValue).iterator();
     }
 
     @Override

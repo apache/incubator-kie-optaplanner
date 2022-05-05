@@ -145,8 +145,8 @@ public class IndexerFactory {
                 Function<IndexProperties, Comparable> endComparisonIndexPropertyFunction =
                         indexProperties -> indexProperties.getProperty(previousEndingPropertyExclusive);
                 downstreamIndexerSupplier = () -> new RangeIndexer<>(
-                        isLeftBridge ? startComparisonIndexPropertyFunction : endComparisonIndexPropertyFunction,
-                        isLeftBridge ? endComparisonIndexPropertyFunction : startComparisonIndexPropertyFunction,
+                        isLeftBridge? startComparisonIndexPropertyFunction : endComparisonIndexPropertyFunction,
+                        isLeftBridge? endComparisonIndexPropertyFunction : startComparisonIndexPropertyFunction,
                         actualDownstreamIndexerSupplier);
                 i++; // Skip the next joiner too, as it was just processed.
             }

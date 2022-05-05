@@ -24,7 +24,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.core.impl.util.Pair;
 
 public final class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>> {
@@ -95,7 +94,7 @@ public final class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Di
         return true;
     }
 
-    public boolean remove(IndexProperties indexProperties, Interval interval) {
+    public boolean remove(Interval interval) {
         IntervalSplitPoint<Interval_, Point_> startSplitPoint = interval.getStartSplitPoint();
         IntervalSplitPoint<Interval_, Point_> endSplitPoint = interval.getEndSplitPoint();
 
@@ -117,7 +116,7 @@ public final class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Di
         }
 
         consecutiveIntervalData.removeInterval(interval);
-        intervalMap.remove(indexProperties);
+        intervalMap.remove(Pair.of(interval.getStart(), interval.getEnd()));
         return true;
     }
 

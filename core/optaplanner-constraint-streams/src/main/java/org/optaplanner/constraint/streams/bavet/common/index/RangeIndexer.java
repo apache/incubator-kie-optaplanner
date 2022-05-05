@@ -45,8 +45,9 @@ final class RangeIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<K
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Objects.requireNonNull(value);
-        Key_ start = startComparisonIndexPropertyFunction.apply(indexProperties);
-        Key_ end = endComparisonIndexPropertyFunction.apply(indexProperties);
+
+        Key_ end = startComparisonIndexPropertyFunction.apply(indexProperties);
+        Key_ start = endComparisonIndexPropertyFunction.apply(indexProperties);
 
         Interval<TupleInterval<Tuple_, Value_, Key_>, ?> interval = intervalTree.computeIfAbsent(start, end,
                 () -> new TupleInterval<>(start, end, tuple, value, downstreamIndexerSupplier.get()));
@@ -55,8 +56,8 @@ final class RangeIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<K
 
     @Override
     public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
-        Key_ start = startComparisonIndexPropertyFunction.apply(indexProperties);
-        Key_ end = endComparisonIndexPropertyFunction.apply(indexProperties);
+        Key_ end = startComparisonIndexPropertyFunction.apply(indexProperties);
+        Key_ start = endComparisonIndexPropertyFunction.apply(indexProperties);
 
         Interval<TupleInterval<Tuple_, Value_, Key_>, ?> interval = intervalTree.getIntervalByRange(start, end);
         if (interval == null) {
@@ -72,7 +73,7 @@ final class RangeIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<K
         }
         Value_ value = downstreamIndexer.remove(indexProperties, tuple);
         if (downstreamIndexer.isEmpty()) {
-            intervalTree.remove(indexProperties, interval);
+            intervalTree.remove(interval);
         }
         return value;
     }

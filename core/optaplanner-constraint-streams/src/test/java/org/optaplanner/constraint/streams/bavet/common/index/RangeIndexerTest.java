@@ -99,15 +99,15 @@ class RangeIndexerTest extends AbstractIndexerTest {
         assertThat(getTupleMap(indexer, beginningOfTime, YESTERDAY))
                 .isEmpty();
         assertThat(getTupleMap(indexer, YESTERDAY, muchLater))
-                .containsOnlyKeys(carlTuple);
+                .containsOnlyKeys(annTuple, bethTuple, carlTuple);
         assertThat(getTupleMap(indexer, TODAY, muchLater))
-                .isEmpty();
+                .containsOnlyKeys(annTuple, carlTuple);
         assertThat(getTupleMap(indexer, TOMORROW, muchLater))
                 .isEmpty();
         assertThat(getTupleMap(indexer, YESTERDAY, TOMORROW))
-                .containsOnlyKeys(carlTuple);
+                .containsOnlyKeys(annTuple, bethTuple, carlTuple);
         assertThat(getTupleMap(indexer, TODAY, TOMORROW))
-                .isEmpty();
+                .containsOnlyKeys(annTuple, carlTuple);
     }
 
     private static UniTuple<String> newTuple(String factA) {
