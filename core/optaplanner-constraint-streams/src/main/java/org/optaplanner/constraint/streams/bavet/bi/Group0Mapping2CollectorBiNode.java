@@ -39,7 +39,7 @@ final class Group0Mapping2CollectorBiNode<OldA, OldB, A, B, ResultContainerA_, R
         this.outputStoreSize = outputStoreSize;
     }
 
-    private static <OldA, OldB, A, B, ResultContainerA_, ResultContainerB_>
+    static <OldA, OldB, A, B, ResultContainerA_, ResultContainerB_>
             BiConstraintCollector<OldA, OldB, Object, Pair<A, B>> mergeCollectors(
                     BiConstraintCollector<OldA, OldB, ResultContainerA_, A> collectorA,
                     BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB) {
