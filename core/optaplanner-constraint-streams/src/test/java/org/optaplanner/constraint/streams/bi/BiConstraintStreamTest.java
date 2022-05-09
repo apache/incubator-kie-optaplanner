@@ -822,7 +822,6 @@ class BiConstraintStreamTest extends AbstractConstraintStreamTest implements Con
     @Override
     @TestTemplate
     public void groupBy_1Mapping0Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 7);
         TestdataLavishEntityGroup entityGroup1 = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup1);

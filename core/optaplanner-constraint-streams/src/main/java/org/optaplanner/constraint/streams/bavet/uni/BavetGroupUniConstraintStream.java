@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.bavet.uni;
 import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.bi.BavetAbstractBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;

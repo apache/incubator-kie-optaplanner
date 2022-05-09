@@ -16,36 +16,39 @@
 
 package org.optaplanner.constraint.streams.bavet.bi;
 
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractGroupBiNode;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.impl.util.Pair;
 
-final class Group0Mapping1CollectorBiNode<OldA, OldB, A, ResultContainer_>
-        extends AbstractGroupBiNode<OldA, OldB, UniTuple<A>, String, ResultContainer_, A> {
+public final class Group1Mapping0CollectorBiNode<OldA, OldB, A>
+        extends AbstractGroupBiNode<OldA, OldB, UniTuple<A>, A, Void, Void> {
 
-    private static final String NO_GROUP_KEY = "NO_GROUP";
-
+    private final BiFunction<OldA, OldB, A> groupKeyMapping;
     private final int outputStoreSize;
 
-    public Group0Mapping1CollectorBiNode(int groupStoreIndex,
-            BiConstraintCollector<OldA, OldB, ResultContainer_, A> collector,
+    public Group1Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMapping, int groupStoreIndex,
             Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, Group2Mapping0CollectorBiNode.NOOP_COLLECTOR, nextNodesInsert, nextNodesRetract);
+        this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
     }
 
     @Override
-    protected String getGroupKey(OldA oldA, OldB oldB) {
-        return NO_GROUP_KEY;
+    protected A getGroupKey(OldA oldA, OldB oldB) {
+        return groupKeyMapping.apply(oldA, oldB);
     }
 
     @Override
-    protected UniTuple<A> createTuple(Group<UniTuple<A>, String, ResultContainer_> group) {
-        ResultContainer_ resultContainer = group.resultContainer;
-        A a = finisher.apply(resultContainer);
+    protected UniTuple<A> createTuple(Group<UniTuple<A>, A, Void> group) {
+        A a = group.groupKey;
         return new UniTuple<>(a, outputStoreSize);
     }
 

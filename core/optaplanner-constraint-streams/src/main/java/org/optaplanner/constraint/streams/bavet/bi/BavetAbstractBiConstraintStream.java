@@ -232,7 +232,11 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
 
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(BiFunction<A, B, GroupKey_> groupKeyMapping) {
-        throw new UnsupportedOperationException();
+        BavetAbstractUniGroupBridgeBiConstraintStream<Solution_, A, B, GroupKey_> bridge = shareAndAddChild(
+                new BavetGroupBridge1Mapping0CollectorBiConstraintStream<>(constraintFactory, this, groupKeyMapping));
+        return constraintFactory.share(
+                new BavetGroupUniConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     @Override

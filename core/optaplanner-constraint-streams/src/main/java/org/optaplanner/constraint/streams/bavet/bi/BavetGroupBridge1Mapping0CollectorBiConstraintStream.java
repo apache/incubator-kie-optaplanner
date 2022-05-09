@@ -16,23 +16,23 @@
 
 package org.optaplanner.constraint.streams.bavet.bi;
 
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.AbstractGroupBiNode;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 
-final class BavetGroupBridge0Mapping1CollectorBiConstraintStream<Solution_, A, B, ResultContainer_, NewA>
+final class BavetGroupBridge1Mapping0CollectorBiConstraintStream<Solution_, A, B, NewA, NewB>
         extends BavetAbstractUniGroupBridgeBiConstraintStream<Solution_, A, B, NewA> {
 
-    private final BiConstraintCollector<A, B, ResultContainer_, NewA> collector;
+    private final BiFunction<A, B, NewA> groupKeyMapping;
 
-    public BavetGroupBridge0Mapping1CollectorBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+    public BavetGroupBridge1Mapping0CollectorBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractBiConstraintStream<Solution_, A, B> parent,
-            BiConstraintCollector<A, B, ResultContainer_, NewA> collector) {
+            BiFunction<A, B, NewA> groupKeyMapping) {
         super(constraintFactory, parent);
-        this.collector = collector;
+        this.groupKeyMapping = groupKeyMapping;
     }
 
     // ************************************************************************
@@ -42,6 +42,6 @@ final class BavetGroupBridge0Mapping1CollectorBiConstraintStream<Solution_, A, B
     @Override
     protected AbstractGroupBiNode<A, B, UniTuple<NewA>, ?, ?, ?> createNode(int inputStoreIndex,
             Consumer<UniTuple<NewA>> insert, Consumer<UniTuple<NewA>> retract, int outputStoreSize) {
-        return new Group0Mapping1CollectorBiNode<>(inputStoreIndex, collector, insert, retract, outputStoreSize);
+        return new Group1Mapping0CollectorBiNode<>(groupKeyMapping, inputStoreIndex, insert, retract, outputStoreSize);
     }
 }
