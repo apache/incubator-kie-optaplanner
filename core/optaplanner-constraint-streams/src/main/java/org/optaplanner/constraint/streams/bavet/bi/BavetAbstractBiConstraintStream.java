@@ -27,6 +27,7 @@ import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.tri.BavetGroupTriConstraintStream;
 import org.optaplanner.constraint.streams.bavet.tri.BavetJoinTriConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetIfExistsBridgeUniConstraintStream;
@@ -192,7 +193,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_> BiConstraintStream<ResultA_, ResultB_> groupBy(
             BiConstraintCollector<A, B, ResultContainerA_, ResultA_> collectorA,
             BiConstraintCollector<A, B, ResultContainerB_, ResultB_> collectorB) {
-        BavetAbstractGroupBridgeBiConstraintStream<Solution_, A, B, ResultA_, ResultB_> bridge = shareAndAddChild(
+        BavetAbstractBiGroupBridgeBiConstraintStream<Solution_, A, B, ResultA_, ResultB_> bridge = shareAndAddChild(
                 new BavetGroupBridge0Mapping2CollectorBiConstraintStream<>(constraintFactory, this, collectorA,
                         collectorB));
         return constraintFactory.share(
@@ -206,7 +207,12 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
             groupBy(BiConstraintCollector<A, B, ResultContainerA_, ResultA_> collectorA,
                     BiConstraintCollector<A, B, ResultContainerB_, ResultB_> collectorB,
                     BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC) {
-        throw new UnsupportedOperationException();
+        BavetAbstractTriGroupBridgeBiConstraintStream<Solution_, A, B, ResultA_, ResultB_, ResultC_> bridge = shareAndAddChild(
+                new BavetGroupBridge0Mapping3CollectorBiConstraintStream<>(constraintFactory, this, collectorA,
+                        collectorB, collectorC));
+        return constraintFactory.share(
+                new BavetGroupTriConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     @Override
@@ -245,7 +251,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             BiFunction<A, B, GroupKey_> groupKeyMapping,
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
-        BavetAbstractGroupBridgeBiConstraintStream<Solution_, A, B, GroupKey_, Result_> bridge = shareAndAddChild(
+        BavetAbstractBiGroupBridgeBiConstraintStream<Solution_, A, B, GroupKey_, Result_> bridge = shareAndAddChild(
                 new BavetGroupBridge1Mapping1CollectorBiConstraintStream<>(constraintFactory, this, groupKeyMapping,
                         collector));
         return constraintFactory.share(
@@ -256,7 +262,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping) {
-        BavetAbstractGroupBridgeBiConstraintStream<Solution_, A, B, GroupKeyA_, GroupKeyB_> bridge = shareAndAddChild(
+        BavetAbstractBiGroupBridgeBiConstraintStream<Solution_, A, B, GroupKeyA_, GroupKeyB_> bridge = shareAndAddChild(
                 new BavetGroupBridge2Mapping0CollectorBiConstraintStream<>(constraintFactory, this, groupKeyAMapping,
                         groupKeyBMapping));
         return constraintFactory.share(

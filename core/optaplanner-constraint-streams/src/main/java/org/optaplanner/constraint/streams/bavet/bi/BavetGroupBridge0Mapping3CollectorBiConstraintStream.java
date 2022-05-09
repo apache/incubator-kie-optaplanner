@@ -20,21 +20,25 @@ import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.AbstractGroupBiNode;
+import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 
-final class BavetGroupBridge0Mapping2CollectorBiConstraintStream<Solution_, A, B, ResultContainerA_, NewA, ResultContainerB_, NewB>
-        extends BavetAbstractBiGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB> {
+final class BavetGroupBridge0Mapping3CollectorBiConstraintStream<Solution_, A, B, ResultContainerA_, NewA, ResultContainerB_, NewB, ResultContainerC_, NewC>
+        extends BavetAbstractTriGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB, NewC> {
 
     private final BiConstraintCollector<A, B, ResultContainerA_, NewA> collectorA;
     private final BiConstraintCollector<A, B, ResultContainerB_, NewB> collectorB;
+    private final BiConstraintCollector<A, B, ResultContainerC_, NewC> collectorC;
 
-    public BavetGroupBridge0Mapping2CollectorBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+    public BavetGroupBridge0Mapping3CollectorBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractBiConstraintStream<Solution_, A, B> parent,
             BiConstraintCollector<A, B, ResultContainerA_, NewA> collectorA,
-            BiConstraintCollector<A, B, ResultContainerB_, NewB> collectorB) {
+            BiConstraintCollector<A, B, ResultContainerB_, NewB> collectorB,
+            BiConstraintCollector<A, B, ResultContainerC_, NewC> collectorC) {
         super(constraintFactory, parent);
         this.collectorA = collectorA;
         this.collectorB = collectorB;
+        this.collectorC = collectorC;
     }
 
     // ************************************************************************
@@ -42,11 +46,10 @@ final class BavetGroupBridge0Mapping2CollectorBiConstraintStream<Solution_, A, B
     // ************************************************************************
 
     @Override
-    protected AbstractGroupBiNode<A, B, BiTuple<NewA, NewB>, ?, ?, ?> createNode(int inputStoreIndex,
-            Consumer<BiTuple<NewA, NewB>> insert, Consumer<BiTuple<NewA, NewB>> retract, int outputStoreSize) {
-        return new Group0Mapping2CollectorBiNode<>(inputStoreIndex,
-                collectorA, collectorB,
+    protected AbstractGroupBiNode<A, B, TriTuple<NewA, NewB, NewC>, ?, ?, ?> createNode(int inputStoreIndex,
+            Consumer<TriTuple<NewA, NewB, NewC>> insert, Consumer<TriTuple<NewA, NewB, NewC>> retract, int outputStoreSize) {
+        return new Group0Mapping3CollectorBiNode<>(inputStoreIndex,
+                collectorA, collectorB, collectorC,
                 insert, retract, outputStoreSize);
     }
-
 }

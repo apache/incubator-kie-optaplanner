@@ -26,14 +26,14 @@ import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
-public abstract class BavetAbstractGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB>
+abstract class BavetAbstractBiGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB>
         extends BavetAbstractBiConstraintStream<Solution_, A, B> {
 
     protected final BavetAbstractBiConstraintStream<Solution_, A, B> parent;
     protected BavetGroupBiConstraintStream<Solution_, NewA, NewB> groupStream;
 
-    public BavetAbstractGroupBridgeBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractBiConstraintStream<Solution_, A, B> parent) {
+    public BavetAbstractBiGroupBridgeBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+                                                        BavetAbstractBiConstraintStream<Solution_, A, B> parent) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
     }

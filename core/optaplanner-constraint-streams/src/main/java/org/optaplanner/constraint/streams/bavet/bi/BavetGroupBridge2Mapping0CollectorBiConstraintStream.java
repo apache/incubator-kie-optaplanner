@@ -23,7 +23,7 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.AbstractGroupBiNode;
 
 final class BavetGroupBridge2Mapping0CollectorBiConstraintStream<Solution_, A, B, NewA, NewB>
-        extends BavetAbstractGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB> {
+        extends BavetAbstractBiGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB> {
 
     private final BiFunction<A, B, NewA> groupKeyMappingA;
     private final BiFunction<A, B, NewB> groupKeyMappingB;

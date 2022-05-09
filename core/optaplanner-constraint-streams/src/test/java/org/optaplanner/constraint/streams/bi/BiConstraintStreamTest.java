@@ -1003,7 +1003,6 @@ class BiConstraintStreamTest extends AbstractConstraintStreamTest implements Con
     @Override
     @TestTemplate
     public void groupBy_0Mapping3Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishEntity.class)
