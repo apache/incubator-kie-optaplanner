@@ -42,7 +42,8 @@ final class Group3Mapping0CollectorUniNode<OldA, A, B, C>
     }
 
     @Override
-    protected Triple<A, B, C> getGroupKey(OldA oldA) {
+    protected Triple<A, B, C> createGroupKey(UniTuple<OldA> tuple) {
+        OldA oldA = tuple.factA;
         A a = groupKeyMappingA.apply(oldA);
         B b = groupKeyMappingB.apply(oldA);
         C c = groupKeyMappingC.apply(oldA);
@@ -50,7 +51,7 @@ final class Group3Mapping0CollectorUniNode<OldA, A, B, C>
     }
 
     @Override
-    protected TriTuple<A, B, C> createTuple(Group<TriTuple<A, B, C>, Triple<A, B, C>, Void> group) {
+    protected TriTuple<A, B, C> createDownstreamTuple(Group<TriTuple<A, B, C>, Triple<A, B, C>, Void> group) {
         Triple<A, B, C> key = group.groupKey;
         return new TriTuple<>(key.getA(), key.getB(), key.getC(), outputStoreSize);
     }

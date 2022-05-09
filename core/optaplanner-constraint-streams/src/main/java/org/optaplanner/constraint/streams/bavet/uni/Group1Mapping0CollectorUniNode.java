@@ -36,12 +36,12 @@ public final class Group1Mapping0CollectorUniNode<OldA, A>
     }
 
     @Override
-    protected A getGroupKey(OldA oldA) {
-        return groupKeyMapping.apply(oldA);
+    protected A createGroupKey(UniTuple<OldA> tuple) {
+        return groupKeyMapping.apply(tuple.factA);
     }
 
     @Override
-    protected UniTuple<A> createTuple(Group<UniTuple<A>, A, Void> group) {
+    protected UniTuple<A> createDownstreamTuple(Group<UniTuple<A>, A, Void> group) {
         A a = group.groupKey;
         return new UniTuple<>(a, outputStoreSize);
     }

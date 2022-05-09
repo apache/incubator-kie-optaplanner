@@ -37,12 +37,12 @@ final class Group0Mapping1CollectorUniNode<OldA, A, ResultContainer_>
     }
 
     @Override
-    protected String getGroupKey(OldA oldA) {
+    protected String createGroupKey(UniTuple<OldA> tuple) {
         return NO_GROUP_KEY;
     }
 
     @Override
-    protected UniTuple<A> createTuple(Group<UniTuple<A>, String, ResultContainer_> group) {
+    protected UniTuple<A> createDownstreamTuple(Group<UniTuple<A>, String, ResultContainer_> group) {
         ResultContainer_ resultContainer = group.resultContainer;
         A a = finisher.apply(resultContainer);
         return new UniTuple<>(a, outputStoreSize);

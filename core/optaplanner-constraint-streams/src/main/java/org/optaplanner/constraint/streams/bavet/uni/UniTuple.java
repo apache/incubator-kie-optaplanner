@@ -43,6 +43,11 @@ public final class UniTuple<A> implements Tuple {
     }
 
     @Override
+    public Object[] getStore() {
+        return store;
+    }
+
+    @Override
     public String toString() {
         return "{" + factA + "}";
     }

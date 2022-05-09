@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.uni.BavetGroupUniConstraintStream;
@@ -66,12 +67,12 @@ abstract class BavetAbstractUniGroupBridgeBiConstraintStream<Solution_, A, B, Ne
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupBiNode<A, B, UniTuple<NewA>, ?, ?, ?> node =
+        AbstractGroupNode<BiTuple<A, B>, UniTuple<NewA>, ?, ?, ?> node =
                 createNode(inputStoreIndex,
                         buildHelper.getAggregatedInsert(groupStream.getChildStreamList()),
                         buildHelper.getAggregatedRetract(groupStream.getChildStreamList()), outputStoreSize);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(this, node::insertAB, node::retractAB);
+        buildHelper.putInsertRetract(this, node::insert, node::retract);
     }
 
     protected abstract AbstractGroupBiNode<A, B, UniTuple<NewA>, ?, ?, ?> createNode(int inputStoreIndex,

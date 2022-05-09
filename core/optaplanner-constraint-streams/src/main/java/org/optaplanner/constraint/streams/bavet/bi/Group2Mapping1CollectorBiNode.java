@@ -43,14 +43,16 @@ final class Group2Mapping1CollectorBiNode<OldA, OldB, A, B, C, ResultContainer_>
     }
 
     @Override
-    protected Pair<A, B> getGroupKey(OldA oldA, OldB oldB) {
+    protected Pair<A, B> createGroupKey(BiTuple<OldA, OldB> tuple) {
+        OldA oldA = tuple.factA;
+        OldB oldB = tuple.factB;
         A a = groupKeyMappingA.apply(oldA, oldB);
         B b = groupKeyMappingB.apply(oldA, oldB);
         return Pair.of(a, b);
     }
 
     @Override
-    protected TriTuple<A, B, C> createTuple(Group<TriTuple<A, B, C>, Pair<A, B>, ResultContainer_> group) {
+    protected TriTuple<A, B, C> createDownstreamTuple(Group<TriTuple<A, B, C>, Pair<A, B>, ResultContainer_> group) {
         Pair<A, B> groupKey = group.groupKey;
         A a = groupKey.getKey();
         B b = groupKey.getValue();

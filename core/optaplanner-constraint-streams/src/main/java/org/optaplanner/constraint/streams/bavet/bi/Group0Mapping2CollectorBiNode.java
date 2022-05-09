@@ -48,12 +48,12 @@ final class Group0Mapping2CollectorBiNode<OldA, OldB, A, B, ResultContainerA_, R
     }
 
     @Override
-    protected String getGroupKey(OldA oldA, OldB oldB) {
+    protected String createGroupKey(BiTuple<OldA, OldB> tuple) {
         return NO_GROUP_KEY;
     }
 
     @Override
-    protected BiTuple<A, B> createTuple(Group<BiTuple<A, B>, String, Object> group) {
+    protected BiTuple<A, B> createDownstreamTuple(Group<BiTuple<A, B>, String, Object> group) {
         Object resultContainer = group.resultContainer;
         Pair<A, B> result = finisher.apply(resultContainer);
         A a = result.getKey();
@@ -65,5 +65,4 @@ final class Group0Mapping2CollectorBiNode<OldA, OldB, A, B, ResultContainerA_, R
     public String toString() {
         return "GroupBiNode 0+2";
     }
-
 }

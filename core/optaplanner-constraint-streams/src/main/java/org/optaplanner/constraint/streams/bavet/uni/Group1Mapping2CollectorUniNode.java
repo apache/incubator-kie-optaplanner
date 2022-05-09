@@ -42,12 +42,12 @@ final class Group1Mapping2CollectorUniNode<OldA, A, B, C, ResultContainerB_, Res
     }
 
     @Override
-    protected A getGroupKey(OldA oldA) {
-        return groupKeyMapping.apply(oldA);
+    protected A createGroupKey(UniTuple<OldA> tuple) {
+        return groupKeyMapping.apply(tuple.factA);
     }
 
     @Override
-    protected TriTuple<A, B, C> createTuple(Group<TriTuple<A, B, C>, A, Object> group) {
+    protected TriTuple<A, B, C> createDownstreamTuple(Group<TriTuple<A, B, C>, A, Object> group) {
         A factA = group.groupKey;
         Pair<B, C> result = finisher.apply(group.resultContainer);
         B factB = result.getKey();

@@ -47,6 +47,11 @@ public final class TriTuple<A, B, C> implements Tuple {
     }
 
     @Override
+    public Object[] getStore() {
+        return store;
+    }
+
+    @Override
     public String toString() {
         return "{" + factA + ", " + factB + ", " + factC + "}";
     }

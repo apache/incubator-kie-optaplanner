@@ -17,123 +17,26 @@
 
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
-import org.optaplanner.constraint.streams.bavet.bi.JoinBiNode;
-import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
-import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
-import org.optaplanner.constraint.streams.bavet.common.Group;
-import org.optaplanner.constraint.streams.bavet.common.GroupPart;
+import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
 abstract class AbstractGroupUniNode<OldA, OutTuple_ extends Tuple, GroupKey_, ResultContainer_, Result_>
-        extends AbstractNode {
+        extends AbstractGroupNode<UniTuple<OldA>, OutTuple_, GroupKey_, ResultContainer_, Result_> {
 
-    private final int groupStoreIndex;
-    private final Supplier<ResultContainer_> supplier;
     private final BiFunction<ResultContainer_, OldA, Runnable> accumulator;
-    protected final Function<ResultContainer_, Result_> finisher;
-    /**
-     * Calls for example {@link UniScorer#insert(UniTuple)}, {@link JoinBiNode#insertA(UniTuple)} and/or ...
-     */
-    private final Consumer<OutTuple_> nextNodesInsert;
-    /**
-     * Calls for example {@link UniScorer#retract(UniTuple)}, {@link JoinBiNode#retractA(UniTuple)} and/or ...
-     */
-    private final Consumer<OutTuple_> nextNodesRetract;
-    private final Map<GroupKey_, Group<OutTuple_, GroupKey_, ResultContainer_>> groupMap;
-    private final Queue<Group<OutTuple_, GroupKey_, ResultContainer_>> dirtyGroupQueue;
 
     public AbstractGroupUniNode(int groupStoreIndex, UniConstraintCollector<OldA, ResultContainer_, Result_> collector,
             Consumer<OutTuple_> nextNodesInsert, Consumer<OutTuple_> nextNodesRetract) {
-        this.groupStoreIndex = groupStoreIndex;
-        supplier = collector.supplier();
+        super(groupStoreIndex, collector.supplier(), collector.finisher(), nextNodesInsert, nextNodesRetract);
         accumulator = collector.accumulator();
-        finisher = collector.finisher();
-        this.nextNodesInsert = nextNodesInsert;
-        this.nextNodesRetract = nextNodesRetract;
-        groupMap = new HashMap<>(1000);
-        dirtyGroupQueue = new ArrayDeque<>(1000);
-    }
-
-    public void insertA(UniTuple<OldA> tupleOldA) {
-        if (tupleOldA.store[groupStoreIndex] != null) {
-            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleOldA
-                    + ") was already added in the tupleStore.");
-        }
-        GroupKey_ groupKey = getGroupKey(tupleOldA.factA);
-        Group<OutTuple_, GroupKey_, ResultContainer_> group = groupMap.computeIfAbsent(groupKey,
-                k -> new Group<>(groupKey, supplier.get()));
-        group.parentCount++;
-
-        Runnable undoAccumulator = accumulator.apply(group.resultContainer, tupleOldA.factA);
-        GroupPart<OutTuple_, GroupKey_, ResultContainer_> groupPart = new GroupPart<>(group, undoAccumulator);
-        tupleOldA.store[groupStoreIndex] = groupPart;
-        if (!group.dirty) {
-            group.dirty = true;
-            dirtyGroupQueue.add(group);
-        }
-    }
-
-    protected abstract GroupKey_ getGroupKey(OldA a);
-
-    protected abstract OutTuple_ createTuple(Group<OutTuple_, GroupKey_, ResultContainer_> group);
-
-    public void retractA(UniTuple<OldA> tupleOldA) {
-        GroupPart<OutTuple_, GroupKey_, ResultContainer_> groupPart =
-                (GroupPart<OutTuple_, GroupKey_, ResultContainer_>) tupleOldA.store[groupStoreIndex];
-        if (groupPart == null) {
-            // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
-            return;
-        }
-        tupleOldA.store[groupStoreIndex] = null;
-        Group<OutTuple_, GroupKey_, ResultContainer_> group = groupPart.group;
-        group.parentCount--;
-        groupPart.undoAccumulator.run();
-        if (group.parentCount == 0) {
-            Group<OutTuple_, GroupKey_, ResultContainer_> old = groupMap.remove(group.groupKey);
-            if (old == null) {
-                throw new IllegalStateException("Impossible state: the group for the groupKey ("
-                        + group.groupKey + ") doesn't exist in the groupMap.");
-            }
-            group.dying = true;
-        }
-        if (!group.dirty) {
-            group.dirty = true;
-            dirtyGroupQueue.add(group);
-        }
     }
 
     @Override
-    public void calculateScore() {
-        dirtyGroupQueue.forEach(group -> {
-            group.dirty = false;
-            if (group.tuple != null) {
-                BavetTupleState tupleState = group.tuple.getState();
-                if (tupleState != BavetTupleState.OK) {
-                    throw new IllegalStateException("Impossible state: The tuple (" + group.tuple + ") in node (" +
-                            this + ") is in the state (" + tupleState + ").");
-                }
-                group.tuple.setState(BavetTupleState.DYING);
-                nextNodesRetract.accept(group.tuple);
-                group.tuple.setState(BavetTupleState.DEAD);
-            }
-            if (!group.dying) {
-                // Delay calculating B until it propagates
-                group.tuple = createTuple(group);
-                nextNodesInsert.accept(group.tuple);
-                group.tuple.setState(BavetTupleState.OK);
-            }
-        });
-        dirtyGroupQueue.clear();
+    protected final Runnable accumulate(ResultContainer_ resultContainer, UniTuple<OldA> tuple) {
+        return accumulator.apply(resultContainer, tuple.factA);
     }
-
 }

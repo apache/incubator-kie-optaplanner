@@ -51,12 +51,12 @@ final class Group0Mapping3CollectorBiNode<OldA, OldB, A, B, C, ResultContainerA_
     }
 
     @Override
-    protected String getGroupKey(OldA oldA, OldB oldB) {
+    protected String createGroupKey(BiTuple<OldA, OldB> tuple) {
         return NO_GROUP_KEY;
     }
 
     @Override
-    protected TriTuple<A, B, C> createTuple(Group<TriTuple<A, B, C>, String, Object> group) {
+    protected TriTuple<A, B, C> createDownstreamTuple(Group<TriTuple<A, B, C>, String, Object> group) {
         Object resultContainer = group.resultContainer;
         Triple<A, B, C> result = finisher.apply(resultContainer);
         A a = result.getA();

@@ -31,4 +31,6 @@ public interface Tuple {
 
     void setState(BavetTupleState state);
 
+    Object[] getStore();
+
 }

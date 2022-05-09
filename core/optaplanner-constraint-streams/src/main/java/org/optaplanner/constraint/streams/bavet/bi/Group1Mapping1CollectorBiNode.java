@@ -38,12 +38,12 @@ final class Group1Mapping1CollectorBiNode<OldA, OldB, A, B, ResultContainer_>
     }
 
     @Override
-    protected A getGroupKey(OldA oldA, OldB oldB) {
-        return groupKeyMapping.apply(oldA, oldB);
+    protected A createGroupKey(BiTuple<OldA, OldB> tuple) {
+        return groupKeyMapping.apply(tuple.factA, tuple.factB);
     }
 
     @Override
-    protected BiTuple<A, B> createTuple(Group<BiTuple<A, B>, A, ResultContainer_> group) {
+    protected BiTuple<A, B> createDownstreamTuple(Group<BiTuple<A, B>, A, ResultContainer_> group) {
         A factA = group.groupKey;
         B factB = finisher.apply(group.resultContainer);
         return new BiTuple<>(factA, factB, outputStoreSize);

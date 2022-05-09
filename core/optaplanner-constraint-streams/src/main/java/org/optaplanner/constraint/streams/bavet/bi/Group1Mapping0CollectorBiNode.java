@@ -37,19 +37,18 @@ public final class Group1Mapping0CollectorBiNode<OldA, OldB, A>
     }
 
     @Override
-    protected A getGroupKey(OldA oldA, OldB oldB) {
-        return groupKeyMapping.apply(oldA, oldB);
-    }
-
-    @Override
-    protected UniTuple<A> createTuple(Group<UniTuple<A>, A, Void> group) {
-        A a = group.groupKey;
-        return new UniTuple<>(a, outputStoreSize);
-    }
-
-    @Override
     public String toString() {
         return "GroupBiNode 1+0";
     }
 
+    @Override
+    protected A createGroupKey(BiTuple<OldA, OldB> tuple) {
+        return groupKeyMapping.apply(tuple.factA, tuple.factB);
+    }
+
+    @Override
+    protected UniTuple<A> createDownstreamTuple(Group<UniTuple<A>, A, Void> group) {
+        A a = group.groupKey;
+        return new UniTuple<>(a, outputStoreSize);
+    }
 }

@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.tri.BavetGroupTriConstraintStream;
@@ -68,10 +69,10 @@ abstract class BavetAbstractTriGroupBridgeBiConstraintStream<Solution_, A, B, Ne
         Consumer<TriTuple<NewA, NewB, NewC>> insert = buildHelper.getAggregatedInsert(groupStream.getChildStreamList());
         Consumer<TriTuple<NewA, NewB, NewC>> retract = buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupBiNode<A, B, TriTuple<NewA, NewB, NewC>, ?, ?, ?> node =
+        AbstractGroupNode<BiTuple<A, B>, TriTuple<NewA, NewB, NewC>, ?, ?, ?> node =
                 createNode(inputStoreIndex, insert, retract, outputStoreSize);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(this, node::insertAB, node::retractAB);
+        buildHelper.putInsertRetract(this, node::insert, node::retract);
     }
 
     protected abstract AbstractGroupBiNode<A, B, TriTuple<NewA, NewB, NewC>, ?, ?, ?> createNode(int inputStoreIndex,

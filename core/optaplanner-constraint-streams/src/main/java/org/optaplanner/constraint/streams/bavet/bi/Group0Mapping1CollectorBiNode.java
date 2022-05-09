@@ -38,12 +38,12 @@ final class Group0Mapping1CollectorBiNode<OldA, OldB, A, ResultContainer_>
     }
 
     @Override
-    protected String getGroupKey(OldA oldA, OldB oldB) {
+    protected String createGroupKey(BiTuple<OldA, OldB> tuple) {
         return NO_GROUP_KEY;
     }
 
     @Override
-    protected UniTuple<A> createTuple(Group<UniTuple<A>, String, ResultContainer_> group) {
+    protected UniTuple<A> createDownstreamTuple(Group<UniTuple<A>, String, ResultContainer_> group) {
         ResultContainer_ resultContainer = group.resultContainer;
         A a = finisher.apply(resultContainer);
         return new UniTuple<>(a, outputStoreSize);

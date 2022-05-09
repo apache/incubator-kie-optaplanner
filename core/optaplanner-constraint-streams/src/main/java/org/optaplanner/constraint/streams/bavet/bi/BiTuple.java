@@ -45,6 +45,11 @@ public final class BiTuple<A, B> implements Tuple {
     }
 
     @Override
+    public Object[] getStore() {
+        return store;
+    }
+
+    @Override
     public String toString() {
         return "{" + factA + ", " + factB + "}";
     }
