@@ -179,6 +179,10 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
         notificationQueuesAreEmpty = false;
     }
 
+    public void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        // beforeElementAdded() has already added it to the notificationQueue
+    }
+
     public void beforeElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
         Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
         if (!notifiables.isEmpty()) {
@@ -188,6 +192,10 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
             }
         }
         notificationQueuesAreEmpty = false;
+    }
+
+    public void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        // beforeElementRemoved() has already added it to the notificationQueue
     }
 
     public void beforeElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
@@ -202,6 +210,12 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
             }
         }
         notificationQueuesAreEmpty = false;
+    }
+
+    public void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object sourceEntity, int sourceIndex,
+            Object destinationEntity, int destinationIndex) {
+        // beforeElementMoved() has already added it to the notificationQueue
     }
 
     public void triggerVariableListenersInNotificationQueues() {
