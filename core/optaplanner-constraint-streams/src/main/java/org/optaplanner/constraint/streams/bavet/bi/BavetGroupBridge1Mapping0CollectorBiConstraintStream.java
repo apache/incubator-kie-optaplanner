@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
-final class BavetGroupBridge1Mapping0CollectorBiConstraintStream<Solution_, A, B, NewA, NewB>
+final class BavetGroupBridge1Mapping0CollectorBiConstraintStream<Solution_, A, B, NewA>
         extends BavetAbstractUniGroupBridgeBiConstraintStream<Solution_, A, B, NewA> {
 
     private final BiFunction<A, B, NewA> groupKeyMapping;

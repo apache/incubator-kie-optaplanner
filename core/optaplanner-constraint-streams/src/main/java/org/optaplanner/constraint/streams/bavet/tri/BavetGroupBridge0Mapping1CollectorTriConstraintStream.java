@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet.uni;
+package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 
-final class BavetGroupBridge1Mapping0CollectorUniConstraintStream<Solution_, A, NewA>
-        extends BavetAbstractUniGroupBridgeUniConstraintStream<Solution_, A, NewA> {
+final class BavetGroupBridge0Mapping1CollectorTriConstraintStream<Solution_, A, B, C, ResultContainer_, NewA>
+        extends BavetAbstractUniGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA> {
 
-    private final Function<A, NewA> groupKeyMapping;
+    private final TriConstraintCollector<A, B, C, ResultContainer_, NewA> collector;
 
-    public BavetGroupBridge1Mapping0CollectorUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractUniConstraintStream<Solution_, A> parent,
-            Function<A, NewA> groupKeyMapping) {
+    public BavetGroupBridge0Mapping1CollectorTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
+            TriConstraintCollector<A, B, C, ResultContainer_, NewA> collector) {
         super(constraintFactory, parent);
-        this.groupKeyMapping = groupKeyMapping;
+        this.collector = collector;
     }
 
     // ************************************************************************
@@ -38,8 +39,8 @@ final class BavetGroupBridge1Mapping0CollectorUniConstraintStream<Solution_, A, 
     // ************************************************************************
 
     @Override
-    protected AbstractGroupUniNode<A, UniTuple<NewA>, ?, ?, ?> createNode(int inputStoreIndex,
+    protected AbstractGroupTriNode<A, B, C, UniTuple<NewA>, ?, ?, ?> createNode(int inputStoreIndex,
             Consumer<UniTuple<NewA>> insert, Consumer<UniTuple<NewA>> retract, int outputStoreSize) {
-        return new Group1Mapping0CollectorUniNode<>(groupKeyMapping, inputStoreIndex, insert, retract, outputStoreSize);
+        return new Group0Mapping1CollectorTriNode<>(inputStoreIndex, collector, insert, retract, outputStoreSize);
     }
 }

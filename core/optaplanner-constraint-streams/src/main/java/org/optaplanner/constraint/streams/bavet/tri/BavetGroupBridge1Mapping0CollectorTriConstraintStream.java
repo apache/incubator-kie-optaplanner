@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet.uni;
+package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.core.api.function.TriFunction;
 
-final class BavetGroupBridge1Mapping0CollectorUniConstraintStream<Solution_, A, NewA>
-        extends BavetAbstractUniGroupBridgeUniConstraintStream<Solution_, A, NewA> {
+final class BavetGroupBridge1Mapping0CollectorTriConstraintStream<Solution_, A, B, C, NewA>
+        extends BavetAbstractUniGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA> {
 
-    private final Function<A, NewA> groupKeyMapping;
+    private final TriFunction<A, B, C, NewA> groupKeyMapping;
 
-    public BavetGroupBridge1Mapping0CollectorUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractUniConstraintStream<Solution_, A> parent,
-            Function<A, NewA> groupKeyMapping) {
+    public BavetGroupBridge1Mapping0CollectorTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
+            BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
+            TriFunction<A, B, C, NewA> groupKeyMapping) {
         super(constraintFactory, parent);
         this.groupKeyMapping = groupKeyMapping;
     }
@@ -38,8 +39,8 @@ final class BavetGroupBridge1Mapping0CollectorUniConstraintStream<Solution_, A, 
     // ************************************************************************
 
     @Override
-    protected AbstractGroupUniNode<A, UniTuple<NewA>, ?, ?, ?> createNode(int inputStoreIndex,
+    protected AbstractGroupTriNode<A, B, C, UniTuple<NewA>, ?, ?, ?> createNode(int inputStoreIndex,
             Consumer<UniTuple<NewA>> insert, Consumer<UniTuple<NewA>> retract, int outputStoreSize) {
-        return new Group1Mapping0CollectorUniNode<>(groupKeyMapping, inputStoreIndex, insert, retract, outputStoreSize);
+        return new Group1Mapping0CollectorTriNode<>(groupKeyMapping, inputStoreIndex, insert, retract, outputStoreSize);
     }
 }
