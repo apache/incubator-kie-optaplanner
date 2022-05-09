@@ -1,0 +1,78 @@
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.constraint.streams.bavet.bi;
+
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import org.optaplanner.constraint.streams.bavet.common.AbstractGroupBiNode;
+import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.impl.util.Pair;
+
+public final class Group2Mapping0CollectorBiNode<OldA, OldB, A, B>
+        extends AbstractGroupBiNode<OldA, OldB, BiTuple<A, B>, Pair<A, B>, Void, Void> {
+
+    private static final BiConstraintCollector NOOP_COLLECTOR = new BiConstraintCollector<>() {
+        @Override
+        public Supplier supplier() {
+            return () -> null;
+        }
+
+        @Override
+        public TriFunction accumulator() {
+            return (nothing, a, b) -> (Runnable) () -> {
+                // DO NOTHING
+            };
+        }
+
+        @Override
+        public Function finisher() {
+            return a -> a;
+        }
+    };
+
+    private final BiFunction<OldA, OldB, A> groupKeyMappingA;
+    private final BiFunction<OldA, OldB, B> groupKeyMappingB;
+    private final int outputStoreSize;
+
+    public Group2Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMappingA,
+            BiFunction<OldA, OldB, B> groupKeyMappingB, int groupStoreIndex,
+            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
+            int outputStoreSize) {
+        super(groupStoreIndex, NOOP_COLLECTOR, nextNodesInsert, nextNodesRetract);
+        this.groupKeyMappingA = groupKeyMappingA;
+        this.groupKeyMappingB = groupKeyMappingB;
+        this.outputStoreSize = outputStoreSize;
+    }
+
+    @Override
+    protected Pair<A, B> getGroupKey(OldA oldA, OldB oldB) {
+        A a = groupKeyMappingA.apply(oldA, oldB);
+        B b = groupKeyMappingB.apply(oldA, oldB);
+        return Pair.of(a, b);
+    }
+
+    @Override
+    protected BiTuple<A, B> createTuple(Group<BiTuple<A, B>, Pair<A, B>, Void> group) {
+        Pair<A, B> key = group.groupKey;
+        return new BiTuple<>(key.getKey(), key.getValue(), outputStoreSize);
+    }
+
+}

@@ -979,7 +979,6 @@ class BiConstraintStreamTest extends AbstractConstraintStreamTest implements Con
     @Override
     @TestTemplate
     public void groupBy_0Mapping2Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishEntity.class)
@@ -1071,7 +1070,6 @@ class BiConstraintStreamTest extends AbstractConstraintStreamTest implements Con
     @Override
     @TestTemplate
     public void groupBy_2Mapping0Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 3, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishEntity.class)

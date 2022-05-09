@@ -33,6 +33,16 @@ public final class UniTuple<A> implements Tuple {
     }
 
     @Override
+    public BavetTupleState getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(BavetTupleState state) {
+        this.state = state;
+    }
+
+    @Override
     public String toString() {
         return "{" + factA + "}";
     }

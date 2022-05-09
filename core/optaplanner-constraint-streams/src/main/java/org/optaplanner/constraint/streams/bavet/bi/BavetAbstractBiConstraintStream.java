@@ -192,7 +192,12 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_> BiConstraintStream<ResultA_, ResultB_> groupBy(
             BiConstraintCollector<A, B, ResultContainerA_, ResultA_> collectorA,
             BiConstraintCollector<A, B, ResultContainerB_, ResultB_> collectorB) {
-        throw new UnsupportedOperationException();
+        BavetAbstractGroupBridgeBiConstraintStream<Solution_, A, B, ResultA_, ResultB_> bridge = shareAndAddChild(
+                new BavetGroupBridge0Mapping2CollectorBiConstraintStream<>(constraintFactory, this, collectorA,
+                        collectorB));
+        return constraintFactory.share(
+                new BavetGroupBiConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     @Override
@@ -240,9 +245,9 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             BiFunction<A, B, GroupKey_> groupKeyMapping,
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
-        BavetGroupBridgeBiConstraintStream<Solution_, A, B, GroupKey_, ResultContainer_, Result_> bridge =
-                shareAndAddChild(
-                        new BavetGroupBridgeBiConstraintStream<>(constraintFactory, this, groupKeyMapping, collector));
+        BavetAbstractGroupBridgeBiConstraintStream<Solution_, A, B, GroupKey_, Result_> bridge = shareAndAddChild(
+                new BavetGroupBridge1Mapping1CollectorBiConstraintStream<>(constraintFactory, this, groupKeyMapping,
+                        collector));
         return constraintFactory.share(
                 new BavetGroupBiConstraintStream<>(constraintFactory, bridge),
                 bridge::setGroupStream);
@@ -251,7 +256,12 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping) {
-        throw new UnsupportedOperationException();
+        BavetAbstractGroupBridgeBiConstraintStream<Solution_, A, B, GroupKeyA_, GroupKeyB_> bridge = shareAndAddChild(
+                new BavetGroupBridge2Mapping0CollectorBiConstraintStream<>(constraintFactory, this, groupKeyAMapping,
+                        groupKeyBMapping));
+        return constraintFactory.share(
+                new BavetGroupBiConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     @Override
