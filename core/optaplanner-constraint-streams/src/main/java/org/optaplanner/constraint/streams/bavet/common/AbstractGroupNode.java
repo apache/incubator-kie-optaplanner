@@ -1,18 +1,20 @@
 
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *      http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 package org.optaplanner.constraint.streams.bavet.common;
@@ -51,7 +53,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     private final Map<GroupKey_, Group<OutTuple_, GroupKey_, ResultContainer_>> groupMap;
     private final Queue<Group<OutTuple_, GroupKey_, ResultContainer_>> dirtyGroupQueue;
 
-    public AbstractGroupNode(int groupStoreIndex, Supplier<ResultContainer_> supplier,
+    protected AbstractGroupNode(int groupStoreIndex, Supplier<ResultContainer_> supplier,
             Function<ResultContainer_, Result_> finisher, Consumer<OutTuple_> nextNodesInsert,
             Consumer<OutTuple_> nextNodesRetract) {
         this.groupStoreIndex = groupStoreIndex;
