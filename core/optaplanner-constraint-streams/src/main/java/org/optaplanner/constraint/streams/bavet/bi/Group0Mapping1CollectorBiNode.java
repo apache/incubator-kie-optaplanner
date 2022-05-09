@@ -18,7 +18,6 @@ package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.AbstractGroupBiNode;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 
@@ -49,4 +48,8 @@ final class Group0Mapping1CollectorBiNode<OldA, OldB, A, ResultContainer_>
         return new UniTuple<>(a, outputStoreSize);
     }
 
+    @Override
+    public String toString() {
+        return "GroupBiNode 0+1";
+    }
 }

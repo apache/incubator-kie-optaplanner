@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.AbstractGroupBiNode;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.core.impl.util.Triple;
 
@@ -53,6 +52,11 @@ final class Group3Mapping0CollectorBiNode<OldA, OldB, A, B, C>
     protected TriTuple<A, B, C> createTuple(Group<TriTuple<A, B, C>, Triple<A, B, C>, Void> group) {
         Triple<A, B, C> key = group.groupKey;
         return new TriTuple<>(key.getA(), key.getB(), key.getC(), outputStoreSize);
+    }
+
+    @Override
+    public String toString() {
+        return "GroupBiNode 3+0";
     }
 
 }

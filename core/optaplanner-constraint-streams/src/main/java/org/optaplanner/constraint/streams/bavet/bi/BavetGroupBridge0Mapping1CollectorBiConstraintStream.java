@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.AbstractGroupBiNode;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 

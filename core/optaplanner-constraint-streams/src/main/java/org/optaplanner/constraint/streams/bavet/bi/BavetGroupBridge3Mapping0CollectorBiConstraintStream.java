@@ -20,7 +20,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.AbstractGroupBiNode;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 
 final class BavetGroupBridge3Mapping0CollectorBiConstraintStream<Solution_, A, B, NewA, NewB, NewC>

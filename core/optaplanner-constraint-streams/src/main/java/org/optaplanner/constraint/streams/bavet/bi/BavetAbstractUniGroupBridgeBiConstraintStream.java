@@ -20,7 +20,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.AbstractGroupBiNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.uni.BavetGroupUniConstraintStream;
@@ -66,11 +65,11 @@ abstract class BavetAbstractUniGroupBridgeBiConstraintStream<Solution_, A, B, Ne
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
-        Consumer<UniTuple<NewA>> insert = buildHelper.getAggregatedInsert(groupStream.getChildStreamList());
-        Consumer<UniTuple<NewA>> retract = buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
         AbstractGroupBiNode<A, B, UniTuple<NewA>, ?, ?, ?> node =
-                createNode(inputStoreIndex, insert, retract, outputStoreSize);
+                createNode(inputStoreIndex,
+                        buildHelper.getAggregatedInsert(groupStream.getChildStreamList()),
+                        buildHelper.getAggregatedRetract(groupStream.getChildStreamList()), outputStoreSize);
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(this, node::insertAB, node::retractAB);
     }

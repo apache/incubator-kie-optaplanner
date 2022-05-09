@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet.common;
+package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
@@ -26,11 +26,14 @@ import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.bi.BiScorer;
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
+import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
+import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
+import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.constraint.streams.bavet.tri.JoinTriNode;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 
-public abstract class AbstractGroupBiNode<OldA, OldB, OutTuple_ extends Tuple, GroupKey_, ResultContainer_, Result_>
+abstract class AbstractGroupBiNode<OldA, OldB, OutTuple_ extends Tuple, GroupKey_, ResultContainer_, Result_>
         extends AbstractNode {
 
     private final int groupStoreIndex;
@@ -154,11 +157,6 @@ public abstract class AbstractGroupBiNode<OldA, OldB, OutTuple_ extends Tuple, G
             }
         });
         dirtyGroupQueue.clear();
-    }
-
-    @Override
-    public String toString() {
-        return "GroupBiToBiNode";
     }
 
 }

@@ -20,7 +20,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.AbstractGroupBiNode;
 
 final class BavetGroupBridge2Mapping0CollectorBiConstraintStream<Solution_, A, B, NewA, NewB>
         extends BavetAbstractBiGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB> {
