@@ -16,8 +16,8 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
-import org.optaplanner.core.api.domain.variable.ListVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 
 final class ElementRemovedNotification<Solution_> extends AbstractNotification implements ListVariableNotification<Solution_> {
 

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.domain.variable;
+package org.optaplanner.core.impl.domain.variable;
 
+import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 
 public interface ListVariableListener<Solution_, Entity_> extends AbstractVariableListener<Solution_, Entity_> {

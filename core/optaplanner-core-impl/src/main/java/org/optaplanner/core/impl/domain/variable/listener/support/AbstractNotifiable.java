@@ -20,9 +20,9 @@ import java.util.ArrayDeque;
 import java.util.Collection;
 
 import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
-import org.optaplanner.core.api.domain.variable.ListVariableListener;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 
 abstract class AbstractNotifiable<Solution_, T extends AbstractVariableListener<Solution_, Object>>
         implements EntityNotifiable<Solution_> {
