@@ -30,6 +30,7 @@ import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintSt
 import org.optaplanner.constraint.streams.bavet.tri.BavetGroupTriConstraintStream;
 import org.optaplanner.constraint.streams.bavet.tri.BavetJoinTriConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.BavetGroupUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetIfExistsBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.bi.InnerBiConstraintStream;
@@ -186,7 +187,11 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             BiConstraintCollector<A, B, ResultContainer_, Result_> collector) {
-        throw new UnsupportedOperationException();
+        BavetAbstractUniGroupBridgeBiConstraintStream<Solution_, A, B, Result_> bridge = shareAndAddChild(
+                new BavetGroupBridge0Mapping1CollectorBiConstraintStream<>(constraintFactory, this, collector));
+        return constraintFactory.share(
+                new BavetGroupUniConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     @Override
