@@ -19,6 +19,7 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
 public final class Group1Mapping0CollectorBiNode<OldA, OldB, A>

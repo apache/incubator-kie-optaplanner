@@ -14,36 +14,36 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet.bi;
+package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
 
-final class Group1Mapping2CollectorBiNode<OldA, OldB, A, B, C, ResultContainerB_, ResultContainerC_>
-        extends AbstractGroupBiNode<OldA, OldB, TriTuple<A, B, C>, A, Object, Pair<B, C>> {
+final class Group1Mapping2CollectorUniNode<OldA, A, B, C, ResultContainerB_, ResultContainerC_>
+        extends AbstractGroupUniNode<OldA, TriTuple<A, B, C>, A, Object, Pair<B, C>> {
 
-    private final BiFunction<OldA, OldB, A> groupKeyMapping;
+    private final Function<OldA, A> groupKeyMapping;
     private final int outputStoreSize;
 
-    public Group1Mapping2CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMapping, int groupStoreIndex,
-            BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
-            BiConstraintCollector<OldA, OldB, ResultContainerC_, C> collectorC,
+    public Group1Mapping2CollectorUniNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex,
+            UniConstraintCollector<OldA, ResultContainerB_, B> collectorB,
+            UniConstraintCollector<OldA, ResultContainerC_, C> collectorC,
             Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, Group0Mapping2CollectorBiNode.mergeCollectors(collectorB, collectorC), nextNodesInsert,
+        super(groupStoreIndex, Group0Mapping2CollectorUniNode.mergeCollectors(collectorB, collectorC), nextNodesInsert,
                 nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
     }
 
     @Override
-    protected A getGroupKey(OldA oldA, OldB oldB) {
-        return groupKeyMapping.apply(oldA, oldB);
+    protected A getGroupKey(OldA oldA) {
+        return groupKeyMapping.apply(oldA);
     }
 
     @Override
@@ -57,7 +57,7 @@ final class Group1Mapping2CollectorBiNode<OldA, OldB, A, B, C, ResultContainerB_
 
     @Override
     public String toString() {
-        return "GroupBiNode 1+2";
+        return "GroupUniNode 1+2";
     }
 
 }

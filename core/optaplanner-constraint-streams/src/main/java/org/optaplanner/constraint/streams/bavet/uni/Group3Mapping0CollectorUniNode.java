@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet.bi;
+package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.core.impl.util.Triple;
 
-final class Group3Mapping0CollectorBiNode<OldA, OldB, A, B, C>
-        extends AbstractGroupBiNode<OldA, OldB, TriTuple<A, B, C>, Triple<A, B, C>, Void, Void> {
+final class Group3Mapping0CollectorUniNode<OldA, A, B, C>
+        extends AbstractGroupUniNode<OldA, TriTuple<A, B, C>, Triple<A, B, C>, Void, Void> {
 
-    private final BiFunction<OldA, OldB, A> groupKeyMappingA;
-    private final BiFunction<OldA, OldB, B> groupKeyMappingB;
-    private final BiFunction<OldA, OldB, C> groupKeyMappingC;
+    private final Function<OldA, A> groupKeyMappingA;
+    private final Function<OldA, B> groupKeyMappingB;
+    private final Function<OldA, C> groupKeyMappingC;
     private final int outputStoreSize;
 
-    public Group3Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMappingA,
-            BiFunction<OldA, OldB, B> groupKeyMappingB, BiFunction<OldA, OldB, C> groupKeyMappingC, int groupStoreIndex,
+    public Group3Mapping0CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
+            Function<OldA, C> groupKeyMappingC, int groupStoreIndex,
             Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract, int outputStoreSize) {
-        super(groupStoreIndex, Group2Mapping0CollectorBiNode.NOOP_COLLECTOR, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, Group2Mapping0CollectorUniNode.NOOP_COLLECTOR, nextNodesInsert, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;
         this.groupKeyMappingC = groupKeyMappingC;
@@ -42,10 +42,10 @@ final class Group3Mapping0CollectorBiNode<OldA, OldB, A, B, C>
     }
 
     @Override
-    protected Triple<A, B, C> getGroupKey(OldA oldA, OldB oldB) {
-        A a = groupKeyMappingA.apply(oldA, oldB);
-        B b = groupKeyMappingB.apply(oldA, oldB);
-        C c = groupKeyMappingC.apply(oldA, oldB);
+    protected Triple<A, B, C> getGroupKey(OldA oldA) {
+        A a = groupKeyMappingA.apply(oldA);
+        B b = groupKeyMappingB.apply(oldA);
+        C c = groupKeyMappingC.apply(oldA);
         return Triple.of(a, b, c);
     }
 
@@ -57,7 +57,7 @@ final class Group3Mapping0CollectorBiNode<OldA, OldB, A, B, C>
 
     @Override
     public String toString() {
-        return "GroupBiNode 3+0";
+        return "GroupUniNode 3+0";
     }
 
 }

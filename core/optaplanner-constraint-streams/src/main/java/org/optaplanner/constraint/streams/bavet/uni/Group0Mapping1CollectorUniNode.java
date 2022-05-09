@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet.bi;
+package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Group;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-final class Group0Mapping1CollectorBiNode<OldA, OldB, A, ResultContainer_>
-        extends AbstractGroupBiNode<OldA, OldB, UniTuple<A>, String, ResultContainer_, A> {
+final class Group0Mapping1CollectorUniNode<OldA, A, ResultContainer_>
+        extends AbstractGroupUniNode<OldA, UniTuple<A>, String, ResultContainer_, A> {
 
     private static final String NO_GROUP_KEY = "NO_GROUP";
 
     private final int outputStoreSize;
 
-    public Group0Mapping1CollectorBiNode(int groupStoreIndex,
-            BiConstraintCollector<OldA, OldB, ResultContainer_, A> collector,
+    public Group0Mapping1CollectorUniNode(int groupStoreIndex,
+            UniConstraintCollector<OldA, ResultContainer_, A> collector,
             Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
             int outputStoreSize) {
         super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
@@ -38,7 +37,7 @@ final class Group0Mapping1CollectorBiNode<OldA, OldB, A, ResultContainer_>
     }
 
     @Override
-    protected String getGroupKey(OldA oldA, OldB oldB) {
+    protected String getGroupKey(OldA oldA) {
         return NO_GROUP_KEY;
     }
 
@@ -51,6 +50,6 @@ final class Group0Mapping1CollectorBiNode<OldA, OldB, A, ResultContainer_>
 
     @Override
     public String toString() {
-        return "GroupBiNode 0+1";
+        return "GroupUniNode 0+1";
     }
 }

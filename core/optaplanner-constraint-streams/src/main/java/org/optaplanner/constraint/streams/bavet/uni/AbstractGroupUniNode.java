@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
@@ -14,40 +15,44 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet.bi;
+package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.optaplanner.constraint.streams.bavet.common.*;
-import org.optaplanner.constraint.streams.bavet.tri.JoinTriNode;
-import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.constraint.streams.bavet.bi.JoinBiNode;
+import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
+import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
+import org.optaplanner.constraint.streams.bavet.common.Group;
+import org.optaplanner.constraint.streams.bavet.common.GroupPart;
+import org.optaplanner.constraint.streams.bavet.common.Tuple;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-abstract class AbstractGroupBiNode<OldA, OldB, OutTuple_ extends Tuple, GroupKey_, ResultContainer_, Result_>
+abstract class AbstractGroupUniNode<OldA, OutTuple_ extends Tuple, GroupKey_, ResultContainer_, Result_>
         extends AbstractNode {
 
     private final int groupStoreIndex;
     private final Supplier<ResultContainer_> supplier;
-    private final TriFunction<ResultContainer_, OldA, OldB, Runnable> accumulator;
+    private final BiFunction<ResultContainer_, OldA, Runnable> accumulator;
     protected final Function<ResultContainer_, Result_> finisher;
     /**
-     * Calls for example {@link BiScorer#insert(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
+     * Calls for example {@link UniScorer#insert(UniTuple)}, {@link JoinBiNode#insertA(UniTuple)} and/or ...
      */
     private final Consumer<OutTuple_> nextNodesInsert;
     /**
-     * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#retractAB(BiTuple)} and/or ...
+     * Calls for example {@link UniScorer#retract(UniTuple)}, {@link JoinBiNode#retractA(UniTuple)} and/or ...
      */
     private final Consumer<OutTuple_> nextNodesRetract;
     private final Map<GroupKey_, Group<OutTuple_, GroupKey_, ResultContainer_>> groupMap;
     private final Queue<Group<OutTuple_, GroupKey_, ResultContainer_>> dirtyGroupQueue;
 
-    public AbstractGroupBiNode(int groupStoreIndex, BiConstraintCollector<OldA, OldB, ResultContainer_, Result_> collector,
+    public AbstractGroupUniNode(int groupStoreIndex, UniConstraintCollector<OldA, ResultContainer_, Result_> collector,
             Consumer<OutTuple_> nextNodesInsert, Consumer<OutTuple_> nextNodesRetract) {
         this.groupStoreIndex = groupStoreIndex;
         supplier = collector.supplier();
@@ -59,37 +64,37 @@ abstract class AbstractGroupBiNode<OldA, OldB, OutTuple_ extends Tuple, GroupKey
         dirtyGroupQueue = new ArrayDeque<>(1000);
     }
 
-    public void insertAB(BiTuple<OldA, OldB> tupleOldAB) {
-        if (tupleOldAB.store[groupStoreIndex] != null) {
-            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleOldAB
+    public void insertA(UniTuple<OldA> tupleOldA) {
+        if (tupleOldA.store[groupStoreIndex] != null) {
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleOldA
                     + ") was already added in the tupleStore.");
         }
-        GroupKey_ groupKey = getGroupKey(tupleOldAB.factA, tupleOldAB.factB);
+        GroupKey_ groupKey = getGroupKey(tupleOldA.factA);
         Group<OutTuple_, GroupKey_, ResultContainer_> group = groupMap.computeIfAbsent(groupKey,
                 k -> new Group<>(groupKey, supplier.get()));
         group.parentCount++;
 
-        Runnable undoAccumulator = accumulator.apply(group.resultContainer, tupleOldAB.factA, tupleOldAB.factB);
+        Runnable undoAccumulator = accumulator.apply(group.resultContainer, tupleOldA.factA);
         GroupPart<OutTuple_, GroupKey_, ResultContainer_> groupPart = new GroupPart<>(group, undoAccumulator);
-        tupleOldAB.store[groupStoreIndex] = groupPart;
+        tupleOldA.store[groupStoreIndex] = groupPart;
         if (!group.dirty) {
             group.dirty = true;
             dirtyGroupQueue.add(group);
         }
     }
 
-    protected abstract GroupKey_ getGroupKey(OldA a, OldB b);
+    protected abstract GroupKey_ getGroupKey(OldA a);
 
     protected abstract OutTuple_ createTuple(Group<OutTuple_, GroupKey_, ResultContainer_> group);
 
-    public void retractAB(BiTuple<OldA, OldB> tupleOldAB) {
+    public void retractA(UniTuple<OldA> tupleOldA) {
         GroupPart<OutTuple_, GroupKey_, ResultContainer_> groupPart =
-                (GroupPart<OutTuple_, GroupKey_, ResultContainer_>) tupleOldAB.store[groupStoreIndex];
+                (GroupPart<OutTuple_, GroupKey_, ResultContainer_>) tupleOldA.store[groupStoreIndex];
         if (groupPart == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        tupleOldAB.store[groupStoreIndex] = null;
+        tupleOldA.store[groupStoreIndex] = null;
         Group<OutTuple_, GroupKey_, ResultContainer_> group = groupPart.group;
         group.parentCount--;
         groupPart.undoAccumulator.run();

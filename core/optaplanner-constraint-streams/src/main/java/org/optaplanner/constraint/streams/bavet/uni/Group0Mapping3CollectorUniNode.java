@@ -14,44 +14,44 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet.bi;
+package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.util.Triple;
 
-final class Group0Mapping3CollectorBiNode<OldA, OldB, A, B, C, ResultContainerA_, ResultContainerB_, ResultContainerC_>
-        extends AbstractGroupBiNode<OldA, OldB, TriTuple<A, B, C>, String, Object, Triple<A, B, C>> {
+final class Group0Mapping3CollectorUniNode<OldA, A, B, C, ResultContainerA_, ResultContainerB_, ResultContainerC_>
+        extends AbstractGroupUniNode<OldA, TriTuple<A, B, C>, String, Object, Triple<A, B, C>> {
 
     private static final String NO_GROUP_KEY = "NO_GROUP";
 
     private final int outputStoreSize;
 
-    public Group0Mapping3CollectorBiNode(int groupStoreIndex,
-            BiConstraintCollector<OldA, OldB, ResultContainerA_, A> collectorA,
-            BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
-            BiConstraintCollector<OldA, OldB, ResultContainerC_, C> collectorC,
+    public Group0Mapping3CollectorUniNode(int groupStoreIndex,
+            UniConstraintCollector<OldA, ResultContainerA_, A> collectorA,
+            UniConstraintCollector<OldA, ResultContainerB_, B> collectorB,
+            UniConstraintCollector<OldA, ResultContainerC_, C> collectorC,
             Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
             int outputStoreSize) {
         super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC), nextNodesInsert, nextNodesRetract);
         this.outputStoreSize = outputStoreSize;
     }
 
-    private static <OldA, OldB, A, B, C, ResultContainerA_, ResultContainerB_, ResultContainerC_>
-            BiConstraintCollector<OldA, OldB, Object, Triple<A, B, C>> mergeCollectors(
-                    BiConstraintCollector<OldA, OldB, ResultContainerA_, A> collectorA,
-                    BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
-                    BiConstraintCollector<OldA, OldB, ResultContainerC_, C> collectorC) {
-        return (BiConstraintCollector<OldA, OldB, Object, Triple<A, B, C>>) ConstraintCollectors.compose(collectorA, collectorB,
+    private static <OldA, A, B, C, ResultContainerA_, ResultContainerB_, ResultContainerC_>
+            UniConstraintCollector<OldA, Object, Triple<A, B, C>> mergeCollectors(
+                    UniConstraintCollector<OldA, ResultContainerA_, A> collectorA,
+                    UniConstraintCollector<OldA, ResultContainerB_, B> collectorB,
+                    UniConstraintCollector<OldA, ResultContainerC_, C> collectorC) {
+        return (UniConstraintCollector<OldA, Object, Triple<A, B, C>>) ConstraintCollectors.compose(collectorA, collectorB,
                 collectorC, Triple::of);
     }
 
     @Override
-    protected String getGroupKey(OldA oldA, OldB oldB) {
+    protected String getGroupKey(OldA oldA) {
         return NO_GROUP_KEY;
     }
 
@@ -67,7 +67,7 @@ final class Group0Mapping3CollectorBiNode<OldA, OldB, A, B, C, ResultContainerA_
 
     @Override
     public String toString() {
-        return "GroupBiNode 0+3";
+        return "GroupUniNode 0+3";
     }
 
 }

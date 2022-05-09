@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet.bi;
+package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
+import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
 import org.optaplanner.constraint.streams.bavet.common.Group;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
+import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 
-final class Group1Mapping1CollectorBiNode<OldA, OldB, A, B, ResultContainer_>
-        extends AbstractGroupBiNode<OldA, OldB, BiTuple<A, B>, A, ResultContainer_, B> {
+final class Group1Mapping1CollectorUniNode<OldA, A, B, ResultContainer_>
+        extends AbstractGroupUniNode<OldA, BiTuple<A, B>, A, ResultContainer_, B> {
 
-    private final BiFunction<OldA, OldB, A> groupKeyMapping;
+    private final Function<OldA, A> groupKeyMapping;
     private final int outputStoreSize;
 
-    public Group1Mapping1CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMapping, int groupStoreIndex,
-            BiConstraintCollector<OldA, OldB, ResultContainer_, B> collector,
+    public Group1Mapping1CollectorUniNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex,
+            UniConstraintCollector<OldA, ResultContainer_, B> collector,
             Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
             int outputStoreSize) {
         super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
@@ -38,8 +39,8 @@ final class Group1Mapping1CollectorBiNode<OldA, OldB, A, B, ResultContainer_>
     }
 
     @Override
-    protected A getGroupKey(OldA oldA, OldB oldB) {
-        return groupKeyMapping.apply(oldA, oldB);
+    protected A getGroupKey(OldA oldA) {
+        return groupKeyMapping.apply(oldA);
     }
 
     @Override
@@ -51,7 +52,7 @@ final class Group1Mapping1CollectorBiNode<OldA, OldB, A, B, ResultContainer_>
 
     @Override
     public String toString() {
-        return "GroupBiNode 1+1";
+        return "GroupUniNode 1+1";
     }
 
 }
