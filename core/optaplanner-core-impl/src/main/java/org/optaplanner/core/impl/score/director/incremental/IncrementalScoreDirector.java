@@ -31,6 +31,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
@@ -177,7 +178,39 @@ public class IncrementalScoreDirector<Solution_, Score_ extends Score<Score_>>
         super.afterVariableChanged(variableDescriptor, entity);
     }
 
-    // TODO override list variable methods
+    // TODO Add support for list variable (https://issues.redhat.com/browse/PLANNER-2711).
+
+    @Override
+    public void beforeElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        throw new UnsupportedOperationException("Not yet supported.");
+    }
+
+    @Override
+    public void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        throw new UnsupportedOperationException("Not yet supported.");
+    }
+
+    @Override
+    public void beforeElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+        throw new UnsupportedOperationException("Not yet supported.");
+    }
+
+    @Override
+    public void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
+        throw new UnsupportedOperationException("Not yet supported.");
+    }
+
+    @Override
+    public void beforeElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        throw new UnsupportedOperationException("Not yet supported.");
+    }
+
+    @Override
+    public void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+        throw new UnsupportedOperationException("Not yet supported.");
+    }
 
     @Override
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
