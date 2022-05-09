@@ -22,7 +22,6 @@ import org.optaplanner.constraint.streams.bavet.common.AbstractGroupBiNode;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
-import org.optaplanner.core.impl.util.Pair;
 import org.optaplanner.core.impl.util.Triple;
 
 final class Group0Mapping3CollectorBiNode<OldA, OldB, A, B, C, ResultContainerA_, ResultContainerB_, ResultContainerC_>

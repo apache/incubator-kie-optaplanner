@@ -23,7 +23,6 @@ import org.optaplanner.constraint.streams.bavet.common.AbstractGroupBiNode;
 import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
-import org.optaplanner.core.impl.util.Triple;
 
 final class Group1Mapping2CollectorBiNode<OldA, OldB, A, B, C, ResultContainerB_, ResultContainerC_>
         extends AbstractGroupBiNode<OldA, OldB, TriTuple<A, B, C>, A, Object, Pair<B, C>> {

@@ -33,7 +33,7 @@ abstract class BavetAbstractBiGroupBridgeBiConstraintStream<Solution_, A, B, New
     protected BavetGroupBiConstraintStream<Solution_, NewA, NewB> groupStream;
 
     public BavetAbstractBiGroupBridgeBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                                        BavetAbstractBiConstraintStream<Solution_, A, B> parent) {
+            BavetAbstractBiConstraintStream<Solution_, A, B> parent) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
     }

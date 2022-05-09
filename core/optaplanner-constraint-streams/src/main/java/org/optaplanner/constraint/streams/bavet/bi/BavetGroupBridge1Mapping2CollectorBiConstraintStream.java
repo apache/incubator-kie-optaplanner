@@ -46,7 +46,8 @@ final class BavetGroupBridge1Mapping2CollectorBiConstraintStream<Solution_, A, B
     // ************************************************************************
 
     @Override
-    protected AbstractGroupBiNode<A, B, TriTuple<NewA, NewB, NewC>, ?, ?, ?> createNode(int inputStoreIndex, Consumer<TriTuple<NewA, NewB, NewC>> insert, Consumer<TriTuple<NewA, NewB, NewC>> retract, int outputStoreSize) {
+    protected AbstractGroupBiNode<A, B, TriTuple<NewA, NewB, NewC>, ?, ?, ?> createNode(int inputStoreIndex,
+            Consumer<TriTuple<NewA, NewB, NewC>> insert, Consumer<TriTuple<NewA, NewB, NewC>> retract, int outputStoreSize) {
         return new Group1Mapping2CollectorBiNode<>(
                 groupKeyMapping, inputStoreIndex, collectorB, collectorC,
                 insert, retract, outputStoreSize);
