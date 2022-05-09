@@ -31,8 +31,11 @@ abstract class AbstractGroupTriNode<OldA, OldB, OldC, OutTuple_ extends Tuple, G
     public AbstractGroupTriNode(int groupStoreIndex,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainer_, Result_> collector,
             Consumer<OutTuple_> nextNodesInsert, Consumer<OutTuple_> nextNodesRetract) {
-        super(groupStoreIndex, collector.supplier(), collector.finisher(), nextNodesInsert, nextNodesRetract);
-        accumulator = collector.accumulator();
+        super(groupStoreIndex,
+                collector == null ? null : collector.supplier(),
+                collector == null ? null : collector.finisher(),
+                nextNodesInsert, nextNodesRetract);
+        accumulator = collector == null ? null : collector.accumulator();
     }
 
     @Override

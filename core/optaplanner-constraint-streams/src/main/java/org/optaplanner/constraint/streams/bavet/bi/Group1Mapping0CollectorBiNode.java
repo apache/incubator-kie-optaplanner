@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
-public final class Group1Mapping0CollectorBiNode<OldA, OldB, A>
+final class Group1Mapping0CollectorBiNode<OldA, OldB, A>
         extends AbstractGroupBiNode<OldA, OldB, UniTuple<A>, A, Void, Void> {
 
     private final BiFunction<OldA, OldB, A> groupKeyMapping;
@@ -31,7 +31,7 @@ public final class Group1Mapping0CollectorBiNode<OldA, OldB, A>
     public Group1Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMapping, int groupStoreIndex,
             Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, Group2Mapping0CollectorBiNode.NOOP_COLLECTOR, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, null, nextNodesInsert, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
     }

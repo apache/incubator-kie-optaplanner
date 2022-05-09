@@ -22,7 +22,7 @@ import org.optaplanner.constraint.streams.bavet.common.Group;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.api.function.TriFunction;
 
-public final class Group1Mapping0CollectorTriNode<OldA, OldB, OldC, A>
+final class Group1Mapping0CollectorTriNode<OldA, OldB, OldC, A>
         extends AbstractGroupTriNode<OldA, OldB, OldC, UniTuple<A>, A, Void, Void> {
 
     private final TriFunction<OldA, OldB, OldC, A> groupKeyMapping;
@@ -31,7 +31,7 @@ public final class Group1Mapping0CollectorTriNode<OldA, OldB, OldC, A>
     public Group1Mapping0CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMapping, int groupStoreIndex,
             Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, Group2Mapping0CollectorTriNode.NOOP_COLLECTOR, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, null, nextNodesInsert, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
     }

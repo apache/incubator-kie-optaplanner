@@ -30,8 +30,11 @@ abstract class AbstractGroupBiNode<OldA, OldB, OutTuple_ extends Tuple, GroupKey
 
     public AbstractGroupBiNode(int groupStoreIndex, BiConstraintCollector<OldA, OldB, ResultContainer_, Result_> collector,
             Consumer<OutTuple_> nextNodesInsert, Consumer<OutTuple_> nextNodesRetract) {
-        super(groupStoreIndex, collector.supplier(), collector.finisher(), nextNodesInsert, nextNodesRetract);
-        accumulator = collector.accumulator();
+        super(groupStoreIndex,
+                collector == null ? null : collector.supplier(),
+                collector == null ? null : collector.finisher(),
+                nextNodesInsert, nextNodesRetract);
+        accumulator = collector == null ? null : collector.accumulator();
     }
 
     @Override

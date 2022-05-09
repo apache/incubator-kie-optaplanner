@@ -16,37 +16,15 @@
 
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
 import org.optaplanner.constraint.streams.bavet.common.Group;
-import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
 
-public final class Group2Mapping0CollectorUniNode<OldA, A, B>
+final class Group2Mapping0CollectorUniNode<OldA, A, B>
         extends AbstractGroupUniNode<OldA, BiTuple<A, B>, Pair<A, B>, Void, Void> {
-
-    static final UniConstraintCollector NOOP_COLLECTOR = new UniConstraintCollector<>() {
-        @Override
-        public Supplier supplier() {
-            return () -> null;
-        }
-
-        @Override
-        public BiFunction accumulator() {
-            return (nothing, a) -> (Runnable) () -> {
-                // DO NOTHING
-            };
-        }
-
-        @Override
-        public Function finisher() {
-            return a -> a;
-        }
-    };
 
     private final Function<OldA, A> groupKeyMappingA;
     private final Function<OldA, B> groupKeyMappingB;
@@ -55,7 +33,7 @@ public final class Group2Mapping0CollectorUniNode<OldA, A, B>
     public Group2Mapping0CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
             int groupStoreIndex, Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, NOOP_COLLECTOR, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, null, nextNodesInsert, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;
         this.outputStoreSize = outputStoreSize;

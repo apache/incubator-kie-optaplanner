@@ -17,37 +17,14 @@
 package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
 import org.optaplanner.constraint.streams.bavet.common.Group;
-import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
 
-public final class Group2Mapping0CollectorTriNode<OldA, OldB, OldC, A, B>
+final class Group2Mapping0CollectorTriNode<OldA, OldB, OldC, A, B>
         extends AbstractGroupTriNode<OldA, OldB, OldC, BiTuple<A, B>, Pair<A, B>, Void, Void> {
-
-    static final TriConstraintCollector NOOP_COLLECTOR = new TriConstraintCollector<>() {
-        @Override
-        public Supplier supplier() {
-            return () -> null;
-        }
-
-        @Override
-        public QuadFunction accumulator() {
-            return (nothing, a, b, c) -> (Runnable) () -> {
-                // DO NOTHING
-            };
-        }
-
-        @Override
-        public Function finisher() {
-            return a -> a;
-        }
-    };
 
     private final TriFunction<OldA, OldB, OldC, A> groupKeyMappingA;
     private final TriFunction<OldA, OldB, OldC, B> groupKeyMappingB;
@@ -57,7 +34,7 @@ public final class Group2Mapping0CollectorTriNode<OldA, OldB, OldC, A, B>
             TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, int groupStoreIndex,
             Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, NOOP_COLLECTOR, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, null, nextNodesInsert, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;
         this.outputStoreSize = outputStoreSize;

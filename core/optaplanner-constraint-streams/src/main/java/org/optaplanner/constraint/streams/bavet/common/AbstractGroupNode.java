@@ -36,6 +36,11 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     private final Supplier<ResultContainer_> supplier;
     protected final Function<ResultContainer_, Result_> finisher;
     /**
+     * Some code paths may decide to not supply a collector.
+     * In that case, we skip the code path that would attempt to use it.
+     */
+    private final boolean runAccumulate;
+    /**
      * Calls for example {@link UniScorer#insert(UniTuple)}, {@link JoinBiNode#insertA(UniTuple)} and/or ...
      */
     private final Consumer<OutTuple_> nextNodesInsert;
@@ -52,6 +57,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         this.groupStoreIndex = groupStoreIndex;
         this.supplier = supplier;
         this.finisher = finisher;
+        this.runAccumulate = supplier != null && finisher != null;
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
         groupMap = new HashMap<>(1000);
@@ -65,10 +71,10 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         }
         GroupKey_ groupKey = createGroupKey(tupleOldA);
         Group<OutTuple_, GroupKey_, ResultContainer_> group = groupMap.computeIfAbsent(groupKey,
-                k -> new Group<>(groupKey, supplier.get()));
+                k -> new Group<>(groupKey, runAccumulate ? supplier.get() : null));
         group.parentCount++;
 
-        Runnable undoAccumulator = accumulate(group.resultContainer, tupleOldA);
+        Runnable undoAccumulator = runAccumulate ? accumulate(group.resultContainer, tupleOldA) : null;
         GroupPart<OutTuple_, GroupKey_, ResultContainer_> groupPart = new GroupPart<>(group, undoAccumulator);
         tupleOldA.getStore()[groupStoreIndex] = groupPart;
         if (!group.dirty) {
@@ -93,7 +99,9 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         tupleOldA.getStore()[groupStoreIndex] = null;
         Group<OutTuple_, GroupKey_, ResultContainer_> group = groupPart.group;
         group.parentCount--;
-        groupPart.undoAccumulator.run();
+        if (runAccumulate) {
+            groupPart.undoAccumulator.run();
+        }
         if (group.parentCount == 0) {
             Group<OutTuple_, GroupKey_, ResultContainer_> old = groupMap.remove(group.groupKey);
             if (old == null) {

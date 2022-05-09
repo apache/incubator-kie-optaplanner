@@ -21,7 +21,7 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.Group;
 
-public final class Group1Mapping0CollectorUniNode<OldA, A>
+final class Group1Mapping0CollectorUniNode<OldA, A>
         extends AbstractGroupUniNode<OldA, UniTuple<A>, A, Void, Void> {
 
     private final Function<OldA, A> groupKeyMapping;
@@ -30,7 +30,7 @@ public final class Group1Mapping0CollectorUniNode<OldA, A>
     public Group1Mapping0CollectorUniNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex,
             Consumer<UniTuple<A>> nextNodesInsert, Consumer<UniTuple<A>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, Group2Mapping0CollectorUniNode.NOOP_COLLECTOR, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, null, nextNodesInsert, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
     }

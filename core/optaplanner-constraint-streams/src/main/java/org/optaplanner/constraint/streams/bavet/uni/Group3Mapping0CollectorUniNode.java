@@ -34,7 +34,7 @@ final class Group3Mapping0CollectorUniNode<OldA, A, B, C>
     public Group3Mapping0CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
             Function<OldA, C> groupKeyMappingC, int groupStoreIndex,
             Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract, int outputStoreSize) {
-        super(groupStoreIndex, Group2Mapping0CollectorUniNode.NOOP_COLLECTOR, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, null, nextNodesInsert, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;
         this.groupKeyMappingC = groupKeyMappingC;
