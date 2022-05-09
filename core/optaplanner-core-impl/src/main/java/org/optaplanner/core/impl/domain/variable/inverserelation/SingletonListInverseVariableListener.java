@@ -42,7 +42,7 @@ public class SingletonListInverseVariableListener<Solution_>
     @Override
     public void afterEntityAdded(ScoreDirector<Solution_> scoreDirector, Object entity) {
         for (Object element : sourceVariableDescriptor.getListVariable(entity)) {
-            setInverse((InnerScoreDirector<Solution_, ?>) scoreDirector, element, entity);
+            setInverse((InnerScoreDirector<Solution_, ?>) scoreDirector, element, entity, null);
         }
     }
 
@@ -53,8 +53,9 @@ public class SingletonListInverseVariableListener<Solution_>
 
     @Override
     public void afterEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         for (Object element : sourceVariableDescriptor.getListVariable(entity)) {
-            setInverse((InnerScoreDirector<Solution_, ?>) scoreDirector, element, null);
+            setInverse(innerScoreDirector, element, null, entity);
         }
     }
 
@@ -67,14 +68,14 @@ public class SingletonListInverseVariableListener<Solution_>
     public void afterElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         // Set entity[index].
         setInverse((InnerScoreDirector<Solution_, ?>) scoreDirector,
-                sourceVariableDescriptor.getElement(entity, index), entity);
+                sourceVariableDescriptor.getElement(entity, index), entity, null);
     }
 
     @Override
     public void beforeElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         // Unset entity[index].
         setInverse((InnerScoreDirector<Solution_, ?>) scoreDirector,
-                sourceVariableDescriptor.getElement(entity, index), null);
+                sourceVariableDescriptor.getElement(entity, index), null, entity);
     }
 
     @Override
@@ -97,11 +98,23 @@ public class SingletonListInverseVariableListener<Solution_>
             return;
         }
         setInverse((InnerScoreDirector<Solution_, ?>) scoreDirector,
-                sourceVariableDescriptor.getElement(destinationEntity, destinationIndex), destinationEntity);
+                sourceVariableDescriptor.getElement(destinationEntity, destinationIndex), destinationEntity, sourceEntity);
     }
 
-    private void setInverse(InnerScoreDirector<Solution_, ?> scoreDirector, Object element, Object inverseEntity) {
-        // TODO check oldInverseEntity?
+    private void setInverse(InnerScoreDirector<Solution_, ?> scoreDirector,
+            Object element, Object inverseEntity, Object expectedOldInverseEntity) {
+        Object oldInverseEntity = shadowVariableDescriptor.getValue(element);
+        if (oldInverseEntity == inverseEntity) {
+            return;
+        } else if (oldInverseEntity != expectedOldInverseEntity) {
+            throw new IllegalStateException("The entity (" + inverseEntity
+                    + ") has a list variable (" + sourceVariableDescriptor.getVariableName()
+                    + ") and one of its elements (" + element
+                    + ") which has a shadow variable (" + shadowVariableDescriptor.getVariableName()
+                    + ") has an oldInverseEntity (" + oldInverseEntity + ") which is not that entity.\n"
+                    + "Verify the consistency of your input problem for that shadow variable.");
+
+        }
         scoreDirector.beforeVariableChanged(shadowVariableDescriptor, element);
         shadowVariableDescriptor.setValue(element, inverseEntity);
         scoreDirector.afterVariableChanged(shadowVariableDescriptor, element);
