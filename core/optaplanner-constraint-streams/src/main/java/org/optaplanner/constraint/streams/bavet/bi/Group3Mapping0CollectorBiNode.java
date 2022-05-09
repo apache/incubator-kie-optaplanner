@@ -22,57 +22,42 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractGroupBiNode;
+import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
+import org.optaplanner.core.impl.util.Triple;
 
-public final class Group2Mapping0CollectorBiNode<OldA, OldB, A, B>
-        extends AbstractGroupBiNode<OldA, OldB, BiTuple<A, B>, Pair<A, B>, Void, Void> {
-
-    static final BiConstraintCollector NOOP_COLLECTOR = new BiConstraintCollector<>() {
-        @Override
-        public Supplier supplier() {
-            return () -> null;
-        }
-
-        @Override
-        public TriFunction accumulator() {
-            return (nothing, a, b) -> (Runnable) () -> {
-                // DO NOTHING
-            };
-        }
-
-        @Override
-        public Function finisher() {
-            return a -> a;
-        }
-    };
+final class Group3Mapping0CollectorBiNode<OldA, OldB, A, B, C>
+        extends AbstractGroupBiNode<OldA, OldB, TriTuple<A, B, C>, Triple<A, B, C>, Void, Void> {
 
     private final BiFunction<OldA, OldB, A> groupKeyMappingA;
     private final BiFunction<OldA, OldB, B> groupKeyMappingB;
+    private final BiFunction<OldA, OldB, C> groupKeyMappingC;
     private final int outputStoreSize;
 
-    public Group2Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMappingA,
-            BiFunction<OldA, OldB, B> groupKeyMappingB, int groupStoreIndex,
-            Consumer<BiTuple<A, B>> nextNodesInsert, Consumer<BiTuple<A, B>> nextNodesRetract,
-            int outputStoreSize) {
-        super(groupStoreIndex, NOOP_COLLECTOR, nextNodesInsert, nextNodesRetract);
+    public Group3Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMappingA,
+            BiFunction<OldA, OldB, B> groupKeyMappingB, BiFunction<OldA, OldB, C> groupKeyMappingC, int groupStoreIndex,
+            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract, int outputStoreSize) {
+        super(groupStoreIndex, Group2Mapping0CollectorBiNode.NOOP_COLLECTOR, nextNodesInsert, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;
+        this.groupKeyMappingC = groupKeyMappingC;
         this.outputStoreSize = outputStoreSize;
     }
 
     @Override
-    protected Pair<A, B> getGroupKey(OldA oldA, OldB oldB) {
+    protected Triple<A, B, C> getGroupKey(OldA oldA, OldB oldB) {
         A a = groupKeyMappingA.apply(oldA, oldB);
         B b = groupKeyMappingB.apply(oldA, oldB);
-        return Pair.of(a, b);
+        C c = groupKeyMappingC.apply(oldA, oldB);
+        return Triple.of(a, b, c);
     }
 
     @Override
-    protected BiTuple<A, B> createTuple(Group<BiTuple<A, B>, Pair<A, B>, Void> group) {
-        Pair<A, B> key = group.groupKey;
-        return new BiTuple<>(key.getKey(), key.getValue(), outputStoreSize);
+    protected TriTuple<A, B, C> createTuple(Group<TriTuple<A, B, C>, Triple<A, B, C>, Void> group) {
+        Triple<A, B, C> key = group.groupKey;
+        return new TriTuple<>(key.getA(), key.getB(), key.getC(), outputStoreSize);
     }
 
 }

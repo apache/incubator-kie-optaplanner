@@ -302,7 +302,13 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     public <GroupKeyA_, GroupKeyB_, GroupKeyC_> TriConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_> groupBy(
             BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
             BiFunction<A, B, GroupKeyC_> groupKeyCMapping) {
-        throw new UnsupportedOperationException();
+        BavetAbstractTriGroupBridgeBiConstraintStream<Solution_, A, B, GroupKeyA_, GroupKeyB_, GroupKeyC_> bridge =
+                shareAndAddChild(
+                        new BavetGroupBridge3Mapping0CollectorBiConstraintStream<>(constraintFactory, this, groupKeyAMapping,
+                                groupKeyBMapping, groupKeyCMapping));
+        return constraintFactory.share(
+                new BavetGroupTriConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     @Override
