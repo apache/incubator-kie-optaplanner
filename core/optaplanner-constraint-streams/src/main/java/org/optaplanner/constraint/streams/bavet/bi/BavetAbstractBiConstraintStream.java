@@ -168,7 +168,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
         return ifExistsOrNot(false, otherStream, joiners);
     }
 
-    private final <C> BiConstraintStream<A, B> ifExistsOrNot(boolean shouldExist, UniConstraintStream<C> otherStream,
+    private <C> BiConstraintStream<A, B> ifExistsOrNot(boolean shouldExist, UniConstraintStream<C> otherStream,
             TriJoiner<A, B, C>[] joiners) {
         BavetAbstractUniConstraintStream<Solution_, C> other = assertBavetUniConstraintStream(otherStream);
         TriJoinerComber<A, B, C> joinerComber = TriJoinerComber.comb(joiners);

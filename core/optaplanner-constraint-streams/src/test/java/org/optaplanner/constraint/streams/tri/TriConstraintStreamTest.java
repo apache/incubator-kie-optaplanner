@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -325,7 +325,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void ifExists_unknownClass() {
-        assumeDrools();
         assertThatThrownBy(() -> buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishValueGroup.class)
                     .join(TestdataLavishEntityGroup.class)
@@ -339,7 +338,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void ifExists_0Joiner0Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
         TestdataLavishValueGroup valueGroup = new TestdataLavishValueGroup("MyValueGroup");
         solution.getValueGroupList().add(valueGroup);
@@ -367,7 +365,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void ifExists_0Join1Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -404,7 +401,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void ifExists_1Join0Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -443,7 +439,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void ifExists_1Join1Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -480,7 +475,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void ifExistsDoesNotIncludeNullVars() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -512,7 +506,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @TestTemplate
     @Deprecated(forRemoval = true)
     public void ifExistsIncludesNullVarsWithFrom() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -552,7 +545,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void ifNotExists_unknownClass() {
-        assumeDrools();
         assertThatThrownBy(() -> buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishValueGroup.class)
                     .join(TestdataLavishEntityGroup.class)
@@ -566,7 +558,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void ifNotExists_0Joiner0Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 1, 1);
         TestdataLavishValueGroup valueGroup = new TestdataLavishValueGroup("MyValueGroup");
         solution.getValueGroupList().add(valueGroup);
@@ -594,7 +585,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void ifNotExists_0Join1Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -635,7 +625,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void ifNotExists_1Join0Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -670,7 +659,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void ifNotExists_1Join1Filter() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -711,7 +699,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void ifNotExistsDoesNotIncludeNullVars() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);
@@ -755,7 +742,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @TestTemplate
     @Deprecated(forRemoval = true)
     public void ifNotExistsIncludesNullVarsWithFrom() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 1, 1);
         TestdataLavishEntityGroup entityGroup = new TestdataLavishEntityGroup("MyEntityGroup");
         solution.getEntityGroupList().add(entityGroup);

@@ -26,8 +26,10 @@ import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetGroupUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.BavetIfExistsBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
+import org.optaplanner.constraint.streams.quad.QuadJoinerComber;
 import org.optaplanner.constraint.streams.tri.InnerTriConstraintStream;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
@@ -146,11 +148,16 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
         return ifExistsOrNot(false, otherStream, joiners);
     }
 
-    private final <D> TriConstraintStream<A, B, C> ifExistsOrNot(boolean shouldExist, UniConstraintStream<D> otherStream,
+    private <D> TriConstraintStream<A, B, C> ifExistsOrNot(boolean shouldExist, UniConstraintStream<D> otherStream,
             QuadJoiner<A, B, C, D>[] joiners) {
         BavetAbstractUniConstraintStream<Solution_, D> other = assertBavetUniConstraintStream(otherStream);
-
-        throw new UnsupportedOperationException();
+        QuadJoinerComber<A, B, C, D> joinerComber = QuadJoinerComber.comb(joiners);
+        BavetIfExistsBridgeUniConstraintStream<Solution_, D> parentBridgeD = other.shareAndAddChild(
+                new BavetIfExistsBridgeUniConstraintStream<>(constraintFactory, other));
+        return constraintFactory.share(
+                new BavetIfExistsTriConstraintStream<>(constraintFactory, this, parentBridgeD,
+                        shouldExist, joinerComber.getMergedJoiner(), joinerComber.getMergedFiltering()),
+                childStreamList::add);
     }
 
     // ************************************************************************

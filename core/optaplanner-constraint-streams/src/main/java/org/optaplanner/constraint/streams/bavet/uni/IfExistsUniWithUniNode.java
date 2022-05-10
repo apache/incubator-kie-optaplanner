@@ -25,7 +25,7 @@ import org.optaplanner.constraint.streams.bavet.common.AbstractIfExistsNode;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 
-public final class IfExistsUniWithUniNode<A, B> extends AbstractIfExistsNode<UniTuple<A>, B> {
+final class IfExistsUniWithUniNode<A, B> extends AbstractIfExistsNode<UniTuple<A>, B> {
 
     private final Function<A, IndexProperties> mappingA;
     private final BiPredicate<A, B> filtering;
