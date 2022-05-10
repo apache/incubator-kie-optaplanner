@@ -67,7 +67,8 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     }
 
     public void insert(InTuple_ tupleOldA) {
-        if (tupleOldA.getStore()[groupStoreIndex] != null) {
+        Object[] tupleStore = tupleOldA.getStore();
+        if (tupleStore[groupStoreIndex] != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleOldA
                     + ") was already added in the tupleStore.");
         }
@@ -77,8 +78,8 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         group.parentCount++;
 
         Runnable undoAccumulator = runAccumulate ? accumulate(group.resultContainer, tupleOldA) : null;
-        GroupPart<OutTuple_, GroupKey_, ResultContainer_> groupPart = new GroupPart<>(group, undoAccumulator);
-        tupleOldA.getStore()[groupStoreIndex] = groupPart;
+        GroupPart<Group<OutTuple_, GroupKey_, ResultContainer_>> groupPart = new GroupPart<>(group, undoAccumulator);
+        tupleStore[groupStoreIndex] = groupPart;
         if (!group.dirty) {
             group.dirty = true;
             dirtyGroupQueue.add(group);
@@ -92,13 +93,14 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     protected abstract OutTuple_ createDownstreamTuple(Group<OutTuple_, GroupKey_, ResultContainer_> group);
 
     public void retract(InTuple_ tupleOldA) {
-        GroupPart<OutTuple_, GroupKey_, ResultContainer_> groupPart =
-                (GroupPart<OutTuple_, GroupKey_, ResultContainer_>) tupleOldA.getStore()[groupStoreIndex];
+        Object[] tupleStore = tupleOldA.getStore();
+        GroupPart<Group<OutTuple_, GroupKey_, ResultContainer_>> groupPart =
+                (GroupPart<Group<OutTuple_, GroupKey_, ResultContainer_>>) tupleStore[groupStoreIndex];
         if (groupPart == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        tupleOldA.getStore()[groupStoreIndex] = null;
+        tupleStore[groupStoreIndex] = null;
         Group<OutTuple_, GroupKey_, ResultContainer_> group = groupPart.group;
         group.parentCount--;
         if (runAccumulate) {

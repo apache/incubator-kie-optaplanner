@@ -18,12 +18,12 @@
 
 package org.optaplanner.constraint.streams.bavet.common;
 
-public final class GroupPart<OutTuple_ extends Tuple, GroupKey_, ResultContainer_> {
+final class GroupPart<Group_> {
 
-    public final Group<OutTuple_, GroupKey_, ResultContainer_> group;
+    public final Group_ group;
     public final Runnable undoAccumulator;
 
-    public GroupPart(Group<OutTuple_, GroupKey_, ResultContainer_> group, Runnable undoAccumulator) {
+    public GroupPart(Group_ group, Runnable undoAccumulator) {
         this.group = group;
         this.undoAccumulator = undoAccumulator;
     }
