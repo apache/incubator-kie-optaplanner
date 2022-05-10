@@ -28,7 +28,6 @@ import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
-import org.optaplanner.constraint.streams.bavet.tri.JoinTriNode;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.api.function.TriPredicate;
 
@@ -40,11 +39,11 @@ public final class IfExistsBiWithUniNode<A, B, C> extends AbstractNode {
     private final int inputStoreIndexAB;
     private final int inputStoreIndexC;
     /**
-     * Calls for example {@link BiScorer#insert(BiTuple)}, {@link JoinTriNode#insertAB(BiTuple)} and/or ...
+     * Calls for example {@link BiScorer#insert(BiTuple)}, and/or ...
      */
     private final Consumer<BiTuple<A, B>> nextNodesInsert;
     /**
-     * Calls for example {@link BiScorer#retract(BiTuple)}, {@link JoinTriNode#retractAB(BiTuple)} and/or ...
+     * Calls for example {@link BiScorer#retract(BiTuple)}, and/or ...
      */
     private final Consumer<BiTuple<A, B>> nextNodesRetract;
     // No outputStoreSize because this node is not a tuple source, even though it has a dirtyCounterQueue.
