@@ -83,16 +83,18 @@ public final class BavetIfExistsBiConstraintStream<Solution_, A, B, C>
         Consumer<BiTuple<A, B>> insert = buildHelper.getAggregatedInsert(childStreamList);
         Consumer<BiTuple<A, B>> retract = buildHelper.getAggregatedRetract(childStreamList);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        Indexer<BiTuple<A, B>, IfExistsBiWithUniNode.Counter<A, B>> indexerAB = indexerFactory.buildIndexer(true);
-        Indexer<UniTuple<C>, Set<IfExistsBiWithUniNode.Counter<A, B>>> indexerC = indexerFactory.buildIndexer(false);
+        Indexer<BiTuple<A, B>, IfExistsBiWithUniNode.Counter<BiTuple<A, B>>> indexerAB =
+                indexerFactory.buildIndexer(true);
+        Indexer<UniTuple<C>, Set<IfExistsBiWithUniNode.Counter<BiTuple<A, B>>>> indexerC =
+                indexerFactory.buildIndexer(false);
         IfExistsBiWithUniNode<A, B, C> node = new IfExistsBiWithUniNode<>(shouldExist,
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexA, inputStoreIndexB,
                 insert, retract,
                 indexerAB, indexerC, filtering);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(this, node::insertAB, node::retractAB);
-        buildHelper.putInsertRetract(parentBridgeC, node::insertC, node::retractC);
+        buildHelper.putInsertRetract(this, node::insertLeft, node::retractLeft);
+        buildHelper.putInsertRetract(parentBridgeC, node::insertRight, node::retractRight);
     }
 
     // ************************************************************************
