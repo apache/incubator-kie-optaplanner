@@ -159,6 +159,7 @@ public class ExternalizedIndexVariableSupply<Solution_> implements
         for (int index = startIndex; index < listVariable.size(); index++) {
             Object element = listVariable.get(index);
             Integer oldIndex = indexMap.put(element, index);
+            // The first element is allowed to have a null oldIndex because it might have been just assigned.
             if (oldIndex == null && index != startIndex) {
                 throw new IllegalStateException("The supply (" + this + ") is corrupted,"
                         + " because the element (" + element

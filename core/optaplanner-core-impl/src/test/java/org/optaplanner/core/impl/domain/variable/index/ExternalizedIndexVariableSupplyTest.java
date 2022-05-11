@@ -83,6 +83,13 @@ class ExternalizedIndexVariableSupplyTest {
         assertThat(supply.getIndex(v2)).isNull();
         assertThat(supply.getIndex(v3)).isNull();
 
+        // Assign v1 to e2.
+        supply.beforeElementAdded(scoreDirector, e2, 0);
+        e2.getValueList().add(0, v1);
+        supply.afterElementAdded(scoreDirector, e2, 0);
+
+        assertThat(supply.getIndex(v1)).isEqualTo(0);
+
         supply.close();
     }
 }
