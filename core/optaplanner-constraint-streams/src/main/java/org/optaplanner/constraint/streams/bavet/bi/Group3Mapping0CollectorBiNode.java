@@ -52,7 +52,7 @@ final class Group3Mapping0CollectorBiNode<OldA, OldB, A, B, C>
     }
 
     @Override
-    protected TriTuple<A, B, C> createDownstreamTuple(Group<TriTuple<A, B, C>, Triple<A, B, C>, Void> group) {
+    protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, Triple<A, B, C>, Void> group) {
         Triple<A, B, C> key = group.groupKey;
         return new TriTuple<>(key.getA(), key.getB(), key.getC(), outputStoreSize);
     }

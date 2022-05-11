@@ -56,7 +56,7 @@ final class Group0Mapping3CollectorUniNode<OldA, A, B, C, ResultContainerA_, Res
     }
 
     @Override
-    protected TriTuple<A, B, C> createDownstreamTuple(Group<TriTuple<A, B, C>, String, Object> group) {
+    protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, String, Object> group) {
         Object resultContainer = group.resultContainer;
         Triple<A, B, C> result = finisher.apply(resultContainer);
         A a = result.getA();

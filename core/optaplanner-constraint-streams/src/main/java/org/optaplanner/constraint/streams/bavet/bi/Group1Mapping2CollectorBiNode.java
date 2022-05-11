@@ -49,7 +49,7 @@ final class Group1Mapping2CollectorBiNode<OldA, OldB, A, B, C, ResultContainerB_
     }
 
     @Override
-    protected TriTuple<A, B, C> createDownstreamTuple(Group<TriTuple<A, B, C>, A, Object> group) {
+    protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, A, Object> group) {
         A factA = group.groupKey;
         Pair<B, C> result = finisher.apply(group.resultContainer);
         B factB = result.getKey();

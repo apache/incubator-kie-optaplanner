@@ -1,20 +1,18 @@
 
 /*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
- *  * Copyright 2022 Red Hat, Inc. and/or its affiliates.
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *      http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.optaplanner.constraint.streams.bavet.common;
@@ -66,18 +64,18 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         dirtyGroupQueue = new ArrayDeque<>(1000);
     }
 
-    public void insert(InTuple_ tupleOldA) {
-        Object[] tupleStore = tupleOldA.getStore();
+    public void insert(InTuple_ tuple) {
+        Object[] tupleStore = tuple.getStore();
         if (tupleStore[groupStoreIndex] != null) {
-            throw new IllegalStateException("Impossible state: the input for the tuple (" + tupleOldA
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + tuple
                     + ") was already added in the tupleStore.");
         }
-        GroupKey_ groupKey = createGroupKey(tupleOldA);
+        GroupKey_ groupKey = createGroupKey(tuple);
         Group<OutTuple_, GroupKey_, ResultContainer_> group = groupMap.computeIfAbsent(groupKey,
-                k -> new Group<>(groupKey, runAccumulate ? supplier.get() : null));
+                k -> new Group<>(k, runAccumulate ? supplier.get() : null));
         group.parentCount++;
 
-        Runnable undoAccumulator = runAccumulate ? accumulate(group.resultContainer, tupleOldA) : null;
+        Runnable undoAccumulator = runAccumulate ? accumulate(group.resultContainer, tuple) : null;
         GroupPart<Group<OutTuple_, GroupKey_, ResultContainer_>> groupPart = new GroupPart<>(group, undoAccumulator);
         tupleStore[groupStoreIndex] = groupPart;
         if (!group.dirty) {
@@ -90,10 +88,10 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
 
     protected abstract Runnable accumulate(ResultContainer_ resultContainer, InTuple_ tuple);
 
-    protected abstract OutTuple_ createDownstreamTuple(Group<OutTuple_, GroupKey_, ResultContainer_> group);
+    protected abstract OutTuple_ createOutTuple(Group<OutTuple_, GroupKey_, ResultContainer_> group);
 
-    public void retract(InTuple_ tupleOldA) {
-        Object[] tupleStore = tupleOldA.getStore();
+    public void retract(InTuple_ tuple) {
+        Object[] tupleStore = tuple.getStore();
         GroupPart<Group<OutTuple_, GroupKey_, ResultContainer_>> groupPart =
                 (GroupPart<Group<OutTuple_, GroupKey_, ResultContainer_>>) tupleStore[groupStoreIndex];
         if (groupPart == null) {
@@ -107,10 +105,11 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
             groupPart.undoAccumulator.run();
         }
         if (group.parentCount == 0) {
-            Group<OutTuple_, GroupKey_, ResultContainer_> old = groupMap.remove(group.groupKey);
+            GroupKey_ groupKey = group.groupKey;
+            Group<OutTuple_, GroupKey_, ResultContainer_> old = groupMap.remove(groupKey);
             if (old == null) {
                 throw new IllegalStateException("Impossible state: the group for the groupKey ("
-                        + group.groupKey + ") doesn't exist in the groupMap.");
+                        + groupKey + ") doesn't exist in the groupMap.");
             }
             group.dying = true;
         }
@@ -125,20 +124,22 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         dirtyGroupQueue.forEach(group -> {
             group.dirty = false;
             if (group.tuple != null) {
-                BavetTupleState tupleState = group.tuple.getState();
+                OutTuple_ tuple = group.tuple;
+                BavetTupleState tupleState = tuple.getState();
                 if (tupleState != BavetTupleState.OK) {
-                    throw new IllegalStateException("Impossible state: The tuple (" + group.tuple + ") in node (" +
+                    throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is in the state (" + tupleState + ").");
                 }
-                group.tuple.setState(BavetTupleState.DYING);
-                nextNodesRetract.accept(group.tuple);
-                group.tuple.setState(BavetTupleState.DEAD);
+                tuple.setState(BavetTupleState.DYING);
+                nextNodesRetract.accept(tuple);
+                tuple.setState(BavetTupleState.DEAD);
             }
             if (!group.dying) {
-                // Delay calculating B until it propagates
-                group.tuple = createDownstreamTuple(group);
-                nextNodesInsert.accept(group.tuple);
-                group.tuple.setState(BavetTupleState.OK);
+                // Delay calculating right until it propagates
+                OutTuple_ tuple = createOutTuple(group);
+                group.tuple = tuple;
+                nextNodesInsert.accept(tuple);
+                tuple.setState(BavetTupleState.OK);
             }
         });
         dirtyGroupQueue.clear();

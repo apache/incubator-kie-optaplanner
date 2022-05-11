@@ -41,7 +41,7 @@ final class Group1Mapping0CollectorUniNode<OldA, A>
     }
 
     @Override
-    protected UniTuple<A> createDownstreamTuple(Group<UniTuple<A>, A, Void> group) {
+    protected UniTuple<A> createOutTuple(Group<UniTuple<A>, A, Void> group) {
         A a = group.groupKey;
         return new UniTuple<>(a, outputStoreSize);
     }

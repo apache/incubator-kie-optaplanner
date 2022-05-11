@@ -50,7 +50,7 @@ final class Group2Mapping1CollectorUniNode<OldA, A, B, C, ResultContainer_>
     }
 
     @Override
-    protected TriTuple<A, B, C> createDownstreamTuple(Group<TriTuple<A, B, C>, Pair<A, B>, ResultContainer_> group) {
+    protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, Pair<A, B>, ResultContainer_> group) {
         Pair<A, B> groupKey = group.groupKey;
         A a = groupKey.getKey();
         B b = groupKey.getValue();

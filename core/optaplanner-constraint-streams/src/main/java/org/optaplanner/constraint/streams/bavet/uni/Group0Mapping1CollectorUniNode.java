@@ -42,7 +42,7 @@ final class Group0Mapping1CollectorUniNode<OldA, A, ResultContainer_>
     }
 
     @Override
-    protected UniTuple<A> createDownstreamTuple(Group<UniTuple<A>, String, ResultContainer_> group) {
+    protected UniTuple<A> createOutTuple(Group<UniTuple<A>, String, ResultContainer_> group) {
         ResultContainer_ resultContainer = group.resultContainer;
         A a = finisher.apply(resultContainer);
         return new UniTuple<>(a, outputStoreSize);

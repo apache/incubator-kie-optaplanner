@@ -54,7 +54,7 @@ final class Group0Mapping2CollectorUniNode<OldA, A, B, ResultContainerA_, Result
     }
 
     @Override
-    protected BiTuple<A, B> createDownstreamTuple(Group<BiTuple<A, B>, String, Object> group) {
+    protected BiTuple<A, B> createOutTuple(Group<BiTuple<A, B>, String, Object> group) {
         Object resultContainer = group.resultContainer;
         Pair<A, B> result = finisher.apply(resultContainer);
         A a = result.getKey();
