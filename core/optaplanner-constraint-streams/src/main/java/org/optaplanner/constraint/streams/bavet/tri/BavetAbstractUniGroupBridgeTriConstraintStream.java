@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ abstract class BavetAbstractUniGroupBridgeTriConstraintStream<Solution_, A, B, C
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupNode<TriTuple<A, B, C>, UniTuple<NewA>, ?, ?, ?> node =
+        AbstractGroupNode<TriTuple<A, B, C>, UniTuple<NewA>, ?, ?> node =
                 createNode(inputStoreIndex,
                         buildHelper.getAggregatedInsert(groupStream.getChildStreamList()),
                         buildHelper.getAggregatedRetract(groupStream.getChildStreamList()), outputStoreSize);

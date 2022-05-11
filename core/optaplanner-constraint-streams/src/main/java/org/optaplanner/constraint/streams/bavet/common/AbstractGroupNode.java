@@ -22,19 +22,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.bi.JoinBiNode;
 import org.optaplanner.constraint.streams.bavet.uni.UniScorer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
-public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extends Tuple, GroupKey_, ResultContainer_, Result_>
+public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extends Tuple, GroupKey_, ResultContainer_>
         extends AbstractNode {
 
     private final int groupStoreIndex;
     private final Supplier<ResultContainer_> supplier;
-    protected final Function<ResultContainer_, Result_> finisher;
     /**
      * Some code paths may decide to not supply a collector.
      * In that case, we skip the code path that would attempt to use it.
@@ -52,16 +50,14 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     private final Queue<Group<OutTuple_, GroupKey_, ResultContainer_>> dirtyGroupQueue;
 
     protected AbstractGroupNode(int groupStoreIndex, Supplier<ResultContainer_> supplier,
-            Function<ResultContainer_, Result_> finisher, Consumer<OutTuple_> nextNodesInsert,
-            Consumer<OutTuple_> nextNodesRetract) {
+            Consumer<OutTuple_> nextNodesInsert, Consumer<OutTuple_> nextNodesRetract) {
         this.groupStoreIndex = groupStoreIndex;
         this.supplier = supplier;
-        this.finisher = finisher;
-        this.runAccumulate = supplier != null && finisher != null;
+        this.runAccumulate = supplier != null;
         this.nextNodesInsert = nextNodesInsert;
         this.nextNodesRetract = nextNodesRetract;
-        groupMap = new HashMap<>(1000);
-        dirtyGroupQueue = new ArrayDeque<>(1000);
+        this.groupMap = new HashMap<>(1000);
+        this.dirtyGroupQueue = new ArrayDeque<>(1000);
     }
 
     public void insert(InTuple_ tuple) {

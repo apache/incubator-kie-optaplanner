@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ abstract class BavetAbstractBiGroupBridgeTriConstraintStream<Solution_, A, B, C,
         Consumer<BiTuple<NewA, NewB>> insert = buildHelper.getAggregatedInsert(groupStream.getChildStreamList());
         Consumer<BiTuple<NewA, NewB>> retract = buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupNode<TriTuple<A, B, C>, BiTuple<NewA, NewB>, ?, ?, ?> node =
+        AbstractGroupNode<TriTuple<A, B, C>, BiTuple<NewA, NewB>, ?, ?> node =
                 createNode(inputStoreIndex, insert, retract, outputStoreSize);
         buildHelper.addNode(node);
         buildHelper.putInsertRetract(this, node::insert, node::retract);

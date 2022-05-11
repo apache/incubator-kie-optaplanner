@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ abstract class BavetAbstractUniGroupBridgeBiConstraintStream<Solution_, A, B, Ne
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupNode<BiTuple<A, B>, UniTuple<NewA>, ?, ?, ?> node =
+        AbstractGroupNode<BiTuple<A, B>, UniTuple<NewA>, ?, ?> node =
                 createNode(inputStoreIndex,
                         buildHelper.getAggregatedInsert(groupStream.getChildStreamList()),
                         buildHelper.getAggregatedRetract(groupStream.getChildStreamList()), outputStoreSize);
