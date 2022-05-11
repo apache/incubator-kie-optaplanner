@@ -19,11 +19,18 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 import java.util.ArrayDeque;
 import java.util.Collection;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 
+/**
+ * Generic notifiable that receives and triggers {@link Notification}s for a specific variable listener of the type {@code T}.
+ *
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <T> the variable listener type
+ */
 abstract class AbstractNotifiable<Solution_, T extends AbstractVariableListener<Solution_, Object>>
         implements EntityNotifiable<Solution_> {
 
