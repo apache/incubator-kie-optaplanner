@@ -95,13 +95,13 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         tupleStore[inputStoreIndexLeft] = null;
 
         indexerLeft.remove(indexProperties, leftTuple);
-        // Remove tupleABCs from the other side
-        indexerRight.visit(indexProperties, (rightTuple, outTupleRight) -> {
-            OutTuple_ outTuple = outTupleRight.remove(leftTuple);
+        // Remove out tuples from the other side
+        indexerRight.visit(indexProperties, (rightTuple, outTupleMapRight) -> {
+            OutTuple_ outTuple = outTupleMapRight.remove(leftTuple);
             if (outTuple == null) {
                 throw new IllegalStateException("Impossible state: the tuple (" + leftTuple
                         + ") with indexProperties (" + indexProperties
-                        + ") has tuples on the AB side that didn't exist on the C side.");
+                        + ") has tuples on the left side that didn't exist on the right side.");
             }
             killTuple(outTuple);
         });
@@ -135,13 +135,13 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         rightTuple.store[inputStoreIndexRight] = null;
 
         indexerRight.remove(indexProperties, rightTuple);
-        // Remove tupleABCs from the other side
+        // Remove out tuples from the other side
         indexerLeft.visit(indexProperties, (leftTuple, outTupleMapLeft) -> {
             OutTuple_ outTuple = outTupleMapLeft.remove(rightTuple);
             if (outTuple == null) {
                 throw new IllegalStateException("Impossible state: the tuple (" + leftTuple
                         + ") with indexProperties (" + indexProperties
-                        + ") has tuples on the C side that didn't exist on the AB side.");
+                        + ") has tuples on the right side that didn't exist on the left side.");
             }
             killTuple(outTuple);
         });
