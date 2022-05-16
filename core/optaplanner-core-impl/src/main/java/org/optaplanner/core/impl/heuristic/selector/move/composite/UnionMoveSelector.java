@@ -63,13 +63,6 @@ public class UnionMoveSelector<Solution_> extends CompositeMoveSelector<Solution
                         + ") cannot have a selectorProbabilityWeightFactory (" + selectorProbabilityWeightFactory
                         + ").");
             }
-        } else {
-            if (selectorProbabilityWeightFactory == null) {
-                throw new IllegalArgumentException("The selector (" + this
-                        + ") with randomSelection (" + randomSelection
-                        + ") requires a selectorProbabilityWeightFactory (" + selectorProbabilityWeightFactory
-                        + ").");
-            }
         }
     }
 

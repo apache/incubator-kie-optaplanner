@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,12 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.composite;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.FixedSelectorProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
@@ -52,20 +48,6 @@ public class UnionMoveSelectorFactory<Solution_>
             }
             selectorProbabilityWeightFactory = ConfigUtils.newInstance(config,
                     "selectorProbabilityWeightFactoryClass", config.getSelectorProbabilityWeightFactoryClass());
-        } else if (randomSelection) {
-            Map<MoveSelector<Solution_>, Double> fixedProbabilityWeightMap =
-                    new HashMap<>(config.getMoveSelectorList().size());
-            for (int i = 0; i < config.getMoveSelectorList().size(); i++) {
-                MoveSelectorConfig<?> innerMoveSelectorConfig = config.getMoveSelectorList().get(i);
-                MoveSelector<Solution_> moveSelector = moveSelectorList.get(i);
-                Double fixedProbabilityWeight = innerMoveSelectorConfig.getFixedProbabilityWeight();
-                if (fixedProbabilityWeight == null) {
-                    // Default to equal probability for each move type => unequal probability for each move instance
-                    fixedProbabilityWeight = 1.0;
-                }
-                fixedProbabilityWeightMap.put(moveSelector, fixedProbabilityWeight);
-            }
-            selectorProbabilityWeightFactory = new FixedSelectorProbabilityWeightFactory<>(fixedProbabilityWeightMap);
         } else {
             selectorProbabilityWeightFactory = null;
         }
