@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class UnionMoveSelector<Solution_> extends CompositeMoveSelector<Solution
         if (!randomSelection) {
             if (selectorProbabilityWeightFactory != null) {
                 throw new IllegalArgumentException("The selector (" + this
-                        + ") with randomSelection (" + randomSelection
+                        + ") without randomSelection (" + randomSelection
                         + ") cannot have a selectorProbabilityWeightFactory (" + selectorProbabilityWeightFactory
                         + ").");
             }
