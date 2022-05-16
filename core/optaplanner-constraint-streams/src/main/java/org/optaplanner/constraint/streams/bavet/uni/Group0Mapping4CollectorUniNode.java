@@ -38,7 +38,8 @@ final class Group0Mapping4CollectorUniNode<OldA, A, B, C, D, ResultContainerA_, 
             UniConstraintCollector<OldA, ResultContainerD_, D> collectorD,
             Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC, collectorD), nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC, collectorD), nextNodesInsert,
+                nextNodesRetract);
         this.outputStoreSize = outputStoreSize;
     }
 

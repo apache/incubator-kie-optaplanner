@@ -35,7 +35,7 @@ abstract class BavetAbstractQuadGroupBridgeBiConstraintStream<Solution_, A, B, N
     protected BavetGroupQuadConstraintStream<Solution_, NewA, NewB, NewC, NewD> groupStream;
 
     public BavetAbstractQuadGroupBridgeBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                                          BavetAbstractBiConstraintStream<Solution_, A, B> parent) {
+            BavetAbstractBiConstraintStream<Solution_, A, B> parent) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
     }
@@ -67,7 +67,8 @@ abstract class BavetAbstractQuadGroupBridgeBiConstraintStream<Solution_, A, B, N
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
         Consumer<QuadTuple<NewA, NewB, NewC, NewD>> insert = buildHelper.getAggregatedInsert(groupStream.getChildStreamList());
-        Consumer<QuadTuple<NewA, NewB, NewC, NewD>> retract = buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
+        Consumer<QuadTuple<NewA, NewB, NewC, NewD>> retract =
+                buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
         AbstractGroupNode<BiTuple<A, B>, QuadTuple<NewA, NewB, NewC, NewD>, ?, ?> node =
                 createNode(inputStoreIndex, insert, retract, outputStoreSize);

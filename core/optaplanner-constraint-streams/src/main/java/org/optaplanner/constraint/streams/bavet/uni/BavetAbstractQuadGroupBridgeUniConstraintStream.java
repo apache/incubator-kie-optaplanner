@@ -35,7 +35,7 @@ abstract class BavetAbstractQuadGroupBridgeUniConstraintStream<Solution_, A, New
     protected BavetGroupQuadConstraintStream<Solution_, NewA, NewB, NewC, NewD> groupStream;
 
     public BavetAbstractQuadGroupBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-                                                           BavetAbstractUniConstraintStream<Solution_, A> parent) {
+            BavetAbstractUniConstraintStream<Solution_, A> parent) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
     }
@@ -67,7 +67,8 @@ abstract class BavetAbstractQuadGroupBridgeUniConstraintStream<Solution_, A, New
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
         Consumer<QuadTuple<NewA, NewB, NewC, NewD>> insert = buildHelper.getAggregatedInsert(groupStream.getChildStreamList());
-        Consumer<QuadTuple<NewA, NewB, NewC, NewD>> retract = buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
+        Consumer<QuadTuple<NewA, NewB, NewC, NewD>> retract =
+                buildHelper.getAggregatedRetract(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
         AbstractGroupNode<UniTuple<A>, QuadTuple<NewA, NewB, NewC, NewD>, ?, ?> node =
                 createNode(inputStoreIndex, insert, retract, outputStoreSize);
