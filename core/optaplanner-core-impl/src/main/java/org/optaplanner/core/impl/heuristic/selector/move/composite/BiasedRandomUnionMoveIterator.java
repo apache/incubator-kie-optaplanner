@@ -70,7 +70,7 @@ final class BiasedRandomUnionMoveIterator<Solution_> extends SelectionIterator<M
         }
         double randomOffset = RandomUtils.nextDouble(workingRandom, probabilityWeightTotal);
         Map.Entry<Double, Iterator<Move<Solution_>>> entry = moveIteratorMap.floorEntry(randomOffset);
-        // entry is never null because randomOffset < probabilityWeightTotal
+        // The entry is never null because randomOffset < probabilityWeightTotal
         Iterator<Move<Solution_>> moveIterator = entry.getValue();
         Move<Solution_> next = moveIterator.next();
         if (!moveIterator.hasNext()) {
