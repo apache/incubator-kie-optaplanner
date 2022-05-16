@@ -16,48 +16,49 @@
 
 package org.optaplanner.constraint.streams.bavet.bi;
 
+import static org.optaplanner.constraint.streams.bavet.bi.Group0Mapping3CollectorBiNode.mergeCollectors;
+
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Group;
-import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
+import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
-import org.optaplanner.core.impl.util.Pair;
+import org.optaplanner.core.impl.util.Triple;
 
-final class Group1Mapping2CollectorBiNode<OldA, OldB, A, B, C, ResultContainerB_, ResultContainerC_>
-        extends AbstractGroupBiNode<OldA, OldB, TriTuple<A, B, C>, A, Object, Pair<B, C>> {
+final class Group1Mapping3CollectorBiNode<OldA, OldB, A, B, C, D, ResultContainerB_, ResultContainerC_, ResultContainerD_>
+        extends AbstractGroupBiNode<OldA, OldB, QuadTuple<A, B, C, D>, A, Object, Triple<B, C, D>> {
 
     private final BiFunction<OldA, OldB, A> groupKeyMapping;
     private final int outputStoreSize;
 
-    public Group1Mapping2CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMapping, int groupStoreIndex,
+    public Group1Mapping3CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMapping, int groupStoreIndex,
             BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
             BiConstraintCollector<OldA, OldB, ResultContainerC_, C> collectorC,
-            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            BiConstraintCollector<OldA, OldB, ResultContainerD_, D> collectorD,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, Group0Mapping2CollectorBiNode.mergeCollectors(collectorB, collectorC), nextNodesInsert,
-                nextNodesRetract);
+        super(groupStoreIndex, mergeCollectors(collectorB, collectorC, collectorD),
+                nextNodesInsert, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
     }
 
     @Override
     protected A createGroupKey(BiTuple<OldA, OldB> tuple) {
-        OldA oldA = tuple.factA;
-        OldB oldB = tuple.factB;
-        return groupKeyMapping.apply(oldA, oldB);
+        return groupKeyMapping.apply(tuple.factA, tuple.factB);
     }
 
     @Override
-    protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, A, Object> group) {
-        A factA = group.groupKey;
-        Pair<B, C> result = finisher.apply(group.resultContainer);
-        return new TriTuple<>(factA, result.getKey(), result.getValue(), outputStoreSize);
+    protected QuadTuple<A, B, C, D> createOutTuple(Group<QuadTuple<A, B, C, D>, A, Object> group) {
+        A a = group.groupKey;
+        Triple<B, C, D> result = finisher.apply(group.resultContainer);
+        return new QuadTuple<>(a, result.getA(), result.getB(), result.getC(), outputStoreSize);
     }
 
     @Override
     public String toString() {
-        return "GroupBiNode 1+2";
+        return "GroupBiNode 1+3";
     }
 
 }

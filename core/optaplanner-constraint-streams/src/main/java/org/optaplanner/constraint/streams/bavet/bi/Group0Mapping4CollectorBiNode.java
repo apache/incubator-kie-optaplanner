@@ -19,35 +19,38 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Group;
-import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
+import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
-import org.optaplanner.core.impl.util.Triple;
+import org.optaplanner.core.impl.util.Quadruple;
 
-final class Group0Mapping3CollectorBiNode<OldA, OldB, A, B, C, ResultContainerA_, ResultContainerB_, ResultContainerC_>
-        extends AbstractGroupBiNode<OldA, OldB, TriTuple<A, B, C>, String, Object, Triple<A, B, C>> {
+final class Group0Mapping4CollectorBiNode<OldA, OldB, A, B, C, D, ResultContainerA_, ResultContainerB_, ResultContainerC_, ResultContainerD_>
+        extends AbstractGroupBiNode<OldA, OldB, QuadTuple<A, B, C, D>, String, Object, Quadruple<A, B, C, D>> {
 
     private static final String NO_GROUP_KEY = "NO_GROUP";
 
     private final int outputStoreSize;
 
-    public Group0Mapping3CollectorBiNode(int groupStoreIndex,
+    public Group0Mapping4CollectorBiNode(int groupStoreIndex,
             BiConstraintCollector<OldA, OldB, ResultContainerA_, A> collectorA,
             BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
             BiConstraintCollector<OldA, OldB, ResultContainerC_, C> collectorC,
-            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            BiConstraintCollector<OldA, OldB, ResultContainerD_, D> collectorD,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC), nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC, collectorD), nextNodesInsert,
+                nextNodesRetract);
         this.outputStoreSize = outputStoreSize;
     }
 
-    static <OldA, OldB, A, B, C, ResultContainerA_, ResultContainerB_, ResultContainerC_>
-            BiConstraintCollector<OldA, OldB, Object, Triple<A, B, C>> mergeCollectors(
+    private static <OldA, OldB, A, B, C, D, ResultContainerA_, ResultContainerB_, ResultContainerC_, ResultContainerD_>
+            BiConstraintCollector<OldA, OldB, Object, Quadruple<A, B, C, D>> mergeCollectors(
                     BiConstraintCollector<OldA, OldB, ResultContainerA_, A> collectorA,
                     BiConstraintCollector<OldA, OldB, ResultContainerB_, B> collectorB,
-                    BiConstraintCollector<OldA, OldB, ResultContainerC_, C> collectorC) {
-        return (BiConstraintCollector<OldA, OldB, Object, Triple<A, B, C>>) ConstraintCollectors.compose(collectorA, collectorB,
-                collectorC, Triple::of);
+                    BiConstraintCollector<OldA, OldB, ResultContainerC_, C> collectorC,
+                    BiConstraintCollector<OldA, OldB, ResultContainerD_, D> collectorD) {
+        return (BiConstraintCollector<OldA, OldB, Object, Quadruple<A, B, C, D>>) ConstraintCollectors.compose(collectorA,
+                collectorB, collectorC, collectorD, Quadruple::of);
     }
 
     @Override
@@ -56,15 +59,15 @@ final class Group0Mapping3CollectorBiNode<OldA, OldB, A, B, C, ResultContainerA_
     }
 
     @Override
-    protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, String, Object> group) {
+    protected QuadTuple<A, B, C, D> createOutTuple(Group<QuadTuple<A, B, C, D>, String, Object> group) {
         Object resultContainer = group.resultContainer;
-        Triple<A, B, C> result = finisher.apply(resultContainer);
-        return new TriTuple<>(result.getA(), result.getB(), result.getC(), outputStoreSize);
+        Quadruple<A, B, C, D> result = finisher.apply(resultContainer);
+        return new QuadTuple<>(result.getA(), result.getB(), result.getC(), result.getD(), outputStoreSize);
     }
 
     @Override
     public String toString() {
-        return "GroupBiNode 0+3";
+        return "GroupBiNode 0+4";
     }
 
 }

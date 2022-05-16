@@ -27,6 +27,7 @@ import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.quad.BavetGroupQuadConstraintStream;
 import org.optaplanner.constraint.streams.bavet.tri.BavetGroupTriConstraintStream;
 import org.optaplanner.constraint.streams.bavet.tri.BavetJoinTriConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
@@ -227,7 +228,13 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
                     BiConstraintCollector<A, B, ResultContainerB_, ResultB_> collectorB,
                     BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
                     BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
-        throw new UnsupportedOperationException();
+        BavetAbstractQuadGroupBridgeBiConstraintStream<Solution_, A, B, ResultA_, ResultB_, ResultC_, ResultD_> bridge =
+                shareAndAddChild(
+                        new BavetGroupBridge0Mapping4CollectorBiConstraintStream<>(constraintFactory, this, collectorA,
+                                collectorB, collectorC, collectorD));
+        return constraintFactory.share(
+                new BavetGroupQuadConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     @Override
@@ -259,7 +266,13 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
                     BiConstraintCollector<A, B, ResultContainerB_, ResultB_> collectorB,
                     BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
                     BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
-        throw new UnsupportedOperationException();
+        BavetAbstractQuadGroupBridgeBiConstraintStream<Solution_, A, B, GroupKey_, ResultB_, ResultC_, ResultD_> bridge =
+                shareAndAddChild(
+                        new BavetGroupBridge1Mapping3CollectorBiConstraintStream<>(constraintFactory, this, groupKeyMapping,
+                                collectorB, collectorC, collectorD));
+        return constraintFactory.share(
+                new BavetGroupQuadConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     @Override
@@ -304,7 +317,13 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
                     BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
                     BiConstraintCollector<A, B, ResultContainerC_, ResultC_> collectorC,
                     BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
-        throw new UnsupportedOperationException();
+        BavetAbstractQuadGroupBridgeBiConstraintStream<Solution_, A, B, GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> bridge =
+                shareAndAddChild(
+                        new BavetGroupBridge2Mapping2CollectorBiConstraintStream<>(constraintFactory, this, groupKeyAMapping,
+                                groupKeyBMapping, collectorC, collectorD));
+        return constraintFactory.share(
+                new BavetGroupQuadConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     @Override
@@ -326,14 +345,26 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
             groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
                     BiFunction<A, B, GroupKeyC_> groupKeyCMapping,
                     BiConstraintCollector<A, B, ResultContainerD_, ResultD_> collectorD) {
-        throw new UnsupportedOperationException();
+        BavetAbstractQuadGroupBridgeBiConstraintStream<Solution_, A, B, GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_> bridge =
+                shareAndAddChild(
+                        new BavetGroupBridge3Mapping1CollectorBiConstraintStream<>(constraintFactory, this, groupKeyAMapping,
+                                groupKeyBMapping, groupKeyCMapping, collectorD));
+        return constraintFactory.share(
+                new BavetGroupQuadConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     @Override
     public <GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> QuadConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>
             groupBy(BiFunction<A, B, GroupKeyA_> groupKeyAMapping, BiFunction<A, B, GroupKeyB_> groupKeyBMapping,
                     BiFunction<A, B, GroupKeyC_> groupKeyCMapping, BiFunction<A, B, GroupKeyD_> groupKeyDMapping) {
-        throw new UnsupportedOperationException();
+        BavetAbstractQuadGroupBridgeBiConstraintStream<Solution_, A, B, GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> bridge =
+                shareAndAddChild(
+                        new BavetGroupBridge4Mapping0CollectorBiConstraintStream<>(constraintFactory, this, groupKeyAMapping,
+                                groupKeyBMapping, groupKeyCMapping, groupKeyDMapping));
+        return constraintFactory.share(
+                new BavetGroupQuadConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     // ************************************************************************
