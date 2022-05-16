@@ -23,6 +23,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseL
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -93,7 +94,7 @@ class UnionMoveSelectorTest {
     }
 
     @Test
-    void randomSelection() {
+    void biasedRandomSelection() {
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
@@ -111,6 +112,34 @@ class UnionMoveSelectorTest {
                 1000.0 / 1020.0,
                 0.0,
                 999.0 / 1020.0);
+        SolverScope solverScope = mock(SolverScope.class);
+        when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
+        moveSelector.solvingStarted(solverScope);
+        AbstractPhaseScope phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
+        moveSelector.phaseStarted(phaseScopeA);
+        AbstractStepScope stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
+        moveSelector.stepStarted(stepScopeA1);
+
+        // A union of ending MoveSelectors does end, even with randomSelection
+        assertAllCodesOfMoveSelector(moveSelector, "a1", "b1", "b2", "a2", "a3");
+
+        moveSelector.stepEnded(stepScopeA1);
+        moveSelector.phaseEnded(phaseScopeA);
+        moveSelector.solvingEnded(solverScope);
+
+        verifyPhaseLifecycle(childMoveSelectorList.get(0), 1, 1, 1);
+        verifyPhaseLifecycle(childMoveSelectorList.get(1), 1, 1, 1);
+    }
+
+    @Test
+    void fairRandomSelection() {
+        List<MoveSelector> childMoveSelectorList = List.of(
+                SelectorTestUtils.mockMoveSelector(DummyMove.class, new DummyMove("a1"), new DummyMove("a2"),
+                        new DummyMove("a3")),
+                SelectorTestUtils.mockMoveSelector(DummyMove.class, new DummyMove("b1"), new DummyMove("b2")));
+        UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, true, null);
+
+        Random workingRandom = new TestRandom(0, 1, 1, 0, 0);
         SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
