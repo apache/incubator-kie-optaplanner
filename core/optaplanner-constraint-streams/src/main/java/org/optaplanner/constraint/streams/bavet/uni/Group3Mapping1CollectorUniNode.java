@@ -46,9 +46,10 @@ final class Group3Mapping1CollectorUniNode<OldA, A, B, C, D, ResultContainer_>
 
     @Override
     protected Triple<A, B, C> createGroupKey(UniTuple<OldA> tuple) {
-        A a = groupKeyMappingA.apply(tuple.factA);
-        B b = groupKeyMappingB.apply(tuple.factA);
-        C c = groupKeyMappingC.apply(tuple.factA);
+        OldA oldA = tuple.factA;
+        A a = groupKeyMappingA.apply(oldA);
+        B b = groupKeyMappingB.apply(oldA);
+        C c = groupKeyMappingC.apply(oldA);
         return Triple.of(a, b, c);
     }
 

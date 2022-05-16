@@ -200,7 +200,13 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
                     QuadConstraintCollector<A, B, C, D, ResultContainerB_, ResultB_> collectorB,
                     QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
                     QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD) {
-        throw new UnsupportedOperationException();
+        BavetAbstractQuadGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, ResultA_, ResultB_, ResultC_, ResultD_> bridge =
+                shareAndAddChild(
+                        new BavetGroupBridge0Mapping4CollectorQuadConstraintStream<>(constraintFactory, this, collectorA,
+                                collectorB, collectorC, collectorD));
+        return constraintFactory.share(
+                new BavetGroupQuadConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     @Override
@@ -233,7 +239,13 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
                     QuadConstraintCollector<A, B, C, D, ResultContainerB_, ResultB_> collectorB,
                     QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
                     QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD) {
-        throw new UnsupportedOperationException();
+        BavetAbstractQuadGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, GroupKey_, ResultB_, ResultC_, ResultD_> bridge =
+                shareAndAddChild(
+                        new BavetGroupBridge1Mapping3CollectorQuadConstraintStream<>(constraintFactory, this, groupKeyMapping,
+                                collectorB, collectorC, collectorD));
+        return constraintFactory.share(
+                new BavetGroupQuadConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     @Override
@@ -282,7 +294,13 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
                     QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
                     QuadConstraintCollector<A, B, C, D, ResultContainerC_, ResultC_> collectorC,
                     QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD) {
-        throw new UnsupportedOperationException();
+        BavetAbstractQuadGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, GroupKeyA_, GroupKeyB_, ResultC_, ResultD_> bridge =
+                shareAndAddChild(
+                        new BavetGroupBridge2Mapping2CollectorQuadConstraintStream<>(constraintFactory, this, groupKeyAMapping,
+                                groupKeyBMapping, collectorC, collectorD));
+        return constraintFactory.share(
+                new BavetGroupQuadConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     @Override
@@ -305,7 +323,13 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
                     QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
                     QuadFunction<A, B, C, D, GroupKeyC_> groupKeyCMapping,
                     QuadConstraintCollector<A, B, C, D, ResultContainerD_, ResultD_> collectorD) {
-        throw new UnsupportedOperationException();
+        BavetAbstractQuadGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_> bridge =
+                shareAndAddChild(
+                        new BavetGroupBridge3Mapping1CollectorQuadConstraintStream<>(constraintFactory, this, groupKeyAMapping,
+                                groupKeyBMapping, groupKeyCMapping, collectorD));
+        return constraintFactory.share(
+                new BavetGroupQuadConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     @Override
@@ -314,7 +338,13 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
                     QuadFunction<A, B, C, D, GroupKeyB_> groupKeyBMapping,
                     QuadFunction<A, B, C, D, GroupKeyC_> groupKeyCMapping,
                     QuadFunction<A, B, C, D, GroupKeyD_> groupKeyDMapping) {
-        throw new UnsupportedOperationException();
+        BavetAbstractQuadGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_> bridge =
+                shareAndAddChild(
+                        new BavetGroupBridge4Mapping0CollectorQuadConstraintStream<>(constraintFactory, this, groupKeyAMapping,
+                                groupKeyBMapping, groupKeyCMapping, groupKeyDMapping));
+        return constraintFactory.share(
+                new BavetGroupQuadConstraintStream<>(constraintFactory, bridge),
+                bridge::setGroupStream);
     }
 
     // ************************************************************************

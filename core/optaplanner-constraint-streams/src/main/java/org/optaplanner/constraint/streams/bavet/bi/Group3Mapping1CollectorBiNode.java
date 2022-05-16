@@ -46,9 +46,11 @@ final class Group3Mapping1CollectorBiNode<OldA, OldB, A, B, C, D, ResultContaine
 
     @Override
     protected Triple<A, B, C> createGroupKey(BiTuple<OldA, OldB> tuple) {
-        A a = groupKeyMappingA.apply(tuple.factA, tuple.factB);
-        B b = groupKeyMappingB.apply(tuple.factA, tuple.factB);
-        C c = groupKeyMappingC.apply(tuple.factA, tuple.factB);
+        OldA oldA = tuple.factA;
+        OldB oldB = tuple.factB;
+        A a = groupKeyMappingA.apply(oldA, oldB);
+        B b = groupKeyMappingB.apply(oldA, oldB);
+        C c = groupKeyMappingC.apply(oldA, oldB);
         return Triple.of(a, b, c);
     }
 

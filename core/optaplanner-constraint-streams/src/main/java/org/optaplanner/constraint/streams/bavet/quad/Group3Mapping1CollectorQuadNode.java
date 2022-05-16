@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet.tri;
+package org.optaplanner.constraint.streams.bavet.quad;
 
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Group;
-import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
-import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
+import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.util.Triple;
 
-final class Group3Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultContainer_>
-        extends AbstractGroupTriNode<OldA, OldB, OldC, QuadTuple<A, B, C, D>, Triple<A, B, C>, ResultContainer_, D> {
+final class Group3Mapping1CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D, ResultContainer_>
+        extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, QuadTuple<A, B, C, D>, Triple<A, B, C>, ResultContainer_, D> {
 
-    private final TriFunction<OldA, OldB, OldC, A> groupKeyMappingA;
-    private final TriFunction<OldA, OldB, OldC, B> groupKeyMappingB;
-    private final TriFunction<OldA, OldB, OldC, C> groupKeyMappingC;
+    private final QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMappingA;
+    private final QuadFunction<OldA, OldB, OldC, OldD, B> groupKeyMappingB;
+    private final QuadFunction<OldA, OldB, OldC, OldD, C> groupKeyMappingC;
     private final int outputStoreSize;
 
-    public Group3Mapping1CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA,
-            TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, TriFunction<OldA, OldB, OldC, C> groupKeyMappingC,
-            int groupStoreIndex, TriConstraintCollector<OldA, OldB, OldC, ResultContainer_, D> collector,
+    public Group3Mapping1CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMappingA,
+            QuadFunction<OldA, OldB, OldC, OldD, B> groupKeyMappingB, QuadFunction<OldA, OldB, OldC, OldD, C> groupKeyMappingC,
+            int groupStoreIndex, QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainer_, D> collector,
             Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
             int outputStoreSize) {
         super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
@@ -45,13 +44,14 @@ final class Group3Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultC
     }
 
     @Override
-    protected Triple<A, B, C> createGroupKey(TriTuple<OldA, OldB, OldC> tuple) {
+    protected Triple<A, B, C> createGroupKey(QuadTuple<OldA, OldB, OldC, OldD> tuple) {
         OldA oldA = tuple.factA;
         OldB oldB = tuple.factB;
         OldC oldC = tuple.factC;
-        A a = groupKeyMappingA.apply(oldA, oldB, oldC);
-        B b = groupKeyMappingB.apply(oldA, oldB, oldC);
-        C c = groupKeyMappingC.apply(oldA, oldB, oldC);
+        OldD oldD = tuple.factD;
+        A a = groupKeyMappingA.apply(oldA, oldB, oldC, oldD);
+        B b = groupKeyMappingB.apply(oldA, oldB, oldC, oldD);
+        C c = groupKeyMappingC.apply(oldA, oldB, oldC, oldD);
         return Triple.of(a, b, c);
     }
 
@@ -64,7 +64,7 @@ final class Group3Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultC
 
     @Override
     public String toString() {
-        return "GroupTriNode 3+1";
+        return "GroupQuadNode 3+1";
     }
 
 }

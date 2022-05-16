@@ -45,9 +45,9 @@ final class Group1Mapping1CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, Result
 
     @Override
     protected BiTuple<A, B> createOutTuple(Group<BiTuple<A, B>, A, ResultContainer_> group) {
-        A factA = group.groupKey;
-        B factB = finisher.apply(group.resultContainer);
-        return new BiTuple<>(factA, factB, outputStoreSize);
+        A a = group.groupKey;
+        B b = finisher.apply(group.resultContainer);
+        return new BiTuple<>(a, b, outputStoreSize);
     }
 
     @Override

@@ -16,50 +16,48 @@
 
 package org.optaplanner.constraint.streams.bavet.quad;
 
+import static org.optaplanner.constraint.streams.bavet.quad.Group0Mapping3CollectorQuadNode.mergeCollectors;
+
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Group;
-import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.impl.util.Pair;
+import org.optaplanner.core.impl.util.Triple;
 
-final class Group1Mapping2CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, ResultContainerB_, ResultContainerC_>
-        extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, TriTuple<A, B, C>, A, Object, Pair<B, C>> {
+final class Group1Mapping3CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D, ResultContainerB_, ResultContainerC_, ResultContainerD_>
+        extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, QuadTuple<A, B, C, D>, A, Object, Triple<B, C, D>> {
 
     private final QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping;
     private final int outputStoreSize;
 
-    public Group1Mapping2CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping, int groupStoreIndex,
+    public Group1Mapping3CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping, int groupStoreIndex,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerB_, B> collectorB,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerC_, C> collectorC,
-            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainerD_, D> collectorD,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, Group0Mapping2CollectorQuadNode.mergeCollectors(collectorB, collectorC), nextNodesInsert,
-                nextNodesRetract);
+        super(groupStoreIndex, mergeCollectors(collectorB, collectorC, collectorD),
+                nextNodesInsert, nextNodesRetract);
         this.groupKeyMapping = groupKeyMapping;
         this.outputStoreSize = outputStoreSize;
     }
 
     @Override
     protected A createGroupKey(QuadTuple<OldA, OldB, OldC, OldD> tuple) {
-        OldA oldA = tuple.factA;
-        OldB oldB = tuple.factB;
-        OldC oldC = tuple.factC;
-        OldD oldD = tuple.factD;
-        return groupKeyMapping.apply(oldA, oldB, oldC, oldD);
+        return groupKeyMapping.apply(tuple.factA, tuple.factB, tuple.factC, tuple.factD);
     }
 
     @Override
-    protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, A, Object> group) {
+    protected QuadTuple<A, B, C, D> createOutTuple(Group<QuadTuple<A, B, C, D>, A, Object> group) {
         A a = group.groupKey;
-        Pair<B, C> result = finisher.apply(group.resultContainer);
-        return new TriTuple<>(a, result.getKey(), result.getValue(), outputStoreSize);
+        Triple<B, C, D> result = finisher.apply(group.resultContainer);
+        return new QuadTuple<>(a, result.getA(), result.getB(), result.getC(), outputStoreSize);
     }
 
     @Override
     public String toString() {
-        return "GroupQuadNode 1+2";
+        return "GroupQuadNode 1+3";
     }
 
 }
