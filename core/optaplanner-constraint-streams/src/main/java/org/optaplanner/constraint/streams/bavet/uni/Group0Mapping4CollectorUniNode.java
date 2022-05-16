@@ -19,35 +19,37 @@ package org.optaplanner.constraint.streams.bavet.uni;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Group;
-import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
+import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.util.Triple;
+import org.optaplanner.core.impl.util.Quadruple;
 
-final class Group0Mapping3CollectorUniNode<OldA, A, B, C, ResultContainerA_, ResultContainerB_, ResultContainerC_>
-        extends AbstractGroupUniNode<OldA, TriTuple<A, B, C>, String, Object, Triple<A, B, C>> {
+final class Group0Mapping4CollectorUniNode<OldA, A, B, C, D, ResultContainerA_, ResultContainerB_, ResultContainerC_, ResultContainerD_>
+        extends AbstractGroupUniNode<OldA, QuadTuple<A, B, C, D>, String, Object, Quadruple<A, B, C, D>> {
 
     private static final String NO_GROUP_KEY = "NO_GROUP";
 
     private final int outputStoreSize;
 
-    public Group0Mapping3CollectorUniNode(int groupStoreIndex,
+    public Group0Mapping4CollectorUniNode(int groupStoreIndex,
             UniConstraintCollector<OldA, ResultContainerA_, A> collectorA,
             UniConstraintCollector<OldA, ResultContainerB_, B> collectorB,
             UniConstraintCollector<OldA, ResultContainerC_, C> collectorC,
-            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+            UniConstraintCollector<OldA, ResultContainerD_, D> collectorD,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC), nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, mergeCollectors(collectorA, collectorB, collectorC, collectorD), nextNodesInsert, nextNodesRetract);
         this.outputStoreSize = outputStoreSize;
     }
 
-    static <OldA, A, B, C, ResultContainerA_, ResultContainerB_, ResultContainerC_>
-            UniConstraintCollector<OldA, Object, Triple<A, B, C>> mergeCollectors(
+    private static <OldA, A, B, C, D, ResultContainerA_, ResultContainerB_, ResultContainerC_, ResultContainerD_>
+            UniConstraintCollector<OldA, Object, Quadruple<A, B, C, D>> mergeCollectors(
                     UniConstraintCollector<OldA, ResultContainerA_, A> collectorA,
                     UniConstraintCollector<OldA, ResultContainerB_, B> collectorB,
-                    UniConstraintCollector<OldA, ResultContainerC_, C> collectorC) {
-        return (UniConstraintCollector<OldA, Object, Triple<A, B, C>>) ConstraintCollectors.compose(collectorA, collectorB,
-                collectorC, Triple::of);
+                    UniConstraintCollector<OldA, ResultContainerC_, C> collectorC,
+                    UniConstraintCollector<OldA, ResultContainerD_, D> collectorD) {
+        return (UniConstraintCollector<OldA, Object, Quadruple<A, B, C, D>>) ConstraintCollectors.compose(collectorA,
+                collectorB, collectorC, collectorD, Quadruple::of);
     }
 
     @Override
@@ -56,15 +58,15 @@ final class Group0Mapping3CollectorUniNode<OldA, A, B, C, ResultContainerA_, Res
     }
 
     @Override
-    protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, String, Object> group) {
+    protected QuadTuple<A, B, C, D> createOutTuple(Group<QuadTuple<A, B, C, D>, String, Object> group) {
         Object resultContainer = group.resultContainer;
-        Triple<A, B, C> result = finisher.apply(resultContainer);
-        return new TriTuple<>(result.getA(), result.getB(), result.getC(), outputStoreSize);
+        Quadruple<A, B, C, D> result = finisher.apply(resultContainer);
+        return new QuadTuple<>(result.getA(), result.getB(), result.getC(), result.getD(), outputStoreSize);
     }
 
     @Override
     public String toString() {
-        return "GroupUniNode 0+3";
+        return "GroupUniNode 0+4";
     }
 
 }

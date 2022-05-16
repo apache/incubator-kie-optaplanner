@@ -20,45 +20,48 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.Group;
-import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
+import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
-import org.optaplanner.core.impl.util.Pair;
+import org.optaplanner.core.impl.util.Triple;
 
-final class Group2Mapping1CollectorUniNode<OldA, A, B, C, ResultContainer_>
-        extends AbstractGroupUniNode<OldA, TriTuple<A, B, C>, Pair<A, B>, ResultContainer_, C> {
+final class Group3Mapping1CollectorUniNode<OldA, A, B, C, D, ResultContainer_>
+        extends AbstractGroupUniNode<OldA, QuadTuple<A, B, C, D>, Triple<A, B, C>, ResultContainer_, D> {
 
     private final Function<OldA, A> groupKeyMappingA;
     private final Function<OldA, B> groupKeyMappingB;
+    private final Function<OldA, C> groupKeyMappingC;
     private final int outputStoreSize;
 
-    public Group2Mapping1CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
-            int groupStoreIndex, UniConstraintCollector<OldA, ResultContainer_, C> collector,
-            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+    public Group3Mapping1CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
+            Function<OldA, C> groupKeyMappingC,
+            int groupStoreIndex, UniConstraintCollector<OldA, ResultContainer_, D> collector,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
             int outputStoreSize) {
         super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;
+        this.groupKeyMappingC = groupKeyMappingC;
         this.outputStoreSize = outputStoreSize;
     }
 
     @Override
-    protected Pair<A, B> createGroupKey(UniTuple<OldA> tuple) {
-        OldA oldA = tuple.factA;
-        A a = groupKeyMappingA.apply(oldA);
-        B b = groupKeyMappingB.apply(oldA);
-        return Pair.of(a, b);
+    protected Triple<A, B, C> createGroupKey(UniTuple<OldA> tuple) {
+        A a = groupKeyMappingA.apply(tuple.factA);
+        B b = groupKeyMappingB.apply(tuple.factA);
+        C c = groupKeyMappingC.apply(tuple.factA);
+        return Triple.of(a, b, c);
     }
 
     @Override
-    protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, Pair<A, B>, ResultContainer_> group) {
-        Pair<A, B> groupKey = group.groupKey;
-        C c = finisher.apply(group.resultContainer);
-        return new TriTuple<>(groupKey.getKey(), groupKey.getValue(), c, outputStoreSize);
+    protected QuadTuple<A, B, C, D> createOutTuple(Group<QuadTuple<A, B, C, D>, Triple<A, B, C>, ResultContainer_> group) {
+        Triple<A, B, C> groupKey = group.groupKey;
+        D d = finisher.apply(group.resultContainer);
+        return new QuadTuple<>(groupKey.getA(), groupKey.getB(), groupKey.getC(), d, outputStoreSize);
     }
 
     @Override
     public String toString() {
-        return "GroupUniNode 2+1";
+        return "GroupUniNode 3+1";
     }
 
 }
