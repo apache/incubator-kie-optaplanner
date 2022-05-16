@@ -1263,7 +1263,6 @@ class BiConstraintStreamTest extends AbstractConstraintStreamTest implements Con
     @Override
     @TestTemplate
     public void distinct() { // On a distinct stream, this is a no-op.
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishEntity.class)

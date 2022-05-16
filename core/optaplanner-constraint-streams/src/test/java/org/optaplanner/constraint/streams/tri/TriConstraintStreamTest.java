@@ -157,7 +157,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void join_0() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
         solution.getValueList().add(value1);
@@ -212,7 +211,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void join_1Equal() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
         solution.getValueList().add(value1);
@@ -270,7 +268,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void join_2Equal() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
         TestdataLavishValue value1 = new TestdataLavishValue("MyValue 1", solution.getFirstValueGroup());
         solution.getValueList().add(value1);
@@ -872,7 +869,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_0Mapping4Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishEntity.class)
@@ -995,7 +991,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_1Mapping3Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -1103,7 +1098,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_2Mapping2Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
@@ -1170,7 +1164,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_3Mapping1Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 3, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishEntity.class)
@@ -1203,7 +1196,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void groupBy_4Mapping0Collector() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 3, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishEntity.class)
@@ -1242,7 +1234,6 @@ class TriConstraintStreamTest extends AbstractConstraintStreamTest implements Co
     @Override
     @TestTemplate
     public void distinct() { // On a distinct stream, this is a no-op.
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 3);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEachUniquePair(TestdataLavishEntity.class)

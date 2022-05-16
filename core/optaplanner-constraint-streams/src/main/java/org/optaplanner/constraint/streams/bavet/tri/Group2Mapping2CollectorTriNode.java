@@ -16,27 +16,30 @@
 
 package org.optaplanner.constraint.streams.bavet.tri;
 
+import static org.optaplanner.constraint.streams.bavet.tri.Group0Mapping2CollectorTriNode.mergeCollectors;
+
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Group;
+import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
 
-final class Group2Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, C, ResultContainer_>
-        extends AbstractGroupTriNode<OldA, OldB, OldC, TriTuple<A, B, C>, Pair<A, B>, ResultContainer_, C> {
+final class Group2Mapping2CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultContainerC_, ResultContainerD_>
+        extends AbstractGroupTriNode<OldA, OldB, OldC, QuadTuple<A, B, C, D>, Pair<A, B>, Object, Pair<C, D>> {
 
     private final TriFunction<OldA, OldB, OldC, A> groupKeyMappingA;
     private final TriFunction<OldA, OldB, OldC, B> groupKeyMappingB;
     private final int outputStoreSize;
 
-    public Group2Mapping1CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA,
-            TriFunction<OldA, OldB, OldC, B> groupKeyMappingB,
-            int groupStoreIndex,
-            TriConstraintCollector<OldA, OldB, OldC, ResultContainer_, C> collector,
-            Consumer<TriTuple<A, B, C>> nextNodesInsert, Consumer<TriTuple<A, B, C>> nextNodesRetract,
+    public Group2Mapping2CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA,
+            TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, int groupStoreIndex,
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerC_, C> collectorC,
+            TriConstraintCollector<OldA, OldB, OldC, ResultContainerD_, D> collectorD,
+            Consumer<QuadTuple<A, B, C, D>> nextNodesInsert, Consumer<QuadTuple<A, B, C, D>> nextNodesRetract,
             int outputStoreSize) {
-        super(groupStoreIndex, collector, nextNodesInsert, nextNodesRetract);
+        super(groupStoreIndex, mergeCollectors(collectorC, collectorD), nextNodesInsert, nextNodesRetract);
         this.groupKeyMappingA = groupKeyMappingA;
         this.groupKeyMappingB = groupKeyMappingB;
         this.outputStoreSize = outputStoreSize;
@@ -53,15 +56,15 @@ final class Group2Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, C, ResultCont
     }
 
     @Override
-    protected TriTuple<A, B, C> createOutTuple(Group<TriTuple<A, B, C>, Pair<A, B>, ResultContainer_> group) {
+    protected QuadTuple<A, B, C, D> createOutTuple(Group<QuadTuple<A, B, C, D>, Pair<A, B>, Object> group) {
         Pair<A, B> groupKey = group.groupKey;
-        C c = finisher.apply(group.resultContainer);
-        return new TriTuple<>(groupKey.getKey(), groupKey.getValue(), c, outputStoreSize);
+        Pair<C, D> result = finisher.apply(group.resultContainer);
+        return new QuadTuple<>(groupKey.getKey(), groupKey.getValue(), result.getKey(), result.getValue(), outputStoreSize);
     }
 
     @Override
     public String toString() {
-        return "GroupTriNode 2+1";
+        return "GroupTriNode 2+2";
     }
 
 }
