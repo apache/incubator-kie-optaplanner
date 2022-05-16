@@ -21,8 +21,10 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.common.AbstractJoiner;
+import org.optaplanner.constraint.streams.penta.DefaultPentaJoiner;
 import org.optaplanner.constraint.streams.quad.DefaultQuadJoiner;
 import org.optaplanner.constraint.streams.tri.DefaultTriJoiner;
+import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.TriFunction;
 
 public final class JoinerUtils {
@@ -81,6 +83,25 @@ public final class JoinerUtils {
                 Object[] mappings = new Object[joinerCount];
                 for (int i = 0; i < joinerCount; i++) {
                     mappings[i] = joiner.getLeftMapping(i).apply(a, b, c);
+                }
+                return new ManyIndexProperties(mappings);
+            };
+        }
+    }
+
+    public static <A, B, C, D, E> QuadFunction<A, B, C, D, IndexProperties> combineLeftMappings(
+            DefaultPentaJoiner<A, B, C, D, E> joiner) {
+        int joinerCount = joiner.getJoinerCount();
+        if (joinerCount == 0) {
+            return (A a, B b, C c, D d) -> NONE_INDEX_PROPERTY;
+        } else if (joinerCount == 1) {
+            QuadFunction<A, B, C, D, Object> mapping = joiner.getLeftMapping(0);
+            return (A a, B b, C c, D d) -> new SingleIndexProperties(mapping.apply(a, b, c, d));
+        } else {
+            return (A a, B b, C c, D d) -> {
+                Object[] mappings = new Object[joinerCount];
+                for (int i = 0; i < joinerCount; i++) {
+                    mappings[i] = joiner.getLeftMapping(i).apply(a, b, c, d);
                 }
                 return new ManyIndexProperties(mappings);
             };

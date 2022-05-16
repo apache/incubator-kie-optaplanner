@@ -21,17 +21,16 @@ import java.util.List;
 
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
-import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 
 /**
- * Combs an array of {@link TriJoiner} instances into a mergedJoiner and a mergedFiltering.
+ * Combs an array of {@link QuadJoiner} instances into a mergedJoiner and a mergedFiltering.
  * 
  * @param <A>
  * @param <B>
  * @param <C>
  * @param <D>
  */
-public class QuadJoinerComber<A, B, C, D> {
+public final class QuadJoinerComber<A, B, C, D> {
 
     public static <A, B, C, D> QuadJoinerComber<A, B, C, D> comb(QuadJoiner<A, B, C, D>[] joiners) {
         List<DefaultQuadJoiner<A, B, C, D>> defaultJoinerList = new ArrayList<>(joiners.length);
@@ -82,8 +81,8 @@ public class QuadJoinerComber<A, B, C, D> {
         }
     }
 
-    private DefaultQuadJoiner<A, B, C, D> mergedJoiner;
-    private QuadPredicate<A, B, C, D> mergedFiltering;
+    private final DefaultQuadJoiner<A, B, C, D> mergedJoiner;
+    private final QuadPredicate<A, B, C, D> mergedFiltering;
 
     public QuadJoinerComber(DefaultQuadJoiner<A, B, C, D> mergedJoiner, QuadPredicate<A, B, C, D> mergedFiltering) {
         this.mergedJoiner = mergedJoiner;

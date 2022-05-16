@@ -28,7 +28,7 @@ import org.optaplanner.core.api.score.stream.bi.BiJoiner;
  * @param <A>
  * @param <B>
  */
-public class BiJoinerComber<A, B> {
+public final class BiJoinerComber<A, B> {
 
     public static <A, B> BiJoinerComber<A, B> comb(BiJoiner<A, B>[] joiners) {
         List<DefaultBiJoiner<A, B>> defaultJoinerList = new ArrayList<>(joiners.length);
@@ -80,7 +80,7 @@ public class BiJoinerComber<A, B> {
     }
 
     private DefaultBiJoiner<A, B> mergedJoiner;
-    private BiPredicate<A, B> mergedFiltering;
+    private final BiPredicate<A, B> mergedFiltering;
 
     public BiJoinerComber(DefaultBiJoiner<A, B> mergedJoiner, BiPredicate<A, B> mergedFiltering) {
         this.mergedJoiner = mergedJoiner;

@@ -24,9 +24,11 @@ import java.util.function.Function;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.quad.BavetJoinQuadConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetGroupUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetIfExistsBridgeUniConstraintStream;
+import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.quad.QuadJoinerComber;
@@ -85,7 +87,29 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     @SafeVarargs
     public final <D> QuadConstraintStream<A, B, C, D> join(UniConstraintStream<D> otherStream,
             QuadJoiner<A, B, C, D>... joiners) {
-        throw new UnsupportedOperationException();
+        BavetAbstractUniConstraintStream<Solution_, D> other = assertBavetUniConstraintStream(otherStream);
+        QuadJoinerComber<A, B, C, D> joinerComber = QuadJoinerComber.comb(joiners);
+
+        BavetJoinBridgeTriConstraintStream<Solution_, A, B, C> leftBridge =
+                new BavetJoinBridgeTriConstraintStream<>(constraintFactory, this, true);
+        BavetJoinBridgeUniConstraintStream<Solution_, D> rightBridge =
+                new BavetJoinBridgeUniConstraintStream<>(constraintFactory, other, false);
+        BavetJoinQuadConstraintStream<Solution_, A, B, C, D> joinStream =
+                new BavetJoinQuadConstraintStream<>(constraintFactory, leftBridge, rightBridge,
+                        joinerComber.getMergedJoiner());
+        leftBridge.setJoinStream(joinStream);
+        rightBridge.setJoinStream(joinStream);
+
+        joinStream = constraintFactory.share(joinStream, joinStream_ -> {
+            // Connect the bridges upstream, as it is an actual new join.
+            getChildStreamList().add(leftBridge);
+            other.getChildStreamList().add(rightBridge);
+        });
+        if (joinerComber.getMergedFiltering() == null) {
+            return joinStream;
+        } else {
+            return joinStream.filter(joinerComber.getMergedFiltering());
+        }
     }
 
     // ************************************************************************

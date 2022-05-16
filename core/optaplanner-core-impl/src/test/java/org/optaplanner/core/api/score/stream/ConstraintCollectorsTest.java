@@ -3897,6 +3897,7 @@ class ConstraintCollectorsTest {
         firstRetractor.run();
         assertResult(collector, container, Quadruple.of(0, null, null, null));
     }
+
     private static <A, B, C, Container_, Result_> Runnable accumulate(
             TriConstraintCollector<A, B, C, Container_, Result_> collector, Object container, A valueA, B valueB,
             C valueC) {
