@@ -196,14 +196,14 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     @Override
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
-        TriNodeConstructor<A, B, C, UniTuple<Result_>> nodeConstructor =
+        TriGroupNodeConstructor<A, B, C, UniTuple<Result_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<UniTuple<Result_>> insert, Consumer<UniTuple<Result_>> retract,
                         int outputStoreSize) -> new Group0Mapping1CollectorTriNode<>(inputStoreIndex, collector, insert,
                                 retract, outputStoreSize);
         return buildUniGroupBy(nodeConstructor);
     }
 
-    private <NewA> UniConstraintStream<NewA> buildUniGroupBy(TriNodeConstructor<A, B, C, UniTuple<NewA>> nodeConstructor) {
+    private <NewA> UniConstraintStream<NewA> buildUniGroupBy(TriGroupNodeConstructor<A, B, C, UniTuple<NewA>> nodeConstructor) {
         BavetUniGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA> bridge = shareAndAddChild(
                 new BavetUniGroupBridgeTriConstraintStream<>(constraintFactory, this, nodeConstructor));
         return constraintFactory.share(
@@ -215,7 +215,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     public <ResultContainerA_, ResultA_, ResultContainerB_, ResultB_> BiConstraintStream<ResultA_, ResultB_> groupBy(
             TriConstraintCollector<A, B, C, ResultContainerA_, ResultA_> collectorA,
             TriConstraintCollector<A, B, C, ResultContainerB_, ResultB_> collectorB) {
-        TriNodeConstructor<A, B, C, BiTuple<ResultA_, ResultB_>> nodeConstructor =
+        TriGroupNodeConstructor<A, B, C, BiTuple<ResultA_, ResultB_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<BiTuple<ResultA_, ResultB_>> insert,
                         Consumer<BiTuple<ResultA_, ResultB_>> retract,
                         int outputStoreSize) -> new Group0Mapping2CollectorTriNode<>(inputStoreIndex, collectorA, collectorB,
@@ -224,7 +224,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     }
 
     private <NewA, NewB> BiConstraintStream<NewA, NewB>
-            buildBiGroupBy(TriNodeConstructor<A, B, C, BiTuple<NewA, NewB>> nodeConstructor) {
+            buildBiGroupBy(TriGroupNodeConstructor<A, B, C, BiTuple<NewA, NewB>> nodeConstructor) {
         BavetBiGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA, NewB> bridge = shareAndAddChild(
                 new BavetBiGroupBridgeTriConstraintStream<>(constraintFactory, this, nodeConstructor));
         return constraintFactory.share(
@@ -238,7 +238,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
             groupBy(TriConstraintCollector<A, B, C, ResultContainerA_, ResultA_> collectorA,
                     TriConstraintCollector<A, B, C, ResultContainerB_, ResultB_> collectorB,
                     TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC) {
-        TriNodeConstructor<A, B, C, TriTuple<ResultA_, ResultB_, ResultC_>> nodeConstructor =
+        TriGroupNodeConstructor<A, B, C, TriTuple<ResultA_, ResultB_, ResultC_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<TriTuple<ResultA_, ResultB_, ResultC_>> insert,
                         Consumer<TriTuple<ResultA_, ResultB_, ResultC_>> retract,
                         int outputStoreSize) -> new Group0Mapping3CollectorTriNode<>(inputStoreIndex, collectorA, collectorB,
@@ -247,7 +247,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     }
 
     private <NewA, NewB, NewC> TriConstraintStream<NewA, NewB, NewC>
-            buildTriGroupBy(TriNodeConstructor<A, B, C, TriTuple<NewA, NewB, NewC>> nodeConstructor) {
+            buildTriGroupBy(TriGroupNodeConstructor<A, B, C, TriTuple<NewA, NewB, NewC>> nodeConstructor) {
         BavetTriGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA, NewB, NewC> bridge = shareAndAddChild(
                 new BavetTriGroupBridgeTriConstraintStream<>(constraintFactory, this, nodeConstructor));
         return constraintFactory.share(
@@ -262,7 +262,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
                     TriConstraintCollector<A, B, C, ResultContainerB_, ResultB_> collectorB,
                     TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC,
                     TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> collectorD) {
-        TriNodeConstructor<A, B, C, QuadTuple<ResultA_, ResultB_, ResultC_, ResultD_>> nodeConstructor =
+        TriGroupNodeConstructor<A, B, C, QuadTuple<ResultA_, ResultB_, ResultC_, ResultD_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<QuadTuple<ResultA_, ResultB_, ResultC_, ResultD_>> insert,
                         Consumer<QuadTuple<ResultA_, ResultB_, ResultC_, ResultD_>> retract,
                         int outputStoreSize) -> new Group0Mapping4CollectorTriNode<>(inputStoreIndex, collectorA, collectorB,
@@ -271,7 +271,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     }
 
     private <NewA, NewB, NewC, NewD> QuadConstraintStream<NewA, NewB, NewC, NewD>
-            buildQuadGroupBy(TriNodeConstructor<A, B, C, QuadTuple<NewA, NewB, NewC, NewD>> nodeConstructor) {
+            buildQuadGroupBy(TriGroupNodeConstructor<A, B, C, QuadTuple<NewA, NewB, NewC, NewD>> nodeConstructor) {
         BavetQuadGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA, NewB, NewC, NewD> bridge = shareAndAddChild(
                 new BavetQuadGroupBridgeTriConstraintStream<>(constraintFactory, this, nodeConstructor));
         return constraintFactory.share(
@@ -281,7 +281,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(TriFunction<A, B, C, GroupKey_> groupKeyMapping) {
-        TriNodeConstructor<A, B, C, UniTuple<GroupKey_>> nodeConstructor =
+        TriGroupNodeConstructor<A, B, C, UniTuple<GroupKey_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<UniTuple<GroupKey_>> insert, Consumer<UniTuple<GroupKey_>> retract,
                         int outputStoreSize) -> new Group1Mapping0CollectorTriNode<>(groupKeyMapping, inputStoreIndex, insert,
                                 retract, outputStoreSize);
@@ -293,7 +293,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
             TriConstraintStream<GroupKey_, ResultB_, ResultC_> groupBy(TriFunction<A, B, C, GroupKey_> groupKeyMapping,
                     TriConstraintCollector<A, B, C, ResultContainerB_, ResultB_> collectorB,
                     TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC) {
-        TriNodeConstructor<A, B, C, TriTuple<GroupKey_, ResultB_, ResultC_>> nodeConstructor =
+        TriGroupNodeConstructor<A, B, C, TriTuple<GroupKey_, ResultB_, ResultC_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<TriTuple<GroupKey_, ResultB_, ResultC_>> insert,
                         Consumer<TriTuple<GroupKey_, ResultB_, ResultC_>> retract,
                         int outputStoreSize) -> new Group1Mapping2CollectorTriNode<>(groupKeyMapping, inputStoreIndex,
@@ -308,7 +308,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
                     TriConstraintCollector<A, B, C, ResultContainerB_, ResultB_> collectorB,
                     TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC,
                     TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> collectorD) {
-        TriNodeConstructor<A, B, C, QuadTuple<GroupKey_, ResultB_, ResultC_, ResultD_>> nodeConstructor =
+        TriGroupNodeConstructor<A, B, C, QuadTuple<GroupKey_, ResultB_, ResultC_, ResultD_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<QuadTuple<GroupKey_, ResultB_, ResultC_, ResultD_>> insert,
                         Consumer<QuadTuple<GroupKey_, ResultB_, ResultC_, ResultD_>> retract,
                         int outputStoreSize) -> new Group1Mapping3CollectorTriNode<>(groupKeyMapping, inputStoreIndex,
@@ -320,7 +320,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     public <GroupKey_, ResultContainer_, Result_> BiConstraintStream<GroupKey_, Result_> groupBy(
             TriFunction<A, B, C, GroupKey_> groupKeyMapping,
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
-        TriNodeConstructor<A, B, C, BiTuple<GroupKey_, Result_>> nodeConstructor =
+        TriGroupNodeConstructor<A, B, C, BiTuple<GroupKey_, Result_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<BiTuple<GroupKey_, Result_>> insert,
                         Consumer<BiTuple<GroupKey_, Result_>> retract,
                         int outputStoreSize) -> new Group1Mapping1CollectorTriNode<>(groupKeyMapping, inputStoreIndex,
@@ -332,7 +332,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping,
             TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping) {
-        TriNodeConstructor<A, B, C, BiTuple<GroupKeyA_, GroupKeyB_>> nodeConstructor =
+        TriGroupNodeConstructor<A, B, C, BiTuple<GroupKeyA_, GroupKeyB_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<BiTuple<GroupKeyA_, GroupKeyB_>> insert,
                         Consumer<BiTuple<GroupKeyA_, GroupKeyB_>> retract,
                         int outputStoreSize) -> new Group2Mapping0CollectorTriNode<>(groupKeyAMapping, groupKeyBMapping,
@@ -346,7 +346,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
             TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping,
             TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
             TriConstraintCollector<A, B, C, ResultContainer_, Result_> collector) {
-        TriNodeConstructor<A, B, C, TriTuple<GroupKeyA_, GroupKeyB_, Result_>> nodeConstructor =
+        TriGroupNodeConstructor<A, B, C, TriTuple<GroupKeyA_, GroupKeyB_, Result_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<TriTuple<GroupKeyA_, GroupKeyB_, Result_>> insert,
                         Consumer<TriTuple<GroupKeyA_, GroupKeyB_, Result_>> retract,
                         int outputStoreSize) -> new Group2Mapping1CollectorTriNode<>(groupKeyAMapping, groupKeyBMapping,
@@ -361,7 +361,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
                     TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
                     TriConstraintCollector<A, B, C, ResultContainerC_, ResultC_> collectorC,
                     TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> collectorD) {
-        TriNodeConstructor<A, B, C, QuadTuple<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_>> nodeConstructor =
+        TriGroupNodeConstructor<A, B, C, QuadTuple<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_>> insert,
                         Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_>> retract,
                         int outputStoreSize) -> new Group2Mapping2CollectorTriNode<>(groupKeyAMapping, groupKeyBMapping,
@@ -373,7 +373,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     public <GroupKeyA_, GroupKeyB_, GroupKeyC_> TriConstraintStream<GroupKeyA_, GroupKeyB_, GroupKeyC_> groupBy(
             TriFunction<A, B, C, GroupKeyA_> groupKeyAMapping, TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
             TriFunction<A, B, C, GroupKeyC_> groupKeyCMapping) {
-        TriNodeConstructor<A, B, C, TriTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_>> nodeConstructor =
+        TriGroupNodeConstructor<A, B, C, TriTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<TriTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_>> insert,
                         Consumer<TriTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_>> retract,
                         int outputStoreSize) -> new Group3Mapping0CollectorTriNode<>(groupKeyAMapping, groupKeyBMapping,
@@ -389,7 +389,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
                     TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
                     TriFunction<A, B, C, GroupKeyC_> groupKeyCMapping,
                     TriConstraintCollector<A, B, C, ResultContainerD_, ResultD_> collectorD) {
-        TriNodeConstructor<A, B, C, QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_>> nodeConstructor =
+        TriGroupNodeConstructor<A, B, C, QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_>> insert,
                         Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_>> retract,
                         int outputStoreSize) -> new Group3Mapping1CollectorTriNode<>(groupKeyAMapping, groupKeyBMapping,
@@ -403,7 +403,7 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
                     TriFunction<A, B, C, GroupKeyB_> groupKeyBMapping,
                     TriFunction<A, B, C, GroupKeyC_> groupKeyCMapping,
                     TriFunction<A, B, C, GroupKeyD_> groupKeyDMapping) {
-        TriNodeConstructor<A, B, C, QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>> nodeConstructor =
+        TriGroupNodeConstructor<A, B, C, QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>> nodeConstructor =
                 (int inputStoreIndex, Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>> insert,
                         Consumer<QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>> retract,
                         int outputStoreSize) -> new Group4Mapping0CollectorTriNode<>(groupKeyAMapping, groupKeyBMapping,

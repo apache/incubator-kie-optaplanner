@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet.uni;
+package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
 @FunctionalInterface
-interface UniNodeConstructor<A, Tuple_ extends Tuple> {
+interface BiGroupNodeConstructor<A, B, Tuple_ extends Tuple> {
 
-    AbstractGroupUniNode<A, Tuple_, ?, ?, ?> apply(int inputStoreIndex, Consumer<Tuple_> insert, Consumer<Tuple_> retract,
-            int outputStoreSize);
+    AbstractGroupBiNode<A, B, Tuple_, ?, ?, ?> apply(int inputStoreIndex, Consumer<Tuple_> insert,
+            Consumer<Tuple_> retract, int outputStoreSize);
 
 }

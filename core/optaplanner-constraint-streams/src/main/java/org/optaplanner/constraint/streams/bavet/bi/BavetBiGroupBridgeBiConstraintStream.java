@@ -31,11 +31,11 @@ final class BavetBiGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB>
 
     private final BavetAbstractBiConstraintStream<Solution_, A, B> parent;
     private BavetGroupBiConstraintStream<Solution_, NewA, NewB> groupStream;
-    private final BiNodeConstructor<A, B, BiTuple<NewA, NewB>> nodeConstructor;
+    private final BiGroupNodeConstructor<A, B, BiTuple<NewA, NewB>> nodeConstructor;
 
     public BavetBiGroupBridgeBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractBiConstraintStream<Solution_, A, B> parent,
-            BiNodeConstructor<A, B, BiTuple<NewA, NewB>> nodeConstructor) {
+            BiGroupNodeConstructor<A, B, BiTuple<NewA, NewB>> nodeConstructor) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.nodeConstructor = nodeConstructor;

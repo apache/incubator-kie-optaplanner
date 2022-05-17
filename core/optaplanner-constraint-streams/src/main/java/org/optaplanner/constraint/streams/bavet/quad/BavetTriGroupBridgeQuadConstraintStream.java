@@ -33,11 +33,11 @@ final class BavetTriGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, NewA,
 
     protected final BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent;
     protected BavetGroupTriConstraintStream<Solution_, NewA, NewB, NewC> groupStream;
-    private final QuadNodeConstructor<A, B, C, D, TriTuple<NewA, NewB, NewC>> nodeConstructor;
+    private final QuadGroupNodeConstructor<A, B, C, D, TriTuple<NewA, NewB, NewC>> nodeConstructor;
 
     public BavetTriGroupBridgeQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
-            QuadNodeConstructor<A, B, C, D, TriTuple<NewA, NewB, NewC>> nodeConstructor) {
+            QuadGroupNodeConstructor<A, B, C, D, TriTuple<NewA, NewB, NewC>> nodeConstructor) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.nodeConstructor = nodeConstructor;

@@ -33,11 +33,11 @@ final class BavetTriGroupBridgeUniConstraintStream<Solution_, A, NewA, NewB, New
 
     private final BavetAbstractUniConstraintStream<Solution_, A> parent;
     private BavetGroupTriConstraintStream<Solution_, NewA, NewB, NewC> groupStream;
-    private final UniNodeConstructor<A, TriTuple<NewA, NewB, NewC>> nodeConstructor;
+    private final UniGroupNodeConstructor<A, TriTuple<NewA, NewB, NewC>> nodeConstructor;
 
     public BavetTriGroupBridgeUniConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractUniConstraintStream<Solution_, A> parent,
-            UniNodeConstructor<A, TriTuple<NewA, NewB, NewC>> nodeConstructor) {
+            UniGroupNodeConstructor<A, TriTuple<NewA, NewB, NewC>> nodeConstructor) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.nodeConstructor = nodeConstructor;

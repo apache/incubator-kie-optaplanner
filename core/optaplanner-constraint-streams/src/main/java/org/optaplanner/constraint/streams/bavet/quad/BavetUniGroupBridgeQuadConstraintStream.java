@@ -32,11 +32,11 @@ final class BavetUniGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, NewA>
 
     protected final BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent;
     protected BavetGroupUniConstraintStream<Solution_, NewA> groupStream;
-    private final QuadNodeConstructor<A, B, C, D, UniTuple<NewA>> nodeConstructor;
+    private final QuadGroupNodeConstructor<A, B, C, D, UniTuple<NewA>> nodeConstructor;
 
     public BavetUniGroupBridgeQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
-            QuadNodeConstructor<A, B, C, D, UniTuple<NewA>> nodeConstructor) {
+            QuadGroupNodeConstructor<A, B, C, D, UniTuple<NewA>> nodeConstructor) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.nodeConstructor = nodeConstructor;

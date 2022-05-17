@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.optaplanner.constraint.streams.bavet.tri;
+package org.optaplanner.constraint.streams.bavet.quad;
 
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
 @FunctionalInterface
-interface TriNodeConstructor<A, B, C, Tuple_ extends Tuple> {
+interface QuadGroupNodeConstructor<A, B, C, D, Tuple_ extends Tuple> {
 
-    AbstractGroupTriNode<A, B, C, Tuple_, ?, ?, ?> apply(int inputStoreIndex, Consumer<Tuple_> insert,
+    AbstractGroupQuadNode<A, B, C, D, Tuple_, ?, ?, ?> apply(int inputStoreIndex, Consumer<Tuple_> insert,
             Consumer<Tuple_> retract, int outputStoreSize);
 
 }
