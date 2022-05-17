@@ -111,7 +111,7 @@ public class UnionMoveSelector<Solution_> extends CompositeMoveSelector<Solution
             }
             return stream.iterator();
         } else if (selectorProbabilityWeightFactory == null) {
-            return new FairRandomUnionMoveIterator<>(childMoveSelectorList, workingRandom);
+            return new UniformRandomUnionMoveIterator<>(childMoveSelectorList, workingRandom);
         } else {
             return new BiasedRandomUnionMoveIterator<>(childMoveSelectorList,
                     moveSelector -> {

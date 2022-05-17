@@ -136,7 +136,7 @@ class UnionMoveSelectorTest {
     }
 
     @Test
-    void fairRandomSelection() {
+    void uniformRandomSelection() {
         List<MoveSelector<TestdataSolution>> childMoveSelectorList = List.of(
                 SelectorTestUtils.mockMoveSelector(DummyMove.class, new DummyMove("a1"), new DummyMove("a2"),
                         new DummyMove("a3")),

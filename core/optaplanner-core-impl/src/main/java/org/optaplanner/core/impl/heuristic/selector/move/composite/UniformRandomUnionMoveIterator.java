@@ -25,12 +25,12 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
-final class FairRandomUnionMoveIterator<Solution_> extends SelectionIterator<Move<Solution_>> {
+final class UniformRandomUnionMoveIterator<Solution_> extends SelectionIterator<Move<Solution_>> {
 
     private final List<Iterator<Move<Solution_>>> moveIteratorList;
     private final Random workingRandom;
 
-    public FairRandomUnionMoveIterator(List<MoveSelector<Solution_>> childMoveSelectorList, Random workingRandom) {
+    public UniformRandomUnionMoveIterator(List<MoveSelector<Solution_>> childMoveSelectorList, Random workingRandom) {
         this.moveIteratorList = childMoveSelectorList.stream()
                 .map(Iterable::iterator)
                 .collect(Collectors.toList());
