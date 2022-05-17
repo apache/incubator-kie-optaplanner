@@ -59,23 +59,24 @@ public final class BiJoinerComber<A, B> {
     }
 
     private static <A, B> BiPredicate<A, B> mergeFiltering(List<BiPredicate<A, B>> filteringList) {
-        if (filteringList.size() == 0) {
+        if (filteringList.isEmpty()) {
             return null;
-        } else if (filteringList.size() == 1) {
-            return filteringList.get(0);
-        } else if (filteringList.size() == 2) {
-            return filteringList.get(0).and(filteringList.get(1));
-        } else {
-            // Avoid predicate.and() when more than 2 predicates for debugging and potentially performance
-            BiPredicate<A, B>[] predicates = filteringList.toArray(BiPredicate[]::new);
-            return (A a, B b) -> {
-                for (BiPredicate<A, B> predicate : predicates) {
-                    if (!predicate.test(a, b)) {
-                        return false;
+        }
+        switch (filteringList.size()) {
+            case 1:
+                return filteringList.get(0);
+            case 2:
+                return filteringList.get(0).and(filteringList.get(1));
+            default:
+                // Avoid predicate.and() when more than 2 predicates for debugging and potentially performance
+                return (A a, B b) -> {
+                    for (BiPredicate<A, B> predicate : filteringList) {
+                        if (!predicate.test(a, b)) {
+                            return false;
+                        }
                     }
-                }
-                return true;
-            };
+                    return true;
+                };
         }
     }
 

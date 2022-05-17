@@ -61,23 +61,24 @@ public final class QuadJoinerComber<A, B, C, D> {
     }
 
     private static <A, B, C, D> QuadPredicate<A, B, C, D> mergeFiltering(List<QuadPredicate<A, B, C, D>> filteringList) {
-        if (filteringList.size() == 0) {
+        if (filteringList.isEmpty()) {
             return null;
-        } else if (filteringList.size() == 1) {
-            return filteringList.get(0);
-        } else if (filteringList.size() == 2) {
-            return filteringList.get(0).and(filteringList.get(1));
-        } else {
-            // Avoid predicate.and() when more than 2 predicates for debugging and potentially performance
-            QuadPredicate<A, B, C, D>[] predicates = filteringList.toArray(QuadPredicate[]::new);
-            return (A a, B b, C c, D d) -> {
-                for (QuadPredicate<A, B, C, D> predicate : predicates) {
-                    if (!predicate.test(a, b, c, d)) {
-                        return false;
+        }
+        switch (filteringList.size()) {
+            case 1:
+                return filteringList.get(0);
+            case 2:
+                return filteringList.get(0).and(filteringList.get(1));
+            default:
+                // Avoid predicate.and() when more than 2 predicates for debugging and potentially performance
+                return (A a, B b, C c, D d) -> {
+                    for (QuadPredicate<A, B, C, D> predicate : filteringList) {
+                        if (!predicate.test(a, b, c, d)) {
+                            return false;
+                        }
                     }
-                }
-                return true;
-            };
+                    return true;
+                };
         }
     }
 

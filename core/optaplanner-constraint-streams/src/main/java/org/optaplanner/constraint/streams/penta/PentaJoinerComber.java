@@ -63,23 +63,24 @@ public final class PentaJoinerComber<A, B, C, D, E> {
 
     private static <A, B, C, D, E> PentaPredicate<A, B, C, D, E>
             mergeFiltering(List<PentaPredicate<A, B, C, D, E>> filteringList) {
-        if (filteringList.size() == 0) {
+        if (filteringList.isEmpty()) {
             return null;
-        } else if (filteringList.size() == 1) {
-            return filteringList.get(0);
-        } else if (filteringList.size() == 2) {
-            return filteringList.get(0).and(filteringList.get(1));
-        } else {
-            // Avoid predicate.and() when more than 2 predicates for debugging and potentially performance
-            PentaPredicate<A, B, C, D, E>[] predicates = filteringList.toArray(PentaPredicate[]::new);
-            return (A a, B b, C c, D d, E e) -> {
-                for (PentaPredicate<A, B, C, D, E> predicate : predicates) {
-                    if (!predicate.test(a, b, c, d, e)) {
-                        return false;
+        }
+        switch (filteringList.size()) {
+            case 1:
+                return filteringList.get(0);
+            case 2:
+                return filteringList.get(0).and(filteringList.get(1));
+            default:
+                // Avoid predicate.and() when more than 2 predicates for debugging and potentially performance
+                return (A a, B b, C c, D d, E e) -> {
+                    for (PentaPredicate<A, B, C, D, E> predicate : filteringList) {
+                        if (!predicate.test(a, b, c, d, e)) {
+                            return false;
+                        }
                     }
-                }
-                return true;
-            };
+                    return true;
+                };
         }
     }
 
