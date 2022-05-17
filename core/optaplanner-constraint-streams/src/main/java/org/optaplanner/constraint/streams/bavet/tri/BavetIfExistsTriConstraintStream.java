@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.common.AbstractIfExistsNode.Counter;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
@@ -83,9 +84,9 @@ final class BavetIfExistsTriConstraintStream<Solution_, A, B, C, D>
         Consumer<TriTuple<A, B, C>> insert = buildHelper.getAggregatedInsert(childStreamList);
         Consumer<TriTuple<A, B, C>> retract = buildHelper.getAggregatedRetract(childStreamList);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        Indexer<TriTuple<A, B, C>, IfExistsTriWithUniNode.Counter<TriTuple<A, B, C>>> indexerAB =
+        Indexer<TriTuple<A, B, C>, Counter<TriTuple<A, B, C>>> indexerAB =
                 indexerFactory.buildIndexer(true);
-        Indexer<UniTuple<D>, Set<IfExistsTriWithUniNode.Counter<TriTuple<A, B, C>>>> indexerC =
+        Indexer<UniTuple<D>, Set<Counter<TriTuple<A, B, C>>>> indexerC =
                 indexerFactory.buildIndexer(false);
         IfExistsTriWithUniNode<A, B, C, D> node = new IfExistsTriWithUniNode<>(shouldExist,
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),

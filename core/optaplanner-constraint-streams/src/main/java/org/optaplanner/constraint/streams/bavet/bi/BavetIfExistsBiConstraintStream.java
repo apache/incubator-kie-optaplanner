@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.common.AbstractIfExistsNode.Counter;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
@@ -32,7 +33,7 @@ import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
-public final class BavetIfExistsBiConstraintStream<Solution_, A, B, C>
+public final class  BavetIfExistsBiConstraintStream<Solution_, A, B, C>
         extends BavetAbstractBiConstraintStream<Solution_, A, B> {
 
     private final BavetAbstractBiConstraintStream<Solution_, A, B> parentAB;
@@ -83,9 +84,9 @@ public final class BavetIfExistsBiConstraintStream<Solution_, A, B, C>
         Consumer<BiTuple<A, B>> insert = buildHelper.getAggregatedInsert(childStreamList);
         Consumer<BiTuple<A, B>> retract = buildHelper.getAggregatedRetract(childStreamList);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        Indexer<BiTuple<A, B>, IfExistsBiWithUniNode.Counter<BiTuple<A, B>>> indexerAB =
+        Indexer<BiTuple<A, B>, Counter<BiTuple<A, B>>> indexerAB =
                 indexerFactory.buildIndexer(true);
-        Indexer<UniTuple<C>, Set<IfExistsBiWithUniNode.Counter<BiTuple<A, B>>>> indexerC =
+        Indexer<UniTuple<C>, Set<Counter<BiTuple<A, B>>>> indexerC =
                 indexerFactory.buildIndexer(false);
         IfExistsBiWithUniNode<A, B, C> node = new IfExistsBiWithUniNode<>(shouldExist,
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
