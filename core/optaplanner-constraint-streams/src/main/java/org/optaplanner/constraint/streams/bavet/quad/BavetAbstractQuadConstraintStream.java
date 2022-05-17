@@ -169,7 +169,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
         return buildUniGroupBy(nodeConstructor);
     }
 
-    private <NewA> UniConstraintStream<NewA> buildUniGroupBy(QuadGroupNodeConstructor<A, B, C, D, UniTuple<NewA>> nodeConstructor) {
+    private <NewA> UniConstraintStream<NewA>
+            buildUniGroupBy(QuadGroupNodeConstructor<A, B, C, D, UniTuple<NewA>> nodeConstructor) {
         BavetUniGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, NewA> bridge = shareAndAddChild(
                 new BavetUniGroupBridgeQuadConstraintStream<>(constraintFactory, this, nodeConstructor));
         return constraintFactory.share(

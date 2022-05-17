@@ -33,7 +33,7 @@ import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
-public final class  BavetIfExistsBiConstraintStream<Solution_, A, B, C>
+public final class BavetIfExistsBiConstraintStream<Solution_, A, B, C>
         extends BavetAbstractBiConstraintStream<Solution_, A, B> {
 
     private final BavetAbstractBiConstraintStream<Solution_, A, B> parentAB;
