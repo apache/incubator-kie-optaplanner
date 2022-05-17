@@ -23,8 +23,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.optaplanner.constraint.streams.bavet.bi.BiScorer;
-import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
@@ -36,11 +34,11 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_> ext
     private final int inputStoreIndexLeft;
     private final int inputStoreIndexRight;
     /**
-     * Calls for example {@link BiScorer#insert(BiTuple)}, and/or ...
+     * Calls for example {@link AbstractScorer#insert(Tuple)}, and/or ...
      */
     private final Consumer<LeftTuple_> nextNodesInsert;
     /**
-     * Calls for example {@link BiScorer#retract(BiTuple)}, and/or ...
+     * Calls for example {@link AbstractScorer#retract(Tuple)}, and/or ...
      */
     private final Consumer<LeftTuple_> nextNodesRetract;
     // No outputStoreSize because this node is not a tuple source, even though it has a dirtyCounterQueue.

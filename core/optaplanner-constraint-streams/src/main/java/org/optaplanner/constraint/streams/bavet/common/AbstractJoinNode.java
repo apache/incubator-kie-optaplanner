@@ -25,8 +25,6 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
-import org.optaplanner.constraint.streams.bavet.tri.TriScorer;
-import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
 public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTuple_ extends Tuple> extends AbstractNode {
@@ -35,11 +33,11 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
     private final int inputStoreIndexLeft;
     private final int inputStoreIndexRight;
     /**
-     * Calls for example {@link TriScorer#insert(TriTuple)} and/or ...
+     * Calls for example {@link AbstractScorer#insert(Tuple)} and/or ...
      */
     private final Consumer<OutTuple_> nextNodesInsert;
     /**
-     * Calls for example {@link TriScorer#retract(TriTuple)} and/or ...
+     * Calls for example {@link AbstractScorer#retract(Tuple)} and/or ...
      */
     private final Consumer<OutTuple_> nextNodesRetract;
     private final Indexer<LeftTuple_, Map<UniTuple<Right_>, OutTuple_>> indexerLeft;

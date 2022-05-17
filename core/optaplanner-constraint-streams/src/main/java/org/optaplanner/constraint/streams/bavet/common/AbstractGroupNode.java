@@ -24,9 +24,6 @@ import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.optaplanner.constraint.streams.bavet.uni.UniScorer;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-
 public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extends Tuple, GroupKey_, ResultContainer_>
         extends AbstractNode {
 
@@ -38,11 +35,11 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
      */
     private final boolean runAccumulate;
     /**
-     * Calls for example {@link UniScorer#insert(UniTuple)}, and/or ...
+     * Calls for example {@link AbstractScorer#insert(Tuple)}, and/or ...
      */
     private final Consumer<OutTuple_> nextNodesInsert;
     /**
-     * Calls for example {@link UniScorer#retract(UniTuple)}, and/or ...
+     * Calls for example {@link AbstractScorer#retract(Tuple)}, and/or ...
      */
     private final Consumer<OutTuple_> nextNodesRetract;
     private final Map<GroupKey_, Group<OutTuple_, GroupKey_, ResultContainer_>> groupMap;
