@@ -45,7 +45,7 @@ public final class BavetConstraintStreamScoreDirectorFactory<Solution_, Score_ e
     }
 
     public BavetConstraintSession<Score_> newSession(boolean constraintMatchEnabled,
-                                                     Solution_ workingSolution) {
+            Solution_ workingSolution) {
         return constraintSessionFactory.buildSession(constraintMatchEnabled, workingSolution);
     }
 
