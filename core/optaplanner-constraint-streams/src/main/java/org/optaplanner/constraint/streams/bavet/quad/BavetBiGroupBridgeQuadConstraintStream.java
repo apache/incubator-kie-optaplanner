@@ -31,8 +31,8 @@ import org.optaplanner.core.api.score.stream.ConstraintStream;
 final class BavetBiGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, NewA, NewB>
         extends BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> {
 
-    protected final BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent;
-    protected BavetGroupBiConstraintStream<Solution_, NewA, NewB> groupStream;
+    private final BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent;
+    private BavetGroupBiConstraintStream<Solution_, NewA, NewB> groupStream;
     private final QuadGroupNodeConstructor<A, B, C, D, BiTuple<NewA, NewB>> nodeConstructor;
 
     public BavetBiGroupBridgeQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
