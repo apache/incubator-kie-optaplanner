@@ -31,7 +31,7 @@ final class NoneIndexProperties implements IndexProperties {
 
     @Override
     public int maxLength() {
-        throw new IllegalArgumentException("Impossible state: none index property requested");
+        throw new IllegalStateException("Impossible state: none index property requested");
     }
 
     @Override
