@@ -48,6 +48,11 @@ public final class DrlScoreDirectorFactoryService<Solution_, Score_ extends Scor
     private static final AtomicBoolean DRL_DEPRECATION_MESSAGE_SHOWN = new AtomicBoolean();
 
     @Override
+    public ScoreDirectorType getSupportedScoreDirectorType() {
+        return ScoreDirectorType.DRL;
+    }
+
+    @Override
     public Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> buildScoreDirectorFactory(ClassLoader classLoader,
             SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config) {
         if (ConfigUtils.isEmptyCollection(config.getScoreDrlList())
@@ -81,11 +86,6 @@ public final class DrlScoreDirectorFactoryService<Solution_, Score_ extends Scor
         return () -> buildScoreDirectorFactory(classLoader, solutionDescriptor, config, scoreDrlList);
     }
 
-    @Override
-    public ScoreDirectorType getSupportedScoreDirectorType() {
-        return ScoreDirectorType.DRL;
-    }
-
     private DrlScoreDirectorFactory<Solution_, Score_> buildScoreDirectorFactory(ClassLoader classLoader,
             SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config,
             List<String> scoreDrlList) {
@@ -114,7 +114,7 @@ public final class DrlScoreDirectorFactoryService<Solution_, Score_ extends Scor
         if (config.isDroolsAlphaNetworkCompilationEnabled()) {
             KieBaseUpdaterANC.generateAndSetInMemoryANC(kieBase); // Enable Alpha Network Compiler for performance.
         }
-        return createScoreDirectorFactory(solutionDescriptor, kieBase);
+        return new DrlScoreDirectorFactory<>(solutionDescriptor, kieBase);
     }
 
     private static KieBaseConfiguration buildKieBaseConfiguration(ScoreDirectorFactoryConfig config,
@@ -126,11 +126,6 @@ public final class DrlScoreDirectorFactoryService<Solution_, Score_ extends Scor
             }
         }
         return kieBaseConfiguration;
-    }
-
-    private DrlScoreDirectorFactory<Solution_, Score_>
-            createScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor, KieBase kieBase) {
-        return new DrlScoreDirectorFactory<>(solutionDescriptor, kieBase);
     }
 
 }
