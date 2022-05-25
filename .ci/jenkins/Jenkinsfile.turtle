@@ -77,7 +77,7 @@ String getGitAuthor() {
 }
 
 String getCsType() {
-    return params.CS_TYPE
+    return env.CS_TYPE
 }
 
 void sendEmail() {
