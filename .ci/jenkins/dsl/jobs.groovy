@@ -257,7 +257,7 @@ void setupPostReleaseJob() {
 void setupOptaPlannerTurtleTestsJob(String csType) {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, "optaplanner-turtle-tests-${csType}", Folder.OTHER, "${jenkins_path}/Jenkinsfile.turtle",
             "Run OptaPlanner turtle tests with CS-${csType} on a weekly basis.")
-    jobParams.env.put('CS_TYPE' : "${csType}")
+    jobParams.env.put('CS_TYPE', "${csType}")
     jobParams.triggers = [ cron : 'H H * * 5' ] // Run every Friday.
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
