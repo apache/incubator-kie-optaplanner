@@ -522,7 +522,7 @@ public class EntityDescriptor<Solution_> {
         return !effectiveGenuineVariableDescriptorMap.isEmpty();
     }
 
-    public boolean hasAnyListGenuineVariables() {
+    public boolean hasAnyGenuineListVariables() {
         return effectiveGenuineVariableDescriptorList.stream().anyMatch(GenuineVariableDescriptor::isListVariable);
     }
 
