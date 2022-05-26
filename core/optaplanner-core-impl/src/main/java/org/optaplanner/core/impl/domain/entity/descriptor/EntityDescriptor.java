@@ -446,10 +446,6 @@ public class EntityDescriptor<Solution_> {
         return effectiveGenuineVariableDescriptorList;
     }
 
-    public boolean hasGenuineVariableDescriptor(String variableName) {
-        return effectiveGenuineVariableDescriptorMap.containsKey(variableName);
-    }
-
     public GenuineVariableDescriptor<Solution_> getGenuineVariableDescriptor(String variableName) {
         return effectiveGenuineVariableDescriptorMap.get(variableName);
     }
@@ -462,20 +458,12 @@ public class EntityDescriptor<Solution_> {
         return effectiveShadowVariableDescriptorMap.values();
     }
 
-    public boolean hasShadowVariableDescriptor(String variableName) {
-        return effectiveShadowVariableDescriptorMap.containsKey(variableName);
-    }
-
     public ShadowVariableDescriptor<Solution_> getShadowVariableDescriptor(String variableName) {
         return effectiveShadowVariableDescriptorMap.get(variableName);
     }
 
     public Map<String, VariableDescriptor<Solution_>> getVariableDescriptorMap() {
         return effectiveVariableDescriptorMap;
-    }
-
-    public Collection<VariableDescriptor<Solution_>> getVariableDescriptors() {
-        return effectiveVariableDescriptorMap.values();
     }
 
     public boolean hasVariableDescriptor(String variableName) {
@@ -532,15 +520,6 @@ public class EntityDescriptor<Solution_> {
 
     public boolean hasAnyGenuineVariables() {
         return !effectiveGenuineVariableDescriptorMap.isEmpty();
-    }
-
-    public boolean hasAnyChainedGenuineVariables() {
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
-            if (!variableDescriptor.isChained()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean hasAnyListGenuineVariables() {
