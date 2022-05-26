@@ -354,8 +354,8 @@ public class EntityDescriptor<Solution_> {
         effectiveGenuineVariableDescriptorMap = new LinkedHashMap<>(declaredGenuineVariableDescriptorMap.size());
         effectiveShadowVariableDescriptorMap = new LinkedHashMap<>(declaredShadowVariableDescriptorMap.size());
         for (EntityDescriptor<Solution_> inheritedEntityDescriptor : inheritedEntityDescriptorList) {
-            effectiveGenuineVariableDescriptorMap.putAll(inheritedEntityDescriptor.getGenuineVariableDescriptorMap());
-            effectiveShadowVariableDescriptorMap.putAll(inheritedEntityDescriptor.getShadowVariableDescriptorMap());
+            effectiveGenuineVariableDescriptorMap.putAll(inheritedEntityDescriptor.effectiveGenuineVariableDescriptorMap);
+            effectiveShadowVariableDescriptorMap.putAll(inheritedEntityDescriptor.effectiveShadowVariableDescriptorMap);
         }
         effectiveGenuineVariableDescriptorMap.putAll(declaredGenuineVariableDescriptorMap);
         effectiveShadowVariableDescriptorMap.putAll(declaredShadowVariableDescriptorMap);
@@ -438,20 +438,12 @@ public class EntityDescriptor<Solution_> {
         return effectiveGenuineVariableDescriptorMap.keySet();
     }
 
-    public Map<String, GenuineVariableDescriptor<Solution_>> getGenuineVariableDescriptorMap() {
-        return effectiveGenuineVariableDescriptorMap;
-    }
-
     public List<GenuineVariableDescriptor<Solution_>> getGenuineVariableDescriptorList() {
         return effectiveGenuineVariableDescriptorList;
     }
 
     public GenuineVariableDescriptor<Solution_> getGenuineVariableDescriptor(String variableName) {
         return effectiveGenuineVariableDescriptorMap.get(variableName);
-    }
-
-    public Map<String, ShadowVariableDescriptor<Solution_>> getShadowVariableDescriptorMap() {
-        return effectiveShadowVariableDescriptorMap;
     }
 
     public Collection<ShadowVariableDescriptor<Solution_>> getShadowVariableDescriptors() {
