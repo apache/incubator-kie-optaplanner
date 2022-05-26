@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.cheaptime.app;
 
-import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.optional.score.CheapTimeEasyScoreCalculator;
 import org.optaplanner.examples.common.app.CommonApp;
