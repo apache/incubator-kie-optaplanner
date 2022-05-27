@@ -44,7 +44,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
     private final NotifiableRegistry<Solution_> notifiableRegistry;
     private final Map<Demand<?>, Supply> supplyMap;
 
-    private boolean notificationQueuesAreEmpty;
+    private boolean notificationQueuesAreEmpty = true;
     private int nextGlobalOrder = 0;
 
     VariableListenerSupport(
@@ -64,7 +64,6 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
     }
 
     public void linkVariableListeners() {
-        notificationQueuesAreEmpty = true;
         scoreDirector.getSolutionDescriptor().getEntityDescriptors().stream()
                 .map(EntityDescriptor::getDeclaredShadowVariableDescriptors)
                 .flatMap(Collection::stream)
@@ -130,8 +129,8 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
             for (EntityNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
+            notificationQueuesAreEmpty = false;
         }
-        notificationQueuesAreEmpty = false;
     }
 
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
@@ -141,8 +140,8 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
             for (EntityNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
+            notificationQueuesAreEmpty = false;
         }
-        notificationQueuesAreEmpty = false;
     }
 
     public void beforeVariableChanged(VariableDescriptor<Solution_> variableDescriptor, Object entity) {
@@ -152,8 +151,8 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
             for (VariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
+            notificationQueuesAreEmpty = false;
         }
-        notificationQueuesAreEmpty = false;
     }
 
     public void beforeElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
@@ -163,8 +162,8 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
             for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
+            notificationQueuesAreEmpty = false;
         }
-        notificationQueuesAreEmpty = false;
     }
 
     public void beforeElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
@@ -174,8 +173,8 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
             for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
+            notificationQueuesAreEmpty = false;
         }
-        notificationQueuesAreEmpty = false;
     }
 
     public void beforeElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
@@ -188,8 +187,8 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
             for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.addNotification(notification);
             }
+            notificationQueuesAreEmpty = false;
         }
-        notificationQueuesAreEmpty = false;
     }
 
     public void triggerVariableListenersInNotificationQueues() {
