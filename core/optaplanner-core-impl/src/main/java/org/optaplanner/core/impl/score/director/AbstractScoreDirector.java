@@ -385,7 +385,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         if (lookUpEnabled) {
             lookUpManager.addWorkingObject(entity);
         }
-        variableListenerSupport.afterEntityAdded(entityDescriptor, entity);
         if (!allChangesWillBeUndoneBeforeStepEnds) {
             setWorkingEntityListDirty();
         }
@@ -404,7 +403,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         if (variableDescriptor.isGenuineAndUninitialized(entity)) {
             workingInitScore--;
         }
-        variableListenerSupport.afterVariableChanged(variableDescriptor, entity);
     }
 
     @Override
@@ -422,7 +420,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     @Override
     public void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
         workingInitScore++;
-        variableListenerSupport.afterElementAdded(variableDescriptor, entity, index);
     }
 
     @Override
@@ -433,7 +430,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     @Override
     public void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
         workingInitScore--;
-        variableListenerSupport.afterElementRemoved(variableDescriptor, entity, index);
     }
 
     @Override
@@ -446,8 +442,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     @Override
     public void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
             Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        variableListenerSupport.afterElementMoved(variableDescriptor,
-                sourceEntity, sourceIndex, destinationEntity, destinationIndex);
+        // Do nothing
     }
 
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
@@ -459,7 +454,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         if (lookUpEnabled) {
             lookUpManager.removeWorkingObject(entity);
         }
-        variableListenerSupport.afterEntityRemoved(entityDescriptor, entity);
         if (!allChangesWillBeUndoneBeforeStepEnds) {
             setWorkingEntityListDirty();
         }
