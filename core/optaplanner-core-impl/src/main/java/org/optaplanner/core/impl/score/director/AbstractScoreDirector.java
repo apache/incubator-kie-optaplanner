@@ -115,14 +115,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         return scoreDirectorFactory.getScoreDefinition();
     }
 
-    public boolean isLookUpEnabled() {
-        return lookUpEnabled;
-    }
-
-    public boolean isConstraintMatchEnabledPreference() {
-        return constraintMatchEnabledPreference;
-    }
-
     @Override
     public void overwriteConstraintMatchEnabledPreference(boolean constraintMatchEnabledPreference) {
         this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
@@ -136,10 +128,6 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     @Override
     public long getWorkingEntityListRevision() {
         return workingEntityListRevision;
-    }
-
-    public boolean isAllChangesWillBeUndoneBeforeStepEnds() {
-        return allChangesWillBeUndoneBeforeStepEnds;
     }
 
     @Override
@@ -178,7 +166,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         this.workingSolution = requireNonNull(workingSolution);
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
         workingInitScore = -solutionDescriptor.countUninitialized(workingSolution);
-        if (isLookUpEnabled()) {
+        if (lookUpEnabled) {
             lookUpManager.reset();
             solutionDescriptor.visitAllFacts(workingSolution, c -> {
                 lookUpManager.addWorkingObject(c);
@@ -300,7 +288,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         // Subclasses should overwrite this method to avoid breaking it if possible.
         AbstractScoreDirector<Solution_, Score_, Factory_> clone =
                 (AbstractScoreDirector<Solution_, Score_, Factory_>) scoreDirectorFactory
-                        .buildScoreDirector(isLookUpEnabled(), constraintMatchEnabledPreference);
+                        .buildScoreDirector(lookUpEnabled, constraintMatchEnabledPreference);
         clone.setWorkingSolution(cloneWorkingSolution());
         return clone;
     }
@@ -310,7 +298,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         if (childThreadType == ChildThreadType.PART_THREAD) {
             AbstractScoreDirector<Solution_, Score_, Factory_> childThreadScoreDirector =
                     (AbstractScoreDirector<Solution_, Score_, Factory_>) scoreDirectorFactory
-                            .buildScoreDirector(isLookUpEnabled(), constraintMatchEnabledPreference);
+                            .buildScoreDirector(lookUpEnabled, constraintMatchEnabledPreference);
             // ScoreCalculationCountTermination takes into account previous phases
             // but the calculationCount of partitions is maxed, not summed.
             childThreadScoreDirector.calculationCount = calculationCount;
