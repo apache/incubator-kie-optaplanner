@@ -91,8 +91,8 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
                 inputStoreIndexAB, inputStoreIndexC, insert, retract,
                 outputStoreSize, indexerABC, indexerD);
         buildHelper.addNode(node);
-        buildHelper.putInsertRetract(leftParent, node::insertLeft, node::retractLeft);
-        buildHelper.putInsertRetract(rightParent, node::insertRight, node::retractRight);
+        buildHelper.putInsertRetract(leftParent, node::insertLeft, node::updateLeft, node::retractLeft);
+        buildHelper.putInsertRetract(rightParent, node::insertRight, node::updateRight, node::retractRight);
     }
 
     // ************************************************************************

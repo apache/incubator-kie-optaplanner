@@ -79,9 +79,11 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         });
     }
 
-    protected abstract IndexProperties createIndexProperties(LeftTuple_ leftTuple);
-
-    protected abstract OutTuple_ createOutTuple(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
+    public void updateLeft(LeftTuple_ leftTuple) {
+        // TODO Implement actual update
+        retractLeft(leftTuple);
+        insertLeft(leftTuple);
+    }
 
     public final void retractLeft(LeftTuple_ leftTuple) {
         Object[] tupleStore = leftTuple.getStore();
@@ -115,6 +117,12 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         });
     }
 
+    public void updateRight(UniTuple<Right_> rightTuple) {
+        // TODO Implement actual update
+        retractRight(rightTuple);
+        insertRight(rightTuple);
+    }
+
     public final void retractRight(UniTuple<Right_> rightTuple) {
         IndexProperties indexProperties = (IndexProperties) rightTuple.store[inputStoreIndexRight];
         if (indexProperties == null) {
@@ -135,6 +143,10 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
             killTuple(outTuple);
         });
     }
+
+    protected abstract IndexProperties createIndexProperties(LeftTuple_ leftTuple);
+
+    protected abstract OutTuple_ createOutTuple(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
 
     private void killTuple(OutTuple_ outTuple) {
         // Don't add the tuple to the dirtyTupleQueue twice
