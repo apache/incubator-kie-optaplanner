@@ -69,6 +69,19 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
         return value;
     }
 
+    @Override
+    public Value_ get(IndexProperties indexProperties, Tuple_ tuple) {
+        Key_ comparisonIndexProperty = comparisonIndexPropertyFunction.apply(indexProperties);
+        Indexer<Tuple_, Value_> downstreamIndexer = comparisonMap.get(comparisonIndexProperty);
+        if (downstreamIndexer == null) {
+            throw new IllegalStateException("Impossible state: the tuple (" + tuple
+                    + ") with indexProperties (" + indexProperties
+                    + ") doesn't exist in the indexer.");
+        }
+        Value_ value = downstreamIndexer.get(indexProperties, tuple);
+        return value;
+    }
+
     private SubmapBiFunction<Tuple_, Value_, Key_> getSubmapExtractor(JoinerType comparisonJoinerType) {
         switch (comparisonJoinerType) {
             case LESS_THAN:
