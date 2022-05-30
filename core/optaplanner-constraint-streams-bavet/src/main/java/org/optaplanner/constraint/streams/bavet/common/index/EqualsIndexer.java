@@ -70,8 +70,7 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_> implements Indexer
                     + ") with indexProperties (" + indexProperties
                     + ") doesn't exist in the indexer" + this + ".");
         }
-        Value_ value = downstreamIndexer.get(indexProperties, tuple);
-        return value;
+        return downstreamIndexer.get(indexProperties, tuple);
     }
 
     @Override
