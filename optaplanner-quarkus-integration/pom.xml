@@ -30,6 +30,9 @@
 
   <modules>
     <module>optaplanner-quarkus</module>
+    <module>optaplanner-quarkus-constraint-drl</module>
+    <module>optaplanner-quarkus-constraint-streams-bavet</module>
+    <module>optaplanner-quarkus-constraint-streams-drools</module>
     <module>optaplanner-quarkus-benchmark</module>
     <module>optaplanner-quarkus-jackson</module>
     <module>optaplanner-quarkus-jsonb</module>

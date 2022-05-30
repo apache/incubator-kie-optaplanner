@@ -369,6 +369,57 @@
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-quarkus-constraint-drl</artifactId>
+        <version>${version.org.optaplanner}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-quarkus-constraint-drl</artifactId>
+        <version>${version.org.optaplanner}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-quarkus-constraint-drl</artifactId>
+        <type>test-jar</type>
+        <version>${version.org.optaplanner}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-quarkus-constraint-streams-bavet</artifactId>
+        <version>${version.org.optaplanner}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-quarkus-constraint-streams-bavet</artifactId>
+        <version>${version.org.optaplanner}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-quarkus-constraint-streams-bavet</artifactId>
+        <type>test-jar</type>
+        <version>${version.org.optaplanner}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-quarkus-constraint-streams-drools</artifactId>
+        <version>${version.org.optaplanner}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-quarkus-constraint-streams-drools</artifactId>
+        <version>${version.org.optaplanner}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-quarkus-constraint-streams-drools</artifactId>
+        <type>test-jar</type>
+        <version>${version.org.optaplanner}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
         <artifactId>optaplanner-quarkus-deployment</artifactId>
         <version>${version.org.optaplanner}</version>
       </dependency>

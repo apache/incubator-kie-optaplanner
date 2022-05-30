@@ -30,19 +30,35 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-core</artifactId>
       <exclusions>
+        <!--
+          In order to be able to cleanly exclude all of org.drools:* from the outside,
+          we need to bring in Quarkus-specific overriding modules with DRL and CS-D support.
+        -->
         <exclusion>
-          <!--
-            Dynamic is not compatible with GraalVM native compilation.
-            Replaced with org.drools:drools-wiring-static.
-          -->
-          <groupId>org.drools</groupId>
-          <artifactId>drools-wiring-dynamic</artifactId>
+          <groupId>org.optaplanner</groupId>
+          <artifactId>optaplanner-constraint-drl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.optaplanner</groupId>
+          <artifactId>optaplanner-constraint-streams-bavet</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.optaplanner</groupId>
+          <artifactId>optaplanner-constraint-streams-drools</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-wiring-static</artifactId>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-quarkus-constraint-drl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-quarkus-constraint-streams-bavet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-quarkus-constraint-streams-drools</artifactId>
     </dependency>
     <dependency>
       <groupId>org.graalvm.nativeimage</groupId>
