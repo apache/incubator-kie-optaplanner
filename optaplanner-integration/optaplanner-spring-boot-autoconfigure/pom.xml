@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-integration</artifactId>
-    <version>7.67.1-SNAPSHOT</version>
+    <version>7.67.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-spring-boot-autoconfigure</artifactId>
