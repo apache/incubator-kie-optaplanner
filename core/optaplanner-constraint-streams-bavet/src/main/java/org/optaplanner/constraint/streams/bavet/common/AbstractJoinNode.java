@@ -251,23 +251,23 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
 
     @Override
     public void calculateScore() {
-        dirtyTupleQueue.forEach(tuple -> {
+        for (OutTuple_ tuple : dirtyTupleQueue) {
             switch (tuple.getState()) {
                 case CREATING:
                     nextNodesInsert.accept(tuple);
                     tuple.setState(BavetTupleState.OK);
-                    return;
+                    continue;
                 case UPDATING:
                     nextNodesUpdate.accept(tuple);
                     tuple.setState(BavetTupleState.OK);
-                    return;
+                    continue;
                 case DYING:
                     nextNodesRetract.accept(tuple);
                     tuple.setState(BavetTupleState.DEAD);
-                    return;
+                    continue;
                 case ABORTING:
                     tuple.setState(BavetTupleState.DEAD);
-                    return;
+                    continue;
                 case DEAD:
                     throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is already in the dead state (" + tuple.getState() + ").");
@@ -275,7 +275,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
                     throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is in an unexpected state (" + tuple.getState() + ").");
             }
-        });
+        }
         dirtyTupleQueue.clear();
     }
 
