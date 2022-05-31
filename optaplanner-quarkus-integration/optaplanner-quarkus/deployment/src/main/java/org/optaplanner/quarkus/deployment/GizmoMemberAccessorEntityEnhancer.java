@@ -321,6 +321,8 @@ public class GizmoMemberAccessorEntityEnhancer {
                 Class<?> entityClass = (Class<?>) entityClassObject;
                 Collection<ClassInfo> classInfoCollection;
 
+                // getAllKnownSubclasses returns an empty collection for interfaces (silent failure); thus:
+                // for interfaces, we use getAllKnownImplementors; otherwise we use getAllKnownSubclasses
                 if (entityClass.isInterface()) {
                     classInfoCollection = indexView.getAllKnownImplementors(DotName.createSimple(entityClass.getName()));
                 } else {
