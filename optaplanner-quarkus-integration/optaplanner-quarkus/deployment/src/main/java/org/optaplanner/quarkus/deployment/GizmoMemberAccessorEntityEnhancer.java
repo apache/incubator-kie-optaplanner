@@ -319,8 +319,14 @@ public class GizmoMemberAccessorEntityEnhancer {
             Set<Class<?>> solutionAndEntitySubclassSet = new HashSet<>(solutionSubclassesList);
             for (Object entityClassObject : solutionDescriptor.getEntityClassSet()) {
                 Class<?> entityClass = (Class<?>) entityClassObject;
-                Collection<ClassInfo> classInfoCollection =
-                        indexView.getAllKnownSubclasses(DotName.createSimple(entityClass.getName()));
+                Collection<ClassInfo> classInfoCollection;
+
+                if (entityClass.isInterface()) {
+                    classInfoCollection = indexView.getAllKnownImplementors(DotName.createSimple(entityClass.getName()));
+                } else {
+                    classInfoCollection = indexView.getAllKnownSubclasses(DotName.createSimple(entityClass.getName()));
+                }
+
                 classInfoCollection.stream().map(classInfo -> {
                     try {
                         return Class.forName(classInfo.name().toString(), false,
