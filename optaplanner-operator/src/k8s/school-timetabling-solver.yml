@@ -1,0 +1,11 @@
+# Example solver resource; override as you see fit.
+apiVersion: org.optaplanner.solver/v1beta1
+kind: Solver
+metadata:
+  name: school-timetabling
+spec:
+  kafkaCluster: my-cluster
+  kafkaBootstrapServers: my-cluster-kafka-bootstrap.demo.svc.cluster.local:9092
+  solverImage: quay.io/example/school-timetabling:latest
+  scaling:
+    replicas: 1
