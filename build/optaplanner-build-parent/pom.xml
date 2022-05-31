@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-parent</artifactId>
-    <version>8.13.1-SNAPSHOT</version>
+    <version>8.13.2-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -20,7 +20,7 @@
     <!-- Dependencies -->
     <!-- ************************************************************************ -->
     <!-- SNAPSHOT and KIE dependency versions -->
-    <version.org.kie.kogito>1.13.1-SNAPSHOT</version.org.kie.kogito>
+    <version.org.kie.kogito>1.13.2-SNAPSHOT</version.org.kie.kogito>
 
     <!-- Normal dependency versions -->
     <version.ch.qos.logback>1.2.10</version.ch.qos.logback>
