@@ -1,0 +1,151 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+import org.kie.jenkins.MavenCommand
+
+quarkusRepo = 'quarkus'
+optaplannerRepo = 'optaplanner'
+quickstartsRepo = 'optaplanner-quickstarts'
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && kie-mem16g'
+    }
+    environment {
+        // QUARKUS_BRANCH should be defined directly into the job environment
+
+        OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+
+        MAVEN_OPTS = '-Xms1024m -Xmx4g'
+    }
+    tools {
+        maven 'kie-maven-3.8.1'
+        jdk 'kie-jdk11'
+    }
+    options {
+        timestamps()
+        timeout(time: 360, unit: 'MINUTES')
+        disableConcurrentBuilds(abortPrevious: true)
+    }
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    checkoutQuarkusRepo()
+                    checkoutOptaplannerRepo()
+                    checkoutOptaplannerQuickstartsRepo()
+                }
+            }
+        }
+        stage('Build quarkus') {
+            steps {
+                script {
+                    getMavenCommand(quarkusRepo, false)
+                        .withProperty('quickly')
+                        .run('clean install')
+                }
+            }
+            post {
+                always {
+                    script {
+                        cleanContainers()
+                    }
+                }
+            }
+        }
+
+        stage('Build optaplanner') {
+            steps {
+                script {
+                    getMavenCommand(optaplannerRepo)
+                        .withProperty('maven.test.failure.ignore', true)
+                        .run('clean install')
+                }
+            }
+            post {
+                always {
+                    script {
+                        junit testResults: '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml', allowEmptyResults: true
+                        util.archiveConsoleLog()
+                        cleanContainers()
+                    }
+                }
+            }
+        }
+
+        stage('Build optaplanner-quickstarts') {
+            steps {
+                script {
+                    getMavenCommand('optaplanner-quickstarts')
+                        .withProperty('maven.test.failure.ignore', true)
+                        .run('clean install')
+                }
+            }
+            post {
+                always {
+                    script {
+                        cleanContainers()
+                    }
+                }
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            sendNotification()
+        }
+        cleanup {
+            script {
+                util.cleanNode('docker')
+            }
+        }
+    }
+}
+
+void sendNotification() {
+    mailer.sendMarkdownTestSummaryNotification("Quarkus ${getQuarkusBranch()}", "[${params.BUILD_BRANCH_NAME}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO])
+}
+
+void checkoutOptaplannerRepo() {
+    dir(optaplannerRepo) {
+        checkout(githubscm.resolveRepository(optaplannerRepo, params.GIT_AUTHOR, getOptaplannerTargetBranch(), false))
+    }
+}
+
+void checkoutOptaplannerQuickstartsRepo() {
+    // If the PR to OptaPlanner targets the 'main' branch, we assume the branch 'development' for quickstarts.
+    String quickstartsChangeTarget = params.BUILD_BRANCH_NAME == 'main' ? 'development' : getOptaplannerTargetBranch()
+
+    dir(quickstartsRepo) {
+        checkout(githubscm.resolveRepository(quickstartsRepo, params.GIT_AUTHOR, quickstartsChangeTarget, false))
+    }
+}
+
+void checkoutQuarkusRepo() {
+    dir('quarkus') {
+        checkout(githubscm.resolveRepository(quarkusRepo, 'quarkusio', getQuarkusBranch(), false))
+    }
+}
+
+MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true) {
+    def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
+                .withSettingsXmlId('kogito_release_settings')
+                // `-Dquarkus.bootstrap.effective-model-builder` is a temporary fix due to quarkus resolver on tests
+                // https://github.com/quarkusio/quarkus/issues/23205
+                .withProperty('quarkus.bootstrap.effective-model-builder', true)
+                .inDirectory(directory)
+    if (addQuarkusVersion) {
+        mvnCmd.withProperty('version.io.quarkus', '999-SNAPSHOT')
+    }
+    if (env.BUILD_MVN_OPTS) {
+        mvnCmd.withOptions([ env.BUILD_MVN_OPTS ])
+    }
+    return mvnCmd
+}
+
+String getQuarkusBranch() {
+    return env['QUARKUS_BRANCH'] ?: 'main'
+}
+
+void cleanContainers() {
+    cloud.cleanContainersAndImages('docker')
+}

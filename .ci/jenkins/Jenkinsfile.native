@@ -4,7 +4,6 @@ import org.kie.jenkins.MavenCommand
 
 optaplannerRepo = 'optaplanner'
 quickstartsRepo = 'optaplanner-quickstarts'
-droolsRepo = 'drools'
 
 pipeline {
     agent {
@@ -20,31 +19,14 @@ pipeline {
         disableConcurrentBuilds(abortPrevious: true)
     }
     environment {
-        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+        OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
     }
     stages {
         stage('Initialize') {
             steps {
                 script {
-                    checkoutDroolsRepo()
                     checkoutOptaplannerRepo()
                     checkoutOptaplannerQuickstartsRepo()
-                }
-            }
-        }
-        stage('Build quickly drools') {
-            steps {
-                script {
-                    getMavenCommand(droolsRepo)
-                        .withProperty('quickly')
-                        .run('clean install')
-                }
-            }
-            post {
-                always {
-                    script {
-                        cleanContainers()
-                    }
                 }
             }
         }
@@ -100,50 +82,26 @@ pipeline {
 }
 
 void sendNotification() {
-    mailer.sendMarkdownTestSummaryNotification("${NOTIFICATION_JOB_NAME}", "[${params.BUILD_BRANCH_NAME}] Optaplanner", [env.KOGITO_CI_EMAIL_TO], "cc @*optaplanner-team*")
+    mailer.sendMarkdownTestSummaryNotification("${NOTIFICATION_JOB_NAME}", "[${params.BUILD_BRANCH_NAME}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO], "cc @*optaplanner-team*")
 }
 
 void checkoutOptaplannerRepo() {
     dir(optaplannerRepo) {
-        checkout(githubscm.resolveRepository(optaplannerRepo, params.GIT_AUTHOR, getOptaplannerTargetBranch(), false))
+        checkout(githubscm.resolveRepository(optaplannerRepo, params.GIT_AUTHOR, getBuildBranch(), false))
     }
 }
 
 void checkoutOptaplannerQuickstartsRepo() {
     // If the PR to OptaPlanner targets the 'main' branch, we assume the branch 'development' for quickstarts.
-    String quickstartsChangeTarget = params.BUILD_BRANCH_NAME == 'main' ? 'development' : getOptaplannerTargetBranch()
+    String quickstartsChangeTarget = params.BUILD_BRANCH_NAME == 'main' ? 'development' : getBuildBranch()
 
     dir(quickstartsRepo) {
         checkout(githubscm.resolveRepository(quickstartsRepo, params.GIT_AUTHOR, quickstartsChangeTarget, false))
     }
 }
 
-void checkoutDroolsRepo() {
-    dir(droolsRepo) {
-        checkout(githubscm.resolveRepository(droolsRepo, params.GIT_AUTHOR, getDroolsTargetBranch(), false))
-    }
-}
-
-String getOptaplannerTargetBranch() {
-    return getTargetBranch(0)
-}
-
-String getDroolsTargetBranch() {
-    return getTargetBranch(0)
-}
-
-String getTargetBranch(Integer addToMajor) {
-    String targetBranch = params.BUILD_BRANCH_NAME
-    String [] versionSplit = targetBranch.split("\\.")
-    if (versionSplit.length == 3
-        && versionSplit[0].isNumber()
-        && versionSplit[1].isNumber()
-        && versionSplit[2] == 'x') {
-        targetBranch = "${Integer.parseInt(versionSplit[0]) + addToMajor}.${versionSplit[1]}.x"
-    } else {
-        echo "Cannot parse targetBranch as release branch so going further with current value: ${targetBranch}"
-        }
-    return targetBranch
+String getBuildBranch() {
+    return params.BUILD_BRANCH_NAME
 }
 
 MavenCommand getMavenCommand(String directory) {

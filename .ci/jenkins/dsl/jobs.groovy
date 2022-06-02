@@ -30,13 +30,6 @@ Map getMultijobPRConfig(Folder jobFolder) {
                     DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
                 ]
             ], [
-                id: 'kogito-apps',
-                repository: 'kogito-apps',
-                env : [
-                    BUILD_MVN_OPTS_CURRENT: jobFolder.isNative() || jobFolder.isMandrel() ? '-Poptaplanner-downstream,native' : '-Poptaplanner-downstream',
-                    ADDITIONAL_TIMEOUT: jobFolder.isNative() || jobFolder.isMandrel() ? '360' : '210',
-                ]
-            ], [
                 id: 'optaweb-employee-rostering',
                 repository: 'optaweb-employee-rostering'
             ], [
@@ -73,7 +66,6 @@ setupPromoteJob(Folder.RELEASE)
 setupPostReleaseJob()
 
 if (Utils.isMainBranch(this)) {
-    setupOptaPlannerTurtleTestsJob('drools')
     setupOptaPlannerTurtleTestsJob('bavet')
 }
 
@@ -81,6 +73,10 @@ if (Utils.isMainBranch(this)) {
 KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'optaplanner', [
   modules: [ 'optaplanner-build-parent' ],
   properties: [ 'version.io.quarkus' ],
+])
+KogitoJobUtils.createVersionUpdateToolsJob(this, 'optaplanner', 'Drools', [
+  modules: [ 'optaplanner-build-parent' ],
+  properties: [ 'version.org.drools' ],
 ])
 
 /////////////////////////////////////////////////////////////////
@@ -172,7 +168,6 @@ void setupDeployJob(Folder jobFolder) {
 
             booleanParam('CREATE_PR', false, 'Should we create a PR with the changes ?')
             stringParam('PROJECT_VERSION', '', 'Optional if not RELEASE. If RELEASE, cannot be empty.')
-            stringParam('DROOLS_VERSION', '', 'Optional if not RELEASE. If RELEASE, cannot be empty.')
 
             if (jobFolder.isPullRequest()) {
                 stringParam('PR_TARGET_BRANCH', '', 'What is the target branch of the PR?')
@@ -216,7 +211,6 @@ void setupPromoteJob(Folder jobFolder) {
 
             // Release information which can override `deployment.properties`
             stringParam('PROJECT_VERSION', '', 'Override `deployment.properties`. Optional if not RELEASE. If RELEASE, cannot be empty.')
-            stringParam('DROOLS_VERSION', '', 'Optional if not RELEASE. If RELEASE, cannot be empty.')
 
             stringParam('GIT_TAG', '', 'Git tag to set, if different from PROJECT_VERSION')
 
