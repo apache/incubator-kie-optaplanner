@@ -66,6 +66,7 @@ setupPromoteJob(Folder.RELEASE)
 setupPostReleaseJob()
 
 if (Utils.isMainBranch(this)) {
+    setupOptaPlannerTurtleTestsJob('drools')
     setupOptaPlannerTurtleTestsJob('bavet')
 }
 
