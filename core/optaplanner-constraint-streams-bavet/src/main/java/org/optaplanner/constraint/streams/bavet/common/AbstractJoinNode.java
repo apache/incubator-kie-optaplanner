@@ -232,8 +232,8 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
                 outTuple.setState(BavetTupleState.ABORTING);
                 break;
             case OK:
-                dirtyTupleQueue.add(outTuple);
                 outTuple.setState(BavetTupleState.DYING);
+                dirtyTupleQueue.add(outTuple);
                 break;
             case UPDATING:
                 // Don't add the tuple to the dirtyTupleQueue twice
