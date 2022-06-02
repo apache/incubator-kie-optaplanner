@@ -49,12 +49,9 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
     private final Indexer<UniTuple<Right_>, Map<LeftTuple_, OutTuple_>> indexerRight;
     private final Queue<OutTuple_> dirtyTupleQueue;
 
-    protected AbstractJoinNode(Function<Right_, IndexProperties> mappingRight,
-            int inputStoreIndexLeft, int inputStoreIndexRight,
-            Consumer<OutTuple_> nextNodesInsert,
-            Consumer<OutTuple_> nextNodesUpdate,
-            Consumer<OutTuple_> nextNodesRetract,
-            Indexer<LeftTuple_, Map<UniTuple<Right_>, OutTuple_>> indexerLeft,
+    protected AbstractJoinNode(Function<Right_, IndexProperties> mappingRight, int inputStoreIndexLeft,
+            int inputStoreIndexRight, Consumer<OutTuple_> nextNodesInsert, Consumer<OutTuple_> nextNodesUpdate,
+            Consumer<OutTuple_> nextNodesRetract, Indexer<LeftTuple_, Map<UniTuple<Right_>, OutTuple_>> indexerLeft,
             Indexer<UniTuple<Right_>, Map<LeftTuple_, OutTuple_>> indexerRight) {
         this.mappingRight = mappingRight;
         this.inputStoreIndexLeft = inputStoreIndexLeft;
@@ -236,7 +233,8 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
                 break;
             case OK:
                 dirtyTupleQueue.add(outTuple);
-                // Intentional fall-through.
+                outTuple.setState(BavetTupleState.DYING);
+                break;
             case UPDATING:
                 // Don't add the tuple to the dirtyTupleQueue twice
                 // Kill the original propagation
