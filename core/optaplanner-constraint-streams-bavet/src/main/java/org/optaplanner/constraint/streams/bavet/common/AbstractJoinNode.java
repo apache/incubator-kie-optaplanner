@@ -256,18 +256,18 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
                 case CREATING:
                     nextNodesInsert.accept(tuple);
                     tuple.setState(BavetTupleState.OK);
-                    continue;
+                    break;
                 case UPDATING:
                     nextNodesUpdate.accept(tuple);
                     tuple.setState(BavetTupleState.OK);
-                    continue;
+                    break;
                 case DYING:
                     nextNodesRetract.accept(tuple);
                     tuple.setState(BavetTupleState.DEAD);
-                    continue;
+                    break;
                 case ABORTING:
                     tuple.setState(BavetTupleState.DEAD);
-                    continue;
+                    break;
                 case DEAD:
                     throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is already in the dead state (" + tuple.getState() + ").");

@@ -106,18 +106,18 @@ public final class ForEachUniNode<A> extends AbstractNode {
                 case CREATING:
                     nextNodesInsert.accept(tuple);
                     tuple.state = BavetTupleState.OK;
-                    continue;
+                    break;
                 case UPDATING:
                     nextNodesUpdate.accept(tuple);
                     tuple.state = BavetTupleState.OK;
-                    continue;
+                    break;
                 case DYING:
                     nextNodesRetract.accept(tuple);
                     tuple.state = BavetTupleState.DEAD;
-                    continue;
+                    break;
                 case ABORTING:
                     tuple.state = BavetTupleState.DEAD;
-                    continue;
+                    break;
                 case DEAD:
                     throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
                             this + ") is already in the dead state (" + tuple.state + ").");
