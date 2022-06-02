@@ -74,21 +74,21 @@ public final class NodeBuildHelper<Score_ extends Score<Score_>> {
         reversedNodeList.add(node);
     }
 
-    public <Tuple_ extends Tuple> void putInsertRetract(ConstraintStream stream,
-            Consumer<Tuple_> insert, Consumer<Tuple_> update, Consumer<Tuple_> retract) {
+    public <Tuple_ extends Tuple> void putInsertUpdateRetract(ConstraintStream stream, Consumer<Tuple_> insert,
+            Consumer<Tuple_> update, Consumer<Tuple_> retract) {
         insertMap.put(stream, insert);
         updateMap.put(stream, update);
         retractMap.put(stream, retract);
     }
 
-    public <Tuple_ extends Tuple> void putInsertRetract(ConstraintStream stream,
+    public <Tuple_ extends Tuple> void putInsertUpdateRetract(ConstraintStream stream,
             List<? extends AbstractConstraintStream> childStreamList,
             Function<Consumer<Tuple_>, AbstractInserter<Tuple_>> inserterConstructor,
             BiFunction<Consumer<Tuple_>, Consumer<Tuple_>, AbstractUpdater<Tuple_>> updaterConstructor) {
         Consumer<Tuple_> insert = getAggregatedInsert(childStreamList);
         Consumer<Tuple_> update = getAggregatedUpdate(childStreamList);
         Consumer<Tuple_> retract = getAggregatedRetract(childStreamList);
-        putInsertRetract(stream,
+        putInsertUpdateRetract(stream,
                 inserterConstructor.apply(insert),
                 updaterConstructor.apply(update, retract),
                 retract);
