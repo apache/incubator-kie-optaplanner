@@ -59,6 +59,9 @@ setupDeployJob(Folder.PULLREQUEST_RUNTIMES_BDD)
 setupNativeJob()
 setupDeployJob(Folder.NIGHTLY)
 setupMandrelJob()
+setupQuarkusJob(Folder.NIGHTLY_QUARKUS_MAIN)
+setupQuarkusJob(Folder.NIGHTLY_QUARKUS_BRANCH)
+setupQuarkusJob(Folder.NIGHTLY_QUARKUS_LTS)
 
 // Release jobs
 setupDeployJob(Folder.RELEASE)
@@ -68,6 +71,8 @@ setupPostReleaseJob()
 if (Utils.isMainBranch(this)) {
     setupOptaPlannerTurtleTestsJob('drools')
     setupOptaPlannerTurtleTestsJob('bavet')
+
+    setupDroolsJob('main')
 }
 
 // Tools folder
@@ -83,6 +88,21 @@ KogitoJobUtils.createVersionUpdateToolsJob(this, 'optaplanner', 'Drools', [
 /////////////////////////////////////////////////////////////////
 // Methods
 /////////////////////////////////////////////////////////////////
+
+void setupQuarkusJob(Folder quarkusFolder) {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-all', quarkusFolder, "${jenkins_path}/Jenkinsfile.quarkus", 'Optaplanner Quarkus Snapshot')
+    jobParams.triggers = [ cron : 'H 4 * * *' ]
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+        NOTIFICATION_JOB_NAME: "${quarkusFolder.environment.toName()} check"
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
+        }
+    }
+}
 
 void setupNativeJob() {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner', Folder.NIGHTLY_NATIVE, "${jenkins_path}/Jenkinsfile.native", 'Optaplanner Native Testing')
@@ -105,6 +125,22 @@ void setupMandrelJob() {
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
         NOTIFICATION_JOB_NAME: 'Mandrel check',
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
+        }
+    }
+}
+
+void setupDroolsJob(String droolsBranch) {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-drools-snapshot', Folder.NIGHTLY_ECOSYSTEM, "${jenkins_path}/Jenkinsfile.drools", 'Optaplanner testing against Drools snapshot')
+    jobParams.triggers = [ cron : 'H 2 * * *' ]
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+        NOTIFICATION_JOB_NAME: 'Drools snapshot check',
+        DROOLS_BRANCH: droolsBranch,
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
