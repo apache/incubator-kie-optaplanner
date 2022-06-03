@@ -21,6 +21,7 @@ import static java.util.stream.Collectors.toList;
 import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -46,19 +47,28 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Constraint> implements ConstraintFactory {
 
+    private static final Predicate DUMMY_PREDICATE = fact -> true;
+
+    private final Map<Class, Predicate> nullityPredicateMap = new HashMap<>();
+    private final Predicate nullityFilter = fact -> {
+        Predicate nullityPredicate = nullityPredicateMap.computeIfAbsent(fact.getClass(), clz -> {
+            EntityDescriptor<Solution_> entityDescriptor = getSolutionDescriptor().findEntityDescriptor(clz);
+            if (entityDescriptor != null && entityDescriptor.hasAnyGenuineVariables()) {
+                return entityDescriptor.getHasNoNullVariables();
+            }
+            return DUMMY_PREDICATE;
+        });
+        return nullityPredicate.test(fact);
+    };
+
+    public <A> Predicate<A> getNullityFilter() {
+        return nullityFilter;
+    }
+
     @Override
     public <A> UniConstraintStream<A> forEach(Class<A> sourceClass) {
         UniConstraintStream<A> stream = forEachIncludingNullVars(sourceClass);
-        Predicate<A> nullityFilter = getNullityFilter(sourceClass);
-        return nullityFilter == null ? stream : stream.filter(nullityFilter);
-    }
-
-    public <A> Predicate<A> getNullityFilter(Class<A> fromClass) {
-        EntityDescriptor<Solution_> entityDescriptor = getSolutionDescriptor().findEntityDescriptor(fromClass);
-        if (entityDescriptor != null && entityDescriptor.hasAnyGenuineVariables()) {
-            return (Predicate<A>) entityDescriptor.getHasNoNullVariables();
-        }
-        return null;
+        return stream.filter(nullityFilter);
     }
 
     @Override
