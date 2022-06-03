@@ -33,7 +33,7 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
             Class<B> otherClass, BiJoiner<A, B>... joiners) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-        Predicate<B> nullityFilter = shouldIncludeNullVars ? null : constraintFactory.getNullityFilter(otherClass);
+        Predicate<B> nullityFilter = shouldIncludeNullVars ? null : constraintFactory.getNullityFilter();
         this.leftHandSide = shouldExist
                 ? parent.getLeftHandSide().andExists(otherClass, joiners, nullityFilter)
                 : parent.getLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);

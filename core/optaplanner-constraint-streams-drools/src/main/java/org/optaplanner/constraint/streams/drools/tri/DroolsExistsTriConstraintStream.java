@@ -34,7 +34,7 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
             boolean shouldIncludeNullVars, Class<D> otherClass, QuadJoiner<A, B, C, D>... joiners) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-        Predicate<D> nullityFilter = shouldIncludeNullVars ? null : constraintFactory.getNullityFilter(otherClass);
+        Predicate<D> nullityFilter = shouldIncludeNullVars ? null : constraintFactory.getNullityFilter();
         this.leftHandSide = shouldExist
                 ? parent.getLeftHandSide().andExists(otherClass, joiners, nullityFilter)
                 : parent.getLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
