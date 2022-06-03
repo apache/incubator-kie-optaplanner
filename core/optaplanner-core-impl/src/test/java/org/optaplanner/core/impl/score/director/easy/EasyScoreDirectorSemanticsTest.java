@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,17 +32,16 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintConfigurationSolution;
 import org.optaplanner.core.impl.testdata.domain.constraintconfiguration.TestdataConstraintWeightEasyScoreCalculator;
 
 final class EasyScoreDirectorSemanticsTest extends AbstractScoreDirectorSemanticsTest {
 
     @Override
-    protected InnerScoreDirectorFactory<TestdataConstraintConfigurationSolution, SimpleScore>
-            buildInnerScoreDirectorFactory(SolutionDescriptor<TestdataConstraintConfigurationSolution> solutionDescriptor) {
+    protected <Solution_> InnerScoreDirectorFactory<Solution_, SimpleScore>
+            buildInnerScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig()
                 .withEasyScoreCalculatorClass(TestdataConstraintWeightEasyScoreCalculator.class);
-        ScoreDirectorFactoryFactory<TestdataConstraintConfigurationSolution, SimpleScore> scoreDirectorFactoryFactory =
+        ScoreDirectorFactoryFactory<Solution_, SimpleScore> scoreDirectorFactoryFactory =
                 new ScoreDirectorFactoryFactory<>(scoreDirectorFactoryConfig);
         return scoreDirectorFactoryFactory.buildScoreDirectorFactory(getClass().getClassLoader(),
                 EnvironmentMode.REPRODUCIBLE, solutionDescriptor);
