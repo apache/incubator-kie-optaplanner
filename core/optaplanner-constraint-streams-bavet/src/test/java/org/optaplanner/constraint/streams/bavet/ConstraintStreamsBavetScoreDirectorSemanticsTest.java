@@ -16,10 +16,10 @@
 
 package org.optaplanner.constraint.streams.bavet;
 
+import static org.optaplanner.core.api.score.stream.ConstraintStreamImplType.BAVET;
+
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorSemanticsTest;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-
-import static org.optaplanner.core.api.score.stream.ConstraintStreamImplType.BAVET;
 
 final class ConstraintStreamsBavetScoreDirectorSemanticsTest
         extends AbstractConstraintStreamScoreDirectorSemanticsTest {

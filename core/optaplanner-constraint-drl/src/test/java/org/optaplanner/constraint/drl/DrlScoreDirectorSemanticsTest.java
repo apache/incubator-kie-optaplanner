@@ -27,7 +27,8 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorFactoryFactory;
 final class DrlScoreDirectorSemanticsTest extends AbstractScoreDirectorSemanticsTest {
 
     @Override
-    protected <Solution_> InnerScoreDirectorFactory<Solution_, SimpleScore> buildInnerScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
+    protected <Solution_> InnerScoreDirectorFactory<Solution_, SimpleScore>
+            buildInnerScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig()
                 .withScoreDrls("org/optaplanner/constraint/drl/scoreDirectorSemanticsDroolsConstraints.drl",
                         "org/optaplanner/constraint/drl/scoreDirectorSemanticsDroolsConstraints2.drl");
