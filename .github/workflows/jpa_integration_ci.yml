@@ -63,7 +63,5 @@ jobs:
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       # Builds the JPA module and runs tests in a PostgreSQL container
-      - name: Build all modules with Maven
-        run: mvn -B clean install -Dquickly
-      - name: Run tests with Maven
-        run: mvn -B install -pl :optaplanner-persistence-jpa -am -Ppostgresql
+      - name: Build with Maven
+        run: mvn -B clean install -pl :optaplanner-persistence-jpa -am -Ppostgresql
