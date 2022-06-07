@@ -27,8 +27,8 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 public class Flight extends AbstractPersistable implements Comparable<Flight> {
 
     private static final Comparator<Flight> COMPARATOR = Comparator.comparing(Flight::getDepartureUTCDateTime)
-            .thenComparing(Flight::getArrivalUTCDateTime)
             .thenComparing(Flight::getDepartureAirport)
+            .thenComparing(Flight::getArrivalUTCDateTime)
             .thenComparing(Flight::getArrivalAirport)
             .thenComparing(Flight::getFlightNumber);
 
