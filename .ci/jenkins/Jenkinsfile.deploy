@@ -13,7 +13,7 @@ employeeRosteringRepository = 'optaweb-employee-rostering'
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem16g'
+        label 'kie-rhel7 && kie-mem16g && !master'
     }
 
     tools {
