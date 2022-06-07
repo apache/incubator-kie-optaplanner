@@ -22,22 +22,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extends Tuple, GroupKey_, ResultContainer_>
+public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extends Tuple, GroupKey_, ResultContainer_, Result_>
         extends AbstractNode {
 
     private final int groupStoreIndex;
     private final Supplier<ResultContainer_> supplier;
+    private final Function<ResultContainer_, Result_> finisher;
     /**
      * Some code paths may decide to not supply a collector.
      * In that case, we skip the code path that would attempt to use it.
      */
-    private final boolean runAccumulate;
+    private final boolean hasCollector;
     /**
      * Calls for example {@link AbstractScorer#insert(Tuple)}, and/or ...
      */
     private final Consumer<OutTuple_> nextNodesInsert;
+    /**
+     * Calls for example {@link AbstractScorer#update(Tuple)}, and/or ...
+     */
+    private final Consumer<OutTuple_> nextNodesUpdate;
     /**
      * Calls for example {@link AbstractScorer#retract(Tuple)}, and/or ...
      */
@@ -45,12 +51,18 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     private final Map<GroupKey_, Group<OutTuple_, GroupKey_, ResultContainer_>> groupMap;
     private final Queue<Group<OutTuple_, GroupKey_, ResultContainer_>> dirtyGroupQueue;
 
-    protected AbstractGroupNode(int groupStoreIndex, Supplier<ResultContainer_> supplier,
-            Consumer<OutTuple_> nextNodesInsert, Consumer<OutTuple_> nextNodesRetract) {
+    protected AbstractGroupNode(int groupStoreIndex,
+            Supplier<ResultContainer_> supplier,
+            Function<ResultContainer_, Result_> finisher,
+            Consumer<OutTuple_> nextNodesInsert,
+            Consumer<OutTuple_> nextNodesUpdate,
+            Consumer<OutTuple_> nextNodesRetract) {
         this.groupStoreIndex = groupStoreIndex;
         this.supplier = supplier;
-        this.runAccumulate = supplier != null;
+        this.finisher = finisher;
+        this.hasCollector = supplier != null;
         this.nextNodesInsert = nextNodesInsert;
+        this.nextNodesUpdate = nextNodesUpdate;
         this.nextNodesRetract = nextNodesRetract;
         this.groupMap = new HashMap<>(1000);
         this.dirtyGroupQueue = new ArrayDeque<>(1000);
@@ -64,15 +76,37 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         }
         GroupKey_ groupKey = createGroupKey(tuple);
         Group<OutTuple_, GroupKey_, ResultContainer_> group = groupMap.computeIfAbsent(groupKey,
-                k -> new Group<>(k, runAccumulate ? supplier.get() : null));
+                k -> new Group<>(k, hasCollector ? supplier.get() : null));
         group.parentCount++;
 
-        Runnable undoAccumulator = runAccumulate ? accumulate(group.resultContainer, tuple) : null;
+        Runnable undoAccumulator = hasCollector ? accumulate(group.resultContainer, tuple) : null;
         GroupPart<Group<OutTuple_, GroupKey_, ResultContainer_>> groupPart = new GroupPart<>(group, undoAccumulator);
         tupleStore[groupStoreIndex] = groupPart;
-        if (!group.dirty) {
-            group.dirty = true;
+
+        if (group.state == null) {
+            group.state = BavetTupleState.CREATING;
             dirtyGroupQueue.add(group);
+        } else {
+            switch (group.state) {
+                case CREATING:
+                    break;
+                case UPDATING:
+                    break;
+                case OK:
+                    group.state = BavetTupleState.UPDATING;
+                    dirtyGroupQueue.add(group);
+                    break;
+                case DYING:
+                    group.state = BavetTupleState.UPDATING;
+                    break;
+                case ABORTING:
+                    group.state = BavetTupleState.CREATING;
+                    break;
+                case DEAD:
+                default:
+                    throw new IllegalStateException("Impossible state: The group (" + group + ") in node (" +
+                            this + ") is in an unexpected state (" + group.state + ").");
+            }
         }
     }
 
@@ -93,21 +127,39 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         tupleStore[groupStoreIndex] = null;
         Group<OutTuple_, GroupKey_, ResultContainer_> group = groupPart.group;
         group.parentCount--;
-        if (runAccumulate) {
+        if (hasCollector) {
             groupPart.undoAccumulator.run();
         }
-        if (group.parentCount == 0) {
+        boolean killGroup = (group.parentCount == 0);
+        if (killGroup) {
             GroupKey_ groupKey = group.groupKey;
             Group<OutTuple_, GroupKey_, ResultContainer_> old = groupMap.remove(groupKey);
             if (old == null) {
                 throw new IllegalStateException("Impossible state: the group for the groupKey ("
                         + groupKey + ") doesn't exist in the groupMap.");
             }
-            group.dying = true;
         }
-        if (!group.dirty) {
-            group.dirty = true;
-            dirtyGroupQueue.add(group);
+        switch (group.state) {
+            case CREATING:
+                if (killGroup) {
+                    group.state = BavetTupleState.ABORTING;
+                }
+                break;
+            case UPDATING:
+                if (killGroup) {
+                    group.state = BavetTupleState.DYING;
+                }
+                break;
+            case OK:
+                group.state = killGroup ? BavetTupleState.DYING : BavetTupleState.UPDATING;
+                dirtyGroupQueue.add(group);
+                break;
+            case DYING:
+            case ABORTING:
+            case DEAD:
+            default:
+                throw new IllegalStateException("Impossible state: The group (" + group + ") in node (" +
+                        this + ") is in an unexpected state (" + group.state + ").");
         }
     }
 
@@ -118,29 +170,58 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     @Override
     public void calculateScore() {
         for (Group<OutTuple_, GroupKey_, ResultContainer_> group : dirtyGroupQueue) {
-            group.dirty = false;
-            if (group.tuple != null) {
-                OutTuple_ tuple = group.tuple;
-                BavetTupleState tupleState = tuple.getState();
-                if (tupleState != BavetTupleState.OK) {
-                    throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
-                            this + ") is in the state (" + tupleState + ").");
-                }
-                tuple.setState(BavetTupleState.DYING);
-                nextNodesRetract.accept(tuple);
-                tuple.setState(BavetTupleState.DEAD);
+            OutTuple_ outTuple = group.outTuple;
+            if (outTuple != null && outTuple.getState() != BavetTupleState.OK) {
+                throw new IllegalStateException("Impossible state: The outTuple (" + group.outTuple + ") in node (" +
+                        this + ") is in the state (" + group.outTuple.getState() + ").");
             }
-            if (!group.dying) {
-                // Delay calculating right until it propagates
-                OutTuple_ tuple = createOutTuple(group);
-                group.tuple = tuple;
-                nextNodesInsert.accept(tuple);
-                tuple.setState(BavetTupleState.OK);
+            // Delay calculating finisher right until the tuple propagates
+            switch (group.state) {
+                case CREATING:
+                    outTuple = createOutTuple(group.groupKey);
+                    updateOutTupleToFinisher(outTuple, group.resultContainer);
+                    group.outTuple = outTuple;
+                    outTuple.setState(BavetTupleState.CREATING);
+                    nextNodesInsert.accept(outTuple);
+                    outTuple.setState(BavetTupleState.OK);
+                    group.state = BavetTupleState.OK;
+                    break;
+                case UPDATING:
+                    updateOutTupleToFinisher(group.outTuple, group.resultContainer);
+                    outTuple.setState(BavetTupleState.UPDATING);
+                    nextNodesUpdate.accept(outTuple);
+                    outTuple.setState(BavetTupleState.OK);
+                    group.state = BavetTupleState.OK;
+                    break;
+                case DYING:
+                    outTuple.setState(BavetTupleState.DYING);
+                    nextNodesRetract.accept(outTuple);
+                    outTuple.setState(BavetTupleState.DEAD);
+                    group.state = BavetTupleState.DEAD;
+                    break;
+                case ABORTING:
+                    group.state = BavetTupleState.DEAD;
+                    break;
+                case OK:
+                case DEAD:
+                default:
+                    throw new IllegalStateException("Impossible state: The group (" + group + ") in node (" +
+                            this + ") is in an unexpected state (" + group.state + ").");
             }
         }
         dirtyGroupQueue.clear();
     }
 
-    protected abstract OutTuple_ createOutTuple(Group<OutTuple_, GroupKey_, ResultContainer_> group);
+    protected abstract OutTuple_ createOutTuple(GroupKey_ groupKey);
+
+    private void updateOutTupleToFinisher(OutTuple_ outTuple, ResultContainer_ resultContainer) {
+        if (finisher == null) {
+            return;
+        }
+        Result_ result = finisher.apply(resultContainer);
+        updateOutTupleToResult(outTuple, result);
+    }
+
+    protected abstract void updateOutTupleToResult(OutTuple_ outTuple, Result_ result);
 
 }

@@ -21,9 +21,8 @@ public final class Group<OutTuple_ extends Tuple, GroupKey_, ResultContainer_> {
     public final GroupKey_ groupKey;
     public final ResultContainer_ resultContainer;
     public int parentCount = 0;
-    public boolean dirty = false;
-    public boolean dying = false;
-    public OutTuple_ tuple = null;
+    public BavetTupleState state = null;
+    public OutTuple_ outTuple = null;
 
     public Group(GroupKey_ groupKey, ResultContainer_ resultContainer) {
         this.groupKey = groupKey;
