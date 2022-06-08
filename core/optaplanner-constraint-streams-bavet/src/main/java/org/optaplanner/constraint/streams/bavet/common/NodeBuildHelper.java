@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintStream;
@@ -81,12 +80,6 @@ public final class NodeBuildHelper<Score_ extends Score<Score_>> {
 
     public <Tuple_ extends Tuple> TupleLifecycle<Tuple_> getAggregatedTupleLifecycle(
             List<? extends ConstraintStream> streamList) {
-        return getAggregatedTupleLifecycle(streamList, tupleLifecycleMap);
-    }
-
-    private <Tuple_ extends Tuple> TupleLifecycle<Tuple_> getAggregatedTupleLifecycle(
-            List<? extends ConstraintStream> streamList,
-            Map<ConstraintStream, TupleLifecycle<? extends Tuple>> tupleLifecycleMap) {
         TupleLifecycle<Tuple_>[] tupleLifecycles = streamList.stream()
                 .filter(this::isStreamActive)
                 .map(s -> getTupleLifecycle(s, tupleLifecycleMap))
@@ -100,15 +93,6 @@ public final class NodeBuildHelper<Score_ extends Score<Score_>> {
             default:
                 return new AggregatedTupleLifecycle<>(tupleLifecycles);
         }
-    }
-
-    private static <Tuple_ extends Tuple> Consumer<Tuple_> getConsumer(ConstraintStream stream,
-            Map<ConstraintStream, Consumer<? extends Tuple>> consumerMap) {
-        Consumer<Tuple_> consumer = (Consumer<Tuple_>) consumerMap.get(stream);
-        if (consumer == null) {
-            throw new IllegalStateException("Impossible state: the stream (" + stream + ") hasn't built a node yet.");
-        }
-        return consumer;
     }
 
     private static <Tuple_ extends Tuple> TupleLifecycle<Tuple_> getTupleLifecycle(ConstraintStream stream,

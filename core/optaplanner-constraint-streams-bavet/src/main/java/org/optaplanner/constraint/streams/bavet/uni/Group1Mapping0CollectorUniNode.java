@@ -16,9 +16,9 @@
 
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-
 import java.util.function.Function;
+
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 
 final class Group1Mapping0CollectorUniNode<OldA, A>
         extends AbstractGroupUniNode<OldA, UniTuple<A>, A, Void, Void> {

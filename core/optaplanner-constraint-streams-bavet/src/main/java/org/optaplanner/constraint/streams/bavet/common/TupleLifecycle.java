@@ -11,10 +11,7 @@ public interface TupleLifecycle<Tuple_ extends Tuple> {
 
     void insert(Tuple_ tuple);
 
-    default void update(Tuple_ tuple) {
-        retract(tuple);
-        insert(tuple);
-    }
+    void update(Tuple_ tuple);
 
     void retract(Tuple_ tuple);
 

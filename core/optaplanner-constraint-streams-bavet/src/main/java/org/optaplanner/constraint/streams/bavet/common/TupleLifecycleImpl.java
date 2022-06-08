@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 final class TupleLifecycleImpl<Tuple_ extends Tuple>
-    implements TupleLifecycle<Tuple_> {
+        implements TupleLifecycle<Tuple_> {
 
     private final Consumer<Tuple_> insert;
     private final Consumer<Tuple_> update;

@@ -93,7 +93,8 @@ final class BavetIfExistsTriConstraintStream<Solution_, A, B, C, D>
                 indexerAB, indexerC, filtering);
         buildHelper.addNode(node);
         buildHelper.putInsertUpdateRetract(this, TupleLifecycle.of(node::insertLeft, node::updateLeft, node::retractLeft));
-        buildHelper.putInsertUpdateRetract(parentBridgeD, TupleLifecycle.of(node::insertRight, node::updateRight, node::retractRight));
+        buildHelper.putInsertUpdateRetract(parentBridgeD,
+                TupleLifecycle.of(node::insertRight, node::updateRight, node::retractRight));
     }
 
     // ************************************************************************

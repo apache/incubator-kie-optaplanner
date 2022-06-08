@@ -38,7 +38,7 @@ public final class ForEachUniNode<A> extends AbstractNode {
     private final Queue<UniTuple<A>> dirtyTupleQueue;
 
     public ForEachUniNode(Class<A> forEachClass,
-                          TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
+            TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
         this.forEachClass = forEachClass;
         this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
         this.outputStoreSize = outputStoreSize;

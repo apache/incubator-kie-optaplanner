@@ -17,7 +17,6 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.Set;
-import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
