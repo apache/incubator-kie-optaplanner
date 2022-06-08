@@ -66,8 +66,7 @@ public final class BavetFilterQuadConstraintStream<Solution_, A, B, C, D>
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         buildHelper.<QuadTuple<A, B, C, D>> putInsertUpdateRetract(this, childStreamList,
-                insert -> new ConditionalQuadInserter<>(predicate, insert),
-                (update, retract) -> new ConditionalQuadUpdater<>(predicate, update, retract));
+                tupleLifecycle -> new ConditionalQuadTupleLifecycle<>(predicate, tupleLifecycle));
     }
 
     // ************************************************************************

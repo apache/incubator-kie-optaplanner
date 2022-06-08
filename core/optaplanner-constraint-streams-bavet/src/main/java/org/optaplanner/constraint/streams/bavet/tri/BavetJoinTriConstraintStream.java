@@ -19,7 +19,6 @@ package org.optaplanner.constraint.streams.bavet.tri;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.bi.BavetJoinBridgeBiConstraintStream;
@@ -27,6 +26,7 @@ import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
@@ -80,9 +80,6 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         int inputStoreIndexAB = buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource());
         int inputStoreIndexC = buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource());
-        Consumer<TriTuple<A, B, C>> insert = buildHelper.getAggregatedInsert(childStreamList);
-        Consumer<TriTuple<A, B, C>> update = buildHelper.getAggregatedUpdate(childStreamList);
-        Consumer<TriTuple<A, B, C>> retract = buildHelper.getAggregatedRetract(childStreamList);
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
         Indexer<BiTuple<A, B>, Map<UniTuple<C>, TriTuple<A, B, C>>> indexerAB = indexerFactory.buildIndexer(true);
@@ -90,11 +87,13 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
         JoinTriNode<A, B, C> node = new JoinTriNode<>(
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexAB, inputStoreIndexC,
-                insert, update, retract,
+                buildHelper.getAggregatedTupleLifecycle(childStreamList),
                 outputStoreSize, indexerAB, indexerC);
         buildHelper.addNode(node);
-        buildHelper.putInsertUpdateRetract(leftParent, node::insertLeft, node::updateLeft, node::retractLeft);
-        buildHelper.putInsertUpdateRetract(rightParent, node::insertRight, node::updateRight, node::retractRight);
+        buildHelper.putInsertUpdateRetract(leftParent,
+                TupleLifecycle.of(node::insertLeft, node::updateLeft, node::retractLeft));
+        buildHelper.putInsertUpdateRetract(rightParent,
+                TupleLifecycle.of(node::insertRight, node::updateRight, node::retractRight));
     }
 
     // ************************************************************************

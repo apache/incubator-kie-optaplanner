@@ -18,12 +18,12 @@ package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.util.Set;
 import java.util.function.BiPredicate;
-import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.AbstractIfExistsNode.Counter;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
@@ -78,8 +78,6 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         int inputStoreIndexA = buildHelper.reserveTupleStoreIndex(parentA.getTupleSource());
         int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(parentBridgeB.getTupleSource());
-        Consumer<UniTuple<A>> insert = buildHelper.getAggregatedInsert(childStreamList);
-        Consumer<UniTuple<A>> retract = buildHelper.getAggregatedRetract(childStreamList);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
         Indexer<UniTuple<A>, Counter<UniTuple<A>>> indexerA =
                 indexerFactory.buildIndexer(true);
@@ -88,11 +86,13 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
         IfExistsUniWithUniNode<A, B> node = new IfExistsUniWithUniNode<>(shouldExist,
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexA, inputStoreIndexB,
-                insert, retract,
+                buildHelper.getAggregatedTupleLifecycle(childStreamList),
                 indexerA, indexerB, filtering);
         buildHelper.addNode(node);
-        buildHelper.putInsertUpdateRetract(this, node::insertLeft, node::updateLeft, node::retractLeft);
-        buildHelper.putInsertUpdateRetract(parentBridgeB, node::insertRight, node::updateRight, node::retractRight);
+        buildHelper.putInsertUpdateRetract(this,
+                TupleLifecycle.of(node::insertLeft, node::updateLeft, node::retractLeft));
+        buildHelper.putInsertUpdateRetract(parentBridgeB,
+                TupleLifecycle.of(node::insertRight, node::updateRight, node::retractRight));
     }
 
     // ************************************************************************
