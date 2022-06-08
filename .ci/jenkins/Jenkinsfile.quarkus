@@ -102,18 +102,18 @@ pipeline {
 }
 
 void sendNotification() {
-    mailer.sendMarkdownTestSummaryNotification("Quarkus ${getQuarkusBranch()}", "[${params.BUILD_BRANCH_NAME}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO])
+    mailer.sendMarkdownTestSummaryNotification("Quarkus ${getQuarkusBranch()}", "[${getBuildBranch()}] Optaplanner", [env.OPTAPLANNER_CI_EMAIL_TO])
 }
 
 void checkoutOptaplannerRepo() {
     dir(optaplannerRepo) {
-        checkout(githubscm.resolveRepository(optaplannerRepo, params.GIT_AUTHOR, getOptaplannerTargetBranch(), false))
+        checkout(githubscm.resolveRepository(optaplannerRepo, params.GIT_AUTHOR, getBuildBranch(), false))
     }
 }
 
 void checkoutOptaplannerQuickstartsRepo() {
     // If the PR to OptaPlanner targets the 'main' branch, we assume the branch 'development' for quickstarts.
-    String quickstartsChangeTarget = params.BUILD_BRANCH_NAME == 'main' ? 'development' : getOptaplannerTargetBranch()
+    String quickstartsChangeTarget = getBuildBranch() == 'main' ? 'development' : getBuildBranch()
 
     dir(quickstartsRepo) {
         checkout(githubscm.resolveRepository(quickstartsRepo, params.GIT_AUTHOR, quickstartsChangeTarget, false))
@@ -144,6 +144,10 @@ MavenCommand getMavenCommand(String directory, boolean addQuarkusVersion=true) {
 
 String getQuarkusBranch() {
     return env['QUARKUS_BRANCH'] ?: 'main'
+}
+
+String getBuildBranch() {
+    return params.BUILD_BRANCH_NAME
 }
 
 void cleanContainers() {
