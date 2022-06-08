@@ -123,22 +123,6 @@ public final class NodeBuildHelper<Score_ extends Score<Score_>> {
         }
     }
 
-    private static final class AggregatedConsumer<Tuple_ extends Tuple> implements Consumer<Tuple_> {
-        private final Consumer<Tuple_>[] consumers;
-
-        public AggregatedConsumer(Consumer<Tuple_>[] consumers) {
-            this.consumers = consumers;
-        }
-
-        @Override
-        public void accept(Tuple_ tuple) {
-            for (Consumer<Tuple_> consumer : consumers) {
-                consumer.accept(tuple);
-            }
-        }
-
-    }
-
     private static <Tuple_ extends Tuple> Consumer<Tuple_> getConsumer(ConstraintStream stream,
             Map<ConstraintStream, Consumer<? extends Tuple>> consumerMap) {
         Consumer<Tuple_> consumer = (Consumer<Tuple_>) consumerMap.get(stream);
