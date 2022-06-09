@@ -74,8 +74,7 @@ final class BavetTriGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB, N
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
         AbstractGroupNode<BiTuple<A, B>, TriTuple<NewA, NewB, NewC>, ?, ?, ?> node =
                 nodeConstructor.apply(inputStoreIndex, tupleLifecycle, outputStoreSize);
-        buildHelper.addNode(node);
-        buildHelper.putInsertUpdateRetract(this, node);
+        buildHelper.addNode(node, this);
     }
 
     @Override

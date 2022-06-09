@@ -74,8 +74,7 @@ final class BavetUniGroupBridgeBiConstraintStream<Solution_, A, B, NewA>
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
         AbstractGroupNode<BiTuple<A, B>, UniTuple<NewA>, ?, ?, ?> node =
                 nodeConstructor.apply(inputStoreIndex, tupleLifecycle, outputStoreSize);
-        buildHelper.addNode(node);
-        buildHelper.putInsertUpdateRetract(this, node);
+        buildHelper.addNode(node, this);
     }
 
     @Override

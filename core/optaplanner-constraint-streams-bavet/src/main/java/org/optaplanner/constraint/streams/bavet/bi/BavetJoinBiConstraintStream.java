@@ -16,16 +16,14 @@
 
 package org.optaplanner.constraint.streams.bavet.bi;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
+import org.optaplanner.constraint.streams.bavet.common.AbstractJoinNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
-import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
@@ -78,16 +76,12 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
         int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource());
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        Indexer<UniTuple<A>, Map<UniTuple<B>, BiTuple<A, B>>> indexerA = indexerFactory.buildIndexer(true);
-        Indexer<UniTuple<B>, Map<UniTuple<A>, BiTuple<A, B>>> indexerB = indexerFactory.buildIndexer(false);
-        JoinBiNode<A, B> node = new JoinBiNode<>(
+        AbstractJoinNode<UniTuple<A>, B, BiTuple<A, B>> node = new JoinBiNode<>(
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexA, inputStoreIndexB,
                 buildHelper.getAggregatedTupleLifecycle(childStreamList),
-                outputStoreSize, indexerA, indexerB);
-        buildHelper.addNode(node);
-        buildHelper.putInsertUpdateRetract(leftParent, TupleLifecycle.ofLeft(node));
-        buildHelper.putInsertUpdateRetract(rightParent, TupleLifecycle.ofRight(node));
+                outputStoreSize, indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false));
+        buildHelper.addNode(node, leftParent, rightParent);
     }
 
     // ************************************************************************

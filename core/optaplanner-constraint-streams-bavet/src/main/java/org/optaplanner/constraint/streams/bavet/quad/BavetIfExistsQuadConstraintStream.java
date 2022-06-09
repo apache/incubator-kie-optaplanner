@@ -19,15 +19,12 @@ package org.optaplanner.constraint.streams.bavet.quad;
 import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.AbstractIfExistsNode.Counter;
+import org.optaplanner.constraint.streams.bavet.common.AbstractIfExistsNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
-import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.uni.BavetIfExistsBridgeUniConstraintStream;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.constraint.streams.common.penta.DefaultPentaJoiner;
 import org.optaplanner.core.api.function.PentaPredicate;
 import org.optaplanner.core.api.score.Score;
@@ -82,18 +79,13 @@ final class BavetIfExistsQuadConstraintStream<Solution_, A, B, C, D, E>
         int inputStoreIndexA = buildHelper.reserveTupleStoreIndex(parentABCD.getTupleSource());
         int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(parentBridgeE.getTupleSource());
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        Indexer<QuadTuple<A, B, C, D>, Counter<QuadTuple<A, B, C, D>>> indexerABCD =
-                indexerFactory.buildIndexer(true);
-        Indexer<UniTuple<E>, Set<Counter<QuadTuple<A, B, C, D>>>> indexerE =
-                indexerFactory.buildIndexer(false);
-        IfExistsQuadWithUniNode<A, B, C, D, E> node = new IfExistsQuadWithUniNode<>(shouldExist,
+        AbstractIfExistsNode<QuadTuple<A, B, C, D>, E> node = new IfExistsQuadWithUniNode<>(shouldExist,
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexA, inputStoreIndexB,
                 buildHelper.getAggregatedTupleLifecycle(childStreamList),
-                indexerABCD, indexerE, filtering);
-        buildHelper.addNode(node);
-        buildHelper.putInsertUpdateRetract(this, TupleLifecycle.ofLeft(node));
-        buildHelper.putInsertUpdateRetract(parentBridgeE, TupleLifecycle.ofRight(node));
+                indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false),
+                filtering);
+        buildHelper.addNode(node, this, parentBridgeE);
     }
 
     // ************************************************************************

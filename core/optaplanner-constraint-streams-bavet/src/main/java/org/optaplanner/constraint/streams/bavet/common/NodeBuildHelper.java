@@ -67,6 +67,17 @@ public final class NodeBuildHelper<Score_ extends Score<Score_>> {
         reversedNodeList.add(node);
     }
 
+    public void addNode(AbstractNode node, ConstraintStream parent) {
+        addNode(node);
+        putInsertUpdateRetract(parent, (TupleLifecycle<? extends Tuple>) node);
+    }
+
+    public void addNode(AbstractNode node, ConstraintStream leftParent, ConstraintStream rightParent) {
+        addNode(node);
+        putInsertUpdateRetract(leftParent, TupleLifecycle.ofLeft((LeftTupleLifecycle<? extends Tuple>) node));
+        putInsertUpdateRetract(rightParent, TupleLifecycle.ofRight((RightTupleLifecycle<? extends Tuple>) node));
+    }
+
     public <Tuple_ extends Tuple> void putInsertUpdateRetract(ConstraintStream stream, TupleLifecycle<Tuple_> tupleLifecycle) {
         tupleLifecycleMap.put(stream, tupleLifecycle);
     }

@@ -74,8 +74,7 @@ final class BavetUniGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, NewA>
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
         AbstractGroupNode<QuadTuple<A, B, C, D>, UniTuple<NewA>, ?, ?, ?> node =
                 nodeConstructor.apply(inputStoreIndex, tupleLifecycle, outputStoreSize);
-        buildHelper.addNode(node);
-        buildHelper.putInsertUpdateRetract(this, node);
+        buildHelper.addNode(node, this);
     }
 
     @Override
