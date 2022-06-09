@@ -92,10 +92,8 @@ final class BavetIfExistsQuadConstraintStream<Solution_, A, B, C, D, E>
                 buildHelper.getAggregatedTupleLifecycle(childStreamList),
                 indexerABCD, indexerE, filtering);
         buildHelper.addNode(node);
-        buildHelper.putInsertUpdateRetract(this,
-                TupleLifecycle.of(node::insertLeft, node::updateLeft, node::retractLeft));
-        buildHelper.putInsertUpdateRetract(parentBridgeE,
-                TupleLifecycle.of(node::insertRight, node::updateRight, node::retractRight));
+        buildHelper.putInsertUpdateRetract(this, TupleLifecycle.ofLeft(node));
+        buildHelper.putInsertUpdateRetract(parentBridgeE, TupleLifecycle.ofRight(node));
     }
 
     // ************************************************************************

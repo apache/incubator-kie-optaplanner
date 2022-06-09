@@ -90,10 +90,8 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
                 buildHelper.getAggregatedTupleLifecycle(childStreamList),
                 outputStoreSize, indexerAB, indexerC);
         buildHelper.addNode(node);
-        buildHelper.putInsertUpdateRetract(leftParent,
-                TupleLifecycle.of(node::insertLeft, node::updateLeft, node::retractLeft));
-        buildHelper.putInsertUpdateRetract(rightParent,
-                TupleLifecycle.of(node::insertRight, node::updateRight, node::retractRight));
+        buildHelper.putInsertUpdateRetract(leftParent, TupleLifecycle.ofLeft(node));
+        buildHelper.putInsertUpdateRetract(rightParent, TupleLifecycle.ofRight(node));
     }
 
     // ************************************************************************

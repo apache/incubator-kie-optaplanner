@@ -27,7 +27,9 @@ import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
-public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTuple_ extends Tuple> extends AbstractNode {
+public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTuple_ extends Tuple>
+        extends AbstractNode
+        implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
 
     private final Function<Right_, IndexProperties> mappingRight;
     private final int inputStoreIndexLeft;
@@ -53,6 +55,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         dirtyTupleQueue = new ArrayDeque<>(1000);
     }
 
+    @Override
     public final void insertLeft(LeftTuple_ leftTuple) {
         Object[] tupleStore = leftTuple.getStore();
         if (tupleStore[inputStoreIndexLeft] != null) {
@@ -77,7 +80,8 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         });
     }
 
-    public void updateLeft(LeftTuple_ leftTuple) {
+    @Override
+    public final void updateLeft(LeftTuple_ leftTuple) {
         Object[] tupleStore = leftTuple.getStore();
         IndexProperties oldIndexProperties = (IndexProperties) tupleStore[inputStoreIndexLeft];
         if (oldIndexProperties == null) {
@@ -106,6 +110,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         }
     }
 
+    @Override
     public final void retractLeft(LeftTuple_ leftTuple) {
         Object[] tupleStore = leftTuple.getStore();
         IndexProperties indexProperties = (IndexProperties) tupleStore[inputStoreIndexLeft];
@@ -121,6 +126,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         }
     }
 
+    @Override
     public final void insertRight(UniTuple<Right_> rightTuple) {
         if (rightTuple.store[inputStoreIndexRight] != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + rightTuple
@@ -141,7 +147,8 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         });
     }
 
-    public void updateRight(UniTuple<Right_> rightTuple) {
+    @Override
+    public final void updateRight(UniTuple<Right_> rightTuple) {
         IndexProperties oldIndexProperties = (IndexProperties) rightTuple.store[inputStoreIndexRight];
         if (oldIndexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
@@ -183,6 +190,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         });
     }
 
+    @Override
     public final void retractRight(UniTuple<Right_> rightTuple) {
         IndexProperties indexProperties = (IndexProperties) rightTuple.store[inputStoreIndexRight];
         if (indexProperties == null) {

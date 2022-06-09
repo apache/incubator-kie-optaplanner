@@ -89,10 +89,8 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
                 buildHelper.getAggregatedTupleLifecycle(childStreamList),
                 indexerA, indexerB, filtering);
         buildHelper.addNode(node);
-        buildHelper.putInsertUpdateRetract(this,
-                TupleLifecycle.of(node::insertLeft, node::updateLeft, node::retractLeft));
-        buildHelper.putInsertUpdateRetract(parentBridgeB,
-                TupleLifecycle.of(node::insertRight, node::updateRight, node::retractRight));
+        buildHelper.putInsertUpdateRetract(this, TupleLifecycle.ofLeft(node));
+        buildHelper.putInsertUpdateRetract(parentBridgeB, TupleLifecycle.ofRight(node));
     }
 
     // ************************************************************************
