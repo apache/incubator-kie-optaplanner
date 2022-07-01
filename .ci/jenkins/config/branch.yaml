@@ -1,12 +1,12 @@
 environment:
   quarkus:
     main:
-      enabled: true
+      enabled: false
     branch:
       enabled: true
       version: '2.10'
     lts:
-      enabled: true
+      enabled: false
       version: '2.7'
   native:
     enabled: true
@@ -15,18 +15,18 @@ environment:
     builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.0-java11
   runtimes_bdd:
     enabled: true
-productized_branch: true
+productized_branch: false
 disable:
   triggers: false
 repositories:
 - name: optaplanner
-  branch: main
+  branch: optaplanner-8.24.x
 - name: optaweb-employee-rostering
-  branch: main
+  branch: 8.24.x
 - name: optaweb-vehicle-routing
-  branch: main
+  branch: 8.24.x
 - name: optaplanner-quickstarts
-  branch: development
+  branch: 8.24.x
 git:
   author:
     name: kiegroup
