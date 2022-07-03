@@ -112,7 +112,7 @@ public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> 
     /**
      * Returns a Score whose value is (|this|).
      *
-     * @return |this|
+     * @return never null
      */
     Score_ abs();
 
