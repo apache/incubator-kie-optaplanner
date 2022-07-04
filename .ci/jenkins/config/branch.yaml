@@ -20,7 +20,7 @@ disable:
   triggers: false
 repositories:
 - name: optaplanner
-  branch: optaplanner-8.24.x
+  branch: 8.24.x
 - name: optaweb-employee-rostering
   branch: 8.24.x
 - name: optaweb-vehicle-routing
