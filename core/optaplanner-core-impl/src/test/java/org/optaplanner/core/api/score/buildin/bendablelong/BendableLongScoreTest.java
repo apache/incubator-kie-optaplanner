@@ -283,6 +283,18 @@ class BendableLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    void absHHSSS() {
+        assertThat(scoreDefinitionHHSSS.createScore(3000000000L, 4000000000L, 5000000000L, 0L, 0L).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(3000000000L, 4000000000L, 5000000000L, 0L, 0L));
+        assertThat(scoreDefinitionHHSSS.createScore(3000000000L, -4000000000L, 5000000000L, 0L, 0L).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(3000000000L, 4000000000L, 5000000000L, 0L, 0L));
+        assertThat(scoreDefinitionHHSSS.createScore(-3L, 4L, -5L, 0L, 0L).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(3L, 4L, 5L, 0L, 0L));
+        assertThat(scoreDefinitionHHSSS.createScore(-3L, -4L, -5L, 0L, 0L).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(3L, 4L, 5L, 0L, 0L));
+    }
+
+    @Test
     void equalsAndHashCodeHHSSS() {
         PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHHSSS.createScore(-10000000000L, -20000000000L, -30000000000L, 0L, 0L),

@@ -336,6 +336,18 @@ class BendableBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    void absHHSSS() {
+        assertThat(scoreDefinitionHHSSS.createScore(THREE, FOUR, FIVE, ZERO, ZERO).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(THREE, FOUR, FIVE, ZERO, ZERO));
+        assertThat(scoreDefinitionHHSSS.createScore(THREE, MINUS_FOUR, FIVE, ZERO, ZERO).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(THREE, FOUR, FIVE, ZERO, ZERO));
+        assertThat(scoreDefinitionHHSSS.createScore(MINUS_THREE, FOUR, MINUS_FIVE, ZERO, ZERO).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(THREE, FOUR, FIVE, ZERO, ZERO));
+        assertThat(scoreDefinitionHHSSS.createScore(MINUS_THREE, MINUS_FOUR, MINUS_FIVE, ZERO, ZERO).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(THREE, FOUR, FIVE, ZERO, ZERO));
+    }
+
+    @Test
     void equalsAndHashCodeHHSSS() {
         PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHHSSS.createScore(MINUS_TEN, MINUS_20, MINUS_30, ZERO, ZERO),

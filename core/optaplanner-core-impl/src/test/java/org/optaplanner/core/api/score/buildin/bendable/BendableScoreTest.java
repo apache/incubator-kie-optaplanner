@@ -277,6 +277,18 @@ class BendableScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    void absHHSSS() {
+        assertThat(scoreDefinitionHHSSS.createScore(3, 4, 5, 0, 0).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(3, 4, 5, 0, 0));
+        assertThat(scoreDefinitionHHSSS.createScore(3, -4, 5, 0, 0).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(3, 4, 5, 0, 0));
+        assertThat(scoreDefinitionHHSSS.createScore(-3, 4, -5, 0, 0).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(3, 4, 5, 0, 0));
+        assertThat(scoreDefinitionHHSSS.createScore(-3, -4, -5, 0, 0).abs())
+                .isEqualTo(scoreDefinitionHHSSS.createScore(3, 4, 5, 0, 0));
+    }
+
+    @Test
     void equalsAndHashCodeHHSSS() {
         PlannerAssert.assertObjectsAreEqual(
                 scoreDefinitionHHSSS.createScore(-10, -20, -30, 0, 0),
