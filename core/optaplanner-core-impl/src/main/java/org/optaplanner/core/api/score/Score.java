@@ -110,7 +110,7 @@ public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> 
     Score_ negate();
 
     /**
-     * Returns a Score whose value is (|this|).
+     * Returns a Score whose value is the absolute value of the score, i.e. |this|.
      *
      * @return never null
      */

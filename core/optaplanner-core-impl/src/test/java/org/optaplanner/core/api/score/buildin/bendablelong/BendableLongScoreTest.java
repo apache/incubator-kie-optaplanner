@@ -151,6 +151,18 @@ class BendableLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    void absHSS() {
+        assertThat(scoreDefinitionHSS.createScore(3000000000L, 4000000000L, 5000000000L).abs())
+                .isEqualTo(scoreDefinitionHSS.createScore(3000000000L, 4000000000L, 5000000000L));
+        assertThat(scoreDefinitionHSS.createScore(3000000000L, -4000000000L, 5000000000L).abs())
+                .isEqualTo(scoreDefinitionHSS.createScore(3000000000L, 4000000000L, 5000000000L));
+        assertThat(scoreDefinitionHSS.createScore(-3000000000L, 4000000000L, -5000000000L).abs())
+                .isEqualTo(scoreDefinitionHSS.createScore(3000000000L, 4000000000L, 5000000000L));
+        assertThat(scoreDefinitionHSS.createScore(-3000000000L, -4000000000L, -5000000000L).abs())
+                .isEqualTo(scoreDefinitionHSS.createScore(3000000000L, 4000000000L, 5000000000L));
+    }
+
+    @Test
     void zero() {
         BendableLongScore manualZero = BendableLongScore.zero(0, 1);
         SoftAssertions.assertSoftly(softly -> {

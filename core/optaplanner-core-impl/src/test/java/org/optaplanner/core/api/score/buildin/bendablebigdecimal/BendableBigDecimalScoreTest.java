@@ -204,6 +204,18 @@ class BendableBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    void absHSS() {
+        assertThat(scoreDefinitionHSS.createScore(THREE, FOUR, FIVE).abs())
+                .isEqualTo(scoreDefinitionHSS.createScore(THREE, FOUR, FIVE));
+        assertThat(scoreDefinitionHSS.createScore(THREE, MINUS_FOUR, FIVE).abs())
+                .isEqualTo(scoreDefinitionHSS.createScore(THREE, FOUR, FIVE));
+        assertThat(scoreDefinitionHSS.createScore(MINUS_THREE, FOUR, MINUS_FIVE).abs())
+                .isEqualTo(scoreDefinitionHSS.createScore(THREE, FOUR, FIVE));
+        assertThat(scoreDefinitionHSS.createScore(MINUS_THREE, MINUS_FOUR, MINUS_FIVE).abs())
+                .isEqualTo(scoreDefinitionHSS.createScore(THREE, FOUR, FIVE));
+    }
+
+    @Test
     void zero() {
         BendableBigDecimalScore manualZero = BendableBigDecimalScore.zero(0, 1);
         SoftAssertions.assertSoftly(softly -> {
