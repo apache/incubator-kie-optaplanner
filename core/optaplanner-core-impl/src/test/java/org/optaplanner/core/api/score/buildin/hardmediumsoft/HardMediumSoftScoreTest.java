@@ -43,12 +43,10 @@ class HardMediumSoftScoreTest extends AbstractScoreTest {
 
     @Test
     void testToString() {
-        assertThatIllegalArgumentException().isThrownBy(() -> HardMediumSoftScore.parseScore("-147"));
-
-//        assertThat(HardMediumSoftScore.of(0, -258, -369).toString()).isEqualTo("0hard/-258medium/-369soft");
-//        assertThat(HardMediumSoftScore.of(-147, -258, -369).toString()).isEqualTo("-147hard/-258medium/-369soft");
-//        assertThat(HardMediumSoftScore.ofUninitialized(-7, -147, -258, -369).toString())
-//                .isEqualTo("-7init/-147hard/-258medium/-369soft");
+        assertThat(HardMediumSoftScore.of(0, -258, -369).toString()).isEqualTo("0hard/-258medium/-369soft");
+        assertThat(HardMediumSoftScore.of(-147, -258, -369).toString()).isEqualTo("-147hard/-258medium/-369soft");
+        assertThat(HardMediumSoftScore.ofUninitialized(-7, -147, -258, -369).toString())
+                .isEqualTo("-7init/-147hard/-258medium/-369soft");
     }
 
     @Test
@@ -80,7 +78,7 @@ class HardMediumSoftScoreTest extends AbstractScoreTest {
                 HardMediumSoftScore.of(-1, -300, 4000))).isEqualTo(HardMediumSoftScore.of(19, -320, 0));
         assertThat(HardMediumSoftScore.ofUninitialized(-70, 20, -20, -4000).add(
                 HardMediumSoftScore.ofUninitialized(-7, -1, -300, 4000)))
-                        .isEqualTo(HardMediumSoftScore.ofUninitialized(-77, 19, -320, 0));
+                .isEqualTo(HardMediumSoftScore.ofUninitialized(-77, 19, -320, 0));
     }
 
     @Test
@@ -89,7 +87,7 @@ class HardMediumSoftScoreTest extends AbstractScoreTest {
                 HardMediumSoftScore.of(-1, -300, 4000))).isEqualTo(HardMediumSoftScore.of(21, 280, -8000));
         assertThat(HardMediumSoftScore.ofUninitialized(-70, 20, -20, -4000).subtract(
                 HardMediumSoftScore.ofUninitialized(-7, -1, -300, 4000)))
-                        .isEqualTo(HardMediumSoftScore.ofUninitialized(-63, 21, 280, -8000));
+                .isEqualTo(HardMediumSoftScore.ofUninitialized(-63, 21, 280, -8000));
     }
 
     @Test
