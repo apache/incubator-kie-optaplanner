@@ -1,5 +1,7 @@
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
+import java.util.List;
+
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
@@ -85,19 +87,32 @@ public class SingletonListInverseVariableListener<Solution_>
                 sourceVariableDescriptor.getElement(destinationEntity, destinationIndex), destinationEntity, sourceEntity);
     }
 
+    @Override
+    public void beforeSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
+        // Do nothing
+    }
+
+    @Override
+    public void afterSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
+        List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
+        for (int i = fromIndex; i < toIndex; i++) { // TODO test OBOE error
+            setInverse(innerScoreDirector, listVariable.get(i), entity, this); // TODO check expectedOldInverseEntity or not?
+        }
+    }
+
     private void setInverse(InnerScoreDirector<Solution_, ?> scoreDirector,
             Object element, Object inverseEntity, Object expectedOldInverseEntity) {
         Object oldInverseEntity = shadowVariableDescriptor.getValue(element);
         if (oldInverseEntity == inverseEntity) {
             return;
-        } else if (oldInverseEntity != expectedOldInverseEntity) {
+        } else if (oldInverseEntity != expectedOldInverseEntity && expectedOldInverseEntity != this) {
             throw new IllegalStateException("The entity (" + inverseEntity
                     + ") has a list variable (" + sourceVariableDescriptor.getVariableName()
                     + ") and one of its elements (" + element
                     + ") which has a shadow variable (" + shadowVariableDescriptor.getVariableName()
                     + ") has an oldInverseEntity (" + oldInverseEntity + ") which is not that entity.\n"
                     + "Verify the consistency of your input problem for that shadow variable.");
-
         }
         scoreDirector.beforeVariableChanged(shadowVariableDescriptor, element);
         shadowVariableDescriptor.setValue(element, inverseEntity);

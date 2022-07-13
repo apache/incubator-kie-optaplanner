@@ -416,6 +416,18 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         // Do nothing
     }
 
+    @Override
+    public void beforeSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object entity, int fromIndex, int toIndex) {
+        variableListenerSupport.beforeSubListChanged(variableDescriptor, entity, fromIndex, toIndex);
+    }
+
+    @Override
+    public void afterSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object entity, int fromIndex, int toIndex) {
+        // Do nothing
+    }
+
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         workingInitScore += entityDescriptor.countUninitializedVariables(entity);
         variableListenerSupport.beforeEntityRemoved(entityDescriptor, entity);

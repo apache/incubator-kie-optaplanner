@@ -107,6 +107,16 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_> implement
     }
 
     @Override
+    public void beforeSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    @Override
+    public void afterSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    @Override
     public void beforeEntityRemoved(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // Do nothing
     }

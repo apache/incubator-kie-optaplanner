@@ -175,6 +175,18 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
         }
     }
 
+    public void beforeSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object entity, int fromIndex, int toIndex) {
+        Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
+        if (!notifiables.isEmpty()) {
+            ListVariableNotification<Solution_> notification = Notification.subListChanged(entity, fromIndex, toIndex);
+            for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
+                notifiable.addNotification(notification);
+            }
+            notificationQueuesAreEmpty = false;
+        }
+    }
+
     public void triggerVariableListenersInNotificationQueues() {
         for (Notifiable notifiable : notifiableRegistry.getAll()) {
             notifiable.triggerAllNotifications();

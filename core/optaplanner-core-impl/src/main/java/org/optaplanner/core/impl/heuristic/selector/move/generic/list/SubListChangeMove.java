@@ -1,11 +1,13 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  *
@@ -64,11 +66,19 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
-        List<Object> sourceList = variableDescriptor.getListVariable(sourceEntity);
-        List<Object> subList = sourceList.subList(sourceIndex, sourceIndex + length);
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
 
-        variableDescriptor.getListVariable(destinationEntity).addAll(destinationIndex, subList);
+        List<Object> sourceList = variableDescriptor.getListVariable(sourceEntity);
+        List<Object> subList = new ArrayList<>(sourceList.subList(sourceIndex, sourceIndex + length));
+
+        innerScoreDirector.beforeSubListChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex);
         sourceList.removeAll(subList);
+        innerScoreDirector.afterSubListChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex);
+
+        int destinationToIndex = destinationIndex + length;
+        innerScoreDirector.beforeSubListChanged(variableDescriptor, destinationEntity, destinationIndex, destinationToIndex);
+        variableDescriptor.getListVariable(destinationEntity).addAll(destinationIndex, subList);
+        innerScoreDirector.afterSubListChanged(variableDescriptor, destinationEntity, destinationIndex, destinationToIndex);
     }
 
     @Override

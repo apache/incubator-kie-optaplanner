@@ -197,6 +197,18 @@ public class IncrementalScoreDirector<Solution_, Score_ extends Score<Score_>>
     }
 
     @Override
+    public void beforeSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
+            int toIndex) {
+        throw new UnsupportedOperationException("Not yet supported.");
+    }
+
+    @Override
+    public void afterSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
+            int toIndex) {
+        throw new UnsupportedOperationException("Not yet supported.");
+    }
+
+    @Override
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         incrementalScoreCalculator.beforeEntityRemoved(entity);
         super.beforeEntityRemoved(entityDescriptor, entity);

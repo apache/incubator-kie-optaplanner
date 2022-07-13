@@ -69,6 +69,10 @@ public interface Notification<Solution_, T extends AbstractVariableListener<Solu
         return new ElementMovedNotification<>(sourceEntity, sourceIndex, destinationEntity, destinationIndex);
     }
 
+    static <Solution_> ListVariableNotification<Solution_> subListChanged(Object entity, int fromIndex, int toIndex) {
+        return new SubListChangedNotification<>(entity, fromIndex, toIndex);
+    }
+
     /**
      * Trigger {@code variableListener}'s before method corresponding to this notification.
      */

@@ -181,6 +181,13 @@ public class DrlScoreDirector<Solution_, Score_ extends Score<Score_>>
         super.afterElementMoved(variableDescriptor, sourceEntity, sourceIndex, destinationEntity, destinationIndex);
     }
 
+    @Override
+    public void afterSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
+            int toIndex) {
+        update(entity, variableDescriptor.getVariableName());
+        super.afterSubListChanged(variableDescriptor, entity, fromIndex, toIndex);
+    }
+
     private void update(Object entity, String variableName) {
         FactHandle factHandle = kieSession.getFactHandle(entity);
         if (factHandle == null) {

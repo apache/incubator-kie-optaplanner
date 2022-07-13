@@ -86,6 +86,17 @@ public class IndexVariableListener<Solution_> implements ListVariableListener<So
         updateIndexes(innerScoreDirector, destinationEntity, destinationIndex);
     }
 
+    @Override
+    public void beforeSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
+        // Do nothing
+    }
+
+    @Override
+    public void afterSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
+        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
+        updateIndexes(innerScoreDirector, entity, fromIndex);
+    }
+
     private void updateIndexes(InnerScoreDirector<Solution_, ?> scoreDirector, Object entity, int startIndex) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
         for (int i = startIndex; i < listVariable.size(); i++) {
@@ -95,12 +106,6 @@ public class IndexVariableListener<Solution_> implements ListVariableListener<So
                 scoreDirector.beforeVariableChanged(shadowVariableDescriptor, element);
                 shadowVariableDescriptor.setValue(element, i);
                 scoreDirector.afterVariableChanged(shadowVariableDescriptor, element);
-            } else if (i != startIndex) {
-                // It is possible to quit early when an element with the expected index is encountered
-                // and **if it's not the moved element**. For example, when X is moved from Ann[3] to Beth[3],
-                // we need to start updating Beth's elements at index 3 where X already has the expected index, but quitting
-                // there would be incorrect because all the elements after X need their indexes incremented.
-                return;
             }
         }
     }

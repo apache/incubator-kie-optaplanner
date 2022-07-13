@@ -300,4 +300,36 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
             Object sourceEntity, int sourceIndex,
             Object destinationEntity, int destinationIndex);
 
+    /**
+     * Notify the score director before a subList of a list variable changes. The subList is a continuous sequence of
+     * the list variable elements starting at {@code fromIndex} (inclusive) and ending at {@code toIndex} (exclusive).
+     * <p>
+     * The subList has to comply with the following contract:
+     * <ol>
+     * <li>{@code fromIndex} must be greater than or equal to 0; {@code toIndex} must be less than or equal to the list variable
+     * size.</li>
+     * <li>{@code fromIndex} and {@code toIndex} must be the same in both {@code beforeSubListChanged} and
+     * {@link #afterSubListChanged}.</li>
+     * <li>After the change, the subList must contain all elements that have changed and must not contain any elements that
+     * haven't changed.
+     * </li>
+     * </ol>
+     *
+     * @param variableDescriptor descriptor of the variable being changed
+     * @param entity the entity owning the variable being changed
+     * @param fromIndex low endpoint (inclusive) of the subList
+     * @param toIndex high endpoint (exclusive) of the subList
+     */
+    void beforeSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex, int toIndex);
+
+    /**
+     * See {@link #beforeSubListChanged}.
+     *
+     * @param variableDescriptor descriptor of the variable being changed
+     * @param entity the entity owning the variable being changed
+     * @param fromIndex low endpoint (inclusive) of the subList
+     * @param toIndex high endpoint (exclusive) of the subList
+     */
+    void afterSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex, int toIndex);
+
 }
