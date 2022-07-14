@@ -13,7 +13,7 @@ public final class QuadTuple<A, B, C, D> implements Tuple {
 
     public final Object[] store;
 
-    public BavetTupleState state;
+    public BavetTupleState state = BavetTupleState.CREATING;
 
     public QuadTuple(A factA, B factB, C factC, D factD, int storeSize) {
         this.factA = factA;

@@ -10,7 +10,7 @@ public final class UniTuple<A> implements Tuple {
 
     public final Object[] store;
 
-    public BavetTupleState state;
+    public BavetTupleState state = BavetTupleState.CREATING;
 
     public UniTuple(A factA, int storeSize) {
         this.factA = factA;

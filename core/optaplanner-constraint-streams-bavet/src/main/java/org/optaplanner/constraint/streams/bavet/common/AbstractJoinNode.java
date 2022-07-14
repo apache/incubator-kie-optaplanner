@@ -58,7 +58,6 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         indexerLeft.put(newIndexProperties, leftTuple, outTupleMapLeft);
         indexerRight.visit(newIndexProperties, (rightTuple, emptyMap) -> {
             OutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
-            outTuple.setState(BavetTupleState.CREATING);
             outTupleMapLeft.put(rightTuple, outTuple);
             dirtyTupleQueue.add(outTuple);
         });
@@ -126,7 +125,6 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         indexerRight.put(indexProperties, rightTuple, Collections.emptyMap());
         indexerLeft.visit(indexProperties, (leftTuple, outTupleMapLeft) -> {
             OutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
-            outTuple.setState(BavetTupleState.CREATING);
             outTupleMapLeft.put(rightTuple, outTuple);
             dirtyTupleQueue.add(outTuple);
         });

@@ -115,7 +115,6 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
 
     private Group<OutTuple_, GroupKey_, ResultContainer_> createGroup(GroupKey_ key) {
         OutTuple_ outTuple = createOutTuple(key);
-        outTuple.setState(BavetTupleState.CREATING);
         ResultContainer_ resultContainer = hasCollector ? supplier.get() : null;
         Group<OutTuple_, GroupKey_, ResultContainer_> group = new Group<>(key, resultContainer, outTuple);
         // Don't add it if (state == CREATING), but (newGroup != null), which is a 2nd insert of the same newGroupKey.

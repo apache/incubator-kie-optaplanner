@@ -11,7 +11,7 @@ public final class BiTuple<A, B> implements Tuple {
 
     public final Object[] store;
 
-    public BavetTupleState state;
+    public BavetTupleState state = BavetTupleState.CREATING;
 
     public BiTuple(A factA, B factB, int storeSize) {
         this.factA = factA;

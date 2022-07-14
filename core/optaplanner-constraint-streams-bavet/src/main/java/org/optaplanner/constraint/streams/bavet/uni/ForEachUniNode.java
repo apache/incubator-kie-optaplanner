@@ -31,7 +31,6 @@ public final class ForEachUniNode<A> extends AbstractNode {
 
     public void insert(A a) {
         UniTuple<A> tuple = new UniTuple<>(a, outputStoreSize);
-        tuple.state = BavetTupleState.CREATING;
         UniTuple<A> old = tupleMap.put(a, tuple);
         if (old != null) {
             throw new IllegalStateException("The fact (" + a + ") was already inserted, so it cannot insert again.");

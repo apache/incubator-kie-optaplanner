@@ -12,7 +12,7 @@ public final class TriTuple<A, B, C> implements Tuple {
 
     public final Object[] store;
 
-    public BavetTupleState state;
+    public BavetTupleState state = BavetTupleState.CREATING;
 
     public TriTuple(A factA, B factB, C factC, int storeSize) {
         this.factA = factA;
