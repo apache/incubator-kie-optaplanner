@@ -1369,8 +1369,6 @@ public abstract class AbstractTriConstraintStreamTest
     @Override
     @TestTemplate
     public void flattenLastWithDuplicates() {
-        assumeDrools();
-
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -1408,8 +1406,6 @@ public abstract class AbstractTriConstraintStreamTest
     @Override
     @TestTemplate
     public void flattenLastWithoutDuplicates() {
-        assumeDrools();
-
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -1444,8 +1440,6 @@ public abstract class AbstractTriConstraintStreamTest
     @Override
     @TestTemplate
     public void flattenLastAndDistinctWithDuplicates() {
-        assumeDrools();
-
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -1481,8 +1475,6 @@ public abstract class AbstractTriConstraintStreamTest
     @Override
     @TestTemplate
     public void flattenLastAndDistinctWithoutDuplicates() {
-        assumeDrools();
-
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 3);
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);

@@ -1816,8 +1816,6 @@ public abstract class AbstractUniConstraintStreamTest
     @Override
     @TestTemplate
     public void flattenLastWithDuplicates() {
-        assumeDrools();
-
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 2);
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1853,7 +1851,6 @@ public abstract class AbstractUniConstraintStreamTest
     @Override
     @TestTemplate
     public void flattenLastWithoutDuplicates() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 2);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEach(TestdataLavishEntity.class)
@@ -1883,8 +1880,6 @@ public abstract class AbstractUniConstraintStreamTest
     @Override
     @TestTemplate
     public void flattenLastAndDistinctWithDuplicates() {
-        assumeDrools();
-
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 2);
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1916,7 +1911,6 @@ public abstract class AbstractUniConstraintStreamTest
     @Override
     @TestTemplate
     public void flattenLastAndDistinctWithoutDuplicates() {
-        assumeDrools();
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 2);
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
             return factory.forEach(TestdataLavishEntity.class)
