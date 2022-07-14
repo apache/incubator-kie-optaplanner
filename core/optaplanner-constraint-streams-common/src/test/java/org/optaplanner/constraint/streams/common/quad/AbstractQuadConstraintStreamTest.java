@@ -479,6 +479,7 @@ public abstract class AbstractQuadConstraintStreamTest
 
     }
 
+    @Override
     @TestTemplate
     public void ifExistsAfterGroupBy() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);

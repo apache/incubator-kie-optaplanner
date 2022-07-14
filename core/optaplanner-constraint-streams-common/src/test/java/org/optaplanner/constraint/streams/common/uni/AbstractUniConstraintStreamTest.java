@@ -369,6 +369,7 @@ public abstract class AbstractUniConstraintStreamTest
                 assertMatch(entity3, entity3));
     }
 
+    @Override
     @TestTemplate
     public void joinAfterGroupBy() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
@@ -900,6 +901,7 @@ public abstract class AbstractUniConstraintStreamTest
                 assertMatch(solution.getFirstEntity()));
     }
 
+    @Override
     @TestTemplate
     public void ifExistsAfterGroupBy() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);

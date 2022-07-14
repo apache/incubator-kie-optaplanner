@@ -301,6 +301,7 @@ public abstract class AbstractTriConstraintStreamTest
         assertScore(scoreDirector);
     }
 
+    @Override
     @TestTemplate
     public void joinAfterGroupBy() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
@@ -809,6 +810,7 @@ public abstract class AbstractTriConstraintStreamTest
                 assertMatch(entity1, entity2, solution.getFirstEntity()));
     }
 
+    @Override
     @TestTemplate
     public void ifExistsAfterGroupBy() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);

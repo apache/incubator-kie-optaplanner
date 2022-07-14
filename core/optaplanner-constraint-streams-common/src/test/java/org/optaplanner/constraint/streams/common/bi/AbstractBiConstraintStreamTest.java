@@ -395,6 +395,7 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         assertScore(scoreDirector);
     }
 
+    @Override
     @TestTemplate
     public void joinAfterGroupBy() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
@@ -847,6 +848,7 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                 assertMatch(solution.getFirstEntity(), entity1));
     }
 
+    @Override
     @TestTemplate
     public void ifExistsAfterGroupBy() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 0, 1, 0);
