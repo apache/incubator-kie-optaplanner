@@ -6,7 +6,7 @@ import org.optaplanner.constraint.streams.bavet.common.AbstractScorer;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.core.api.score.Score;
 
-final class BiScorer<A, B> extends AbstractScorer<BiTuple<A, B>> {
+final class BiScorer<A, B> extends AbstractScorer<BiTupleImpl<A, B>> {
 
     private final BiFunction<A, B, UndoScoreImpacter> scoreImpacter;
 
@@ -17,7 +17,7 @@ final class BiScorer<A, B> extends AbstractScorer<BiTuple<A, B>> {
     }
 
     @Override
-    protected UndoScoreImpacter impact(BiTuple<A, B> tuple) {
+    protected UndoScoreImpacter impact(BiTupleImpl<A, B> tuple) {
         return scoreImpacter.apply(tuple.factA, tuple.factB);
     }
 }

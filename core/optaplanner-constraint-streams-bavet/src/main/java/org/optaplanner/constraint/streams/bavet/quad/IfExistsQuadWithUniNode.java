@@ -7,11 +7,11 @@ import org.optaplanner.constraint.streams.bavet.common.AbstractIfExistsNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.bavet.uni.UniTupleImpl;
 import org.optaplanner.core.api.function.PentaPredicate;
 import org.optaplanner.core.api.function.QuadFunction;
 
-final class IfExistsQuadWithUniNode<A, B, C, D, E> extends AbstractIfExistsNode<QuadTuple<A, B, C, D>, E> {
+final class IfExistsQuadWithUniNode<A, B, C, D, E> extends AbstractIfExistsNode<QuadTupleImpl<A, B, C, D>, E> {
 
     private final QuadFunction<A, B, C, D, IndexProperties> mappingABCD;
     private final PentaPredicate<A, B, C, D, E> filtering;
@@ -19,9 +19,9 @@ final class IfExistsQuadWithUniNode<A, B, C, D, E> extends AbstractIfExistsNode<
     public IfExistsQuadWithUniNode(boolean shouldExist,
             QuadFunction<A, B, C, D, IndexProperties> mappingABCD, Function<E, IndexProperties> mappingD,
             int inputStoreIndexABC, int inputStoreIndexD,
-            TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle,
-            Indexer<QuadTuple<A, B, C, D>, Counter<QuadTuple<A, B, C, D>>> indexerABCD,
-            Indexer<UniTuple<E>, Set<Counter<QuadTuple<A, B, C, D>>>> indexerE,
+            TupleLifecycle<QuadTupleImpl<A, B, C, D>> nextNodesTupleLifecycle,
+            Indexer<QuadTupleImpl<A, B, C, D>, Counter<QuadTupleImpl<A, B, C, D>>> indexerABCD,
+            Indexer<UniTupleImpl<E>, Set<Counter<QuadTupleImpl<A, B, C, D>>>> indexerE,
             PentaPredicate<A, B, C, D, E> filtering) {
         super(shouldExist, mappingD, inputStoreIndexABC, inputStoreIndexD, nextNodesTupleLifecycle, indexerABCD, indexerE);
         this.mappingABCD = mappingABCD;
@@ -29,7 +29,7 @@ final class IfExistsQuadWithUniNode<A, B, C, D, E> extends AbstractIfExistsNode<
     }
 
     @Override
-    protected IndexProperties createIndexProperties(QuadTuple<A, B, C, D> tuple) {
+    protected IndexProperties createIndexProperties(QuadTupleImpl<A, B, C, D> tuple) {
         return mappingABCD.apply(tuple.factA, tuple.factB, tuple.factC, tuple.factD);
     }
 
@@ -39,7 +39,7 @@ final class IfExistsQuadWithUniNode<A, B, C, D, E> extends AbstractIfExistsNode<
     }
 
     @Override
-    protected boolean isFiltered(QuadTuple<A, B, C, D> leftTuple, UniTuple<E> rightTuple) {
+    protected boolean isFiltered(QuadTupleImpl<A, B, C, D> leftTuple, UniTupleImpl<E> rightTuple) {
         return filtering.test(leftTuple.factA, leftTuple.factB, leftTuple.factC, leftTuple.factD, rightTuple.factA);
     }
 

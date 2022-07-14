@@ -63,7 +63,7 @@ final class BavetIfExistsQuadConstraintStream<Solution_, A, B, C, D, E>
         int inputStoreIndexA = buildHelper.reserveTupleStoreIndex(parentABCD.getTupleSource());
         int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(parentBridgeE.getTupleSource());
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        AbstractIfExistsNode<QuadTuple<A, B, C, D>, E> node = new IfExistsQuadWithUniNode<>(shouldExist,
+        AbstractIfExistsNode<QuadTupleImpl<A, B, C, D>, E> node = new IfExistsQuadWithUniNode<>(shouldExist,
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexA, inputStoreIndexB,
                 buildHelper.getAggregatedTupleLifecycle(childStreamList),

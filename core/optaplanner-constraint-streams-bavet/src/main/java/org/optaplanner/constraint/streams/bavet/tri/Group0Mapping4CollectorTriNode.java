@@ -1,13 +1,13 @@
 package org.optaplanner.constraint.streams.bavet.tri;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
+import org.optaplanner.constraint.streams.bavet.quad.QuadTupleImpl;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.util.Quadruple;
 
 final class Group0Mapping4CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultContainerA_, ResultContainerB_, ResultContainerC_, ResultContainerD_>
-        extends AbstractGroupTriNode<OldA, OldB, OldC, QuadTuple<A, B, C, D>, Void, Object, Quadruple<A, B, C, D>> {
+        extends AbstractGroupTriNode<OldA, OldB, OldC, QuadTupleImpl<A, B, C, D>, Void, Object, Quadruple<A, B, C, D>> {
 
     private final int outputStoreSize;
 
@@ -16,7 +16,7 @@ final class Group0Mapping4CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultC
             TriConstraintCollector<OldA, OldB, OldC, ResultContainerB_, B> collectorB,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainerC_, C> collectorC,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainerD_, D> collectorD,
-            TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
+            TupleLifecycle<QuadTupleImpl<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
         super(groupStoreIndex, null, mergeCollectors(collectorA, collectorB, collectorC, collectorD), nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
@@ -32,12 +32,12 @@ final class Group0Mapping4CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultC
     }
 
     @Override
-    protected QuadTuple<A, B, C, D> createOutTuple(Void groupKey) {
-        return new QuadTuple<>(null, null, null, null, outputStoreSize);
+    protected QuadTupleImpl<A, B, C, D> createOutTuple(Void groupKey) {
+        return new QuadTupleImpl<>(null, null, null, null, outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(QuadTuple<A, B, C, D> outTuple, Quadruple<A, B, C, D> result) {
+    protected void updateOutTupleToResult(QuadTupleImpl<A, B, C, D> outTuple, Quadruple<A, B, C, D> result) {
         outTuple.factA = result.getA();
         outTuple.factB = result.getB();
         outTuple.factC = result.getC();

@@ -15,11 +15,11 @@ final class BavetBiGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB>
 
     private final BavetAbstractBiConstraintStream<Solution_, A, B> parent;
     private BavetGroupBiConstraintStream<Solution_, NewA, NewB> groupStream;
-    private final BiGroupNodeConstructor<A, B, BiTuple<NewA, NewB>> nodeConstructor;
+    private final BiGroupNodeConstructor<A, B, BiTupleImpl<NewA, NewB>> nodeConstructor;
 
     public BavetBiGroupBridgeBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractBiConstraintStream<Solution_, A, B> parent,
-            BiGroupNodeConstructor<A, B, BiTuple<NewA, NewB>> nodeConstructor) {
+            BiGroupNodeConstructor<A, B, BiTupleImpl<NewA, NewB>> nodeConstructor) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.nodeConstructor = nodeConstructor;
@@ -51,9 +51,10 @@ final class BavetBiGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB>
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
-        TupleLifecycle<BiTuple<NewA, NewB>> insert = buildHelper.getAggregatedTupleLifecycle(groupStream.getChildStreamList());
+        TupleLifecycle<BiTupleImpl<NewA, NewB>> insert =
+                buildHelper.getAggregatedTupleLifecycle(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupNode<BiTuple<A, B>, BiTuple<NewA, NewB>, ?, ?, ?> node =
+        AbstractGroupNode<BiTupleImpl<A, B>, BiTupleImpl<NewA, NewB>, ?, ?, ?> node =
                 nodeConstructor.apply(inputStoreIndex, insert, outputStoreSize);
         buildHelper.addNode(node, this);
     }

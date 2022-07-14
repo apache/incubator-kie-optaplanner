@@ -9,12 +9,12 @@ import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 
 abstract class AbstractGroupQuadNode<OldA, OldB, OldC, OldD, OutTuple_ extends Tuple, GroupKey_, ResultContainer_, Result_>
-        extends AbstractGroupNode<QuadTuple<OldA, OldB, OldC, OldD>, OutTuple_, GroupKey_, ResultContainer_, Result_> {
+        extends AbstractGroupNode<QuadTupleImpl<OldA, OldB, OldC, OldD>, OutTuple_, GroupKey_, ResultContainer_, Result_> {
 
     private final PentaFunction<ResultContainer_, OldA, OldB, OldC, OldD, Runnable> accumulator;
 
     protected AbstractGroupQuadNode(int groupStoreIndex,
-            Function<QuadTuple<OldA, OldB, OldC, OldD>, GroupKey_> groupKeyFunction,
+            Function<QuadTupleImpl<OldA, OldB, OldC, OldD>, GroupKey_> groupKeyFunction,
             QuadConstraintCollector<OldA, OldB, OldC, OldD, ResultContainer_, Result_> collector,
             TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
         super(groupStoreIndex, groupKeyFunction,
@@ -25,7 +25,7 @@ abstract class AbstractGroupQuadNode<OldA, OldB, OldC, OldD, OutTuple_ extends T
     }
 
     @Override
-    protected final Runnable accumulate(ResultContainer_ resultContainer, QuadTuple<OldA, OldB, OldC, OldD> tuple) {
+    protected final Runnable accumulate(ResultContainer_ resultContainer, QuadTupleImpl<OldA, OldB, OldC, OldD> tuple) {
         return accumulator.apply(resultContainer, tuple.factA, tuple.factB, tuple.factC, tuple.factD);
     }
 

@@ -6,12 +6,12 @@ import static org.optaplanner.constraint.streams.bavet.bi.Group2Mapping0Collecto
 import java.util.function.BiFunction;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
+import org.optaplanner.constraint.streams.bavet.quad.QuadTupleImpl;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group2Mapping2CollectorBiNode<OldA, OldB, A, B, C, D, ResultContainerC_, ResultContainerD_>
-        extends AbstractGroupBiNode<OldA, OldB, QuadTuple<A, B, C, D>, Pair<A, B>, Object, Pair<C, D>> {
+        extends AbstractGroupBiNode<OldA, OldB, QuadTupleImpl<A, B, C, D>, Pair<A, B>, Object, Pair<C, D>> {
 
     private final int outputStoreSize;
 
@@ -19,19 +19,19 @@ final class Group2Mapping2CollectorBiNode<OldA, OldB, A, B, C, D, ResultContaine
             int groupStoreIndex,
             BiConstraintCollector<OldA, OldB, ResultContainerC_, C> collectorC,
             BiConstraintCollector<OldA, OldB, ResultContainerD_, D> collectorD,
-            TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
+            TupleLifecycle<QuadTupleImpl<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
         super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, tuple),
                 mergeCollectors(collectorC, collectorD), nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
     @Override
-    protected QuadTuple<A, B, C, D> createOutTuple(Pair<A, B> groupKey) {
-        return new QuadTuple<>(groupKey.getKey(), groupKey.getValue(), null, null, outputStoreSize);
+    protected QuadTupleImpl<A, B, C, D> createOutTuple(Pair<A, B> groupKey) {
+        return new QuadTupleImpl<>(groupKey.getKey(), groupKey.getValue(), null, null, outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(QuadTuple<A, B, C, D> outTuple, Pair<C, D> result) {
+    protected void updateOutTupleToResult(QuadTupleImpl<A, B, C, D> outTuple, Pair<C, D> result) {
         outTuple.factC = result.getKey();
         outTuple.factD = result.getValue();
     }

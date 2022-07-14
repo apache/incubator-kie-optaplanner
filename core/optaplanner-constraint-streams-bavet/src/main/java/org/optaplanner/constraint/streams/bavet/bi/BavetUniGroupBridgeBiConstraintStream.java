@@ -8,7 +8,7 @@ import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintSt
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.uni.BavetGroupUniConstraintStream;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.bavet.uni.UniTupleImpl;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
@@ -17,11 +17,11 @@ final class BavetUniGroupBridgeBiConstraintStream<Solution_, A, B, NewA>
 
     private final BavetAbstractBiConstraintStream<Solution_, A, B> parent;
     private BavetGroupUniConstraintStream<Solution_, NewA> groupStream;
-    private final BiGroupNodeConstructor<A, B, UniTuple<NewA>> nodeConstructor;
+    private final BiGroupNodeConstructor<A, B, UniTupleImpl<NewA>> nodeConstructor;
 
     public BavetUniGroupBridgeBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractBiConstraintStream<Solution_, A, B> parent,
-            BiGroupNodeConstructor<A, B, UniTuple<NewA>> nodeConstructor) {
+            BiGroupNodeConstructor<A, B, UniTupleImpl<NewA>> nodeConstructor) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.nodeConstructor = nodeConstructor;
@@ -53,10 +53,10 @@ final class BavetUniGroupBridgeBiConstraintStream<Solution_, A, B, NewA>
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
-        TupleLifecycle<UniTuple<NewA>> tupleLifecycle =
+        TupleLifecycle<UniTupleImpl<NewA>> tupleLifecycle =
                 buildHelper.getAggregatedTupleLifecycle(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupNode<BiTuple<A, B>, UniTuple<NewA>, ?, ?, ?> node =
+        AbstractGroupNode<BiTupleImpl<A, B>, UniTupleImpl<NewA>, ?, ?, ?> node =
                 nodeConstructor.apply(inputStoreIndex, tupleLifecycle, outputStoreSize);
         buildHelper.addNode(node, this);
     }

@@ -23,7 +23,7 @@ import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 class FlattenLastUniNodeTest {
 
     @Mock
-    private TupleLifecycle<UniTuple<String>> downstream;
+    private TupleLifecycle<UniTupleImpl<String>> downstream;
 
     private static String merge(String... facts) {
         /*
@@ -42,22 +42,22 @@ class FlattenLastUniNodeTest {
                 .collect(Collectors.toList());
     }
 
-    private static UniTuple<String> createTuple(String... facts) {
-        return new UniTuple<>(merge(facts), 1);
+    private static UniTupleImpl<String> createTuple(String... facts) {
+        return new UniTupleImpl<>(merge(facts), 1);
     }
 
-    private static UniTuple<String> modifyTuple(UniTuple<String> tuple, String... facts) {
+    private static UniTupleImpl<String> modifyTuple(UniTupleImpl<String> tuple, String... facts) {
         tuple.factA = merge(facts);
         return tuple;
     }
 
     @Test
     void insertAndRetract() {
-        AbstractFlattenLastNode<UniTuple<String>, UniTuple<String>, String, String> node =
+        AbstractFlattenLastNode<UniTupleImpl<String>, UniTupleImpl<String>, String, String> node =
                 new FlattenLastUniNode<>(0, FlattenLastUniNodeTest::split, downstream, 1);
 
         // First tuple is inserted, A and B make it downstream.
-        UniTuple<String> firstTuple = createTuple("A", "B");
+        UniTupleImpl<String> firstTuple = createTuple("A", "B");
         node.insert(firstTuple);
         verifyNoInteractions(downstream);
 
@@ -68,7 +68,7 @@ class FlattenLastUniNodeTest {
         reset(downstream);
 
         // Second tuple is inserted, B and C make it downstream even though B already did before.
-        UniTuple<String> secondTuple = createTuple("B", "C");
+        UniTupleImpl<String> secondTuple = createTuple("B", "C");
         node.insert(secondTuple);
         verifyNoInteractions(downstream);
 
@@ -105,15 +105,15 @@ class FlattenLastUniNodeTest {
 
     @Test
     void modify() {
-        AbstractFlattenLastNode<UniTuple<String>, UniTuple<String>, String, String> node =
+        AbstractFlattenLastNode<UniTupleImpl<String>, UniTupleImpl<String>, String, String> node =
                 new FlattenLastUniNode<>(0, FlattenLastUniNodeTest::split, downstream, 1);
 
         // First tuple is inserted.
-        UniTuple<String> firstTuple = createTuple("A", "B");
+        UniTupleImpl<String> firstTuple = createTuple("A", "B");
         node.insert(firstTuple);
 
         // Second tuple is inserted.
-        UniTuple<String> secondTuple = createTuple("B", "C");
+        UniTupleImpl<String> secondTuple = createTuple("B", "C");
         node.insert(secondTuple);
 
         // Clear the dirty queue.

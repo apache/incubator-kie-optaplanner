@@ -57,7 +57,7 @@ public final class BavetFlattenLastBridgeQuadConstraintStream<Solution_, A, B, C
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
         int outputStoreSize = buildHelper.extractTupleStoreSize(flattenLastStream);
-        AbstractFlattenLastNode<QuadTuple<A, B, C, D>, QuadTuple<A, B, C, NewD>, D, NewD> node =
+        AbstractFlattenLastNode<QuadTupleImpl<A, B, C, D>, QuadTupleImpl<A, B, C, NewD>, D, NewD> node =
                 new FlattenLastQuadNode<>(inputStoreIndex, mappingFunction,
                         buildHelper.getAggregatedTupleLifecycle(flattenLastStream.getChildStreamList()),
                         outputStoreSize);

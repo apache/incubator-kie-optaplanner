@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.bi.BavetJoinBridgeBiConstraintStream;
-import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
+import org.optaplanner.constraint.streams.bavet.bi.BiTupleImpl;
 import org.optaplanner.constraint.streams.bavet.common.AbstractJoinNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.BavetJoinConstraintStream;
@@ -63,7 +63,7 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
         int inputStoreIndexC = buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource());
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        AbstractJoinNode<BiTuple<A, B>, C, TriTuple<A, B, C>> node = new JoinTriNode<>(
+        AbstractJoinNode<BiTupleImpl<A, B>, C, TriTupleImpl<A, B, C>> node = new JoinTriNode<>(
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexAB, inputStoreIndexC,
                 buildHelper.getAggregatedTupleLifecycle(childStreamList),

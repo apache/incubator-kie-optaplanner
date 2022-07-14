@@ -13,16 +13,16 @@ public final class ForEachUniNode<A> extends AbstractNode {
 
     private final Class<A> forEachClass;
     /**
-     * Calls for example {@link UniScorer#insert(UniTuple)}, and/or ...
+     * Calls for example {@link UniScorer#insert(UniTupleImpl)}, and/or ...
      */
-    private final TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle;
+    private final TupleLifecycle<UniTupleImpl<A>> nextNodesTupleLifecycle;
     private final int outputStoreSize;
 
-    private final Map<A, UniTuple<A>> tupleMap = new IdentityHashMap<>(1000);
-    private final Queue<UniTuple<A>> dirtyTupleQueue;
+    private final Map<A, UniTupleImpl<A>> tupleMap = new IdentityHashMap<>(1000);
+    private final Queue<UniTupleImpl<A>> dirtyTupleQueue;
 
     public ForEachUniNode(Class<A> forEachClass,
-            TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
+            TupleLifecycle<UniTupleImpl<A>> nextNodesTupleLifecycle, int outputStoreSize) {
         this.forEachClass = forEachClass;
         this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
         this.outputStoreSize = outputStoreSize;
@@ -30,8 +30,8 @@ public final class ForEachUniNode<A> extends AbstractNode {
     }
 
     public void insert(A a) {
-        UniTuple<A> tuple = new UniTuple<>(a, outputStoreSize);
-        UniTuple<A> old = tupleMap.put(a, tuple);
+        UniTupleImpl<A> tuple = new UniTupleImpl<>(a, outputStoreSize);
+        UniTupleImpl<A> old = tupleMap.put(a, tuple);
         if (old != null) {
             throw new IllegalStateException("The fact (" + a + ") was already inserted, so it cannot insert again.");
         }
@@ -39,7 +39,7 @@ public final class ForEachUniNode<A> extends AbstractNode {
     }
 
     public void update(A a) {
-        UniTuple<A> tuple = tupleMap.get(a);
+        UniTupleImpl<A> tuple = tupleMap.get(a);
         if (tuple == null) {
             throw new IllegalStateException("The fact (" + a + ") was never inserted, so it cannot update.");
         }
@@ -54,7 +54,7 @@ public final class ForEachUniNode<A> extends AbstractNode {
     }
 
     public void retract(A a) {
-        UniTuple<A> tuple = tupleMap.remove(a);
+        UniTupleImpl<A> tuple = tupleMap.remove(a);
         if (tuple == null) {
             throw new IllegalStateException("The fact (" + a + ") was never inserted, so it cannot retract.");
         }
@@ -71,7 +71,7 @@ public final class ForEachUniNode<A> extends AbstractNode {
 
     @Override
     public void calculateScore() {
-        for (UniTuple<A> tuple : dirtyTupleQueue) {
+        for (UniTupleImpl<A> tuple : dirtyTupleQueue) {
             switch (tuple.state) {
                 case CREATING:
                     nextNodesTupleLifecycle.insert(tuple);

@@ -63,7 +63,7 @@ public final class BavetIfExistsBiConstraintStream<Solution_, A, B, C>
         int inputStoreIndexA = buildHelper.reserveTupleStoreIndex(parentAB.getTupleSource());
         int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(parentBridgeC.getTupleSource());
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        AbstractIfExistsNode<BiTuple<A, B>, C> node = new IfExistsBiWithUniNode<>(shouldExist,
+        AbstractIfExistsNode<BiTupleImpl<A, B>, C> node = new IfExistsBiWithUniNode<>(shouldExist,
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexA, inputStoreIndexB,
                 buildHelper.getAggregatedTupleLifecycle(childStreamList),

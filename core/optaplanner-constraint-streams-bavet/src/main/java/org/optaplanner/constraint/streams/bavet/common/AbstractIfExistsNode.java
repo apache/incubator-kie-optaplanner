@@ -8,11 +8,11 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.bavet.uni.UniTupleImpl;
 
 public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         extends AbstractNode
-        implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
+        implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTupleImpl<Right_>> {
 
     private final boolean shouldExist;
     private final Function<Right_, IndexProperties> mappingRight;
@@ -26,7 +26,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
     // No outputStoreSize because this node is not a tuple source, even though it has a dirtyCounterQueue.
 
     private final Indexer<LeftTuple_, Counter<LeftTuple_>> indexerLeft;
-    private final Indexer<UniTuple<Right_>, Set<Counter<LeftTuple_>>> indexerRight;
+    private final Indexer<UniTupleImpl<Right_>, Set<Counter<LeftTuple_>>> indexerRight;
     private final Queue<Counter<LeftTuple_>> dirtyCounterQueue;
 
     protected AbstractIfExistsNode(boolean shouldExist,
@@ -34,7 +34,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             int inputStoreIndexLeft, int inputStoreIndexRight,
             TupleLifecycle<LeftTuple_> nextNodeTupleLifecycle,
             Indexer<LeftTuple_, Counter<LeftTuple_>> indexerLeft,
-            Indexer<UniTuple<Right_>, Set<Counter<LeftTuple_>>> indexerRight) {
+            Indexer<UniTupleImpl<Right_>, Set<Counter<LeftTuple_>>> indexerRight) {
         this.shouldExist = shouldExist;
         this.mappingRight = mappingRight;
         this.inputStoreIndexLeft = inputStoreIndexLeft;
@@ -104,14 +104,14 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
     }
 
     @Override
-    public final void updateRight(UniTuple<Right_> rightTuple) {
+    public final void updateRight(UniTupleImpl<Right_> rightTuple) {
         // TODO Implement actual update
         retractRight(rightTuple);
         insertRight(rightTuple);
     }
 
     @Override
-    public final void insertRight(UniTuple<Right_> rightTuple) {
+    public final void insertRight(UniTupleImpl<Right_> rightTuple) {
         if (rightTuple.store[inputStoreIndexRight] != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + rightTuple
                     + ") was already added in the tupleStore.");
@@ -138,7 +138,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
     }
 
     @Override
-    public final void retractRight(UniTuple<Right_> rightTuple) {
+    public final void retractRight(UniTupleImpl<Right_> rightTuple) {
         Object[] tupleStore = rightTuple.store;
         IndexProperties indexProperties = (IndexProperties) tupleStore[inputStoreIndexRight];
         if (indexProperties == null) {
@@ -163,7 +163,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     protected abstract boolean isFiltering();
 
-    protected abstract boolean isFiltered(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
+    protected abstract boolean isFiltered(LeftTuple_ leftTuple, UniTupleImpl<Right_> rightTuple);
 
     public static final class Counter<Tuple_ extends Tuple> {
         public final Tuple_ leftTuple;

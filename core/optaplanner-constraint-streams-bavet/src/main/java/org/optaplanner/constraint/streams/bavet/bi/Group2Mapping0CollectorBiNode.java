@@ -6,20 +6,20 @@ import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group2Mapping0CollectorBiNode<OldA, OldB, A, B>
-        extends AbstractGroupBiNode<OldA, OldB, BiTuple<A, B>, Pair<A, B>, Void, Void> {
+        extends AbstractGroupBiNode<OldA, OldB, BiTupleImpl<A, B>, Pair<A, B>, Void, Void> {
 
     private final int outputStoreSize;
 
     public Group2Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMappingA,
             BiFunction<OldA, OldB, B> groupKeyMappingB, int groupStoreIndex,
-            TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
+            TupleLifecycle<BiTupleImpl<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
         super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, tuple),
                 null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 
     static <A, B, OldA, OldB> Pair<A, B> createGroupKey(BiFunction<OldA, OldB, A> groupKeyMappingA,
-            BiFunction<OldA, OldB, B> groupKeyMappingB, BiTuple<OldA, OldB> tuple) {
+            BiFunction<OldA, OldB, B> groupKeyMappingB, BiTupleImpl<OldA, OldB> tuple) {
         OldA oldA = tuple.factA;
         OldB oldB = tuple.factB;
         A a = groupKeyMappingA.apply(oldA, oldB);
@@ -28,12 +28,12 @@ final class Group2Mapping0CollectorBiNode<OldA, OldB, A, B>
     }
 
     @Override
-    protected BiTuple<A, B> createOutTuple(Pair<A, B> groupKey) {
-        return new BiTuple<>(groupKey.getKey(), groupKey.getValue(), outputStoreSize);
+    protected BiTupleImpl<A, B> createOutTuple(Pair<A, B> groupKey) {
+        return new BiTupleImpl<>(groupKey.getKey(), groupKey.getValue(), outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(BiTuple<A, B> outTuple, Void unused) {
+    protected void updateOutTupleToResult(BiTupleImpl<A, B> outTuple, Void unused) {
         throw new IllegalStateException("Impossible state: collector is null.");
     }
 
