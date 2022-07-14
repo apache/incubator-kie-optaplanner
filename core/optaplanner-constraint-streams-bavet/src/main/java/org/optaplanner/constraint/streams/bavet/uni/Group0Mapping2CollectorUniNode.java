@@ -1,5 +1,6 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
+import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
 import org.optaplanner.constraint.streams.bavet.bi.BiTupleImpl;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
@@ -7,16 +8,14 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group0Mapping2CollectorUniNode<OldA, A, B, ResultContainerA_, ResultContainerB_>
-        extends AbstractGroupUniNode<OldA, BiTupleImpl<A, B>, Void, Object, Pair<A, B>> {
-
-    private static final String NO_GROUP_KEY = "NO_GROUP";
+        extends AbstractGroupUniNode<OldA, BiTuple<A, B>, BiTupleImpl<A, B>, Void, Object, Pair<A, B>> {
 
     private final int outputStoreSize;
 
     public Group0Mapping2CollectorUniNode(int groupStoreIndex,
             UniConstraintCollector<OldA, ResultContainerA_, A> collectorA,
             UniConstraintCollector<OldA, ResultContainerB_, B> collectorB,
-            TupleLifecycle<BiTupleImpl<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
+            TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
         super(groupStoreIndex, null, mergeCollectors(collectorA, collectorB), nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }

@@ -1,6 +1,6 @@
 package org.optaplanner.constraint.streams.bavet.tri;
 
-import static org.optaplanner.constraint.streams.bavet.tri.Group1Mapping0CollectorTriNode.*;
+import static org.optaplanner.constraint.streams.bavet.tri.Group1Mapping0CollectorTriNode.createGroupKey;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.function.TriFunction;
@@ -8,14 +8,14 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group1Mapping2CollectorTriNode<OldA, OldB, OldC, A, B, C, ResultContainerB_, ResultContainerC_>
-        extends AbstractGroupTriNode<OldA, OldB, OldC, TriTupleImpl<A, B, C>, A, Object, Pair<B, C>> {
+        extends AbstractGroupTriNode<OldA, OldB, OldC, TriTuple<A, B, C>, TriTupleImpl<A, B, C>, A, Object, Pair<B, C>> {
 
     private final int outputStoreSize;
 
     public Group1Mapping2CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMapping, int groupStoreIndex,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainerB_, B> collectorB,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainerC_, C> collectorC,
-            TupleLifecycle<TriTupleImpl<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
+            TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
         super(groupStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple),
                 Group0Mapping2CollectorTriNode.mergeCollectors(collectorB, collectorC), nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;

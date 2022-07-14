@@ -8,7 +8,7 @@ import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintSt
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.tri.BavetGroupTriConstraintStream;
-import org.optaplanner.constraint.streams.bavet.tri.TriTupleImpl;
+import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
@@ -17,11 +17,11 @@ final class BavetTriGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, NewA,
 
     protected final BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent;
     protected BavetGroupTriConstraintStream<Solution_, NewA, NewB, NewC> groupStream;
-    private final QuadGroupNodeConstructor<A, B, C, D, TriTupleImpl<NewA, NewB, NewC>> nodeConstructor;
+    private final QuadGroupNodeConstructor<A, B, C, D, TriTuple<NewA, NewB, NewC>> nodeConstructor;
 
     public BavetTriGroupBridgeQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
-            QuadGroupNodeConstructor<A, B, C, D, TriTupleImpl<NewA, NewB, NewC>> nodeConstructor) {
+            QuadGroupNodeConstructor<A, B, C, D, TriTuple<NewA, NewB, NewC>> nodeConstructor) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.nodeConstructor = nodeConstructor;
@@ -53,10 +53,10 @@ final class BavetTriGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, NewA,
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
-        TupleLifecycle<TriTupleImpl<NewA, NewB, NewC>> tupleLifecycle =
+        TupleLifecycle<TriTuple<NewA, NewB, NewC>> tupleLifecycle =
                 buildHelper.getAggregatedTupleLifecycle(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupNode<QuadTupleImpl<A, B, C, D>, TriTupleImpl<NewA, NewB, NewC>, ?, ?, ?> node =
+        AbstractGroupNode<QuadTuple<A, B, C, D>, TriTuple<NewA, NewB, NewC>, ?, ?, ?, ?> node =
                 nodeConstructor.apply(inputStoreIndex, tupleLifecycle, outputStoreSize);
         buildHelper.addNode(node, this);
     }

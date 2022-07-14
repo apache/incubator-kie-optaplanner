@@ -8,13 +8,13 @@ import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 
-abstract class AbstractGroupTriNode<OldA, OldB, OldC, OutTuple_ extends Tuple, GroupKey_, ResultContainer_, Result_>
-        extends AbstractGroupNode<TriTupleImpl<OldA, OldB, OldC>, OutTuple_, GroupKey_, ResultContainer_, Result_> {
+abstract class AbstractGroupTriNode<OldA, OldB, OldC, OutTuple_ extends Tuple, MutableOutTuple_ extends OutTuple_, GroupKey_, ResultContainer_, Result_>
+        extends AbstractGroupNode<TriTuple<OldA, OldB, OldC>, OutTuple_, MutableOutTuple_, GroupKey_, ResultContainer_, Result_> {
 
     private final QuadFunction<ResultContainer_, OldA, OldB, OldC, Runnable> accumulator;
 
     protected AbstractGroupTriNode(int groupStoreIndex,
-            Function<TriTupleImpl<OldA, OldB, OldC>, GroupKey_> groupKeyFunction,
+            Function<TriTuple<OldA, OldB, OldC>, GroupKey_> groupKeyFunction,
             TriConstraintCollector<OldA, OldB, OldC, ResultContainer_, Result_> collector,
             TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
         super(groupStoreIndex, groupKeyFunction,
@@ -25,8 +25,8 @@ abstract class AbstractGroupTriNode<OldA, OldB, OldC, OutTuple_ extends Tuple, G
     }
 
     @Override
-    protected final Runnable accumulate(ResultContainer_ resultContainer, TriTupleImpl<OldA, OldB, OldC> tuple) {
-        return accumulator.apply(resultContainer, tuple.factA, tuple.factB, tuple.factC);
+    protected final Runnable accumulate(ResultContainer_ resultContainer, TriTuple<OldA, OldB, OldC> tuple) {
+        return accumulator.apply(resultContainer, tuple.getFactA(), tuple.getFactB(), tuple.getFactC());
     }
 
 }

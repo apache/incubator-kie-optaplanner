@@ -3,17 +3,18 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import java.util.function.BiFunction;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
+import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.constraint.streams.bavet.tri.TriTupleImpl;
 import org.optaplanner.core.impl.util.Triple;
 
 final class Group3Mapping0CollectorBiNode<OldA, OldB, A, B, C>
-        extends AbstractGroupBiNode<OldA, OldB, TriTupleImpl<A, B, C>, Triple<A, B, C>, Void, Void> {
+        extends AbstractGroupBiNode<OldA, OldB, TriTuple<A, B, C>, TriTupleImpl<A, B, C>, Triple<A, B, C>, Void, Void> {
 
     private final int outputStoreSize;
 
     public Group3Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMappingA,
             BiFunction<OldA, OldB, B> groupKeyMappingB, BiFunction<OldA, OldB, C> groupKeyMappingC, int groupStoreIndex,
-            TupleLifecycle<TriTupleImpl<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
+            TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
         super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, tuple),
                 null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
@@ -21,9 +22,9 @@ final class Group3Mapping0CollectorBiNode<OldA, OldB, A, B, C>
 
     static <A, B, C, OldA, OldB> Triple<A, B, C> createGroupKey(BiFunction<OldA, OldB, A> groupKeyMappingA,
             BiFunction<OldA, OldB, B> groupKeyMappingB, BiFunction<OldA, OldB, C> groupKeyMappingC,
-            BiTupleImpl<OldA, OldB> tuple) {
-        OldA oldA = tuple.factA;
-        OldB oldB = tuple.factB;
+            BiTuple<OldA, OldB> tuple) {
+        OldA oldA = tuple.getFactA();
+        OldB oldB = tuple.getFactB();
         A a = groupKeyMappingA.apply(oldA, oldB);
         B b = groupKeyMappingB.apply(oldA, oldB);
         C c = groupKeyMappingC.apply(oldA, oldB);

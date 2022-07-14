@@ -15,11 +15,11 @@ final class BavetTriGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA, New
 
     private final BavetAbstractTriConstraintStream<Solution_, A, B, C> parent;
     private BavetGroupTriConstraintStream<Solution_, NewA, NewB, NewC> groupStream;
-    private final TriGroupNodeConstructor<A, B, C, TriTupleImpl<NewA, NewB, NewC>> nodeConstructor;
+    private final TriGroupNodeConstructor<A, B, C, TriTuple<NewA, NewB, NewC>> nodeConstructor;
 
     public BavetTriGroupBridgeTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
-            TriGroupNodeConstructor<A, B, C, TriTupleImpl<NewA, NewB, NewC>> nodeConstructor) {
+            TriGroupNodeConstructor<A, B, C, TriTuple<NewA, NewB, NewC>> nodeConstructor) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.nodeConstructor = nodeConstructor;
@@ -51,10 +51,10 @@ final class BavetTriGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA, New
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
-        TupleLifecycle<TriTupleImpl<NewA, NewB, NewC>> tupleLifecycle =
+        TupleLifecycle<TriTuple<NewA, NewB, NewC>> tupleLifecycle =
                 buildHelper.getAggregatedTupleLifecycle(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupNode<TriTupleImpl<A, B, C>, TriTupleImpl<NewA, NewB, NewC>, ?, ?, ?> node =
+        AbstractGroupNode<TriTuple<A, B, C>, TriTuple<NewA, NewB, NewC>, ?, ?, ?, ?> node =
                 nodeConstructor.apply(inputStoreIndex, tupleLifecycle, outputStoreSize);
         buildHelper.addNode(node, this);
     }
