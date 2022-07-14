@@ -57,7 +57,7 @@ public final class BavetFlattenLastBridgeTriConstraintStream<Solution_, A, B, C,
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
         int outputStoreSize = buildHelper.extractTupleStoreSize(flattenLastStream);
-        AbstractFlattenLastNode<TriTupleImpl<A, B, C>, TriTupleImpl<A, B, NewC>, C, NewC> node = new FlattenLastTriNode<>(
+        AbstractFlattenLastNode<TriTuple<A, B, C>, TriTuple<A, B, NewC>, C, NewC> node = new FlattenLastTriNode<>(
                 inputStoreIndex, mappingFunction,
                 buildHelper.getAggregatedTupleLifecycle(flattenLastStream.getChildStreamList()),
                 outputStoreSize);

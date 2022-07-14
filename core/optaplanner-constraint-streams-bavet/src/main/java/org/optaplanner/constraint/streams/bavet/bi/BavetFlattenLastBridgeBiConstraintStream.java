@@ -57,7 +57,7 @@ public final class BavetFlattenLastBridgeBiConstraintStream<Solution_, A, B, New
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
         int outputStoreSize = buildHelper.extractTupleStoreSize(flattenLastStream);
-        AbstractFlattenLastNode<BiTupleImpl<A, B>, BiTupleImpl<A, NewB>, B, NewB> node = new FlattenLastBiNode<>(
+        AbstractFlattenLastNode<BiTuple<A, B>, BiTuple<A, NewB>, B, NewB> node = new FlattenLastBiNode<>(
                 inputStoreIndex, mappingFunction,
                 buildHelper.getAggregatedTupleLifecycle(flattenLastStream.getChildStreamList()),
                 outputStoreSize);

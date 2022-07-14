@@ -57,7 +57,7 @@ public final class BavetFlattenLastBridgeUniConstraintStream<Solution_, A, NewA>
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
         int outputStoreSize = buildHelper.extractTupleStoreSize(flattenLastStream);
-        AbstractFlattenLastNode<UniTupleImpl<A>, UniTupleImpl<NewA>, A, NewA> node = new FlattenLastUniNode<>(
+        AbstractFlattenLastNode<UniTuple<A>, UniTuple<NewA>, A, NewA> node = new FlattenLastUniNode<>(
                 inputStoreIndex, mappingFunction,
                 buildHelper.getAggregatedTupleLifecycle(flattenLastStream.getChildStreamList()),
                 outputStoreSize);
