@@ -61,7 +61,7 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
         int inputStoreIndexA = buildHelper.reserveTupleStoreIndex(parentA.getTupleSource());
         int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(parentBridgeB.getTupleSource());
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        AbstractIfExistsNode<UniTupleImpl<A>, B> node = new IfExistsUniWithUniNode<>(shouldExist,
+        AbstractIfExistsNode<UniTuple<A>, B> node = new IfExistsUniWithUniNode<>(shouldExist,
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexA, inputStoreIndexB,
                 buildHelper.getAggregatedTupleLifecycle(childStreamList),

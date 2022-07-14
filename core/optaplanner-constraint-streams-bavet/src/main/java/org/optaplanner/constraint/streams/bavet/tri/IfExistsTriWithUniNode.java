@@ -7,11 +7,11 @@ import org.optaplanner.constraint.streams.bavet.common.AbstractIfExistsNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
-import org.optaplanner.constraint.streams.bavet.uni.UniTupleImpl;
+import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
 
-final class IfExistsTriWithUniNode<A, B, C, D> extends AbstractIfExistsNode<TriTupleImpl<A, B, C>, D> {
+final class IfExistsTriWithUniNode<A, B, C, D> extends AbstractIfExistsNode<TriTuple<A, B, C>, D> {
 
     private final TriFunction<A, B, C, IndexProperties> mappingABC;
     private final QuadPredicate<A, B, C, D> filtering;
@@ -19,9 +19,9 @@ final class IfExistsTriWithUniNode<A, B, C, D> extends AbstractIfExistsNode<TriT
     public IfExistsTriWithUniNode(boolean shouldExist,
             TriFunction<A, B, C, IndexProperties> mappingABC, Function<D, IndexProperties> mappingD,
             int inputStoreIndexABC, int inputStoreIndexD,
-            TupleLifecycle<TriTupleImpl<A, B, C>> nextNodesTupleLifecycle,
-            Indexer<TriTupleImpl<A, B, C>, Counter<TriTupleImpl<A, B, C>>> indexerABC,
-            Indexer<UniTupleImpl<D>, Set<Counter<TriTupleImpl<A, B, C>>>> indexerD,
+            TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle,
+            Indexer<TriTuple<A, B, C>, Counter<TriTuple<A, B, C>>> indexerABC,
+            Indexer<UniTuple<D>, Set<Counter<TriTuple<A, B, C>>>> indexerD,
             QuadPredicate<A, B, C, D> filtering) {
         super(shouldExist, mappingD, inputStoreIndexABC, inputStoreIndexD, nextNodesTupleLifecycle, indexerABC,
                 indexerD);
@@ -30,8 +30,8 @@ final class IfExistsTriWithUniNode<A, B, C, D> extends AbstractIfExistsNode<TriT
     }
 
     @Override
-    protected IndexProperties createIndexProperties(TriTupleImpl<A, B, C> abcTriTuple) {
-        return mappingABC.apply(abcTriTuple.factA, abcTriTuple.factB, abcTriTuple.factC);
+    protected IndexProperties createIndexProperties(TriTuple<A, B, C> leftTuple) {
+        return mappingABC.apply(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC());
     }
 
     @Override
@@ -40,8 +40,8 @@ final class IfExistsTriWithUniNode<A, B, C, D> extends AbstractIfExistsNode<TriT
     }
 
     @Override
-    protected boolean isFiltered(TriTupleImpl<A, B, C> abcTriTuple, UniTupleImpl<D> rightTuple) {
-        return filtering.test(abcTriTuple.factA, abcTriTuple.factB, abcTriTuple.factC, rightTuple.factA);
+    protected boolean isFiltered(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
+        return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), rightTuple.getFactA());
     }
 
     @Override

@@ -8,10 +8,10 @@ import org.optaplanner.constraint.streams.bavet.common.AbstractIfExistsNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
-import org.optaplanner.constraint.streams.bavet.uni.UniTupleImpl;
+import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.api.function.TriPredicate;
 
-final class IfExistsBiWithUniNode<A, B, C> extends AbstractIfExistsNode<BiTupleImpl<A, B>, C> {
+final class IfExistsBiWithUniNode<A, B, C> extends AbstractIfExistsNode<BiTuple<A, B>, C> {
 
     private final BiFunction<A, B, IndexProperties> mappingAB;
     private final TriPredicate<A, B, C> filtering;
@@ -19,9 +19,9 @@ final class IfExistsBiWithUniNode<A, B, C> extends AbstractIfExistsNode<BiTupleI
     public IfExistsBiWithUniNode(boolean shouldExist,
             BiFunction<A, B, IndexProperties> mappingAB, Function<C, IndexProperties> mappingC,
             int inputStoreIndexAB, int inputStoreIndexC,
-            TupleLifecycle<BiTupleImpl<A, B>> tupleLifecycle,
-            Indexer<BiTupleImpl<A, B>, Counter<BiTupleImpl<A, B>>> indexerAB,
-            Indexer<UniTupleImpl<C>, Set<Counter<BiTupleImpl<A, B>>>> indexerC,
+            TupleLifecycle<BiTuple<A, B>> tupleLifecycle,
+            Indexer<BiTuple<A, B>, Counter<BiTuple<A, B>>> indexerAB,
+            Indexer<UniTuple<C>, Set<Counter<BiTuple<A, B>>>> indexerC,
             TriPredicate<A, B, C> filtering) {
         super(shouldExist, mappingC, inputStoreIndexAB, inputStoreIndexC, tupleLifecycle, indexerAB, indexerC);
         this.mappingAB = mappingAB;
@@ -29,8 +29,8 @@ final class IfExistsBiWithUniNode<A, B, C> extends AbstractIfExistsNode<BiTupleI
     }
 
     @Override
-    protected IndexProperties createIndexProperties(BiTupleImpl<A, B> abBiTuple) {
-        return mappingAB.apply(abBiTuple.factA, abBiTuple.factB);
+    protected IndexProperties createIndexProperties(BiTuple<A, B> leftTuple) {
+        return mappingAB.apply(leftTuple.getFactA(), leftTuple.getFactB());
     }
 
     @Override
@@ -39,8 +39,8 @@ final class IfExistsBiWithUniNode<A, B, C> extends AbstractIfExistsNode<BiTupleI
     }
 
     @Override
-    protected boolean isFiltered(BiTupleImpl<A, B> abBiTuple, UniTupleImpl<C> rightTuple) {
-        return filtering.test(abBiTuple.factA, abBiTuple.factB, rightTuple.factA);
+    protected boolean isFiltered(BiTuple<A, B> leftTuple, UniTuple<C> rightTuple) {
+        return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), rightTuple.getFactA());
     }
 
     @Override

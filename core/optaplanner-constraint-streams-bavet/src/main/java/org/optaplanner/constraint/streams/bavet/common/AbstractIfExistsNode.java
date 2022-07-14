@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
+import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.constraint.streams.bavet.uni.UniTupleImpl;
 
 public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
@@ -26,7 +27,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
     // No outputStoreSize because this node is not a tuple source, even though it has a dirtyCounterQueue.
 
     private final Indexer<LeftTuple_, Counter<LeftTuple_>> indexerLeft;
-    private final Indexer<UniTupleImpl<Right_>, Set<Counter<LeftTuple_>>> indexerRight;
+    private final Indexer<UniTuple<Right_>, Set<Counter<LeftTuple_>>> indexerRight;
     private final Queue<Counter<LeftTuple_>> dirtyCounterQueue;
 
     protected AbstractIfExistsNode(boolean shouldExist,
@@ -34,7 +35,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             int inputStoreIndexLeft, int inputStoreIndexRight,
             TupleLifecycle<LeftTuple_> nextNodeTupleLifecycle,
             Indexer<LeftTuple_, Counter<LeftTuple_>> indexerLeft,
-            Indexer<UniTupleImpl<Right_>, Set<Counter<LeftTuple_>>> indexerRight) {
+            Indexer<UniTuple<Right_>, Set<Counter<LeftTuple_>>> indexerRight) {
         this.shouldExist = shouldExist;
         this.mappingRight = mappingRight;
         this.inputStoreIndexLeft = inputStoreIndexLeft;
@@ -163,7 +164,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     protected abstract boolean isFiltering();
 
-    protected abstract boolean isFiltered(LeftTuple_ leftTuple, UniTupleImpl<Right_> rightTuple);
+    protected abstract boolean isFiltered(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
 
     public static final class Counter<Tuple_ extends Tuple> {
         public final Tuple_ leftTuple;

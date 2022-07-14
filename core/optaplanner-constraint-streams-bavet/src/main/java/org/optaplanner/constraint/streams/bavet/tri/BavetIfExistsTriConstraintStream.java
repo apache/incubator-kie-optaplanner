@@ -63,7 +63,7 @@ final class BavetIfExistsTriConstraintStream<Solution_, A, B, C, D>
         int inputStoreIndexA = buildHelper.reserveTupleStoreIndex(parentABC.getTupleSource());
         int inputStoreIndexB = buildHelper.reserveTupleStoreIndex(parentBridgeD.getTupleSource());
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        AbstractIfExistsNode<TriTupleImpl<A, B, C>, D> node = new IfExistsTriWithUniNode<>(shouldExist,
+        AbstractIfExistsNode<TriTuple<A, B, C>, D> node = new IfExistsTriWithUniNode<>(shouldExist,
                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                 inputStoreIndexA, inputStoreIndexB,
                 buildHelper.getAggregatedTupleLifecycle(childStreamList),
