@@ -8,7 +8,8 @@ import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group2Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, C, ResultContainer_>
-        extends AbstractGroupTriNode<OldA, OldB, OldC, TriTuple<A, B, C>, TriTupleImpl<A, B, C>, Pair<A, B>, ResultContainer_, C> {
+        extends
+        AbstractGroupTriNode<OldA, OldB, OldC, TriTuple<A, B, C>, TriTupleImpl<A, B, C>, Pair<A, B>, ResultContainer_, C> {
 
     private final int outputStoreSize;
 

@@ -75,7 +75,8 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         Group<MutableOutTuple_, GroupKey_, ResultContainer_> newGroup = getOrCreateGroup(newGroupKey);
         newGroup.parentCount++;
         Runnable undoAccumulator = hasCollector ? accumulate(newGroup.resultContainer, tuple) : null;
-        GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> newGroupPart = new GroupPart<>(newGroup, undoAccumulator);
+        GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> newGroupPart =
+                new GroupPart<>(newGroup, undoAccumulator);
         tupleStore[groupStoreIndex] = newGroupPart;
 
         OutTuple_ outTuple = newGroup.outTuple;
@@ -138,7 +139,8 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         if (Objects.equals(newGroupKey, oldGroupKey)) {
             // No need to change parentCount because it is the same group
             Runnable undoAccumulator = hasCollector ? accumulate(oldGroup.resultContainer, tuple) : null;
-            GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> newGroupPart = new GroupPart<>(oldGroup, undoAccumulator);
+            GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> newGroupPart =
+                    new GroupPart<>(oldGroup, undoAccumulator);
             tupleStore[groupStoreIndex] = newGroupPart;
             switch (oldGroup.outTuple.getState()) {
                 case CREATING:

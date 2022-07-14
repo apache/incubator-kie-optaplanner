@@ -11,7 +11,8 @@ import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.api.function.TriFunction;
 
-final class JoinQuadNode<A, B, C, D> extends AbstractJoinNode<TriTuple<A, B, C>, D, QuadTuple<A, B, C, D>, QuadTupleImpl<A, B, C, D>> {
+final class JoinQuadNode<A, B, C, D>
+        extends AbstractJoinNode<TriTuple<A, B, C>, D, QuadTuple<A, B, C, D>, QuadTupleImpl<A, B, C, D>> {
 
     private final TriFunction<A, B, C, IndexProperties> mappingABC;
     private final int outputStoreSize;
@@ -46,7 +47,8 @@ final class JoinQuadNode<A, B, C, D> extends AbstractJoinNode<TriTuple<A, B, C>,
 
     @Override
     protected QuadTupleImpl<A, B, C, D> createOutTuple(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
-        return new QuadTupleImpl<>(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), rightTuple.getFactA(), outputStoreSize);
+        return new QuadTupleImpl<>(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), rightTuple.getFactA(),
+                outputStoreSize);
     }
 
     @Override

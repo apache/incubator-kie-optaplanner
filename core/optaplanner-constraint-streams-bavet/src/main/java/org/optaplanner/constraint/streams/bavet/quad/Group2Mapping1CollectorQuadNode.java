@@ -10,7 +10,8 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group2Mapping1CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, ResultContainer_>
-        extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, TriTuple<A, B, C>, TriTupleImpl<A, B, C>, Pair<A, B>, ResultContainer_, C> {
+        extends
+        AbstractGroupQuadNode<OldA, OldB, OldC, OldD, TriTuple<A, B, C>, TriTupleImpl<A, B, C>, Pair<A, B>, ResultContainer_, C> {
 
     private final int outputStoreSize;
 

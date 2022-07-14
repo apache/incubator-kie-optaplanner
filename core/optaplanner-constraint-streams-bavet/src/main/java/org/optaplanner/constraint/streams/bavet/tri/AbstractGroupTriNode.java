@@ -9,7 +9,8 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 
 abstract class AbstractGroupTriNode<OldA, OldB, OldC, OutTuple_ extends Tuple, MutableOutTuple_ extends OutTuple_, GroupKey_, ResultContainer_, Result_>
-        extends AbstractGroupNode<TriTuple<OldA, OldB, OldC>, OutTuple_, MutableOutTuple_, GroupKey_, ResultContainer_, Result_> {
+        extends
+        AbstractGroupNode<TriTuple<OldA, OldB, OldC>, OutTuple_, MutableOutTuple_, GroupKey_, ResultContainer_, Result_> {
 
     private final QuadFunction<ResultContainer_, OldA, OldB, OldC, Runnable> accumulator;
 

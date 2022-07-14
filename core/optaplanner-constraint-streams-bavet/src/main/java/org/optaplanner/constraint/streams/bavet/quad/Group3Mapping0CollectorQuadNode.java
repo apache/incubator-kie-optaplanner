@@ -7,7 +7,8 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.impl.util.Triple;
 
 final class Group3Mapping0CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C>
-        extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, TriTuple<A, B, C>, TriTupleImpl<A, B, C>, Triple<A, B, C>, Void, Void> {
+        extends
+        AbstractGroupQuadNode<OldA, OldB, OldC, OldD, TriTuple<A, B, C>, TriTupleImpl<A, B, C>, Triple<A, B, C>, Void, Void> {
 
     private final int outputStoreSize;
 

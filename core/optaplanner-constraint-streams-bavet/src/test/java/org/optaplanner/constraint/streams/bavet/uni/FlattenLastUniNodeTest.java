@@ -47,7 +47,7 @@ class FlattenLastUniNodeTest {
     }
 
     private static UniTuple<String> modifyTuple(UniTuple<String> tuple, String... facts) {
-        ((UniTupleImpl<String>)tuple).factA = merge(facts);
+        ((UniTupleImpl<String>) tuple).factA = merge(facts);
         return tuple;
     }
 

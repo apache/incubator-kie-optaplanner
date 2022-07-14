@@ -40,7 +40,8 @@ final class IfExistsQuadWithUniNode<A, B, C, D, E> extends AbstractIfExistsNode<
 
     @Override
     protected boolean isFiltered(QuadTuple<A, B, C, D> leftTuple, UniTuple<E> rightTuple) {
-        return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), leftTuple.getFactD(), rightTuple.getFactA());
+        return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), leftTuple.getFactD(),
+                rightTuple.getFactA());
     }
 
     @Override
