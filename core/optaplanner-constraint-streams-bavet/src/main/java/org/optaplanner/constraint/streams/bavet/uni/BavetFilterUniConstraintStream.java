@@ -47,7 +47,7 @@ public final class BavetFilterUniConstraintStream<Solution_, A> extends BavetAbs
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        buildHelper.<UniTupleImpl<A>> putInsertUpdateRetract(this, childStreamList,
+        buildHelper.<UniTuple<A>> putInsertUpdateRetract(this, childStreamList,
                 tupleLifecycle -> new ConditionalUniTupleLifecycle<>(predicate, tupleLifecycle));
     }
 

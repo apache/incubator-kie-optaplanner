@@ -48,7 +48,7 @@ public final class BavetFilterBiConstraintStream<Solution_, A, B> extends BavetA
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        buildHelper.<BiTupleImpl<A, B>> putInsertUpdateRetract(this, childStreamList,
+        buildHelper.<BiTuple<A, B>> putInsertUpdateRetract(this, childStreamList,
                 tupleLifecycle -> new ConditionalBiTupleLifecycle<>(predicate, tupleLifecycle));
     }
 

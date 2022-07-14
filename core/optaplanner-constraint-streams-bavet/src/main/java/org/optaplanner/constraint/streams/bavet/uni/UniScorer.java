@@ -6,7 +6,7 @@ import org.optaplanner.constraint.streams.bavet.common.AbstractScorer;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.core.api.score.Score;
 
-final class UniScorer<A> extends AbstractScorer<UniTupleImpl<A>> {
+final class UniScorer<A> extends AbstractScorer<UniTuple<A>> {
 
     private final Function<A, UndoScoreImpacter> scoreImpacter;
 
@@ -17,7 +17,7 @@ final class UniScorer<A> extends AbstractScorer<UniTupleImpl<A>> {
     }
 
     @Override
-    protected UndoScoreImpacter impact(UniTupleImpl<A> tuple) {
-        return scoreImpacter.apply(tuple.factA);
+    protected UndoScoreImpacter impact(UniTuple<A> tuple) {
+        return scoreImpacter.apply(tuple.getFactA());
     }
 }

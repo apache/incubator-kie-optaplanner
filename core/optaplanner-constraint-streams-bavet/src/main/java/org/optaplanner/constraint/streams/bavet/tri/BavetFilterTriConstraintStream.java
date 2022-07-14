@@ -49,7 +49,7 @@ public final class BavetFilterTriConstraintStream<Solution_, A, B, C>
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        buildHelper.<TriTupleImpl<A, B, C>> putInsertUpdateRetract(this, childStreamList,
+        buildHelper.<TriTuple<A, B, C>> putInsertUpdateRetract(this, childStreamList,
                 tupleLifecycle -> new ConditionalTriTupleLifecycle<>(predicate, tupleLifecycle));
     }
 

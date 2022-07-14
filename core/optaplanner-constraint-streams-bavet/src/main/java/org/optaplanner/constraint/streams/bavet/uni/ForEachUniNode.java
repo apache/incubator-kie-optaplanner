@@ -13,16 +13,15 @@ public final class ForEachUniNode<A> extends AbstractNode {
 
     private final Class<A> forEachClass;
     /**
-     * Calls for example {@link UniScorer#insert(UniTupleImpl)}, and/or ...
+     * Calls for example {@link UniScorer#insert(UniTuple)}, and/or ...
      */
-    private final TupleLifecycle<UniTupleImpl<A>> nextNodesTupleLifecycle;
+    private final TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle;
     private final int outputStoreSize;
 
     private final Map<A, UniTupleImpl<A>> tupleMap = new IdentityHashMap<>(1000);
     private final Queue<UniTupleImpl<A>> dirtyTupleQueue;
 
-    public ForEachUniNode(Class<A> forEachClass,
-            TupleLifecycle<UniTupleImpl<A>> nextNodesTupleLifecycle, int outputStoreSize) {
+    public ForEachUniNode(Class<A> forEachClass, TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
         this.forEachClass = forEachClass;
         this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
         this.outputStoreSize = outputStoreSize;

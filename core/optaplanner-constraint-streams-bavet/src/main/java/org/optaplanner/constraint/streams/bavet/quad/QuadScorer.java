@@ -5,7 +5,7 @@ import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.Score;
 
-final class QuadScorer<A, B, C, D> extends AbstractScorer<QuadTupleImpl<A, B, C, D>> {
+final class QuadScorer<A, B, C, D> extends AbstractScorer<QuadTuple<A, B, C, D>> {
 
     private final QuadFunction<A, B, C, D, UndoScoreImpacter> scoreImpacter;
 
@@ -16,7 +16,7 @@ final class QuadScorer<A, B, C, D> extends AbstractScorer<QuadTupleImpl<A, B, C,
     }
 
     @Override
-    protected UndoScoreImpacter impact(QuadTupleImpl<A, B, C, D> tuple) {
-        return scoreImpacter.apply(tuple.factA, tuple.factB, tuple.factC, tuple.factD);
+    protected UndoScoreImpacter impact(QuadTuple<A, B, C, D> tuple) {
+        return scoreImpacter.apply(tuple.getFactA(), tuple.getFactB(), tuple.getFactC(), tuple.getFactD());
     }
 }

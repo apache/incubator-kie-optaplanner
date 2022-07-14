@@ -42,12 +42,12 @@ class FlattenLastUniNodeTest {
                 .collect(Collectors.toList());
     }
 
-    private static UniTupleImpl<String> createTuple(String... facts) {
+    private static UniTuple<String> createTuple(String... facts) {
         return new UniTupleImpl<>(merge(facts), 1);
     }
 
-    private static UniTupleImpl<String> modifyTuple(UniTupleImpl<String> tuple, String... facts) {
-        tuple.factA = merge(facts);
+    private static UniTuple<String> modifyTuple(UniTuple<String> tuple, String... facts) {
+        ((UniTupleImpl<String>)tuple).factA = merge(facts);
         return tuple;
     }
 
@@ -57,7 +57,7 @@ class FlattenLastUniNodeTest {
                 new FlattenLastUniNode<>(0, FlattenLastUniNodeTest::split, downstream, 1);
 
         // First tuple is inserted, A and B make it downstream.
-        UniTupleImpl<String> firstTuple = createTuple("A", "B");
+        UniTuple<String> firstTuple = createTuple("A", "B");
         node.insert(firstTuple);
         verifyNoInteractions(downstream);
 
@@ -68,7 +68,7 @@ class FlattenLastUniNodeTest {
         reset(downstream);
 
         // Second tuple is inserted, B and C make it downstream even though B already did before.
-        UniTupleImpl<String> secondTuple = createTuple("B", "C");
+        UniTuple<String> secondTuple = createTuple("B", "C");
         node.insert(secondTuple);
         verifyNoInteractions(downstream);
 
@@ -109,11 +109,11 @@ class FlattenLastUniNodeTest {
                 new FlattenLastUniNode<>(0, FlattenLastUniNodeTest::split, downstream, 1);
 
         // First tuple is inserted.
-        UniTupleImpl<String> firstTuple = createTuple("A", "B");
+        UniTuple<String> firstTuple = createTuple("A", "B");
         node.insert(firstTuple);
 
         // Second tuple is inserted.
-        UniTupleImpl<String> secondTuple = createTuple("B", "C");
+        UniTuple<String> secondTuple = createTuple("B", "C");
         node.insert(secondTuple);
 
         // Clear the dirty queue.
