@@ -820,6 +820,39 @@
         <sonar.pullrequest.base>${env.ghprbTargetBranch}</sonar.pullrequest.base>
       </properties>
     </profile>
+    <profile>
+      <id>android-api-compatibility-check</id>
+      <activation>
+        <property>
+          <name>android-api-compatibility-check</name>
+        </property>
+      </activation>
+        <build>
+          <pluginManagement>
+            <plugins>
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>animal-sniffer-maven-plugin</artifactId>
+              <version>1.20</version>
+              <configuration>
+                <signature>
+                  <groupId>net.sf.androidscents.signature</groupId>
+                  <artifactId>android-api-level-32</artifactId>
+                  <version>12_r1</version>
+                </signature>
+              </configuration>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>check</goal>
+                  </goals>
+                </execution>
+              </executions>
+            </plugin>
+            </plugins>
+          </pluginManagement>
+      </build>
+    </profile>
 
     <profile>
       <id>quickProfile</id>
@@ -829,6 +862,7 @@
         </property>
       </activation>
       <properties>
+        <animal.sniffer.skip>true</animal.sniffer.skip>
         <enforcer.skip>true</enforcer.skip>
         <revapi.skip>true</revapi.skip>
         <skipTests>true</skipTests>
@@ -862,5 +896,4 @@
       </build>
     </profile>
   </profiles>
-
 </project>
