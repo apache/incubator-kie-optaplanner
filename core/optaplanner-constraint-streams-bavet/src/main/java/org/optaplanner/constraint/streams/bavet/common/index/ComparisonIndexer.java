@@ -50,7 +50,8 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
         this.comparisonMap = new TreeMap<>(keyComparator);
     }
 
-    private static <Key_ extends Comparable<Key_>> BiPredicate<Key_, Key_> getIterationStoppingCondition(JoinerType comparisonJoinerType) {
+    private static <Key_ extends Comparable<Key_>> BiPredicate<Key_, Key_>
+            getIterationStoppingCondition(JoinerType comparisonJoinerType) {
         switch (comparisonJoinerType) {
             case LESS_THAN:
                 return (BiPredicate) LT_STOP_PREDICATE;
