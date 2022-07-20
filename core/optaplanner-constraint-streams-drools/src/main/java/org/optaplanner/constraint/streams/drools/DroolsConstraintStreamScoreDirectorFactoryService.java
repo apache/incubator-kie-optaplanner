@@ -1,5 +1,7 @@
 package org.optaplanner.constraint.streams.drools;
 
+import static org.optaplanner.core.api.score.stream.ConstraintStreamImplType.BAVET;
+
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -27,7 +29,7 @@ public final class DroolsConstraintStreamScoreDirectorFactoryService<Solution_, 
             SolutionDescriptor<Solution_> solutionDescriptor, ScoreDirectorFactoryConfig config) {
         ConstraintStreamImplType constraintStreamImplType_ =
                 Objects.requireNonNullElse(config.getConstraintStreamImplType(), ConstraintStreamImplType.DROOLS);
-        if (constraintStreamImplType_ != ConstraintStreamImplType.DROOLS) {
+        if (constraintStreamImplType_ == BAVET) {
             return null;
         }
         if (config.getConstraintProviderClass() != null) {

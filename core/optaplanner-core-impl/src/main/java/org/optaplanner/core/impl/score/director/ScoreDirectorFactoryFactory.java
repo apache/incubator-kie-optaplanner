@@ -70,10 +70,36 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                 ServiceLoader.load(ScoreDirectorFactoryService.class);
         Map<ScoreDirectorType, Supplier<AbstractScoreDirectorFactory<Solution_, Score_>>> scoreDirectorFactorySupplierMap =
                 new EnumMap<>(ScoreDirectorType.class);
+        boolean isBavet = false;
         for (ScoreDirectorFactoryService<Solution_, Score_> service : scoreDirectorFactoryServiceLoader) {
             Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> factory =
                     service.buildScoreDirectorFactory(classLoader, solutionDescriptor, config);
             if (factory != null) {
+                if (service.getSupportedScoreDirectorType() == CONSTRAINT_STREAMS) {
+                    switch (service.getPriority()) {
+                        case Integer.MAX_VALUE:
+                            // Drools will be registered as the CS impl.
+                            isBavet = false;
+                            break;
+                        case Integer.MIN_VALUE:
+                            if (scoreDirectorFactorySupplierMap.containsKey(CONSTRAINT_STREAMS)) {
+                                /*
+                                 * We already have a CS service registered, and it is of a higher priority.
+                                 * This means Drools was loaded first, but Bavet is available too.
+                                 * Such situation can only happen if the user did not specify an impl type.
+                                 * Therefore, we skip Bavet as Drools is the default and already registered.
+                                 */
+                                continue;
+                            } else {
+                                // Bavet will be registered as the CS impl.
+                                isBavet = true;
+                            }
+                            break;
+                        default:
+                            throw new IllegalStateException(
+                                    "Impossible state: Unknown service priority (" + service.getPriority() + ")");
+                    }
+                }
                 scoreDirectorFactorySupplierMap.put(service.getSupportedScoreDirectorType(), factory);
             }
         }
@@ -102,7 +128,6 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
             return incrementalScoreDirectorFactorySupplier.get();
         }
 
-        boolean isBavet = config.getConstraintStreamImplType() == ConstraintStreamImplType.BAVET;
         if (constraintStreamScoreDirectorFactorySupplier != null) {
             if (isBavet) {
                 validateNoDroolsAlphaNetworkCompilation();
