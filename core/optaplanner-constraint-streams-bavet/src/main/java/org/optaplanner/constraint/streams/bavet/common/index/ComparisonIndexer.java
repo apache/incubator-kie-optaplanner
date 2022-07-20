@@ -15,15 +15,6 @@ import org.optaplanner.core.impl.score.stream.JoinerType;
 final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<Key_>>
         implements Indexer<Tuple_, Value_> {
 
-    private static final BiPredicate<Comparable, Comparable> LT_STOP_PREDICATE =
-            (currentKey, stopKey) -> currentKey.compareTo(stopKey) >= 0;
-    private static final BiPredicate<Comparable, Comparable> LTE_STOP_PREDICATE =
-            (currentKey, stopKey) -> currentKey.compareTo(stopKey) > 0;
-    private static final BiPredicate<Comparable, Comparable> GT_STOP_PREDICATE =
-            (currentKey, stopKey) -> currentKey.compareTo(stopKey) <= 0;
-    private static final BiPredicate<Comparable, Comparable> GTE_STOP_PREDICATE =
-            (currentKey, stopKey) -> currentKey.compareTo(stopKey) < 0;
-
     private final int indexKeyPosition;
     private final BiPredicate<Key_, Key_> iterationStoppingCondition;
     private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
@@ -54,13 +45,13 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
             getIterationStoppingCondition(JoinerType comparisonJoinerType) {
         switch (comparisonJoinerType) {
             case LESS_THAN:
-                return (BiPredicate) LT_STOP_PREDICATE;
+                return (currentKey, stopKey) -> currentKey.compareTo(stopKey) >= 0;
             case LESS_THAN_OR_EQUAL:
-                return (BiPredicate) LTE_STOP_PREDICATE;
+                return (currentKey, stopKey) -> currentKey.compareTo(stopKey) > 0;
             case GREATER_THAN:
-                return (BiPredicate) GT_STOP_PREDICATE;
+                return (currentKey, stopKey) -> currentKey.compareTo(stopKey) <= 0;
             case GREATER_THAN_OR_EQUAL:
-                return (BiPredicate) GTE_STOP_PREDICATE;
+                return (currentKey, stopKey) -> currentKey.compareTo(stopKey) < 0;
             default:
                 throw new IllegalStateException("Impossible state: the comparisonJoinerType (" + comparisonJoinerType
                         + ") is not one of the 4 comparison types.");
