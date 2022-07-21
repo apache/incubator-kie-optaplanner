@@ -72,6 +72,11 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                 new EnumMap<>(ScoreDirectorType.class);
         boolean isBavet = false;
         for (ScoreDirectorFactoryService<Solution_, Score_> service : scoreDirectorFactoryServiceLoader) {
+            /*
+             * Drools will be available if one the classpath and user did not request BAVET.
+             * Bavet will be available if on the classpath and user did not request DROOLS.
+             * The following logic deals with the decision of which to pick if both available.
+             */
             Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> factory =
                     service.buildScoreDirectorFactory(classLoader, solutionDescriptor, config);
             if (factory != null) {
