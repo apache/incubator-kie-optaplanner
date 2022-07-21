@@ -75,7 +75,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         for (ScoreDirectorFactoryService<Solution_, Score_> service : scoreDirectorFactoryServiceLoader) {
             Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> factory =
                     service.buildScoreDirectorFactory(classLoader, solutionDescriptor, config);
-            if (factory != null && service.getSupportedScoreDirectorType() == CONSTRAINT_STREAMS) {
+            if (service.getSupportedScoreDirectorType() == CONSTRAINT_STREAMS) {
                 /*
                  * CS-D will be available if on the classpath and user did not request BAVET.
                  * CS-B will be available if on the classpath and user did not request DROOLS.
@@ -83,8 +83,13 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                  */
                 switch (service.getPriority()) {
                     case Integer.MAX_VALUE:
-                        // Drools will be registered as the CS impl.
-                        isBavet = false;
+                        if (config.getConstraintStreamImplType() == BAVET) {
+                            // Drools should be skipped.
+                            continue;
+                        } else {
+                            // Drools will be registered as the CS impl.
+                            isBavet = false;
+                        }
                         break;
                     case Integer.MIN_VALUE:
                         if (scoreDirectorFactorySupplierMap.containsKey(CONSTRAINT_STREAMS)) {
@@ -105,7 +110,9 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                                 "Impossible state: Unknown service priority (" + service.getPriority() + ")");
                 }
             }
-            scoreDirectorFactorySupplierMap.put(service.getSupportedScoreDirectorType(), factory);
+            if (factory != null) {
+                scoreDirectorFactorySupplierMap.put(service.getSupportedScoreDirectorType(), factory);
+            }
         }
 
         Supplier<AbstractScoreDirectorFactory<Solution_, Score_>> easyScoreDirectorFactorySupplier =
