@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -390,6 +391,28 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         classVisitor.accept(incrementalScoreCalculatorClass);
         if (assertionScoreDirectorFactory != null) {
             assertionScoreDirectorFactory.visitReferencedClasses(classVisitor);
+        }
+    }
+
+    private boolean isUsingDrools() {
+        if (scoreDrlList != null || scoreDrlFileList != null) { // We know we're in DRL.
+            return true;
+        } else if (constraintProviderClass == null) { // We know we're neither in DRL nor in CS.
+            return false;
+        }
+        return (constraintStreamImplType == null || constraintStreamImplType == ConstraintStreamImplType.DROOLS);
+    }
+
+    @Deprecated(forRemoval = true)
+    public boolean isDroolsAlphaNetworkCompilationEnabled() {
+        if (!isUsingDrools()) {
+            return false;
+        }
+        boolean ancEnabledValue = Objects.requireNonNullElse(getDroolsAlphaNetworkCompilationEnabled(), true);
+        if (ancEnabledValue) { // ANC does not work in native images.
+            return !ConfigUtils.isNativeImage();
+        } else {
+            return false;
         }
     }
 
