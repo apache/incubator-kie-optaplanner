@@ -1,5 +1,7 @@
 package org.optaplanner.core.impl.score.director;
 
+import static org.optaplanner.core.api.score.stream.ConstraintStreamImplType.BAVET;
+import static org.optaplanner.core.api.score.stream.ConstraintStreamImplType.DROOLS;
 import static org.optaplanner.core.impl.score.director.ScoreDirectorType.CONSTRAINT_STREAMS;
 import static org.optaplanner.core.impl.score.director.ScoreDirectorType.DRL;
 import static org.optaplanner.core.impl.score.director.ScoreDirectorType.EASY;
@@ -17,7 +19,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -138,10 +139,12 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
             }
             return constraintStreamScoreDirectorFactorySupplier.get();
         } else if (config.getConstraintProviderClass() != null) {
+            String expectedModule = config.getConstraintStreamImplType() == BAVET
+                    ? "optaplanner-constraint-streams-bavet"
+                    : "optaplanner-constraint-streams-drools";
             throw new IllegalStateException("Constraint Streams requested via constraintProviderClass (" +
                     config.getConstraintProviderClass() + ") but the supporting classes were not found on the classpath.\n"
-                    + "Maybe include org.optaplanner:optaplanner-constraint-streams-drools or "
-                    + "org.optaplanner:optaplanner-constraint-streams-bavet dependency in your project?\n"
+                    + "Maybe include org.optaplanner:" + expectedModule + " dependency in your project?\n"
                     + "Maybe ensure your uberjar bundles META-INF/services from included JAR files?");
         }
 
@@ -202,7 +205,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         if (config.getDroolsAlphaNetworkCompilationEnabled() != null) {
             throw new IllegalStateException("If there is no scoreDrl (" + config.getScoreDrlList()
                     + "), scoreDrlFile (" + config.getScoreDrlFileList() + ") or constraintProviderClass ("
-                    + config.getConstraintProviderClass() + ") with " + ConstraintStreamImplType.DROOLS + " impl type ("
+                    + config.getConstraintProviderClass() + ") with " + DROOLS + " impl type ("
                     + config.getConstraintStreamImplType() + "), there can be no droolsAlphaNetworkCompilationEnabled ("
                     + config.getDroolsAlphaNetworkCompilationEnabled() + ") either.");
         }
@@ -211,7 +214,7 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
     private void validateNoGizmoKieBaseSupplier() {
         if (config.getGizmoKieBaseSupplier() != null) {
             throw new IllegalStateException("If there is no constraintProviderClass ("
-                    + config.getConstraintProviderClass() + ") with " + ConstraintStreamImplType.DROOLS + " impl type ("
+                    + config.getConstraintProviderClass() + ") with " + DROOLS + " impl type ("
                     + config.getConstraintStreamImplType() + "), there can be no gizmoKieBaseSupplier ("
                     + config.getGizmoKieBaseSupplier() + ") either.");
         }
