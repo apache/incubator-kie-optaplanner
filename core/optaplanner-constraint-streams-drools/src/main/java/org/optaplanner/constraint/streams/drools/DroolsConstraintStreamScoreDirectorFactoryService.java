@@ -43,7 +43,8 @@ public final class DroolsConstraintStreamScoreDirectorFactoryService<Solution_, 
                         "constraintProviderClass", config.getConstraintProviderClass());
                 ConfigUtils.applyCustomProperties(constraintProvider, "constraintProviderClass",
                         config.getConstraintProviderCustomProperties(), "constraintProviderCustomProperties");
-                boolean isDroolsAlphaNetworkEnabled = config.isDroolsAlphaNetworkCompilationEnabled();
+                boolean isDroolsAlphaNetworkEnabled =
+                        Objects.requireNonNullElse(config.getDroolsAlphaNetworkCompilationEnabled(), true);
                 if (config.getGizmoKieBaseSupplier() != null) {
                     return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
                             (KieBaseDescriptor<Solution_>) config.getGizmoKieBaseSupplier(),
