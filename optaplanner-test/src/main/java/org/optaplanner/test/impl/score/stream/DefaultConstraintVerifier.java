@@ -1,6 +1,7 @@
 package org.optaplanner.test.impl.score.stream;
 
 import static java.util.Objects.requireNonNull;
+import static org.optaplanner.core.api.score.stream.ConstraintStreamImplType.DROOLS;
 
 import java.util.Comparator;
 import java.util.List;
@@ -105,9 +106,10 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
                             + "Maybe ensure your uberjar bundles META-INF/services from included JAR files?");
         }
         AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> service = services.get(0);
-        boolean isDrools = service.supportsImplType(ConstraintStreamImplType.DROOLS);
         boolean isDroolsAlphaNetworkCompilationEnabled =
-                droolsAlphaNetworkCompilationEnabled == null ? isDrools : droolsAlphaNetworkCompilationEnabled;
+                droolsAlphaNetworkCompilationEnabled == null
+                        ? service.supportsImplType(DROOLS) && isDroolsAlphaNetworkCompilationEnabled()
+                        : droolsAlphaNetworkCompilationEnabled;
         return service.buildScoreDirectorFactory(solutionDescriptor, constraintProvider,
                 isDroolsAlphaNetworkCompilationEnabled);
     }
