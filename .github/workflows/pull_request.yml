@@ -66,6 +66,74 @@ jobs:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
+      - name: maven-settings-xml-action
+        uses: whelk-io/maven-settings-xml-action@v20
+        with:
+          repositories: >
+            [
+              {
+                "id": "jboss-public-repository-group",
+                "name": "JBoss Public Repository Group",
+                "url": "https://repository.jboss.org/nexus/content/groups/public",
+                "releases": {
+                  "enabled": "true",
+                  "updatePolicy": "never"
+                },
+                "snapshots": {
+                  "enabled": "false",
+                  "updatePolicy": "never"
+                }
+              },
+              {
+                "id": "kogito-staging-repository-group",
+                "name": "Kogito Staging Repositories",
+                "url": "https://repository.jboss.org/nexus/content/groups/kogito-public",
+                "releases": {
+                  "enabled": "true",
+                  "updatePolicy": "never"
+                },
+                "snapshots": {
+                  "enabled": "false",
+                  "updatePolicy": "never"
+                }
+              }
+            ]
+          plugin_repositories: >
+            [
+              {
+                "id": "jboss-public-repository-group",
+                "name": "JBoss Public Repository Group",
+                "url": "https://repository.jboss.org/nexus/content/groups/public",
+                "releases": {
+                  "enabled": "true",
+                  "updatePolicy": "never"
+                },
+                "snapshots": {
+                  "enabled": "false",
+                  "updatePolicy": "never"
+                }
+              },
+              {
+                "id": "kogito-staging-repository-group",
+                "name": "Kogito Staging Repositories",
+                "url": "https://repository.jboss.org/nexus/content/groups/kogito-public",
+                "releases": {
+                  "enabled": "true",
+                  "updatePolicy": "never"
+                },
+                "snapshots": {
+                  "enabled": "false",
+                  "updatePolicy": "never"
+                }
+              }
+            ]
+          plugin_groups: >
+            [
+              "org.zanata"
+            ]
+      - name: Debug settings.xml
+        run: |
+          cat ~/.m2/settings.xml
       - name: Set FLOW_TYPE to pull-request
         if: github.event_name == 'pull_request'
         run: echo "FLOW_TYPE=pull-request" >> $GITHUB_ENV
