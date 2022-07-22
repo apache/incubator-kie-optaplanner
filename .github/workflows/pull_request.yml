@@ -46,8 +46,8 @@ jobs:
       cancel-in-progress: true
     strategy:
       matrix:
-        os: ${{ fromJSON(needs.os-prep.outputs.os) }}
-        java-version: [ 11, 17, 19 ]
+        os: [ ubuntu-latest ]
+        java-version: [ 11 ]
         maven-version: [ '3.8.6' ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
