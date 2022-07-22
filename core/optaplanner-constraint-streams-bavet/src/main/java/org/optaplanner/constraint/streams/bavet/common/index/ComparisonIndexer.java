@@ -2,11 +2,11 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.Comparator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
@@ -17,7 +17,7 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
 
     private final int indexKeyPosition;
     private final BiPredicate<Key_, Key_> iterationStoppingCondition;
-    private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
+    private final Function<Key_, Indexer<Tuple_, Value_>> downstreamIndexerFunction;
     private final SortedMap<Key_, Indexer<Tuple_, Value_>> comparisonMap;
 
     public ComparisonIndexer(JoinerType comparisonJoinerType, Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
@@ -28,7 +28,8 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
             Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
         this.indexKeyPosition = indexKeyPosition;
         this.iterationStoppingCondition = getIterationStoppingCondition(comparisonJoinerType);
-        this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
+        // Avoid creating the capturing lambda over and over on the hot path.
+        this.downstreamIndexerFunction = k -> downstreamIndexerSupplier.get();
         /*
          * For GT/GTE, the iteration order is reversed.
          * This allows us to iterate over the entire map, stopping when the given condition is reached.
@@ -60,7 +61,13 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
 
     @Override
     public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
+        if (comparisonMap.isEmpty()) {
+            return; // Prevent NSEE in the next call.
+        }
         Key_ comparisonIndexProperty = getIndexerKey(indexProperties);
+        if (iterationStoppingCondition.test(comparisonMap.firstKey(), comparisonIndexProperty)) {
+            return; // First key already stops iteration; avoid creating the expensive entrySet().
+        }
         for (Map.Entry<Key_, Indexer<Tuple_, Value_>> entry : comparisonMap.entrySet()) {
             Key_ key = entry.getKey();
             if (iterationStoppingCondition.test(key, comparisonIndexProperty)) {
@@ -86,7 +93,7 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Key_ indexerKey = getIndexerKey(indexProperties);
         Indexer<Tuple_, Value_> downstreamIndexer =
-                comparisonMap.computeIfAbsent(indexerKey, k -> downstreamIndexerSupplier.get());
+                comparisonMap.computeIfAbsent(indexerKey, downstreamIndexerFunction);
         downstreamIndexer.put(indexProperties, tuple, value);
     }
 

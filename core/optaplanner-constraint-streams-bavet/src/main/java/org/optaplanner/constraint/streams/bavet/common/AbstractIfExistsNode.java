@@ -9,11 +9,10 @@ import java.util.function.Function;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.constraint.streams.bavet.uni.UniTupleImpl;
 
 public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         extends AbstractNode
-        implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTupleImpl<Right_>> {
+        implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
 
     private final boolean shouldExist;
     private final Function<Right_, IndexProperties> mappingRight;
@@ -105,20 +104,21 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
     }
 
     @Override
-    public final void updateRight(UniTupleImpl<Right_> rightTuple) {
+    public final void updateRight(UniTuple<Right_> rightTuple) {
         // TODO Implement actual update
         retractRight(rightTuple);
         insertRight(rightTuple);
     }
 
     @Override
-    public final void insertRight(UniTupleImpl<Right_> rightTuple) {
-        if (rightTuple.store[inputStoreIndexRight] != null) {
+    public final void insertRight(UniTuple<Right_> rightTuple) {
+        Object[] tupleStore = rightTuple.getStore();
+        if (tupleStore[inputStoreIndexRight] != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + rightTuple
                     + ") was already added in the tupleStore.");
         }
-        IndexProperties indexProperties = mappingRight.apply(rightTuple.factA);
-        rightTuple.store[inputStoreIndexRight] = indexProperties;
+        IndexProperties indexProperties = mappingRight.apply(rightTuple.getFactA());
+        tupleStore[inputStoreIndexRight] = indexProperties;
 
         // TODO Maybe predict capacity with Math.max(16, counterMapA.size())
         Set<Counter<LeftTuple_>> counterSetRight = new LinkedHashSet<>();
@@ -139,8 +139,8 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
     }
 
     @Override
-    public final void retractRight(UniTupleImpl<Right_> rightTuple) {
-        Object[] tupleStore = rightTuple.store;
+    public final void retractRight(UniTuple<Right_> rightTuple) {
+        Object[] tupleStore = rightTuple.getStore();
         IndexProperties indexProperties = (IndexProperties) tupleStore[inputStoreIndexRight];
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)

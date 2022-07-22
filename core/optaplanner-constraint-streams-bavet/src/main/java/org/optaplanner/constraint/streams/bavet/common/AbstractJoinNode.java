@@ -10,11 +10,10 @@ import java.util.function.Function;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.constraint.streams.bavet.uni.UniTupleImpl;
 
 public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTuple_ extends Tuple, MutableOutTuple_ extends OutTuple_>
         extends AbstractNode
-        implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTupleImpl<Right_>> {
+        implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
 
     private final Function<Right_, IndexProperties> mappingRight;
     private final int inputStoreIndexLeft;
@@ -57,11 +56,14 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
     private void indexLeftTuple(LeftTuple_ leftTuple, IndexProperties newIndexProperties,
             Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft) {
         indexerLeft.put(newIndexProperties, leftTuple, outTupleMapLeft);
-        indexerRight.visit(newIndexProperties, (rightTuple, emptyMap) -> {
-            MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
-            outTupleMapLeft.put(rightTuple, outTuple);
-            dirtyTupleQueue.add(outTuple);
-        });
+        indexerRight.visit(newIndexProperties,
+                (rightTuple, emptyMap) -> createAndAddOutTuple(leftTuple, rightTuple, outTupleMapLeft));
+    }
+
+    private void createAndAddOutTuple(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple, Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft) {
+        MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
+        outTupleMapLeft.put(rightTuple, outTuple);
+        dirtyTupleQueue.add(outTuple);
     }
 
     @Override
@@ -112,56 +114,55 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
     }
 
     @Override
-    public final void insertRight(UniTupleImpl<Right_> rightTuple) {
-        if (rightTuple.store[inputStoreIndexRight] != null) {
+    public final void insertRight(UniTuple<Right_> rightTuple) {
+        Object[] tupleStore = rightTuple.getStore();
+        if (tupleStore[inputStoreIndexRight] != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + rightTuple
                     + ") was already added in the tupleStore.");
         }
-        IndexProperties indexProperties = mappingRight.apply(rightTuple.factA);
-        rightTuple.store[inputStoreIndexRight] = indexProperties;
+        IndexProperties indexProperties = mappingRight.apply(rightTuple.getFactA());
+        tupleStore[inputStoreIndexRight] = indexProperties;
         indexRightTuple(rightTuple, indexProperties);
     }
 
-    private void indexRightTuple(UniTupleImpl<Right_> rightTuple, IndexProperties indexProperties) {
+    private void indexRightTuple(UniTuple<Right_> rightTuple, IndexProperties indexProperties) {
         indexerRight.put(indexProperties, rightTuple, Collections.emptyMap());
-        indexerLeft.visit(indexProperties, (leftTuple, outTupleMapLeft) -> {
-            MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
-            outTupleMapLeft.put(rightTuple, outTuple);
-            dirtyTupleQueue.add(outTuple);
-        });
+        indexerLeft.visit(indexProperties,
+                (leftTuple, outTupleMapLeft) -> createAndAddOutTuple(leftTuple, rightTuple, outTupleMapLeft));
     }
 
     @Override
-    public final void updateRight(UniTupleImpl<Right_> rightTuple) {
-        IndexProperties oldIndexProperties = (IndexProperties) rightTuple.store[inputStoreIndexRight];
+    public final void updateRight(UniTuple<Right_> rightTuple) {
+        Object[] tupleStore = rightTuple.getStore();
+        IndexProperties oldIndexProperties = (IndexProperties) tupleStore[inputStoreIndexRight];
         if (oldIndexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             insertRight(rightTuple);
             return;
         }
-        IndexProperties newIndexProperties = mappingRight.apply(rightTuple.factA);
+        IndexProperties newIndexProperties = mappingRight.apply(rightTuple.getFactA());
 
         if (oldIndexProperties.equals(newIndexProperties)) {
             // No need for re-indexing because the index properties didn't change
             // Still needed to propagate the update for downstream filters, matchWeighters, ...
             indexerLeft.visit(oldIndexProperties, (leftTuple, outTupleMapLeft) -> {
                 MutableOutTuple_ outTuple = outTupleMapLeft.get(rightTuple);
-                updateOutTupleRight(outTuple, rightTuple);
                 if (outTuple == null) {
                     throw new IllegalStateException("Impossible state: the tuple (" + leftTuple
                             + ") with indexProperties (" + oldIndexProperties
                             + ") has tuples on the right side that didn't exist on the left side.");
                 }
+                updateOutTupleRight(outTuple, rightTuple);
                 updateTuple(outTuple);
             });
         } else {
             deindexRightTuple(oldIndexProperties, rightTuple);
-            rightTuple.store[inputStoreIndexRight] = newIndexProperties;
+            tupleStore[inputStoreIndexRight] = newIndexProperties;
             indexRightTuple(rightTuple, newIndexProperties);
         }
     }
 
-    private void deindexRightTuple(IndexProperties indexProperties, UniTupleImpl<Right_> rightTuple) {
+    private void deindexRightTuple(IndexProperties indexProperties, UniTuple<Right_> rightTuple) {
         indexerRight.remove(indexProperties, rightTuple);
         // Remove out tuples from the other side
         indexerLeft.visit(indexProperties, (leftTuple, outTupleMapLeft) -> {
@@ -176,13 +177,14 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
     }
 
     @Override
-    public final void retractRight(UniTupleImpl<Right_> rightTuple) {
-        IndexProperties indexProperties = (IndexProperties) rightTuple.store[inputStoreIndexRight];
+    public final void retractRight(UniTuple<Right_> rightTuple) {
+        Object[] tupleStore = rightTuple.getStore();
+        IndexProperties indexProperties = (IndexProperties) tupleStore[inputStoreIndexRight];
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        rightTuple.store[inputStoreIndexRight] = null;
+        tupleStore[inputStoreIndexRight] = null;
         deindexRightTuple(indexProperties, rightTuple);
     }
 
