@@ -49,7 +49,7 @@ public class IndexerFactory {
             if (joinerType == JoinerType.EQUAL) {
                 return new EqualsIndexer<>(NoneIndexer::new);
             } else {
-                return new ComparisonIndexer<>(isLeftBridge ? joinerType : joinerType.flip(), NoneIndexer::new);
+                return new NonCommittalIndexer<>(new ComparisonIndexer<>(isLeftBridge ? joinerType : joinerType.flip(), NoneIndexer::new));
             }
         }
         /*
@@ -72,6 +72,14 @@ public class IndexerFactory {
                 joinerTypeMap.put(i, previousJoinerType);
             }
         }
+        // Find the first comparison joiner in the map.
+        int firstComparisonIndexerProperty = joinerTypeMap.entrySet()
+                .stream()
+                .filter(e -> e.getValue() != JoinerType.EQUAL)
+                .mapToInt(Map.Entry::getKey)
+                .min()
+                .orElse(-1);
+        // Iterate joiners in reverse order, as we build the indexers from the bottom up.
         NavigableMap<Integer, JoinerType> descendingJoinerTypeMap = joinerTypeMap.descendingMap();
         Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier = NoneIndexer::new;
         for (Map.Entry<Integer, JoinerType> entry : descendingJoinerTypeMap.entrySet()) {
@@ -104,8 +112,22 @@ public class IndexerFactory {
                  * Example 1: For an EQUAL+LESS_THAN joiner, comparison key is on position 1.
                  * Example 2: For an EQUAL+EQUAL+LESS_THAN joiner: comparison key is on position 2.
                  */
-                downstreamIndexerSupplier = () -> new ComparisonIndexer<>(actualJoinerType, previousEndingPropertyExclusive,
+
+                Supplier<Indexer<Tuple_, Value_>> comparisonIndexerSupplier = () -> new ComparisonIndexer<>(actualJoinerType, previousEndingPropertyExclusive,
                         actualDownstreamIndexerSupplier);
+                if (endingPropertyExclusive == firstComparisonIndexerProperty) {
+                    /*
+                     * ComparisonIndexer is expensive.
+                     * Yet in some cases, we insert tuples that we later remove without going through the index first.
+                     * These additions can safely be removed without passing them to the index, resulting in a speedup.
+                     *
+                     * We only do this for the first ComparisonIndexer,
+                     * as this behavior only needs to be eliminated once at the top level.
+                     */
+                    downstreamIndexerSupplier = () -> new NonCommittalIndexer<>(comparisonIndexerSupplier.get());
+                } else {
+                    downstreamIndexerSupplier = comparisonIndexerSupplier;
+                }
             }
         }
         return downstreamIndexerSupplier.get();
