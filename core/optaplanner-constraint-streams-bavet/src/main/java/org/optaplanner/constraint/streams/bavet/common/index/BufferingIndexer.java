@@ -9,16 +9,16 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
 /**
  * Some additions to the index will be reverted without ever iterating over the downstream indexer contents.
- * If we buffer all additions until {@link #visit(IndexProperties, BiConsumer)} is called,
- * we can safely remove any of them from the buffer without ever reaching the downstream indexer.
- * When {@link #visit(IndexProperties, BiConsumer)} is called, we empty the buffer into the downstream indexer,
- * finally paying the indexing price.
- * However, the price will be minimized, as we only index the tuples we do not intend to revert.
+ * If we buffer all additions, we can safely remove any of them from the buffer
+ * before {@link #visit(IndexProperties, BiConsumer)} is called without ever reaching the downstream indexer.
+ * When {@link #visit(IndexProperties, BiConsumer)} is called, we empty the rest into the downstream indexer,
+ * finally paying the indexing price on this smaller set of tuples.
  *
  * <p>
  * As range indexing is expensive, avoiding it represents a major performance gain.
  * It is therefore recommended to place this indexer immediately upstream from the top-most {@link ComparisonIndexer}
- * of any indexer chain which contains one.
+ * of any indexer chain which contains a {@link ComparisonIndexer}.
+ * All subsequent {@link ComparisonIndexer}s in that chain will benefit too, as the buffer is applied once at the top.
  * {@link EqualsIndexer} will not benefit from this, as that just puts one {@link java.util.HashMap} in front of another.
  *
  * @param <Tuple_>
