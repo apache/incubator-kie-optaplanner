@@ -18,6 +18,7 @@ final class NoneIndexerStorage<Key_, Value_> {
     private int size = 0;
 
     public Value_ put(Key_ key, Value_ value) {
+        Objects.requireNonNull(value);
         if (map == null) { // We have not yet created the map.
             if (size == 0) { // Use the fields instead of the map.
                 singletonKey = key;
@@ -33,8 +34,11 @@ final class NoneIndexerStorage<Key_, Value_> {
                 throw new IllegalStateException("Impossible state: storage size (" + size + ") > 1 yet no map used.");
             }
         }
-        size += 1;
-        return map.put(key, value);
+        Value_ oldValue = map.put(key, value);
+        if (oldValue == null) {
+            size += 1;
+        }
+        return oldValue;
     }
 
     public Value_ remove(Key_ key) {
@@ -49,7 +53,9 @@ final class NoneIndexerStorage<Key_, Value_> {
             return oldValue;
         }
         Value_ value = map.remove(key);
-        size -= 1;
+        if (value != null) {
+            size -= 1;
+        }
         return value;
     }
 
