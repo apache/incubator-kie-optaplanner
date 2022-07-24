@@ -49,7 +49,7 @@ public class IndexerFactory {
             if (joinerType == JoinerType.EQUAL) {
                 return new EqualsIndexer<>(NoneIndexer::new);
             } else {
-                return new NonCommittalIndexer<>(new ComparisonIndexer<>(isLeftBridge ? joinerType : joinerType.flip(), NoneIndexer::new));
+                return new BufferingIndexer<>(new ComparisonIndexer<>(isLeftBridge ? joinerType : joinerType.flip(), NoneIndexer::new));
             }
         }
         /*
@@ -124,7 +124,7 @@ public class IndexerFactory {
                      * We only do this for the first ComparisonIndexer,
                      * as this behavior only needs to be eliminated once at the top level.
                      */
-                    downstreamIndexerSupplier = () -> new NonCommittalIndexer<>(comparisonIndexerSupplier.get());
+                    downstreamIndexerSupplier = () -> new BufferingIndexer<>(comparisonIndexerSupplier.get());
                 } else {
                     downstreamIndexerSupplier = comparisonIndexerSupplier;
                 }
