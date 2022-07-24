@@ -1,7 +1,8 @@
 package org.optaplanner.constraint.streams.bavet.common.index;
 
-import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
@@ -24,7 +25,7 @@ final class NonCommittalIndexer<Tuple_ extends Tuple, Value_> implements Indexer
 
     private final Indexer<Tuple_, Value_> downstreamIndexer;
     // Tuples do not have identity; no need to incur HashMap's overheads.
-    private final Map<Tuple_, Operation<Tuple_, Value_>> uncommittedOperations = new IdentityHashMap<>();
+    private final Map<Tuple_, Operation<Tuple_, Value_>> uncommittedOperations = new LinkedHashMap<>();
     private int uncommittedOperationCount = 0;
 
     public NonCommittalIndexer(Indexer<Tuple_, Value_> downstreamIndexer) {
@@ -38,6 +39,7 @@ final class NonCommittalIndexer<Tuple_ extends Tuple, Value_> implements Indexer
                 downstreamIndexer.put(operation.indexProperties, operation.tuple, operation.value);
             }
             uncommittedOperations.clear();
+            uncommittedOperationCount = 0;
         }
         downstreamIndexer.visit(indexProperties, tupleValueVisitor);
     }
@@ -55,7 +57,11 @@ final class NonCommittalIndexer<Tuple_ extends Tuple, Value_> implements Indexer
 
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
-        uncommittedOperations.put(tuple, new Operation<>(indexProperties, tuple, value));
+        Operation<Tuple_, Value_> previous = uncommittedOperations.put(tuple,
+                new Operation<>(indexProperties, tuple, Objects.requireNonNull(value)));
+        if (previous != null) {
+            throw new IllegalStateException();
+        }
         uncommittedOperationCount += 1;
     }
 
