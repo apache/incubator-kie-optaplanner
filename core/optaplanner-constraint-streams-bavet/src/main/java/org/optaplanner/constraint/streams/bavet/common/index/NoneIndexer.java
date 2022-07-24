@@ -1,6 +1,5 @@
 package org.optaplanner.constraint.streams.bavet.common.index;
 
-import java.util.Objects;
 import java.util.function.BiConsumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
@@ -11,7 +10,7 @@ final class NoneIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_,
 
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
-        Value_ old = storage.put(tuple, Objects.requireNonNull(value));
+        Value_ old = storage.put(tuple, value);
         if (old != null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
                     + ") with indexProperties (" + indexProperties
