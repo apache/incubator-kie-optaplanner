@@ -26,15 +26,13 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
  */
 final class BufferingIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tuple_, Value_> {
 
-    private static final class Operation<Tuple_ extends Tuple, Value_> {
+    private static final class Operation<Value_> {
 
         private final IndexProperties indexProperties;
-        private final Tuple_ tuple;
         private final Value_ value;
 
-        public Operation(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
+        public Operation(IndexProperties indexProperties, Value_ value) {
             this.indexProperties = indexProperties;
-            this.tuple = tuple;
             this.value = value;
         }
 
@@ -46,7 +44,7 @@ final class BufferingIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tu
      * We also do not need consistent iteration order, as that will be guaranteed by the ComparisonIndexer downstream.
      * Therefore, IdentityHashMap is the fastest possible option.
      */
-    private final Map<Tuple_, Operation<Tuple_, Value_>> bufferedOperationsMap = new IdentityHashMap<>();
+    private final Map<Tuple_, Operation<Value_>> bufferedOperationsMap = new IdentityHashMap<>();
     private int bufferedOperationCount = 0;
 
     public BufferingIndexer(Indexer<Tuple_, Value_> downstreamIndexer) {
@@ -56,8 +54,11 @@ final class BufferingIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tu
     @Override
     public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
         if (bufferedOperationCount > 0) {
-            for (Operation<Tuple_, Value_> operation : bufferedOperationsMap.values()) {
-                downstreamIndexer.put(operation.indexProperties, operation.tuple, operation.value);
+            // TODO would it be safe and faster if we only remove the operations where indexProperties matches?
+            for (Map.Entry<Tuple_, Operation<Value_>> entry : bufferedOperationsMap.entrySet()) {
+                Tuple_ tuple = entry.getKey();
+                Operation<Value_> operation = entry.getValue();
+                downstreamIndexer.put(operation.indexProperties, tuple, operation.value);
             }
             bufferedOperationsMap.clear();
             bufferedOperationCount = 0;
@@ -68,7 +69,7 @@ final class BufferingIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tu
     @Override
     public Value_ get(IndexProperties indexProperties, Tuple_ tuple) {
         if (bufferedOperationCount > 0) {
-            Operation<Tuple_, Value_> uncommittedOperation = bufferedOperationsMap.get(tuple);
+            Operation<Value_> uncommittedOperation = bufferedOperationsMap.get(tuple);
             if (uncommittedOperation != null) {
                 return uncommittedOperation.value;
             }
@@ -78,8 +79,8 @@ final class BufferingIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tu
 
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
-        Operation<Tuple_, Value_> previous = bufferedOperationsMap.put(tuple,
-                new Operation<>(indexProperties, tuple, Objects.requireNonNull(value)));
+        Operation<Value_> previous = bufferedOperationsMap.put(tuple,
+                new Operation<>(indexProperties, Objects.requireNonNull(value)));
         if (previous != null) {
             throw new IllegalStateException();
         }
@@ -89,7 +90,7 @@ final class BufferingIndexer<Tuple_ extends Tuple, Value_> implements Indexer<Tu
     @Override
     public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
         if (bufferedOperationCount > 0) {
-            Operation<Tuple_, Value_> uncommittedOperation = bufferedOperationsMap.remove(tuple);
+            Operation<Value_> uncommittedOperation = bufferedOperationsMap.remove(tuple);
             if (uncommittedOperation != null) {
                 bufferedOperationCount -= 1;
                 return uncommittedOperation.value;
