@@ -8,7 +8,7 @@ import java.util.function.BiConsumer;
 /**
  * Uses {@link LinkedHashMap} as tuple storage unless it is the first and only entry, in which case it uses fields.
  * This helps avoid the overhead of creating and accessing a hash map if we only have 1 entry in the index.
- * This situation occurs often enough that this optimization has been proven beneficial.
+ * This situation occurs often enough that this optimization is beneficial.
  */
 final class NoneIndexerStorage<Key_, Value_> {
 
