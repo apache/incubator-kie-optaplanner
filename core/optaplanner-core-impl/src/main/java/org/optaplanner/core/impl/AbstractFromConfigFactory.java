@@ -37,6 +37,14 @@ public abstract class AbstractFromConfigFactory<Solution_, Config_ extends Abstr
         return entitySelectorConfig;
     }
 
+    protected EntityDescriptor<Solution_> deduceEntityDescriptor(HeuristicConfigPolicy<Solution_> configPolicy,
+            Class<?> entityClass) {
+        SolutionDescriptor<Solution_> solutionDescriptor = configPolicy.getSolutionDescriptor();
+        return entityClass == null
+                ? deduceEntityDescriptor(solutionDescriptor)
+                : deduceEntityDescriptor(solutionDescriptor, entityClass);
+    }
+
     protected EntityDescriptor<Solution_> deduceEntityDescriptor(SolutionDescriptor<Solution_> solutionDescriptor,
             Class<?> entityClass) {
         EntityDescriptor<Solution_> entityDescriptor =
