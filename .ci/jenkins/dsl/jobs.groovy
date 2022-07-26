@@ -67,11 +67,11 @@ if (Utils.isMainBranch(this)) {
 
 // Optaplanner PR checks
 setupMultijobPrDefaultChecks()
-// setupMultijobPrNativeChecks()
+setupMultijobPrNativeChecks()
 setupMultijobPrLTSChecks()
 
 // Nightly jobs
-// setupNativeJob()
+setupNativeJob()
 setupDeployJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
 setupPromoteJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
 
@@ -85,9 +85,9 @@ if (Utils.isMainBranch(this)) {
     setupOptaPlannerTurtleTestsJob()
 }
 
-// if (Utils.isLTSBranch(this)) {
-//     setupNativeLTSJob()
-// }
+if (Utils.isLTSBranch(this)) {
+    setupNativeLTSJob()
+}
 
 // Tools folder
 KogitoJobUtils.createQuarkusUpdateToolsJob(this, 'optaplanner', 'OptaPlanner', [
