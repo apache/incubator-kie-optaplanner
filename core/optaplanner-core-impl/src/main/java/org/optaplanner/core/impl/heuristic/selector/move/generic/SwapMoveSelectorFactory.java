@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -21,7 +22,8 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListSwapMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.OriginalListSwapMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.RandomListSwapMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
@@ -50,15 +52,16 @@ public class SwapMoveSelectorFactory<Solution_>
                 deduceVariableDescriptorList(entityDescriptor, config.getVariableNameIncludeList());
         if (variableDescriptorList.size() == 1 && variableDescriptorList.get(0).isListVariable()) {
             // TODO add ValueSelector to the config
-            EntityIndependentValueSelector<Solution_> leftValueSelector = buildEntityIndependentValueSelector(
-                    configPolicy, entityDescriptor, minimumCacheType, selectionOrder);
-            EntityIndependentValueSelector<Solution_> rightValueSelector = buildEntityIndependentValueSelector(
-                    configPolicy, entityDescriptor, minimumCacheType, selectionOrder);
-            return new ListSwapMoveSelector<>(
-                    (ListVariableDescriptor<Solution_>) variableDescriptorList.get(0),
-                    leftValueSelector,
-                    rightValueSelector,
-                    randomSelection);
+            Supplier<EntityIndependentValueSelector<Solution_>> valueSelectorSupplier =
+                    () -> buildEntityIndependentValueSelector(configPolicy, entityDescriptor, minimumCacheType, selectionOrder);
+            return randomSelection
+                    ? new RandomListSwapMoveSelector<>(
+                            (ListVariableDescriptor<Solution_>) variableDescriptorList.get(0),
+                            valueSelectorSupplier.get(),
+                            valueSelectorSupplier.get())
+                    : new OriginalListSwapMoveSelector<>(
+                            (ListVariableDescriptor<Solution_>) variableDescriptorList.get(0),
+                            valueSelectorSupplier.get());
         }
         if (variableDescriptorList.stream().noneMatch(GenuineVariableDescriptor::isListVariable)) {
             return new SwapMoveSelector<>(leftEntitySelector, rightEntitySelector, variableDescriptorList,

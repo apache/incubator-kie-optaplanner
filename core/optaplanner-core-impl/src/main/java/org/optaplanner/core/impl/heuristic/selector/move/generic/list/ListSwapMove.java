@@ -84,6 +84,14 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
         this.rightIndex = rightIndex;
     }
 
+    public ListSwapMove(
+            ListVariableDescriptor<Solution_> listVariableDescriptor,
+            ElementRef leftElement,
+            ElementRef rightElement) {
+        this(listVariableDescriptor, leftElement.getEntity(), leftElement.getIndex(),
+                rightElement.getEntity(), rightElement.getIndex());
+    }
+
     public Object getLeftEntity() {
         return leftEntity;
     }

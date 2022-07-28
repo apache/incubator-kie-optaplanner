@@ -6,7 +6,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class TestdataListUtils {
+public final class TestdataListUtils {
 
     private TestdataListUtils() {
     }
@@ -17,6 +17,11 @@ public class TestdataListUtils {
 
     public static EntityIndependentValueSelector<TestdataListSolution> mockEntityIndependentValueSelector(Object... values) {
         return SelectorTestUtils.mockEntityIndependentValueSelector(TestdataListEntity.class, "valueList", values);
+    }
+
+    public static EntityIndependentValueSelector<TestdataListSolution> mockEntityIndependentValueSelector(
+            ListVariableDescriptor<TestdataListSolution> listVariableDescriptor, Object... values) {
+        return SelectorTestUtils.mockEntityIndependentValueSelector(listVariableDescriptor, values);
     }
 
     public static ListVariableDescriptor<TestdataListSolution> getListVariableDescriptor(
