@@ -193,7 +193,8 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         indexRight(rightTuple, indexProperties, counterSetRight);
     }
 
-    private void indexRight(UniTuple<Right_> rightTuple, IndexProperties indexProperties, Set<Counter<LeftTuple_>> counterSetRight) {
+    private void indexRight(UniTuple<Right_> rightTuple, IndexProperties indexProperties,
+            Set<Counter<LeftTuple_>> counterSetRight) {
         indexerRight.put(indexProperties, rightTuple, counterSetRight);
         indexerLeft.visit(indexProperties, (leftTuple, counter) -> {
             if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
@@ -226,17 +227,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             if (isFiltering) {
                 // Call filtering for the leftTuple and rightTuple combinations again
                 Set<Counter<LeftTuple_>> counterSetRight = indexerRight.get(oldIndexProperties, rightTuple);
-                for (Counter<LeftTuple_> counter : counterSetRight) {
-                    counter.countRight--;
-                    if (counter.countRight == 0) {
-                        if (shouldExist) {
-                            retractCounter(counter);
-                        } else {
-                            insertCounter(counter);
-                        }
-                    }
-                }
-                counterSetRight.clear();
+                processAndClearCounters(counterSetRight);
 
                 indexerLeft.visit(newIndexProperties, (leftTuple, counter) -> {
                     if (testFiltering(leftTuple, rightTuple)) {
@@ -254,20 +245,28 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             }
         } else {
             Set<Counter<LeftTuple_>> counterSetRight = indexerRight.remove(oldIndexProperties, rightTuple);
-            for (Counter<LeftTuple_> counter : counterSetRight) {
-                counter.countRight--;
-                if (counter.countRight == 0) {
-                    if (shouldExist) {
-                        retractCounter(counter);
-                    } else {
-                        insertCounter(counter);
-                    }
-                }
-            }
-            counterSetRight.clear();
+            processAndClearCounters(counterSetRight);
 
             tupleStore[inputStoreIndexRight] = newIndexProperties;
             indexRight(rightTuple, newIndexProperties, counterSetRight);
+        }
+    }
+
+    private void processAndClearCounters(Set<Counter<LeftTuple_>> counterSetRight) {
+        processCounters(counterSetRight);
+        counterSetRight.clear();
+    }
+
+    private void processCounters(Set<Counter<LeftTuple_>> counterSetRight) {
+        for (Counter<LeftTuple_> counter : counterSetRight) {
+            counter.countRight--;
+            if (counter.countRight == 0) {
+                if (shouldExist) {
+                    retractCounter(counter);
+                } else {
+                    insertCounter(counter);
+                }
+            }
         }
     }
 
@@ -281,16 +280,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         }
         tupleStore[inputStoreIndexRight] = null;
         Set<Counter<LeftTuple_>> counterSetRight = indexerRight.remove(indexProperties, rightTuple);
-        for (Counter<LeftTuple_> counter : counterSetRight) {
-            counter.countRight--;
-            if (counter.countRight == 0) {
-                if (shouldExist) {
-                    retractCounter(counter);
-                } else {
-                    insertCounter(counter);
-                }
-            }
-        }
+        processCounters(counterSetRight);
     }
 
     protected abstract IndexProperties createIndexProperties(LeftTuple_ leftTuple);
