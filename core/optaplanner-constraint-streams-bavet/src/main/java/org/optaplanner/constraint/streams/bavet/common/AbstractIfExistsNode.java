@@ -30,13 +30,15 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
     private final Indexer<LeftTuple_, Counter<LeftTuple_>> indexerLeft;
     private final Indexer<UniTuple<Right_>, Set<Counter<LeftTuple_>>> indexerRight;
     private final Queue<Counter<LeftTuple_>> dirtyCounterQueue;
+    private final boolean isFiltering;
 
     protected AbstractIfExistsNode(boolean shouldExist,
             Function<Right_, IndexProperties> mappingRight,
             int inputStoreIndexLeft, int inputStoreIndexRight,
             TupleLifecycle<LeftTuple_> nextNodeTupleLifecycle,
             Indexer<LeftTuple_, Counter<LeftTuple_>> indexerLeft,
-            Indexer<UniTuple<Right_>, Set<Counter<LeftTuple_>>> indexerRight) {
+            Indexer<UniTuple<Right_>, Set<Counter<LeftTuple_>>> indexerRight,
+            boolean isFiltering) {
         this.shouldExist = shouldExist;
         this.mappingRight = mappingRight;
         this.inputStoreIndexLeft = inputStoreIndexLeft;
@@ -44,7 +46,8 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         this.nextNodesTupleLifecycle = nextNodeTupleLifecycle;
         this.indexerLeft = indexerLeft;
         this.indexerRight = indexerRight;
-        dirtyCounterQueue = new ArrayDeque<>(1000);
+        this.dirtyCounterQueue = new ArrayDeque<>(1000);
+        this.isFiltering = isFiltering;
     }
 
     @Override
@@ -61,7 +64,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         indexerLeft.put(indexProperties, leftTuple, counter);
 
         indexerRight.visit(indexProperties, (rightTuple, counterSetRight) -> {
-            if (!isFiltering() || testFiltering(leftTuple, rightTuple)) {
+            if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
                 counter.countRight++;
                 counterSetRight.add(counter);
             }
@@ -87,7 +90,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             // No need for re-indexing because the index properties didn't change
             Counter<LeftTuple_> counter = indexerLeft.get(oldIndexProperties, leftTuple);
             // The indexers contain counters in the DEAD state, to track the rightCount.
-            if (!isFiltering()) {
+            if (!isFiltering) {
                 switch (counter.state) {
                     case CREATING:
                     case UPDATING:
@@ -128,7 +131,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             indexerRight.visit(oldIndexProperties, (rightTuple, counterSetRight) -> {
                 boolean changed = counterSetRight.remove(counter);
                 // If filtering is active, not all counterSets contain the counter and we don't track which ones do
-                if (!changed && !isFiltering()) {
+                if (!changed && !isFiltering) {
                     throw new IllegalStateException("Impossible state: the tuple (" + leftTuple
                             + ") with indexProperties (" + oldIndexProperties
                             + ") has a counter on the AB side that doesn't exist on the C side.");
@@ -139,7 +142,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             tupleStore[inputStoreIndexLeft] = newIndexProperties;
             indexerLeft.put(newIndexProperties, leftTuple, counter);
             indexerRight.visit(newIndexProperties, (rightTuple, counterSetRight) -> {
-                if (!isFiltering() || testFiltering(leftTuple, rightTuple)) {
+                if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
                     counter.countRight++;
                     counterSetRight.add(counter);
                 }
@@ -167,7 +170,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         indexerRight.visit(indexProperties, (rightTuple, counterSetRight) -> {
             boolean changed = counterSetRight.remove(counter);
             // If filtering is active, not all counterSets contain the counter and we don't track which ones do
-            if (!changed && !isFiltering()) {
+            if (!changed && !isFiltering) {
                 throw new IllegalStateException("Impossible state: the tuple (" + leftTuple
                         + ") with indexProperties (" + indexProperties
                         + ") has a counter on the AB side that doesn't exist on the C side.");
@@ -192,7 +195,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         Set<Counter<LeftTuple_>> counterSetRight = new LinkedHashSet<>();
         indexerRight.put(indexProperties, rightTuple, counterSetRight);
         indexerLeft.visit(indexProperties, (leftTuple, counter) -> {
-            if (!isFiltering() || testFiltering(leftTuple, rightTuple)) {
+            if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
                 if (counter.countRight == 0) {
                     if (shouldExist) {
                         insertCounter(counter);
@@ -219,9 +222,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
         if (oldIndexProperties.equals(newIndexProperties)) {
             // No need for re-indexing because the index properties didn't change
-            if (!isFiltering()) {
-                // Do nothing
-            } else {
+            if (isFiltering) {
                 // Call filtering for the leftTuple and rightTuple combinations again
                 Set<Counter<LeftTuple_>> counterSetRight = indexerRight.get(oldIndexProperties, rightTuple);
                 for (Counter<LeftTuple_> counter : counterSetRight) {
@@ -267,7 +268,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             tupleStore[inputStoreIndexRight] = newIndexProperties;
             indexerRight.put(newIndexProperties, rightTuple, counterSetRight);
             indexerLeft.visit(newIndexProperties, (leftTuple, counter) -> {
-                if (!isFiltering() || testFiltering(leftTuple, rightTuple)) {
+                if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
                     if (counter.countRight == 0) {
                         if (shouldExist) {
                             insertCounter(counter);
@@ -305,8 +306,6 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
     }
 
     protected abstract IndexProperties createIndexProperties(LeftTuple_ leftTuple);
-
-    protected abstract boolean isFiltering();
 
     protected abstract boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
 
