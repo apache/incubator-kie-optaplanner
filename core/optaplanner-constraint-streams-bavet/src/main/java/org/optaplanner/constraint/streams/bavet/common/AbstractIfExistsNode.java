@@ -113,10 +113,10 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
                 // Call filtering for the leftTuple and rightTuple combinations again
                 counter.countRight = 0;
                 indexerRight.visit(oldIndexProperties, (rightTuple, counterSetRight) -> {
-                    counterSetRight.remove(counter); // Filtering is active, so it might not contain it
                     if (testFiltering(leftTuple, rightTuple)) {
                         counter.countRight++;
-                        counterSetRight.add(counter);
+                    } else {
+                        counterSetRight.remove(counter);
                     }
                 });
                 if (counter.isAlive()) {
