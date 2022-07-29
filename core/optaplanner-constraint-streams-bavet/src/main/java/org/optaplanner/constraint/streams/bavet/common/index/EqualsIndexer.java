@@ -92,7 +92,7 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_>
         if (downstreamIndexer == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
                     + ") with indexProperties (" + indexProperties
-                    + ") doesn't exist in the indexer" + this + ".");
+                    + ") doesn't exist in the indexer " + this + ".");
         }
         return downstreamIndexer;
     }

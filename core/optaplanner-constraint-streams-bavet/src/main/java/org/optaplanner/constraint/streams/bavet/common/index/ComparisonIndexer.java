@@ -15,7 +15,7 @@ import org.optaplanner.core.impl.score.stream.JoinerType;
 final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<Key_>>
         implements Indexer<Tuple_, Value_> {
 
-    private final int indexKeyPosition;
+    private final Function<IndexProperties, Key_> indexKeyFunction;
     private final BiPredicate<Key_, Key_> iterationStoppingCondition;
     private final Function<Key_, Indexer<Tuple_, Value_>> downstreamIndexerFunction;
     private final SortedMap<Key_, Indexer<Tuple_, Value_>> comparisonMap;
@@ -26,7 +26,7 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
 
     public ComparisonIndexer(JoinerType comparisonJoinerType, int indexKeyPosition,
             Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
-        this.indexKeyPosition = indexKeyPosition;
+        this.indexKeyFunction = indexProperties -> indexProperties.getProperty(indexKeyPosition);
         this.iterationStoppingCondition = getIterationStoppingCondition(comparisonJoinerType);
         // Avoid creating the capturing lambda over and over on the hot path.
         this.downstreamIndexerFunction = k -> downstreamIndexerSupplier.get();
@@ -61,10 +61,10 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
 
     @Override
     public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
-        Key_ comparisonIndexProperty = getIndexerKey(indexProperties);
+        Key_ indexKey = indexKeyFunction.apply(indexProperties);
         for (Map.Entry<Key_, Indexer<Tuple_, Value_>> entry : comparisonMap.entrySet()) {
             Key_ key = entry.getKey();
-            if (iterationStoppingCondition.test(key, comparisonIndexProperty)) {
+            if (iterationStoppingCondition.test(key, indexKey)) {
                 return;
             }
             Indexer<Tuple_, Value_> indexer = entry.getValue();
@@ -72,32 +72,28 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
         }
     }
 
-    private Key_ getIndexerKey(IndexProperties indexProperties) {
-        return indexProperties.getProperty(indexKeyPosition);
-    }
-
     @Override
     public Value_ get(IndexProperties indexProperties, Tuple_ tuple) {
-        Key_ indexerKey = getIndexerKey(indexProperties);
-        Indexer<Tuple_, Value_> downstreamIndexer = getDownstreamIndexer(indexProperties, indexerKey, tuple);
+        Key_ indexKey = indexKeyFunction.apply(indexProperties);
+        Indexer<Tuple_, Value_> downstreamIndexer = getDownstreamIndexer(indexProperties, indexKey, tuple);
         return downstreamIndexer.get(indexProperties, tuple);
     }
 
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
-        Key_ indexerKey = getIndexerKey(indexProperties);
+        Key_ indexKey = indexKeyFunction.apply(indexProperties);
         Indexer<Tuple_, Value_> downstreamIndexer =
-                comparisonMap.computeIfAbsent(indexerKey, downstreamIndexerFunction);
+                comparisonMap.computeIfAbsent(indexKey, downstreamIndexerFunction);
         downstreamIndexer.put(indexProperties, tuple, value);
     }
 
     @Override
     public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
-        Key_ oldIndexerKey = getIndexerKey(indexProperties);
-        Indexer<Tuple_, Value_> downstreamIndexer = getDownstreamIndexer(indexProperties, oldIndexerKey, tuple);
+        Key_ indexKey = indexKeyFunction.apply(indexProperties);
+        Indexer<Tuple_, Value_> downstreamIndexer = getDownstreamIndexer(indexProperties, indexKey, tuple);
         Value_ value = downstreamIndexer.remove(indexProperties, tuple);
         if (downstreamIndexer.isEmpty()) {
-            comparisonMap.remove(oldIndexerKey);
+            comparisonMap.remove(indexKey);
         }
         return value;
     }
@@ -107,7 +103,7 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
         if (downstreamIndexer == null) {
             throw new IllegalStateException("Impossible state: the tuple (" + tuple
                     + ") with indexProperties (" + indexProperties
-                    + ") doesn't exist in the indexer" + this + ".");
+                    + ") doesn't exist in the indexer " + this + ".");
         }
         return downstreamIndexer;
     }
