@@ -402,7 +402,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     @Override
     public void calculateScore() {
-        dirtyCounterQueue.forEach(counter -> {
+        for (Counter<LeftTuple_> counter : dirtyCounterQueue) {
             switch (counter.state) {
                 case CREATING:
                     nextNodesTupleLifecycle.insert(counter.leftTuple);
@@ -425,7 +425,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
                     throw new IllegalStateException("Impossible state: The dirty counter (" + counter
                             + ") has an non-dirty state (" + counter.state + ").");
             }
-        });
+        }
         dirtyCounterQueue.clear();
     }
 
