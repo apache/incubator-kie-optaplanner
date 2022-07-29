@@ -190,6 +190,10 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
         // TODO Maybe predict capacity with Math.max(16, counterMapA.size())
         Set<Counter<LeftTuple_>> counterSetRight = new LinkedHashSet<>();
+        indexRight(rightTuple, indexProperties, counterSetRight);
+    }
+
+    private void indexRight(UniTuple<Right_> rightTuple, IndexProperties indexProperties, Set<Counter<LeftTuple_>> counterSetRight) {
         indexerRight.put(indexProperties, rightTuple, counterSetRight);
         indexerLeft.visit(indexProperties, (leftTuple, counter) -> {
             if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
@@ -263,20 +267,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             counterSetRight.clear();
 
             tupleStore[inputStoreIndexRight] = newIndexProperties;
-            indexerRight.put(newIndexProperties, rightTuple, counterSetRight);
-            indexerLeft.visit(newIndexProperties, (leftTuple, counter) -> {
-                if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
-                    if (counter.countRight == 0) {
-                        if (shouldExist) {
-                            insertCounter(counter);
-                        } else {
-                            retractCounter(counter);
-                        }
-                    }
-                    counter.countRight++;
-                    counterSetRight.add(counter);
-                }
-            });
+            indexRight(rightTuple, newIndexProperties, counterSetRight);
         }
     }
 
