@@ -128,16 +128,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
                 }
             }
         } else {
-            Counter<LeftTuple_> counter = indexerLeft.remove(oldIndexProperties, leftTuple);
-            indexerRight.visit(oldIndexProperties, (rightTuple, counterSetRight) -> {
-                boolean changed = counterSetRight.remove(counter);
-                // If filtering is active, not all counterSets contain the counter and we don't track which ones do
-                if (!changed && !isFiltering) {
-                    throw new IllegalStateException("Impossible state: the tuple (" + leftTuple
-                            + ") with indexProperties (" + oldIndexProperties
-                            + ") has a counter on the AB side that doesn't exist on the C side.");
-                }
-            });
+            Counter<LeftTuple_> counter = deindexLeft(leftTuple, oldIndexProperties);
 
             counter.countRight = 0;
             tupleStore[inputStoreIndexLeft] = newIndexProperties;
@@ -157,6 +148,20 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         }
     }
 
+    private Counter<LeftTuple_> deindexLeft(LeftTuple_ leftTuple, IndexProperties oldIndexProperties) {
+        Counter<LeftTuple_> counter = indexerLeft.remove(oldIndexProperties, leftTuple);
+        indexerRight.visit(oldIndexProperties, (rightTuple, counterSetRight) -> {
+            boolean changed = counterSetRight.remove(counter);
+            // If filtering is active, not all counterSets contain the counter and we don't track which ones do
+            if (!changed && !isFiltering) {
+                throw new IllegalStateException("Impossible state: the tuple (" + leftTuple
+                        + ") with indexProperties (" + oldIndexProperties
+                        + ") has a counter on the AB side that doesn't exist on the C side.");
+            }
+        });
+        return counter;
+    }
+
     @Override
     public final void retractLeft(LeftTuple_ leftTuple) {
         Object[] tupleStore = leftTuple.getStore();
@@ -167,16 +172,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         }
         tupleStore[inputStoreIndexLeft] = null;
 
-        Counter<LeftTuple_> counter = indexerLeft.remove(indexProperties, leftTuple);
-        indexerRight.visit(indexProperties, (rightTuple, counterSetRight) -> {
-            boolean changed = counterSetRight.remove(counter);
-            // If filtering is active, not all counterSets contain the counter and we don't track which ones do
-            if (!changed && !isFiltering) {
-                throw new IllegalStateException("Impossible state: the tuple (" + leftTuple
-                        + ") with indexProperties (" + indexProperties
-                        + ") has a counter on the AB side that doesn't exist on the C side.");
-            }
-        });
+        Counter<LeftTuple_> counter = deindexLeft(leftTuple, indexProperties);
         if (counter.isAlive()) {
             retractCounter(counter);
         }
