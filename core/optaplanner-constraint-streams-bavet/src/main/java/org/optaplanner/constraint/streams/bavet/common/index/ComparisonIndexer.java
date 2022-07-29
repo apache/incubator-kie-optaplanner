@@ -35,10 +35,10 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
          * This allows us to iterate over the entire map, stopping when the given condition is reached.
          * This is done so that we can avoid using head/tail sub maps, which are expensive.
          */
-        Comparator<Key_> keyComparator =
-                (comparisonJoinerType == JoinerType.GREATER_THAN || comparisonJoinerType == JoinerType.GREATER_THAN_OR_EQUAL)
-                        ? KeyComparator.COMPARATOR_REVERSED
-                        : KeyComparator.COMPARATOR;
+        Comparator<Key_> keyComparator = new KeyComparator<>();
+        if (comparisonJoinerType == JoinerType.GREATER_THAN || comparisonJoinerType == JoinerType.GREATER_THAN_OR_EQUAL) {
+            keyComparator = keyComparator.reversed();
+        }
         this.comparisonMap = new TreeMap<>(keyComparator);
     }
 
@@ -118,9 +118,6 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
     }
 
     private static final class KeyComparator<Key_ extends Comparable<Key_>> implements Comparator<Key_> {
-
-        private static final Comparator COMPARATOR = new KeyComparator<>();
-        private static final Comparator COMPARATOR_REVERSED = COMPARATOR.reversed();
 
         @Override
         public int compare(Key_ o1, Key_ o2) { // Exists so that the comparison operations can be more easily debugged.
