@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
@@ -16,8 +17,8 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
         implements Indexer<Tuple_, Value_> {
 
     private final Function<IndexProperties, Key_> indexKeyFunction;
+    private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
     private final BiPredicate<Key_, Key_> iterationStoppingCondition;
-    private final Function<Key_, Indexer<Tuple_, Value_>> downstreamIndexerFunction;
     private final SortedMap<Key_, Indexer<Tuple_, Value_>> comparisonMap;
 
     public ComparisonIndexer(JoinerType comparisonJoinerType, Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
@@ -27,9 +28,8 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
     public ComparisonIndexer(JoinerType comparisonJoinerType, int indexKeyPosition,
             Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
         this.indexKeyFunction = indexProperties -> indexProperties.getProperty(indexKeyPosition);
+        this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
         this.iterationStoppingCondition = getIterationStoppingCondition(comparisonJoinerType);
-        // Avoid creating the capturing lambda over and over on the hot path.
-        this.downstreamIndexerFunction = k -> downstreamIndexerSupplier.get();
         /*
          * For GT/GTE, the iteration order is reversed.
          * This allows us to iterate over the entire map, stopping when the given condition is reached.
@@ -82,8 +82,12 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Key_ indexKey = indexKeyFunction.apply(indexProperties);
-        Indexer<Tuple_, Value_> downstreamIndexer =
-                comparisonMap.computeIfAbsent(indexKey, downstreamIndexerFunction);
+        // Avoids computeIfAbsent in order to not create lambdas on the hot path.
+        Indexer<Tuple_, Value_> downstreamIndexer = comparisonMap.get(indexKey);
+        if (downstreamIndexer == null) {
+            downstreamIndexer = downstreamIndexerSupplier.get();
+            comparisonMap.put(indexKey, downstreamIndexer);
+        }
         downstreamIndexer.put(indexProperties, tuple, value);
     }
 

@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -15,7 +16,7 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_>
         implements Indexer<Tuple_, Value_> {
 
     private final Function<IndexProperties, Key_> indexKeyFunction;
-    private final Function<Key_, Indexer<Tuple_, Value_>> downstreamIndexerFunction;
+    private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
     private final Map<Key_, Indexer<Tuple_, Value_>> downstreamIndexerMap = new HashMap<>();
 
     public EqualsIndexer(Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
@@ -25,8 +26,7 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_>
     public EqualsIndexer(int indexKeyFromInclusive, int indexKeyToExclusive,
             Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
         this.indexKeyFunction = getIndexKeyFunction(indexKeyFromInclusive, indexKeyToExclusive);
-        // Avoid creating the capturing lambda over and over on the hot path.
-        this.downstreamIndexerFunction = k -> downstreamIndexerSupplier.get();
+        this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
     }
 
     @Override
@@ -71,8 +71,12 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_>
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
         Key_ indexKey = indexKeyFunction.apply(indexProperties);
-        Indexer<Tuple_, Value_> downstreamIndexer =
-                downstreamIndexerMap.computeIfAbsent(indexKey, downstreamIndexerFunction);
+        // Avoids computeIfAbsent in order to not create lambdas on the hot path.
+        Indexer<Tuple_, Value_> downstreamIndexer = downstreamIndexerMap.get(indexKey);
+        if (downstreamIndexer == null) {
+            downstreamIndexer = downstreamIndexerSupplier.get();
+            downstreamIndexerMap.put(indexKey, downstreamIndexer);
+        }
         downstreamIndexer.put(indexProperties, tuple, value);
     }
 
