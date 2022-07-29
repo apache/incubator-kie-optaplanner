@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.IntPredicate;
 
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
@@ -60,7 +61,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         IndexProperties indexProperties = createIndexProperties(leftTuple);
         tupleStore[inputStoreIndexLeft] = indexProperties;
 
-        Counter<LeftTuple_> counter = new Counter<>(leftTuple);
+        Counter<LeftTuple_> counter = new Counter<>(leftTuple, shouldExist);
         indexerLeft.put(indexProperties, leftTuple, counter);
 
         indexerRight.visit(indexProperties, (rightTuple, counterSetRight) -> {
@@ -69,7 +70,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
                 counterSetRight.add(counter);
             }
         });
-        if (shouldExist ? counter.countRight > 0 : counter.countRight == 0) {
+        if (counter.isAlive()) {
             counter.state = BavetTupleState.CREATING;
             dirtyCounterQueue.add(counter);
         }
@@ -118,7 +119,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
                         counterSetRight.add(counter);
                     }
                 });
-                if (shouldExist ? counter.countRight > 0 : counter.countRight == 0) {
+                if (counter.isAlive()) {
                     // Insert or update
                     insertOrUpdateCounter(counter);
                 } else {
@@ -148,7 +149,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
                 }
             });
 
-            if (shouldExist ? counter.countRight > 0 : counter.countRight == 0) {
+            if (counter.isAlive()) {
                 insertOrUpdateCounter(counter);
             } else {
                 retractOrRemainDeadCounter(counter);
@@ -176,7 +177,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
                         + ") has a counter on the AB side that doesn't exist on the C side.");
             }
         });
-        if (shouldExist ? counter.countRight > 0 : counter.countRight == 0) {
+        if (counter.isAlive()) {
             retractCounter(counter);
         }
     }
@@ -310,12 +311,22 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
     protected abstract boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
 
     public static final class Counter<Tuple_ extends Tuple> {
-        public final Tuple_ leftTuple;
-        public BavetTupleState state = DEAD;
-        public int countRight = 0;
 
-        public Counter(Tuple_ leftTuple) {
+        private static final IntPredicate ZERO_COUNT = count -> count == 0;
+        private static final IntPredicate NON_ZERO_COUNT = count -> count > 0;
+
+        private final Tuple_ leftTuple;
+        private final IntPredicate alivePredicate;
+        private BavetTupleState state = DEAD;
+        private int countRight = 0;
+
+        private Counter(Tuple_ leftTuple, boolean shouldExist) {
             this.leftTuple = leftTuple;
+            this.alivePredicate = shouldExist ? NON_ZERO_COUNT : ZERO_COUNT;
+        }
+
+        private boolean isAlive() {
+            return alivePredicate.test(countRight);
         }
 
         @Override
