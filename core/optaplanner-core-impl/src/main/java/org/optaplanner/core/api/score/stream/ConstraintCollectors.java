@@ -364,10 +364,14 @@ public final class ConstraintCollectors {
                 MutableInt::new,
                 (resultContainer, a) -> {
                     int value = groupValueMapping.applyAsInt(a);
-                    resultContainer.add(value);
-                    return () -> resultContainer.subtract(value);
+                    return innerSum(resultContainer, value);
                 },
                 MutableInt::intValue);
+    }
+
+    private static Runnable innerSum(MutableInt resultContainer, int value) {
+        resultContainer.add(value);
+        return () -> resultContainer.subtract(value);
     }
 
     /**
@@ -378,10 +382,14 @@ public final class ConstraintCollectors {
                 MutableLong::new,
                 (resultContainer, a) -> {
                     long value = groupValueMapping.applyAsLong(a);
-                    resultContainer.add(value);
-                    return () -> resultContainer.subtract(value);
+                    return innerSum(resultContainer, value);
                 },
                 MutableLong::longValue);
+    }
+
+    private static Runnable innerSum(MutableLong resultContainer, long value) {
+        resultContainer.add(value);
+        return () -> resultContainer.subtract(value);
     }
 
     /**
@@ -393,10 +401,15 @@ public final class ConstraintCollectors {
                 () -> new MutableReference<>(zero),
                 (resultContainer, a) -> {
                     Result value = groupValueMapping.apply(a);
-                    resultContainer.setValue(adder.apply(resultContainer.getValue(), value));
-                    return () -> resultContainer.setValue(subtractor.apply(resultContainer.getValue(), value));
+                    return innerSum(resultContainer, value, adder, subtractor);
                 },
                 MutableReference::getValue);
+    }
+
+    private static <Result> Runnable innerSum(MutableReference<Result> resultContainer, Result value,
+            BinaryOperator<Result> adder, BinaryOperator<Result> subtractor) {
+        resultContainer.setValue(adder.apply(resultContainer.getValue(), value));
+        return () -> resultContainer.setValue(subtractor.apply(resultContainer.getValue(), value));
     }
 
     /**
@@ -439,8 +452,7 @@ public final class ConstraintCollectors {
                 MutableInt::new,
                 (resultContainer, a, b) -> {
                     int value = groupValueMapping.applyAsInt(a, b);
-                    resultContainer.add(value);
-                    return () -> resultContainer.subtract(value);
+                    return innerSum(resultContainer, value);
                 },
                 MutableInt::intValue);
     }
@@ -454,8 +466,7 @@ public final class ConstraintCollectors {
                 MutableLong::new,
                 (resultContainer, a, b) -> {
                     long value = groupValueMapping.applyAsLong(a, b);
-                    resultContainer.add(value);
-                    return () -> resultContainer.subtract(value);
+                    return innerSum(resultContainer, value);
                 },
                 MutableLong::longValue);
     }
@@ -470,8 +481,7 @@ public final class ConstraintCollectors {
                 () -> new MutableReference<>(zero),
                 (resultContainer, a, b) -> {
                     Result value = groupValueMapping.apply(a, b);
-                    resultContainer.setValue(adder.apply(resultContainer.getValue(), value));
-                    return () -> resultContainer.setValue(subtractor.apply(resultContainer.getValue(), value));
+                    return innerSum(resultContainer, value, adder, subtractor);
                 },
                 MutableReference::getValue);
     }
@@ -517,8 +527,7 @@ public final class ConstraintCollectors {
                 MutableInt::new,
                 (resultContainer, a, b, c) -> {
                     int value = groupValueMapping.applyAsInt(a, b, c);
-                    resultContainer.add(value);
-                    return () -> resultContainer.subtract(value);
+                    return innerSum(resultContainer, value);
                 },
                 MutableInt::intValue);
     }
@@ -532,8 +541,7 @@ public final class ConstraintCollectors {
                 MutableLong::new,
                 (resultContainer, a, b, c) -> {
                     long value = groupValueMapping.applyAsLong(a, b, c);
-                    resultContainer.add(value);
-                    return () -> resultContainer.subtract(value);
+                    return innerSum(resultContainer, value);
                 },
                 MutableLong::longValue);
     }
@@ -548,8 +556,7 @@ public final class ConstraintCollectors {
                 () -> new MutableReference<>(zero),
                 (resultContainer, a, b, c) -> {
                     Result value = groupValueMapping.apply(a, b, c);
-                    resultContainer.setValue(adder.apply(resultContainer.getValue(), value));
-                    return () -> resultContainer.setValue(subtractor.apply(resultContainer.getValue(), value));
+                    return innerSum(resultContainer, value, adder, subtractor);
                 },
                 MutableReference::getValue);
     }
@@ -595,8 +602,7 @@ public final class ConstraintCollectors {
                 MutableInt::new,
                 (resultContainer, a, b, c, d) -> {
                     int value = groupValueMapping.applyAsInt(a, b, c, d);
-                    resultContainer.add(value);
-                    return () -> resultContainer.subtract(value);
+                    return innerSum(resultContainer, value);
                 },
                 MutableInt::intValue);
     }
@@ -610,8 +616,7 @@ public final class ConstraintCollectors {
                 MutableLong::new,
                 (resultContainer, a, b, c, d) -> {
                     long value = groupValueMapping.applyAsLong(a, b, c, d);
-                    resultContainer.add(value);
-                    return () -> resultContainer.subtract(value);
+                    return innerSum(resultContainer, value);
                 },
                 MutableLong::longValue);
     }
@@ -626,8 +631,7 @@ public final class ConstraintCollectors {
                 () -> new MutableReference<>(zero),
                 (resultContainer, a, b, c, d) -> {
                     Result value = groupValueMapping.apply(a, b, c, d);
-                    resultContainer.setValue(adder.apply(resultContainer.getValue(), value));
-                    return () -> resultContainer.setValue(subtractor.apply(resultContainer.getValue(), value));
+                    return innerSum(resultContainer, value, adder, subtractor);
                 },
                 MutableReference::getValue);
     }
