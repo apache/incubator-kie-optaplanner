@@ -60,7 +60,8 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
                 (rightTuple, emptyMap) -> indexAndPropagate(outTupleMapLeft, leftTuple, rightTuple));
     }
 
-    private void indexAndPropagate(Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft, LeftTuple_ leftTuple, UniTuple<Right_> rightTuple) {
+    private void indexAndPropagate(Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft, LeftTuple_ leftTuple,
+            UniTuple<Right_> rightTuple) {
         MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
         outTupleMapLeft.put(rightTuple, outTuple);
         dirtyTupleQueue.add(outTuple);
