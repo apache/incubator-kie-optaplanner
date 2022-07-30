@@ -64,19 +64,18 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
 
     @Override
     public void insert(InTuple_ tuple) {
-        Object[] tupleStore = tuple.getStore();
-        if (tupleStore[groupStoreIndex] != null) {
+        if (tuple.getStore(groupStoreIndex) != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + tuple
                     + ") was already added in the tupleStore.");
         }
         GroupKey_ groupKey = hasMultipleGroups ? groupKeyFunction.apply(tuple) : null;
-        createTuple(tuple, tupleStore, groupKey);
+        createTuple(tuple, groupKey);
     }
 
-    private void createTuple(InTuple_ tuple, Object[] tupleStore, GroupKey_ newGroupKey) {
+    private void createTuple(InTuple_ tuple, GroupKey_ newGroupKey) {
         Group<MutableOutTuple_, GroupKey_, ResultContainer_> newGroup = getOrCreateGroup(newGroupKey);
         newGroup.parentCount++;
-        OutTuple_ outTuple = accumulate(tuple, tupleStore, newGroup);
+        OutTuple_ outTuple = accumulate(tuple, newGroup);
         switch (outTuple.getState()) {
             case CREATING:
             case UPDATING:
@@ -98,12 +97,11 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         }
     }
 
-    private OutTuple_ accumulate(InTuple_ tuple, Object[] tupleStore,
-            Group<MutableOutTuple_, GroupKey_, ResultContainer_> group) {
+    private OutTuple_ accumulate(InTuple_ tuple, Group<MutableOutTuple_, GroupKey_, ResultContainer_> group) {
         Runnable undoAccumulator = hasCollector ? accumulate(group.resultContainer, tuple) : null;
         GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> newGroupPart =
                 new GroupPart<>(group, undoAccumulator);
-        tupleStore[groupStoreIndex] = newGroupPart;
+        tuple.setStore(groupStoreIndex, newGroupPart);
         return group.outTuple;
     }
 
@@ -135,9 +133,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
 
     @Override
     public void update(InTuple_ tuple) {
-        Object[] tupleStore = tuple.getStore();
-        GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> oldGroupPart =
-                (GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>>) tupleStore[groupStoreIndex];
+        GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> oldGroupPart = tuple.getStore(groupStoreIndex);
         if (oldGroupPart == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             insert(tuple);
@@ -150,7 +146,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         GroupKey_ newGroupKey = hasMultipleGroups ? groupKeyFunction.apply(tuple) : null;
         if (Objects.equals(newGroupKey, oldGroupKey)) {
             // No need to change parentCount because it is the same group
-            OutTuple_ outTuple = accumulate(tuple, tupleStore, oldGroup);
+            OutTuple_ outTuple = accumulate(tuple, oldGroup);
             switch (outTuple.getState()) {
                 case CREATING:
                 case UPDATING:
@@ -168,7 +164,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
             }
         } else {
             killTuple(oldGroup);
-            createTuple(tuple, tupleStore, newGroupKey);
+            createTuple(tuple, newGroupKey);
         }
     }
 
@@ -220,14 +216,12 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
 
     @Override
     public void retract(InTuple_ tuple) {
-        Object[] tupleStore = tuple.getStore();
-        GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> groupPart =
-                (GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>>) tupleStore[groupStoreIndex];
+        GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> groupPart = tuple.getStore(groupStoreIndex);
         if (groupPart == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        tupleStore[groupStoreIndex] = null;
+        tuple.setStore(groupStoreIndex, null);
         Group<MutableOutTuple_, GroupKey_, ResultContainer_> group = groupPart.group;
         groupPart.undoAccumulate();
         killTuple(group);
