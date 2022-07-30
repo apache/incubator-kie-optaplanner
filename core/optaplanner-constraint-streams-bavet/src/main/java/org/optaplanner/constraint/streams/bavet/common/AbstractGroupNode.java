@@ -53,9 +53,11 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         this.hasMultipleGroups = groupKeyFunction != null;
         this.hasCollector = supplier != null;
         this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
-        // Not using the default sizing to 1000.
-        // The number of groups can be very small, and that situation is not unlikely.
-        // Therefore, the size of these collections is kept default.
+        /*
+         * Not using the default sizing to 1000.
+         * The number of groups can be very small, and that situation is not unlikely.
+         * Therefore, the size of these collections is kept default.
+         */
         this.groupMap = hasMultipleGroups ? new HashMap<>() : null;
         this.dirtyGroupQueue = new ArrayDeque<>();
     }
@@ -74,12 +76,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     private void createTuple(InTuple_ tuple, Object[] tupleStore, GroupKey_ newGroupKey) {
         Group<MutableOutTuple_, GroupKey_, ResultContainer_> newGroup = getOrCreateGroup(newGroupKey);
         newGroup.parentCount++;
-        Runnable undoAccumulator = hasCollector ? accumulate(newGroup.resultContainer, tuple) : null;
-        GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> newGroupPart =
-                new GroupPart<>(newGroup, undoAccumulator);
-        tupleStore[groupStoreIndex] = newGroupPart;
-
-        OutTuple_ outTuple = newGroup.outTuple;
+        OutTuple_ outTuple = accumulate(tuple, tupleStore, newGroup);
         switch (outTuple.getState()) {
             case CREATING:
             case UPDATING:
@@ -99,6 +96,15 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
                 throw new IllegalStateException("Impossible state: The group (" + newGroup + ") in node (" +
                         this + ") is in an unexpected state (" + outTuple.getState() + ").");
         }
+    }
+
+    private OutTuple_ accumulate(InTuple_ tuple, Object[] tupleStore,
+            Group<MutableOutTuple_, GroupKey_, ResultContainer_> group) {
+        Runnable undoAccumulator = hasCollector ? accumulate(group.resultContainer, tuple) : null;
+        GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> newGroupPart =
+                new GroupPart<>(group, undoAccumulator);
+        tupleStore[groupStoreIndex] = newGroupPart;
+        return group.outTuple;
     }
 
     private Group<MutableOutTuple_, GroupKey_, ResultContainer_> getOrCreateGroup(GroupKey_ key) {
@@ -144,16 +150,13 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         GroupKey_ newGroupKey = hasMultipleGroups ? groupKeyFunction.apply(tuple) : null;
         if (Objects.equals(newGroupKey, oldGroupKey)) {
             // No need to change parentCount because it is the same group
-            Runnable undoAccumulator = hasCollector ? accumulate(oldGroup.resultContainer, tuple) : null;
-            GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> newGroupPart =
-                    new GroupPart<>(oldGroup, undoAccumulator);
-            tupleStore[groupStoreIndex] = newGroupPart;
-            switch (oldGroup.outTuple.getState()) {
+            OutTuple_ outTuple = accumulate(tuple, tupleStore, oldGroup);
+            switch (outTuple.getState()) {
                 case CREATING:
                 case UPDATING:
                     break;
                 case OK:
-                    oldGroup.outTuple.setState(BavetTupleState.UPDATING);
+                    outTuple.setState(BavetTupleState.UPDATING);
                     dirtyGroupQueue.add(oldGroup);
                     break;
                 case DYING:
@@ -161,7 +164,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
                 case DEAD:
                 default:
                     throw new IllegalStateException("Impossible state: The group (" + oldGroup + ") in node (" +
-                            this + ") is in an unexpected state (" + oldGroup.outTuple.getState() + ").");
+                            this + ") is in an unexpected state (" + outTuple.getState() + ").");
             }
         } else {
             killTuple(oldGroup);
@@ -170,8 +173,8 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     }
 
     private void killTuple(Group<MutableOutTuple_, GroupKey_, ResultContainer_> group) {
-        group.parentCount--;
-        boolean killGroup = (group.parentCount == 0);
+        int newParentCount = --group.parentCount;
+        boolean killGroup = (newParentCount == 0);
         if (killGroup) {
             GroupKey_ groupKey = group.groupKey;
             Group<MutableOutTuple_, GroupKey_, ResultContainer_> old = removeGroup(groupKey);
@@ -259,7 +262,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
                 case DEAD:
                 default:
                     throw new IllegalStateException("Impossible state: The group (" + group + ") in node (" +
-                            this + ") is in an unexpected state (" + group.outTuple.getState() + ").");
+                            this + ") is in an unexpected state (" + outTuple.getState() + ").");
             }
         }
         dirtyGroupQueue.clear();
