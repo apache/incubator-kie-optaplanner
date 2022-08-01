@@ -80,11 +80,13 @@ public final class ConstraintCollectors {
     public static <A> UniConstraintCollector<A, ?, Integer> count() {
         return new DefaultUniConstraintCollector<>(
                 MutableInt::new,
-                (resultContainer, a) -> {
-                    resultContainer.increment();
-                    return resultContainer::decrement;
-                },
+                (resultContainer, a) -> innerCount(resultContainer),
                 MutableInt::intValue);
+    }
+
+    private static Runnable innerCount(MutableInt resultContainer) {
+        resultContainer.increment();
+        return resultContainer::decrement;
     }
 
     /**
@@ -93,11 +95,13 @@ public final class ConstraintCollectors {
     public static <A> UniConstraintCollector<A, ?, Long> countLong() {
         return new DefaultUniConstraintCollector<>(
                 MutableLong::new,
-                (resultContainer, a) -> {
-                    resultContainer.increment();
-                    return resultContainer::decrement;
-                },
+                (resultContainer, a) -> innerCount(resultContainer),
                 MutableLong::longValue);
+    }
+
+    private static Runnable innerCount(MutableLong resultContainer) {
+        resultContainer.increment();
+        return resultContainer::decrement;
     }
 
     /**
@@ -106,10 +110,7 @@ public final class ConstraintCollectors {
     public static <A, B> BiConstraintCollector<A, B, ?, Integer> countBi() {
         return new DefaultBiConstraintCollector<>(
                 MutableInt::new,
-                (resultContainer, a, b) -> {
-                    resultContainer.increment();
-                    return resultContainer::decrement;
-                },
+                (resultContainer, a, b) -> innerCount(resultContainer),
                 MutableInt::intValue);
     }
 
@@ -119,10 +120,7 @@ public final class ConstraintCollectors {
     public static <A, B> BiConstraintCollector<A, B, ?, Long> countLongBi() {
         return new DefaultBiConstraintCollector<>(
                 MutableLong::new,
-                (resultContainer, a, b) -> {
-                    resultContainer.increment();
-                    return resultContainer::decrement;
-                },
+                (resultContainer, a, b) -> innerCount(resultContainer),
                 MutableLong::longValue);
     }
 
@@ -132,10 +130,7 @@ public final class ConstraintCollectors {
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, Integer> countTri() {
         return new DefaultTriConstraintCollector<>(
                 MutableInt::new,
-                (resultContainer, a, b, c) -> {
-                    resultContainer.increment();
-                    return resultContainer::decrement;
-                },
+                (resultContainer, a, b, c) -> innerCount(resultContainer),
                 MutableInt::intValue);
     }
 
@@ -145,10 +140,7 @@ public final class ConstraintCollectors {
     public static <A, B, C> TriConstraintCollector<A, B, C, ?, Long> countLongTri() {
         return new DefaultTriConstraintCollector<>(
                 MutableLong::new,
-                (resultContainer, a, b, c) -> {
-                    resultContainer.increment();
-                    return resultContainer::decrement;
-                },
+                (resultContainer, a, b, c) -> innerCount(resultContainer),
                 MutableLong::longValue);
     }
 
@@ -158,10 +150,7 @@ public final class ConstraintCollectors {
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Integer> countQuad() {
         return new DefaultQuadConstraintCollector<>(
                 MutableInt::new,
-                (resultContainer, a, b, c, d) -> {
-                    resultContainer.increment();
-                    return resultContainer::decrement;
-                },
+                (resultContainer, a, b, c, d) -> innerCount(resultContainer),
                 MutableInt::intValue);
     }
 
@@ -171,10 +160,7 @@ public final class ConstraintCollectors {
     public static <A, B, C, D> QuadConstraintCollector<A, B, C, D, ?, Long> countLongQuad() {
         return new DefaultQuadConstraintCollector<>(
                 MutableLong::new,
-                (resultContainer, a, b, c, d) -> {
-                    resultContainer.increment();
-                    return resultContainer::decrement;
-                },
+                (resultContainer, a, b, c, d) -> innerCount(resultContainer),
                 MutableLong::longValue);
     }
 
