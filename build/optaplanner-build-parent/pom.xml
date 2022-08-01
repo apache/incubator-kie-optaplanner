@@ -857,6 +857,10 @@
                   <artifactId>android-api-level-32</artifactId>
                   <version>12_r1</version>
                 </signature>
+                <ignores>
+                  <ignore>java.lang.invoke.LambdaMetafactory</ignore>
+                  <ignore>java.lang.invoke.MethodHandle</ignore>
+                </ignores>
               </configuration>
               <executions>
                 <execution>
