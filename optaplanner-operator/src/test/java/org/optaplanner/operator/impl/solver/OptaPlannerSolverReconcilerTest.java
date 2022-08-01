@@ -48,7 +48,6 @@ public class OptaPlannerSolverReconcilerTest {
 
     @Test
     void canReconcile() {
-
         final OptaPlannerSolver solver = new OptaPlannerSolver();
         final String solverName = "test-solver";
         solver.getMetadata().setName(solverName);
