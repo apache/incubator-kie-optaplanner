@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.optaplanner.operator.impl.solver.model.AmqBroker;
 import org.optaplanner.operator.impl.solver.model.ConfigMapDependentResource;
 import org.optaplanner.operator.impl.solver.model.OptaPlannerSolver;
 import org.optaplanner.operator.impl.solver.model.OptaPlannerSolverSpec;
@@ -19,6 +20,7 @@ import org.optaplanner.operator.impl.solver.model.Scaling;
 import org.optaplanner.operator.impl.solver.model.messaging.MessageAddress;
 
 import io.fabric8.kubernetes.api.model.ConfigMap;
+import io.fabric8.kubernetes.api.model.SecretKeySelector;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.javaoperatorsdk.operator.Operator;
@@ -50,11 +52,17 @@ public class OptaPlannerSolverReconcilerTest {
     void canReconcile() {
         final OptaPlannerSolver solver = new OptaPlannerSolver();
         final String solverName = "test-solver";
+
+        AmqBroker amqBroker = new AmqBroker();
+        amqBroker.setHost("amq-host");
+        amqBroker.setPort(5678);
+        amqBroker.setUsernameSecretRef(new SecretKeySelector("amq-username", "my-secret", false));
+        amqBroker.setPasswordSecretRef(new SecretKeySelector("amq-password", "my-secret", false));
+
         solver.getMetadata().setName(solverName);
         solver.setSpec(new OptaPlannerSolverSpec());
         solver.getSpec().setSolverImage("solver-project-image");
-        solver.getSpec().setKafkaBootstrapServers("kafkaServers");
-        solver.getSpec().setKafkaCluster("my-kafka-cluster");
+        solver.getSpec().setAmqBroker(amqBroker);
         solver.getSpec().setScaling(new Scaling());
         mockServer.getClient().resources(OptaPlannerSolver.class).create(solver);
 

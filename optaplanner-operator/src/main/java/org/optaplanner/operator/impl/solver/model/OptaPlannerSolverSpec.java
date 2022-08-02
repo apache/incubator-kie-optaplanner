@@ -2,8 +2,7 @@ package org.optaplanner.operator.impl.solver.model;
 
 public final class OptaPlannerSolverSpec {
     private String solverImage;
-    private String kafkaBootstrapServers;
-    private String kafkaCluster;
+    private AmqBroker amqBroker;
 
     private Scaling scaling;
 
@@ -11,10 +10,9 @@ public final class OptaPlannerSolverSpec {
         // required by Jackson
     }
 
-    public OptaPlannerSolverSpec(String solverImage, String kafkaBootstrapServers, String kafkaCluster) {
+    public OptaPlannerSolverSpec(String solverImage, AmqBroker amqBroker) {
         this.solverImage = solverImage;
-        this.kafkaBootstrapServers = kafkaBootstrapServers;
-        this.kafkaCluster = kafkaCluster;
+        this.amqBroker = amqBroker;
     }
 
     public String getSolverImage() {
@@ -25,27 +23,19 @@ public final class OptaPlannerSolverSpec {
         this.solverImage = solverImage;
     }
 
-    public String getKafkaBootstrapServers() {
-        return kafkaBootstrapServers;
-    }
-
-    public void setKafkaBootstrapServers(String kafkaBootstrapServers) {
-        this.kafkaBootstrapServers = kafkaBootstrapServers;
-    }
-
-    public String getKafkaCluster() {
-        return kafkaCluster;
-    }
-
-    public void setKafkaCluster(String kafkaCluster) {
-        this.kafkaCluster = kafkaCluster;
-    }
-
     public Scaling getScaling() {
         return scaling;
     }
 
     public void setScaling(Scaling scaling) {
         this.scaling = scaling;
+    }
+
+    public AmqBroker getAmqBroker() {
+        return amqBroker;
+    }
+
+    public void setAmqBroker(AmqBroker amqBroker) {
+        this.amqBroker = amqBroker;
     }
 }
