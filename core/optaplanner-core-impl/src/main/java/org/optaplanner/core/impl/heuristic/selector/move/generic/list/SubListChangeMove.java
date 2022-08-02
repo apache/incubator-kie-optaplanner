@@ -32,6 +32,30 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
         this.destinationIndex = destinationIndex;
     }
 
+    public Object getSourceEntity() {
+        return sourceEntity;
+    }
+
+    public int getFromIndex() {
+        return sourceIndex;
+    }
+
+    public int getSubListSize() {
+        return length;
+    }
+
+    public int getToIndex() {
+        return sourceIndex + length;
+    }
+
+    public Object getDestinationEntity() {
+        return destinationEntity;
+    }
+
+    public int getDestinationIndex() {
+        return destinationIndex;
+    }
+
     @Override
     protected AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         return new SubListChangeMove<>(variableDescriptor, destinationEntity, destinationIndex, length, sourceEntity,
@@ -57,6 +81,6 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
     @Override
     public String toString() {
         return String.format("|%d| {%s[%d..%d] -> %s[%d]}",
-                length, sourceEntity, sourceIndex, sourceIndex + length, destinationEntity, destinationIndex);
+                length, sourceEntity, sourceIndex, getToIndex(), destinationEntity, destinationIndex);
     }
 }

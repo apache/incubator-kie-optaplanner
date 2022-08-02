@@ -10,6 +10,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListAssignMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListSwapMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 
 public interface CodeAssertable {
@@ -59,6 +60,15 @@ public interface CodeAssertable {
                     + convert(listSwapMove.getRightValue())
                     + " {" + convert(listSwapMove.getRightEntity())
                     + "[" + listSwapMove.getRightIndex() + "]}";
+        } else if (o instanceof SubListChangeMove) {
+            SubListChangeMove<?> subListChangeMove = (SubListChangeMove<?>) o;
+            return () -> "|" + subListChangeMove.getSubListSize()
+                    + "| {" + convert(subListChangeMove.getSourceEntity())
+                    + "[" + subListChangeMove.getFromIndex()
+                    + ".." + subListChangeMove.getToIndex()
+                    + "]->"
+                    + convert(subListChangeMove.getDestinationEntity())
+                    + "[" + subListChangeMove.getDestinationIndex() + "]}";
         } else if (o instanceof List) {
             List<?> list = (List) o;
             StringBuilder codeBuilder = new StringBuilder("[");
