@@ -22,6 +22,7 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelec
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
@@ -41,6 +42,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
         PillarSwapMoveSelectorConfig.class,
         SubChainChangeMoveSelectorConfig.class,
         SubChainSwapMoveSelectorConfig.class,
+        SubListChangeMoveSelectorConfig.class,
         SwapMoveSelectorConfig.class,
         TailChainSwapMoveSelectorConfig.class,
         UnionMoveSelectorConfig.class

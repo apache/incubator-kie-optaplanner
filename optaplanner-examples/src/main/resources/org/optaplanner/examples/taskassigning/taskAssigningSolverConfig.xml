@@ -18,4 +18,15 @@
   <!--<termination>-->
     <!--<minutesSpentLimit>5</minutesSpentLimit>-->
   <!--</termination>-->
+  <constructionHeuristic/>
+  <localSearch>
+    <unionMoveSelector>
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+      <subListChangeMoveSelector>
+        <minimumSubListSize>2</minimumSubListSize>
+        <maximumSubListSize>6</maximumSubListSize>
+      </subListChangeMoveSelector>
+    </unionMoveSelector>
+  </localSearch>
 </solver>
