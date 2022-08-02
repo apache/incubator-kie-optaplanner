@@ -33,10 +33,18 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
  */
 
 @XmlSeeAlso({
-        UnionMoveSelectorConfig.class, CartesianProductMoveSelectorConfig.class, ChangeMoveSelectorConfig.class,
-        SwapMoveSelectorConfig.class, PillarChangeMoveSelectorConfig.class, PillarSwapMoveSelectorConfig.class,
-        TailChainSwapMoveSelectorConfig.class, SubChainChangeMoveSelectorConfig.class, SubChainSwapMoveSelectorConfig.class,
-        MoveListFactoryConfig.class, MoveIteratorFactoryConfig.class })
+        CartesianProductMoveSelectorConfig.class,
+        ChangeMoveSelectorConfig.class,
+        MoveIteratorFactoryConfig.class,
+        MoveListFactoryConfig.class,
+        PillarChangeMoveSelectorConfig.class,
+        PillarSwapMoveSelectorConfig.class,
+        SubChainChangeMoveSelectorConfig.class,
+        SubChainSwapMoveSelectorConfig.class,
+        SwapMoveSelectorConfig.class,
+        TailChainSwapMoveSelectorConfig.class,
+        UnionMoveSelectorConfig.class
+})
 @XmlType(propOrder = {
         "cacheType",
         "selectionOrder",
