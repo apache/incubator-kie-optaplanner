@@ -17,16 +17,21 @@ public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelec
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntitySelector<Solution_> entitySelector;
     private final EntityIndependentValueSelector<Solution_> valueSelector;
+    private final int minimumSubListSize;
+    private final int maximumSubListSize;
 
     private SingletonInverseVariableSupply inverseVariableSupply;
 
     public RandomSubListChangeMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntitySelector<Solution_> entitySelector,
-            EntityIndependentValueSelector<Solution_> valueSelector) {
+            EntityIndependentValueSelector<Solution_> valueSelector,
+            int minimumSubListSize, int maximumSubListSize) {
         this.listVariableDescriptor = listVariableDescriptor;
         this.entitySelector = entitySelector;
         this.valueSelector = valueSelector;
+        this.minimumSubListSize = minimumSubListSize;
+        this.maximumSubListSize = maximumSubListSize;
         phaseLifecycleSupport.addEventListener(entitySelector);
         phaseLifecycleSupport.addEventListener(valueSelector);
     }
@@ -47,7 +52,7 @@ public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelec
     @Override
     public Iterator<Move<Solution_>> iterator() {
         return new RandomSubListChangeMoveIterator<>(listVariableDescriptor, inverseVariableSupply, valueSelector,
-                entitySelector, workingRandom);
+                entitySelector, minimumSubListSize, maximumSubListSize, workingRandom);
     }
 
     @Override

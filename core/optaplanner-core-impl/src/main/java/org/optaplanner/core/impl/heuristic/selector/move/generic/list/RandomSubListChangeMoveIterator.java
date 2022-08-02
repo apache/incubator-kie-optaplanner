@@ -11,6 +11,7 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInvers
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.TriangleElementFactory.TriangleElement;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.util.Pair;
 
@@ -19,6 +20,7 @@ class RandomSubListChangeMoveIterator<Solution_> extends UpcomingSelectionIterat
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final SingletonInverseVariableSupply inverseVariableSupply;
     private final Iterator<Object> valueIterator;
+    private final TriangleElementFactory triangleElementFactory;
     private final Random workingRandom;
     private final NavigableMap<Integer, Object> indexToDestinationEntityMap;
     private final int destinationIndexRange;
@@ -28,11 +30,13 @@ class RandomSubListChangeMoveIterator<Solution_> extends UpcomingSelectionIterat
             SingletonInverseVariableSupply inverseVariableSupply,
             EntityIndependentValueSelector<Solution_> valueSelector,
             EntitySelector<Solution_> entitySelector,
+            int minimumSubListSize, int maximumSubListSize,
             Random workingRandom) {
         this.listVariableDescriptor = listVariableDescriptor;
         this.inverseVariableSupply = inverseVariableSupply;
         this.valueIterator = valueSelector.iterator();
         this.workingRandom = workingRandom;
+        this.triangleElementFactory = new TriangleElementFactory(minimumSubListSize, maximumSubListSize, workingRandom);
 
         // TODO optimize this (don't rebuild the whole map at the beginning of each step).
         //  https://issues.redhat.com/browse/PLANNER-2507
@@ -53,50 +57,19 @@ class RandomSubListChangeMoveIterator<Solution_> extends UpcomingSelectionIterat
 
         Object sourceEntity = inverseVariableSupply.getInverseSingleton(valueIterator.next());
         int listSize = listVariableDescriptor.getListSize(sourceEntity);
-        int subListCount = TriangularNumbers.nth(listSize);
-        int subListIndex = workingRandom.nextInt(subListCount) + 1; // Triangle elements are indexed from 1.
-        TriangleElement triangleElement = TriangleElement.valueOf(subListIndex);
-        int length = listSize - triangleElement.nthTriangle + 1;
-        int sourceIndex = triangleElement.remainder - 1;
+
+        TriangleElement triangleElement = triangleElementFactory.nextElement(listSize);
+        int subListLength = listSize - triangleElement.getLevel() + 1;
+        int sourceIndex = triangleElement.getIndexOnLevel() - 1;
 
         Pair<Object, Integer> destination = entityAndIndexFromGlobalIndex(workingRandom.nextInt(destinationIndexRange));
 
-        return new SubListChangeMove<>(listVariableDescriptor, sourceEntity, sourceIndex, length, destination.getKey(),
+        return new SubListChangeMove<>(listVariableDescriptor, sourceEntity, sourceIndex, subListLength, destination.getKey(),
                 destination.getValue());
     }
 
     Pair<Object, Integer> entityAndIndexFromGlobalIndex(int index) {
         Map.Entry<Integer, Object> entry = indexToDestinationEntityMap.floorEntry(index);
         return Pair.of(entry.getValue(), index - entry.getKey());
-    }
-
-    static final class TriangleElement {
-
-        private final int index;
-        private final int nthTriangle;
-        private final int remainder;
-
-        private TriangleElement(int index, int nthTriangle, int remainder) {
-            this.index = index;
-            this.nthTriangle = nthTriangle;
-            this.remainder = remainder;
-        }
-
-        static TriangleElement valueOf(int index) {
-            int rootCeil = TriangularNumbers.rootCeil(index);
-            return new TriangleElement(index, rootCeil, index - TriangularNumbers.nth(rootCeil - 1));
-        }
-
-        public int getIndex() {
-            return index;
-        }
-
-        public int getNthTriangle() {
-            return nthTriangle;
-        }
-
-        public int getRemainder() {
-            return remainder;
-        }
     }
 }

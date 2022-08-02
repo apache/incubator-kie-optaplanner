@@ -16,11 +16,11 @@ final class TriangularNumbers {
         return (Math.sqrt(8 * x + 1) - 1) / 2;
     }
 
-    static int rootFloor(int x) {
+    static int floorRoot(int x) {
         return (int) Math.floor(root(x));
     }
 
-    static int rootCeil(int x) {
+    static int ceilRoot(int x) {
         return (int) Math.ceil(root(x));
     }
 }
