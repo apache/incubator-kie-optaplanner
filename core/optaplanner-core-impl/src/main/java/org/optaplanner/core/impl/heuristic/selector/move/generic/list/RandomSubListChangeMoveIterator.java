@@ -24,6 +24,8 @@ class RandomSubListChangeMoveIterator<Solution_> extends UpcomingSelectionIterat
     private final Random workingRandom;
     private final NavigableMap<Integer, Object> indexToDestinationEntityMap;
     private final int destinationIndexRange;
+    private final int minimumSubListSize;
+    private final int biggestListSize;
 
     RandomSubListChangeMoveIterator(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
@@ -35,28 +37,43 @@ class RandomSubListChangeMoveIterator<Solution_> extends UpcomingSelectionIterat
         this.listVariableDescriptor = listVariableDescriptor;
         this.inverseVariableSupply = inverseVariableSupply;
         this.valueIterator = valueSelector.iterator();
-        this.workingRandom = workingRandom;
+        this.minimumSubListSize = minimumSubListSize;
         this.triangleElementFactory = new TriangleElementFactory(minimumSubListSize, maximumSubListSize, workingRandom);
+        this.workingRandom = workingRandom;
 
         // TODO optimize this (don't rebuild the whole map at the beginning of each step).
         //  https://issues.redhat.com/browse/PLANNER-2507
         indexToDestinationEntityMap = new TreeMap<>();
         int cumulativeDestinationListSize = 0;
+        int biggestListSize_ = 0;
         for (Object entity : ((Iterable<Object>) entitySelector::endingIterator)) {
             indexToDestinationEntityMap.put(cumulativeDestinationListSize, entity);
             cumulativeDestinationListSize += (listVariableDescriptor.getListSize(entity) + 1);
+            biggestListSize_ = Math.max(biggestListSize_, listVariableDescriptor.getListSize(entity));
         }
+        this.biggestListSize = biggestListSize_;
         this.destinationIndexRange = cumulativeDestinationListSize;
     }
 
     @Override
     protected Move<Solution_> createUpcomingSelection() {
-        if (!valueIterator.hasNext() || destinationIndexRange == 0) {
+        if (!valueIterator.hasNext() || destinationIndexRange == 0 || biggestListSize < minimumSubListSize) {
             return noUpcomingSelection();
         }
 
-        Object sourceEntity = inverseVariableSupply.getInverseSingleton(valueIterator.next());
-        int listSize = listVariableDescriptor.getListSize(sourceEntity);
+        Object sourceEntity = null;
+        int listSize = 0;
+
+        // TODO What if MIN is 500? We could burn thousands of cycles before we hit a listSize >= 500!
+        while (listSize < minimumSubListSize) {
+            if (!valueIterator.hasNext()) {
+                throw new IllegalStateException("The valueIterator (" + valueIterator + ") should never end.");
+            }
+            // Using valueSelector instead of entitySelector is more fair because entities with bigger list variables
+            // will be selected more often.
+            sourceEntity = inverseVariableSupply.getInverseSingleton(valueIterator.next());
+            listSize = listVariableDescriptor.getListSize(sourceEntity);
+        }
 
         TriangleElement triangleElement = triangleElementFactory.nextElement(listSize);
         int subListLength = listSize - triangleElement.getLevel() + 1;
