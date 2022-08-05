@@ -22,18 +22,11 @@ import org.optaplanner.operator.impl.solver.model.messaging.MessageAddress;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.SecretKeySelector;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
-import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 import io.javaoperatorsdk.operator.Operator;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.kubernetes.client.KubernetesTestServer;
-import io.quarkus.test.kubernetes.client.WithKubernetesTestServer;
 
-@WithKubernetesTestServer
 @QuarkusTest
-public class OptaPlannerSolverReconcilerTest {
-
-    @KubernetesTestServer
-    KubernetesServer mockServer;
+public class OptaPlannerSolverReconcilerTest extends AbstractKubernetesTest {
 
     @Inject
     Operator operator;
@@ -64,13 +57,13 @@ public class OptaPlannerSolverReconcilerTest {
         solver.getSpec().setSolverImage("solver-project-image");
         solver.getSpec().setAmqBroker(amqBroker);
         solver.getSpec().setScaling(new Scaling());
-        mockServer.getClient().resources(OptaPlannerSolver.class).create(solver);
+        getMockServer().getClient().resources(OptaPlannerSolver.class).create(solver);
 
         final String expectedMessageAddressIn = solverName + "-" + MessageAddress.INPUT.getName();
         final String expectedMessageAddressOut = solverName + "-" + MessageAddress.OUTPUT.getName();
 
         await().ignoreException(NullPointerException.class).atMost(1, MINUTES).untilAsserted(() -> {
-            OptaPlannerSolver updatedSolver = mockServer.getClient()
+            OptaPlannerSolver updatedSolver = getMockServer().getClient()
                     .resources(OptaPlannerSolver.class)
                     .inNamespace(solver.getMetadata().getNamespace())
                     .withName(solver.getMetadata().getName())
@@ -82,7 +75,7 @@ public class OptaPlannerSolverReconcilerTest {
                     .isEqualTo(expectedMessageAddressOut);
         });
 
-        ConfigMap configMap = mockServer.getClient()
+        ConfigMap configMap = getMockServer().getClient()
                 .resources(ConfigMap.class)
                 .inNamespace(solver.getMetadata().getNamespace())
                 .withName(solver.getConfigMapName())
@@ -93,7 +86,7 @@ public class OptaPlannerSolverReconcilerTest {
         assertThat(configMapData.get(ConfigMapDependentResource.SOLVER_MESSAGE_OUTPUT_KEY))
                 .isEqualTo(expectedMessageAddressOut);
 
-        List<Deployment> deployments = mockServer.getClient()
+        List<Deployment> deployments = getMockServer().getClient()
                 .resources(Deployment.class)
                 .inNamespace(solver.getMetadata().getNamespace())
                 .list()

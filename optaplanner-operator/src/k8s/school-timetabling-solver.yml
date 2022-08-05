@@ -7,6 +7,7 @@ spec:
   amqBroker:
     host: ex-aao-amqp-0-svc.artemis.svc.cluster.local
     port: 5672
+    managementHost: ex-aao-hdls-svc.artemis.svc.cluster.local
     usernameSecretRef:
       key: activemq-username
       name: activemq-secret
@@ -15,4 +16,5 @@ spec:
       name: activemq-secret
   solverImage: quay.io/example/school-timetabling:latest
   scaling:
-    replicas: 1
+    dynamic: true
+    replicas: 3

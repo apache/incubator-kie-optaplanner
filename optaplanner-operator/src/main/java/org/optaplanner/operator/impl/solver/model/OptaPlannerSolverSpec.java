@@ -6,15 +6,6 @@ public final class OptaPlannerSolverSpec {
 
     private Scaling scaling;
 
-    public OptaPlannerSolverSpec() {
-        // required by Jackson
-    }
-
-    public OptaPlannerSolverSpec(String solverImage, AmqBroker amqBroker) {
-        this.solverImage = solverImage;
-        this.amqBroker = amqBroker;
-    }
-
     public String getSolverImage() {
         return solverImage;
     }

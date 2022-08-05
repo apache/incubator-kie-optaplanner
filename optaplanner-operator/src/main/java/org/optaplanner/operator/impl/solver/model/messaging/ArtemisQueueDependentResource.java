@@ -12,7 +12,7 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.CRUKubernetes
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependent;
 
 @KubernetesDependent
-public class ArtemisQueueDependentResource extends CRUKubernetesDependentResource<ArtemisQueue, OptaPlannerSolver> {
+public final class ArtemisQueueDependentResource extends CRUKubernetesDependentResource<ArtemisQueue, OptaPlannerSolver> {
 
     public ArtemisQueueDependentResource(MessageAddress messageAddress, KubernetesClient kubernetesClient) {
         super(ArtemisQueue.class);

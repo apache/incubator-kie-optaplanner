@@ -9,6 +9,8 @@ import org.optaplanner.operator.impl.solver.model.ConfigMapDependentResource;
 import org.optaplanner.operator.impl.solver.model.DeploymentDependentResource;
 import org.optaplanner.operator.impl.solver.model.OptaPlannerSolver;
 import org.optaplanner.operator.impl.solver.model.OptaPlannerSolverStatus;
+import org.optaplanner.operator.impl.solver.model.keda.ScaledObjectDependentResource;
+import org.optaplanner.operator.impl.solver.model.keda.TriggerAuthenticationDependentResource;
 import org.optaplanner.operator.impl.solver.model.messaging.ArtemisQueue;
 import org.optaplanner.operator.impl.solver.model.messaging.ArtemisQueueDependentResource;
 import org.optaplanner.operator.impl.solver.model.messaging.MessageAddress;
@@ -35,6 +37,8 @@ public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlanner
     private final ArtemisQueueDependentResource inputQueueDependentResource;
     private final ArtemisQueueDependentResource outputQueueDependentResource;
     private final ConfigMapDependentResource configMapDependentResource;
+    private final TriggerAuthenticationDependentResource triggerAuthenticationDependentResource;
+    private final ScaledObjectDependentResource scaledObjectDependentResource;
 
     @Inject
     public OptaPlannerSolverReconciler(KubernetesClient kubernetesClient) {
@@ -42,6 +46,8 @@ public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlanner
         inputQueueDependentResource = new ArtemisQueueDependentResource(MessageAddress.INPUT, kubernetesClient);
         outputQueueDependentResource = new ArtemisQueueDependentResource(MessageAddress.OUTPUT, kubernetesClient);
         configMapDependentResource = new ConfigMapDependentResource(kubernetesClient);
+        triggerAuthenticationDependentResource = new TriggerAuthenticationDependentResource(kubernetesClient);
+        scaledObjectDependentResource = new ScaledObjectDependentResource(kubernetesClient);
 
         // The two dependent resource of the same type need to be differentiated by a label.
         inputQueueDependentResource.configureWith(
@@ -59,7 +65,9 @@ public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlanner
         return EventSourceInitializer.nameEventSources(deploymentDependentResource.initEventSource(context),
                 inputQueueDependentResource.initEventSource(context),
                 outputQueueDependentResource.initEventSource(context),
-                configMapDependentResource.initEventSource(context));
+                configMapDependentResource.initEventSource(context),
+                triggerAuthenticationDependentResource.initEventSource(context),
+                scaledObjectDependentResource.initEventSource(context));
     }
 
     @Override
@@ -67,6 +75,11 @@ public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlanner
         deploymentDependentResource.reconcile(solver, context);
         inputQueueDependentResource.reconcile(solver, context);
         outputQueueDependentResource.reconcile(solver, context);
+
+        if (solver.getSpec().getScaling().isDynamic()) {
+            triggerAuthenticationDependentResource.reconcile(solver, context);
+            scaledObjectDependentResource.reconcile(solver, context);
+        }
 
         Optional<ArtemisQueue> inputQueue = inputQueueDependentResource.getSecondaryResource(solver);
         Optional<ArtemisQueue> outputQueue = outputQueueDependentResource.getSecondaryResource(solver);

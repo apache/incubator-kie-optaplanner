@@ -1,8 +1,8 @@
 package org.optaplanner.operator.impl.solver.model;
 
-public class Scaling {
+public final class Scaling {
 
-    private boolean dynamic;
+    private boolean dynamic = false;
 
     private int replicas = 1;
 
