@@ -6,6 +6,15 @@ public final class Scaling {
 
     private int replicas = 1;
 
+    public Scaling() {
+        // Required by Jackson
+    }
+
+    public Scaling(boolean dynamic, int replicas) {
+        this.dynamic = dynamic;
+        this.replicas = replicas;
+    }
+
     public boolean isDynamic() {
         return dynamic;
     }

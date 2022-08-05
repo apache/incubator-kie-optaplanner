@@ -32,8 +32,8 @@ spec:
 public final class TriggerAuthenticationDependentResource
         extends CRUKubernetesDependentResource<TriggerAuthentication, OptaPlannerSolver> {
 
-    private static final String PARAM_USERNAME = "username";
-    private static final String PARAM_PASSWORD = "password";
+    public static final String PARAM_USERNAME = "username";
+    public static final String PARAM_PASSWORD = "password";
 
     public TriggerAuthenticationDependentResource(KubernetesClient kubernetesClient) {
         super(TriggerAuthentication.class);
@@ -45,7 +45,7 @@ public final class TriggerAuthenticationDependentResource
         final SecretKeySelector amqUsernameSecretKeySelector =
                 optaPlannerSolver.getSpec().getAmqBroker().getUsernameSecretRef();
         final SecretKeySelector amqPasswordSecretKeySelector =
-                optaPlannerSolver.getSpec().getAmqBroker().getUsernameSecretRef();
+                optaPlannerSolver.getSpec().getAmqBroker().getPasswordSecretRef();
         TriggerAuthenticationSpec spec = new TriggerAuthenticationSpec()
                 .withSecretTargetRef(SecretTargetRef.fromSecretKeySelector(PARAM_USERNAME, amqUsernameSecretKeySelector))
                 .withSecretTargetRef(SecretTargetRef.fromSecretKeySelector(PARAM_PASSWORD, amqPasswordSecretKeySelector));

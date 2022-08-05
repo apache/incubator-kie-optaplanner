@@ -42,7 +42,7 @@ spec:
 @KubernetesDependent
 public final class ScaledObjectDependentResource extends CRUKubernetesDependentResource<ScaledObject, OptaPlannerSolver> {
 
-    private static final String ARTEMIS_QUEUE_TRIGGER = "artemis-queue";
+    public static final String ARTEMIS_QUEUE_TRIGGER = "artemis-queue";
 
     /**
      * Required to scale down to zero pods.
