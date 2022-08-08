@@ -186,4 +186,35 @@ class RandomSubListChangeMoveSelectorTest {
 
         random.assertIntBoundJustRequested(destinationIndexRange);
     }
+
+    @Test
+    void sizeUnrestricted() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListValue v4 = new TestdataListValue("4");
+        TestdataListEntity a = TestdataListEntity.createWithValues("A", v1, v2, v3);
+        TestdataListEntity b = TestdataListEntity.createWithValues("B");
+        TestdataListEntity c = TestdataListEntity.createWithValues("C", v4);
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+
+        RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
+                getListVariableDescriptor(scoreDirector),
+                // Selectors must be accurate; their sizes affect the moveSelector size.
+                mockEntitySelector(a, b, c),
+                mockEntityIndependentValueSelector(v1, v2, v3, v4),
+                1,
+                Integer.MAX_VALUE);
+
+        TestRandom random = new TestRandom(0, 0);
+
+        SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
+        when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
+        when(solverScope.getWorkingRandom()).thenReturn(random);
+        moveSelector.solvingStarted(solverScope);
+
+        assertCodesOfNeverEndingMoveSelector(moveSelector, 26 + 5);
+    }
 }

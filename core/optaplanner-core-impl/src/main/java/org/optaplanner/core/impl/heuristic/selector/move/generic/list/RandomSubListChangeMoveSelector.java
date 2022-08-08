@@ -67,6 +67,14 @@ public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelec
 
     @Override
     public long getSize() {
-        return 0;
+        long d = entitySelector.getSize() + valueSelector.getSize();
+        long moveCount = 0;
+        for (Object entity : (Iterable<?>) entitySelector::endingIterator) {
+            int n = listVariableDescriptor.getListSize(entity);
+            int triangle = TriangularNumbers.nth(n);
+            int pyramid = triangle * (2 * n + 1) / 3;
+            moveCount += triangle * (d - n - 2) + pyramid;
+        }
+        return moveCount;
     }
 }
