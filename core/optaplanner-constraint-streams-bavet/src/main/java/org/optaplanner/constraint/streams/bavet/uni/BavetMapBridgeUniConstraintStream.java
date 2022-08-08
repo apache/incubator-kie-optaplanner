@@ -52,7 +52,7 @@ public final class BavetMapBridgeUniConstraintStream<Solution_, A, NewA>
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         if (!childStreamList.isEmpty()) {
             throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's a flattenLast bridge.");
+                    + ") has a non-empty childStreamList (" + childStreamList + ") but it's a flattenLast bridge.");
         }
         int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
         int outputStoreSize = buildHelper.extractTupleStoreSize(mapStream);
