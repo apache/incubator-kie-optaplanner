@@ -23,29 +23,17 @@ class TriangularNumbersTest {
 
     @ParameterizedTest
     @MethodSource("nthProvider")
-    void nth(int n, int nthTriangularNumber) {
-        assertThat(TriangularNumbers.nth(n)).isEqualTo(nthTriangularNumber);
+    void nthTriangle(int n, int nthTriangularNumber) {
+        assertThat(TriangularNumbers.nthTriangle(n)).isEqualTo(nthTriangularNumber);
     }
 
     @ParameterizedTest
     @MethodSource("nthProvider")
-    void root(int n, int nthTriangularNumber) {
-        assertThat(TriangularNumbers.root(nthTriangularNumber)).isEqualTo(n);
+    void triangularRoot(int n, int nthTriangularNumber) {
+        assertThat(TriangularNumbers.triangularRoot(nthTriangularNumber)).isEqualTo(n);
     }
 
-    @ParameterizedTest
-    @MethodSource("nthProvider")
-    void floorRootExact(int n, int nthTriangularNumber) {
-        assertThat(TriangularNumbers.floorRoot(nthTriangularNumber)).isEqualTo(n);
-    }
-
-    @ParameterizedTest
-    @MethodSource("nthProvider")
-    void ceilRootExact(int n, int nthTriangularNumber) {
-        assertThat(TriangularNumbers.ceilRoot(nthTriangularNumber)).isEqualTo(n);
-    }
-
-    static Stream<Arguments> floorRootProvider() {
+    static Stream<Arguments> nonTriangularRoots() {
         return Stream.of(
                 arguments(2, 1),
                 arguments(4, 2),
@@ -56,14 +44,8 @@ class TriangularNumbersTest {
     }
 
     @ParameterizedTest
-    @MethodSource("floorRootProvider")
-    void floorRoot(int x, int lesserTriangle) {
-        assertThat(TriangularNumbers.floorRoot(x)).isEqualTo(lesserTriangle);
-    }
-
-    @ParameterizedTest
-    @MethodSource("floorRootProvider")
-    void ceilRoot(int x, int lesserTriangle) {
-        assertThat(TriangularNumbers.ceilRoot(x)).isEqualTo(lesserTriangle + 1);
+    @MethodSource
+    void nonTriangularRoots(int x, int rootFloor) {
+        assertThat(TriangularNumbers.triangularRoot(x)).isStrictlyBetween((double) rootFloor, rootFloor + 1.0);
     }
 }

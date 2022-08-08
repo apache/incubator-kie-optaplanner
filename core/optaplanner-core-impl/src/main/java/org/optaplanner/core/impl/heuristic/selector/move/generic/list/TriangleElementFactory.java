@@ -1,5 +1,8 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
+import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.TriangularNumbers.nthTriangle;
+import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.TriangularNumbers.triangularRoot;
+
 import java.util.Random;
 
 final class TriangleElementFactory {
@@ -31,9 +34,9 @@ final class TriangleElementFactory {
      */
     TriangleElement nextElement(int listSize) throws IllegalArgumentException {
         // Reduce the triangle base by the minimum subList size.
-        int subListCount = TriangularNumbers.nth(listSize - minimumSubListSize + 1);
+        int subListCount = nthTriangle(listSize - minimumSubListSize + 1);
         // The top triangle represents all subLists of size greater or equal to maximum subList size. Remove them all.
-        int topTriangleSize = listSize <= maximumSubListSize ? 0 : TriangularNumbers.nth(listSize - maximumSubListSize);
+        int topTriangleSize = listSize <= maximumSubListSize ? 0 : nthTriangle(listSize - maximumSubListSize);
         // Triangle elements are indexed from 1.
         int subListIndex = workingRandom.nextInt(subListCount - topTriangleSize) + topTriangleSize + 1;
         return TriangleElement.valueOf(subListIndex);
@@ -52,8 +55,8 @@ final class TriangleElementFactory {
         }
 
         static TriangleElement valueOf(int index) {
-            int level = TriangularNumbers.ceilRoot(index);
-            return new TriangleElement(index, level, index - TriangularNumbers.nth(level - 1));
+            int level = (int) Math.ceil(triangularRoot(index));
+            return new TriangleElement(index, level, index - nthTriangle(level - 1));
         }
 
         public int getIndex() {

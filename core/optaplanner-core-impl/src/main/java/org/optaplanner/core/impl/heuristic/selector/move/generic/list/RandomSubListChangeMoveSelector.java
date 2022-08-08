@@ -1,5 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
+import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.TriangularNumbers.nthTriangle;
+
 import java.util.Iterator;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
@@ -85,7 +87,7 @@ public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelec
     }
 
     private static long moveCount(long destinationRange, int listSize, int n) {
-        int triangle = TriangularNumbers.nth(n);
+        int triangle = nthTriangle(n);
         int pyramid = triangle * (2 * n + 1) / 3;
         return triangle * (destinationRange - listSize - 2) + pyramid;
     }
