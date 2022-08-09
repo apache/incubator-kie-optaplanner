@@ -57,10 +57,19 @@ class RandomSubListChangeMoveIterator<Solution_> extends UpcomingSelectionIterat
 
     @Override
     protected Move<Solution_> createUpcomingSelection() {
-        if (!valueIterator.hasNext() || destinationIndexRange == 0 || biggestListSize < minimumSubListSize) {
+        if (!hasNextSubList() || destinationIndexRange == 0) {
             return noUpcomingSelection();
         }
+        SubList subList = nextSubList();
+        Pair<Object, Integer> destination = entityAndIndexFromGlobalIndex(workingRandom.nextInt(destinationIndexRange));
+        return new SubListChangeMove<>(listVariableDescriptor, subList, destination.getKey(), destination.getValue());
+    }
 
+    private boolean hasNextSubList() {
+        return valueIterator.hasNext() && biggestListSize >= minimumSubListSize;
+    }
+
+    private SubList nextSubList() {
         Object sourceEntity = null;
         int listSize = 0;
 
@@ -79,10 +88,7 @@ class RandomSubListChangeMoveIterator<Solution_> extends UpcomingSelectionIterat
         int subListLength = listSize - triangleElement.getLevel() + 1;
         int sourceIndex = triangleElement.getIndexOnLevel() - 1;
 
-        Pair<Object, Integer> destination = entityAndIndexFromGlobalIndex(workingRandom.nextInt(destinationIndexRange));
-
-        return new SubListChangeMove<>(listVariableDescriptor, sourceEntity, sourceIndex, subListLength, destination.getKey(),
-                destination.getValue());
+        return new SubList(sourceEntity, sourceIndex, subListLength);
     }
 
     Pair<Object, Integer> entityAndIndexFromGlobalIndex(int index) {

@@ -22,6 +22,12 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
     private final Object destinationEntity;
     private final int destinationIndex;
 
+    public SubListChangeMove(ListVariableDescriptor<Solution_> variableDescriptor, SubList subList, Object destinationEntity,
+            Integer destinationIndex) {
+        this(variableDescriptor, subList.getEntity(), subList.getFromIndex(), subList.getLength(), destinationEntity,
+                destinationIndex);
+    }
+
     public SubListChangeMove(
             ListVariableDescriptor<Solution_> variableDescriptor,
             Object sourceEntity, int sourceIndex, int length,
