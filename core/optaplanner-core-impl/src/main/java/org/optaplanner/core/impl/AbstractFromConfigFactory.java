@@ -77,7 +77,7 @@ public abstract class AbstractFromConfigFactory<Solution_, Config_ extends Abstr
                 : getVariableDescriptorForName(entityDescriptor, variableName);
     }
 
-    private GenuineVariableDescriptor<Solution_> getVariableDescriptorForName(EntityDescriptor<Solution_> entityDescriptor,
+    protected GenuineVariableDescriptor<Solution_> getVariableDescriptorForName(EntityDescriptor<Solution_> entityDescriptor,
             String variableName) {
         GenuineVariableDescriptor<Solution_> variableDescriptor = entityDescriptor.getGenuineVariableDescriptor(variableName);
         if (variableDescriptor == null) {

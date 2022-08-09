@@ -59,18 +59,9 @@ public class ValueSelectorFactory<Solution_>
 
     public GenuineVariableDescriptor<Solution_> extractVariableDescriptor(HeuristicConfigPolicy<Solution_> configPolicy,
             EntityDescriptor<Solution_> entityDescriptor) {
-        entityDescriptor = downcastEntityDescriptor(configPolicy, entityDescriptor);
-        if (config.getVariableName() != null) {
-            GenuineVariableDescriptor<Solution_> variableDescriptor =
-                    entityDescriptor.getGenuineVariableDescriptor(config.getVariableName());
-            if (variableDescriptor == null) {
-                throw new IllegalArgumentException("The selectorConfig (" + config
-                        + ") has a variableName (" + config.getVariableName()
-                        + ") which is not a valid planning variable on entityClass ("
-                        + entityDescriptor.getEntityClass() + ").\n"
-                        + entityDescriptor.buildInvalidVariableNameExceptionMessage(config.getVariableName()));
-            }
-            return variableDescriptor;
+        String variableName = config.getVariableName();
+        if (variableName != null) {
+            return getVariableDescriptorForName(downcastEntityDescriptor(configPolicy, entityDescriptor), variableName);
         } else if (config.getMimicSelectorRef() != null) {
             return configPolicy.getValueMimicRecorder(config.getMimicSelectorRef()).getVariableDescriptor();
         } else {
