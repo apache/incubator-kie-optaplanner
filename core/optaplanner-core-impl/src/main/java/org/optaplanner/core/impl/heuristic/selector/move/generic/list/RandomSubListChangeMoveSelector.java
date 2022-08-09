@@ -5,14 +5,10 @@ import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.Tri
 import java.util.Iterator;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
-import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
-import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
-import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
@@ -21,8 +17,7 @@ public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelec
     private final EntityIndependentValueSelector<Solution_> valueSelector;
     private final int minimumSubListSize;
     private final int maximumSubListSize;
-
-    private SingletonInverseVariableSupply inverseVariableSupply;
+    private final RandomSubListSelector<Solution_> subListSelector;
 
     public RandomSubListChangeMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
@@ -34,27 +29,16 @@ public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelec
         this.valueSelector = valueSelector;
         this.minimumSubListSize = minimumSubListSize;
         this.maximumSubListSize = maximumSubListSize;
+        subListSelector = new RandomSubListSelector<>(listVariableDescriptor, entitySelector, valueSelector,
+                minimumSubListSize, maximumSubListSize);
         phaseLifecycleSupport.addEventListener(entitySelector);
         phaseLifecycleSupport.addEventListener(valueSelector);
-    }
-
-    @Override
-    public void solvingStarted(SolverScope<Solution_> solverScope) {
-        super.solvingStarted(solverScope);
-        SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
-        inverseVariableSupply = supplyManager.demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor));
-    }
-
-    @Override
-    public void solvingEnded(SolverScope<Solution_> solverScope) {
-        super.solvingEnded(solverScope);
-        inverseVariableSupply = null;
+        phaseLifecycleSupport.addEventListener(subListSelector);
     }
 
     @Override
     public Iterator<Move<Solution_>> iterator() {
-        return new RandomSubListChangeMoveIterator<>(listVariableDescriptor, inverseVariableSupply, valueSelector,
-                entitySelector, minimumSubListSize, maximumSubListSize, workingRandom);
+        return new RandomSubListChangeMoveIterator<>(listVariableDescriptor, subListSelector, entitySelector, workingRandom);
     }
 
     @Override
