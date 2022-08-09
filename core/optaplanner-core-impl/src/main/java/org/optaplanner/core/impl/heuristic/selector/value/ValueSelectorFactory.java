@@ -100,7 +100,7 @@ public class ValueSelectorFactory<Solution_>
             SelectionOrder inheritedSelectionOrder, boolean applyReinitializeVariableFiltering,
             boolean applyUnassignedValueFiltering) {
         GenuineVariableDescriptor<Solution_> variableDescriptor = deduceGenuineVariableDescriptor(
-                downcastEntityDescriptor(configPolicy, entityDescriptor));
+                downcastEntityDescriptor(configPolicy, entityDescriptor), config.getVariableName());
         if (config.getMimicSelectorRef() != null) {
             ValueSelector<Solution_> valueSelector = buildMimicReplaying(configPolicy);
             valueSelector =
@@ -142,12 +142,6 @@ public class ValueSelectorFactory<Solution_>
                 applyReinitializeVariableFiltering(applyReinitializeVariableFiltering, variableDescriptor, valueSelector);
         valueSelector = applyDowncasting(valueSelector);
         return valueSelector;
-    }
-
-    private GenuineVariableDescriptor<Solution_> deduceGenuineVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor) {
-        return config.getVariableName() == null
-                ? deduceVariableDescriptor(entityDescriptor)
-                : deduceVariableDescriptor(entityDescriptor, config.getVariableName());
     }
 
     protected ValueSelector<Solution_> buildMimicReplaying(HeuristicConfigPolicy<Solution_> configPolicy) {
