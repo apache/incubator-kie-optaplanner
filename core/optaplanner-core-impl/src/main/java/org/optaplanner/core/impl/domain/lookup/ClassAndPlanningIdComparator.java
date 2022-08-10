@@ -7,12 +7,12 @@ import java.util.Map;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.common.accessor.CachedMemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 
 public class ClassAndPlanningIdComparator implements Comparator<Object> {
 
-    private CachedMemberAccessorFactory cachedMemberAccessorFactory;
+    private MemberAccessorFactory memberAccessorFactory;
     private DomainAccessType domainAccessType;
     private boolean failFastIfNoPlanningId;
     private Map<Class, MemberAccessor> decisionCache = new HashMap<>();
@@ -28,9 +28,9 @@ public class ClassAndPlanningIdComparator implements Comparator<Object> {
         this.failFastIfNoPlanningId = failFastIfNoPlanningId;
     }
 
-    public ClassAndPlanningIdComparator(CachedMemberAccessorFactory cachedMemberAccessorFactory,
+    public ClassAndPlanningIdComparator(MemberAccessorFactory memberAccessorFactory,
             DomainAccessType domainAccessType, boolean failFastIfNoPlanningId) {
-        this.cachedMemberAccessorFactory = cachedMemberAccessorFactory;
+        this.memberAccessorFactory = memberAccessorFactory;
         this.domainAccessType = domainAccessType;
         this.failFastIfNoPlanningId = failFastIfNoPlanningId;
     }
@@ -96,7 +96,7 @@ public class ClassAndPlanningIdComparator implements Comparator<Object> {
     }
 
     private MemberAccessor findMemberAccessor(Class<?> clazz, DomainAccessType domainAccessType) {
-        return cachedMemberAccessorFactory == null ? ConfigUtils.findPlanningIdMemberAccessor(clazz, domainAccessType)
-                : ConfigUtils.findPlanningIdMemberAccessor(clazz, cachedMemberAccessorFactory, domainAccessType);
+        return memberAccessorFactory == null ? ConfigUtils.findPlanningIdMemberAccessor(clazz, domainAccessType)
+                : ConfigUtils.findPlanningIdMemberAccessor(clazz, memberAccessorFactory, domainAccessType);
     }
 }

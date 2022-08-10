@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -85,12 +87,42 @@ public final class MemberAccessorFactory {
         }
     }
 
+    private final Map<String, MemberAccessor> memberAccessorCache;
+
+    public MemberAccessorFactory() {
+        this(null);
+    }
+
+    /**
+     * Prefills the member accessor cache.
+     *
+     * @param memberAccessorMap key is the fully qualified member name
+     */
+    public MemberAccessorFactory(Map<String, MemberAccessor> memberAccessorMap) {
+        // The MemberAccessorFactory may be accessed, and this cache both read and updated, by multiple threads.
+        this.memberAccessorCache =
+                memberAccessorMap == null ? new ConcurrentHashMap<>() : new ConcurrentHashMap<>(memberAccessorMap);
+    }
+
+    /**
+     * Creates a new member accessor based on the given parameters. Caches the result.
+     *
+     * @param member never null, method or field to access
+     * @param memberAccessorType
+     * @param annotationClass the annotation the member was annotated with (used for error reporting)
+     * @param domainAccessType
+     * @return never null, new {@link MemberAccessor} instance unless already found in memberAccessorMap
+     */
+    public MemberAccessor buildAndCacheMemberAccessor(Member member, MemberAccessorType memberAccessorType,
+            Class<? extends Annotation> annotationClass, DomainAccessType domainAccessType) {
+        String generatedClassName = GizmoMemberAccessorFactory.getGeneratedClassName(member);
+        return memberAccessorCache.computeIfAbsent(generatedClassName,
+                k -> MemberAccessorFactory.buildMemberAccessor(member, memberAccessorType, annotationClass, domainAccessType));
+    }
+
     public enum MemberAccessorType {
         FIELD_OR_READ_METHOD,
         FIELD_OR_GETTER_METHOD,
         FIELD_OR_GETTER_METHOD_WITH_SETTER
-    }
-
-    private MemberAccessorFactory() {
     }
 }

@@ -30,7 +30,6 @@ import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
-import org.optaplanner.core.impl.domain.common.accessor.CachedMemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 
@@ -460,13 +459,13 @@ public class ConfigUtils {
     }
 
     public static <C> MemberAccessor findPlanningIdMemberAccessor(Class<C> clazz,
-            CachedMemberAccessorFactory cachedMemberAccessorFactory, DomainAccessType domainAccessType) {
+            MemberAccessorFactory memberAccessorFactory, DomainAccessType domainAccessType) {
         Member member = getSingleMember(clazz, PlanningId.class);
         if (member == null) {
             return null;
         }
         MemberAccessor memberAccessor =
-                cachedMemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class,
+                memberAccessorFactory.buildAndCacheMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class,
                         domainAccessType);
         assertPlanningIdMemberIsComparable(clazz, member, memberAccessor);
         return memberAccessor;

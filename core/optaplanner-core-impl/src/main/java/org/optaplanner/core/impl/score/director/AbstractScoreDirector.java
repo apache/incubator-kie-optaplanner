@@ -174,7 +174,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         if (!planningIdAccessorCacheMap.containsKey(factClass)) {
             SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
             planningIdAccessorCacheMap.put(factClass,
-                    ConfigUtils.findPlanningIdMemberAccessor(factClass, solutionDescriptor.getCachedMemberAccessorFactory(),
+                    ConfigUtils.findPlanningIdMemberAccessor(factClass, solutionDescriptor.getMemberAccessorFactory(),
                             solutionDescriptor.getDomainAccessType()));
         }
         MemberAccessor planningIdAccessor = planningIdAccessorCacheMap.get(factClass);
@@ -744,7 +744,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     private Map<Object, Set<ConstraintMatch<Score_>>> createConstraintMatchMap(
             Collection<ConstraintMatchTotal<Score_>> constraintMatchTotals) {
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
-        Comparator<Object> comparator = new ClassAndPlanningIdComparator(solutionDescriptor.getCachedMemberAccessorFactory(),
+        Comparator<Object> comparator = new ClassAndPlanningIdComparator(solutionDescriptor.getMemberAccessorFactory(),
                 solutionDescriptor.getDomainAccessType(), false);
         Map<Object, Set<ConstraintMatch<Score_>>> constraintMatchMap =
                 new LinkedHashMap<>(constraintMatchTotals.size() * 16);
