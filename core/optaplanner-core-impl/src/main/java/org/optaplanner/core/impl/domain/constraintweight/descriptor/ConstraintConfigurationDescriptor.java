@@ -111,9 +111,8 @@ public class ConstraintConfigurationDescriptor<Solution_> {
     private void processParameterAnnotation(DescriptorPolicy descriptorPolicy, Member member,
             ScoreDefinition scoreDefinition) {
         if (((AnnotatedElement) member).isAnnotationPresent(ConstraintWeight.class)) {
-            MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD,
-                    ConstraintWeight.class, descriptorPolicy.getDomainAccessType(),
-                    descriptorPolicy.getGeneratedMemberAccessorMap());
+            MemberAccessor memberAccessor = MemberAccessorFactory.get().buildMemberAccessor(member,
+                    FIELD_OR_READ_METHOD, ConstraintWeight.class, descriptorPolicy.getDomainAccessType());
             if (constraintWeightDescriptorMap.containsKey(memberAccessor.getName())) {
                 MemberAccessor duplicate = constraintWeightDescriptorMap.get(memberAccessor.getName()).getMemberAccessor();
                 throw new IllegalStateException("The constraintConfigurationClass (" + constraintConfigurationClass

@@ -55,8 +55,7 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
 
     private <A> DefaultBiJoiner<A, A> buildLessThanId(Class<A> sourceClass) {
         MemberAccessor planningIdMemberAccessor =
-                ConfigUtils.findPlanningIdMemberAccessor(sourceClass, getSolutionDescriptor().getDomainAccessType(),
-                        getSolutionDescriptor().getGeneratedMemberAccessorMap());
+                ConfigUtils.findPlanningIdMemberAccessor(sourceClass, getSolutionDescriptor().getDomainAccessType());
         if (planningIdMemberAccessor == null) {
             throw new IllegalArgumentException("The fromClass (" + sourceClass + ") has no member with a @"
                     + PlanningId.class.getSimpleName() + " annotation,"

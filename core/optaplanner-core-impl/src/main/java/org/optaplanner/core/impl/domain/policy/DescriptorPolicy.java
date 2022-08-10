@@ -12,7 +12,6 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 public class DescriptorPolicy {
-    private Map<String, MemberAccessor> generatedMemberAccessorMap = new LinkedHashMap<>();
     private Map<String, SolutionCloner> generatedSolutionClonerMap = new LinkedHashMap<>();
     private Map<String, MemberAccessor> fromSolutionValueRangeProviderMap = new LinkedHashMap<>();
     private Map<String, MemberAccessor> fromEntityValueRangeProviderMap = new LinkedHashMap<>();
@@ -49,17 +48,6 @@ public class DescriptorPolicy {
 
     public void setDomainAccessType(DomainAccessType domainAccessType) {
         this.domainAccessType = domainAccessType;
-    }
-
-    /**
-     * @return never null
-     */
-    public Map<String, MemberAccessor> getGeneratedMemberAccessorMap() {
-        return generatedMemberAccessorMap;
-    }
-
-    public void setGeneratedMemberAccessorMap(Map<String, MemberAccessor> generatedMemberAccessorMap) {
-        this.generatedMemberAccessorMap = generatedMemberAccessorMap;
     }
 
     /**

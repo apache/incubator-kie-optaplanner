@@ -6,38 +6,59 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
 
-public class MemberAccessorFactory {
+public final class MemberAccessorFactory {
+
+    private static final MemberAccessorFactory INSTANCE = new MemberAccessorFactory();
 
     // exists only so that the various member accessors can share the same text in their exception messages
     static final String CLASSLOADER_NUDGE_MESSAGE = "Maybe add getClass().getClassLoader() as a parameter to the " +
             SolverFactory.class.getSimpleName() + ".create...() method call.";
 
     /**
-     * As defined by {@link #buildMemberAccessor(Member, MemberAccessorType, Class, DomainAccessType, Map)},
-     * but caches the result in the map if provided.
+     * Prefills the member accessor cache.
+     * 
+     * @param memberAccessorMap key is the fully qualified member name
+     */
+    public static void setMemberAccessorCache(Map<String, MemberAccessor> memberAccessorMap) {
+        INSTANCE.setMemberAccessorCacheInternal(memberAccessorMap);
+    }
+
+    /**
+     * Retrieves the single MemberAccessorFactory instance.
+     */
+    public static MemberAccessorFactory get() {
+        return INSTANCE;
+    }
+
+    private Map<String, MemberAccessor> memberAccessorCache;
+
+    private void setMemberAccessorCacheInternal(Map<String, MemberAccessor> memberAccessorMap) {
+        // The MemberAccessorFactory may be accessed, and this cache both read and updated, by multiple threads.
+        this.memberAccessorCache =
+                memberAccessorMap == null ? new ConcurrentHashMap<>() : new ConcurrentHashMap<>(memberAccessorMap);
+    }
+
+    /**
+     * Creates a new member accessor based on the given parameters. Caches the result.
      *
      * @param member never null, method or field to access
      * @param memberAccessorType
      * @param annotationClass the annotation the member was annotated with (used for error reporting)
      * @param domainAccessType
-     * @param memberAccessorMap key is the fully qualified member name
      * @return never null, new {@link MemberAccessor} instance unless already found in memberAccessorMap
      */
-    public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorType memberAccessorType,
-            Class<? extends Annotation> annotationClass, DomainAccessType domainAccessType,
-            Map<String, MemberAccessor> memberAccessorMap) {
-        if (memberAccessorMap == null) {
-            return buildMemberAccessor(member, memberAccessorType, annotationClass, domainAccessType);
-        }
+    public MemberAccessor buildMemberAccessor(Member member, MemberAccessorType memberAccessorType,
+            Class<? extends Annotation> annotationClass, DomainAccessType domainAccessType) {
         String generatedClassName = GizmoMemberAccessorFactory.getGeneratedClassName(member);
-        return memberAccessorMap.computeIfAbsent(generatedClassName,
-                k -> buildMemberAccessor(member, memberAccessorType, annotationClass, domainAccessType));
+        return memberAccessorCache.computeIfAbsent(generatedClassName,
+                k -> buildMemberAccessorInternal(member, memberAccessorType, annotationClass, domainAccessType));
     }
 
     /**
@@ -49,7 +70,7 @@ public class MemberAccessorFactory {
      * @param domainAccessType
      * @return never null, new instance of the member accessor
      */
-    public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorType memberAccessorType,
+    private MemberAccessor buildMemberAccessorInternal(Member member, MemberAccessorType memberAccessorType,
             Class<? extends Annotation> annotationClass, DomainAccessType domainAccessType) {
         switch (domainAccessType) {
             case GIZMO:

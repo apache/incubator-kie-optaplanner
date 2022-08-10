@@ -12,25 +12,22 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 public class ClassAndPlanningIdComparator implements Comparator<Object> {
 
     private DomainAccessType domainAccessType;
-    private Map<String, MemberAccessor> generatedMemberAccessorMap;
     private boolean failFastIfNoPlanningId;
     private Map<Class, MemberAccessor> decisionCache = new HashMap<>();
 
     public ClassAndPlanningIdComparator() {
         // TODO This will break Quarkus once we don't open up the domain hierarchy for reflection any more
-        this(DomainAccessType.REFLECTION, new HashMap<>(), true);
+        this(DomainAccessType.REFLECTION, true);
     }
 
     public ClassAndPlanningIdComparator(boolean failFastIfNoPlanningId) {
         // TODO This will break Quarkus once we don't open up the domain hierarchy for reflection any more
-        this(DomainAccessType.REFLECTION, new HashMap<>(), failFastIfNoPlanningId);
+        this(DomainAccessType.REFLECTION, failFastIfNoPlanningId);
     }
 
     public ClassAndPlanningIdComparator(DomainAccessType domainAccessType,
-            Map<String, MemberAccessor> generatedMemberAccessorMap,
             boolean failFastIfNoPlanningId) {
         this.domainAccessType = domainAccessType;
-        this.generatedMemberAccessorMap = generatedMemberAccessorMap;
         this.failFastIfNoPlanningId = failFastIfNoPlanningId;
     }
 
@@ -47,9 +44,9 @@ public class ClassAndPlanningIdComparator implements Comparator<Object> {
             return aClass.getName().compareTo(bClass.getName());
         }
         MemberAccessor aMemberAccessor = decisionCache.computeIfAbsent(aClass,
-                clazz -> ConfigUtils.findPlanningIdMemberAccessor(clazz, domainAccessType, generatedMemberAccessorMap));
+                clazz -> ConfigUtils.findPlanningIdMemberAccessor(clazz, domainAccessType));
         MemberAccessor bMemberAccessor = decisionCache.computeIfAbsent(bClass,
-                clazz -> ConfigUtils.findPlanningIdMemberAccessor(clazz, domainAccessType, generatedMemberAccessorMap));
+                clazz -> ConfigUtils.findPlanningIdMemberAccessor(clazz, domainAccessType));
         if (failFastIfNoPlanningId) {
             if (aMemberAccessor == null) {
                 throw new IllegalArgumentException("The class (" + aClass

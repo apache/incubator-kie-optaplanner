@@ -16,8 +16,6 @@ import java.time.Year;
 import java.time.YearMonth;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -35,21 +33,12 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 public class LookUpStrategyResolver {
 
     private final LookUpStrategyType lookUpStrategyType;
-    private final Map<String, MemberAccessor> generatedMemberAccessorMap;
     private final DomainAccessType domainAccessType;
 
     private final ConcurrentMap<Class<?>, LookUpStrategy> decisionCache = new ConcurrentHashMap<>();
 
-    public LookUpStrategyResolver(DomainAccessType domainAccessType,
-            LookUpStrategyType lookUpStrategyType) {
-        this(domainAccessType, new HashMap<>(), lookUpStrategyType);
-    }
-
-    public LookUpStrategyResolver(DomainAccessType domainAccessType,
-            Map<String, MemberAccessor> generatedMemberAccessorMap,
-            LookUpStrategyType lookUpStrategyType) {
+    public LookUpStrategyResolver(DomainAccessType domainAccessType, LookUpStrategyType lookUpStrategyType) {
         this.lookUpStrategyType = lookUpStrategyType;
-        this.generatedMemberAccessorMap = generatedMemberAccessorMap;
         this.domainAccessType = domainAccessType;
         decisionCache.put(Boolean.class, new ImmutableLookUpStrategy());
         decisionCache.put(Byte.class, new ImmutableLookUpStrategy());
@@ -94,14 +83,14 @@ public class LookUpStrategyResolver {
             switch (lookUpStrategyType) {
                 case PLANNING_ID_OR_NONE:
                     MemberAccessor memberAccessor1 =
-                            ConfigUtils.findPlanningIdMemberAccessor(objectClass, domainAccessType, generatedMemberAccessorMap);
+                            ConfigUtils.findPlanningIdMemberAccessor(objectClass, domainAccessType);
                     if (memberAccessor1 == null) {
                         return new NoneLookUpStrategy();
                     }
                     return new PlanningIdLookUpStrategy(memberAccessor1);
                 case PLANNING_ID_OR_FAIL_FAST:
                     MemberAccessor memberAccessor2 =
-                            ConfigUtils.findPlanningIdMemberAccessor(objectClass, domainAccessType, generatedMemberAccessorMap);
+                            ConfigUtils.findPlanningIdMemberAccessor(objectClass, domainAccessType);
                     if (memberAccessor2 == null) {
                         throw new IllegalArgumentException("The class (" + objectClass
                                 + ") does not have a @" + PlanningId.class.getSimpleName() + " annotation,"

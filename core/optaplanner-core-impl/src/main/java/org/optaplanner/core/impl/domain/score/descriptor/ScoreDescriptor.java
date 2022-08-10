@@ -64,12 +64,11 @@ public class ScoreDescriptor {
     }
 
     private static MemberAccessor buildScoreMemberAccessor(DescriptorPolicy descriptorPolicy, Member member) {
-        return MemberAccessorFactory.buildMemberAccessor(
+        return MemberAccessorFactory.get().buildMemberAccessor(
                 member,
                 FIELD_OR_GETTER_METHOD_WITH_SETTER,
                 PlanningScore.class,
-                descriptorPolicy.getDomainAccessType(),
-                descriptorPolicy.getGeneratedMemberAccessorMap());
+                descriptorPolicy.getDomainAccessType());
     }
 
     private static Class<? extends Score<?>> extractScoreType(MemberAccessor scoreMemberAccessor, Class<?> solutionClass) {
