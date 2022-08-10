@@ -44,7 +44,7 @@ public class LookUpStrategyResolver {
     public LookUpStrategyResolver(DescriptorPolicy descriptorPolicy, LookUpStrategyType lookUpStrategyType) {
         this.lookUpStrategyType = lookUpStrategyType;
         this.domainAccessType = descriptorPolicy.getDomainAccessType();
-        this.memberAccessorFactory = descriptorPolicy.getMemberAccessorFactory();
+        this.memberAccessorFactory = descriptorPolicy.getCachedMemberAccessorFactory();
         decisionCache.put(Boolean.class, new ImmutableLookUpStrategy());
         decisionCache.put(Byte.class, new ImmutableLookUpStrategy());
         decisionCache.put(Short.class, new ImmutableLookUpStrategy());

@@ -17,7 +17,7 @@ public class DescriptorPolicy {
     private Map<String, MemberAccessor> fromSolutionValueRangeProviderMap = new LinkedHashMap<>();
     private Map<String, MemberAccessor> fromEntityValueRangeProviderMap = new LinkedHashMap<>();
     private DomainAccessType domainAccessType = DomainAccessType.REFLECTION;
-    private CachedMemberAccessorFactory memberAccessorFactory;
+    private CachedMemberAccessorFactory cachedMemberAccessorFactory;
 
     public void addFromSolutionValueRangeProvider(MemberAccessor memberAccessor) {
         String id = extractValueRangeProviderId(memberAccessor);
@@ -63,12 +63,12 @@ public class DescriptorPolicy {
         this.generatedSolutionClonerMap = generatedSolutionClonerMap;
     }
 
-    public CachedMemberAccessorFactory getMemberAccessorFactory() {
-        return memberAccessorFactory;
+    public CachedMemberAccessorFactory getCachedMemberAccessorFactory() {
+        return cachedMemberAccessorFactory;
     }
 
     public void setCachedMemberAccessorFactory(CachedMemberAccessorFactory memberAccessorFactory) {
-        this.memberAccessorFactory = memberAccessorFactory;
+        this.cachedMemberAccessorFactory = memberAccessorFactory;
     }
 
     public MemberAccessor getFromEntityValueRangeProvider(String id) {

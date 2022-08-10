@@ -203,7 +203,7 @@ public class EntityDescriptor<Solution_> {
 
     private void processValueRangeProviderAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
         if (((AnnotatedElement) member).isAnnotationPresent(ValueRangeProvider.class)) {
-            MemberAccessor memberAccessor = descriptorPolicy.getMemberAccessorFactory().buildMemberAccessor(member,
+            MemberAccessor memberAccessor = descriptorPolicy.getCachedMemberAccessorFactory().buildMemberAccessor(member,
                     FIELD_OR_READ_METHOD, ValueRangeProvider.class, descriptorPolicy.getDomainAccessType());
             descriptorPolicy.addFromEntityValueRangeProvider(
                     memberAccessor);
@@ -220,7 +220,7 @@ public class EntityDescriptor<Solution_> {
             } else {
                 memberAccessorType = FIELD_OR_GETTER_METHOD_WITH_SETTER;
             }
-            MemberAccessor memberAccessor = descriptorPolicy.getMemberAccessorFactory().buildMemberAccessor(member,
+            MemberAccessor memberAccessor = descriptorPolicy.getCachedMemberAccessorFactory().buildMemberAccessor(member,
                     memberAccessorType, variableAnnotationClass, descriptorPolicy.getDomainAccessType());
             registerVariableAccessor(variableAnnotationClass, memberAccessor);
         }
@@ -281,7 +281,7 @@ public class EntityDescriptor<Solution_> {
 
     private void processPlanningPinAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
         if (((AnnotatedElement) member).isAnnotationPresent(PlanningPin.class)) {
-            MemberAccessor memberAccessor = descriptorPolicy.getMemberAccessorFactory().buildMemberAccessor(member,
+            MemberAccessor memberAccessor = descriptorPolicy.getCachedMemberAccessorFactory().buildMemberAccessor(member,
                     FIELD_OR_READ_METHOD, PlanningPin.class, descriptorPolicy.getDomainAccessType());
             Class<?> type = memberAccessor.getType();
             if (!Boolean.TYPE.isAssignableFrom(type) && !Boolean.class.isAssignableFrom(type)) {

@@ -268,7 +268,7 @@ public class SolutionDescriptor<Solution_> {
 
     private void processValueRangeProviderAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
         if (((AnnotatedElement) member).isAnnotationPresent(ValueRangeProvider.class)) {
-            MemberAccessor memberAccessor = descriptorPolicy.getMemberAccessorFactory().buildMemberAccessor(member,
+            MemberAccessor memberAccessor = descriptorPolicy.getCachedMemberAccessorFactory().buildMemberAccessor(member,
                     FIELD_OR_READ_METHOD, ValueRangeProvider.class, descriptorPolicy.getDomainAccessType());
             descriptorPolicy.addFromSolutionValueRangeProvider(memberAccessor);
         }
@@ -377,7 +377,7 @@ public class SolutionDescriptor<Solution_> {
     private void processConstraintConfigurationProviderAnnotation(
             DescriptorPolicy descriptorPolicy, Member member,
             Class<? extends Annotation> annotationClass) {
-        MemberAccessor memberAccessor = descriptorPolicy.getMemberAccessorFactory().buildMemberAccessor(member,
+        MemberAccessor memberAccessor = descriptorPolicy.getCachedMemberAccessorFactory().buildMemberAccessor(member,
                 FIELD_OR_READ_METHOD, annotationClass, descriptorPolicy.getDomainAccessType());
         if (constraintConfigurationMemberAccessor != null) {
             if (!constraintConfigurationMemberAccessor.getName().equals(memberAccessor.getName())
@@ -410,7 +410,7 @@ public class SolutionDescriptor<Solution_> {
     private void processProblemFactPropertyAnnotation(DescriptorPolicy descriptorPolicy,
             Member member,
             Class<? extends Annotation> annotationClass) {
-        MemberAccessor memberAccessor = descriptorPolicy.getMemberAccessorFactory().buildMemberAccessor(member,
+        MemberAccessor memberAccessor = descriptorPolicy.getCachedMemberAccessorFactory().buildMemberAccessor(member,
                 FIELD_OR_READ_METHOD, annotationClass, descriptorPolicy.getDomainAccessType());
         assertNoFieldAndGetterDuplicationOrConflict(memberAccessor, annotationClass);
         if (annotationClass == ProblemFactProperty.class) {
@@ -432,7 +432,7 @@ public class SolutionDescriptor<Solution_> {
     private void processPlanningEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy,
             Member member,
             Class<? extends Annotation> annotationClass) {
-        MemberAccessor memberAccessor = descriptorPolicy.getMemberAccessorFactory().buildMemberAccessor(member,
+        MemberAccessor memberAccessor = descriptorPolicy.getCachedMemberAccessorFactory().buildMemberAccessor(member,
                 FIELD_OR_GETTER_METHOD, annotationClass, descriptorPolicy.getDomainAccessType());
         assertNoFieldAndGetterDuplicationOrConflict(memberAccessor, annotationClass);
         if (annotationClass == PlanningEntityProperty.class) {
