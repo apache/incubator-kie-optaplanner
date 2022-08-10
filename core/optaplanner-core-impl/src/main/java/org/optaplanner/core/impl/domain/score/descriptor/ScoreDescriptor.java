@@ -64,7 +64,7 @@ public class ScoreDescriptor {
     }
 
     private static MemberAccessor buildScoreMemberAccessor(DescriptorPolicy descriptorPolicy, Member member) {
-        return MemberAccessorFactory.get().buildMemberAccessor(
+        return descriptorPolicy.getMemberAccessorFactory().buildMemberAccessor(
                 member,
                 FIELD_OR_GETTER_METHOD_WITH_SETTER,
                 PlanningScore.class,

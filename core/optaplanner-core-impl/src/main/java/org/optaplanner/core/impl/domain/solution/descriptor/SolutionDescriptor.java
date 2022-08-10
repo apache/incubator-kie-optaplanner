@@ -96,12 +96,13 @@ public class SolutionDescriptor<Solution_> {
     public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(DomainAccessType domainAccessType,
             Class<Solution_> solutionClass, Map<String, MemberAccessor> memberAccessorMap,
             Map<String, SolutionCloner> solutionClonerMap, List<Class<?>> entityClassList) {
-        MemberAccessorFactory.setMemberAccessorCache(memberAccessorMap);
         solutionClonerMap = Objects.requireNonNullElse(solutionClonerMap, Collections.emptyMap());
+        SolutionDescriptor<Solution_> solutionDescriptor = new SolutionDescriptor<>(solutionClass, memberAccessorMap);
         DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
         descriptorPolicy.setDomainAccessType(domainAccessType);
         descriptorPolicy.setGeneratedSolutionClonerMap(solutionClonerMap);
-        SolutionDescriptor<Solution_> solutionDescriptor = new SolutionDescriptor<>(solutionClass);
+        descriptorPolicy.setMemberAccessorFactory(solutionDescriptor.memberAccessorFactory);
+
         solutionDescriptor.processAnnotations(descriptorPolicy, entityClassList);
         for (Class<?> entityClass : sortEntityClassList(entityClassList)) {
             EntityDescriptor<Solution_> entityDescriptor = new EntityDescriptor<>(solutionDescriptor, entityClass);
@@ -158,6 +159,8 @@ public class SolutionDescriptor<Solution_> {
     private SolutionCloner<Solution_> solutionCloner;
     private boolean assertModelForCloning = false;
 
+    private MemberAccessorFactory memberAccessorFactory;
+
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
@@ -167,6 +170,15 @@ public class SolutionDescriptor<Solution_> {
         if (solutionClass.getPackage() == null) {
             LOGGER.warn("The solutionClass ({}) should be in a proper java package.", solutionClass);
         }
+    }
+
+    private SolutionDescriptor(Class<Solution_> solutionClass, Map<String, MemberAccessor> memberAccessorMap) {
+        this(solutionClass);
+        this.memberAccessorFactory = new MemberAccessorFactory(memberAccessorMap);
+    }
+
+    public MemberAccessorFactory getMemberAccessorFactory() {
+        return memberAccessorFactory;
     }
 
     public void addEntityDescriptor(EntityDescriptor<Solution_> entityDescriptor) {
@@ -251,12 +263,12 @@ public class SolutionDescriptor<Solution_> {
             solutionCloner = ConfigUtils.newInstance(this::toString, "solutionClonerClass", solutionClonerClass);
         }
         lookUpStrategyResolver =
-                new LookUpStrategyResolver(descriptorPolicy.getDomainAccessType(), solutionAnnotation.lookUpStrategyType());
+                new LookUpStrategyResolver(descriptorPolicy, solutionAnnotation.lookUpStrategyType());
     }
 
     private void processValueRangeProviderAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
         if (((AnnotatedElement) member).isAnnotationPresent(ValueRangeProvider.class)) {
-            MemberAccessor memberAccessor = MemberAccessorFactory.get().buildMemberAccessor(member,
+            MemberAccessor memberAccessor = descriptorPolicy.getMemberAccessorFactory().buildMemberAccessor(member,
                     FIELD_OR_READ_METHOD, ValueRangeProvider.class, descriptorPolicy.getDomainAccessType());
             descriptorPolicy.addFromSolutionValueRangeProvider(memberAccessor);
         }
@@ -365,7 +377,7 @@ public class SolutionDescriptor<Solution_> {
     private void processConstraintConfigurationProviderAnnotation(
             DescriptorPolicy descriptorPolicy, Member member,
             Class<? extends Annotation> annotationClass) {
-        MemberAccessor memberAccessor = MemberAccessorFactory.get().buildMemberAccessor(member,
+        MemberAccessor memberAccessor = descriptorPolicy.getMemberAccessorFactory().buildMemberAccessor(member,
                 FIELD_OR_READ_METHOD, annotationClass, descriptorPolicy.getDomainAccessType());
         if (constraintConfigurationMemberAccessor != null) {
             if (!constraintConfigurationMemberAccessor.getName().equals(memberAccessor.getName())
@@ -398,7 +410,7 @@ public class SolutionDescriptor<Solution_> {
     private void processProblemFactPropertyAnnotation(DescriptorPolicy descriptorPolicy,
             Member member,
             Class<? extends Annotation> annotationClass) {
-        MemberAccessor memberAccessor = MemberAccessorFactory.get().buildMemberAccessor(member,
+        MemberAccessor memberAccessor = descriptorPolicy.getMemberAccessorFactory().buildMemberAccessor(member,
                 FIELD_OR_READ_METHOD, annotationClass, descriptorPolicy.getDomainAccessType());
         assertNoFieldAndGetterDuplicationOrConflict(memberAccessor, annotationClass);
         if (annotationClass == ProblemFactProperty.class) {
@@ -420,7 +432,7 @@ public class SolutionDescriptor<Solution_> {
     private void processPlanningEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy,
             Member member,
             Class<? extends Annotation> annotationClass) {
-        MemberAccessor memberAccessor = MemberAccessorFactory.get().buildMemberAccessor(member,
+        MemberAccessor memberAccessor = descriptorPolicy.getMemberAccessorFactory().buildMemberAccessor(member,
                 FIELD_OR_GETTER_METHOD, annotationClass, descriptorPolicy.getDomainAccessType());
         assertNoFieldAndGetterDuplicationOrConflict(memberAccessor, annotationClass);
         if (annotationClass == PlanningEntityProperty.class) {

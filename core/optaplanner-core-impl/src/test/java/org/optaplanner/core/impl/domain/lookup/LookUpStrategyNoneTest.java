@@ -11,13 +11,14 @@ import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectMult
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectNoId;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectPrimitiveIntId;
 
-class LookUpStrategyNoneTest {
+class LookUpStrategyNoneTest extends AbstractLookupTest {
 
     private LookUpManager lookUpManager;
 
     @BeforeEach
     void setUpLookUpManager() {
-        lookUpManager = new LookUpManager(new LookUpStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.NONE));
+        lookUpManager = new LookUpManager(
+                createLookupStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.NONE));
     }
 
     @Test

@@ -13,13 +13,13 @@ import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectEqua
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectEqualsSubclass;
 import org.optaplanner.core.impl.testdata.domain.clone.lookup.TestdataObjectNoId;
 
-class LookUpStrategyEqualityTest {
+class LookUpStrategyEqualityTest extends AbstractLookupTest {
 
     private LookUpManager lookUpManager;
 
     @BeforeEach
     void setUpLookUpManager() {
-        lookUpManager = new LookUpManager(new LookUpStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.EQUALITY));
+        lookUpManager = new LookUpManager(createLookupStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.EQUALITY));
     }
 
     @Test

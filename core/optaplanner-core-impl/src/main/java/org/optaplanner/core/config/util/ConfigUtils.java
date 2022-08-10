@@ -458,7 +458,8 @@ public class ConfigUtils {
         }
     }
 
-    public static <C> MemberAccessor findPlanningIdMemberAccessor(Class<C> clazz, DomainAccessType domainAccessType) {
+    public static <C> MemberAccessor findPlanningIdMemberAccessor(Class<C> clazz,
+            MemberAccessorFactory memberAccessorFactory, DomainAccessType domainAccessType) {
         List<Member> memberList = getAllMembers(clazz, PlanningId.class);
         if (memberList.isEmpty()) {
             return null;
@@ -470,7 +471,7 @@ public class ConfigUtils {
         }
         Member member = memberList.get(0);
         MemberAccessor memberAccessor =
-                MemberAccessorFactory.get().buildMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class,
+                memberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD, PlanningId.class,
                         domainAccessType);
         if (!memberAccessor.getType().isPrimitive() && !Comparable.class.isAssignableFrom(memberAccessor.getType())) {
             throw new IllegalArgumentException("The class (" + clazz

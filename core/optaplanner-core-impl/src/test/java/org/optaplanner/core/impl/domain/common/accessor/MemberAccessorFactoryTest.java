@@ -21,7 +21,7 @@ class MemberAccessorFactoryTest {
     @Test
     void fieldAnnotatedEntity() throws NoSuchFieldException {
         MemberAccessor memberAccessor =
-                MemberAccessorFactory.get().buildMemberAccessor(TestdataFieldAnnotatedEntity.class.getDeclaredField("value"),
+                new MemberAccessorFactory().buildMemberAccessor(TestdataFieldAnnotatedEntity.class.getDeclaredField("value"),
                         MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, PlanningVariable.class,
                         DomainAccessType.REFLECTION);
         assertThat(memberAccessor)
@@ -39,7 +39,7 @@ class MemberAccessorFactoryTest {
 
     @Test
     void privateField() throws NoSuchFieldException {
-        MemberAccessor memberAccessor = MemberAccessorFactory.get().buildMemberAccessor(
+        MemberAccessor memberAccessor = new MemberAccessorFactory().buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredField("privateField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
                 DomainAccessType.REFLECTION);
@@ -58,7 +58,7 @@ class MemberAccessorFactoryTest {
 
     @Test
     void publicField() throws NoSuchFieldException {
-        MemberAccessor memberAccessor = MemberAccessorFactory.get().buildMemberAccessor(
+        MemberAccessor memberAccessor = new MemberAccessorFactory().buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredField("publicField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
                 DomainAccessType.REFLECTION);
@@ -77,7 +77,7 @@ class MemberAccessorFactoryTest {
 
     @Test
     void publicProperty() throws NoSuchMethodException {
-        MemberAccessor memberAccessor = MemberAccessorFactory.get().buildMemberAccessor(
+        MemberAccessor memberAccessor = new MemberAccessorFactory().buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredMethod("getPublicProperty"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
                 DomainAccessType.REFLECTION);
@@ -101,9 +101,8 @@ class MemberAccessorFactoryTest {
 
         Map<String, MemberAccessor> preexistingMemberAccessors = new HashMap<>();
         preexistingMemberAccessors.put(GizmoMemberAccessorFactory.getGeneratedClassName(member), mockMemberAccessor);
-        MemberAccessorFactory.setMemberAccessorCache(preexistingMemberAccessors);
-
-        MemberAccessor memberAccessor = MemberAccessorFactory.get().buildMemberAccessor(member,
+        MemberAccessorFactory memberAccessorFactory = new MemberAccessorFactory(preexistingMemberAccessors);
+        MemberAccessor memberAccessor = memberAccessorFactory.buildMemberAccessor(member,
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
                 DomainAccessType.REFLECTION);
         assertThat(memberAccessor)

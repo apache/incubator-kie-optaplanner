@@ -30,7 +30,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 
-class LookUpStrategyImmutableTest {
+class LookUpStrategyImmutableTest extends AbstractLookupTest {
 
     private LookUpManager lookUpManager;
 
@@ -70,7 +70,7 @@ class LookUpStrategyImmutableTest {
     @BeforeEach
     void setUpLookUpManager() {
         lookUpManager = new LookUpManager(
-                new LookUpStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.PLANNING_ID_OR_NONE));
+                createLookupStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.PLANNING_ID_OR_NONE));
     }
 
     @ParameterizedTest(name = "{index}: {0}")

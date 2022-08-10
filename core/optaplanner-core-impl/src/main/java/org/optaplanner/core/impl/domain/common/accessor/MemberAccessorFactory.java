@@ -15,31 +15,22 @@ import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccesso
 
 public final class MemberAccessorFactory {
 
-    private static final MemberAccessorFactory INSTANCE = new MemberAccessorFactory();
-
     // exists only so that the various member accessors can share the same text in their exception messages
     static final String CLASSLOADER_NUDGE_MESSAGE = "Maybe add getClass().getClassLoader() as a parameter to the " +
             SolverFactory.class.getSimpleName() + ".create...() method call.";
 
-    /**
-     * Prefills the member accessor cache.
-     * 
-     * @param memberAccessorMap key is the fully qualified member name
-     */
-    public static void setMemberAccessorCache(Map<String, MemberAccessor> memberAccessorMap) {
-        INSTANCE.setMemberAccessorCacheInternal(memberAccessorMap);
-    }
-
-    /**
-     * Retrieves the single MemberAccessorFactory instance.
-     */
-    public static MemberAccessorFactory get() {
-        return INSTANCE;
-    }
-
     private Map<String, MemberAccessor> memberAccessorCache;
 
-    private void setMemberAccessorCacheInternal(Map<String, MemberAccessor> memberAccessorMap) {
+    public MemberAccessorFactory() {
+        this(null);
+    }
+
+    /**
+     * Prefills the member accessor cache.
+     *
+     * @param memberAccessorMap key is the fully qualified member name
+     */
+    public MemberAccessorFactory(Map<String, MemberAccessor> memberAccessorMap) {
         // The MemberAccessorFactory may be accessed, and this cache both read and updated, by multiple threads.
         this.memberAccessorCache =
                 memberAccessorMap == null ? new ConcurrentHashMap<>() : new ConcurrentHashMap<>(memberAccessorMap);
@@ -134,8 +125,4 @@ public final class MemberAccessorFactory {
         FIELD_OR_GETTER_METHOD,
         FIELD_OR_GETTER_METHOD_WITH_SETTER
     }
-
-    private MemberAccessorFactory() {
-    }
-
 }
