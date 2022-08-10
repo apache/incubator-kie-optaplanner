@@ -101,7 +101,7 @@ public class SolutionDescriptor<Solution_> {
         DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
         descriptorPolicy.setDomainAccessType(domainAccessType);
         descriptorPolicy.setGeneratedSolutionClonerMap(solutionClonerMap);
-        descriptorPolicy.setCachedMemberAccessorFactory(solutionDescriptor.cachedMemberAccessorFactory);
+        descriptorPolicy.setCachedMemberAccessorFactory(solutionDescriptor.getCachedMemberAccessorFactory());
 
         solutionDescriptor.processAnnotations(descriptorPolicy, entityClassList);
         for (Class<?> entityClass : sortEntityClassList(entityClassList)) {
