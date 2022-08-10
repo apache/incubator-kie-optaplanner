@@ -6,14 +6,11 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCompar
 import java.util.Comparator;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntity;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishEntityGroup;
 
 class ClassAndPlanningIdComparatorTest {
-
-    private final MemberAccessorFactory memberAccessorFactory = new MemberAccessorFactory();
-    private final Comparator<Object> comparator = new ClassAndPlanningIdComparator(memberAccessorFactory, false);
+    private final Comparator<Object> comparator = new ClassAndPlanningIdComparator(false);
 
     @Test
     void comparesDifferentClassesByClassName() {
@@ -36,8 +33,8 @@ class ClassAndPlanningIdComparatorTest {
 
     @Test
     void treatesSameUnComparableClassesWithoutPlanningIdAsEqual() {
-        Object firstObject = new ClassAndPlanningIdComparator(memberAccessorFactory, false);
-        Object secondObject = new ClassAndPlanningIdComparator(memberAccessorFactory, false);
+        Object firstObject = new ClassAndPlanningIdComparator(false);
+        Object secondObject = new ClassAndPlanningIdComparator(false);
         int result = comparator.compare(firstObject, secondObject);
         assertThat(result).isEqualTo(0);
     }

@@ -25,8 +25,8 @@ import org.optaplanner.core.api.domain.lookup.LookUpStrategyType;
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.accessor.CachedMemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 
 /**
@@ -37,7 +37,7 @@ public class LookUpStrategyResolver {
     private final LookUpStrategyType lookUpStrategyType;
     private final DomainAccessType domainAccessType;
 
-    private final MemberAccessorFactory memberAccessorFactory;
+    private final CachedMemberAccessorFactory memberAccessorFactory;
 
     private final ConcurrentMap<Class<?>, LookUpStrategy> decisionCache = new ConcurrentHashMap<>();
 

@@ -2,16 +2,10 @@ package org.optaplanner.core.impl.domain.common.accessor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.lang.reflect.Member;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.solution.ProblemFactProperty;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccessorFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier.TestdataVisibilityModifierSolution;
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedEntity;
@@ -21,7 +15,7 @@ class MemberAccessorFactoryTest {
     @Test
     void fieldAnnotatedEntity() throws NoSuchFieldException {
         MemberAccessor memberAccessor =
-                new MemberAccessorFactory().buildMemberAccessor(TestdataFieldAnnotatedEntity.class.getDeclaredField("value"),
+                MemberAccessorFactory.buildMemberAccessor(TestdataFieldAnnotatedEntity.class.getDeclaredField("value"),
                         MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, PlanningVariable.class,
                         DomainAccessType.REFLECTION);
         assertThat(memberAccessor)
@@ -39,7 +33,7 @@ class MemberAccessorFactoryTest {
 
     @Test
     void privateField() throws NoSuchFieldException {
-        MemberAccessor memberAccessor = new MemberAccessorFactory().buildMemberAccessor(
+        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredField("privateField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
                 DomainAccessType.REFLECTION);
@@ -58,7 +52,7 @@ class MemberAccessorFactoryTest {
 
     @Test
     void publicField() throws NoSuchFieldException {
-        MemberAccessor memberAccessor = new MemberAccessorFactory().buildMemberAccessor(
+        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredField("publicField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
                 DomainAccessType.REFLECTION);
@@ -77,7 +71,7 @@ class MemberAccessorFactoryTest {
 
     @Test
     void publicProperty() throws NoSuchMethodException {
-        MemberAccessor memberAccessor = new MemberAccessorFactory().buildMemberAccessor(
+        MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(
                 TestdataVisibilityModifierSolution.class.getDeclaredMethod("getPublicProperty"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
                 DomainAccessType.REFLECTION);
@@ -93,20 +87,4 @@ class MemberAccessorFactoryTest {
         memberAccessor.executeSetter(s1, "secondValue");
         assertThat(memberAccessor.executeGetter(s1)).isEqualTo("secondValue");
     }
-
-    @Test
-    void shouldUseGeneratedMemberAccessorIfExists() throws NoSuchMethodException {
-        Member member = TestdataVisibilityModifierSolution.class.getDeclaredMethod("getPublicProperty");
-        MemberAccessor mockMemberAccessor = Mockito.mock(MemberAccessor.class);
-
-        Map<String, MemberAccessor> preexistingMemberAccessors = new HashMap<>();
-        preexistingMemberAccessors.put(GizmoMemberAccessorFactory.getGeneratedClassName(member), mockMemberAccessor);
-        MemberAccessorFactory memberAccessorFactory = new MemberAccessorFactory(preexistingMemberAccessors);
-        MemberAccessor memberAccessor = memberAccessorFactory.buildMemberAccessor(member,
-                MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
-                DomainAccessType.REFLECTION);
-        assertThat(memberAccessor)
-                .isSameAs(mockMemberAccessor);
-    }
-
 }

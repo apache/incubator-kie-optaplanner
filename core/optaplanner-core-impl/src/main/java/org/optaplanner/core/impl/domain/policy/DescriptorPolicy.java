@@ -9,16 +9,15 @@ import java.util.Map;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.impl.domain.common.accessor.CachedMemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 
 public class DescriptorPolicy {
     private Map<String, SolutionCloner> generatedSolutionClonerMap = new LinkedHashMap<>();
     private Map<String, MemberAccessor> fromSolutionValueRangeProviderMap = new LinkedHashMap<>();
     private Map<String, MemberAccessor> fromEntityValueRangeProviderMap = new LinkedHashMap<>();
     private DomainAccessType domainAccessType = DomainAccessType.REFLECTION;
-
-    private MemberAccessorFactory memberAccessorFactory;
+    private CachedMemberAccessorFactory memberAccessorFactory;
 
     public void addFromSolutionValueRangeProvider(MemberAccessor memberAccessor) {
         String id = extractValueRangeProviderId(memberAccessor);
@@ -64,11 +63,11 @@ public class DescriptorPolicy {
         this.generatedSolutionClonerMap = generatedSolutionClonerMap;
     }
 
-    public MemberAccessorFactory getMemberAccessorFactory() {
+    public CachedMemberAccessorFactory getMemberAccessorFactory() {
         return memberAccessorFactory;
     }
 
-    public void setMemberAccessorFactory(MemberAccessorFactory memberAccessorFactory) {
+    public void setCachedMemberAccessorFactory(CachedMemberAccessorFactory memberAccessorFactory) {
         this.memberAccessorFactory = memberAccessorFactory;
     }
 

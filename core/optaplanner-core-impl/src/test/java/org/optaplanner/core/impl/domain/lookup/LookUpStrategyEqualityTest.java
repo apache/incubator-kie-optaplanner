@@ -19,7 +19,8 @@ class LookUpStrategyEqualityTest extends AbstractLookupTest {
 
     @BeforeEach
     void setUpLookUpManager() {
-        lookUpManager = new LookUpManager(createLookupStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.EQUALITY));
+        lookUpManager =
+                new LookUpManager(createLookupStrategyResolver(DomainAccessType.REFLECTION, LookUpStrategyType.EQUALITY));
     }
 
     @Test

@@ -46,8 +46,8 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
+import org.optaplanner.core.impl.domain.common.accessor.CachedMemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 import org.optaplanner.core.impl.domain.common.accessor.ReflectionFieldMemberAccessor;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -101,7 +101,7 @@ public class SolutionDescriptor<Solution_> {
         DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
         descriptorPolicy.setDomainAccessType(domainAccessType);
         descriptorPolicy.setGeneratedSolutionClonerMap(solutionClonerMap);
-        descriptorPolicy.setMemberAccessorFactory(solutionDescriptor.memberAccessorFactory);
+        descriptorPolicy.setCachedMemberAccessorFactory(solutionDescriptor.cachedMemberAccessorFactory);
 
         solutionDescriptor.processAnnotations(descriptorPolicy, entityClassList);
         for (Class<?> entityClass : sortEntityClassList(entityClassList)) {
@@ -159,7 +159,7 @@ public class SolutionDescriptor<Solution_> {
     private SolutionCloner<Solution_> solutionCloner;
     private boolean assertModelForCloning = false;
 
-    private MemberAccessorFactory memberAccessorFactory;
+    private CachedMemberAccessorFactory cachedMemberAccessorFactory;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -174,11 +174,11 @@ public class SolutionDescriptor<Solution_> {
 
     private SolutionDescriptor(Class<Solution_> solutionClass, Map<String, MemberAccessor> memberAccessorMap) {
         this(solutionClass);
-        this.memberAccessorFactory = new MemberAccessorFactory(memberAccessorMap);
+        this.cachedMemberAccessorFactory = new CachedMemberAccessorFactory(memberAccessorMap);
     }
 
-    public MemberAccessorFactory getMemberAccessorFactory() {
-        return memberAccessorFactory;
+    public CachedMemberAccessorFactory getCachedMemberAccessorFactory() {
+        return cachedMemberAccessorFactory;
     }
 
     public void addEntityDescriptor(EntityDescriptor<Solution_> entityDescriptor) {
