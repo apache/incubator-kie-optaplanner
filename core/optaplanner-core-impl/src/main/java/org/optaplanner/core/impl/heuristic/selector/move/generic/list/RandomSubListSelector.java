@@ -32,6 +32,14 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
         this.listVariableDescriptor = listVariableDescriptor;
         this.entitySelector = entitySelector;
         this.valueSelector = valueSelector;
+        if (minimumSubListSize < 1) {
+            throw new IllegalArgumentException(
+                    "The minimumSubListSize (" + minimumSubListSize + ") must be greater than 0.");
+        }
+        if (minimumSubListSize > maximumSubListSize) {
+            throw new IllegalArgumentException("The minimumSubListSize (" + minimumSubListSize
+                    + ") must be less than or equal to the maximumSubListSize (" + maximumSubListSize + ").");
+        }
         this.minimumSubListSize = minimumSubListSize;
         this.maximumSubListSize = maximumSubListSize;
 
@@ -65,7 +73,17 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
 
     @Override
     public long getSize() {
-        return 0;
+        long size = 0;
+        for (Object entity : ((Iterable<Object>) entitySelector::endingIterator)) {
+            int listSize = listVariableDescriptor.getListSize(entity);
+            if (listSize >= minimumSubListSize) {
+                size += TriangularNumbers.nthTriangle(listSize - minimumSubListSize + 1);
+                if (listSize > maximumSubListSize) {
+                    size -= TriangularNumbers.nthTriangle(listSize - maximumSubListSize);
+                }
+            }
+        }
+        return size;
     }
 
     @Override
@@ -96,10 +114,6 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
 
         @Override
         protected SubList createUpcomingSelection() {
-            if (!valueIterator.hasNext()) {
-                return noUpcomingSelection();
-            }
-
             Object sourceEntity = null;
             int listSize = 0;
 

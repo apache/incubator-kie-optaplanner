@@ -1,6 +1,6 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
-final class SubList {
+public final class SubList {
 
     private final Object entity;
     private final int fromIndex;

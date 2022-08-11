@@ -18,7 +18,7 @@ final class TriangleElementFactory {
         }
         if (minimumSubListSize < 1) {
             throw new IllegalArgumentException(
-                    "The minimumSubListSize (" + minimumSubListSize + ") must be greater than zero.");
+                    "The minimumSubListSize (" + minimumSubListSize + ") must be greater than 0.");
         }
         this.minimumSubListSize = minimumSubListSize;
         this.maximumSubListSize = maximumSubListSize;

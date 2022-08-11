@@ -74,7 +74,7 @@ class TriangleElementFactoryTest {
         assertThatIllegalArgumentException().isThrownBy(() -> new TriangleElementFactory(5, 4, new Random()))
                 .withMessageContaining("less than or equal to");
         assertThatIllegalArgumentException().isThrownBy(() -> new TriangleElementFactory(0, 4, new Random()))
-                .withMessageContaining("greater than zero");
+                .withMessageContaining("greater than 0");
     }
 
     @Test
