@@ -7,7 +7,15 @@ import java.util.function.Function;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.core.impl.util.FieldBasedScalingSet;
 
+/**
+ * There is a strong likelihood that any change to this class, which is not related to indexing,
+ * should also be made to {@link AbstractUnindexedIfExistsNode}.
+ *
+ * @param <LeftTuple_>
+ * @param <Right_>
+ */
 public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Right_>
         extends AbstractIfExistsNode<LeftTuple_, Right_>
         implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
@@ -150,8 +158,7 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
         IndexProperties indexProperties = mappingRight.apply(rightTuple.getFactA());
         rightTuple.setStore(inputStoreIndexRight, indexProperties);
 
-        // TODO Maybe predict capacity with Math.max(16, counterMapA.size())
-        Set<Counter<LeftTuple_>> counterSetRight = new LinkedHashSet<>();
+        Set<Counter<LeftTuple_>> counterSetRight = new FieldBasedScalingSet<>(LinkedHashSet::new);
         indexRight(rightTuple, indexProperties, counterSetRight);
     }
 

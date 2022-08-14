@@ -8,6 +8,15 @@ import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
+/**
+ * This class has two direct children: {@link AbstractIndexedIfExistsNode} and {@link AbstractUnindexedIfExistsNode}.
+ * The logic in either is identical, except that the latter removes all indexing work.
+ * Therefore any time that one of the classes changes,
+ * the other should be inspected if it could benefit from applying the change there too.
+ *
+ * @param <LeftTuple_>
+ * @param <Right_>
+ */
 public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         extends AbstractNode
         implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {

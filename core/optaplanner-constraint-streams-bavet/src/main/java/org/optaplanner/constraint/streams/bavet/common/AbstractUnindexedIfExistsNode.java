@@ -6,7 +6,15 @@ import java.util.Map;
 import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.core.impl.util.FieldBasedScalingSet;
 
+/**
+ * There is a strong likelihood that any change made to this class
+ * should also be made to {@link AbstractIndexedIfExistsNode}.
+ *
+ * @param <LeftTuple_>
+ * @param <Right_>
+ */
 public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Right_>
         extends AbstractIfExistsNode<LeftTuple_, Right_>
         implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
@@ -92,7 +100,7 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
 
     @Override
     public final void insertRight(UniTuple<Right_> rightTuple) {
-        Set<Counter<LeftTuple_>> counterSetRight = new LinkedHashSet<>();
+        Set<Counter<LeftTuple_>> counterSetRight = new FieldBasedScalingSet<>(LinkedHashSet::new);
         rightMap.put(rightTuple, counterSetRight);
         for (Map.Entry<LeftTuple_, Counter<LeftTuple_>> entry : leftMap.entrySet()) {
             LeftTuple_ leftTuple = entry.getKey();

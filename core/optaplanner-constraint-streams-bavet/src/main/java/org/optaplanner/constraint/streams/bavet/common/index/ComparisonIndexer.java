@@ -6,8 +6,6 @@ import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
@@ -16,9 +14,10 @@ import org.optaplanner.core.impl.score.stream.JoinerType;
 final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<Key_>>
         implements Indexer<Tuple_, Value_> {
 
-    private final Function<IndexProperties, Key_> indexKeyFunction;
+    private final int indexKeyPosition;
     private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
-    private final BiPredicate<Key_, Key_> iterationStoppingCondition;
+    private final Comparator<Key_> keyComparator;
+    private final boolean isGteOrLte;
     private final SortedMap<Key_, Indexer<Tuple_, Value_>> comparisonMap;
 
     public ComparisonIndexer(JoinerType comparisonJoinerType, Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
@@ -27,46 +26,36 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
 
     public ComparisonIndexer(JoinerType comparisonJoinerType, int indexKeyPosition,
             Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
-        this.indexKeyFunction = indexProperties -> indexProperties.getProperty(indexKeyPosition);
+        this.indexKeyPosition = indexKeyPosition;
         this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
-        this.iterationStoppingCondition = getIterationStoppingCondition(comparisonJoinerType);
         /*
          * For GT/GTE, the iteration order is reversed.
-         * This allows us to iterate over the entire map, stopping when the given condition is reached.
+         * This allows us to iterate over the entire map, stopping when the threshold is reached.
          * This is done so that we can avoid using head/tail sub maps, which are expensive.
          */
-        Comparator<Key_> keyComparator =
+        this.keyComparator =
                 (comparisonJoinerType == JoinerType.GREATER_THAN || comparisonJoinerType == JoinerType.GREATER_THAN_OR_EQUAL)
-                        ? KeyComparator.COMPARATOR_REVERSED
-                        : KeyComparator.COMPARATOR;
+                        ? ReversedKeyComparator.INSTANCE
+                        : KeyComparator.INSTANCE;
+        this.isGteOrLte = comparisonJoinerType == JoinerType.GREATER_THAN_OR_EQUAL
+                || comparisonJoinerType == JoinerType.LESS_THAN_OR_EQUAL;
         this.comparisonMap = new TreeMap<>(keyComparator);
-    }
-
-    private static <Key_ extends Comparable<Key_>> BiPredicate<Key_, Key_>
-            getIterationStoppingCondition(JoinerType comparisonJoinerType) {
-        switch (comparisonJoinerType) {
-            case LESS_THAN:
-                return (currentKey, stopKey) -> currentKey.compareTo(stopKey) >= 0;
-            case LESS_THAN_OR_EQUAL:
-                return (currentKey, stopKey) -> currentKey.compareTo(stopKey) > 0;
-            case GREATER_THAN:
-                return (currentKey, stopKey) -> currentKey.compareTo(stopKey) <= 0;
-            case GREATER_THAN_OR_EQUAL:
-                return (currentKey, stopKey) -> currentKey.compareTo(stopKey) < 0;
-            default:
-                throw new IllegalStateException("Impossible state: the comparisonJoinerType (" + comparisonJoinerType
-                        + ") is not one of the 4 comparison types.");
-        }
     }
 
     @Override
     public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
-        Key_ indexKey = indexKeyFunction.apply(indexProperties);
+        Key_ indexKey = indexProperties.toKey(indexKeyPosition);
         for (Map.Entry<Key_, Indexer<Tuple_, Value_>> entry : comparisonMap.entrySet()) {
             Key_ key = entry.getKey();
-            if (iterationStoppingCondition.test(key, indexKey)) {
-                return;
+            // Comparator matches the order of iteration of the map, so the boundary is always found from the bottom up.
+            int comparison = keyComparator.compare(key, indexKey);
+            if (comparison >= 0) { // Possibility of reaching the boundary condition.
+                if (comparison > 0 || !isGteOrLte) {
+                    // Boundary condition reached when we're out of bounds entirely, or when GTE/LTE is not allowed.
+                    return;
+                }
             }
+            // Boundary condition not yet reached; include the indexer in the range.
             Indexer<Tuple_, Value_> indexer = entry.getValue();
             indexer.visit(indexProperties, tupleValueVisitor);
         }
@@ -74,14 +63,14 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
 
     @Override
     public Value_ get(IndexProperties indexProperties, Tuple_ tuple) {
-        Key_ indexKey = indexKeyFunction.apply(indexProperties);
+        Key_ indexKey = indexProperties.toKey(indexKeyPosition);
         Indexer<Tuple_, Value_> downstreamIndexer = getDownstreamIndexer(indexProperties, indexKey, tuple);
         return downstreamIndexer.get(indexProperties, tuple);
     }
 
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
-        Key_ indexKey = indexKeyFunction.apply(indexProperties);
+        Key_ indexKey = indexProperties.toKey(indexKeyPosition);
         // Avoids computeIfAbsent in order to not create lambdas on the hot path.
         Indexer<Tuple_, Value_> downstreamIndexer = comparisonMap.get(indexKey);
         if (downstreamIndexer == null) {
@@ -93,7 +82,7 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
 
     @Override
     public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
-        Key_ indexKey = indexKeyFunction.apply(indexProperties);
+        Key_ indexKey = indexProperties.toKey(indexKeyPosition);
         Indexer<Tuple_, Value_> downstreamIndexer = getDownstreamIndexer(indexProperties, indexKey, tuple);
         Value_ value = downstreamIndexer.remove(indexProperties, tuple);
         if (downstreamIndexer.isEmpty()) {
@@ -119,12 +108,28 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
 
     private static final class KeyComparator<Key_ extends Comparable<Key_>> implements Comparator<Key_> {
 
-        private static final Comparator COMPARATOR = new KeyComparator<>();
-        private static final Comparator COMPARATOR_REVERSED = COMPARATOR.reversed();
+        private static final Comparator INSTANCE = new KeyComparator<>();
 
         @Override
-        public int compare(Key_ o1, Key_ o2) { // Exists so that the comparison operations can be more easily debugged.
+        public int compare(Key_ o1, Key_ o2) {
+            if (o1 == o2) {
+                return 0;
+            }
             return o1.compareTo(o2);
+        }
+
+    }
+
+    private static final class ReversedKeyComparator<Key_ extends Comparable<Key_>> implements Comparator<Key_> {
+
+        private static final Comparator INSTANCE = new ReversedKeyComparator<>();
+
+        @Override
+        public int compare(Key_ o1, Key_ o2) {
+            if (o1 == o2) {
+                return 0;
+            }
+            return o2.compareTo(o1);
         }
 
     }

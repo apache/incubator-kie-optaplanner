@@ -11,9 +11,15 @@ final class SingleIndexProperties implements IndexProperties {
     }
 
     @Override
-    public <Type_> Type_ getProperty(int index) {
-        if (index != 0) {
-            throw new IllegalArgumentException("Impossible state: index (" + index + ") != 0");
+    public <Type_> Type_ toKey(int index) {
+        return toKey(1, index);
+    }
+
+    @Override
+    public <Type_> Type_ toKey(int length, int startingPosition) {
+        if (length != 1 || startingPosition != 0) {
+            throw new IllegalArgumentException(
+                    "Impossible state: length (" + length + ") and start (" + startingPosition + ").");
         }
         return (Type_) property;
     }

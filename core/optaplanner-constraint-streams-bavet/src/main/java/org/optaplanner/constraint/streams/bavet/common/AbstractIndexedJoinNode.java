@@ -8,7 +8,15 @@ import java.util.function.Function;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.core.impl.util.FieldBasedScalingMap;
 
+/**
+ * There is a strong likelihood that any change to this class, which is not related to indexing,
+ * should also be made to {@link AbstractUnindexedJoinNode}.
+ *
+ * @param <LeftTuple_>
+ * @param <Right_>
+ */
 public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, OutTuple_ extends Tuple, MutableOutTuple_ extends OutTuple_>
         extends AbstractJoinNode<LeftTuple_, Right_, OutTuple_, MutableOutTuple_>
         implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
@@ -43,7 +51,7 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         IndexProperties indexProperties = createIndexPropertiesLeft(leftTuple);
         leftTuple.setStore(inputStoreIndexLeft, indexProperties);
 
-        Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = new LinkedHashMap<>();
+        Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = new FieldBasedScalingMap<>(LinkedHashMap::new);
         indexAndPropagateLeft(leftTuple, indexProperties, outTupleMapLeft);
     }
 

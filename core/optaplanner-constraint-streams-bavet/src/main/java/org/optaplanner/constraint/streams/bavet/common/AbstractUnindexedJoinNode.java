@@ -6,7 +6,15 @@ import java.util.Map;
 import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.core.impl.util.FieldBasedScalingMap;
 
+/**
+ * There is a strong likelihood that any change made to this class
+ * should also be made to {@link AbstractIndexedJoinNode}.
+ *
+ * @param <LeftTuple_>
+ * @param <Right_>
+ */
 public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_, OutTuple_ extends Tuple, MutableOutTuple_ extends OutTuple_>
         extends AbstractJoinNode<LeftTuple_, Right_, OutTuple_, MutableOutTuple_>
         implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
@@ -20,7 +28,7 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
 
     @Override
     public final void insertLeft(LeftTuple_ leftTuple) {
-        Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = new LinkedHashMap<>();
+        Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = new FieldBasedScalingMap<>(LinkedHashMap::new);
         leftToRightMap.put(leftTuple, outTupleMapLeft);
         for (UniTuple<Right_> rightTuple : rightSet) {
             insert(outTupleMapLeft, leftTuple, rightTuple);
