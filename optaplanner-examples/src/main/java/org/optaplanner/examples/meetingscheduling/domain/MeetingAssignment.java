@@ -69,13 +69,14 @@ public class MeetingAssignment extends AbstractPersistable {
         if (startingTimeGrain == null || other.getStartingTimeGrain() == null) {
             return 0;
         }
+        // start is inclusive, end is exclusive
         int start = startingTimeGrain.getGrainIndex();
-        int otherEnd = other.getLastTimeGrainIndex() + 1;
+        int otherStart = other.startingTimeGrain.getGrainIndex();
+        int otherEnd = otherStart + other.meeting.getDurationInGrains();
         if (otherEnd < start) {
             return 0;
         }
-        int end = this.getLastTimeGrainIndex() + 1;
-        int otherStart = other.startingTimeGrain.getGrainIndex();
+        int end = start + meeting.getDurationInGrains();
         if (end < otherStart) {
             return 0;
         }

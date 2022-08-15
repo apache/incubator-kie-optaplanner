@@ -20,7 +20,7 @@ public class TimeGrain extends AbstractPersistable
      */
     public static final int GRAIN_LENGTH_IN_MINUTES = 15;
 
-    private Integer grainIndex; // unique; Integer in order to avoid boxing and unboxing in the constraint provider
+    private Integer grainIndex; // unique; Integer to avoid auto-boxing overhead
 
     private Day day;
     private int startingMinuteOfDay;

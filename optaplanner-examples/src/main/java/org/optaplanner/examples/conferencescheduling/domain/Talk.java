@@ -73,7 +73,7 @@ public class Talk extends AbstractPersistable {
         Set<Item_> smaller = leftSize < rightSize ? left : right;
         Set<Item_> other = smaller == left ? right : left;
         int overlappingCount = 0;
-        for (Item_ item: smaller) { // Iterate over smaller set, lookup in the larger.
+        for (Item_ item : smaller) { // Iterate over smaller set, lookup in the larger.
             if (other.contains(item)) {
                 overlappingCount++;
             }
@@ -113,7 +113,7 @@ public class Talk extends AbstractPersistable {
             return requiredCount; // All the items are missing.
         }
         int missingCount = 0;
-        for (Item_ item: required) {
+        for (Item_ item : required) {
             if (!available.contains(item)) {
                 missingCount++;
             }

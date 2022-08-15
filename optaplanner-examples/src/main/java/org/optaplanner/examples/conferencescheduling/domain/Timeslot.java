@@ -16,7 +16,7 @@ public class Timeslot extends AbstractPersistable {
     private Set<String> tagSet;
 
     // Cached
-    private Integer durationInMinutes;
+    private int durationInMinutes;
 
     public Timeslot() {
     }
@@ -29,7 +29,7 @@ public class Timeslot extends AbstractPersistable {
         return startDateTime.toLocalDate();
     }
 
-    public Integer getDurationInMinutes() {
+    public int getDurationInMinutes() {
         return durationInMinutes;
     }
 
@@ -52,14 +52,6 @@ public class Timeslot extends AbstractPersistable {
 
     public boolean startsAfter(Timeslot other) {
         return other.endDateTime.compareTo(startDateTime) <= 0;
-    }
-
-    public boolean endsBefore(Timeslot other) {
-        return endDateTime.compareTo(other.startDateTime) <= 0;
-    }
-
-    public boolean hasTag(String tag) {
-        return tagSet.contains(tag);
     }
 
     public boolean isOnSameDayAs(Timeslot other) {
