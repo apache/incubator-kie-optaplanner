@@ -31,15 +31,8 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = new FieldBasedScalingMap<>(LinkedHashMap::new);
         leftToRightMap.put(leftTuple, outTupleMapLeft);
         for (UniTuple<Right_> rightTuple : rightSet) {
-            insert(outTupleMapLeft, leftTuple, rightTuple);
+            insertTuple(outTupleMapLeft, leftTuple, rightTuple);
         }
-    }
-
-    private void insert(Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft, LeftTuple_ leftTuple,
-            UniTuple<Right_> rightTuple) {
-        MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
-        outTupleMapLeft.put(rightTuple, outTuple);
-        dirtyTupleQueue.add(outTuple);
     }
 
     @Override
@@ -72,7 +65,7 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         for (Map.Entry<LeftTuple_, Map<UniTuple<Right_>, MutableOutTuple_>> entry : leftToRightMap.entrySet()) {
             LeftTuple_ leftTuple = entry.getKey();
             Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = entry.getValue();
-            insert(outTupleMapLeft, leftTuple, rightTuple);
+            insertTuple(outTupleMapLeft, leftTuple, rightTuple);
         }
     }
 

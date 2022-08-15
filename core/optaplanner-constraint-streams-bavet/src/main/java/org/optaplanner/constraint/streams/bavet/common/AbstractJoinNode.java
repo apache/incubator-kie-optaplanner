@@ -1,6 +1,7 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
 import java.util.ArrayDeque;
+import java.util.Map;
 import java.util.Queue;
 
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
@@ -34,6 +35,13 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
     protected abstract void updateOutTupleLeft(MutableOutTuple_ outTuple, LeftTuple_ leftTuple);
 
     protected abstract void updateOutTupleRight(MutableOutTuple_ outTuple, UniTuple<Right_> rightTuple);
+
+    protected final void insertTuple(Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft, LeftTuple_ leftTuple,
+            UniTuple<Right_> rightTuple) {
+        MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
+        outTupleMapLeft.put(rightTuple, outTuple);
+        dirtyTupleQueue.add(outTuple);
+    }
 
     protected final void updateTuple(OutTuple_ outTuple) {
         switch (outTuple.getState()) {

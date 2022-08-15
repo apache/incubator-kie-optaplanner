@@ -59,14 +59,7 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
             Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft) {
         indexerLeft.put(newIndexProperties, leftTuple, outTupleMapLeft);
         indexerRight.visit(newIndexProperties,
-                (rightTuple, emptyMap) -> indexAndPropagate(outTupleMapLeft, leftTuple, rightTuple));
-    }
-
-    private void indexAndPropagate(Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft, LeftTuple_ leftTuple,
-            UniTuple<Right_> rightTuple) {
-        MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
-        outTupleMapLeft.put(rightTuple, outTuple);
-        dirtyTupleQueue.add(outTuple);
+                (rightTuple, emptyMap) -> insertTuple(outTupleMapLeft, leftTuple, rightTuple));
     }
 
     @Override
@@ -128,7 +121,7 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
     private void indexAndPropagateRight(UniTuple<Right_> rightTuple, IndexProperties indexProperties) {
         indexerRight.put(indexProperties, rightTuple, Collections.emptyMap());
         indexerLeft.visit(indexProperties,
-                (leftTuple, outTupleMapLeft) -> indexAndPropagate(outTupleMapLeft, leftTuple, rightTuple));
+                (leftTuple, outTupleMapLeft) -> insertTuple(outTupleMapLeft, leftTuple, rightTuple));
     }
 
     @Override

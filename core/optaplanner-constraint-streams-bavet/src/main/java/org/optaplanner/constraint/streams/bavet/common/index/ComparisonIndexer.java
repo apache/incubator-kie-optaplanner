@@ -54,23 +54,27 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
             visitEntry(indexProperties, tupleValueVisitor, indexKey, entry);
         } else {
             for (Map.Entry<Key_, Indexer<Tuple_, Value_>> entry : comparisonMap.entrySet()) {
-                visitEntry(indexProperties, tupleValueVisitor, indexKey, entry);
+                boolean boundaryReached = visitEntry(indexProperties, tupleValueVisitor, indexKey, entry);
+                if (boundaryReached) {
+                    return;
+                }
             }
         }
     }
 
-    private void visitEntry(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor,
+    private boolean visitEntry(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor,
             Key_ indexKey, Map.Entry<Key_, Indexer<Tuple_, Value_>> entry) {
         // Comparator matches the order of iteration of the map, so the boundary is always found from the bottom up.
         int comparison = keyComparator.compare(entry.getKey(), indexKey);
         if (comparison >= 0) { // Possibility of reaching the boundary condition.
             if (comparison > 0 || !isGteOrLte) {
                 // Boundary condition reached when we're out of bounds entirely, or when GTE/LTE is not allowed.
-                return;
+                return true;
             }
         }
         // Boundary condition not yet reached; include the indexer in the range.
         entry.getValue().visit(indexProperties, tupleValueVisitor);
+        return false;
     }
 
     @Override
