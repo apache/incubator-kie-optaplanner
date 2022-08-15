@@ -1,15 +1,21 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.phaseStarted;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.solvingStarted;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.stepStarted;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertEmptyNeverEndingMoveSelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
@@ -48,10 +54,7 @@ class RandomSubListChangeMoveSelectorTest {
         // Alternating subList and destination indexes.
         TestRandom random = new TestRandom(0, b0, 1, b0, 2, b0, 3, b0, 4, b0, 5, b0, 6, b0, 7, b0, 8, b0, 9, b0, 99, 99);
 
-        SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
-        when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
-        when(solverScope.getWorkingRandom()).thenReturn(random);
-        moveSelector.solvingStarted(solverScope);
+        solvingStarted(moveSelector, scoreDirector, random);
 
         // Every possible subList is selected.
         assertCodesOfNeverEndingMoveSelector(moveSelector,
@@ -98,10 +101,7 @@ class RandomSubListChangeMoveSelectorTest {
         // Alternating subList and destination indexes.
         TestRandom random = new TestRandom(0, b0, 1, b0, 2, b0, 3, b0, 4, b0, 99, 99);
 
-        SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
-        when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
-        when(solverScope.getWorkingRandom()).thenReturn(random);
-        moveSelector.solvingStarted(solverScope);
+        solvingStarted(moveSelector, scoreDirector, random);
 
         // Every possible subList is selected.
         assertCodesOfNeverEndingMoveSelector(moveSelector,
@@ -136,10 +136,7 @@ class RandomSubListChangeMoveSelectorTest {
 
         TestRandom random = new TestRandom(new int[] {});
 
-        SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
-        when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
-        when(solverScope.getWorkingRandom()).thenReturn(random);
-        moveSelector.solvingStarted(solverScope);
+        solvingStarted(moveSelector, scoreDirector, random);
 
         assertEmptyNeverEndingMoveSelector(moveSelector);
     }
@@ -174,10 +171,7 @@ class RandomSubListChangeMoveSelectorTest {
         // Alternating subList and destination indexes.
         TestRandom random = new TestRandom(0, b0, 1, b0, 2, b0, 3, b0, 4, b0, 99, 99);
 
-        SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
-        when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
-        when(solverScope.getWorkingRandom()).thenReturn(random);
-        moveSelector.solvingStarted(solverScope);
+        solvingStarted(moveSelector, scoreDirector, random);
 
         // Every possible subList is selected.
         assertCodesOfNeverEndingMoveSelector(moveSelector,
@@ -210,10 +204,7 @@ class RandomSubListChangeMoveSelectorTest {
 
         TestRandom random = new TestRandom(0, 0);
 
-        SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
-        when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
-        when(solverScope.getWorkingRandom()).thenReturn(random);
-        moveSelector.solvingStarted(solverScope);
+        solvingStarted(moveSelector, scoreDirector, random);
 
         assertCodesOfNeverEndingMoveSelector(moveSelector, 26 + 5);
     }
@@ -254,11 +245,46 @@ class RandomSubListChangeMoveSelectorTest {
 
         TestRandom random = new TestRandom(0, 0);
 
-        SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
-        when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
-        when(solverScope.getWorkingRandom()).thenReturn(random);
-        moveSelector.solvingStarted(solverScope);
+        solvingStarted(moveSelector, scoreDirector, random);
 
         assertCodesOfNeverEndingMoveSelector(moveSelector, 158 + 14 + 41);
+    }
+
+    @Test
+    void phaseLifecycle() {
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+
+        EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector();
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockEntityIndependentValueSelector();
+        int minimumSubListSize = 1;
+        int maximumSubListSize = Integer.MAX_VALUE;
+
+        RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
+                getListVariableDescriptor(scoreDirector),
+                entitySelector,
+                valueSelector,
+                minimumSubListSize,
+                maximumSubListSize);
+
+        TestRandom random = new TestRandom(new int[] {});
+
+        SolverScope<TestdataListSolution> solverScope = solvingStarted(moveSelector, scoreDirector, random);
+        AbstractPhaseScope<TestdataListSolution> phaseScope = phaseStarted(moveSelector, solverScope);
+
+        AbstractStepScope<TestdataListSolution> stepScope1 = stepStarted(moveSelector, phaseScope);
+        moveSelector.stepEnded(stepScope1);
+
+        AbstractStepScope<TestdataListSolution> stepScope2 = stepStarted(moveSelector, phaseScope);
+        moveSelector.stepEnded(stepScope2);
+
+        moveSelector.phaseEnded(phaseScope);
+        moveSelector.solvingEnded(solverScope);
+
+        // The invocation counts are doubled because both the move selector and its nested subList selector have
+        // their own phaseLifecycleSupport and both register the given entitySelector and valueSelector.
+        // TODO is it OK for the move selector and subList selector to share the same entitySelector and valueSelector instances?
+        verifyPhaseLifecycle(entitySelector, 2, 2, 4);
+        verifyPhaseLifecycle(valueSelector, 2, 2, 4);
     }
 }

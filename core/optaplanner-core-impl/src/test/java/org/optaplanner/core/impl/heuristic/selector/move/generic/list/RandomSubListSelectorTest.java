@@ -3,21 +3,23 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.phaseStarted;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.solvingStarted;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.stepStarted;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingIterableSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertEmptyNeverEndingIterableSelector;
-
-import java.util.Random;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
@@ -134,6 +136,42 @@ class RandomSubListSelectorTest {
     }
 
     @Test
+    void phaseLifecycle() {
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+
+        EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector();
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockEntityIndependentValueSelector();
+
+        int minimumSubListSize = 1;
+        int maximumSubListSize = Integer.MAX_VALUE;
+
+        RandomSubListSelector<TestdataListSolution> selector = new RandomSubListSelector<>(
+                getListVariableDescriptor(scoreDirector),
+                entitySelector,
+                valueSelector,
+                minimumSubListSize,
+                maximumSubListSize);
+
+        TestRandom random = new TestRandom(new int[] {});
+
+        SolverScope<TestdataListSolution> solverScope = solvingStarted(selector, scoreDirector, random);
+        AbstractPhaseScope<TestdataListSolution> phaseScope = phaseStarted(selector, solverScope);
+
+        AbstractStepScope<TestdataListSolution> stepScope1 = stepStarted(selector, phaseScope);
+        selector.stepEnded(stepScope1);
+
+        AbstractStepScope<TestdataListSolution> stepScope2 = stepStarted(selector, phaseScope);
+        selector.stepEnded(stepScope2);
+
+        selector.phaseEnded(phaseScope);
+        selector.solvingEnded(solverScope);
+
+        verifyPhaseLifecycle(entitySelector, 1, 1, 2);
+        verifyPhaseLifecycle(valueSelector, 1, 1, 2);
+    }
+
+    @Test
     void validateConstructorArguments() {
         ListVariableDescriptor<TestdataListSolution> listVariableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
@@ -148,13 +186,5 @@ class RandomSubListSelectorTest {
                 .withMessageContaining("less than or equal to the maximum");
         assertThatNoException().isThrownBy(() -> new RandomSubListSelector<>(
                 listVariableDescriptor, entitySelector, valueSelector, 1, 1));
-    }
-
-    static void solvingStarted(RandomSubListSelector<TestdataListSolution> selector,
-            InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector, Random random) {
-        SolverScope<TestdataListSolution> solverScope = mock(SolverScope.class);
-        when(solverScope.<SimpleScore> getScoreDirector()).thenReturn(scoreDirector);
-        when(solverScope.getWorkingRandom()).thenReturn(random);
-        selector.solvingStarted(solverScope);
     }
 }
