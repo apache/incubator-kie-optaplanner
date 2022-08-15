@@ -2,8 +2,8 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Objects;
-import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -18,7 +18,7 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
     private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
     private final Comparator<Key_> keyComparator;
     private final boolean isGteOrLte;
-    private final SortedMap<Key_, Indexer<Tuple_, Value_>> comparisonMap;
+    private final NavigableMap<Key_, Indexer<Tuple_, Value_>> comparisonMap;
 
     public ComparisonIndexer(JoinerType comparisonJoinerType, Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
         this(comparisonJoinerType, 0, downstreamIndexerSupplier);
@@ -44,21 +44,33 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
 
     @Override
     public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
-        Key_ indexKey = indexProperties.toKey(indexKeyPosition);
-        for (Map.Entry<Key_, Indexer<Tuple_, Value_>> entry : comparisonMap.entrySet()) {
-            Key_ key = entry.getKey();
-            // Comparator matches the order of iteration of the map, so the boundary is always found from the bottom up.
-            int comparison = keyComparator.compare(key, indexKey);
-            if (comparison >= 0) { // Possibility of reaching the boundary condition.
-                if (comparison > 0 || !isGteOrLte) {
-                    // Boundary condition reached when we're out of bounds entirely, or when GTE/LTE is not allowed.
-                    return;
-                }
-            }
-            // Boundary condition not yet reached; include the indexer in the range.
-            Indexer<Tuple_, Value_> indexer = entry.getValue();
-            indexer.visit(indexProperties, tupleValueVisitor);
+        int size = comparisonMap.size();
+        if (size == 0) {
+            return;
         }
+        Key_ indexKey = indexProperties.toKey(indexKeyPosition);
+        if (size == 1) { // Avoid creation of the entry set and iterator.
+            Map.Entry<Key_, Indexer<Tuple_, Value_>> entry = comparisonMap.firstEntry();
+            visitEntry(indexProperties, tupleValueVisitor, indexKey, entry);
+        } else {
+            for (Map.Entry<Key_, Indexer<Tuple_, Value_>> entry : comparisonMap.entrySet()) {
+                visitEntry(indexProperties, tupleValueVisitor, indexKey, entry);
+            }
+        }
+    }
+
+    private void visitEntry(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor,
+            Key_ indexKey, Map.Entry<Key_, Indexer<Tuple_, Value_>> entry) {
+        // Comparator matches the order of iteration of the map, so the boundary is always found from the bottom up.
+        int comparison = keyComparator.compare(entry.getKey(), indexKey);
+        if (comparison >= 0) { // Possibility of reaching the boundary condition.
+            if (comparison > 0 || !isGteOrLte) {
+                // Boundary condition reached when we're out of bounds entirely, or when GTE/LTE is not allowed.
+                return;
+            }
+        }
+        // Boundary condition not yet reached; include the indexer in the range.
+        entry.getValue().visit(indexProperties, tupleValueVisitor);
     }
 
     @Override
