@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 /**
@@ -117,6 +118,18 @@ public final class FieldBasedScalingMap<K, V> implements Map<K, V> {
             return Collections.singleton(Map.entry(singletonKey, singletonValue));
         } else {
             return map.entrySet();
+        }
+    }
+
+    @Override
+    public void forEach(BiConsumer<? super K, ? super V> action) { // To avoid unnecessary entry sets.
+        if (size == 0) {
+            return;
+        }
+        if (map == null) {
+            action.accept(singletonKey, singletonValue);
+        } else {
+            map.forEach(action); // The entry set creation is only necessary now.
         }
     }
 

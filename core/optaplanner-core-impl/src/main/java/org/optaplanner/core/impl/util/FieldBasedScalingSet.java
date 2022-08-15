@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -150,6 +151,18 @@ public final class FieldBasedScalingSet<E> implements Set<E> {
             return Collections.emptyIterator();
         }
         return Objects.requireNonNullElseGet(set, () -> Collections.singleton(singletonValue)).iterator();
+    }
+
+    @Override
+    public void forEach(Consumer<? super E> action) { // To avoid unnecessary iterators.
+        if (size == 0) {
+            return;
+        }
+        if (set == null) {
+            action.accept(singletonValue);
+        } else {
+            set.forEach(action); // The iterator is only necessary now.
+        }
     }
 
     @Override
