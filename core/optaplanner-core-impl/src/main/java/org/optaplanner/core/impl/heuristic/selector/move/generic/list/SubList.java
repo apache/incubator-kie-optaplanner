@@ -23,4 +23,13 @@ public final class SubList {
     public int getLength() {
         return length;
     }
+
+    public int getToIndex() {
+        return fromIndex + length;
+    }
+
+    @Override
+    public String toString() {
+        return entity + "[" + fromIndex + ".." + getToIndex() + "]";
+    }
 }

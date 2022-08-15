@@ -1,0 +1,96 @@
+package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
+import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.move.AbstractMove;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
+
+class SubListSwapMoveTest {
+
+    @Test
+    void isMoveDoable() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListValue v4 = new TestdataListValue("4");
+        TestdataListValue v5 = new TestdataListValue("5");
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4);
+        TestdataListEntity e2 = new TestdataListEntity("e2", v5);
+
+        ScoreDirector<TestdataListSolution> scoreDirector = mock(ScoreDirector.class);
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+
+        // same entity, overlap => not doable
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 3), sub(e1, 2, 3)).isMoveDoable(scoreDirector))
+                .isFalse();
+        // same entity, overlap => not doable
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 5), sub(e1, 1, 1)).isMoveDoable(scoreDirector))
+                .isFalse();
+        // same entity, no overlap (with gap) => doable
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 1), sub(e1, 4, 1)).isMoveDoable(scoreDirector))
+                .isTrue();
+        // same entity, no overlap (with touch) => doable
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 3), sub(e1, 3, 2)).isMoveDoable(scoreDirector))
+                .isTrue();
+        // same entity, no overlap (with touch, right below left) => doable
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 2, 3), sub(e1, 0, 2)).isMoveDoable(scoreDirector))
+                .isTrue();
+        // different entities => doable
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 5), sub(e2, 0, 1)).isMoveDoable(scoreDirector))
+                .isTrue();
+    }
+
+    @Test
+    void doMove() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListValue v4 = new TestdataListValue("4");
+        TestdataListValue v5 = new TestdataListValue("5");
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4);
+        TestdataListEntity e2 = new TestdataListEntity("e2", v5);
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+
+        SubListSwapMove<TestdataListSolution> move = new SubListSwapMove<>(variableDescriptor, sub(e1, 1, 2), sub(e2, 0, 1));
+
+        AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
+
+        assertThat(e1.getValueList()).containsExactly(v1, v5, v4);
+        assertThat(e2.getValueList()).containsExactly(v2, v3);
+
+        undoMove.doMove(scoreDirector);
+
+        assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4);
+        assertThat(e2.getValueList()).containsExactly(v5);
+    }
+
+    @Test
+    void toStringTest() {
+        TestdataListEntity e1 = new TestdataListEntity("e1");
+        TestdataListEntity e2 = new TestdataListEntity("e2");
+
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 1, 3), sub(e1, 0, 1)))
+                .hasToString("{e1[1..4]} <-> {e1[0..1]}");
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 1), sub(e2, 1, 5)))
+                .hasToString("{e1[0..1]} <-> {e2[1..6]}");
+    }
+
+    static SubList sub(TestdataListEntity entity, int fromIndex, int length) {
+        return new SubList(entity, fromIndex, length);
+    }
+}
