@@ -54,6 +54,10 @@ public class Timeslot extends AbstractPersistable {
         return other.endDateTime.compareTo(startDateTime) <= 0;
     }
 
+    public boolean endsBefore(Timeslot other) {
+        return endDateTime.compareTo(other.startDateTime) <= 0;
+    }
+
     public boolean isOnSameDayAs(Timeslot other) {
         return startDateTime.toLocalDate().equals(other.getStartDateTime().toLocalDate());
     }
@@ -85,7 +89,7 @@ public class Timeslot extends AbstractPersistable {
 
     public void setStartDateTime(LocalDateTime startDateTime) {
         this.startDateTime = startDateTime;
-        durationInMinutes = (startDateTime == null || endDateTime == null) ? null
+        durationInMinutes = (startDateTime == null || endDateTime == null) ? 0
                 : (int) Duration.between(startDateTime, endDateTime).toMinutes();
     }
 
@@ -95,7 +99,7 @@ public class Timeslot extends AbstractPersistable {
 
     public void setEndDateTime(LocalDateTime endDateTime) {
         this.endDateTime = endDateTime;
-        durationInMinutes = (startDateTime == null || endDateTime == null) ? null
+        durationInMinutes = (startDateTime == null || endDateTime == null) ? 0
                 : (int) Duration.between(startDateTime, endDateTime).toMinutes();
     }
 
@@ -120,16 +124,12 @@ public class Timeslot extends AbstractPersistable {
     // ************************************************************************
 
     public Timeslot withStartDateTime(LocalDateTime startDateTime) {
-        this.startDateTime = startDateTime;
-        durationInMinutes = (startDateTime == null || endDateTime == null) ? null
-                : (int) Duration.between(startDateTime, endDateTime).toMinutes();
+        setStartDateTime(startDateTime);
         return this;
     }
 
     public Timeslot withEndDateTime(LocalDateTime endDateTime) {
-        this.endDateTime = endDateTime;
-        durationInMinutes = (startDateTime == null || endDateTime == null) ? null
-                : (int) Duration.between(startDateTime, endDateTime).toMinutes();
+        setEndDateTime(endDateTime);
         return this;
     }
 
