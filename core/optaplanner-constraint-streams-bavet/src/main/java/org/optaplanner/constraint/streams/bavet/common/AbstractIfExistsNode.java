@@ -44,14 +44,13 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
     protected final void processInsert(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple, Counter<LeftTuple_> counter,
             Set<Counter<LeftTuple_>> counterSetRight) {
         if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
-            if (counter.countRight == 0) {
+            if (counter.countRight++ == 0) {
                 if (shouldExist) {
                     insertCounter(counter);
                 } else {
                     retractCounter(counter);
                 }
             }
-            counter.countRight++;
             counterSetRight.add(counter);
         }
     }
@@ -59,15 +58,31 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
     protected final void processUpdate(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple, Counter<LeftTuple_> counter,
             Set<Counter<LeftTuple_>> counterSetRight) {
         if (testFiltering(leftTuple, rightTuple)) {
-            if (counter.countRight == 0) {
+            if (counter.countRight++ == 0) {
                 if (shouldExist) {
                     insertOrUpdateCounter(counter);
                 } else {
                     retractOrRemainDeadCounter(counter);
                 }
             }
-            counter.countRight++;
             counterSetRight.add(counter);
+        }
+    }
+
+    protected final void processAndClearCounters(Set<Counter<LeftTuple_>> counterSetRight) {
+        processCounters(counterSetRight);
+        counterSetRight.clear();
+    }
+
+    protected final void processCounters(Set<Counter<LeftTuple_>> counterSetRight) {
+        for (Counter<LeftTuple_> counter : counterSetRight) {
+            if (--counter.countRight == 0) {
+                if (shouldExist) {
+                    retractCounter(counter);
+                } else {
+                    insertCounter(counter);
+                }
+            }
         }
     }
 
@@ -91,7 +106,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         }
     }
 
-    protected final void insertCounter(Counter<LeftTuple_> counter) {
+    private void insertCounter(Counter<LeftTuple_> counter) {
         switch (counter.state) {
             case DYING:
                 counter.state = BavetTupleState.UPDATING;

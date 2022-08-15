@@ -8,6 +8,7 @@ import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.impl.util.FieldBasedScalingSet;
+import org.optaplanner.core.impl.util.ListBasedScalingOrderedSet;
 
 /**
  * There is a strong likelihood that any change to this class, which is not related to indexing,
@@ -194,24 +195,6 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
 
             rightTuple.setStore(inputStoreIndexRight, newIndexProperties);
             indexRight(rightTuple, newIndexProperties, counterSetRight);
-        }
-    }
-
-    private void processAndClearCounters(Set<Counter<LeftTuple_>> counterSetRight) {
-        processCounters(counterSetRight);
-        counterSetRight.clear();
-    }
-
-    private void processCounters(Set<Counter<LeftTuple_>> counterSetRight) {
-        for (Counter<LeftTuple_> counter : counterSetRight) {
-            counter.countRight--;
-            if (counter.countRight == 0) {
-                if (shouldExist) {
-                    retractCounter(counter);
-                } else {
-                    insertCounter(counter);
-                }
-            }
         }
     }
 

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.impl.util.FieldBasedScalingSet;
+import org.optaplanner.core.impl.util.ListBasedScalingOrderedSet;
 
 /**
  * There is a strong likelihood that any change made to this class
@@ -117,25 +118,11 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
             insertRight(rightTuple);
         } else if (isFiltering) {
             // Call filtering for the leftTuple and rightTuple combinations again
-            processCounters(counterSetRight);
-            counterSetRight.clear();
+            processAndClearCounters(counterSetRight);
             for (Map.Entry<LeftTuple_, Counter<LeftTuple_>> entry : leftMap.entrySet()) {
                 LeftTuple_ leftTuple = entry.getKey();
                 Counter<LeftTuple_> counter = entry.getValue();
                 processUpdate(leftTuple, rightTuple, counter, counterSetRight);
-            }
-        }
-    }
-
-    private void processCounters(Set<Counter<LeftTuple_>> counterSetRight) {
-        for (Counter<LeftTuple_> counter : counterSetRight) {
-            counter.countRight--;
-            if (counter.countRight == 0) {
-                if (shouldExist) {
-                    retractCounter(counter);
-                } else {
-                    insertCounter(counter);
-                }
             }
         }
     }
