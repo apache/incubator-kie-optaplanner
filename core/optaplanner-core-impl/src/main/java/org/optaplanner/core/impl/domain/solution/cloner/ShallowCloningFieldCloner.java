@@ -12,7 +12,7 @@ final class ShallowCloningFieldCloner<C> implements FieldCloner<C> {
     }
 
     @Override
-    public Optional<Unprocessed> clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instaceClass,
+    public Optional<Unprocessed> clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass,
             C original, C clone) {
         Object originalValue = FieldCloner.getFieldValue(original, field);
         FieldCloner.setFieldValue(clone, field, originalValue);

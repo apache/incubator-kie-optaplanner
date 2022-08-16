@@ -56,7 +56,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
  */
 public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<Solution_> {
 
-    // These classes will never be cloned, always copied.
+    // Instances of these classes will never be cloned, always copied.
     private static final Set<Class<?>> IMMUTABLE_JDK_CLASSES = Set.of(
             // Numbers
             Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, BigInteger.class, BigDecimal.class,
@@ -121,18 +121,18 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
     protected <C> Map<Field, FieldCloner<?>> retrieveCachedFields(Class<C> clazz) {
         return fieldListMemoization.computeIfAbsent(clazz, key -> {
             Field[] fields = key.getDeclaredFields();
-            Map<Field, FieldCloner<?>> fieldMap = new HashMap<>(fields.length);
+            Map<Field, FieldCloner<?>> fieldMap = new IdentityHashMap<>(fields.length);
             for (Field field : fields) {
                 if (!Modifier.isStatic(field.getModifiers())) {
                     field.setAccessible(true);
-                    fieldMap.put(field, createCloner(field));
+                    fieldMap.put(field, getCloner(clazz, field));
                 }
             }
             return fieldMap;
         });
     }
 
-    private <C> FieldCloner<C> createCloner(Field field) {
+    private static <C> FieldCloner<C> getCloner(Class<C> clazz, Field field) {
         Class<?> fieldType = field.getType();
         if (fieldType.isPrimitive()) {
             if (fieldType == boolean.class) {
@@ -152,10 +152,10 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             } else if (fieldType == double.class) {
                 return DoubleFieldCloner.getInstance();
             } else {
-                throw new IllegalStateException("Impossible state: The field (" + field
-                        + ") is of an unknown primitive type (" + fieldType + ").");
+                throw new IllegalStateException("Impossible state: The class (" + clazz + ") has a field (" + field
+                        + ") of an unknown primitive type (" + fieldType + ").");
             }
-        } else if (IMMUTABLE_JDK_CLASSES.contains(fieldType)) {
+        } else if (fieldType.isEnum() || IMMUTABLE_JDK_CLASSES.contains(fieldType)) {
             return ShallowCloningFieldCloner.getInstance();
         } else {
             return DeepCloningFieldCloner.getInstance();
@@ -225,16 +225,19 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
         protected void process(Unprocessed unprocessed) {
             Object cloneValue;
-            if (unprocessed.originalValue instanceof Collection) {
-                cloneValue = cloneCollection(unprocessed.field.getType(), (Collection<?>) unprocessed.originalValue);
-            } else if (unprocessed.originalValue instanceof Map) {
-                cloneValue = cloneMap(unprocessed.field.getType(), (Map<?, ?>) unprocessed.originalValue);
-            } else if (unprocessed.originalValue.getClass().isArray()) {
-                cloneValue = cloneArray(unprocessed.field.getType(), unprocessed.originalValue);
+            Object originalValue = unprocessed.originalValue;
+            Field field = unprocessed.field;
+            Class<?> fieldType = field.getType();
+            if (originalValue instanceof Collection) {
+                cloneValue = cloneCollection(fieldType, (Collection<?>) originalValue);
+            } else if (originalValue instanceof Map) {
+                cloneValue = cloneMap(fieldType, (Map<?, ?>) originalValue);
+            } else if (originalValue.getClass().isArray()) {
+                cloneValue = cloneArray(fieldType, originalValue);
             } else {
-                cloneValue = clone(unprocessed.originalValue);
+                cloneValue = clone(originalValue);
             }
-            FieldCloner.setFieldValue(unprocessed.bean, unprocessed.field, cloneValue);
+            FieldCloner.setFieldValue(unprocessed.bean, field, cloneValue);
         }
 
         protected Object cloneArray(Class<?> expectedType, Object originalArray) {
@@ -354,27 +357,22 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
          */
         protected void validateCloneSolution(Solution_ originalSolution, Solution_ cloneSolution) {
             for (MemberAccessor memberAccessor : solutionDescriptor.getEntityMemberAccessorMap().values()) {
-                Object originalProperty = memberAccessor.executeGetter(originalSolution);
-                if (originalProperty != null) {
-                    Object cloneProperty = memberAccessor.executeGetter(cloneSolution);
-                    if (originalProperty == cloneProperty) {
-                        throw new IllegalStateException(
-                                "The solutionProperty (" + memberAccessor.getName() + ") was not cloned as expected."
-                                        + " The " + FieldAccessingSolutionCloner.class.getSimpleName() + " failed to recognize"
-                                        + " that property's field, probably because its field name is different.");
-                    }
-                }
+                validateCloneProperty(originalSolution, cloneSolution, memberAccessor);
             }
             for (MemberAccessor memberAccessor : solutionDescriptor.getEntityCollectionMemberAccessorMap().values()) {
-                Object originalProperty = memberAccessor.executeGetter(originalSolution);
-                if (originalProperty != null) {
-                    Object cloneProperty = memberAccessor.executeGetter(cloneSolution);
-                    if (originalProperty == cloneProperty) {
-                        throw new IllegalStateException(
-                                "The solutionProperty (" + memberAccessor.getName() + ") was not cloned as expected."
-                                        + " The " + FieldAccessingSolutionCloner.class.getSimpleName() + " failed to recognize"
-                                        + " that property's field, probably because its field name is different.");
-                    }
+                validateCloneProperty(originalSolution, cloneSolution, memberAccessor);
+            }
+        }
+
+        private void validateCloneProperty(Solution_ originalSolution, Solution_ cloneSolution, MemberAccessor memberAccessor) {
+            Object originalProperty = memberAccessor.executeGetter(originalSolution);
+            if (originalProperty != null) {
+                Object cloneProperty = memberAccessor.executeGetter(cloneSolution);
+                if (originalProperty == cloneProperty) {
+                    throw new IllegalStateException(
+                            "The solutionProperty (" + memberAccessor.getName() + ") was not cloned as expected."
+                                    + " The " + FieldAccessingSolutionCloner.class.getSimpleName() + " failed to recognize"
+                                    + " that property's field, probably because its field name is different.");
                 }
             }
         }

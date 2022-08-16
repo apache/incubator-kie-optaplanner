@@ -12,7 +12,7 @@ final class BooleanFieldCloner<C> implements FieldCloner<C> {
     }
 
     @Override
-    public Optional<Unprocessed> clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instaceClass,
+    public Optional<Unprocessed> clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass,
             C original, C clone) {
         boolean originalValue = getFieldValue(original, field);
         setFieldValue(clone, field, originalValue);
@@ -23,8 +23,8 @@ final class BooleanFieldCloner<C> implements FieldCloner<C> {
         try {
             return field.getBoolean(bean);
         } catch (IllegalAccessException e) {
-            throw new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
-                    + ") which cannot be read to create a planning clone.", e);
+            FieldCloner.failOnRead(bean, field, e);
+            return false;
         }
     }
 
@@ -32,8 +32,7 @@ final class BooleanFieldCloner<C> implements FieldCloner<C> {
         try {
             field.setBoolean(bean, value);
         } catch (IllegalAccessException e) {
-            throw new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
-                    + ") which cannot be written with the value (" + value + ") to create a planning clone.", e);
+            FieldCloner.failOnWrite(bean, field, value, e);
         }
     }
 

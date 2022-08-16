@@ -28,8 +28,7 @@ final class DeepCloningFieldCloner<C> implements FieldCloner<C> {
         if (originalValue == null) {
             return false;
         }
-        return deepCloningUtils.getDeepCloneDecision(field, fieldInstanceClass,
-                originalValue.getClass());
+        return deepCloningUtils.getDeepCloneDecision(field, fieldInstanceClass, originalValue.getClass());
     }
 
     private DeepCloningFieldCloner() {

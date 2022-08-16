@@ -2,11 +2,11 @@ package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.lang.reflect.Field;
 
-class Unprocessed {
+final class Unprocessed {
 
-    protected Object bean;
-    protected Field field;
-    protected Object originalValue;
+    final Object bean;
+    final Field field;
+    final Object originalValue;
 
     public Unprocessed(Object bean, Field field, Object originalValue) {
         this.bean = bean;
