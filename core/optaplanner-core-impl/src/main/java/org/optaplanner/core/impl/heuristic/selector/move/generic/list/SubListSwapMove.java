@@ -24,6 +24,14 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
         this.rightSubList = rightSubList;
     }
 
+    public SubList getLeftSubList() {
+        return leftSubList;
+    }
+
+    public SubList getRightSubList() {
+        return rightSubList;
+    }
+
     @Override
     public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
         // If both subLists are on the same entity, then they must not overlap.
