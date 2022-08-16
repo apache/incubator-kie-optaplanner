@@ -1,6 +1,8 @@
 package org.optaplanner.core.impl.domain.solution.cloner;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.*;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
@@ -17,6 +19,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
@@ -37,6 +41,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowin
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedSolution;
 import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.TestdataDeepCloningEntity;
 import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.TestdataDeepCloningSolution;
+import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.TestdataVariousTypes;
 import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.field.TestdataFieldAnnotatedDeepCloningEntity;
 import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.field.TestdataFieldAnnotatedDeepCloningSolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataArrayBasedEntity;
@@ -771,6 +776,7 @@ public abstract class AbstractSolutionClonerTest {
         TestdataValue val2 = new TestdataValue("2");
         TestdataValue val3 = new TestdataValue("3");
         TestdataDeepCloningEntity a = new TestdataDeepCloningEntity("a", val1);
+        a.setVariousTypes(new TestdataVariousTypes());
         List<String> aShadowVariableList = Arrays.asList("shadow a1", "shadow a2");
         a.setShadowVariableList(aShadowVariableList);
         TestdataDeepCloningEntity b = new TestdataDeepCloningEntity("b", val1);
@@ -825,6 +831,35 @@ public abstract class AbstractSolutionClonerTest {
         assertThat(b.getShadowVariableMap().get("shadow key b1")).isEqualTo("other shadow value b1");
         // Clone remains unchanged
         assertThat(cloneB.getShadowVariableMap().get("shadow key b1")).isEqualTo("shadow value b1");
+
+        // Assert that all the various types have been cloned.
+        TestdataVariousTypes originalTypes = a.getVariousTypes();
+        TestdataVariousTypes clonedTypes = cloneA.getVariousTypes();
+        assertThat(clonedTypes).isNotSameAs(originalTypes);
+        // Ensure primitives are cloned.
+        assertSoftly(softly -> {
+            softly.assertThat(clonedTypes.booleanValue).isEqualTo(originalTypes.booleanValue);
+            softly.assertThat(clonedTypes.byteValue).isEqualTo(originalTypes.byteValue);
+            softly.assertThat(clonedTypes.charValue).isEqualTo(originalTypes.charValue);
+            softly.assertThat(clonedTypes.shortValue).isEqualTo(originalTypes.shortValue);
+            softly.assertThat(clonedTypes.intValue).isEqualTo(originalTypes.intValue);
+            softly.assertThat(clonedTypes.longValue).isEqualTo(originalTypes.longValue);
+            softly.assertThat(clonedTypes.floatValue).isEqualTo(originalTypes.floatValue);
+            softly.assertThat(clonedTypes.doubleValue).isEqualTo(originalTypes.doubleValue);
+        });
+        // Ensure reference types are copied, not cloned.
+        assertSoftly(softly -> {
+            softly.assertThat(clonedTypes.booleanRef).isSameAs(originalTypes.booleanRef);
+            softly.assertThat(clonedTypes.byteRef).isSameAs(originalTypes.byteRef);
+            softly.assertThat(clonedTypes.charRef).isSameAs(originalTypes.charRef);
+            softly.assertThat(clonedTypes.shortRef).isSameAs(originalTypes.shortRef);
+            softly.assertThat(clonedTypes.intRef).isSameAs(originalTypes.intRef);
+            softly.assertThat(clonedTypes.longRef).isSameAs(originalTypes.longRef);
+            softly.assertThat(clonedTypes.floatRef).isSameAs(originalTypes.floatRef);
+            softly.assertThat(clonedTypes.doubleRef).isSameAs(originalTypes.doubleRef);
+            softly.assertThat(clonedTypes.uuidRef).isSameAs(originalTypes.uuidRef);
+            softly.assertThat(clonedTypes.stringRef).isSameAs(originalTypes.stringRef);
+        });
     }
 
     private void assertDeepCloningEntityClone(TestdataDeepCloningEntity originalEntity, TestdataDeepCloningEntity cloneEntity,

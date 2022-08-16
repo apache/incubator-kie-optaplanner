@@ -170,8 +170,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
         protected Solution_ cloneSolution(Solution_ originalSolution) {
             int entityCount = solutionDescriptor.getEntityCount(originalSolution);
             unprocessedQueue = new ArrayDeque<>(entityCount + 1);
-            originalToCloneMap = new IdentityHashMap<>(
-                    entityCount + 1);
+            originalToCloneMap = new IdentityHashMap<>(entityCount + 1);
             Solution_ cloneSolution = clone(originalSolution);
             processQueue();
             validateCloneSolution(originalSolution, cloneSolution);

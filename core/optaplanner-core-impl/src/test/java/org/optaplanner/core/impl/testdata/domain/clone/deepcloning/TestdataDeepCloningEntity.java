@@ -27,6 +27,7 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     }
 
     private TestdataValue value;
+    private TestdataVariousTypes variousTypes;
     private List<String> shadowVariableList;
     private Map<String, String> shadowVariableMap;
 
@@ -49,6 +50,15 @@ public class TestdataDeepCloningEntity extends TestdataObject {
 
     public void setValue(TestdataValue value) {
         this.value = value;
+    }
+
+    @DeepPlanningClone
+    public TestdataVariousTypes getVariousTypes() {
+        return variousTypes;
+    }
+
+    public void setVariousTypes(TestdataVariousTypes variousTypes) {
+        this.variousTypes = variousTypes;
     }
 
     @DeepPlanningClone

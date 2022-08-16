@@ -21,7 +21,7 @@ final class DoubleFieldCloner<C> implements FieldCloner<C> {
 
     private static double getFieldValue(Object bean, Field field) {
         try {
-            return field.getFloat(bean);
+            return field.getDouble(bean);
         } catch (IllegalAccessException e) {
             FieldCloner.failOnRead(bean, field, e);
             return 0;
