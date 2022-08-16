@@ -47,8 +47,7 @@ public final class DeepCloningUtils {
      *        class might be ArrayList).
      * @return true iff the field should be deep cloned with a particular value.
      */
-    public boolean getDeepCloneDecision(Field field,
-            Class<?> owningClass, Class<?> actualValueClass) {
+    public boolean getDeepCloneDecision(Field field, Class<?> owningClass, Class<?> actualValueClass) {
         Pair<Field, Class<?>> pair = Pair.of(field, owningClass);
         Boolean deepCloneDecision = fieldDeepClonedMemoization.computeIfAbsent(pair,
                 key -> isFieldDeepCloned(field, owningClass));

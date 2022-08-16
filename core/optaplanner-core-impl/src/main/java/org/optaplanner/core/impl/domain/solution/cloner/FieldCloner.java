@@ -24,6 +24,6 @@ interface FieldCloner<C> {
         }
     }
 
-    Optional<Unprocessed> clone(Field f, Class<? extends C> instaceClass, C original, C clone);
+    Optional<Unprocessed> clone(DeepCloningUtils deepCloningUtils, Field f, Class<? extends C> instaceClass, C original, C clone);
 
 }

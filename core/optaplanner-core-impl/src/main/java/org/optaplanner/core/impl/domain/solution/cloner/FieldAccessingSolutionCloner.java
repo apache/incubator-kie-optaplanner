@@ -4,6 +4,22 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,16 +34,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -37,10 +56,23 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
  */
 public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<Solution_> {
 
+    // These classes will never be cloned, always copied.
+    private static final Set<Class<?>> IMMUTABLE_JDK_CLASSES = Set.of(
+            // Numbers
+            Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, BigInteger.class, BigDecimal.class,
+            // Optional
+            Optional.class, OptionalInt.class, OptionalLong.class, OptionalDouble.class,
+            // Date and time
+            Duration.class, Instant.class, LocalDate.class, LocalDateTime.class, LocalTime.class, MonthDay.class,
+            OffsetDateTime.class, OffsetTime.class, Period.class, Year.class, YearMonth.class, ZonedDateTime.class,
+            ZoneId.class, ZoneOffset.class,
+            // Others
+            Boolean.class, Character.class, String.class, UUID.class);
+
     protected final SolutionDescriptor<Solution_> solutionDescriptor;
 
     protected final ConcurrentMap<Class<?>, Constructor<?>> constructorMemoization = new ConcurrentMemoization<>();
-    protected final ConcurrentMap<Class<?>, List<Field>> fieldListMemoization = new ConcurrentMemoization<>();
+    protected final ConcurrentMap<Class<?>, Map<Field, FieldCloner<?>>> fieldListMemoization = new ConcurrentMemoization<>();
     protected final DeepCloningUtils deepCloningUtils;
 
     public FieldAccessingSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
@@ -86,24 +118,26 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
      * @param <C> type
      * @return never null
      */
-    protected <C> List<Field> retrieveCachedFields(Class<C> clazz) {
+    protected <C> Map<Field, FieldCloner<?>> retrieveCachedFields(Class<C> clazz) {
         return fieldListMemoization.computeIfAbsent(clazz, key -> {
-            Field[] fields = clazz.getDeclaredFields();
-            List<Field> fieldList = new ArrayList<>(fields.length);
+            Field[] fields = key.getDeclaredFields();
+            Map<Field, FieldCloner<?>> fieldMap = new HashMap<>(fields.length);
             for (Field field : fields) {
                 if (!Modifier.isStatic(field.getModifiers())) {
                     field.setAccessible(true);
-                    fieldList.add(field);
+                    fieldMap.put(field, createCloner(field));
                 }
             }
-            return fieldList;
+            return fieldMap;
         });
     }
 
-    protected boolean isClassDeepCloned(Class<?> type) {
-        return solutionDescriptor.hasEntityDescriptor(type)
-                || solutionDescriptor.getSolutionClass().isAssignableFrom(type)
-                || type.isAnnotationPresent(DeepPlanningClone.class);
+    private <C> FieldCloner<C> createCloner(Field field) {
+        if (IMMUTABLE_JDK_CLASSES.contains(field.getType())) {
+            return new ShallowCloningFieldCloner<>();
+        } else {
+            return new DeepCloningFieldCloner<>();
+        }
     }
 
     protected class FieldAccessingSolutionClonerRun {
@@ -148,23 +182,16 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
         }
 
         protected <C> void copyFields(Class<C> clazz, Class<? extends C> instanceClass, C original, C clone) {
-            for (Field field : retrieveCachedFields(clazz)) {
-                FieldCloner<C> fieldCloner = new DeepCloningFieldCloner<>(this::isDeepCloneField);
-                Optional<Unprocessed> maybeUnprocessed = fieldCloner.clone(field, instanceClass, original, clone);
+            for (Map.Entry<Field, FieldCloner<?>> entry : retrieveCachedFields(clazz).entrySet()) {
+                FieldCloner<C> fieldCloner = (FieldCloner<C>) entry.getValue();
+                Optional<Unprocessed> maybeUnprocessed =
+                        fieldCloner.clone(deepCloningUtils, entry.getKey(), instanceClass, original, clone);
                 maybeUnprocessed.ifPresent(unprocessedQueue::add);
             }
             Class<? super C> superclass = clazz.getSuperclass();
             if (superclass != null) {
                 copyFields(superclass, instanceClass, original, clone);
             }
-        }
-
-        protected boolean isDeepCloneField(Field field, Class<?> fieldInstanceClass, Object originalValue) {
-            if (originalValue == null) {
-                return false;
-            }
-            return deepCloningUtils.getDeepCloneDecision(field, fieldInstanceClass,
-                    originalValue.getClass());
         }
 
         protected void processQueue() {
