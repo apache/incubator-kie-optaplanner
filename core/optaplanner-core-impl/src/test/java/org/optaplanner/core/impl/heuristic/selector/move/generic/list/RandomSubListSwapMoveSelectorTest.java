@@ -94,11 +94,11 @@ class RandomSubListSwapMoveSelectorTest {
                 "{A[1+3]} <-> {A[1+1]}",
                 "{A[0+2]} <-> {A[0+1]}",
                 "{A[1+2]} <-> {A[2+2]}",
-                "{A[2+2]} <-> {A[1+2]}",
+                "{A[1+2]} <-> {A[2+2]}", // equivalent to {A[2+2]} <-> {A[1+2]}
                 "{A[0+1]} <-> {A[0+2]}",
                 "{A[1+1]} <-> {A[1+3]}",
-                "{A[2+1]} <-> {A[0+3]}",
-                "{A[3+1]} <-> {A[0+4]}");
+                "{A[0+3]} <-> {A[2+1]}", // equivalent to {A[2+1]} <-> {A[0+3]}
+                "{A[0+4]} <-> {A[3+1]}"); // equivalent to {A[3+1]} <-> {A[0+4]}
 
         random.assertIntBoundJustRequested(10);
     }
@@ -153,7 +153,7 @@ class RandomSubListSwapMoveSelectorTest {
                 "{A[1+3]} <-> {A[1+2]}",
                 "{A[0+2]} <-> {A[0+2]}",
                 "{A[1+2]} <-> {A[1+3]}",
-                "{A[2+2]} <-> {A[0+3]}");
+                "{A[0+3]} <-> {A[2+2]}"); // equivalent to {A[2+2]} <-> {A[0+3]}
 
         random.assertIntBoundJustRequested(5);
     }
@@ -227,7 +227,7 @@ class RandomSubListSwapMoveSelectorTest {
                 "{A[0+2]} <-> {A[0+2]}",
                 "{A[0+2]} <-> {A[0+2]}",
                 "{A[0+2]} <-> {A[1+2]}",
-                "{A[1+2]} <-> {A[0+2]}",
+                "{A[0+2]} <-> {A[1+2]}", // equivalent to {A[1+2]} <-> {A[0+2]}
                 "{A[1+2]} <-> {A[1+2]}");
 
         random.assertIntBoundJustRequested(2);

@@ -2,6 +2,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -70,10 +71,46 @@ class SubListSwapMoveTest {
         assertThat(e1.getValueList()).containsExactly(v1, v5, v4);
         assertThat(e2.getValueList()).containsExactly(v2, v3);
 
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 1, 2);
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e2, 0, 2);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 1, 2);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e2, 0, 2);
+
         undoMove.doMove(scoreDirector);
 
         assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4);
         assertThat(e2.getValueList()).containsExactly(v5);
+    }
+
+    @Test
+    void doMoveOnSameEntity() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListValue v4 = new TestdataListValue("4");
+        TestdataListValue v5 = new TestdataListValue("5");
+        TestdataListValue v6 = new TestdataListValue("6");
+        TestdataListValue v7 = new TestdataListValue("7");
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4, v5, v6, v7);
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+
+        SubListSwapMove<TestdataListSolution> move = new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 1), sub(e1, 4, 3));
+
+        AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
+
+        assertThat(e1.getValueList()).containsExactly(v5, v6, v7, v2, v3, v4, v1);
+
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 0, 3);
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 6, 7);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 0, 3);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 6, 7);
+
+        undoMove.doMove(scoreDirector);
+
+        assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4, v5, v6, v7);
     }
 
     @Test
@@ -85,7 +122,7 @@ class SubListSwapMoveTest {
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
         assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 1, 3), sub(e1, 0, 1)))
-                .hasToString("{e1[1..4]} <-> {e1[0..1]}");
+                .hasToString("{e1[0..1]} <-> {e1[1..4]}");
         assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 1), sub(e2, 1, 5)))
                 .hasToString("{e1[0..1]} <-> {e2[1..6]}");
     }
