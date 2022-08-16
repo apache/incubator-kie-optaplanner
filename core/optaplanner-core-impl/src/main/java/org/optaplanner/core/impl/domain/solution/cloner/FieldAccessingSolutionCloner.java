@@ -134,9 +134,9 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
     private <C> FieldCloner<C> createCloner(Field field) {
         if (IMMUTABLE_JDK_CLASSES.contains(field.getType())) {
-            return new ShallowCloningFieldCloner<>();
+            return ShallowCloningFieldCloner.getInstance();
         } else {
-            return new DeepCloningFieldCloner<>();
+            return DeepCloningFieldCloner.getInstance();
         }
     }
 

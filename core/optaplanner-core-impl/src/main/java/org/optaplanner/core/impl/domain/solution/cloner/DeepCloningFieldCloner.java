@@ -5,6 +5,12 @@ import java.util.Optional;
 
 final class DeepCloningFieldCloner<C> implements FieldCloner<C> {
 
+    private static final FieldCloner INSTANCE = new DeepCloningFieldCloner();
+
+    public static <C> FieldCloner<C> getInstance() {
+        return INSTANCE;
+    }
+
     @Override
     public Optional<Unprocessed> clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass,
             C original, C clone) {
@@ -24,5 +30,9 @@ final class DeepCloningFieldCloner<C> implements FieldCloner<C> {
         }
         return deepCloningUtils.getDeepCloneDecision(field, fieldInstanceClass,
                 originalValue.getClass());
+    }
+
+    private DeepCloningFieldCloner() {
+
     }
 }
