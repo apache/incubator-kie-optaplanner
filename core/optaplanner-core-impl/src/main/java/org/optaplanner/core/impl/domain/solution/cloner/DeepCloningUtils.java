@@ -216,7 +216,7 @@ public final class DeepCloningUtils {
                     deepClonedClassSet.add(clazz);
                     for (Field field : getAllFields(clazz)) {
                         deepClonedClassSet.addAll(getDeepClonedTypeArguments(field.getGenericType()));
-                        if (isClassDeepCloned(field.getType())) {
+                        if (isFieldDeepCloned(field, clazz)) {
                             deepClonedClassSet.add(field.getType());
                         }
                     }
