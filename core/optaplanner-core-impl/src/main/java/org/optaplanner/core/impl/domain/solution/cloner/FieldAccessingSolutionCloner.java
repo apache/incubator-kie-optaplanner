@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
@@ -148,14 +149,9 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
         protected <C> void copyFields(Class<C> clazz, Class<? extends C> instanceClass, C original, C clone) {
             for (Field field : retrieveCachedFields(clazz)) {
-                Object originalValue = getFieldValue(original, field);
-                if (isDeepCloneField(field, instanceClass, originalValue)) {
-                    // Postpone filling in the fields
-                    unprocessedQueue.add(new Unprocessed(clone, field, originalValue));
-                } else {
-                    // Shallow copy
-                    setFieldValue(clone, field, originalValue);
-                }
+                FieldCloner<C> fieldCloner = new DeepCloningFieldCloner<>(this::isDeepCloneField);
+                Optional<Unprocessed> maybeUnprocessed = fieldCloner.clone(field, instanceClass, original, clone);
+                maybeUnprocessed.ifPresent(unprocessedQueue::add);
             }
             Class<? super C> superclass = clazz.getSuperclass();
             if (superclass != null) {
@@ -189,7 +185,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             } else {
                 cloneValue = clone(unprocessed.originalValue);
             }
-            setFieldValue(unprocessed.bean, unprocessed.field, cloneValue);
+            FieldCloner.setFieldValue(unprocessed.bean, unprocessed.field, cloneValue);
         }
 
         protected Object cloneArray(Class<?> expectedType, Object originalArray) {
@@ -333,39 +329,6 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
                 }
             }
         }
-
-        protected Object getFieldValue(Object bean, Field field) {
-            try {
-                return field.get(bean);
-            } catch (IllegalAccessException e) {
-                throw new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
-                        + ") which cannot be read to create a planning clone.", e);
-            }
-        }
-
-        protected void setFieldValue(Object bean, Field field, Object value) {
-            try {
-                field.set(bean, value);
-            } catch (IllegalAccessException e) {
-                throw new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
-                        + ") which cannot be written with the value (" + value + ") to create a planning clone.", e);
-            }
-        }
-
-    }
-
-    protected static class Unprocessed {
-
-        protected Object bean;
-        protected Field field;
-        protected Object originalValue;
-
-        public Unprocessed(Object bean, Field field, Object originalValue) {
-            this.bean = bean;
-            this.field = field;
-            this.originalValue = originalValue;
-        }
-
     }
 
 }
