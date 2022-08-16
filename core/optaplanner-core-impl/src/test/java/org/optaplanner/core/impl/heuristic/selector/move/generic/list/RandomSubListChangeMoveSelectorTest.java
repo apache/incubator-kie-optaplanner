@@ -1,8 +1,10 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.phaseStarted;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.solvingStarted;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.stepStarted;
+import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.TriangularNumbers.nthTriangle;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
@@ -187,18 +189,23 @@ class RandomSubListChangeMoveSelectorTest {
         TestdataListValue v2 = new TestdataListValue("2");
         TestdataListValue v3 = new TestdataListValue("3");
         TestdataListValue v4 = new TestdataListValue("4");
+        TestdataListValue v5 = new TestdataListValue("5");
         TestdataListEntity a = TestdataListEntity.createWithValues("A", v1, v2, v3);
         TestdataListEntity b = TestdataListEntity.createWithValues("B");
-        TestdataListEntity c = TestdataListEntity.createWithValues("C", v4);
+        TestdataListEntity c = TestdataListEntity.createWithValues("C", v4, v5);
 
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+
+        int subListCount = 9;
+        assertThat(subListCount).isEqualTo(nthTriangle(listSize(a)) + nthTriangle(listSize(b)) + nthTriangle(listSize(c)));
+        int destinationIndexRange = 8; // value count + entity count
 
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 // Selectors must be accurate; their sizes affect the moveSelector size.
                 mockEntitySelector(a, b, c),
-                mockEntityIndependentValueSelector(v1, v2, v3, v4),
+                mockEntityIndependentValueSelector(v1, v2, v3, v4, v5),
                 1,
                 Integer.MAX_VALUE);
 
@@ -206,7 +213,11 @@ class RandomSubListChangeMoveSelectorTest {
 
         solvingStarted(moveSelector, scoreDirector, random);
 
-        assertCodesOfNeverEndingMoveSelector(moveSelector, 26 + 5);
+        assertCodesOfNeverEndingMoveSelector(moveSelector, subListCount * destinationIndexRange);
+    }
+
+    static int listSize(TestdataListEntity entity) {
+        return entity.getValueList().size();
     }
 
     @Test
@@ -235,6 +246,9 @@ class RandomSubListChangeMoveSelectorTest {
 
         int minimumSubListSize = 3;
         int maximumSubListSize = 5;
+        int subListCount = 16;
+        int destinationIndexRange = 18; // value count + entity count
+
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 // Selectors must be accurate; their sizes affect the moveSelector size.
@@ -247,7 +261,7 @@ class RandomSubListChangeMoveSelectorTest {
 
         solvingStarted(moveSelector, scoreDirector, random);
 
-        assertCodesOfNeverEndingMoveSelector(moveSelector, 158 + 14 + 41);
+        assertCodesOfNeverEndingMoveSelector(moveSelector, subListCount * destinationIndexRange);
     }
 
     @Test

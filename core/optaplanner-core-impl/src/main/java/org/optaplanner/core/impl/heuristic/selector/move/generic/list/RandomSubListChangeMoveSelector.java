@@ -54,25 +54,19 @@ public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelec
     @Override
     public long getSize() {
         long destinationRange = entitySelector.getSize() + valueSelector.getSize();
-        long moveCount = 0;
+        long subListCount = 0;
         for (Object entity : (Iterable<?>) entitySelector::endingIterator) {
             int listSize = listVariableDescriptor.getListSize(entity);
             if (listSize < minimumSubListSize) {
                 continue;
             }
             // Add moves with subLists bigger than minimum subList size.
-            moveCount += moveCount(destinationRange, listSize, listSize - minimumSubListSize + 1);
+            subListCount += nthTriangle(listSize - minimumSubListSize + 1);
             if (listSize > maximumSubListSize) {
                 // Subtract moves with subLists bigger than maximum subList size.
-                moveCount -= moveCount(destinationRange, listSize, listSize - maximumSubListSize);
+                subListCount -= nthTriangle(listSize - maximumSubListSize);
             }
         }
-        return moveCount;
-    }
-
-    private static long moveCount(long destinationRange, int listSize, int n) {
-        int triangle = nthTriangle(n);
-        int pyramid = triangle * (2 * n + 1) / 3;
-        return triangle * (destinationRange - listSize - 2) + pyramid;
+        return subListCount * destinationRange;
     }
 }
