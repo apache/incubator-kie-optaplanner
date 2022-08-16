@@ -133,7 +133,29 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
     }
 
     private <C> FieldCloner<C> createCloner(Field field) {
-        if (IMMUTABLE_JDK_CLASSES.contains(field.getType())) {
+        Class<?> fieldType = field.getType();
+        if (fieldType.isPrimitive()) {
+            if (fieldType == boolean.class) {
+                return BooleanFieldCloner.getInstance();
+            } else if (fieldType == byte.class) {
+                return ByteFieldCloner.getInstance();
+            } else if (fieldType == char.class) {
+                return CharFieldCloner.getInstance();
+            } else if (fieldType == short.class) {
+                return ShortFieldCloner.getInstance();
+            } else if (fieldType == int.class) {
+                return IntFieldCloner.getInstance();
+            } else if (fieldType == long.class) {
+                return LongFieldCloner.getInstance();
+            } else if (fieldType == float.class) {
+                return FloatFieldCloner.getInstance();
+            } else if (fieldType == double.class) {
+                return DoubleFieldCloner.getInstance();
+            } else {
+                throw new IllegalStateException("Impossible state: The field (" + field
+                        + ") is of an unknown primitive type (" + fieldType + ").");
+            }
+        } else if (IMMUTABLE_JDK_CLASSES.contains(fieldType)) {
             return ShallowCloningFieldCloner.getInstance();
         } else {
             return DeepCloningFieldCloner.getInstance();
