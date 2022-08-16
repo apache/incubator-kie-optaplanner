@@ -27,6 +27,10 @@
         <minimumSubListSize>2</minimumSubListSize>
         <maximumSubListSize>6</maximumSubListSize>
       </subListChangeMoveSelector>
+      <subListSwapMoveSelector>
+        <minimumSubListSize>3</minimumSubListSize>
+        <maximumSubListSize>5</maximumSubListSize>
+      </subListSwapMoveSelector>
     </unionMoveSelector>
   </localSearch>
 </solver>
