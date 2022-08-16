@@ -27,7 +27,12 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     }
 
     private TestdataValue value;
-    private TestdataVariousTypes variousTypes;
+    // Will not be picked up for shallow cloning.
+    private TestdataVariousTypes unannotatedCopiedTestdataVariousTypes;
+    // Will be picked for deep-cloning on account of the annotated getter.
+    private TestdataVariousTypes unannotatedClonedTestdataVariousTypes;
+    // Will be picked for deep-cloning on account of the annotated class.
+    private AnnotatedTestdataVariousTypes annotatedClonedTestdataVariousTypes;
     private List<String> shadowVariableList;
     private Map<String, String> shadowVariableMap;
 
@@ -52,13 +57,29 @@ public class TestdataDeepCloningEntity extends TestdataObject {
         this.value = value;
     }
 
-    @DeepPlanningClone
-    public TestdataVariousTypes getVariousTypes() {
-        return variousTypes;
+    public TestdataVariousTypes getUnannotatedCopiedTestdataVariousTypes() {
+        return unannotatedCopiedTestdataVariousTypes;
     }
 
-    public void setVariousTypes(TestdataVariousTypes variousTypes) {
-        this.variousTypes = variousTypes;
+    public void setUnannotatedCopiedTestdataVariousTypes(TestdataVariousTypes unannotatedCopiedTestdataVariousTypes) {
+        this.unannotatedCopiedTestdataVariousTypes = unannotatedCopiedTestdataVariousTypes;
+    }
+
+    @DeepPlanningClone
+    public TestdataVariousTypes getUnannotatedClonedTestdataVariousTypes() {
+        return unannotatedClonedTestdataVariousTypes;
+    }
+
+    public void setUnannotatedClonedTestdataVariousTypes(TestdataVariousTypes unannotatedClonedTestdataVariousTypes) {
+        this.unannotatedClonedTestdataVariousTypes = unannotatedClonedTestdataVariousTypes;
+    }
+
+    public AnnotatedTestdataVariousTypes getAnnotatedClonedTestdataVariousTypes() {
+        return annotatedClonedTestdataVariousTypes;
+    }
+
+    public void setAnnotatedClonedTestdataVariousTypes(AnnotatedTestdataVariousTypes annotatedClonedTestdataVariousTypes) {
+        this.annotatedClonedTestdataVariousTypes = annotatedClonedTestdataVariousTypes;
     }
 
     @DeepPlanningClone

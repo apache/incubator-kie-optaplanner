@@ -1,8 +1,6 @@
 package org.optaplanner.core.impl.domain.solution.cloner;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.*;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
@@ -37,6 +35,7 @@ import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowin
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedObject;
 import org.optaplanner.core.impl.testdata.domain.chained.shadow.TestdataShadowingChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.AnnotatedTestdataVariousTypes;
 import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.TestdataDeepCloningEntity;
 import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.TestdataDeepCloningSolution;
 import org.optaplanner.core.impl.testdata.domain.clone.deepcloning.TestdataVariousTypes;
@@ -774,7 +773,9 @@ public abstract class AbstractSolutionClonerTest {
         TestdataValue val2 = new TestdataValue("2");
         TestdataValue val3 = new TestdataValue("3");
         TestdataDeepCloningEntity a = new TestdataDeepCloningEntity("a", val1);
-        a.setVariousTypes(new TestdataVariousTypes());
+        a.setUnannotatedCopiedTestdataVariousTypes(new TestdataVariousTypes());
+        a.setAnnotatedClonedTestdataVariousTypes(new AnnotatedTestdataVariousTypes());
+        a.setUnannotatedClonedTestdataVariousTypes(new TestdataVariousTypes());
         List<String> aShadowVariableList = Arrays.asList("shadow a1", "shadow a2");
         a.setShadowVariableList(aShadowVariableList);
         TestdataDeepCloningEntity b = new TestdataDeepCloningEntity("b", val1);
@@ -830,33 +831,43 @@ public abstract class AbstractSolutionClonerTest {
         // Clone remains unchanged
         assertThat(cloneB.getShadowVariableMap().get("shadow key b1")).isEqualTo("shadow value b1");
 
-        // Assert that all the various types have been cloned.
-        TestdataVariousTypes originalTypes = a.getVariousTypes();
-        TestdataVariousTypes clonedTypes = cloneA.getVariousTypes();
-        assertThat(clonedTypes).isNotSameAs(originalTypes);
-        // Ensure primitives are cloned.
+        // Assert that all the various types have been treated properly.
+        TestdataVariousTypes originalUnannotatedTypes = a.getUnannotatedClonedTestdataVariousTypes();
+        TestdataVariousTypes clonedUnannotatedTypes = cloneA.getUnannotatedClonedTestdataVariousTypes();
+        AnnotatedTestdataVariousTypes originalAnnotatedTypes = a.getAnnotatedClonedTestdataVariousTypes();
+        AnnotatedTestdataVariousTypes clonedAnnotatedTypes = cloneA.getAnnotatedClonedTestdataVariousTypes();
         assertSoftly(softly -> {
-            softly.assertThat(clonedTypes.booleanValue).isEqualTo(originalTypes.booleanValue);
-            softly.assertThat(clonedTypes.byteValue).isEqualTo(originalTypes.byteValue);
-            softly.assertThat(clonedTypes.charValue).isEqualTo(originalTypes.charValue);
-            softly.assertThat(clonedTypes.shortValue).isEqualTo(originalTypes.shortValue);
-            softly.assertThat(clonedTypes.intValue).isEqualTo(originalTypes.intValue);
-            softly.assertThat(clonedTypes.longValue).isEqualTo(originalTypes.longValue);
-            softly.assertThat(clonedTypes.floatValue).isEqualTo(originalTypes.floatValue);
-            softly.assertThat(clonedTypes.doubleValue).isEqualTo(originalTypes.doubleValue);
+            softly.assertThat(cloneA.getUnannotatedCopiedTestdataVariousTypes()).isSameAs(a.getUnannotatedCopiedTestdataVariousTypes());
+            softly.assertThat(clonedUnannotatedTypes).isNotSameAs(originalUnannotatedTypes);
+            softly.assertThat(clonedAnnotatedTypes).isNotSameAs(originalAnnotatedTypes);
+        });
+        assertTestdataVariousTypes(originalUnannotatedTypes, clonedUnannotatedTypes);
+        assertTestdataVariousTypes(originalAnnotatedTypes, clonedAnnotatedTypes);
+    }
+
+    private void assertTestdataVariousTypes(TestdataVariousTypes original, TestdataVariousTypes cloned) {
+        assertSoftly(softly -> {
+            softly.assertThat(cloned.booleanValue).isEqualTo(original.booleanValue);
+            softly.assertThat(cloned.byteValue).isEqualTo(original.byteValue);
+            softly.assertThat(cloned.charValue).isEqualTo(original.charValue);
+            softly.assertThat(cloned.shortValue).isEqualTo(original.shortValue);
+            softly.assertThat(cloned.intValue).isEqualTo(original.intValue);
+            softly.assertThat(cloned.longValue).isEqualTo(original.longValue);
+            softly.assertThat(cloned.floatValue).isEqualTo(original.floatValue);
+            softly.assertThat(cloned.doubleValue).isEqualTo(original.doubleValue);
         });
         // Ensure reference types are copied, not cloned.
         assertSoftly(softly -> {
-            softly.assertThat(clonedTypes.booleanRef).isSameAs(originalTypes.booleanRef);
-            softly.assertThat(clonedTypes.byteRef).isSameAs(originalTypes.byteRef);
-            softly.assertThat(clonedTypes.charRef).isSameAs(originalTypes.charRef);
-            softly.assertThat(clonedTypes.shortRef).isSameAs(originalTypes.shortRef);
-            softly.assertThat(clonedTypes.intRef).isSameAs(originalTypes.intRef);
-            softly.assertThat(clonedTypes.longRef).isSameAs(originalTypes.longRef);
-            softly.assertThat(clonedTypes.floatRef).isSameAs(originalTypes.floatRef);
-            softly.assertThat(clonedTypes.doubleRef).isSameAs(originalTypes.doubleRef);
-            softly.assertThat(clonedTypes.uuidRef).isSameAs(originalTypes.uuidRef);
-            softly.assertThat(clonedTypes.stringRef).isSameAs(originalTypes.stringRef);
+            softly.assertThat(cloned.booleanRef).isSameAs(original.booleanRef);
+            softly.assertThat(cloned.byteRef).isSameAs(original.byteRef);
+            softly.assertThat(cloned.charRef).isSameAs(original.charRef);
+            softly.assertThat(cloned.shortRef).isSameAs(original.shortRef);
+            softly.assertThat(cloned.intRef).isSameAs(original.intRef);
+            softly.assertThat(cloned.longRef).isSameAs(original.longRef);
+            softly.assertThat(cloned.floatRef).isSameAs(original.floatRef);
+            softly.assertThat(cloned.doubleRef).isSameAs(original.doubleRef);
+            softly.assertThat(cloned.uuidRef).isSameAs(original.uuidRef);
+            softly.assertThat(cloned.stringRef).isSameAs(original.stringRef);
         });
     }
 

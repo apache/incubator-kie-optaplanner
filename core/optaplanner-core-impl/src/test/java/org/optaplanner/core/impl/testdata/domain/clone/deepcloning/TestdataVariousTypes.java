@@ -2,7 +2,7 @@ package org.optaplanner.core.impl.testdata.domain.clone.deepcloning;
 
 import java.util.UUID;
 
-public final class TestdataVariousTypes {
+public class TestdataVariousTypes {
 
     public boolean booleanValue = true;
     public byte byteValue = 1;
