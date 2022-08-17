@@ -48,7 +48,7 @@ class RandomSubListChangeMoveIterator<Solution_> extends UpcomingSelectionIterat
         SubList subList = subListIterator.next();
         // TODO maybe destinationSelector
         Pair<Object, Integer> destination = entityAndIndexFromGlobalIndex(workingRandom.nextInt(destinationIndexRange));
-        return new SubListChangeMove<>(listVariableDescriptor, subList, destination.getKey(), destination.getValue());
+        return new SubListChangeMove<>(listVariableDescriptor, subList, destination.getKey(), destination.getValue(), false);
     }
 
     Pair<Object, Integer> entityAndIndexFromGlobalIndex(int index) {

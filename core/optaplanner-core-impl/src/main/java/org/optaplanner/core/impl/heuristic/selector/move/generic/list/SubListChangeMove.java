@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -21,23 +22,25 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
     private final int length;
     private final Object destinationEntity;
     private final int destinationIndex;
+    private final boolean reversing;
 
     public SubListChangeMove(ListVariableDescriptor<Solution_> variableDescriptor, SubList subList, Object destinationEntity,
-            int destinationIndex) {
+            int destinationIndex, boolean reversing) {
         this(variableDescriptor, subList.getEntity(), subList.getFromIndex(), subList.getLength(), destinationEntity,
-                destinationIndex);
+                destinationIndex, reversing);
     }
 
     public SubListChangeMove(
             ListVariableDescriptor<Solution_> variableDescriptor,
             Object sourceEntity, int sourceIndex, int length,
-            Object destinationEntity, int destinationIndex) {
+            Object destinationEntity, int destinationIndex, boolean reversing) {
         this.variableDescriptor = variableDescriptor;
         this.sourceEntity = sourceEntity;
         this.sourceIndex = sourceIndex;
         this.length = length;
         this.destinationEntity = destinationEntity;
         this.destinationIndex = destinationIndex;
+        this.reversing = reversing;
     }
 
     public Object getSourceEntity() {
@@ -67,7 +70,7 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
     @Override
     protected AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         return new SubListChangeMove<>(variableDescriptor, destinationEntity, destinationIndex, length, sourceEntity,
-                sourceIndex);
+                sourceIndex, reversing);
     }
 
     @Override
@@ -77,6 +80,9 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
         List<Object> sourceList = variableDescriptor.getListVariable(sourceEntity);
         List<Object> subList = sourceList.subList(sourceIndex, sourceIndex + length);
         List<Object> subListCopy = new ArrayList<>(subList);
+        if (reversing) {
+            Collections.reverse(subListCopy);
+        }
 
         innerScoreDirector.beforeSubListChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex);
         subList.clear();
@@ -97,7 +103,8 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public String toString() {
-        return String.format("|%d| {%s[%d..%d] -> %s[%d]}",
-                length, sourceEntity, sourceIndex, getToIndex(), destinationEntity, destinationIndex);
+        return String.format("|%d| {%s[%d..%d] -%s> %s[%d]}",
+                length, sourceEntity, sourceIndex, getToIndex(),
+                reversing ? "reversing-" : "", destinationEntity, destinationIndex);
     }
 }
