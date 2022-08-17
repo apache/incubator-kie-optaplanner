@@ -31,22 +31,22 @@ class SubListSwapMoveTest {
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
         // same entity, overlap => not doable
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 3), sub(e1, 2, 3)).isMoveDoable(scoreDirector))
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 3), sub(e1, 2, 3), false).isMoveDoable(scoreDirector))
                 .isFalse();
         // same entity, overlap => not doable
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 5), sub(e1, 1, 1)).isMoveDoable(scoreDirector))
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 5), sub(e1, 1, 1), false).isMoveDoable(scoreDirector))
                 .isFalse();
         // same entity, no overlap (with gap) => doable
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 1), sub(e1, 4, 1)).isMoveDoable(scoreDirector))
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 1), sub(e1, 4, 1), false).isMoveDoable(scoreDirector))
                 .isTrue();
         // same entity, no overlap (with touch) => doable
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 3), sub(e1, 3, 2)).isMoveDoable(scoreDirector))
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 3), sub(e1, 3, 2), false).isMoveDoable(scoreDirector))
                 .isTrue();
         // same entity, no overlap (with touch, right below left) => doable
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 2, 3), sub(e1, 0, 2)).isMoveDoable(scoreDirector))
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 2, 3), sub(e1, 0, 2), false).isMoveDoable(scoreDirector))
                 .isTrue();
         // different entities => doable
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 5), sub(e2, 0, 1)).isMoveDoable(scoreDirector))
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 5), sub(e2, 0, 1), false).isMoveDoable(scoreDirector))
                 .isTrue();
     }
 
@@ -64,7 +64,8 @@ class SubListSwapMoveTest {
         ListVariableDescriptor<TestdataListSolution> variableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
-        SubListSwapMove<TestdataListSolution> move = new SubListSwapMove<>(variableDescriptor, sub(e1, 1, 2), sub(e2, 0, 1));
+        SubListSwapMove<TestdataListSolution> move =
+                new SubListSwapMove<>(variableDescriptor, sub(e1, 1, 2), sub(e2, 0, 1), false);
 
         AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
 
@@ -83,6 +84,40 @@ class SubListSwapMoveTest {
     }
 
     @Test
+    void doReversingMove() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListValue v4 = new TestdataListValue("4");
+        TestdataListValue v5 = new TestdataListValue("5");
+        TestdataListValue v6 = new TestdataListValue("6");
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4);
+        TestdataListEntity e2 = new TestdataListEntity("e2", v5, v6);
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+
+        SubListSwapMove<TestdataListSolution> move =
+                new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 3), sub(e2, 0, 2), true);
+
+        AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
+
+        assertThat(e1.getValueList()).containsExactly(v6, v5, v4);
+        assertThat(e2.getValueList()).containsExactly(v3, v2, v1);
+
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 0, 2);
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e2, 0, 3);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 0, 2);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e2, 0, 3);
+
+        undoMove.doMove(scoreDirector);
+
+        assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4);
+        assertThat(e2.getValueList()).containsExactly(v5, v6);
+    }
+
+    @Test
     void doMoveOnSameEntity() {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
@@ -97,7 +132,8 @@ class SubListSwapMoveTest {
         ListVariableDescriptor<TestdataListSolution> variableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
-        SubListSwapMove<TestdataListSolution> move = new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 1), sub(e1, 4, 3));
+        SubListSwapMove<TestdataListSolution> move =
+                new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 1), sub(e1, 4, 3), false);
 
         AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
 
@@ -121,10 +157,12 @@ class SubListSwapMoveTest {
         ListVariableDescriptor<TestdataListSolution> variableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 1, 3), sub(e1, 0, 1)))
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 1, 3), sub(e1, 0, 1), false))
                 .hasToString("{e1[0..1]} <-> {e1[1..4]}");
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 1), sub(e2, 1, 5)))
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 1), sub(e2, 1, 5), false))
                 .hasToString("{e1[0..1]} <-> {e2[1..6]}");
+        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 1), sub(e2, 1, 5), true))
+                .hasToString("{e1[0..1]} <-reversing-> {e2[1..6]}");
     }
 
     static SubList sub(TestdataListEntity entity, int fromIndex, int length) {

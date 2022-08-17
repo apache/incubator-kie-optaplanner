@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -18,10 +19,14 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
     private final ListVariableDescriptor<Solution_> variableDescriptor;
     private final SubList leftSubList;
     private final SubList rightSubList;
+    private final boolean reversing;
     private final int rightFromIndex;
     private final int leftToIndex;
 
-    public SubListSwapMove(ListVariableDescriptor<Solution_> variableDescriptor, SubList leftSubList, SubList rightSubList) {
+    public SubListSwapMove(ListVariableDescriptor<Solution_> variableDescriptor,
+            SubList leftSubList,
+            SubList rightSubList,
+            boolean reversing) {
         this.variableDescriptor = variableDescriptor;
         if (leftSubList.getEntity() == rightSubList.getEntity() && leftSubList.getFromIndex() > rightSubList.getFromIndex()) {
             this.leftSubList = rightSubList;
@@ -30,6 +35,7 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
             this.leftSubList = leftSubList;
             this.rightSubList = rightSubList;
         }
+        this.reversing = reversing;
         rightFromIndex = this.rightSubList.getFromIndex();
         leftToIndex = this.leftSubList.getToIndex();
     }
@@ -55,11 +61,13 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
                     new SubList(leftSubList.getEntity(), leftSubList.getFromIndex(), rightSubList.getLength()),
                     new SubList(rightSubList.getEntity(),
                             rightSubList.getFromIndex() - leftSubList.getLength() + rightSubList.getLength(),
-                            leftSubList.getLength()));
+                            leftSubList.getLength()),
+                    reversing);
         }
         return new SubListSwapMove<>(variableDescriptor,
                 new SubList(rightSubList.getEntity(), rightSubList.getFromIndex(), leftSubList.getLength()),
-                new SubList(leftSubList.getEntity(), leftSubList.getFromIndex(), rightSubList.getLength()));
+                new SubList(leftSubList.getEntity(), leftSubList.getFromIndex(), rightSubList.getLength()),
+                reversing);
     }
 
     @Override
@@ -75,6 +83,11 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
         List<Object> rightSubListView = rightList.subList(rightFromIndex, rightSubList.getToIndex());
         List<Object> leftSubListCopy = new ArrayList<>(leftSubListView);
         List<Object> rightSubListCopy = new ArrayList<>(rightSubListView);
+        if (reversing) {
+            Collections.reverse(leftSubListCopy);
+            Collections.reverse(rightSubListCopy);
+        }
+
         int rightSubListDestinationIndex = leftFromIndex;
         int leftSubListDestinationIndex = leftEntity != rightEntity ? rightFromIndex
                 : rightFromIndex + rightSubList.getLength() - leftSubList.getLength();
@@ -101,6 +114,6 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public String toString() {
-        return "{" + leftSubList + "} <-> {" + rightSubList + "}";
+        return "{" + leftSubList + "} <-" + (reversing ? "reversing-" : "") + "> {" + rightSubList + "}";
     }
 }

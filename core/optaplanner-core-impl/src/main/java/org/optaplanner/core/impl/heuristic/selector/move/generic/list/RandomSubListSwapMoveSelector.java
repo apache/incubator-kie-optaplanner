@@ -45,7 +45,7 @@ public class RandomSubListSwapMoveSelector<Solution_> extends GenericMoveSelecto
         return new AbstractRandomSwapIterator<>(leftSubListSelector, rightSubListSelector) {
             @Override
             protected Move<Solution_> newSwapSelection(SubList leftSubSelection, SubList rightSubSelection) {
-                return new SubListSwapMove<>(listVariableDescriptor, leftSubSelection, rightSubSelection);
+                return new SubListSwapMove<>(listVariableDescriptor, leftSubSelection, rightSubSelection, false);
             }
         };
     }
