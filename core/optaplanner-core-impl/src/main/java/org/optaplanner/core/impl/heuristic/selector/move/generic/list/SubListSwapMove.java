@@ -48,6 +48,10 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
         return rightSubList;
     }
 
+    public boolean isReversing() {
+        return reversing;
+    }
+
     @Override
     public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
         // If both subLists are on the same entity, then they must not overlap.

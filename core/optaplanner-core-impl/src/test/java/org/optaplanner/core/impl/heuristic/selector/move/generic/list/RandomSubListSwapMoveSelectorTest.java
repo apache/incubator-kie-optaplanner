@@ -51,7 +51,8 @@ class RandomSubListSwapMoveSelectorTest {
                 mockEntityIndependentValueSelector(Stream.generate(() -> v1).limit(valueSelectorSize).toArray()),
                 mockEntityIndependentValueSelector(Stream.generate(() -> v1).limit(valueSelectorSize).toArray()),
                 minimumSubListSize,
-                maximumSubListSize);
+                maximumSubListSize,
+                false);
 
         // Alternating left and right subList indexes.
         //      L, R
@@ -104,6 +105,56 @@ class RandomSubListSwapMoveSelectorTest {
     }
 
     @Test
+    void reversing() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListValue v5 = new TestdataListValue("5");
+        TestdataListValue v6 = new TestdataListValue("6");
+        TestdataListEntity a = TestdataListEntity.createWithValues("A", v1, v2, v3);
+        TestdataListEntity b = TestdataListEntity.createWithValues("B", v5, v6);
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+
+        // The value selector is longer than the number of expected codes because it is expected
+        // to be never ending, so it must not be exhausted after the last asserted code.
+        int valueSelectorSize = 7;
+        int minimumSubListSize = 1;
+        int maximumSubListSize = Integer.MAX_VALUE;
+
+        RandomSubListSwapMoveSelector<TestdataListSolution> moveSelector = new RandomSubListSwapMoveSelector<>(
+                getListVariableDescriptor(scoreDirector),
+                mockEntitySelector(a, b),
+                mockEntityIndependentValueSelector(Stream.generate(() -> v1).limit(valueSelectorSize).toArray()),
+                mockEntityIndependentValueSelector(Stream.generate(() -> v5).limit(valueSelectorSize).toArray()),
+                minimumSubListSize,
+                maximumSubListSize,
+                true);
+
+        // Each row is consumed by 1 createUpcomingSelection() call.
+        // Columns are: left subList index, right subList index, reversing flag.
+        TestRandom random = new TestRandom(
+                0, 2, 1,
+                0, 1, 0,
+                0, 0, 1,
+                1, 0, 0,
+                2, 0, 1,
+                3, 0, 1,
+                99, 99, 99);
+
+        solvingStarted(moveSelector, scoreDirector, random);
+
+        assertCodesOfNeverEndingMoveSelector(moveSelector,
+                "{A[0+3]} <-reversing-> {B[1+1]}",
+                "{A[0+3]} <-> {B[0+1]}",
+                "{A[0+3]} <-reversing-> {B[0+2]}",
+                "{A[0+2]} <-> {B[0+2]}",
+                "{A[1+2]} <-reversing-> {B[0+2]}",
+                "{A[0+1]} <-reversing-> {B[0+2]}");
+    }
+
+    @Test
     void sameEntityWithSubListSizeBounds() {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
@@ -126,7 +177,8 @@ class RandomSubListSwapMoveSelectorTest {
                 mockEntityIndependentValueSelector(Stream.generate(() -> v1).limit(valueSelectorSize).toArray()),
                 mockEntityIndependentValueSelector(Stream.generate(() -> v1).limit(valueSelectorSize).toArray()),
                 minimumSubListSize,
-                maximumSubListSize);
+                maximumSubListSize,
+                false);
 
         // Alternating left and right subList indexes.
         //      L, R
@@ -177,7 +229,8 @@ class RandomSubListSwapMoveSelectorTest {
                 mockEntityIndependentValueSelector(v1, v1, v1),
                 mockEntityIndependentValueSelector(v1, v1, v1),
                 minimumSubListSize,
-                Integer.MAX_VALUE);
+                Integer.MAX_VALUE,
+                false);
 
         TestRandom random = new TestRandom(new int[] {});
 
@@ -209,7 +262,8 @@ class RandomSubListSwapMoveSelectorTest {
                 mockEntityIndependentValueSelector(v1, v4, v1, v1, v1, v1, v1),
                 mockEntityIndependentValueSelector(v4, v1, v1, v1, v1, v1, v1),
                 minimumSubListSize,
-                maximumSubListSize);
+                maximumSubListSize,
+                false);
 
         // Alternating left and right subList indexes.
         //      L, R
@@ -253,7 +307,8 @@ class RandomSubListSwapMoveSelectorTest {
                 mockEntityIndependentValueSelector(v1, v2, v3, v4),
                 mockEntityIndependentValueSelector(v1, v2, v3, v4),
                 1,
-                Integer.MAX_VALUE);
+                Integer.MAX_VALUE,
+                false);
 
         TestRandom random = new TestRandom(0, 0);
 
@@ -295,7 +350,8 @@ class RandomSubListSwapMoveSelectorTest {
                 mockEntityIndependentValueSelector(v1, v2, v3, v4, v5, v6, v7, v11, v12, v13, v21, v22, v23, v24),
                 mockEntityIndependentValueSelector(v1, v2, v3, v4, v5, v6, v7, v11, v12, v13, v21, v22, v23, v24),
                 minimumSubListSize,
-                maximumSubListSize);
+                maximumSubListSize,
+                false);
 
         TestRandom random = new TestRandom(0, 0);
 
@@ -321,7 +377,8 @@ class RandomSubListSwapMoveSelectorTest {
                 leftValueSelector,
                 rightValueSelector,
                 minimumSubListSize,
-                maximumSubListSize);
+                maximumSubListSize,
+                false);
 
         TestRandom random = new TestRandom(new int[] {});
 

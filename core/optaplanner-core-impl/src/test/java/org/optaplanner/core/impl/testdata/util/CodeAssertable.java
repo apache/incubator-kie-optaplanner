@@ -74,7 +74,8 @@ public interface CodeAssertable {
         } else if (o instanceof SubListSwapMove) {
             SubListSwapMove<?> subListSwapMove = (SubListSwapMove<?>) o;
             return () -> "{" + convert(subListSwapMove.getLeftSubList()).getCode()
-                    + "} <-> {" + convert(subListSwapMove.getRightSubList()).getCode() + "}";
+                    + "} <-" + (subListSwapMove.isReversing() ? "reversing-" : "")
+                    + "> {" + convert(subListSwapMove.getRightSubList()).getCode() + "}";
         } else if (o instanceof List) {
             List<?> list = (List) o;
             StringBuilder codeBuilder = new StringBuilder("[");

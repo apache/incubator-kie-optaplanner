@@ -19,17 +19,20 @@ public class RandomSubListSwapMoveSelector<Solution_> extends GenericMoveSelecto
     private final int maximumSubListSize;
     private final RandomSubListSelector<Solution_> leftSubListSelector;
     private final RandomSubListSelector<Solution_> rightSubListSelector;
+    private final boolean selectReversingMoveToo;
 
     public RandomSubListSwapMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntitySelector<Solution_> entitySelector,
             EntityIndependentValueSelector<Solution_> leftValueSelector,
             EntityIndependentValueSelector<Solution_> rightValueSelector,
-            int minimumSubListSize, int maximumSubListSize) {
+            int minimumSubListSize, int maximumSubListSize,
+            boolean selectReversingMoveToo) {
         this.listVariableDescriptor = listVariableDescriptor;
         this.entitySelector = entitySelector;
         this.minimumSubListSize = minimumSubListSize;
         this.maximumSubListSize = maximumSubListSize;
+        this.selectReversingMoveToo = selectReversingMoveToo;
         leftSubListSelector = new RandomSubListSelector<>(listVariableDescriptor, entitySelector, leftValueSelector,
                 minimumSubListSize, maximumSubListSize);
         rightSubListSelector = new RandomSubListSelector<>(listVariableDescriptor, entitySelector, rightValueSelector,
@@ -45,7 +48,8 @@ public class RandomSubListSwapMoveSelector<Solution_> extends GenericMoveSelecto
         return new AbstractRandomSwapIterator<>(leftSubListSelector, rightSubListSelector) {
             @Override
             protected Move<Solution_> newSwapSelection(SubList leftSubSelection, SubList rightSubSelection) {
-                return new SubListSwapMove<>(listVariableDescriptor, leftSubSelection, rightSubSelection, false);
+                boolean reversing = selectReversingMoveToo && workingRandom.nextBoolean();
+                return new SubListSwapMove<>(listVariableDescriptor, leftSubSelection, rightSubSelection, reversing);
             }
         };
     }
