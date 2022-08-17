@@ -59,6 +59,10 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
         return sourceIndex + length;
     }
 
+    public boolean isReversing() {
+        return reversing;
+    }
+
     public Object getDestinationEntity() {
         return destinationEntity;
     }

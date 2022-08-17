@@ -68,7 +68,7 @@ public interface CodeAssertable {
                     + "| {" + convert(subListChangeMove.getSourceEntity())
                     + "[" + subListChangeMove.getFromIndex()
                     + ".." + subListChangeMove.getToIndex()
-                    + "]->"
+                    + "]-" + (subListChangeMove.isReversing() ? "reversing->" : ">")
                     + convert(subListChangeMove.getDestinationEntity())
                     + "[" + subListChangeMove.getDestinationIndex() + "]}";
         } else if (o instanceof SubListSwapMove) {

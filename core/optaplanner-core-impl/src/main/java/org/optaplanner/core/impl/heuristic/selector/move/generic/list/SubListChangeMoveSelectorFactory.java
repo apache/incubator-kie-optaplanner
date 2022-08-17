@@ -53,7 +53,7 @@ public class SubListChangeMoveSelectorFactory<Solution_>
         int minimumSubListSize = Objects.requireNonNullElse(config.getMinimumSubListSize(), DEFAULT_MINIMUM_SUB_LIST_SIZE);
         int maximumSubListSize = Objects.requireNonNullElse(config.getMaximumSubListSize(), DEFAULT_MAXIMUM_SUB_LIST_SIZE);
         return new RandomSubListChangeMoveSelector<>(((ListVariableDescriptor<Solution_>) variableDescriptor), entitySelector,
-                valueSelector, minimumSubListSize, maximumSubListSize);
+                valueSelector, minimumSubListSize, maximumSubListSize, false);
     }
 
     private EntityIndependentValueSelector<Solution_> buildEntityIndependentValueSelector(
