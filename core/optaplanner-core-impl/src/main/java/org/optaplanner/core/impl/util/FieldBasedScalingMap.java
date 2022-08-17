@@ -195,4 +195,14 @@ public final class FieldBasedScalingMap<K, V> implements Map<K, V> {
         }
     }
 
+    @Override
+    public String toString() {
+        if (size == 0) {
+            return "{}";
+        } else if (map == null) {
+            return "{" + singletonKey + "=" + singletonValue + "}";
+        } else {
+            return map.toString();
+        }
+    }
 }

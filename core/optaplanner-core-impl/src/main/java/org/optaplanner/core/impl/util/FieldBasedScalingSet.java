@@ -187,4 +187,15 @@ public final class FieldBasedScalingSet<E> implements Set<E> {
         return set.toArray(a);
     }
 
+    @Override
+    public String toString() {
+        if (size == 0) {
+            return "[]";
+        } else if (set == null) {
+            return "[" + singletonValue + "]";
+        } else {
+            return set.toString();
+        }
+    }
+
 }
