@@ -81,4 +81,8 @@ public class RandomSubListSwapMoveSelector<Solution_> extends GenericMoveSelecto
         }
         return subListCount * subListCount;
     }
+
+    boolean isSelectReversingMoveToo() {
+        return selectReversingMoveToo;
+    }
 }

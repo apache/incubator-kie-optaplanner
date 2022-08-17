@@ -31,6 +31,7 @@
       <subListSwapMoveSelector>
         <minimumSubListSize>3</minimumSubListSize>
         <maximumSubListSize>5</maximumSubListSize>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
       </subListSwapMoveSelector>
     </unionMoveSelector>
   </localSearch>

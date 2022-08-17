@@ -32,6 +32,22 @@ class SubListSwapMoveSelectorFactoryTest {
     }
 
     @Test
+    void disableSelectReversingMoveToo() {
+        SubListSwapMoveSelectorConfig config = new SubListSwapMoveSelectorConfig();
+        config.setSelectReversingMoveToo(false);
+        SubListSwapMoveSelectorFactory<TestdataListSolution> factory = new SubListSwapMoveSelectorFactory<>(config);
+
+        HeuristicConfigPolicy<TestdataListSolution> heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
+        when(heuristicConfigPolicy.getSolutionDescriptor()).thenReturn(TestdataListSolution.buildSolutionDescriptor());
+
+        RandomSubListSwapMoveSelector<TestdataListSolution> selector =
+                (RandomSubListSwapMoveSelector<TestdataListSolution>) factory.buildBaseMoveSelector(heuristicConfigPolicy,
+                        SelectionCacheType.JUST_IN_TIME, true);
+
+        assertThat(selector.isSelectReversingMoveToo()).isFalse();
+    }
+
+    @Test
     void requiresListVariable() {
         SubListSwapMoveSelectorConfig config = new SubListSwapMoveSelectorConfig();
         SubListSwapMoveSelectorFactory<TestdataSolution> factory = new SubListSwapMoveSelectorFactory<>(config);

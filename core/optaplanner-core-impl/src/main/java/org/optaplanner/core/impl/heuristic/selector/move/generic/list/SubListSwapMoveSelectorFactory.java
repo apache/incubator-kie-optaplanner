@@ -54,8 +54,9 @@ public class SubListSwapMoveSelectorFactory<Solution_>
                 configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
         int minimumSubListSize = Objects.requireNonNullElse(config.getMinimumSubListSize(), DEFAULT_MINIMUM_SUB_LIST_SIZE);
         int maximumSubListSize = Objects.requireNonNullElse(config.getMaximumSubListSize(), DEFAULT_MAXIMUM_SUB_LIST_SIZE);
+        boolean selectReversingMoveToo = Objects.requireNonNullElse(config.getSelectReversingMoveToo(), true);
         return new RandomSubListSwapMoveSelector<>(((ListVariableDescriptor<Solution_>) variableDescriptor), entitySelector,
-                leftValueSelector, rightValueSelector, minimumSubListSize, maximumSubListSize, false);
+                leftValueSelector, rightValueSelector, minimumSubListSize, maximumSubListSize, selectReversingMoveToo);
     }
 
     private EntityIndependentValueSelector<Solution_> buildEntityIndependentValueSelector(
