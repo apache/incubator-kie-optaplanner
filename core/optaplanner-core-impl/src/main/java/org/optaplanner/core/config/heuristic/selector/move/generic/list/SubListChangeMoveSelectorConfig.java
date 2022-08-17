@@ -9,7 +9,8 @@ import org.optaplanner.core.config.util.ConfigUtils;
 
 @XmlType(propOrder = {
         "minimumSubListSize",
-        "maximumSubListSize"
+        "maximumSubListSize",
+        "selectReversingMoveToo"
 })
 public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListChangeMoveSelectorConfig> {
 
@@ -17,6 +18,7 @@ public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListC
 
     protected Integer minimumSubListSize = null;
     protected Integer maximumSubListSize = null;
+    private Boolean selectReversingMoveToo = null;
 
     public Integer getMinimumSubListSize() {
         return minimumSubListSize;
@@ -34,6 +36,14 @@ public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListC
         this.maximumSubListSize = maximumSubListSize;
     }
 
+    public Boolean getSelectReversingMoveToo() {
+        return selectReversingMoveToo;
+    }
+
+    public void setSelectReversingMoveToo(Boolean selectReversingMoveToo) {
+        this.selectReversingMoveToo = selectReversingMoveToo;
+    }
+
     @Override
     public SubListChangeMoveSelectorConfig inherit(SubListChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
@@ -41,6 +51,8 @@ public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListC
                 ConfigUtils.inheritOverwritableProperty(minimumSubListSize, inheritedConfig.minimumSubListSize);
         this.maximumSubListSize =
                 ConfigUtils.inheritOverwritableProperty(maximumSubListSize, inheritedConfig.maximumSubListSize);
+        this.selectReversingMoveToo =
+                ConfigUtils.inheritOverwritableProperty(selectReversingMoveToo, inheritedConfig.selectReversingMoveToo);
         return this;
     }
 

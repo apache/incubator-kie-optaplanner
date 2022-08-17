@@ -73,4 +73,8 @@ public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelec
         }
         return subListCount * destinationRange;
     }
+
+    boolean isSelectReversingMoveToo() {
+        return selectReversingMoveToo;
+    }
 }

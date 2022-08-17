@@ -29,6 +29,23 @@ class SubListChangeMoveSelectorFactoryTest {
 
         assertThat(selector.isCountable()).isTrue();
         assertThat(selector.isNeverEnding()).isTrue();
+        assertThat(selector.isSelectReversingMoveToo()).isTrue();
+    }
+
+    @Test
+    void disableSelectReversingMoveToo() {
+        SubListChangeMoveSelectorConfig config = new SubListChangeMoveSelectorConfig();
+        config.setSelectReversingMoveToo(false);
+        SubListChangeMoveSelectorFactory<TestdataListSolution> factory = new SubListChangeMoveSelectorFactory<>(config);
+
+        HeuristicConfigPolicy<TestdataListSolution> heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
+        when(heuristicConfigPolicy.getSolutionDescriptor()).thenReturn(TestdataListSolution.buildSolutionDescriptor());
+
+        RandomSubListChangeMoveSelector<TestdataListSolution> selector =
+                (RandomSubListChangeMoveSelector<TestdataListSolution>) factory.buildBaseMoveSelector(heuristicConfigPolicy,
+                        SelectionCacheType.JUST_IN_TIME, true);
+
+        assertThat(selector.isSelectReversingMoveToo()).isFalse();
     }
 
     @Test

@@ -26,6 +26,7 @@
       <subListChangeMoveSelector>
         <minimumSubListSize>2</minimumSubListSize>
         <maximumSubListSize>6</maximumSubListSize>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
       </subListChangeMoveSelector>
       <subListSwapMoveSelector>
         <minimumSubListSize>3</minimumSubListSize>
