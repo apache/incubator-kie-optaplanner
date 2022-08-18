@@ -20,12 +20,11 @@ public class TimeGrain extends AbstractPersistable
      */
     public static final int GRAIN_LENGTH_IN_MINUTES = 15;
 
-    private Integer grainIndex; // unique; Integer to avoid auto-boxing overhead
-
+    private int grainIndex;
     private Day day;
     private int startingMinuteOfDay;
 
-    public Integer getGrainIndex() {
+    public int getGrainIndex() {
         return grainIndex;
     }
 
