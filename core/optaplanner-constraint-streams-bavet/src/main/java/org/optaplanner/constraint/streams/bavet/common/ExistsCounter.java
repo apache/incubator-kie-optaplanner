@@ -4,7 +4,7 @@ import static org.optaplanner.constraint.streams.bavet.common.BavetTupleState.DE
 
 import java.util.function.IntPredicate;
 
-public final class Counter<Tuple_ extends Tuple> {
+public final class ExistsCounter<Tuple_ extends Tuple> {
 
     private static final IntPredicate ZERO_COUNT = count -> count == 0;
     private static final IntPredicate NON_ZERO_COUNT = count -> count > 0;
@@ -14,7 +14,7 @@ public final class Counter<Tuple_ extends Tuple> {
     BavetTupleState state = DEAD;
     int countRight = 0;
 
-    Counter(Tuple_ leftTuple, boolean shouldExist) {
+    ExistsCounter(Tuple_ leftTuple, boolean shouldExist) {
         this.leftTuple = leftTuple;
         this.alivePredicate = shouldExist ? NON_ZERO_COUNT : ZERO_COUNT;
     }

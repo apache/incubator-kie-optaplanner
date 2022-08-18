@@ -17,7 +17,7 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
     private final int indexKeyPosition;
     private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
     private final Comparator<Key_> keyComparator;
-    private final boolean isGteOrLte;
+    private final boolean hasOrEquals;
     private final NavigableMap<Key_, Indexer<Tuple_, Value_>> comparisonMap;
 
     public ComparisonIndexer(JoinerType comparisonJoinerType, Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
@@ -35,9 +35,9 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
          */
         this.keyComparator =
                 (comparisonJoinerType == JoinerType.GREATER_THAN || comparisonJoinerType == JoinerType.GREATER_THAN_OR_EQUAL)
-                        ? ReversedKeyComparator.INSTANCE
+                        ? KeyComparator.INSTANCE.reversed()
                         : KeyComparator.INSTANCE;
-        this.isGteOrLte = comparisonJoinerType == JoinerType.GREATER_THAN_OR_EQUAL
+        this.hasOrEquals = comparisonJoinerType == JoinerType.GREATER_THAN_OR_EQUAL
                 || comparisonJoinerType == JoinerType.LESS_THAN_OR_EQUAL;
         this.comparisonMap = new TreeMap<>(keyComparator);
     }
@@ -67,7 +67,7 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
         // Comparator matches the order of iteration of the map, so the boundary is always found from the bottom up.
         int comparison = keyComparator.compare(entry.getKey(), indexKey);
         if (comparison >= 0) { // Possibility of reaching the boundary condition.
-            if (comparison > 0 || !isGteOrLte) {
+            if (comparison > 0 || !hasOrEquals) {
                 // Boundary condition reached when we're out of bounds entirely, or when GTE/LTE is not allowed.
                 return true;
             }
@@ -132,20 +132,6 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
                 return 0;
             }
             return o1.compareTo(o2);
-        }
-
-    }
-
-    private static final class ReversedKeyComparator<Key_ extends Comparable<Key_>> implements Comparator<Key_> {
-
-        private static final Comparator INSTANCE = new ReversedKeyComparator<>();
-
-        @Override
-        public int compare(Key_ o1, Key_ o2) {
-            if (o1 == o2) {
-                return 0;
-            }
-            return o2.compareTo(o1);
         }
 
     }

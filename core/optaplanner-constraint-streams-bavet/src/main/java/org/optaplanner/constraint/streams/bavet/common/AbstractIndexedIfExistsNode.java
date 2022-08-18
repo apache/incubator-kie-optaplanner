@@ -8,7 +8,6 @@ import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.impl.util.FieldBasedScalingSet;
-import org.optaplanner.core.impl.util.ListBasedScalingOrderedSet;
 
 /**
  * There is a strong likelihood that any change to this class, which is not related to indexing,
@@ -24,15 +23,15 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
     private final Function<Right_, IndexProperties> mappingRight;
     private final int inputStoreIndexLeft;
     private final int inputStoreIndexRight;
-    private final Indexer<LeftTuple_, Counter<LeftTuple_>> indexerLeft;
-    private final Indexer<UniTuple<Right_>, Set<Counter<LeftTuple_>>> indexerRight;
+    private final Indexer<LeftTuple_, ExistsCounter<LeftTuple_>> indexerLeft;
+    private final Indexer<UniTuple<Right_>, Set<ExistsCounter<LeftTuple_>>> indexerRight;
 
     protected AbstractIndexedIfExistsNode(boolean shouldExist,
             Function<Right_, IndexProperties> mappingRight,
             int inputStoreIndexLeft, int inputStoreIndexRight,
             TupleLifecycle<LeftTuple_> nextNodeTupleLifecycle,
-            Indexer<LeftTuple_, Counter<LeftTuple_>> indexerLeft,
-            Indexer<UniTuple<Right_>, Set<Counter<LeftTuple_>>> indexerRight,
+            Indexer<LeftTuple_, ExistsCounter<LeftTuple_>> indexerLeft,
+            Indexer<UniTuple<Right_>, Set<ExistsCounter<LeftTuple_>>> indexerRight,
             boolean isFiltering) {
         super(shouldExist, nextNodeTupleLifecycle, isFiltering);
         this.mappingRight = mappingRight;
@@ -51,7 +50,7 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
         IndexProperties indexProperties = createIndexProperties(leftTuple);
         leftTuple.setStore(inputStoreIndexLeft, indexProperties);
 
-        Counter<LeftTuple_> counter = new Counter<>(leftTuple, shouldExist);
+        ExistsCounter<LeftTuple_> counter = new ExistsCounter<>(leftTuple, shouldExist);
         indexerLeft.put(indexProperties, leftTuple, counter);
 
         indexerRight.visit(indexProperties, (rightTuple, counterSetRight) -> {
@@ -78,7 +77,7 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
 
         if (oldIndexProperties.equals(newIndexProperties)) {
             // No need for re-indexing because the index properties didn't change
-            Counter<LeftTuple_> counter = indexerLeft.get(oldIndexProperties, leftTuple);
+            ExistsCounter<LeftTuple_> counter = indexerLeft.get(oldIndexProperties, leftTuple);
             // The indexers contain counters in the DEAD state, to track the rightCount.
             if (!isFiltering) {
                 processCounterUpdate(counter);
@@ -101,7 +100,7 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
                 }
             }
         } else {
-            Counter<LeftTuple_> counter = deindexLeft(leftTuple, oldIndexProperties);
+            ExistsCounter<LeftTuple_> counter = deindexLeft(leftTuple, oldIndexProperties);
 
             counter.countRight = 0;
             leftTuple.setStore(inputStoreIndexLeft, newIndexProperties);
@@ -121,8 +120,8 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
         }
     }
 
-    private Counter<LeftTuple_> deindexLeft(LeftTuple_ leftTuple, IndexProperties oldIndexProperties) {
-        Counter<LeftTuple_> counter = indexerLeft.remove(oldIndexProperties, leftTuple);
+    private ExistsCounter<LeftTuple_> deindexLeft(LeftTuple_ leftTuple, IndexProperties oldIndexProperties) {
+        ExistsCounter<LeftTuple_> counter = indexerLeft.remove(oldIndexProperties, leftTuple);
         indexerRight.visit(oldIndexProperties, (rightTuple, counterSetRight) -> {
             boolean changed = counterSetRight.remove(counter);
             // If filtering is active, not all counterSets contain the counter and we don't track which ones do
@@ -144,7 +143,7 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
         }
         leftTuple.setStore(inputStoreIndexLeft, null);
 
-        Counter<LeftTuple_> counter = deindexLeft(leftTuple, indexProperties);
+        ExistsCounter<LeftTuple_> counter = deindexLeft(leftTuple, indexProperties);
         if (counter.isAlive()) {
             retractCounter(counter);
         }
@@ -159,12 +158,12 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
         IndexProperties indexProperties = mappingRight.apply(rightTuple.getFactA());
         rightTuple.setStore(inputStoreIndexRight, indexProperties);
 
-        Set<Counter<LeftTuple_>> counterSetRight = new FieldBasedScalingSet<>(LinkedHashSet::new);
+        Set<ExistsCounter<LeftTuple_>> counterSetRight = new FieldBasedScalingSet<>(LinkedHashSet::new);
         indexRight(rightTuple, indexProperties, counterSetRight);
     }
 
     private void indexRight(UniTuple<Right_> rightTuple, IndexProperties indexProperties,
-            Set<Counter<LeftTuple_>> counterSetRight) {
+            Set<ExistsCounter<LeftTuple_>> counterSetRight) {
         indexerRight.put(indexProperties, rightTuple, counterSetRight);
         indexerLeft.visit(indexProperties,
                 (leftTuple, counter) -> processInsert(leftTuple, rightTuple, counter, counterSetRight));
@@ -184,13 +183,13 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
             // No need for re-indexing because the index properties didn't change
             if (isFiltering) {
                 // Call filtering for the leftTuple and rightTuple combinations again
-                Set<Counter<LeftTuple_>> counterSetRight = indexerRight.get(oldIndexProperties, rightTuple);
+                Set<ExistsCounter<LeftTuple_>> counterSetRight = indexerRight.get(oldIndexProperties, rightTuple);
                 processAndClearCounters(counterSetRight);
                 indexerLeft.visit(newIndexProperties,
                         (leftTuple, counter) -> processUpdate(leftTuple, rightTuple, counter, counterSetRight));
             }
         } else {
-            Set<Counter<LeftTuple_>> counterSetRight = indexerRight.remove(oldIndexProperties, rightTuple);
+            Set<ExistsCounter<LeftTuple_>> counterSetRight = indexerRight.remove(oldIndexProperties, rightTuple);
             processAndClearCounters(counterSetRight);
 
             rightTuple.setStore(inputStoreIndexRight, newIndexProperties);
@@ -206,7 +205,7 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
             return;
         }
         rightTuple.setStore(inputStoreIndexRight, null);
-        Set<Counter<LeftTuple_>> counterSetRight = indexerRight.remove(indexProperties, rightTuple);
+        Set<ExistsCounter<LeftTuple_>> counterSetRight = indexerRight.remove(indexProperties, rightTuple);
         processCounters(counterSetRight);
     }
 

@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractIndexedIfExistsNode;
-import org.optaplanner.constraint.streams.bavet.common.Counter;
+import org.optaplanner.constraint.streams.bavet.common.ExistsCounter;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
@@ -21,8 +21,8 @@ final class IndexedIfExistsTriNode<A, B, C, D> extends AbstractIndexedIfExistsNo
             TriFunction<A, B, C, IndexProperties> mappingABC, Function<D, IndexProperties> mappingD,
             int inputStoreIndexABC, int inputStoreIndexD,
             TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle,
-            Indexer<TriTuple<A, B, C>, Counter<TriTuple<A, B, C>>> indexerABC,
-            Indexer<UniTuple<D>, Set<Counter<TriTuple<A, B, C>>>> indexerD,
+            Indexer<TriTuple<A, B, C>, ExistsCounter<TriTuple<A, B, C>>> indexerABC,
+            Indexer<UniTuple<D>, Set<ExistsCounter<TriTuple<A, B, C>>>> indexerD,
             QuadPredicate<A, B, C, D> filtering) {
         super(shouldExist, mappingD, inputStoreIndexABC, inputStoreIndexD, nextNodesTupleLifecycle, indexerABC,
                 indexerD, filtering != null);

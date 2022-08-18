@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.core.impl.util.FieldBasedScalingSet;
-import org.optaplanner.core.impl.util.ListBasedScalingOrderedSet;
 
 /**
  * There is a strong likelihood that any change made to this class
@@ -20,8 +19,8 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
         extends AbstractIfExistsNode<LeftTuple_, Right_>
         implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
 
-    private final Map<LeftTuple_, Counter<LeftTuple_>> leftMap = new LinkedHashMap<>();
-    private final Map<UniTuple<Right_>, Set<Counter<LeftTuple_>>> rightMap = new LinkedHashMap<>();
+    private final Map<LeftTuple_, ExistsCounter<LeftTuple_>> leftMap = new LinkedHashMap<>();
+    private final Map<UniTuple<Right_>, Set<ExistsCounter<LeftTuple_>>> rightMap = new LinkedHashMap<>();
 
     protected AbstractUnindexedIfExistsNode(boolean shouldExist, TupleLifecycle<LeftTuple_> nextNodeTupleLifecycle,
             boolean isFiltering) {
@@ -30,13 +29,13 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
 
     @Override
     public final void insertLeft(LeftTuple_ leftTuple) {
-        Counter<LeftTuple_> counter = new Counter<>(leftTuple, shouldExist);
+        ExistsCounter<LeftTuple_> counter = new ExistsCounter<>(leftTuple, shouldExist);
         leftMap.put(leftTuple, counter);
-        for (Map.Entry<UniTuple<Right_>, Set<Counter<LeftTuple_>>> entry : rightMap.entrySet()) {
+        for (Map.Entry<UniTuple<Right_>, Set<ExistsCounter<LeftTuple_>>> entry : rightMap.entrySet()) {
             UniTuple<Right_> rightTuple = entry.getKey();
             if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
                 counter.countRight++;
-                Set<Counter<LeftTuple_>> counterSetRight = entry.getValue();
+                Set<ExistsCounter<LeftTuple_>> counterSetRight = entry.getValue();
                 counterSetRight.add(counter);
             }
         }
@@ -48,7 +47,7 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
 
     @Override
     public final void updateLeft(LeftTuple_ leftTuple) {
-        Counter<LeftTuple_> counter = leftMap.get(leftTuple);
+        ExistsCounter<LeftTuple_> counter = leftMap.get(leftTuple);
         if (counter == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             insertLeft(leftTuple);
@@ -60,12 +59,12 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
         } else {
             // Call filtering for the leftTuple and rightTuple combinations again
             counter.countRight = 0;
-            for (Map.Entry<UniTuple<Right_>, Set<Counter<LeftTuple_>>> entry : rightMap.entrySet()) {
+            for (Map.Entry<UniTuple<Right_>, Set<ExistsCounter<LeftTuple_>>> entry : rightMap.entrySet()) {
                 UniTuple<Right_> rightTuple = entry.getKey();
                 if (testFiltering(leftTuple, rightTuple)) {
                     counter.countRight++;
                 } else {
-                    Set<Counter<LeftTuple_>> counterSetRight = entry.getValue();
+                    Set<ExistsCounter<LeftTuple_>> counterSetRight = entry.getValue();
                     counterSetRight.remove(counter);
                 }
             }
@@ -81,12 +80,12 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
 
     @Override
     public final void retractLeft(LeftTuple_ leftTuple) {
-        Counter<LeftTuple_> counter = leftMap.remove(leftTuple);
+        ExistsCounter<LeftTuple_> counter = leftMap.remove(leftTuple);
         if (counter == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        for (Set<Counter<LeftTuple_>> counterSetRight : rightMap.values()) {
+        for (Set<ExistsCounter<LeftTuple_>> counterSetRight : rightMap.values()) {
             boolean changed = counterSetRight.remove(counter);
             // If filtering is active, not all counterSets contain the counter and we don't track which ones do
             if (!changed && !isFiltering) {
@@ -101,27 +100,27 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
 
     @Override
     public final void insertRight(UniTuple<Right_> rightTuple) {
-        Set<Counter<LeftTuple_>> counterSetRight = new FieldBasedScalingSet<>(LinkedHashSet::new);
+        Set<ExistsCounter<LeftTuple_>> counterSetRight = new FieldBasedScalingSet<>(LinkedHashSet::new);
         rightMap.put(rightTuple, counterSetRight);
-        for (Map.Entry<LeftTuple_, Counter<LeftTuple_>> entry : leftMap.entrySet()) {
+        for (Map.Entry<LeftTuple_, ExistsCounter<LeftTuple_>> entry : leftMap.entrySet()) {
             LeftTuple_ leftTuple = entry.getKey();
-            Counter<LeftTuple_> counter = entry.getValue();
+            ExistsCounter<LeftTuple_> counter = entry.getValue();
             processInsert(leftTuple, rightTuple, counter, counterSetRight);
         }
     }
 
     @Override
     public final void updateRight(UniTuple<Right_> rightTuple) {
-        Set<Counter<LeftTuple_>> counterSetRight = rightMap.get(rightTuple);
+        Set<ExistsCounter<LeftTuple_>> counterSetRight = rightMap.get(rightTuple);
         if (counterSetRight == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             insertRight(rightTuple);
         } else if (isFiltering) {
             // Call filtering for the leftTuple and rightTuple combinations again
             processAndClearCounters(counterSetRight);
-            for (Map.Entry<LeftTuple_, Counter<LeftTuple_>> entry : leftMap.entrySet()) {
+            for (Map.Entry<LeftTuple_, ExistsCounter<LeftTuple_>> entry : leftMap.entrySet()) {
                 LeftTuple_ leftTuple = entry.getKey();
-                Counter<LeftTuple_> counter = entry.getValue();
+                ExistsCounter<LeftTuple_> counter = entry.getValue();
                 processUpdate(leftTuple, rightTuple, counter, counterSetRight);
             }
         }
@@ -129,7 +128,7 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
 
     @Override
     public final void retractRight(UniTuple<Right_> rightTuple) {
-        Set<Counter<LeftTuple_>> counterSetRight = rightMap.remove(rightTuple);
+        Set<ExistsCounter<LeftTuple_>> counterSetRight = rightMap.remove(rightTuple);
         if (counterSetRight == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;

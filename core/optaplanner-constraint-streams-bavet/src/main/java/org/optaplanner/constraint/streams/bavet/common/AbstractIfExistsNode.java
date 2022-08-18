@@ -28,7 +28,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
     private final TupleLifecycle<LeftTuple_> nextNodesTupleLifecycle;
 
     // No outputStoreSize because this node is not a tuple source, even though it has a dirtyCounterQueue.
-    protected final Queue<Counter<LeftTuple_>> dirtyCounterQueue;
+    protected final Queue<ExistsCounter<LeftTuple_>> dirtyCounterQueue;
     protected final boolean isFiltering;
 
     protected AbstractIfExistsNode(boolean shouldExist, TupleLifecycle<LeftTuple_> nextNodeTupleLifecycle,
@@ -41,8 +41,8 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     protected abstract boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
 
-    protected final void processInsert(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple, Counter<LeftTuple_> counter,
-            Set<Counter<LeftTuple_>> counterSetRight) {
+    protected final void processInsert(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple, ExistsCounter<LeftTuple_> counter,
+            Set<ExistsCounter<LeftTuple_>> counterSetRight) {
         if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
             if (counter.countRight++ == 0) {
                 if (shouldExist) {
@@ -55,8 +55,8 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         }
     }
 
-    protected final void processUpdate(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple, Counter<LeftTuple_> counter,
-            Set<Counter<LeftTuple_>> counterSetRight) {
+    protected final void processUpdate(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple, ExistsCounter<LeftTuple_> counter,
+            Set<ExistsCounter<LeftTuple_>> counterSetRight) {
         if (testFiltering(leftTuple, rightTuple)) {
             if (counter.countRight++ == 0) {
                 if (shouldExist) {
@@ -69,13 +69,13 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         }
     }
 
-    protected final void processAndClearCounters(Set<Counter<LeftTuple_>> counterSetRight) {
+    protected final void processAndClearCounters(Set<ExistsCounter<LeftTuple_>> counterSetRight) {
         processCounters(counterSetRight);
         counterSetRight.clear();
     }
 
-    protected final void processCounters(Set<Counter<LeftTuple_>> counterSetRight) {
-        for (Counter<LeftTuple_> counter : counterSetRight) {
+    protected final void processCounters(Set<ExistsCounter<LeftTuple_>> counterSetRight) {
+        for (ExistsCounter<LeftTuple_> counter : counterSetRight) {
             if (--counter.countRight == 0) {
                 if (shouldExist) {
                     retractCounter(counter);
@@ -86,7 +86,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         }
     }
 
-    protected final void processCounterUpdate(Counter<LeftTuple_> counter) {
+    protected final void processCounterUpdate(ExistsCounter<LeftTuple_> counter) {
         switch (counter.state) {
             case CREATING:
             case UPDATING:
@@ -106,7 +106,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         }
     }
 
-    private void insertCounter(Counter<LeftTuple_> counter) {
+    private void insertCounter(ExistsCounter<LeftTuple_> counter) {
         switch (counter.state) {
             case DYING:
                 counter.state = BavetTupleState.UPDATING;
@@ -124,7 +124,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         }
     }
 
-    protected final void insertOrUpdateCounter(Counter<LeftTuple_> counter) {
+    protected final void insertOrUpdateCounter(ExistsCounter<LeftTuple_> counter) {
         // Insert or update
         switch (counter.state) {
             case CREATING:
@@ -151,7 +151,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         }
     }
 
-    protected final void retractOrRemainDeadCounter(Counter<LeftTuple_> counter) {
+    protected final void retractOrRemainDeadCounter(ExistsCounter<LeftTuple_> counter) {
         // Retract or remain dead
         switch (counter.state) {
             case CREATING:
@@ -177,7 +177,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         }
     }
 
-    protected final void retractCounter(Counter<LeftTuple_> counter) {
+    protected final void retractCounter(ExistsCounter<LeftTuple_> counter) {
         switch (counter.state) {
             case CREATING:
                 // Kill it before it propagates
@@ -199,7 +199,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     @Override
     public final void calculateScore() {
-        for (Counter<LeftTuple_> counter : dirtyCounterQueue) {
+        for (ExistsCounter<LeftTuple_> counter : dirtyCounterQueue) {
             switch (counter.state) {
                 case CREATING:
                     nextNodesTupleLifecycle.insert(counter.leftTuple);

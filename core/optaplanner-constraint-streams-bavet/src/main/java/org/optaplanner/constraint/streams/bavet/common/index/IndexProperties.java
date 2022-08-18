@@ -20,11 +20,11 @@ public interface IndexProperties {
      * Retrieves an object to serve as a key in an index.
      * Instances retrieved using the same arguments must be {@link #equals(Object) equal}.
      *
-     * @param length how many of the available properties to use
-     * @param startingPosition index of the first property to use
-     * @return never null
      * @param <Type_> expected type of the key
+     * @param from index of the first property to use, inclusive
+     * @param to index of the last property to use, exclusive
+     * @return never null
      */
-    <Type_> Type_ toKey(int length, int startingPosition);
+    <Type_> Type_ toKey(int from, int to);
 
 }

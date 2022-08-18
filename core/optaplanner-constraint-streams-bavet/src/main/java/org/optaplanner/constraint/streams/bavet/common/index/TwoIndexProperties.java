@@ -25,19 +25,17 @@ final class TwoIndexProperties implements IndexProperties {
     }
 
     @Override
-    public <Type_> Type_ toKey(int length, int startingPosition) {
-        switch (length) {
+    public <Type_> Type_ toKey(int from, int to) {
+        switch (to - from) {
             case 1:
-                return toKey(startingPosition);
+                return toKey(from);
             case 2:
-                if (startingPosition != 0) {
-                    throw new IllegalArgumentException(
-                            "Impossible state: length (" + length + ") and start (" + startingPosition + ").");
+                if (from != 0 || to != 2) {
+                    throw new IllegalArgumentException("Impossible state: key from (" + from + ") to (" + to + ").");
                 }
                 return (Type_) this;
             default:
-                throw new IllegalArgumentException(
-                        "Impossible state: length (" + length + ") and start (" + startingPosition + ").");
+                throw new IllegalArgumentException("Impossible state: key from (" + from + ") to (" + to + ").");
         }
     }
 

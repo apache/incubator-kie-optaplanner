@@ -11,8 +11,8 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
 final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_>
         implements Indexer<Tuple_, Value_> {
 
-    private final int indexKeyLength;
-    private final int indexKeyStart;
+    private final int indexKeyFrom;
+    private final int indexKeyTo;
     private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
     private final Map<Key_, Indexer<Tuple_, Value_>> downstreamIndexerMap = new HashMap<>();
 
@@ -22,14 +22,14 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_>
 
     public EqualsIndexer(int indexKeyFromInclusive, int indexKeyToExclusive,
             Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
-        this.indexKeyLength = indexKeyToExclusive - indexKeyFromInclusive;
-        this.indexKeyStart = indexKeyFromInclusive;
+        this.indexKeyFrom = indexKeyFromInclusive;
+        this.indexKeyTo = indexKeyToExclusive;
         this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
     }
 
     @Override
     public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
-        Key_ indexKey = indexProperties.toKey(indexKeyLength, indexKeyStart);
+        Key_ indexKey = indexProperties.toKey(indexKeyFrom, indexKeyTo);
         Indexer<Tuple_, Value_> downstreamIndexer = downstreamIndexerMap.get(indexKey);
         if (downstreamIndexer == null || downstreamIndexer.isEmpty()) {
             return;
@@ -39,14 +39,14 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_>
 
     @Override
     public Value_ get(IndexProperties indexProperties, Tuple_ tuple) {
-        Key_ indexKey = indexProperties.toKey(indexKeyLength, indexKeyStart);
+        Key_ indexKey = indexProperties.toKey(indexKeyFrom, indexKeyTo);
         Indexer<Tuple_, Value_> downstreamIndexer = getDownstreamIndexer(indexProperties, indexKey, tuple);
         return downstreamIndexer.get(indexProperties, tuple);
     }
 
     @Override
     public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
-        Key_ indexKey = indexProperties.toKey(indexKeyLength, indexKeyStart);
+        Key_ indexKey = indexProperties.toKey(indexKeyFrom, indexKeyTo);
         // Avoids computeIfAbsent in order to not create lambdas on the hot path.
         Indexer<Tuple_, Value_> downstreamIndexer = downstreamIndexerMap.get(indexKey);
         if (downstreamIndexer == null) {
@@ -58,7 +58,7 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_>
 
     @Override
     public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
-        Key_ indexKey = indexProperties.toKey(indexKeyLength, indexKeyStart);
+        Key_ indexKey = indexProperties.toKey(indexKeyFrom, indexKeyTo);
         Indexer<Tuple_, Value_> downstreamIndexer = getDownstreamIndexer(indexProperties, indexKey, tuple);
         Value_ value = downstreamIndexer.remove(indexProperties, tuple);
         if (downstreamIndexer.isEmpty()) {

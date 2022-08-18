@@ -5,7 +5,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractIndexedIfExistsNode;
-import org.optaplanner.constraint.streams.bavet.common.Counter;
+import org.optaplanner.constraint.streams.bavet.common.ExistsCounter;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
@@ -19,8 +19,8 @@ final class IndexedIfExistsUniNode<A, B> extends AbstractIndexedIfExistsNode<Uni
             Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
             int inputStoreIndexA, int inputStoreIndexB,
             TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle,
-            Indexer<UniTuple<A>, Counter<UniTuple<A>>> indexerA,
-            Indexer<UniTuple<B>, Set<Counter<UniTuple<A>>>> indexerB,
+            Indexer<UniTuple<A>, ExistsCounter<UniTuple<A>>> indexerA,
+            Indexer<UniTuple<B>, Set<ExistsCounter<UniTuple<A>>>> indexerB,
             BiPredicate<A, B> filtering) {
         super(shouldExist, mappingB, inputStoreIndexA, inputStoreIndexB, nextNodesTupleLifecycle, indexerA, indexerB,
                 filtering != null);

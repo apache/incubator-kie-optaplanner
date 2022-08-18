@@ -31,21 +31,19 @@ final class ThreeIndexProperties implements IndexProperties {
     }
 
     @Override
-    public <Type_> Type_ toKey(int length, int startingPosition) {
-        switch (length) {
+    public <Type_> Type_ toKey(int from, int to) {
+        switch (to - from) {
             case 1:
-                return toKey(startingPosition);
+                return toKey(to);
             case 2:
-                return (Type_) Pair.of(toKey(startingPosition), toKey(startingPosition + 1));
+                return (Type_) Pair.of(toKey(from), toKey(from + 1));
             case 3:
-                if (startingPosition != 0) {
-                    throw new IllegalArgumentException(
-                            "Impossible state: length (" + length + ") and start (" + startingPosition + ").");
+                if (from != 0 || to != 3) {
+                    throw new IllegalArgumentException("Impossible state: key from (" + from + ") to (" + to + ").");
                 }
                 return (Type_) this;
             default:
-                throw new IllegalArgumentException(
-                        "Impossible state: length (" + length + ") and start (" + startingPosition + ").");
+                throw new IllegalArgumentException("Impossible state: key from (" + from + ") to (" + to + ").");
         }
     }
 

@@ -13,7 +13,7 @@ final class NoneIndexProperties implements IndexProperties {
     }
 
     @Override
-    public <Type_> Type_ toKey(int length, int startingPosition) {
+    public <Type_> Type_ toKey(int from, int to) {
         throw new IllegalArgumentException("Impossible state: none index property requested");
     }
 

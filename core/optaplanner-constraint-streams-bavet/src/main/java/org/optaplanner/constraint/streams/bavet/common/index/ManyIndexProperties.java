@@ -20,20 +20,20 @@ final class ManyIndexProperties implements IndexProperties {
     }
 
     @Override
-    public <Type_> Type_ toKey(int length, int startingPosition) {
-        switch (length) {
+    public <Type_> Type_ toKey(int from, int to) {
+        switch (to - from) {
             case 1:
-                return toKey(startingPosition);
+                return toKey(from);
             case 2:
-                return (Type_) Pair.of(toKey(startingPosition), toKey(startingPosition + 1));
+                return (Type_) Pair.of(toKey(from), toKey(from + 1));
             case 3:
-                return (Type_) Triple.of(toKey(startingPosition), toKey(startingPosition + 1),
-                        toKey(startingPosition + 2));
+                return (Type_) Triple.of(toKey(from), toKey(from + 1),
+                        toKey(from + 2));
             case 4:
-                return (Type_) Quadruple.of(toKey(startingPosition), toKey(startingPosition + 1),
-                        toKey(startingPosition + 2), toKey(startingPosition + 3));
+                return (Type_) Quadruple.of(toKey(from), toKey(from + 1),
+                        toKey(from + 2), toKey(from + 3));
             default:
-                return (Type_) new IndexerKey(this, startingPosition, startingPosition + length);
+                return (Type_) new IndexerKey(this, from, to);
         }
     }
 
