@@ -27,6 +27,7 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
 
     protected Constraint vehicleCapacity(ConstraintFactory factory) {
         return factory.forEach(Customer.class)
+                .filter(customer -> customer.getVehicle() != null)
                 .groupBy(Customer::getVehicle, sum(Customer::getDemand))
                 .filter((vehicle, demand) -> demand > vehicle.getCapacity())
                 .penalizeLong("vehicleCapacity",
@@ -40,6 +41,7 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
 
     protected Constraint distanceToPreviousStandstill(ConstraintFactory factory) {
         return factory.forEach(Customer.class)
+                .filter(customer -> customer.getVehicle() != null)
                 .penalizeLong("distanceToPreviousStandstill",
                         HardSoftLongScore.ONE_SOFT,
                         Customer::getDistanceFromPreviousStandstill);
@@ -47,7 +49,7 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
 
     protected Constraint distanceFromLastCustomerToDepot(ConstraintFactory factory) {
         return factory.forEach(Customer.class)
-                .filter(customer -> customer.getNextCustomer() == null)
+                .filter(customer -> customer.getVehicle() != null && customer.getNextCustomer() == null)
                 .penalizeLong("distanceFromLastCustomerToDepot",
                         HardSoftLongScore.ONE_SOFT,
                         customer -> customer.getDistanceTo(customer.getVehicle()));

@@ -103,11 +103,6 @@ public class TimeWindowedCustomer extends Customer {
                 && dueTime < arrivalTime;
     }
 
-    @Override
-    public TimeWindowedCustomer getNextCustomer() {
-        return (TimeWindowedCustomer) super.getNextCustomer();
-    }
-
     /**
      * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
      */

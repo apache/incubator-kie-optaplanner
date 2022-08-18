@@ -7,7 +7,6 @@ import java.util.Map;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
-import org.optaplanner.examples.vehiclerouting.domain.Standstill;
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
@@ -125,71 +124,71 @@ public class VehicleRoutingIncrementalScoreCalculator
     }
 
     private void insertPreviousStandstill(Customer customer) {
-        Standstill previousStandstill = customer.getPreviousStandstill();
-        if (previousStandstill != null) {
-            // Score constraint distanceToPreviousStandstill
-            softScore -= customer.getDistanceFromPreviousStandstill();
-        }
+        // Standstill previousStandstill = customer.getPreviousStandstill();
+        // if (previousStandstill != null) {
+        //     // Score constraint distanceToPreviousStandstill
+        //     softScore -= customer.getDistanceFromPreviousStandstill();
+        // }
     }
 
     private void retractPreviousStandstill(Customer customer) {
-        Standstill previousStandstill = customer.getPreviousStandstill();
-        if (previousStandstill != null) {
-            // Score constraint distanceToPreviousStandstill
-            softScore += customer.getDistanceFromPreviousStandstill();
-        }
+        // Standstill previousStandstill = customer.getPreviousStandstill();
+        // if (previousStandstill != null) {
+        //     // Score constraint distanceToPreviousStandstill
+        //     softScore += customer.getDistanceFromPreviousStandstill();
+        // }
     }
 
     private void insertVehicle(Customer customer) {
-        Vehicle vehicle = customer.getVehicle();
-        if (vehicle != null) {
-            // Score constraint vehicleCapacity
-            int capacity = vehicle.getCapacity();
-            int oldDemand = vehicleDemandMap.get(vehicle);
-            int newDemand = oldDemand + customer.getDemand();
-            hardScore += Math.min(capacity - newDemand, 0) - Math.min(capacity - oldDemand, 0);
-            vehicleDemandMap.put(vehicle, newDemand);
-            if (customer.getNextCustomer() == null) {
-                // Score constraint distanceFromLastCustomerToDepot
-                softScore -= customer.getLocation().getDistanceTo(vehicle.getLocation());
-            }
-        }
+        // Vehicle vehicle = customer.getVehicle();
+        // if (vehicle != null) {
+        //     // Score constraint vehicleCapacity
+        //     int capacity = vehicle.getCapacity();
+        //     int oldDemand = vehicleDemandMap.get(vehicle);
+        //     int newDemand = oldDemand + customer.getDemand();
+        //     hardScore += Math.min(capacity - newDemand, 0) - Math.min(capacity - oldDemand, 0);
+        //     vehicleDemandMap.put(vehicle, newDemand);
+        //     if (customer.getNextCustomer() == null) {
+        //         // Score constraint distanceFromLastCustomerToDepot
+        //         softScore -= customer.getLocation().getDistanceTo(vehicle.getLocation());
+        //     }
+        // }
     }
 
     private void retractVehicle(Customer customer) {
-        Vehicle vehicle = customer.getVehicle();
-        if (vehicle != null) {
-            // Score constraint vehicleCapacity
-            int capacity = vehicle.getCapacity();
-            int oldDemand = vehicleDemandMap.get(vehicle);
-            int newDemand = oldDemand - customer.getDemand();
-            hardScore += Math.min(capacity - newDemand, 0) - Math.min(capacity - oldDemand, 0);
-            vehicleDemandMap.put(vehicle, newDemand);
-            if (customer.getNextCustomer() == null) {
-                // Score constraint distanceFromLastCustomerToDepot
-                softScore += customer.getLocation().getDistanceTo(vehicle.getLocation());
-            }
-        }
+        // Vehicle vehicle = customer.getVehicle();
+        // if (vehicle != null) {
+        //     // Score constraint vehicleCapacity
+        //     int capacity = vehicle.getCapacity();
+        //     int oldDemand = vehicleDemandMap.get(vehicle);
+        //     int newDemand = oldDemand - customer.getDemand();
+        //     hardScore += Math.min(capacity - newDemand, 0) - Math.min(capacity - oldDemand, 0);
+        //     vehicleDemandMap.put(vehicle, newDemand);
+        //     if (customer.getNextCustomer() == null) {
+        //         // Score constraint distanceFromLastCustomerToDepot
+        //         softScore += customer.getLocation().getDistanceTo(vehicle.getLocation());
+        //     }
+        // }
     }
 
     private void insertNextCustomer(Customer customer) {
-        Vehicle vehicle = customer.getVehicle();
-        if (vehicle != null) {
-            if (customer.getNextCustomer() == null) {
-                // Score constraint distanceFromLastCustomerToDepot
-                softScore -= customer.getLocation().getDistanceTo(vehicle.getLocation());
-            }
-        }
+        // Vehicle vehicle = customer.getVehicle();
+        // if (vehicle != null) {
+        //     if (customer.getNextCustomer() == null) {
+        //         // Score constraint distanceFromLastCustomerToDepot
+        //         softScore -= customer.getLocation().getDistanceTo(vehicle.getLocation());
+        //     }
+        // }
     }
 
     private void retractNextCustomer(Customer customer) {
-        Vehicle vehicle = customer.getVehicle();
-        if (vehicle != null) {
-            if (customer.getNextCustomer() == null) {
-                // Score constraint distanceFromLastCustomerToDepot
-                softScore += customer.getLocation().getDistanceTo(vehicle.getLocation());
-            }
-        }
+        // Vehicle vehicle = customer.getVehicle();
+        // if (vehicle != null) {
+        //     if (customer.getNextCustomer() == null) {
+        //         // Score constraint distanceFromLastCustomerToDepot
+        //         softScore += customer.getLocation().getDistanceTo(vehicle.getLocation());
+        //     }
+        // }
     }
 
     private void insertArrivalTime(TimeWindowedCustomer customer) {

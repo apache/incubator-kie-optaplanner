@@ -127,30 +127,31 @@ public class VehicleRoutingSolutionPainter {
         // TODO Too many nested for loops
         for (Vehicle vehicle : solution.getVehicleList()) {
             g.setColor(TangoColorFactory.SEQUENCE_2.get(colorIndex));
-            Customer vehicleInfoCustomer = null;
+            // If there is only 1 customer in this chain, draw it on a line to the Depot anyway
+            Location previousVehicleInfoLocation = vehicle.getLocation();
+            Location vehicleInfoLocation = null;
             long longestNonDepotDistance = -1L;
             int load = 0;
-            for (Customer customer : solution.getCustomerList()) {
-                if (customer.getPreviousStandstill() != null && customer.getVehicle() == vehicle) {
+            for (int i = 0; i < vehicle.getCustomers().size(); i++) {
+                if (true) { // TODO remove
+                    Customer customer = vehicle.getCustomers().get(i);
                     load += customer.getDemand();
-                    Location previousLocation = customer.getPreviousStandstill().getLocation();
+                    Location previousLocation = i == 0
+                            ? vehicle.getLocation()
+                            : vehicle.getCustomers().get(i - 1).getLocation();
                     Location location = customer.getLocation();
                     translator.drawRoute(g, previousLocation.getLongitude(), previousLocation.getLatitude(),
                             location.getLongitude(), location.getLatitude(),
                             location instanceof AirLocation, false);
                     // Determine where to draw the vehicle info
-                    long distance = customer.getDistanceFromPreviousStandstill();
-                    if (customer.getPreviousStandstill() instanceof Customer) {
-                        if (longestNonDepotDistance < distance) {
-                            longestNonDepotDistance = distance;
-                            vehicleInfoCustomer = customer;
-                        }
-                    } else if (vehicleInfoCustomer == null) {
-                        // If there is only 1 customer in this chain, draw it on a line to the Depot anyway
-                        vehicleInfoCustomer = customer;
+                    long distance = previousLocation.getDistanceTo(location);
+                    if (longestNonDepotDistance < distance) {
+                        longestNonDepotDistance = distance;
+                        previousVehicleInfoLocation = previousLocation;
+                        vehicleInfoLocation = location;
                     }
                     // Line back to the vehicle depot
-                    if (customer.getNextCustomer() == null) {
+                    if (i == vehicle.getCustomers().size() - 1) {
                         Location vehicleLocation = vehicle.getLocation();
                         translator.drawRoute(g, location.getLongitude(), location.getLatitude(),
                                 vehicleLocation.getLongitude(), vehicleLocation.getLatitude(),
@@ -159,12 +160,13 @@ public class VehicleRoutingSolutionPainter {
                 }
             }
             // Draw vehicle info
-            if (vehicleInfoCustomer != null) {
+            if (vehicleInfoLocation != null) {
                 if (load > vehicle.getCapacity()) {
                     g.setColor(TangoColorFactory.SCARLET_2);
                 }
-                Location previousLocation = vehicleInfoCustomer.getPreviousStandstill().getLocation();
-                Location location = vehicleInfoCustomer.getLocation();
+                // TODO inline
+                Location previousLocation = previousVehicleInfoLocation;
+                Location location = vehicleInfoLocation;
                 double longitude = (previousLocation.getLongitude() + location.getLongitude()) / 2.0;
                 int x = translator.translateLongitudeToX(longitude);
                 double latitude = (previousLocation.getLatitude() + location.getLatitude()) / 2.0;
