@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-persistence</artifactId>
-    <version>8.26.0.Final</version>
+    <version>8.26.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-persistence-common</artifactId>
