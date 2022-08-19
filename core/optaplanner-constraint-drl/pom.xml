@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-core-parent</artifactId>
-    <version>8.26.0.Final</version>
+    <version>8.26.1-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
