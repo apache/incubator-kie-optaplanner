@@ -5,8 +5,8 @@ metadata:
   name: school-timetabling
 spec:
   amqBroker:
-    host: ex-aao-amqp-0-svc.artemis.svc.cluster.local
-    port: 5672
+    host: ex-aao-hdls-svc.artemis.svc.cluster.local
+    port: 61616
     managementHost: ex-aao-hdls-svc.artemis.svc.cluster.local
     usernameSecretRef:
       key: activemq-username
