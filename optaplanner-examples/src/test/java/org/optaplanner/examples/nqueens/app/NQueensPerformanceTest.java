@@ -23,6 +23,12 @@ class NQueensPerformanceTest extends SolverPerformanceTest<NQueens, SimpleScore>
                 TestData.of(ConstraintStreamImplType.DROOLS, "data/nqueens/unsolved/8queens.xml", SimpleScore.ZERO,
                         EnvironmentMode.FAST_ASSERT),
                 TestData.of(ConstraintStreamImplType.DROOLS, "data/nqueens/unsolved/4queens.xml", SimpleScore.ZERO,
+                        EnvironmentMode.FULL_ASSERT),
+                TestData.of(ConstraintStreamImplType.BAVET, "data/nqueens/unsolved/16queens.xml", SimpleScore.ZERO,
+                        EnvironmentMode.REPRODUCIBLE),
+                TestData.of(ConstraintStreamImplType.BAVET, "data/nqueens/unsolved/8queens.xml", SimpleScore.ZERO,
+                        EnvironmentMode.FAST_ASSERT),
+                TestData.of(ConstraintStreamImplType.BAVET, "data/nqueens/unsolved/4queens.xml", SimpleScore.ZERO,
                         EnvironmentMode.FULL_ASSERT));
     }
 }
