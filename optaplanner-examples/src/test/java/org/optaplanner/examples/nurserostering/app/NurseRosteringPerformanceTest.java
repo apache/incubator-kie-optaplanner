@@ -4,7 +4,6 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 
@@ -20,13 +19,11 @@ class NurseRosteringPerformanceTest extends SolverPerformanceTest<NurseRoster, H
     @Override
     protected Stream<TestData<HardSoftScore>> testData() {
         return Stream.of(
-                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardSoftScore.ofSoft(-568),
-                        EnvironmentMode.REPRODUCIBLE),
-                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardSoftScore.ofSoft(-689),
-                        EnvironmentMode.FAST_ASSERT),
-                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, HardSoftScore.ofSoft(-424),
-                        EnvironmentMode.REPRODUCIBLE),
-                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, HardSoftScore.ofSoft(-432),
-                        EnvironmentMode.FAST_ASSERT));
+                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
+                        HardSoftScore.ofSoft(-568),
+                        HardSoftScore.ofSoft(-689)),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
+                        HardSoftScore.ofSoft(-424),
+                        HardSoftScore.ofSoft(-432)));
     }
 }

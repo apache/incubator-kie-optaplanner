@@ -4,7 +4,6 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 
@@ -21,12 +20,10 @@ class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolution, Ha
     protected Stream<TestData<HardMediumSoftLongScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardMediumSoftLongScore.of(0, 72725670, -6208480), EnvironmentMode.REPRODUCIBLE),
-                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardMediumSoftLongScore.of(0, 72725039, -5186309), EnvironmentMode.FAST_ASSERT),
+                        HardMediumSoftLongScore.of(0, 72725670, -6208480),
+                        HardMediumSoftLongScore.of(0, 72725039, -5186309)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardMediumSoftLongScore.of(0, 72727353, -4639781), EnvironmentMode.REPRODUCIBLE),
-                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardMediumSoftLongScore.of(0, 72725634, -5507058), EnvironmentMode.FAST_ASSERT));
+                        HardMediumSoftLongScore.of(0, 72727353, -4639781),
+                        HardMediumSoftLongScore.of(0, 72725634, -5507058)));
     }
 }

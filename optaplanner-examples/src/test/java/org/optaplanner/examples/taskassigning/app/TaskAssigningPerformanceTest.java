@@ -4,7 +4,6 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 
@@ -20,13 +19,11 @@ class TaskAssigningPerformanceTest extends SolverPerformanceTest<TaskAssigningSo
     @Override
     protected Stream<TestData<BendableScore>> testData() {
         return Stream.of(
-                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, BendableScore.of(new int[] { 0 },
-                        new int[] { -3925, -6293940, -7784, -20600 }), EnvironmentMode.REPRODUCIBLE),
-                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, BendableScore.of(new int[] { 0 },
-                        new int[] { -3925, -6293940, -7883, -20476 }), EnvironmentMode.FAST_ASSERT),
-                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, BendableScore.of(new int[] { 0 },
-                        new int[] { -3925, -6293940, -7772, -20463 }), EnvironmentMode.REPRODUCIBLE),
-                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, BendableScore.of(new int[] { 0 },
-                        new int[] { -3925, -6293940, -7851, -21621 }), EnvironmentMode.FAST_ASSERT));
+                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
+                        BendableScore.of(new int[] { 0 }, new int[] { -3925, -6293940, -7784, -20600 }),
+                        BendableScore.of(new int[] { 0 }, new int[] { -3925, -6293940, -7883, -20476 })),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
+                        BendableScore.of(new int[] { 0 }, new int[] { -3925, -6293940, -7772, -20463 }),
+                        BendableScore.of(new int[] { 0 }, new int[] { -3925, -6293940, -7851, -21621 })));
     }
 }

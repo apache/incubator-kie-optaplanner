@@ -5,7 +5,6 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 
@@ -21,13 +20,11 @@ class ConferenceSchedulingPerformanceTest extends SolverPerformanceTest<Conferen
     @Override
     protected Stream<TestData<HardMediumSoftScore>> testData() {
         return Stream.of(
-                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardMediumSoftScore.of(0, 0, -1027755),
-                        EnvironmentMode.REPRODUCIBLE),
-                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardMediumSoftScore.of(0, 0, -1119825),
-                        EnvironmentMode.FAST_ASSERT),
-                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, HardMediumSoftScore.of(0, 0, -908820),
-                        EnvironmentMode.REPRODUCIBLE),
-                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, HardMediumSoftScore.of(0, 0, -941580),
-                        EnvironmentMode.FAST_ASSERT));
+                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
+                        HardMediumSoftScore.of(0, 0, -1027755),
+                        HardMediumSoftScore.of(0, 0, -1119825)),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
+                        HardMediumSoftScore.of(0, 0, -908820),
+                        HardMediumSoftScore.of(0, 0, -941580)));
     }
 }

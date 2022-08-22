@@ -4,7 +4,6 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution;
 
@@ -20,13 +19,11 @@ class FlightCrewSchedulingPerformanceTest extends SolverPerformanceTest<FlightCr
     @Override
     protected Stream<TestData<HardSoftLongScore>> testData() {
         return Stream.of(
-                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardSoftLongScore.ofSoft(-129000000),
-                        EnvironmentMode.REPRODUCIBLE),
-                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardSoftLongScore.ofSoft(-129000000),
-                        EnvironmentMode.FAST_ASSERT),
-                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, HardSoftLongScore.ofSoft(-129000000),
-                        EnvironmentMode.REPRODUCIBLE),
-                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, HardSoftLongScore.ofSoft(-129000000),
-                        EnvironmentMode.FAST_ASSERT));
+                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
+                        HardSoftLongScore.ofSoft(-129000000),
+                        HardSoftLongScore.ofSoft(-129000000)),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
+                        HardSoftLongScore.ofSoft(-129000000),
+                        HardSoftLongScore.ofSoft(-129000000)));
     }
 }

@@ -4,7 +4,6 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 
@@ -22,20 +21,12 @@ class VehicleRoutingPerformanceTest extends SolverPerformanceTest<VehicleRouting
     protected Stream<TestData<HardSoftLongScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, CVRP_32_CUSTOMERS_XML, HardSoftLongScore.of(0, -744242),
-                        EnvironmentMode.REPRODUCIBLE),
-                TestData.of(ConstraintStreamImplType.DROOLS, CVRP_32_CUSTOMERS_XML, HardSoftLongScore.of(0, -745420),
-                        EnvironmentMode.FAST_ASSERT),
+                        HardSoftLongScore.of(0, -745420)),
                 TestData.of(ConstraintStreamImplType.DROOLS, CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1798722),
-                        EnvironmentMode.REPRODUCIBLE),
-                TestData.of(ConstraintStreamImplType.DROOLS, CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1812202),
-                        EnvironmentMode.FAST_ASSERT),
+                        HardSoftLongScore.of(0, -1812202)),
                 TestData.of(ConstraintStreamImplType.BAVET, CVRP_32_CUSTOMERS_XML, HardSoftLongScore.of(0, -744242),
-                        EnvironmentMode.REPRODUCIBLE),
-                TestData.of(ConstraintStreamImplType.BAVET, CVRP_32_CUSTOMERS_XML, HardSoftLongScore.of(0, -744242),
-                        EnvironmentMode.FAST_ASSERT),
+                        HardSoftLongScore.of(0, -744242)),
                 TestData.of(ConstraintStreamImplType.BAVET, CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1738656),
-                        EnvironmentMode.REPRODUCIBLE),
-                TestData.of(ConstraintStreamImplType.BAVET, CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1782301),
-                        EnvironmentMode.FAST_ASSERT));
+                        HardSoftLongScore.of(0, -1782301)));
     }
 }

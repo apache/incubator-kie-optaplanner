@@ -58,17 +58,38 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
     @Execution(ExecutionMode.CONCURRENT)
     @Timeout(600)
     Stream<DynamicTest> runSpeedTest() {
-        return moveThreadCounts().flatMap(moveThreadCount -> testData().map(testData -> dynamicTest(
-                testData.constraintStreamImplType + ", " +
-                        testData.unsolvedDataFile.replaceFirst(".*/", "")
-                        + ", "
-                        + testData.environmentMode
-                        + ", threads: " + moveThreadCount,
-                () -> runSpeedTest(testData.constraintStreamImplType,
-                        new File(testData.unsolvedDataFile),
-                        testData.bestScoreLimit,
-                        testData.environmentMode,
-                        moveThreadCount))));
+        return moveThreadCounts().flatMap(moveThreadCount -> testData().flatMap(testData -> {
+            Stream.Builder<DynamicTest> streamBuilder = Stream.builder();
+            streamBuilder.add(createDynamicTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
+                    EnvironmentMode.REPRODUCIBLE,
+                    testData.bestScoreLimitForReproducible, moveThreadCount));
+            if (testData.bestScoreLimitForFastAssert != null) {
+                streamBuilder.add(createDynamicTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
+                        EnvironmentMode.FAST_ASSERT,
+                        testData.bestScoreLimitForFastAssert, moveThreadCount));
+            }
+            if (testData.bestScoreLimitForFullAssert != null) {
+                streamBuilder.add(createDynamicTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
+                        EnvironmentMode.FULL_ASSERT,
+                        testData.bestScoreLimitForFullAssert, moveThreadCount));
+            }
+            return streamBuilder.build();
+        }));
+    }
+
+    private DynamicTest createDynamicTest(ConstraintStreamImplType constraintStreamImplType, String unsolvedDataFile,
+            EnvironmentMode environmentMode, Score_ bestScoreLimit, String moveThreadCount) {
+        String testName = constraintStreamImplType + ", " +
+                unsolvedDataFile.replaceFirst(".*/", "")
+                + ", "
+                + environmentMode
+                + ", threads: " + moveThreadCount;
+        return dynamicTest(testName,
+                () -> runSpeedTest(constraintStreamImplType,
+                        new File(unsolvedDataFile),
+                        bestScoreLimit,
+                        environmentMode,
+                        moveThreadCount));
     }
 
     @BeforeEach
@@ -135,21 +156,37 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
     protected static class TestData<Score_ extends Score<Score_>> {
 
         public static <Score_ extends Score<Score_>> TestData<Score_> of(ConstraintStreamImplType constraintStreamImplType,
-                String unsolvedDataFile, Score_ bestScoreLimit, EnvironmentMode environmentMode) {
-            return new TestData<>(constraintStreamImplType, unsolvedDataFile, bestScoreLimit, environmentMode);
+                String unsolvedDataFile, Score_ bestScoreLimitForReproducible) {
+            return TestData.of(constraintStreamImplType, unsolvedDataFile, bestScoreLimitForReproducible, null);
+        }
+
+        public static <Score_ extends Score<Score_>> TestData<Score_> of(ConstraintStreamImplType constraintStreamImplType,
+                String unsolvedDataFile, Score_ bestScoreLimitForReproducible, Score_ bestScoreLimitForFastAssert) {
+            return TestData.of(constraintStreamImplType, unsolvedDataFile, bestScoreLimitForReproducible,
+                    bestScoreLimitForFastAssert, null);
+        }
+
+        public static <Score_ extends Score<Score_>> TestData<Score_> of(ConstraintStreamImplType constraintStreamImplType,
+                String unsolvedDataFile, Score_ bestScoreLimitForReproducible, Score_ bestScoreLimitForFastAssert,
+                Score_ bestScoreLimitForFullAssert) {
+            return new TestData<>(constraintStreamImplType, unsolvedDataFile, bestScoreLimitForReproducible,
+                    bestScoreLimitForFastAssert, bestScoreLimitForFullAssert);
         }
 
         private final ConstraintStreamImplType constraintStreamImplType;
         private final String unsolvedDataFile;
-        private final Score_ bestScoreLimit;
-        private final EnvironmentMode environmentMode;
+        private final Score_ bestScoreLimitForReproducible;
+        private final Score_ bestScoreLimitForFastAssert;
+        private final Score_ bestScoreLimitForFullAssert;
 
-        private TestData(ConstraintStreamImplType constraintStreamImplType, String unsolvedDataFile, Score_ bestScoreLimit,
-                EnvironmentMode environmentMode) {
+        private TestData(ConstraintStreamImplType constraintStreamImplType, String unsolvedDataFile,
+                Score_ bestScoreLimitForReproducible, Score_ bestScoreLimitForFastAssert,
+                Score_ bestScoreLimitForFullAssert) {
             this.constraintStreamImplType = constraintStreamImplType;
             this.unsolvedDataFile = unsolvedDataFile;
-            this.bestScoreLimit = bestScoreLimit;
-            this.environmentMode = environmentMode;
+            this.bestScoreLimitForReproducible = Objects.requireNonNull(bestScoreLimitForReproducible);
+            this.bestScoreLimitForFastAssert = bestScoreLimitForFastAssert;
+            this.bestScoreLimitForFullAssert = bestScoreLimitForFullAssert;
         }
     }
 }
