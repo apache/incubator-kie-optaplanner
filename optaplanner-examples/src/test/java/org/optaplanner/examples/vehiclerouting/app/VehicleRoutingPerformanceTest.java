@@ -3,6 +3,7 @@ package org.optaplanner.examples.vehiclerouting.app;
 import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
@@ -20,9 +21,13 @@ class VehicleRoutingPerformanceTest extends SolverPerformanceTest<VehicleRouting
     @Override
     protected Stream<TestData<HardSoftLongScore>> testData() {
         return Stream.of(
-                testData(CVRP_32_CUSTOMERS_XML, HardSoftLongScore.of(0, -744242), EnvironmentMode.REPRODUCIBLE),
-                testData(CVRP_32_CUSTOMERS_XML, HardSoftLongScore.of(0, -745420), EnvironmentMode.FAST_ASSERT),
-                testData(CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1798722), EnvironmentMode.REPRODUCIBLE),
-                testData(CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1812202), EnvironmentMode.FAST_ASSERT));
+                TestData.of(ConstraintStreamImplType.DROOLS, CVRP_32_CUSTOMERS_XML, HardSoftLongScore.of(0, -744242),
+                        EnvironmentMode.REPRODUCIBLE),
+                TestData.of(ConstraintStreamImplType.DROOLS, CVRP_32_CUSTOMERS_XML, HardSoftLongScore.of(0, -745420),
+                        EnvironmentMode.FAST_ASSERT),
+                TestData.of(ConstraintStreamImplType.DROOLS, CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1798722),
+                        EnvironmentMode.REPRODUCIBLE),
+                TestData.of(ConstraintStreamImplType.DROOLS, CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1812202),
+                        EnvironmentMode.FAST_ASSERT));
     }
 }

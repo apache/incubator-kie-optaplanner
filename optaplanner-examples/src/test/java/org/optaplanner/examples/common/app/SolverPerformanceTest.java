@@ -6,9 +6,11 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
@@ -21,8 +23,10 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
@@ -50,20 +54,17 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
                 .orElse(Stream.of(SolverConfig.MOVE_THREAD_COUNT_NONE));
     }
 
-    protected TestData<Score_> testData(String unsolvedDataFile, Score_ bestScoreLimit, EnvironmentMode environmentMode) {
-        return new TestData<>(unsolvedDataFile, bestScoreLimit, environmentMode);
-    }
-
     @TestFactory
     @Execution(ExecutionMode.CONCURRENT)
     @Timeout(600)
     Stream<DynamicTest> runSpeedTest() {
         return moveThreadCounts().flatMap(moveThreadCount -> testData().map(testData -> dynamicTest(
-                testData.unsolvedDataFile.replaceFirst(".*/", "")
+                testData.constraintStreamImplType + ", " +
+                        testData.unsolvedDataFile.replaceFirst(".*/", "")
                         + ", "
                         + testData.environmentMode
                         + ", threads: " + moveThreadCount,
-                () -> runSpeedTest(
+                () -> runSpeedTest(testData.constraintStreamImplType,
                         new File(testData.unsolvedDataFile),
                         testData.bestScoreLimit,
                         testData.environmentMode,
@@ -81,9 +82,10 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
 
     protected abstract Stream<TestData<Score_>> testData();
 
-    private void runSpeedTest(File unsolvedDataFile, Score_ bestScoreLimit, EnvironmentMode environmentMode,
-            String moveThreadCount) {
-        SolverFactory<Solution_> solverFactory = buildSolverFactory(bestScoreLimit, environmentMode, moveThreadCount);
+    private void runSpeedTest(ConstraintStreamImplType constraintStreamImplType, File unsolvedDataFile, Score_ bestScoreLimit,
+            EnvironmentMode environmentMode, String moveThreadCount) {
+        SolverFactory<Solution_> solverFactory =
+                buildSolverFactory(constraintStreamImplType, bestScoreLimit, environmentMode, moveThreadCount);
         Solution_ problem = solutionFileIO.read(unsolvedDataFile);
         logger.info("Opened: {}", unsolvedDataFile);
         Solver<Solution_> solver = solverFactory.buildSolver();
@@ -91,13 +93,21 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
         assertScoreAndConstraintMatches(solverFactory, bestSolution, bestScoreLimit);
     }
 
-    private SolverFactory<Solution_> buildSolverFactory(Score_ bestScoreLimit, EnvironmentMode environmentMode,
-            String moveThreadCount) {
+    private SolverFactory<Solution_> buildSolverFactory(ConstraintStreamImplType constraintStreamImplType,
+            Score_ bestScoreLimit, EnvironmentMode environmentMode, String moveThreadCount) {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
         solverConfig.withEnvironmentMode(environmentMode)
                 .withTerminationConfig(new TerminationConfig()
                         .withBestScoreLimit(bestScoreLimit.toString()))
                 .withMoveThreadCount(moveThreadCount);
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig =
+                Objects.requireNonNullElseGet(solverConfig.getScoreDirectorFactoryConfig(),
+                        ScoreDirectorFactoryConfig::new);
+        if (scoreDirectorFactoryConfig.getConstraintProviderClass() == null) {
+            Assertions.fail("Test does not support constraint streams.");
+        }
+        scoreDirectorFactoryConfig.setConstraintStreamImplType(constraintStreamImplType);
+        solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
         return SolverFactory.create(solverConfig);
     }
 
@@ -124,11 +134,19 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
 
     protected static class TestData<Score_ extends Score<Score_>> {
 
+        public static <Score_ extends Score<Score_>> TestData<Score_> of(ConstraintStreamImplType constraintStreamImplType,
+                String unsolvedDataFile, Score_ bestScoreLimit, EnvironmentMode environmentMode) {
+            return new TestData<>(constraintStreamImplType, unsolvedDataFile, bestScoreLimit, environmentMode);
+        }
+
+        private final ConstraintStreamImplType constraintStreamImplType;
         private final String unsolvedDataFile;
         private final Score_ bestScoreLimit;
         private final EnvironmentMode environmentMode;
 
-        private TestData(String unsolvedDataFile, Score_ bestScoreLimit, EnvironmentMode environmentMode) {
+        private TestData(ConstraintStreamImplType constraintStreamImplType, String unsolvedDataFile, Score_ bestScoreLimit,
+                EnvironmentMode environmentMode) {
+            this.constraintStreamImplType = constraintStreamImplType;
             this.unsolvedDataFile = unsolvedDataFile;
             this.bestScoreLimit = bestScoreLimit;
             this.environmentMode = environmentMode;
