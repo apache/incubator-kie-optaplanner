@@ -23,6 +23,10 @@ class CheapTimePerformanceTest extends SolverPerformanceTest<CheapTimeSolution, 
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
                         HardMediumSoftLongScore.of(0, -1043600344878178L, -24077), EnvironmentMode.REPRODUCIBLE),
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardMediumSoftLongScore.of(0, -1047922570736971L, -23863), EnvironmentMode.FAST_ASSERT));
+                        HardMediumSoftLongScore.of(0, -1047922570736971L, -23863), EnvironmentMode.FAST_ASSERT),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
+                        HardMediumSoftLongScore.of(0, -795361927055260L, -22410), EnvironmentMode.REPRODUCIBLE),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
+                        HardMediumSoftLongScore.of(0, -847093214964348L, -24397), EnvironmentMode.FAST_ASSERT));
     }
 }
