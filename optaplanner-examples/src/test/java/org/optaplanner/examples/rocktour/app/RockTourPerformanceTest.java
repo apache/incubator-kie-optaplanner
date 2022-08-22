@@ -23,6 +23,10 @@ class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolution, Ha
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
                         HardMediumSoftLongScore.of(0, 72725670, -6208480), EnvironmentMode.REPRODUCIBLE),
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardMediumSoftLongScore.of(0, 72725039, -5186309), EnvironmentMode.FAST_ASSERT));
+                        HardMediumSoftLongScore.of(0, 72725039, -5186309), EnvironmentMode.FAST_ASSERT),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
+                        HardMediumSoftLongScore.of(0, 72727353, -4639781), EnvironmentMode.REPRODUCIBLE),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
+                        HardMediumSoftLongScore.of(0, 72725634, -5507058), EnvironmentMode.FAST_ASSERT));
     }
 }
