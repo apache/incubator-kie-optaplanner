@@ -23,6 +23,10 @@ class CurriculumCoursePerformanceTest extends SolverPerformanceTest<CourseSchedu
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardSoftScore.ofSoft(-66),
                         EnvironmentMode.REPRODUCIBLE),
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardSoftScore.ofSoft(-82),
+                        EnvironmentMode.FAST_ASSERT),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, HardSoftScore.ofSoft(-38),
+                        EnvironmentMode.REPRODUCIBLE),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, HardSoftScore.ofSoft(-43),
                         EnvironmentMode.FAST_ASSERT));
     }
 }
