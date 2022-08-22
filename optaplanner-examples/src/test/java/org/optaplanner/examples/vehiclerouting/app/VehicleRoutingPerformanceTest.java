@@ -28,6 +28,14 @@ class VehicleRoutingPerformanceTest extends SolverPerformanceTest<VehicleRouting
                 TestData.of(ConstraintStreamImplType.DROOLS, CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1798722),
                         EnvironmentMode.REPRODUCIBLE),
                 TestData.of(ConstraintStreamImplType.DROOLS, CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1812202),
+                        EnvironmentMode.FAST_ASSERT),
+                TestData.of(ConstraintStreamImplType.BAVET, CVRP_32_CUSTOMERS_XML, HardSoftLongScore.of(0, -744242),
+                        EnvironmentMode.REPRODUCIBLE),
+                TestData.of(ConstraintStreamImplType.BAVET, CVRP_32_CUSTOMERS_XML, HardSoftLongScore.of(0, -744242),
+                        EnvironmentMode.FAST_ASSERT),
+                TestData.of(ConstraintStreamImplType.BAVET, CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1738656),
+                        EnvironmentMode.REPRODUCIBLE),
+                TestData.of(ConstraintStreamImplType.BAVET, CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1782301),
                         EnvironmentMode.FAST_ASSERT));
     }
 }
