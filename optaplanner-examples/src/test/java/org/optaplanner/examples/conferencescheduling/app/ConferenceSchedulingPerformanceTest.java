@@ -24,6 +24,10 @@ class ConferenceSchedulingPerformanceTest extends SolverPerformanceTest<Conferen
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardMediumSoftScore.of(0, 0, -1027755),
                         EnvironmentMode.REPRODUCIBLE),
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardMediumSoftScore.of(0, 0, -1119825),
+                        EnvironmentMode.FAST_ASSERT),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, HardMediumSoftScore.of(0, 0, -908820),
+                        EnvironmentMode.REPRODUCIBLE),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, HardMediumSoftScore.of(0, 0, -941580),
                         EnvironmentMode.FAST_ASSERT));
     }
 }
