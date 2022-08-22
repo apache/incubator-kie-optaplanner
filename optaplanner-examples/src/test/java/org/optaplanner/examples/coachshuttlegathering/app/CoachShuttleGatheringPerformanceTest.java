@@ -21,9 +21,13 @@ class CoachShuttleGatheringPerformanceTest
     @Override
     protected Stream<TestData<HardSoftLongScore>> testData() {
         return Stream.of(
-                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardSoftLongScore.of(0, -389030),
+                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardSoftLongScore.of(0, -384040),
                         EnvironmentMode.REPRODUCIBLE),
-                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardSoftLongScore.of(0, -389030),
+                TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardSoftLongScore.of(0, -384040),
+                        EnvironmentMode.FAST_ASSERT),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, HardSoftLongScore.of(0, -384040),
+                        EnvironmentMode.REPRODUCIBLE),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, HardSoftLongScore.of(0, -384040),
                         EnvironmentMode.FAST_ASSERT));
     }
 }
