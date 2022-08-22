@@ -23,6 +23,10 @@ class TspPerformanceTest extends SolverPerformanceTest<TspSolution, SimpleLongSc
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, SimpleLongScore.of(-216469618),
                         EnvironmentMode.REPRODUCIBLE),
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, SimpleLongScore.of(-217458433),
+                        EnvironmentMode.FAST_ASSERT),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, SimpleLongScore.of(-216469618),
+                        EnvironmentMode.REPRODUCIBLE),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, SimpleLongScore.of(-216469618),
                         EnvironmentMode.FAST_ASSERT));
     }
 }
