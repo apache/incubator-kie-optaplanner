@@ -23,6 +23,10 @@ class TaskAssigningPerformanceTest extends SolverPerformanceTest<TaskAssigningSo
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, BendableScore.of(new int[] { 0 },
                         new int[] { -3925, -6293940, -7784, -20600 }), EnvironmentMode.REPRODUCIBLE),
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, BendableScore.of(new int[] { 0 },
-                        new int[] { -3925, -6293940, -7883, -20476 }), EnvironmentMode.FAST_ASSERT));
+                        new int[] { -3925, -6293940, -7883, -20476 }), EnvironmentMode.FAST_ASSERT),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, BendableScore.of(new int[] { 0 },
+                        new int[] { -3925, -6293940, -7772, -20463 }), EnvironmentMode.REPRODUCIBLE),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, BendableScore.of(new int[] { 0 },
+                        new int[] { -3925, -6293940, -7851, -21621 }), EnvironmentMode.FAST_ASSERT));
     }
 }
