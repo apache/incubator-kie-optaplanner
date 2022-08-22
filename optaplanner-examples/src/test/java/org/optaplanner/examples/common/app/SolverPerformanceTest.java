@@ -2,6 +2,7 @@ package org.optaplanner.examples.common.app;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+import static org.optaplanner.core.config.solver.EnvironmentMode.FULL_ASSERT;
 
 import java.io.File;
 import java.util.Arrays;
@@ -70,11 +71,30 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
             }
             if (testData.bestScoreLimitForFullAssert != null) {
                 streamBuilder.add(createDynamicTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
-                        EnvironmentMode.FULL_ASSERT,
+                        FULL_ASSERT,
                         testData.bestScoreLimitForFullAssert, moveThreadCount));
             }
             return streamBuilder.build();
         }));
+    }
+
+    @TestFactory
+    @Execution(ExecutionMode.CONCURRENT)
+    @Timeout(600)
+    Stream<DynamicTest> runMutualCorrectnessTest() {
+        return testData()
+                .map(testData -> new File(testData.unsolvedDataFile))
+                .distinct()
+                .map(this::createDynamicCorrectnessTest);
+    }
+
+    private DynamicTest createDynamicCorrectnessTest(File unsolvedDataFile) {
+        String testName = "DROOLS v. BAVET, " +
+                unsolvedDataFile.toString().replaceFirst(".*/", "")
+                + ", "
+                + FULL_ASSERT;
+        return dynamicTest(testName,
+                () -> runMutualCorrectnessTest(unsolvedDataFile));
     }
 
     private DynamicTest createDynamicTest(ConstraintStreamImplType constraintStreamImplType, String unsolvedDataFile,
@@ -112,6 +132,35 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
         Solver<Solution_> solver = solverFactory.buildSolver();
         Solution_ bestSolution = solver.solve(problem);
         assertScoreAndConstraintMatches(solverFactory, bestSolution, bestScoreLimit);
+    }
+
+    private void runMutualCorrectnessTest(File unsolvedDataFile) {
+        SolverFactory<Solution_> solverFactory = buildMutualCorrectnessSolverFactory();
+        Solution_ problem = solutionFileIO.read(unsolvedDataFile);
+        logger.info("Opened: {}", unsolvedDataFile);
+        Solver<Solution_> solver = solverFactory.buildSolver();
+        Assertions.assertThatNoException()
+                .isThrownBy(() -> solver.solve(problem));
+    }
+
+    private SolverFactory<Solution_> buildMutualCorrectnessSolverFactory() {
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
+        solverConfig.withEnvironmentMode(FULL_ASSERT)
+                .withTerminationConfig(new TerminationConfig()
+                        .withSecondsSpentLimit(10L)); // 10 seconds is not nearly enough; but better than nothing.
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig =
+                Objects.requireNonNullElseGet(solverConfig.getScoreDirectorFactoryConfig(),
+                        ScoreDirectorFactoryConfig::new);
+        if (scoreDirectorFactoryConfig.getConstraintProviderClass() == null) {
+            Assertions.fail("Test does not support constraint streams.");
+        }
+        scoreDirectorFactoryConfig.setConstraintStreamImplType(ConstraintStreamImplType.DROOLS);
+        ScoreDirectorFactoryConfig assertionScoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        assertionScoreDirectorFactoryConfig.setConstraintProviderClass(scoreDirectorFactoryConfig.getConstraintProviderClass());
+        assertionScoreDirectorFactoryConfig.setConstraintStreamImplType(ConstraintStreamImplType.BAVET);
+        scoreDirectorFactoryConfig.setAssertionScoreDirectorFactory(assertionScoreDirectorFactoryConfig);
+        solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
+        return SolverFactory.create(solverConfig);
     }
 
     private SolverFactory<Solution_> buildSolverFactory(ConstraintStreamImplType constraintStreamImplType,
