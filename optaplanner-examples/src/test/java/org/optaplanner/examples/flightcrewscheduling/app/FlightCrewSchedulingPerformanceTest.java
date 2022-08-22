@@ -23,6 +23,10 @@ class FlightCrewSchedulingPerformanceTest extends SolverPerformanceTest<FlightCr
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardSoftLongScore.ofSoft(-129000000),
                         EnvironmentMode.REPRODUCIBLE),
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE, HardSoftLongScore.ofSoft(-129000000),
+                        EnvironmentMode.FAST_ASSERT),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, HardSoftLongScore.ofSoft(-129000000),
+                        EnvironmentMode.REPRODUCIBLE),
+                TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE, HardSoftLongScore.ofSoft(-129000000),
                         EnvironmentMode.FAST_ASSERT));
     }
 }
