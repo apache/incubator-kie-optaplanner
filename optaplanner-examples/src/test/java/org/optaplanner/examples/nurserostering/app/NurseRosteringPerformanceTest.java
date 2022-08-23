@@ -20,10 +20,10 @@ class NurseRosteringPerformanceTest extends SolverPerformanceTest<NurseRoster, H
     protected Stream<TestData<HardSoftScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardSoftScore.ofSoft(-568),
-                        HardSoftScore.ofSoft(-689)),
+                        HardSoftScore.ofSoft(-451),
+                        HardSoftScore.ofSoft(-456)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardSoftScore.ofSoft(-424),
-                        HardSoftScore.ofSoft(-432)));
+                        HardSoftScore.ofSoft(-378),
+                        HardSoftScore.ofSoft(-382)));
     }
 }
