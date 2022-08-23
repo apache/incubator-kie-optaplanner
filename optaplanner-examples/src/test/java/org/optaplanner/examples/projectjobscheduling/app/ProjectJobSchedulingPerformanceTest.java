@@ -20,10 +20,10 @@ class ProjectJobSchedulingPerformanceTest extends SolverPerformanceTest<Schedule
     protected Stream<TestData<HardMediumSoftScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardMediumSoftScore.of(0, -345, -145),
-                        HardMediumSoftScore.of(0, -771, -316)),
+                        HardMediumSoftScore.of(0, -258, -103),
+                        HardMediumSoftScore.of(0, -258, -114)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardMediumSoftScore.of(0, -113, -60),
-                        HardMediumSoftScore.of(0, -138, -65)));
+                        HardMediumSoftScore.of(0, -114, -61),
+                        HardMediumSoftScore.of(0, -141, -66)));
     }
 }
