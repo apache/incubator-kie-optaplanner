@@ -4,10 +4,10 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.examples.common.app.SolverPerformanceTest;
+import org.optaplanner.examples.common.app.SolverSmokeTest;
 import org.optaplanner.examples.rocktour.domain.RockTourSolution;
 
-class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolution, HardMediumSoftLongScore> {
+class RockTourSmokeTest extends SolverSmokeTest<RockTourSolution, HardMediumSoftLongScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/rocktour/unsolved/47shows.xlsx";
 

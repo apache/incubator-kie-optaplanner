@@ -4,10 +4,10 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.examples.common.app.SolverPerformanceTest;
+import org.optaplanner.examples.common.app.SolverSmokeTest;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 
-class TspPerformanceTest extends SolverPerformanceTest<TspSolution, SimpleLongScore> {
+class TspSmokeTest extends SolverSmokeTest<TspSolution, SimpleLongScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/tsp/unsolved/europe40.xml";
 

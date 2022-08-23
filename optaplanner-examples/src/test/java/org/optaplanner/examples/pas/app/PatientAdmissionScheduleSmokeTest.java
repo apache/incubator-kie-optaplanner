@@ -4,11 +4,11 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.examples.common.app.SolverPerformanceTest;
+import org.optaplanner.examples.common.app.SolverSmokeTest;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 
-class PatientAdmissionSchedulePerformanceTest
-        extends SolverPerformanceTest<PatientAdmissionSchedule, HardMediumSoftScore> {
+class PatientAdmissionScheduleSmokeTest
+        extends SolverSmokeTest<PatientAdmissionSchedule, HardMediumSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/pas/unsolved/testdata01.xml";
 

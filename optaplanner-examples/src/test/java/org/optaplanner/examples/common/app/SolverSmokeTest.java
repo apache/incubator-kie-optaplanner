@@ -42,7 +42,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Score_>> extends LoggingTest {
+public abstract class SolverSmokeTest<Solution_, Score_ extends Score<Score_>> extends LoggingTest {
 
     private static final String MOVE_THREAD_COUNTS_STRING = System.getProperty(TestSystemProperties.MOVE_THREAD_COUNTS);
 
@@ -61,16 +61,16 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
     Stream<DynamicTest> runSpeedTest() {
         return moveThreadCounts().flatMap(moveThreadCount -> testData().flatMap(testData -> {
             Stream.Builder<DynamicTest> streamBuilder = Stream.builder();
-            streamBuilder.add(createDynamicTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
+            streamBuilder.add(createSpeedTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
                     EnvironmentMode.REPRODUCIBLE,
                     testData.bestScoreLimitForReproducible, moveThreadCount));
             if (testData.bestScoreLimitForFastAssert != null) {
-                streamBuilder.add(createDynamicTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
+                streamBuilder.add(createSpeedTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
                         EnvironmentMode.FAST_ASSERT,
                         testData.bestScoreLimitForFastAssert, moveThreadCount));
             }
             if (testData.bestScoreLimitForFullAssert != null) {
-                streamBuilder.add(createDynamicTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
+                streamBuilder.add(createSpeedTest(testData.constraintStreamImplType, testData.unsolvedDataFile,
                         FULL_ASSERT,
                         testData.bestScoreLimitForFullAssert, moveThreadCount));
             }
@@ -78,26 +78,7 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
         }));
     }
 
-    @TestFactory
-    @Execution(ExecutionMode.CONCURRENT)
-    @Timeout(600)
-    Stream<DynamicTest> runMutualCorrectnessTest() {
-        return testData()
-                .map(testData -> new File(testData.unsolvedDataFile))
-                .distinct()
-                .map(this::createDynamicCorrectnessTest);
-    }
-
-    private DynamicTest createDynamicCorrectnessTest(File unsolvedDataFile) {
-        String testName = "DROOLS v. BAVET, " +
-                unsolvedDataFile.toString().replaceFirst(".*/", "")
-                + ", "
-                + FULL_ASSERT;
-        return dynamicTest(testName,
-                () -> runMutualCorrectnessTest(unsolvedDataFile));
-    }
-
-    private DynamicTest createDynamicTest(ConstraintStreamImplType constraintStreamImplType, String unsolvedDataFile,
+    private DynamicTest createSpeedTest(ConstraintStreamImplType constraintStreamImplType, String unsolvedDataFile,
             EnvironmentMode environmentMode, Score_ bestScoreLimit, String moveThreadCount) {
         String testName = constraintStreamImplType + ", " +
                 unsolvedDataFile.replaceFirst(".*/", "")
@@ -110,6 +91,25 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
                         bestScoreLimit,
                         environmentMode,
                         moveThreadCount));
+    }
+
+    @TestFactory
+    @Execution(ExecutionMode.CONCURRENT)
+    @Timeout(600)
+    Stream<DynamicTest> runConstraintStreamsMutualCorrectnessTest() {
+        return testData()
+                .map(testData -> new File(testData.unsolvedDataFile))
+                .distinct()
+                .map(this::createConstraintStreamsMutualCorrectnessTest);
+    }
+
+    private DynamicTest createConstraintStreamsMutualCorrectnessTest(File unsolvedDataFile) {
+        String testName = "DROOLS v. BAVET, " +
+                unsolvedDataFile.toString().replaceFirst(".*/", "")
+                + ", "
+                + FULL_ASSERT;
+        return dynamicTest(testName,
+                () -> runConstraintStreamsMutualCorrectnessTest(unsolvedDataFile));
     }
 
     @BeforeEach
@@ -134,7 +134,25 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
         assertScoreAndConstraintMatches(solverFactory, bestSolution, bestScoreLimit);
     }
 
-    private void runMutualCorrectnessTest(File unsolvedDataFile) {
+    private SolverFactory<Solution_> buildSolverFactory(ConstraintStreamImplType constraintStreamImplType,
+            Score_ bestScoreLimit, EnvironmentMode environmentMode, String moveThreadCount) {
+        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
+        solverConfig.withEnvironmentMode(environmentMode)
+                .withTerminationConfig(new TerminationConfig()
+                        .withBestScoreLimit(bestScoreLimit.toString()))
+                .withMoveThreadCount(moveThreadCount);
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig =
+                Objects.requireNonNullElseGet(solverConfig.getScoreDirectorFactoryConfig(),
+                        ScoreDirectorFactoryConfig::new);
+        if (scoreDirectorFactoryConfig.getConstraintProviderClass() == null) {
+            Assertions.fail("Test does not support constraint streams.");
+        }
+        scoreDirectorFactoryConfig.setConstraintStreamImplType(constraintStreamImplType);
+        solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
+        return SolverFactory.create(solverConfig);
+    }
+
+    private void runConstraintStreamsMutualCorrectnessTest(File unsolvedDataFile) {
         SolverFactory<Solution_> solverFactory = buildMutualCorrectnessSolverFactory();
         Solution_ problem = solutionFileIO.read(unsolvedDataFile);
         logger.info("Opened: {}", unsolvedDataFile);
@@ -159,24 +177,6 @@ public abstract class SolverPerformanceTest<Solution_, Score_ extends Score<Scor
         assertionScoreDirectorFactoryConfig.setConstraintProviderClass(scoreDirectorFactoryConfig.getConstraintProviderClass());
         assertionScoreDirectorFactoryConfig.setConstraintStreamImplType(ConstraintStreamImplType.BAVET);
         scoreDirectorFactoryConfig.setAssertionScoreDirectorFactory(assertionScoreDirectorFactoryConfig);
-        solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
-        return SolverFactory.create(solverConfig);
-    }
-
-    private SolverFactory<Solution_> buildSolverFactory(ConstraintStreamImplType constraintStreamImplType,
-            Score_ bestScoreLimit, EnvironmentMode environmentMode, String moveThreadCount) {
-        SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
-        solverConfig.withEnvironmentMode(environmentMode)
-                .withTerminationConfig(new TerminationConfig()
-                        .withBestScoreLimit(bestScoreLimit.toString()))
-                .withMoveThreadCount(moveThreadCount);
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig =
-                Objects.requireNonNullElseGet(solverConfig.getScoreDirectorFactoryConfig(),
-                        ScoreDirectorFactoryConfig::new);
-        if (scoreDirectorFactoryConfig.getConstraintProviderClass() == null) {
-            Assertions.fail("Test does not support constraint streams.");
-        }
-        scoreDirectorFactoryConfig.setConstraintStreamImplType(constraintStreamImplType);
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
         return SolverFactory.create(solverConfig);
     }

@@ -4,10 +4,10 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.examples.common.app.SolverPerformanceTest;
+import org.optaplanner.examples.common.app.SolverSmokeTest;
 import org.optaplanner.examples.examination.domain.Examination;
 
-class ExaminationPerformanceTest extends SolverPerformanceTest<Examination, HardSoftScore> {
+class ExaminationSmokeTest extends SolverSmokeTest<Examination, HardSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/examination/unsolved/exam_comp_set5.xml";
 

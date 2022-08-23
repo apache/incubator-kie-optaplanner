@@ -4,10 +4,10 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.examples.common.app.SolverPerformanceTest;
+import org.optaplanner.examples.common.app.SolverSmokeTest;
 import org.optaplanner.examples.flightcrewscheduling.domain.FlightCrewSolution;
 
-class FlightCrewSchedulingPerformanceTest extends SolverPerformanceTest<FlightCrewSolution, HardSoftLongScore> {
+class FlightCrewSchedulingSmokeTest extends SolverSmokeTest<FlightCrewSolution, HardSoftLongScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/flightcrewscheduling/unsolved/175flights-7days-Europe.xlsx";
 

@@ -5,9 +5,9 @@ import java.util.stream.Stream;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
-import org.optaplanner.examples.common.app.SolverPerformanceTest;
+import org.optaplanner.examples.common.app.SolverSmokeTest;
 
-class CheapTimePerformanceTest extends SolverPerformanceTest<CheapTimeSolution, HardMediumSoftLongScore> {
+class CheapTimeSmokeTest extends SolverSmokeTest<CheapTimeSolution, HardMediumSoftLongScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/cheaptime/unsolved/instance00.xml";
 

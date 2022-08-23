@@ -4,10 +4,10 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.examples.common.app.SolverPerformanceTest;
+import org.optaplanner.examples.common.app.SolverSmokeTest;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
-class ProjectJobSchedulingPerformanceTest extends SolverPerformanceTest<Schedule, HardMediumSoftScore> {
+class ProjectJobSchedulingSmokeTest extends SolverSmokeTest<Schedule, HardMediumSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/projectjobscheduling/unsolved/A-4.xml";
 

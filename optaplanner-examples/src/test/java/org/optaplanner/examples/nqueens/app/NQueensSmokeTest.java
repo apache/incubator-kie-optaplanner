@@ -4,10 +4,10 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.examples.common.app.SolverPerformanceTest;
+import org.optaplanner.examples.common.app.SolverSmokeTest;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 
-class NQueensPerformanceTest extends SolverPerformanceTest<NQueens, SimpleScore> {
+class NQueensSmokeTest extends SolverSmokeTest<NQueens, SimpleScore> {
 
     @Override
     protected NQueensApp createCommonApp() {

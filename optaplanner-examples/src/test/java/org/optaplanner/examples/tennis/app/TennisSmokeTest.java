@@ -4,10 +4,10 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.examples.common.app.SolverPerformanceTest;
+import org.optaplanner.examples.common.app.SolverSmokeTest;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
 
-class TennisPerformanceTest extends SolverPerformanceTest<TennisSolution, HardMediumSoftScore> {
+class TennisSmokeTest extends SolverSmokeTest<TennisSolution, HardMediumSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/tennis/unsolved/munich-7teams.xml";
 

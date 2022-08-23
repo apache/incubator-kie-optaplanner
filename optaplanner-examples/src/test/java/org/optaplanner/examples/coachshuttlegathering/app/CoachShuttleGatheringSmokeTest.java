@@ -5,10 +5,10 @@ import java.util.stream.Stream;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
-import org.optaplanner.examples.common.app.SolverPerformanceTest;
+import org.optaplanner.examples.common.app.SolverSmokeTest;
 
-class CoachShuttleGatheringPerformanceTest
-        extends SolverPerformanceTest<CoachShuttleGatheringSolution, HardSoftLongScore> {
+class CoachShuttleGatheringSmokeTest
+        extends SolverSmokeTest<CoachShuttleGatheringSolution, HardSoftLongScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/coachshuttlegathering/unsolved/demo01.xml";
 

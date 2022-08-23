@@ -5,9 +5,9 @@ import java.util.stream.Stream;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
-import org.optaplanner.examples.common.app.SolverPerformanceTest;
+import org.optaplanner.examples.common.app.SolverSmokeTest;
 
-class CloudBalancingPerformanceTest extends SolverPerformanceTest<CloudBalance, HardSoftScore> {
+class CloudBalancingSmokeTest extends SolverSmokeTest<CloudBalance, HardSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/cloudbalancing/unsolved/200computers-600processes.xml";
 

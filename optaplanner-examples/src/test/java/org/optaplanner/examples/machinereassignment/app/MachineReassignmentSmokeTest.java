@@ -4,10 +4,10 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.examples.common.app.SolverPerformanceTest;
+import org.optaplanner.examples.common.app.SolverSmokeTest;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 
-class MachineReassignmentPerformanceTest extends SolverPerformanceTest<MachineReassignment, HardSoftLongScore> {
+class MachineReassignmentSmokeTest extends SolverSmokeTest<MachineReassignment, HardSoftLongScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/machinereassignment/unsolved/model_a2_1.xml";
 

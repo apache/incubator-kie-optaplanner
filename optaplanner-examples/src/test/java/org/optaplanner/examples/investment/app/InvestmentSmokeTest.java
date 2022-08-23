@@ -4,10 +4,10 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.examples.common.app.SolverPerformanceTest;
+import org.optaplanner.examples.common.app.SolverSmokeTest;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 
-class InvestmentPerformanceTest extends SolverPerformanceTest<InvestmentSolution, HardSoftLongScore> {
+class InvestmentSmokeTest extends SolverSmokeTest<InvestmentSolution, HardSoftLongScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/investment/unsolved/irrinki_1.xml";
 

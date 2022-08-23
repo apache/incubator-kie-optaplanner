@@ -4,10 +4,10 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.examples.common.app.SolverPerformanceTest;
+import org.optaplanner.examples.common.app.SolverSmokeTest;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 
-class TaskAssigningPerformanceTest extends SolverPerformanceTest<TaskAssigningSolution, BendableScore> {
+class TaskAssigningSmokeTest extends SolverSmokeTest<TaskAssigningSolution, BendableScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/taskassigning/unsolved/50tasks-5employees.xml";
 

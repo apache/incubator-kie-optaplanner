@@ -5,10 +5,10 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
-import org.optaplanner.examples.common.app.SolverPerformanceTest;
+import org.optaplanner.examples.common.app.SolverSmokeTest;
 import org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution;
 
-class ConferenceSchedulingPerformanceTest extends SolverPerformanceTest<ConferenceSolution, HardMediumSoftScore> {
+class ConferenceSchedulingSmokeTest extends SolverSmokeTest<ConferenceSolution, HardMediumSoftScore> {
 
     private static final String UNSOLVED_DATA_FILE = "data/conferencescheduling/unsolved/72talks-12timeslots-10rooms.xlsx";
 
