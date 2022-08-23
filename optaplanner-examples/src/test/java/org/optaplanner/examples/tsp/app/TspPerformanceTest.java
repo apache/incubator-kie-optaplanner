@@ -21,7 +21,7 @@ class TspPerformanceTest extends SolverPerformanceTest<TspSolution, SimpleLongSc
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
                         SimpleLongScore.of(-216469618),
-                        SimpleLongScore.of(-217458433)),
+                        SimpleLongScore.of(-216469618)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
                         SimpleLongScore.of(-216469618),
                         SimpleLongScore.of(-216469618)));
