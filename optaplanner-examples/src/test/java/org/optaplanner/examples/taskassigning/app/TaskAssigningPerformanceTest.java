@@ -20,10 +20,10 @@ class TaskAssigningPerformanceTest extends SolverPerformanceTest<TaskAssigningSo
     protected Stream<TestData<BendableScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        BendableScore.of(new int[] { 0 }, new int[] { -3925, -6293940, -7784, -20600 }),
-                        BendableScore.of(new int[] { 0 }, new int[] { -3925, -6293940, -7883, -20476 })),
+                        BendableScore.of(new int[] { 0 }, new int[] { -3925, -6293940, -7872, -20979 }),
+                        BendableScore.of(new int[] { 0 }, new int[] { -3925, -6293940, -8071, -20519 })),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
                         BendableScore.of(new int[] { 0 }, new int[] { -3925, -6293940, -7772, -20463 }),
-                        BendableScore.of(new int[] { 0 }, new int[] { -3925, -6293940, -7851, -21621 })));
+                        BendableScore.of(new int[] { 0 }, new int[] { -3925, -6293940, -7785, -20943 })));
     }
 }
