@@ -21,10 +21,10 @@ public final class DeploymentDependentResource extends CRUKubernetesDependentRes
 
     private static final String ENV_SOLVER_MESSAGE_IN = "SOLVER_MESSAGE_INPUT";
     private static final String ENV_SOLVER_MESSAGE_OUT = "SOLVER_MESSAGE_OUTPUT";
-    private static final String ENV_AMQ_HOST = "AMQ_HOST";
-    private static final String ENV_AMQ_PORT = "AMQ_PORT";
-    private static final String ENV_AMQ_USERNAME = "AMQ_USERNAME";
-    private static final String ENV_AMQ_PASSWORD = "AMQ_PASSWORD";
+    private static final String ENV_AMQ_HOST = "SOLVER_MESSAGE_AMQ_HOST";
+    private static final String ENV_AMQ_PORT = "SOLVER_MESSAGE_AMQ_PORT";
+    private static final String ENV_AMQ_USERNAME = "SOLVER_MESSAGE_AMQ_USERNAME";
+    private static final String ENV_AMQ_PASSWORD = "SOLVER_MESSAGE_AMQ_PASSWORD";
 
     public DeploymentDependentResource(KubernetesClient k8s) {
         super(Deployment.class);
