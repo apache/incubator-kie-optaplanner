@@ -20,10 +20,10 @@ class ExaminationPerformanceTest extends SolverPerformanceTest<Examination, Hard
     protected Stream<TestData<HardSoftScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardSoftScore.of(0, -4357),
-                        HardSoftScore.of(0, -4361)),
+                        HardSoftScore.ofSoft(-4357),
+                        HardSoftScore.ofSoft(-4361)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardSoftScore.of(0, -4107),
-                        HardSoftScore.of(0, -4116)));
+                        HardSoftScore.ofSoft(-4107),
+                        HardSoftScore.ofSoft(-4116)));
     }
 }

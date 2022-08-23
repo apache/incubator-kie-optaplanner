@@ -21,10 +21,10 @@ class ConferenceSchedulingPerformanceTest extends SolverPerformanceTest<Conferen
     protected Stream<TestData<HardMediumSoftScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardMediumSoftScore.of(0, 0, -959595),
-                        HardMediumSoftScore.of(0, 0, -1040415)),
+                        HardMediumSoftScore.ofSoft(-959595),
+                        HardMediumSoftScore.ofSoft(-1040415)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardMediumSoftScore.of(0, 0, -941580),
-                        HardMediumSoftScore.of(0, 0, -959595)));
+                        HardMediumSoftScore.ofSoft(-941580),
+                        HardMediumSoftScore.ofSoft(-959595)));
     }
 }
