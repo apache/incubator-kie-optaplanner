@@ -20,10 +20,10 @@ class TravelingTournamentPerformanceTest extends SolverPerformanceTest<Traveling
     protected Stream<TestData<HardSoftScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardSoftScore.ofSoft(-73073),
-                        HardSoftScore.ofSoft(-73073)),
+                        HardSoftScore.ofSoft(-72772),
+                        HardSoftScore.ofSoft(-72772)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardSoftScore.ofSoft(-71270),
-                        HardSoftScore.ofSoft(-72647)));
+                        HardSoftScore.ofSoft(-72772),
+                        HardSoftScore.ofSoft(-72772)));
     }
 }
