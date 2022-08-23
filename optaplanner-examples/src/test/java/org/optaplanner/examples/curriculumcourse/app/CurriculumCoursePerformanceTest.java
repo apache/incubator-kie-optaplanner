@@ -20,10 +20,10 @@ class CurriculumCoursePerformanceTest extends SolverPerformanceTest<CourseSchedu
     protected Stream<TestData<HardSoftScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardSoftScore.ofSoft(-66),
-                        HardSoftScore.ofSoft(-82)),
+                        HardSoftScore.ofSoft(-43),
+                        HardSoftScore.ofSoft(-58)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardSoftScore.ofSoft(-38),
+                        HardSoftScore.ofSoft(-42),
                         HardSoftScore.ofSoft(-43)));
     }
 }
