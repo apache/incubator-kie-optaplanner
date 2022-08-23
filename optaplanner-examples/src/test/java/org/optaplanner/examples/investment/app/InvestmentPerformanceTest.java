@@ -20,8 +20,8 @@ class InvestmentPerformanceTest extends SolverPerformanceTest<InvestmentSolution
     protected Stream<TestData<HardSoftLongScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardSoftLongScore.ofSoft(74765),
-                        HardSoftLongScore.ofSoft(74660)),
+                        HardSoftLongScore.ofSoft(74760),
+                        HardSoftLongScore.ofSoft(74760)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
                         HardSoftLongScore.ofSoft(74805),
                         HardSoftLongScore.ofSoft(74790)));
