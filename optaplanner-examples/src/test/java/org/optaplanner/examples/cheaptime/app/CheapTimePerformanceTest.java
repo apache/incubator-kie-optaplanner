@@ -20,10 +20,10 @@ class CheapTimePerformanceTest extends SolverPerformanceTest<CheapTimeSolution, 
     protected Stream<TestData<HardMediumSoftLongScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardMediumSoftLongScore.of(0, -1043600344878178L, -24077),
-                        HardMediumSoftLongScore.of(0, -1047922570736971L, -23863)),
+                        HardMediumSoftLongScore.of(0, -1047516879736562L, -23632),
+                        HardMediumSoftLongScore.of(0, -1048339724599097L, -23580)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardMediumSoftLongScore.of(0, -795361927055260L, -22410),
-                        HardMediumSoftLongScore.of(0, -847093214964348L, -24397)));
+                        HardMediumSoftLongScore.of(0, -985796392472644L, -23719),
+                        HardMediumSoftLongScore.of(0, -1046919284188901L, -23940)));
     }
 }
