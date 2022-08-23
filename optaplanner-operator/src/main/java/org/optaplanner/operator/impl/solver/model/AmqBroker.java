@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.fabric8.kubernetes.api.model.SecretKeySelector;
 
+// TODO: add a builder.
 public final class AmqBroker {
 
     private static final int DEFAULT_PORT = 5672;
@@ -17,7 +18,7 @@ public final class AmqBroker {
 
     private int port = DEFAULT_PORT;
 
-    private String managementHost = host;
+    private String managementHost;
 
     private int managementPort = DEFAULT_MANAGEMENT_PORT;
 
