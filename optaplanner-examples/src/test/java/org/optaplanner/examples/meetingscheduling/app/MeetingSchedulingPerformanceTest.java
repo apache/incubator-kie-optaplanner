@@ -21,9 +21,9 @@ class MeetingSchedulingPerformanceTest extends SolverPerformanceTest<MeetingSche
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
                         HardMediumSoftScore.of(-26, -480, -9058),
-                        HardMediumSoftScore.of(-29, -344, -9227)),
+                        HardMediumSoftScore.of(-28, -488, -9078)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardMediumSoftScore.of(0, 0, -5118),
-                        HardMediumSoftScore.of(0, 0, -5126)));
+                        HardMediumSoftScore.of(-26, -480, -9058),
+                        HardMediumSoftScore.of(-28, -488, -9078)));
     }
 }
