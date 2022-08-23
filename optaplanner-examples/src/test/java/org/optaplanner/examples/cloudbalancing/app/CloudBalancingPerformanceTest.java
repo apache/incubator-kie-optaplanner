@@ -20,10 +20,10 @@ class CloudBalancingPerformanceTest extends SolverPerformanceTest<CloudBalance, 
     protected Stream<TestData<HardSoftScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardSoftScore.of(0, -220930),
-                        HardSoftScore.of(0, -229390)),
+                        HardSoftScore.of(0, -225940),
+                        HardSoftScore.of(0, -237060)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardSoftScore.of(0, -210570),
-                        HardSoftScore.of(0, -230040)));
+                        HardSoftScore.of(0, -211050),
+                        HardSoftScore.of(0, -232720)));
     }
 }
