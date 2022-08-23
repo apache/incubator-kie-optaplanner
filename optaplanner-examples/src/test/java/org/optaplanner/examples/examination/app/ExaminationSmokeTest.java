@@ -20,10 +20,10 @@ class ExaminationSmokeTest extends SolverSmokeTest<Examination, HardSoftScore> {
     protected Stream<TestData<HardSoftScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardSoftScore.ofSoft(-4357),
-                        HardSoftScore.ofSoft(-4361)),
+                        HardSoftScore.ofSoft(-6942),
+                        HardSoftScore.ofUninitialized(-34, 0, -8581)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardSoftScore.ofSoft(-4107),
-                        HardSoftScore.ofSoft(-4116)));
+                        HardSoftScore.ofSoft(-4195),
+                        HardSoftScore.ofSoft(-4312)));
     }
 }

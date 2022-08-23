@@ -20,10 +20,10 @@ class CheapTimeSmokeTest extends SolverSmokeTest<CheapTimeSolution, HardMediumSo
     protected Stream<TestData<HardMediumSoftLongScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardMediumSoftLongScore.of(0, -1047516879736562L, -23632),
-                        HardMediumSoftLongScore.of(0, -1048339724599097L, -23580)),
+                        HardMediumSoftLongScore.ofUninitialized(-142, -37767, -978609121833854L, -14970),
+                        HardMediumSoftLongScore.ofUninitialized(-234, -25978, -805181550079606L, -9016)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardMediumSoftLongScore.of(0, -985796392472644L, -23719),
-                        HardMediumSoftLongScore.of(0, -1046919284188901L, -23940)));
+                        HardMediumSoftLongScore.of(0, -1005095520893824L, -23053),
+                        HardMediumSoftLongScore.ofUninitialized(-114, -3878, -1002000826403606L, -16980)));
     }
 }

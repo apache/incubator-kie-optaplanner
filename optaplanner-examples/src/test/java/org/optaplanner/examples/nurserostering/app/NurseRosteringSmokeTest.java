@@ -20,10 +20,10 @@ class NurseRosteringSmokeTest extends SolverSmokeTest<NurseRoster, HardSoftScore
     protected Stream<TestData<HardSoftScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardSoftScore.ofSoft(-451),
-                        HardSoftScore.ofSoft(-456)),
+                        HardSoftScore.ofSoft(-598),
+                        HardSoftScore.ofSoft(-609)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardSoftScore.ofSoft(-378),
-                        HardSoftScore.ofSoft(-382)));
+                        HardSoftScore.ofSoft(-508),
+                        HardSoftScore.ofSoft(-534)));
     }
 }

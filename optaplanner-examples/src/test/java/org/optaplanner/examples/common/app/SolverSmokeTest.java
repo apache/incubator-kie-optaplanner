@@ -37,8 +37,8 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 /**
  * Runs an example {@link Solver}.
  * <p>
- * A test should run in less than 10 seconds on a 3 year old desktop computer, choose the bestScoreLimit accordingly.
- * Always use a {@link Timeout} on {@link Test}, preferably 10 minutes because some of the Jenkins machines are old.
+ * A test should run in ~5 seconds, choose the bestScoreLimit accordingly.
+ * Always use a {@link Timeout} on {@link Test}, preferably 10 minutes as some CI nodes are slow.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
@@ -126,7 +126,7 @@ public abstract class SolverSmokeTest<Solution_, Score_ extends Score<Score_>> e
     private void runSpeedTest(ConstraintStreamImplType constraintStreamImplType, File unsolvedDataFile, Score_ bestScoreLimit,
             EnvironmentMode environmentMode, String moveThreadCount) {
         SolverFactory<Solution_> solverFactory =
-                buildSolverFactory(constraintStreamImplType, bestScoreLimit, environmentMode, moveThreadCount);
+                buildSpeedSolverFactory(constraintStreamImplType, bestScoreLimit, environmentMode, moveThreadCount);
         Solution_ problem = solutionFileIO.read(unsolvedDataFile);
         logger.info("Opened: {}", unsolvedDataFile);
         Solver<Solution_> solver = solverFactory.buildSolver();
@@ -134,7 +134,7 @@ public abstract class SolverSmokeTest<Solution_, Score_ extends Score<Score_>> e
         assertScoreAndConstraintMatches(solverFactory, bestSolution, bestScoreLimit);
     }
 
-    private SolverFactory<Solution_> buildSolverFactory(ConstraintStreamImplType constraintStreamImplType,
+    private SolverFactory<Solution_> buildSpeedSolverFactory(ConstraintStreamImplType constraintStreamImplType,
             Score_ bestScoreLimit, EnvironmentMode environmentMode, String moveThreadCount) {
         SolverConfig solverConfig = SolverConfig.createFromXmlResource(solverConfigResource);
         solverConfig.withEnvironmentMode(environmentMode)

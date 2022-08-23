@@ -20,10 +20,10 @@ class MachineReassignmentSmokeTest extends SolverSmokeTest<MachineReassignment, 
     protected Stream<TestData<HardSoftLongScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardSoftLongScore.ofSoft(-41703511),
-                        HardSoftLongScore.ofSoft(-56700148)),
+                        HardSoftLongScore.ofSoft(-101312993),
+                        HardSoftLongScore.ofSoft(-151402988)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardSoftLongScore.ofSoft(-7976028),
-                        HardSoftLongScore.ofSoft(-12375617)));
+                        HardSoftLongScore.ofSoft(-39203859),
+                        HardSoftLongScore.ofSoft(-61212262)));
     }
 }

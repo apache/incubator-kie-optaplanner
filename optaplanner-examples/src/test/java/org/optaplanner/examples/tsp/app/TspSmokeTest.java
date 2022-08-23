@@ -20,10 +20,10 @@ class TspSmokeTest extends SolverSmokeTest<TspSolution, SimpleLongScore> {
     protected Stream<TestData<SimpleLongScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        SimpleLongScore.of(-216469618),
-                        SimpleLongScore.of(-216469618)),
+                        SimpleLongScore.of(-217364246),
+                        SimpleLongScore.of(-217364246)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
                         SimpleLongScore.of(-216469618),
-                        SimpleLongScore.of(-216469618)));
+                        SimpleLongScore.of(-217364246)));
     }
 }

@@ -20,10 +20,10 @@ class CloudBalancingSmokeTest extends SolverSmokeTest<CloudBalance, HardSoftScor
     protected Stream<TestData<HardSoftScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardSoftScore.ofSoft(-225940),
-                        HardSoftScore.ofSoft(-237060)),
+                        HardSoftScore.ofSoft(-227120),
+                        HardSoftScore.ofSoft(-242610)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardSoftScore.ofSoft(-211050),
-                        HardSoftScore.ofSoft(-232720)));
+                        HardSoftScore.ofSoft(-212900),
+                        HardSoftScore.ofSoft(-237340)));
     }
 }

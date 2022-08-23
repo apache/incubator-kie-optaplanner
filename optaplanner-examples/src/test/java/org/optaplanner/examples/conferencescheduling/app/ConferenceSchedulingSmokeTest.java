@@ -21,10 +21,10 @@ class ConferenceSchedulingSmokeTest extends SolverSmokeTest<ConferenceSolution, 
     protected Stream<TestData<HardMediumSoftScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardMediumSoftScore.ofSoft(-959595),
-                        HardMediumSoftScore.ofSoft(-1040415)),
+                        HardMediumSoftScore.ofSoft(-1100400),
+                        HardMediumSoftScore.ofSoft(-1131135)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardMediumSoftScore.ofSoft(-941580),
-                        HardMediumSoftScore.ofSoft(-959595)));
+                        HardMediumSoftScore.ofSoft(-1025250),
+                        HardMediumSoftScore.ofSoft(-1100400)));
     }
 }

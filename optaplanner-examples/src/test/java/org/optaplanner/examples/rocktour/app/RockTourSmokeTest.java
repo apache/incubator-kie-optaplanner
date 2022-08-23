@@ -20,10 +20,10 @@ class RockTourSmokeTest extends SolverSmokeTest<RockTourSolution, HardMediumSoft
     protected Stream<TestData<HardMediumSoftLongScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardMediumSoftLongScore.of(0, 72725471, -5212395),
-                        HardMediumSoftLongScore.of(0, 72725194, -6558488)),
+                        HardMediumSoftLongScore.of(0, 72725144, -5042452),
+                        HardMediumSoftLongScore.of(0, 72725144, -5042452)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardMediumSoftLongScore.of(0, 72727353, -4639781),
-                        HardMediumSoftLongScore.of(0, 72725627, -5750847)));
+                        HardMediumSoftLongScore.of(0, 72726773, -4954151),
+                        HardMediumSoftLongScore.of(0, 72725194, -6558488)));
     }
 }

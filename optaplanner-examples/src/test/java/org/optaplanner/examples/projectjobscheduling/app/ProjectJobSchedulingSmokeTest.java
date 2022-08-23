@@ -20,10 +20,10 @@ class ProjectJobSchedulingSmokeTest extends SolverSmokeTest<Schedule, HardMedium
     protected Stream<TestData<HardMediumSoftScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardMediumSoftScore.of(0, -258, -103),
-                        HardMediumSoftScore.of(0, -258, -114)),
+                        HardMediumSoftScore.of(0, -520, -150),
+                        HardMediumSoftScore.of(0, -604, -211)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardMediumSoftScore.of(0, -114, -61),
-                        HardMediumSoftScore.of(0, -141, -66)));
+                        HardMediumSoftScore.of(0, -181, -78),
+                        HardMediumSoftScore.of(0, -211, -99)));
     }
 }

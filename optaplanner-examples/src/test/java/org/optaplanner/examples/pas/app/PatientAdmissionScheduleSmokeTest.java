@@ -21,10 +21,10 @@ class PatientAdmissionScheduleSmokeTest
     protected Stream<TestData<HardMediumSoftScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardMediumSoftScore.ofSoft(-7346),
-                        HardMediumSoftScore.ofSoft(-7354)),
+                        HardMediumSoftScore.ofSoft(-7378),
+                        HardMediumSoftScore.ofSoft(-7458)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardMediumSoftScore.ofSoft(-7312),
-                        HardMediumSoftScore.ofSoft(-7354)));
+                        HardMediumSoftScore.ofSoft(-7362),
+                        HardMediumSoftScore.ofSoft(-7378)));
     }
 }
