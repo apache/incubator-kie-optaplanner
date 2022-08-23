@@ -21,10 +21,10 @@ class PatientAdmissionSchedulePerformanceTest
     protected Stream<TestData<HardMediumSoftScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardMediumSoftScore.of(0, 0, -7364),
-                        HardMediumSoftScore.of(0, 0, -7442)),
+                        HardMediumSoftScore.of(0, 0, -7346),
+                        HardMediumSoftScore.of(0, 0, -7354)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardMediumSoftScore.of(0, 0, -7304),
-                        HardMediumSoftScore.of(0, 0, -7322)));
+                        HardMediumSoftScore.of(0, 0, -7312),
+                        HardMediumSoftScore.of(0, 0, -7354)));
     }
 }
