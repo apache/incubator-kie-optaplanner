@@ -20,10 +20,10 @@ class MachineReassignmentPerformanceTest extends SolverPerformanceTest<MachineRe
     protected Stream<TestData<HardSoftLongScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardSoftLongScore.ofSoft(-46270371),
-                        HardSoftLongScore.ofSoft(-57291767)),
+                        HardSoftLongScore.ofSoft(-41703511),
+                        HardSoftLongScore.ofSoft(-56700148)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
-                        HardSoftLongScore.ofSoft(-7952202),
-                        HardSoftLongScore.ofSoft(-13392437)));
+                        HardSoftLongScore.ofSoft(-7976028),
+                        HardSoftLongScore.ofSoft(-12375617)));
     }
 }
