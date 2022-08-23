@@ -55,6 +55,13 @@ public abstract class SolverSmokeTest<Solution_, Score_ extends Score<Score_>> e
                 .orElse(Stream.of(SolverConfig.MOVE_THREAD_COUNT_NONE));
     }
 
+    @BeforeEach
+    public void setUp() {
+        CommonApp<Solution_> commonApp = createCommonApp();
+        solutionFileIO = commonApp.createSolutionFileIO();
+        solverConfigResource = commonApp.getSolverConfigResource();
+    }
+
     @TestFactory
     @Execution(ExecutionMode.CONCURRENT)
     @Timeout(600)
@@ -97,26 +104,21 @@ public abstract class SolverSmokeTest<Solution_, Score_ extends Score<Score_>> e
     @Execution(ExecutionMode.CONCURRENT)
     @Timeout(600)
     Stream<DynamicTest> runConstraintStreamsMutualCorrectnessTest() {
+        SolverFactory<Solution_> solverFactory = buildMutualCorrectnessSolverFactory();
         return testData()
                 .map(testData -> new File(testData.unsolvedDataFile))
                 .distinct()
-                .map(this::createConstraintStreamsMutualCorrectnessTest);
+                .map(inputSolutionFile -> createConstraintStreamsMutualCorrectnessTest(solverFactory, inputSolutionFile));
     }
 
-    private DynamicTest createConstraintStreamsMutualCorrectnessTest(File unsolvedDataFile) {
+    private DynamicTest createConstraintStreamsMutualCorrectnessTest(SolverFactory<Solution_> solverFactory,
+            File unsolvedDataFile) {
         String testName = "DROOLS v. BAVET, " +
                 unsolvedDataFile.toString().replaceFirst(".*/", "")
                 + ", "
                 + FULL_ASSERT;
         return dynamicTest(testName,
-                () -> runConstraintStreamsMutualCorrectnessTest(unsolvedDataFile));
-    }
-
-    @BeforeEach
-    public void setUp() {
-        CommonApp<Solution_> commonApp = createCommonApp();
-        solutionFileIO = commonApp.createSolutionFileIO();
-        solverConfigResource = commonApp.getSolverConfigResource();
+                () -> runConstraintStreamsMutualCorrectnessTest(solverFactory, unsolvedDataFile));
     }
 
     protected abstract CommonApp<Solution_> createCommonApp();
@@ -152,8 +154,7 @@ public abstract class SolverSmokeTest<Solution_, Score_ extends Score<Score_>> e
         return SolverFactory.create(solverConfig);
     }
 
-    private void runConstraintStreamsMutualCorrectnessTest(File unsolvedDataFile) {
-        SolverFactory<Solution_> solverFactory = buildMutualCorrectnessSolverFactory();
+    private void runConstraintStreamsMutualCorrectnessTest(SolverFactory<Solution_> solverFactory, File unsolvedDataFile) {
         Solution_ problem = solutionFileIO.read(unsolvedDataFile);
         logger.info("Opened: {}", unsolvedDataFile);
         Solver<Solution_> solver = solverFactory.buildSolver();
