@@ -20,13 +20,17 @@ class VehicleRoutingPerformanceTest extends SolverPerformanceTest<VehicleRouting
     @Override
     protected Stream<TestData<HardSoftLongScore>> testData() {
         return Stream.of(
-                TestData.of(ConstraintStreamImplType.DROOLS, CVRP_32_CUSTOMERS_XML, HardSoftLongScore.of(0, -744242),
-                        HardSoftLongScore.of(0, -745420)),
-                TestData.of(ConstraintStreamImplType.DROOLS, CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1798722),
-                        HardSoftLongScore.of(0, -1812202)),
-                TestData.of(ConstraintStreamImplType.BAVET, CVRP_32_CUSTOMERS_XML, HardSoftLongScore.of(0, -744242),
-                        HardSoftLongScore.of(0, -744242)),
-                TestData.of(ConstraintStreamImplType.BAVET, CVRPTW_100_CUSTOMERS_A_XML, HardSoftLongScore.of(0, -1738656),
-                        HardSoftLongScore.of(0, -1782301)));
+                TestData.of(ConstraintStreamImplType.DROOLS, CVRP_32_CUSTOMERS_XML,
+                        HardSoftLongScore.ofSoft(-744242),
+                        HardSoftLongScore.ofSoft(-744242)),
+                TestData.of(ConstraintStreamImplType.DROOLS, CVRPTW_100_CUSTOMERS_A_XML,
+                        HardSoftLongScore.ofSoft(-1817383),
+                        HardSoftLongScore.ofSoft(-1828619)),
+                TestData.of(ConstraintStreamImplType.BAVET, CVRP_32_CUSTOMERS_XML,
+                        HardSoftLongScore.ofSoft(-744242),
+                        HardSoftLongScore.ofSoft(-744242)),
+                TestData.of(ConstraintStreamImplType.BAVET, CVRPTW_100_CUSTOMERS_A_XML,
+                        HardSoftLongScore.ofSoft(-1738656),
+                        HardSoftLongScore.ofSoft(-1782301)));
     }
 }
