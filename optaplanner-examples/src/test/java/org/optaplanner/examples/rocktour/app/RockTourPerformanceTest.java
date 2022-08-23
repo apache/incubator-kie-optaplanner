@@ -20,10 +20,10 @@ class RockTourPerformanceTest extends SolverPerformanceTest<RockTourSolution, Ha
     protected Stream<TestData<HardMediumSoftLongScore>> testData() {
         return Stream.of(
                 TestData.of(ConstraintStreamImplType.DROOLS, UNSOLVED_DATA_FILE,
-                        HardMediumSoftLongScore.of(0, 72725670, -6208480),
-                        HardMediumSoftLongScore.of(0, 72725039, -5186309)),
+                        HardMediumSoftLongScore.of(0, 72725471, -5212395),
+                        HardMediumSoftLongScore.of(0, 72725194, -6558488)),
                 TestData.of(ConstraintStreamImplType.BAVET, UNSOLVED_DATA_FILE,
                         HardMediumSoftLongScore.of(0, 72727353, -4639781),
-                        HardMediumSoftLongScore.of(0, 72725634, -5507058)));
+                        HardMediumSoftLongScore.of(0, 72725627, -5750847)));
     }
 }
