@@ -27,7 +27,7 @@ import io.javaoperatorsdk.operator.api.reconciler.UpdateControl;
 import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDependentResourceConfig;
 import io.javaoperatorsdk.operator.processing.event.source.EventSource;
 
-@ControllerConfiguration
+@ControllerConfiguration(name = "optaplanner-solver")
 public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlannerSolver>, ErrorStatusHandler<OptaPlannerSolver>,
         EventSourceInitializer<OptaPlannerSolver> {
 

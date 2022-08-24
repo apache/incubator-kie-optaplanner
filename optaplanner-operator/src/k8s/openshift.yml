@@ -114,7 +114,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: optaplannersolverreconciler-cluster-role
+  name: optaplanner-solver-cluster-role
 rules:
   - apiGroups:
       - ""
@@ -178,11 +178,11 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: optaplannersolverreconciler-cluster-role-binding
+  name: optaplanner-solver-cluster-role-binding
 roleRef:
   kind: ClusterRole
   apiGroup: rbac.authorization.k8s.io
-  name: optaplannersolverreconciler-cluster-role
+  name: optaplanner-solver-cluster-role
 subjects:
   - kind: ServiceAccount
     name: optaplanner-operator
@@ -191,7 +191,7 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: optaplannersolverreconciler-crd-validating-role-binding
+  name: optaplanner-solver-crd-validating-role-binding
 roleRef:
   kind: ClusterRole
   apiGroup: rbac.authorization.k8s.io
