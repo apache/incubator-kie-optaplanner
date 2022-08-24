@@ -45,8 +45,8 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescri
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.InverseRelationShadowVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.next.NextElementShadowVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.previous.PreviousElementShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.nextprev.NextElementShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.nextprev.PreviousElementShadowVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.CompositeSelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;

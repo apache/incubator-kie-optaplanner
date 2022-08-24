@@ -1,10 +1,9 @@
-package org.optaplanner.core.impl.domain.variable.next;
+package org.optaplanner.core.impl.domain.variable.nextprev;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.optaplanner.core.api.domain.variable.NextElementShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -13,24 +12,20 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescript
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class NextElementShadowVariableDescriptor<Solution_> extends ShadowVariableDescriptor<Solution_> {
+abstract class AbstractNextPrevElementShadowVariableDescriptor<Solution_> extends ShadowVariableDescriptor<Solution_> {
 
     protected ListVariableDescriptor<Solution_> sourceVariableDescriptor;
 
-    public NextElementShadowVariableDescriptor(
+    AbstractNextPrevElementShadowVariableDescriptor(
             EntityDescriptor<Solution_> entityDescriptor,
             MemberAccessor variableMemberAccessor) {
         super(entityDescriptor, variableMemberAccessor);
-        if (!variableMemberAccessor.getType().equals(entityDescriptor.getEntityClass())) {
-            throw new IllegalStateException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has an @" + NextElementShadowVariableDescriptor.class.getSimpleName()
-                    + " annotated member (" + variableMemberAccessor
-                    + ") of type (" + variableMemberAccessor.getType()
-                    + ") which is not the entityClass type.");
-        }
     }
+
+    abstract String getSourceVariableName();
+
+    abstract String getAnnotationName();
 
     @Override
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
@@ -43,15 +38,14 @@ public class NextElementShadowVariableDescriptor<Solution_> extends ShadowVariab
     }
 
     private void linkShadowSources(DescriptorPolicy descriptorPolicy) {
-        String sourceVariableName =
-                variableMemberAccessor.getAnnotation(NextElementShadowVariable.class).sourceVariableName();
+        String sourceVariableName = getSourceVariableName();
         List<EntityDescriptor<Solution_>> entitiesWithSourceVariable =
                 entityDescriptor.getSolutionDescriptor().getEntityDescriptors().stream()
                         .filter(entityDescriptor -> entityDescriptor.hasVariableDescriptor(sourceVariableName))
                         .collect(Collectors.toList());
         if (entitiesWithSourceVariable.isEmpty()) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has an @" + NextElementShadowVariable.class.getSimpleName()
+                    + ") has a @" + getAnnotationName()
                     + " annotated property (" + variableMemberAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName
                     + ") which is not a valid planning variable on any of the entity classes ("
@@ -59,13 +53,23 @@ public class NextElementShadowVariableDescriptor<Solution_> extends ShadowVariab
         }
         if (entitiesWithSourceVariable.size() > 1) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has an @" + NextElementShadowVariable.class.getSimpleName()
+                    + ") has a @" + getAnnotationName()
                     + " annotated property (" + variableMemberAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName
                     + ") which is not a unique planning variable."
                     + " A planning variable with the name (" + sourceVariableName + ") exists on multiple entity classes ("
                     + entitiesWithSourceVariable + ").");
         }
+
+        // FIXME source variable's type param must be equal to this member type
+        if (!variableMemberAccessor.getType().equals(entityDescriptor.getEntityClass())) {
+            throw new IllegalStateException("The entityClass (" + entityDescriptor.getEntityClass()
+                    + ") has a @" + getAnnotationName()
+                    + " annotated member (" + variableMemberAccessor
+                    + ") of type (" + variableMemberAccessor.getType()
+                    + ") which is not the entityClass type.");
+        }
+
         VariableDescriptor<Solution_> variableDescriptor =
                 entitiesWithSourceVariable.get(0).getVariableDescriptor(sourceVariableName);
         if (variableDescriptor == null) {
@@ -76,7 +80,7 @@ public class NextElementShadowVariableDescriptor<Solution_> extends ShadowVariab
         }
         if (!(variableDescriptor instanceof ListVariableDescriptor)) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has an @" + NextElementShadowVariable.class.getSimpleName()
+                    + ") has a @" + getAnnotationName()
                     + " annotated property (" + variableMemberAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName
                     + ") which is not a @" + PlanningListVariable.class.getSimpleName() + ".");
@@ -91,17 +95,8 @@ public class NextElementShadowVariableDescriptor<Solution_> extends ShadowVariab
     }
 
     @Override
-    public Class<NextElementVariableListener> getVariableListenerClass() {
-        return NextElementVariableListener.class;
-    }
-
-    @Override
     public Demand<?> getProvidedDemand() {
-        throw new UnsupportedOperationException("TODO");
-    }
-
-    @Override
-    public NextElementVariableListener<Solution_> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
-        return new NextElementVariableListener<>(this, sourceVariableDescriptor);
+        throw new UnsupportedOperationException(
+                "Not implemented because no subsystems demand previous or next shadow variables.");
     }
 }

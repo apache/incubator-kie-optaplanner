@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.domain.variable.previous;
+package org.optaplanner.core.impl.domain.variable.nextprev;
 
 import java.util.List;
 
