@@ -73,10 +73,10 @@ public final class DeploymentDependentResource extends CRUKubernetesDependentRes
                 ConfigMapDependentResource.SOLVER_MESSAGE_OUTPUT_KEY);
 
         EnvVar envVarAmqHost = buildEnvVarFromConfigMap(ENV_AMQ_HOST, configMapName,
-                ConfigMapDependentResource.SOLVER_AMQ_HOST_KEY);
+                ConfigMapDependentResource.SOLVER_MESSAGE_AMQ_HOST_KEY);
 
         EnvVar envVarAmqPort = buildEnvVarFromConfigMap(ENV_AMQ_PORT, configMapName,
-                ConfigMapDependentResource.SOLVER_AMQ_PORT_KEY);
+                ConfigMapDependentResource.SOLVER_MESSAGE_AMQ_PORT_KEY);
 
         EnvVar envVarAmqUsername = buildEnvVarFromSecretKeySelector(ENV_AMQ_USERNAME,
                 solver.getSpec().getAmqBroker().getUsernameSecretRef());

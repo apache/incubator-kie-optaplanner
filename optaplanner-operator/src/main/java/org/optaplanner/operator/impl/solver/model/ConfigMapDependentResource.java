@@ -15,8 +15,8 @@ public final class ConfigMapDependentResource extends CRUKubernetesDependentReso
 
     public static final String SOLVER_MESSAGE_INPUT_KEY = "solver.message.input";
     public static final String SOLVER_MESSAGE_OUTPUT_KEY = "solver.message.output";
-    public static final String SOLVER_AMQ_HOST_KEY = "solver.amq.host";
-    public static final String SOLVER_AMQ_PORT_KEY = "solver.amq.port";
+    public static final String SOLVER_MESSAGE_AMQ_HOST_KEY = "solver.amq.host";
+    public static final String SOLVER_MESSAGE_AMQ_PORT_KEY = "solver.amq.port";
 
     public ConfigMapDependentResource(KubernetesClient kubernetesClient) {
         super(ConfigMap.class);
@@ -30,8 +30,8 @@ public final class ConfigMapDependentResource extends CRUKubernetesDependentReso
             data.put(SOLVER_MESSAGE_INPUT_KEY, solver.getStatus().getInputMessageAddress());
             data.put(SOLVER_MESSAGE_OUTPUT_KEY, solver.getStatus().getOutputMessageAddress());
         }
-        data.put(SOLVER_AMQ_HOST_KEY, solver.getSpec().getAmqBroker().getHost());
-        data.put(SOLVER_AMQ_PORT_KEY, String.valueOf(solver.getSpec().getAmqBroker().getPort()));
+        data.put(SOLVER_MESSAGE_AMQ_HOST_KEY, solver.getSpec().getAmqBroker().getHost());
+        data.put(SOLVER_MESSAGE_AMQ_PORT_KEY, String.valueOf(solver.getSpec().getAmqBroker().getPort()));
 
         return new ConfigMapBuilder()
                 .withNewMetadata()
