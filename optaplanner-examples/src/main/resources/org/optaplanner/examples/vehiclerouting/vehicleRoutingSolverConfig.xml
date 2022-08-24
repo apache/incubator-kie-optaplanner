@@ -30,13 +30,12 @@
     <unionMoveSelector>
       <changeMoveSelector/>
       <swapMoveSelector/>
-      <!-- TODO once VehicleUpdatingListener implements subList notifications -->
-      <!--<subListChangeMoveSelector>-->
-      <!--  <selectReversingMoveToo>true</selectReversingMoveToo>-->
-      <!--</subListChangeMoveSelector>-->
-      <!--<subListChangeMoveSelector>-->
-      <!--  <selectReversingMoveToo>true</selectReversingMoveToo>-->
-      <!--</subListChangeMoveSelector>-->
+      <subListChangeMoveSelector>
+        <selectReversingMoveToo>false</selectReversingMoveToo>
+      </subListChangeMoveSelector>
+      <subListSwapMoveSelector>
+        <selectReversingMoveToo>false</selectReversingMoveToo>
+      </subListSwapMoveSelector>
       <!-- TODO use nearby selection to scale out -->
     </unionMoveSelector>
     <acceptor>

@@ -88,9 +88,12 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
             Collections.reverse(subListCopy);
         }
 
-        innerScoreDirector.beforeSubListChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex);
+        int sourceFromIndex = (sourceEntity == destinationEntity && destinationIndex < sourceIndex)
+                ? sourceIndex + length
+                : sourceIndex;
+        innerScoreDirector.beforeSubListChanged(variableDescriptor, sourceEntity, sourceFromIndex, sourceFromIndex);
         subList.clear();
-        innerScoreDirector.afterSubListChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex);
+        innerScoreDirector.afterSubListChanged(variableDescriptor, sourceEntity, sourceFromIndex, sourceFromIndex);
 
         int destinationToIndex = destinationIndex + length;
         innerScoreDirector.beforeSubListChanged(variableDescriptor, destinationEntity, destinationIndex, destinationToIndex);

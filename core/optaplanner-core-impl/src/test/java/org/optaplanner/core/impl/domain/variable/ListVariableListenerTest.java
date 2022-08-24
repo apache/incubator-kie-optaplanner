@@ -14,6 +14,8 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListAssign
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListSwapMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListUnassignMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListChangeMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListSwapMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.list.shadow_history.TestdataListEntityWithShadowHistory;
 import org.optaplanner.core.impl.testdata.domain.list.shadow_history.TestdataListSolutionWithShadowHistory;
@@ -82,6 +84,28 @@ class ListVariableListenerTest {
             TestdataListEntityWithShadowHistory rightEntity, int rightIndex) {
         new ListSwapMove<>(variableDescriptor, leftEntity, leftIndex, rightEntity, rightIndex)
                 .doMoveOnly(scoreDirector);
+    }
+
+    void doSubListChangeMove(
+            TestdataListEntityWithShadowHistory sourceEntity, int fromIndex, int toIndex,
+            TestdataListEntityWithShadowHistory destinationEntity, int destinationIndex, boolean reversing) {
+        new SubListChangeMove<>(
+                variableDescriptor,
+                sourceEntity, fromIndex, toIndex - fromIndex,
+                destinationEntity, destinationIndex,
+                reversing)
+                        .doMoveOnly(scoreDirector);
+    }
+
+    void doSubListSwapMove(
+            TestdataListEntityWithShadowHistory leftEntity, int leftFromIndex, int leftToIndex,
+            TestdataListEntityWithShadowHistory rightEntity, int rightFromIndex, int rightToIndex, boolean reversing) {
+        new SubListSwapMove<>(
+                variableDescriptor,
+                leftEntity, leftFromIndex, leftToIndex,
+                rightEntity, rightFromIndex, rightToIndex,
+                reversing)
+                        .doMoveOnly(scoreDirector);
     }
 
     @Test
@@ -599,5 +623,329 @@ class ListVariableListenerTest {
         assertNextHistory(b, c, d);
         assertNextHistory(c, d, b);
         assertEmptyNextHistory(d);
+    }
+
+    @Test
+    @DisplayName("subC1: Ann[1..3]→Ann[3]")
+    void moveSubListToHigherIndexSameEntity() {
+        TestdataListValueWithShadowHistory a = new TestdataListValueWithShadowHistory("A");
+        TestdataListValueWithShadowHistory b = new TestdataListValueWithShadowHistory("B");
+        TestdataListValueWithShadowHistory c = new TestdataListValueWithShadowHistory("C");
+        TestdataListValueWithShadowHistory d = new TestdataListValueWithShadowHistory("D");
+        TestdataListValueWithShadowHistory e = new TestdataListValueWithShadowHistory("E");
+        TestdataListEntityWithShadowHistory ann = TestdataListEntityWithShadowHistory.createWithValues("Ann", a, b, c, d, e);
+
+        scoreDirector.setWorkingSolution(buildSolution(ann));
+
+        doSubListChangeMove(ann, 1, 3, ann, 3, false);
+
+        assertThat(ann.getValueList()).containsExactly(a, d, e, b, c);
+
+        assertEntityHistory(a, ann);
+        assertEntityHistory(b, ann);
+        assertEntityHistory(c, ann);
+        assertEntityHistory(d, ann);
+        assertEntityHistory(e, ann);
+
+        assertIndexHistory(a, 0);
+        assertIndexHistory(b, 1, 3);
+        assertIndexHistory(c, 2, 4);
+        assertIndexHistory(d, 3, 1);
+        assertIndexHistory(e, 4, 2);
+
+        assertEmptyPreviousHistory(a);
+        assertPreviousHistory(b, a, e);
+        assertPreviousHistory(c, b);
+        assertPreviousHistory(d, c, a);
+        assertPreviousHistory(e, d);
+
+        assertNextHistory(a, b, d);
+        assertNextHistory(b, c);
+        assertNextHistory(c, d, null);
+        assertNextHistory(d, e);
+        assertNextHistory(e, b);
+    }
+
+    @Test
+    @DisplayName("subC2: Ann[1..4]→Ann[0]")
+    void moveSubListToLowerIndexSameEntity() {
+        TestdataListValueWithShadowHistory a = new TestdataListValueWithShadowHistory("A");
+        TestdataListValueWithShadowHistory b = new TestdataListValueWithShadowHistory("B");
+        TestdataListValueWithShadowHistory c = new TestdataListValueWithShadowHistory("C");
+        TestdataListValueWithShadowHistory d = new TestdataListValueWithShadowHistory("D");
+        TestdataListValueWithShadowHistory e = new TestdataListValueWithShadowHistory("E");
+        TestdataListEntityWithShadowHistory ann = TestdataListEntityWithShadowHistory.createWithValues("Ann", a, b, c, d, e);
+
+        scoreDirector.setWorkingSolution(buildSolution(ann));
+
+        doSubListChangeMove(ann, 1, 4, ann, 0, false);
+
+        assertThat(ann.getValueList()).containsExactly(b, c, d, a, e);
+
+        assertEntityHistory(a, ann);
+        assertEntityHistory(b, ann);
+        assertEntityHistory(c, ann);
+        assertEntityHistory(d, ann);
+        assertEntityHistory(e, ann);
+
+        assertIndexHistory(a, 0, 3);
+        assertIndexHistory(b, 1, 0);
+        assertIndexHistory(c, 2, 1);
+        assertIndexHistory(d, 3, 2);
+        assertIndexHistory(e, 4);
+
+        assertPreviousHistory(a, d);
+        assertPreviousHistory(b, a, null);
+        assertPreviousHistory(c, b);
+        assertPreviousHistory(d, c);
+        assertPreviousHistory(e, d, a);
+
+        assertNextHistory(a, b, e);
+        assertNextHistory(b, c);
+        assertNextHistory(c, d);
+        assertNextHistory(d, e, a);
+        assertEmptyNextHistory(e);
+    }
+
+    @Test
+    @DisplayName("subC3: Ann[1..4]→Bob[2]")
+    void moveSubListToAnotherEntity() {
+        TestdataListValueWithShadowHistory a = new TestdataListValueWithShadowHistory("A");
+        TestdataListValueWithShadowHistory b = new TestdataListValueWithShadowHistory("B");
+        TestdataListValueWithShadowHistory c = new TestdataListValueWithShadowHistory("C");
+        TestdataListValueWithShadowHistory d = new TestdataListValueWithShadowHistory("D");
+        TestdataListValueWithShadowHistory e = new TestdataListValueWithShadowHistory("E");
+        TestdataListValueWithShadowHistory x = new TestdataListValueWithShadowHistory("X");
+        TestdataListValueWithShadowHistory y = new TestdataListValueWithShadowHistory("Y");
+        TestdataListValueWithShadowHistory z = new TestdataListValueWithShadowHistory("Z");
+        TestdataListEntityWithShadowHistory ann = TestdataListEntityWithShadowHistory.createWithValues("Ann", a, b, c, d, e);
+        TestdataListEntityWithShadowHistory bob = TestdataListEntityWithShadowHistory.createWithValues("Bob", x, y, z);
+
+        scoreDirector.setWorkingSolution(buildSolution(ann, bob));
+
+        doSubListChangeMove(ann, 1, 4, bob, 2, false);
+
+        assertThat(ann.getValueList()).containsExactly(a, e);
+        assertThat(bob.getValueList()).containsExactly(x, y, b, c, d, z);
+
+        assertEntityHistory(a, ann);
+        assertEntityHistory(b, ann, bob);
+        assertEntityHistory(c, ann, bob);
+        assertEntityHistory(d, ann, bob);
+        assertEntityHistory(e, ann);
+        assertEntityHistory(x, bob);
+        assertEntityHistory(y, bob);
+        assertEntityHistory(z, bob);
+
+        assertIndexHistory(a, 0);
+        assertIndexHistory(b, 1, 2);
+        assertIndexHistory(c, 2, 3);
+        assertIndexHistory(d, 3, 4);
+        assertIndexHistory(e, 4, 1);
+        assertIndexHistory(x, 0);
+        assertIndexHistory(y, 1);
+        assertIndexHistory(z, 2, 5);
+
+        assertEmptyPreviousHistory(a);
+        assertPreviousHistory(b, a, y);
+        assertPreviousHistory(c, b);
+        assertPreviousHistory(d, c);
+        assertPreviousHistory(e, d, a);
+        assertEmptyPreviousHistory(x);
+        assertPreviousHistory(y, x);
+        assertPreviousHistory(z, y, d);
+
+        assertNextHistory(a, b, e);
+        assertNextHistory(b, c);
+        assertNextHistory(c, d);
+        assertNextHistory(d, e, z);
+        assertEmptyNextHistory(e);
+        assertNextHistory(x, y);
+        assertNextHistory(y, z, b);
+        assertEmptyNextHistory(z);
+    }
+
+    @Test
+    @DisplayName("subC4: Ann[1..3]→Bob[1]")
+    void moveTailSubList() {
+        TestdataListValueWithShadowHistory a = new TestdataListValueWithShadowHistory("A");
+        TestdataListValueWithShadowHistory b = new TestdataListValueWithShadowHistory("B");
+        TestdataListValueWithShadowHistory c = new TestdataListValueWithShadowHistory("C");
+        TestdataListValueWithShadowHistory x = new TestdataListValueWithShadowHistory("X");
+        TestdataListEntityWithShadowHistory ann = TestdataListEntityWithShadowHistory.createWithValues("Ann", a, b, c);
+        TestdataListEntityWithShadowHistory bob = TestdataListEntityWithShadowHistory.createWithValues("Bob", x);
+
+        scoreDirector.setWorkingSolution(buildSolution(ann, bob));
+
+        doSubListChangeMove(ann, 1, 3, bob, 1, false);
+
+        assertThat(ann.getValueList()).containsExactly(a);
+        assertThat(bob.getValueList()).containsExactly(x, b, c);
+
+        assertEntityHistory(a, ann);
+        assertEntityHistory(b, ann, bob);
+        assertEntityHistory(c, ann, bob);
+
+        assertIndexHistory(a, 0);
+        assertIndexHistory(b, 1);
+        assertIndexHistory(c, 2);
+
+        assertEmptyPreviousHistory(a);
+        assertPreviousHistory(b, a, x);
+        assertPreviousHistory(c, b);
+        assertEmptyPreviousHistory(x);
+
+        assertNextHistory(a, b, null);
+        assertNextHistory(b, c);
+        assertEmptyNextHistory(c);
+        assertNextHistory(x, b);
+    }
+
+    // TODO use reversing
+    @Test
+    @DisplayName("subC5: Ann[0..3]→Bob[0]")
+    void moveWholeList() {
+        TestdataListValueWithShadowHistory a = new TestdataListValueWithShadowHistory("A");
+        TestdataListValueWithShadowHistory b = new TestdataListValueWithShadowHistory("B");
+        TestdataListValueWithShadowHistory c = new TestdataListValueWithShadowHistory("C");
+        TestdataListEntityWithShadowHistory ann = TestdataListEntityWithShadowHistory.createWithValues("Ann", a, b, c);
+        TestdataListEntityWithShadowHistory bob = TestdataListEntityWithShadowHistory.createWithValues("Bob");
+
+        scoreDirector.setWorkingSolution(buildSolution(ann, bob));
+
+        doSubListChangeMove(ann, 0, 3, bob, 0, false);
+
+        assertThat(ann.getValueList()).isEmpty();
+        assertThat(bob.getValueList()).containsExactly(a, b, c);
+
+        assertEntityHistory(a, ann, bob);
+        assertEntityHistory(b, ann, bob);
+        assertEntityHistory(c, ann, bob);
+
+        assertIndexHistory(a, 0);
+        assertIndexHistory(b, 1);
+        assertIndexHistory(c, 2);
+
+        assertEmptyPreviousHistory(a);
+        assertPreviousHistory(b, a);
+        assertPreviousHistory(c, b);
+
+        assertNextHistory(a, b);
+        assertNextHistory(b, c);
+        assertEmptyNextHistory(c);
+    }
+
+    @Test
+    @DisplayName("subS1: Ann[0..2]↔Ann[4..7]")
+    void swapSubListsSameEntity() {
+        TestdataListValueWithShadowHistory a = new TestdataListValueWithShadowHistory("A");
+        TestdataListValueWithShadowHistory b = new TestdataListValueWithShadowHistory("B");
+        TestdataListValueWithShadowHistory c = new TestdataListValueWithShadowHistory("C");
+        TestdataListValueWithShadowHistory d = new TestdataListValueWithShadowHistory("D");
+        TestdataListValueWithShadowHistory e = new TestdataListValueWithShadowHistory("E");
+        TestdataListValueWithShadowHistory f = new TestdataListValueWithShadowHistory("F");
+        TestdataListValueWithShadowHistory g = new TestdataListValueWithShadowHistory("G");
+        TestdataListValueWithShadowHistory h = new TestdataListValueWithShadowHistory("H");
+        TestdataListEntityWithShadowHistory ann =
+                TestdataListEntityWithShadowHistory.createWithValues("Ann", a, b, c, d, e, f, g, h);
+
+        scoreDirector.setWorkingSolution(buildSolution(ann));
+
+        doSubListSwapMove(ann, 0, 2, ann, 4, 7, false);
+
+        assertThat(ann.getValueList()).containsExactly(e, f, g, c, d, a, b, h);
+
+        assertEntityHistory(a, ann);
+        assertEntityHistory(b, ann);
+        assertEntityHistory(c, ann);
+        assertEntityHistory(d, ann);
+        assertEntityHistory(e, ann);
+        assertEntityHistory(f, ann);
+        assertEntityHistory(g, ann);
+        assertEntityHistory(h, ann);
+
+        assertIndexHistory(a, 0, 5);
+        assertIndexHistory(b, 1, 6);
+        assertIndexHistory(c, 2, 3);
+        assertIndexHistory(d, 3, 4);
+        assertIndexHistory(e, 4, 0);
+        assertIndexHistory(f, 5, 1);
+        assertIndexHistory(g, 6, 2);
+        assertIndexHistory(h, 7);
+
+        assertPreviousHistory(a, d);
+        assertPreviousHistory(b, a);
+        assertPreviousHistory(c, b, g);
+        assertPreviousHistory(d, c);
+        assertPreviousHistory(e, d, null);
+        assertPreviousHistory(f, e);
+        assertPreviousHistory(g, f);
+        assertPreviousHistory(h, g, b);
+
+        assertNextHistory(a, b);
+        assertNextHistory(b, c, h);
+        assertNextHistory(c, d);
+        assertNextHistory(d, e, a);
+        assertNextHistory(e, f);
+        assertNextHistory(f, g);
+        assertNextHistory(g, h, c);
+        assertEmptyNextHistory(h);
+    }
+
+    @Test
+    @DisplayName("subS2: Ann[0..2]↔Ann[4..6]")
+    void swapSubListsSameSizeSameEntity() {
+        TestdataListValueWithShadowHistory a = new TestdataListValueWithShadowHistory("A");
+        TestdataListValueWithShadowHistory b = new TestdataListValueWithShadowHistory("B");
+        TestdataListValueWithShadowHistory c = new TestdataListValueWithShadowHistory("C");
+        TestdataListValueWithShadowHistory d = new TestdataListValueWithShadowHistory("D");
+        TestdataListValueWithShadowHistory e = new TestdataListValueWithShadowHistory("E");
+        TestdataListValueWithShadowHistory f = new TestdataListValueWithShadowHistory("F");
+        TestdataListValueWithShadowHistory g = new TestdataListValueWithShadowHistory("G");
+        TestdataListValueWithShadowHistory h = new TestdataListValueWithShadowHistory("H");
+        TestdataListEntityWithShadowHistory ann =
+                TestdataListEntityWithShadowHistory.createWithValues("Ann", a, b, c, d, e, f, g, h);
+
+        scoreDirector.setWorkingSolution(buildSolution(ann));
+
+        doSubListSwapMove(ann, 0, 2, ann, 4, 6, false);
+
+        assertThat(ann.getValueList()).containsExactly(e, f, c, d, a, b, g, h);
+
+        assertEntityHistory(a, ann);
+        assertEntityHistory(b, ann);
+        assertEntityHistory(c, ann);
+        assertEntityHistory(d, ann);
+        assertEntityHistory(e, ann);
+        assertEntityHistory(f, ann);
+        assertEntityHistory(g, ann);
+        assertEntityHistory(h, ann);
+
+        assertIndexHistory(a, 0, 4);
+        assertIndexHistory(b, 1, 5);
+        assertIndexHistory(c, 2);
+        assertIndexHistory(d, 3);
+        assertIndexHistory(e, 4, 0);
+        assertIndexHistory(f, 5, 1);
+        assertIndexHistory(g, 6);
+        assertIndexHistory(h, 7);
+
+        assertPreviousHistory(a, d);
+        assertPreviousHistory(b, a);
+        assertPreviousHistory(c, b, f);
+        assertPreviousHistory(d, c);
+        assertPreviousHistory(e, d, null);
+        assertPreviousHistory(f, e);
+        assertPreviousHistory(g, f, b);
+        assertPreviousHistory(h, g);
+
+        assertNextHistory(a, b);
+        assertNextHistory(b, c, g);
+        assertNextHistory(c, d);
+        assertNextHistory(d, e, a);
+        assertNextHistory(e, f);
+        assertNextHistory(f, g, c);
+        assertNextHistory(g, h);
+        assertEmptyNextHistory(h);
     }
 }

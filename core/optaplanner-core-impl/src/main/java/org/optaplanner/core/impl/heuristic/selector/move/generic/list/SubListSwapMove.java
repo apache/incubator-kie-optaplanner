@@ -24,6 +24,16 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
     private final int leftToIndex;
 
     public SubListSwapMove(ListVariableDescriptor<Solution_> variableDescriptor,
+            Object leftEntity, int leftFromIndex, int leftToIndex,
+            Object rightEntity, int rightFromIndex, int rightToIndex,
+            boolean reversing) {
+        this(variableDescriptor,
+                new SubList(leftEntity, leftFromIndex, leftToIndex - leftFromIndex),
+                new SubList(rightEntity, rightFromIndex, rightToIndex - rightFromIndex),
+                reversing);
+    }
+
+    public SubListSwapMove(ListVariableDescriptor<Solution_> variableDescriptor,
             SubList leftSubList,
             SubList rightSubList,
             boolean reversing) {
