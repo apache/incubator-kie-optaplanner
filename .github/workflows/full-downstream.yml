@@ -14,14 +14,23 @@ on:
       - '.ci/**'
 
 jobs:
+  os-prep:
+    runs-on: ubuntu-latest
+    outputs:
+      os: ${{ steps.set-os.outputs.operating-systems }}
+    steps:
+      - name: OS Preparation
+        id: set-os
+        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/os-preparation@main
   build-chain:
+    needs: os-prep
     if: contains(github.event.pull_request.labels.*.name, 'run_fdb')
     concurrency:
       group: fdb-${{ github.head_ref }}
       cancel-in-progress: true
     strategy:
       matrix:
-        os: [ ubuntu-latest ]
+        os: ${{ fromJSON(needs.os-prep.outputs.os) }}
         java-version: [ 11 ]
         maven-version: [ '3.8.6' ]
       fail-fast: false
