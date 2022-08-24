@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: OS Preparation
         id: set-os
-        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/os-preparation@main
+        uses: kiegroup/kogito-pipelines/.ci/actions/os-preparation@main
   build-chain:
     needs: os-prep
     if: contains(github.event.pull_request.labels.*.name, 'run_fdb')
