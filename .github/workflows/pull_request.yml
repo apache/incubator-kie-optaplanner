@@ -38,7 +38,7 @@ jobs:
     steps:
       - name: OS Preparation
         id: set-os
-        uses: kiegroup/droolsjbpm-build-bootstrap/.ci/actions/os-preparation@main
+        uses: lampajr/kogito-pipelines/.ci/actions/os-preparation@BXMSPROD-1770_os_preparation
   build-chain:
     needs: os-prep
     concurrency:
