@@ -13,6 +13,7 @@ public final class SecretTargetRef {
     private String key;
 
     public SecretTargetRef() {
+        // Required by Jackson.
     }
 
     public SecretTargetRef(String parameter, String name, String key) {
