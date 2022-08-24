@@ -1,10 +1,9 @@
 package org.optaplanner.examples.vehiclerouting.domain;
 
-import java.util.List;
-
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
+import org.optaplanner.core.api.domain.variable.NextElementShadowVariable;
+import org.optaplanner.core.api.domain.variable.PreviousElementShadowVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 import org.optaplanner.examples.vehiclerouting.domain.solver.DepotAngleCustomerDifficultyWeightFactory;
@@ -25,7 +24,8 @@ public class Customer extends AbstractPersistable {
 
     // Shadow variables
     protected Vehicle vehicle;
-    protected Integer index;
+    protected Customer previousCustomer;
+    protected Customer nextCustomer;
 
     public Customer() {
     }
@@ -61,13 +61,22 @@ public class Customer extends AbstractPersistable {
         this.vehicle = vehicle;
     }
 
-    @IndexShadowVariable(sourceVariableName = "customers")
-    public Integer getIndex() {
-        return index;
+    @PreviousElementShadowVariable(sourceVariableName = "customers")
+    public Customer getPreviousCustomer() {
+        return previousCustomer;
     }
 
-    public void setIndex(Integer index) {
-        this.index = index;
+    public void setPreviousCustomer(Customer previousCustomer) {
+        this.previousCustomer = previousCustomer;
+    }
+
+    @NextElementShadowVariable(sourceVariableName = "customers")
+    public Customer getNextCustomer() {
+        return nextCustomer;
+    }
+
+    public void setNextCustomer(Customer nextCustomer) {
+        this.nextCustomer = nextCustomer;
     }
 
     // ************************************************************************
@@ -75,22 +84,14 @@ public class Customer extends AbstractPersistable {
     // ************************************************************************
 
     public long getDistanceFromPreviousStandstill() {
-        if (vehicle == null || index == null) {
+        if (vehicle == null) {
             throw new IllegalStateException(
                     "This method must not be called when the shadow variables are not initialized yet.");
         }
-        if (index == 0) {
+        if (previousCustomer == null) {
             return vehicle.getLocation().getDistanceTo(location);
         }
-        return vehicle.getCustomers().get(index - 1).getLocation().getDistanceTo(location);
-    }
-
-    public Customer getNextCustomer() {
-        List<Customer> customers = vehicle.getCustomers();
-        if (index == customers.size() - 1) {
-            return null;
-        }
-        return customers.get(index + 1);
+        return previousCustomer.getLocation().getDistanceTo(location);
     }
 
     public long getDistanceTo(Vehicle vehicle) {
