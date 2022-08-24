@@ -60,16 +60,6 @@ abstract class AbstractNextPrevElementShadowVariableDescriptor<Solution_> extend
                     + " A planning variable with the name (" + sourceVariableName + ") exists on multiple entity classes ("
                     + entitiesWithSourceVariable + ").");
         }
-
-        // FIXME source variable's type param must be equal to this member type
-        if (!variableMemberAccessor.getType().equals(entityDescriptor.getEntityClass())) {
-            throw new IllegalStateException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a @" + getAnnotationName()
-                    + " annotated member (" + variableMemberAccessor
-                    + ") of type (" + variableMemberAccessor.getType()
-                    + ") which is not the entityClass type.");
-        }
-
         VariableDescriptor<Solution_> variableDescriptor =
                 entitiesWithSourceVariable.get(0).getVariableDescriptor(sourceVariableName);
         if (variableDescriptor == null) {
@@ -86,6 +76,14 @@ abstract class AbstractNextPrevElementShadowVariableDescriptor<Solution_> extend
                     + ") which is not a @" + PlanningListVariable.class.getSimpleName() + ".");
         }
         sourceVariableDescriptor = (ListVariableDescriptor<Solution_>) variableDescriptor;
+        if (!variableMemberAccessor.getType().equals(sourceVariableDescriptor.getElementType())) {
+            throw new IllegalStateException("The entityClass (" + entityDescriptor.getEntityClass()
+                    + ") has a @" + getAnnotationName()
+                    + " annotated property (" + variableMemberAccessor.getName()
+                    + ") of type (" + variableMemberAccessor.getType()
+                    + ") which is not the type of elements (" + sourceVariableDescriptor.getElementType()
+                    + ") of the source list variable (" + sourceVariableDescriptor + ").");
+        }
         sourceVariableDescriptor.registerSinkVariableDescriptor(this);
     }
 

@@ -16,6 +16,12 @@ import org.optaplanner.core.impl.testdata.domain.list.valuerange.TestdataListEnt
 class ListVariableDescriptorTest {
 
     @Test
+    void elementType() {
+        assertThat(TestdataListEntity.buildVariableDescriptorForValueList().getElementType())
+                .isEqualTo(TestdataListValue.class);
+    }
+
+    @Test
     void acceptsValueType() {
         ListVariableDescriptor<TestdataListSolution> listVariableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
