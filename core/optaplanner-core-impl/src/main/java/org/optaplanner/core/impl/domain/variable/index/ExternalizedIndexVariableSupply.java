@@ -97,12 +97,12 @@ public class ExternalizedIndexVariableSupply<Solution_> implements
 
     @Override
     public void beforeSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
-        throw new UnsupportedOperationException("TODO");
+        // Do nothing
     }
 
     @Override
     public void afterSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
-        throw new UnsupportedOperationException("TODO");
+        updateIndexes(entity, fromIndex);
     }
 
     @Override

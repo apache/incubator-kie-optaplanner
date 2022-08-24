@@ -72,6 +72,30 @@ class ExternalizedSingletonListInverseVariableSupplyTest {
 
         assertThat(supply.getInverseSingleton(v1)).isEqualTo(e1);
 
+        // Return e1 with v2 and v3.
+        e2.getValueList().clear();
+        e2.getValueList().add(v2);
+        e2.getValueList().add(v3);
+        supply.beforeEntityAdded(scoreDirector, e2);
+        solution.getEntityList().add(e2);
+        supply.afterEntityAdded(scoreDirector, e2);
+
+        assertThat(supply.getInverseSingleton(v1)).isEqualTo(e1);
+        assertThat(supply.getInverseSingleton(v2)).isEqualTo(e2);
+        assertThat(supply.getInverseSingleton(v3)).isEqualTo(e2);
+
+        // Move subList e2[0..2] to e1[1].
+        supply.beforeSubListChanged(scoreDirector, e2, 0, 0);
+        supply.beforeSubListChanged(scoreDirector, e1, 1, 3);
+        e1.getValueList().addAll(e2.getValueList());
+        e2.getValueList().clear();
+        supply.afterSubListChanged(scoreDirector, e2, 0, 0);
+        supply.afterSubListChanged(scoreDirector, e1, 1, 3);
+
+        assertThat(supply.getInverseSingleton(v1)).isEqualTo(e1);
+        assertThat(supply.getInverseSingleton(v2)).isEqualTo(e1);
+        assertThat(supply.getInverseSingleton(v3)).isEqualTo(e1);
+
         supply.close();
     }
 }

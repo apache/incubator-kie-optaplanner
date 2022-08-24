@@ -74,6 +74,26 @@ class ExternalizedIndexVariableSupplyTest {
 
         assertThat(supply.getIndex(v1)).isEqualTo(0);
 
+        // Return e1.
+        supply.beforeEntityAdded(scoreDirector, e1);
+        solution.getEntityList().add(e1);
+        supply.afterEntityAdded(scoreDirector, e1);
+
+        assertThat(supply.getIndex(v2)).isEqualTo(0);
+        assertThat(supply.getIndex(v3)).isEqualTo(1);
+
+        // Move subList e1[0..2] to e2[1].
+        supply.beforeSubListChanged(scoreDirector, e1, 0, 0);
+        supply.beforeSubListChanged(scoreDirector, e2, 1, 3);
+        e2.getValueList().addAll(e1.getValueList());
+        e1.getValueList().clear();
+        supply.afterSubListChanged(scoreDirector, e1, 0, 0);
+        supply.afterSubListChanged(scoreDirector, e2, 1, 3);
+
+        assertThat(supply.getIndex(v1)).isEqualTo(0);
+        assertThat(supply.getIndex(v2)).isEqualTo(1);
+        assertThat(supply.getIndex(v3)).isEqualTo(2);
+
         supply.close();
     }
 }
