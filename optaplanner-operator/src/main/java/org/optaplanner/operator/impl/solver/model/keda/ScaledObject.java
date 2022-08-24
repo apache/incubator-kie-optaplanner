@@ -20,5 +20,6 @@ public final class ScaledObject extends CustomResource<ScaledObjectSpec, ScaledO
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     static class ScaledObjectStatus {
+        // Not interested in the status of this resource.
     }
 }
