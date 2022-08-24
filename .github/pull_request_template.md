@@ -52,6 +52,9 @@ How to retest this PR or trigger a specific build:
   - for <b>github actions</b> job: 
     add the label `run_fdb`
 
+- for a <b>windows build</b>
+  please add the label `windows_check`
+
 - for a <b>compile downstream build</b>  
   please add comment: <b>Jenkins run cdb</b>
 
