@@ -5,6 +5,7 @@ public final class ResourceNameReference {
     private String name;
 
     public ResourceNameReference() {
+        // Required by Jackson.
     }
 
     public ResourceNameReference(String name) {
