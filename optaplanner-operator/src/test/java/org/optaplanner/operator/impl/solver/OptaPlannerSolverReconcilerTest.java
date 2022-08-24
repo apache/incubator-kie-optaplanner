@@ -40,14 +40,13 @@ public class OptaPlannerSolverReconcilerTest extends AbstractKubernetesTest {
     @Inject
     private Operator operator;
 
-    // TODO: file an to quarkus-operator-sdk to enable operator.start() and .stop() in @BeforeEach and @AfterEach.
+    // TODO: Replace with @BeforeEach after https://github.com/quarkiverse/quarkus-operator-sdk/issues/388 is resolved.
     public void onStart(@Observes StartupEvent startupEvent) {
         operator.start();
     }
 
     private String namespace;
 
-    // TODO: file an issue to quarkus-operator-sdk to generate a new namespace for every test
     @BeforeEach
     public void createNamespace() {
         namespace = "test-" + UUID.randomUUID();
