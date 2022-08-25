@@ -91,6 +91,10 @@ class VehicleRoutingConstraintProviderTest
         customer2.setArrivalTime(8_00_00L + 4000L + 1_00_00L + 5000L);
         Vehicle vehicleA = new Vehicle(1L, 100, new TimeWindowedDepot(1L, location1, 8_00_00L, 18_00_00L));
         vehicleA.setCustomers(Arrays.asList(customer1, customer2));
+        customer1.setVehicle(vehicleA);
+        customer1.setNextCustomer(customer2);
+        customer2.setVehicle(vehicleA);
+        customer2.setPreviousCustomer(customer1);
 
         constraintVerifier.verifyThat(VehicleRoutingConstraintProvider::arrivalAfterDueTime)
                 .given(vehicleA, customer1, customer2)

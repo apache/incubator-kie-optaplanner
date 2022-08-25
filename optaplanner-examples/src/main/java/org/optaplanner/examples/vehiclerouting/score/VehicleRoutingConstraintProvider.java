@@ -61,7 +61,7 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
 
     protected Constraint arrivalAfterDueTime(ConstraintFactory factory) {
         return factory.forEach(TimeWindowedCustomer.class)
-                .filter(customer -> customer.getArrivalTime() > customer.getDueTime())
+                .filter(customer -> customer.getVehicle() != null && customer.getArrivalTime() > customer.getDueTime())
                 .penalizeLong("arrivalAfterDueTime",
                         HardSoftLongScore.ONE_HARD,
                         customer -> customer.getArrivalTime() - customer.getDueTime());
