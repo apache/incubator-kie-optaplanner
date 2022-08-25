@@ -41,7 +41,7 @@ if (Utils.isMainBranch(this)) {
 }
 
 // Tools
-KogitoJobUtils.createMainQuarkusUpdateToolsJob(this, 'Kogito Pipelines', [ 'optaplanner', 'optaplanner-quickstarts' ])
+KogitoJobUtils.createMainQuarkusUpdateToolsJob(this, 'OptaPlanner Pipelines', [ 'optaplanner', 'optaplanner-quickstarts' ])
 
 void setupProjectQuarkusJob(Folder quarkusFolder) {
     def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner-all', quarkusFolder, "${jenkins_path_project}/project/Jenkinsfile.quarkus", 'Optaplanner Quarkus Snapshot')
@@ -109,7 +109,7 @@ void setupProjectDroolsJob(String droolsBranch) {
 }
 
 void setupProjectInitBranchJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, '0-init-branch', Folder.INIT_BRANCH, "${jenkins_path_project}/Jenkinsfile.init-branch", 'Kogito Init Branch')
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, '0-init-branch', Folder.INIT_BRANCH, "${jenkins_path_project}/Jenkinsfile.init-branch", 'Optaplanner Project Init Branch')
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
 
@@ -259,7 +259,7 @@ KogitoJobUtils.createVersionUpdateToolsJob(this, 'optaplanner', 'Drools', [
 ])
 
 void setupInitBranchJob() {
-    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner', Folder.INIT_BRANCH, "${jenkins_path}/Jenkinsfile.init-branch", 'OptaPlanner Init branch')
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'optaplanner', Folder.INIT_BRANCH, "${jenkins_path}/Jenkinsfile.init-branch", 'OptaPlanner Init Branch')
     KogitoJobUtils.setupJobParamsDefaultMavenConfiguration(this, jobParams)
     jobParams.env.putAll([
         REPO_NAME: 'optaplanner',
