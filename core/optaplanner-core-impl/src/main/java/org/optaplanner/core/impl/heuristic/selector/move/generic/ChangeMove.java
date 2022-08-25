@@ -44,8 +44,7 @@ public class ChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
-        Object oldValue = variableDescriptor.getValue(entity);
-        return !Objects.equals(oldValue, toPlanningValue);
+        return true; // Moves that do not change value will not be generated.
     }
 
     @Override

@@ -28,9 +28,8 @@ class ChangeMoveTest {
     void isMoveDoable() {
         TestdataValue v1 = new TestdataValue("1");
         TestdataValue v2 = new TestdataValue("2");
-        TestdataValue v3 = new TestdataValue("3");
 
-        TestdataEntityProvidingEntity a = new TestdataEntityProvidingEntity("a", Arrays.asList(v1, v2, v3), null);
+        TestdataEntityProvidingEntity a = new TestdataEntityProvidingEntity("a", Arrays.asList(v1, v2), null);
 
         ScoreDirector<TestdataEntityProvidingSolution> scoreDirector = mock(ScoreDirector.class);
 
@@ -39,12 +38,6 @@ class ChangeMoveTest {
 
         ChangeMove<TestdataEntityProvidingSolution> aMove = new ChangeMove<>(variableDescriptor, a, v2);
         a.setValue(v1);
-        assertThat(aMove.isMoveDoable(scoreDirector)).isTrue();
-
-        a.setValue(v2);
-        assertThat(aMove.isMoveDoable(scoreDirector)).isFalse();
-
-        a.setValue(v3);
         assertThat(aMove.isMoveDoable(scoreDirector)).isTrue();
     }
 

@@ -144,27 +144,6 @@ class ChainedChangeMoveTest {
     }
 
     @Test
-    void sameChainWithSamePlanningValue() {
-        GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
-                .buildVariableDescriptorForChainedObject();
-        InnerScoreDirector<TestdataChainedSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
-
-        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
-        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
-        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
-        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
-        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
-
-        SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
-                new TestdataChainedEntity[] { a1, a2, a3, a4 });
-
-        ChainedChangeMove<TestdataChainedSolution> move =
-                new ChainedChangeMove<>(variableDescriptor, a2, a1, inverseVariableSupply);
-        assertThat(move.isMoveDoable(scoreDirector)).isFalse();
-    }
-
-    @Test
     void rebase() {
         GenuineVariableDescriptor<TestdataChainedSolution> variableDescriptor = TestdataChainedEntity
                 .buildVariableDescriptorForChainedObject();

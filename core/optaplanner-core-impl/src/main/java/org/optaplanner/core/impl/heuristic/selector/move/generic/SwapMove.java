@@ -44,6 +44,9 @@ public class SwapMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
+        if (leftEntity == rightEntity) {
+            return false;
+        }
         boolean movable = false;
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
             Object leftValue = variableDescriptor.getValue(leftEntity);
