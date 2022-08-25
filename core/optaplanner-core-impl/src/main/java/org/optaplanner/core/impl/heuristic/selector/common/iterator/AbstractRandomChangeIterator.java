@@ -1,7 +1,9 @@
 package org.optaplanner.core.impl.heuristic.selector.common.iterator;
 
 import java.util.Iterator;
+import java.util.Objects;
 
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
@@ -9,13 +11,15 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 public abstract class AbstractRandomChangeIterator<Solution_, Move_ extends Move<Solution_>>
         extends UpcomingSelectionIterator<Move_> {
 
+    private final VariableDescriptor<Solution_> entityVariableDescriptor;
     private final EntitySelector<Solution_> entitySelector;
     private final ValueSelector<Solution_> valueSelector;
 
     private Iterator<Object> entityIterator;
 
-    public AbstractRandomChangeIterator(EntitySelector<Solution_> entitySelector,
-            ValueSelector<Solution_> valueSelector) {
+    public AbstractRandomChangeIterator(VariableDescriptor<Solution_> entityVariableDescriptor,
+            EntitySelector<Solution_> entitySelector, ValueSelector<Solution_> valueSelector) {
+        this.entityVariableDescriptor = entityVariableDescriptor;
         this.entitySelector = entitySelector;
         this.valueSelector = valueSelector;
         entityIterator = entitySelector.iterator();
@@ -53,7 +57,11 @@ public abstract class AbstractRandomChangeIterator<Solution_, Move_ extends Move
             entity = entityIterator.next();
             valueIterator = valueSelector.iterator(entity);
         }
+        Object existingValue = entityVariableDescriptor.getValue(entity);
         Object toValue = valueIterator.next();
+        if (Objects.equals(existingValue, toValue)) {
+            return createUpcomingSelection(); // Skip moves that would not do anything.
+        }
         return newChangeSelection(entity, toValue);
     }
 

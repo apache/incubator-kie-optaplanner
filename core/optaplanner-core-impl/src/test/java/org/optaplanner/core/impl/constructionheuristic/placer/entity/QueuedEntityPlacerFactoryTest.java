@@ -68,7 +68,7 @@ class QueuedEntityPlacerFactoryTest extends AbstractEntityPlacerTest {
         entityPlacer.stepStarted(stepScope);
         Placement<TestdataMultiVarSolution> placement = placementIterator.next();
 
-        assertEntityPlacement(placement, "e1", "e1v1", "e1v2", "e2v1", "e2v2");
+        assertEntityPlacement(placement, "e1", "e1v2", "e2v1", "e2v2");
     }
 
     public HeuristicConfigPolicy<TestdataMultiVarSolution>

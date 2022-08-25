@@ -91,14 +91,14 @@ public class ChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_
         final GenuineVariableDescriptor<Solution_> variableDescriptor = valueSelector.getVariableDescriptor();
         if (!randomSelection) {
             if (chained) {
-                return new AbstractOriginalChangeIterator<>(entitySelector, valueSelector) {
+                return new AbstractOriginalChangeIterator<>(variableDescriptor, entitySelector, valueSelector) {
                     @Override
                     protected Move<Solution_> newChangeSelection(Object entity, Object toValue) {
                         return new ChainedChangeMove<>(variableDescriptor, entity, toValue, inverseVariableSupply);
                     }
                 };
             } else {
-                return new AbstractOriginalChangeIterator<>(entitySelector, valueSelector) {
+                return new AbstractOriginalChangeIterator<>(variableDescriptor, entitySelector, valueSelector) {
                     @Override
                     protected Move<Solution_> newChangeSelection(Object entity, Object toValue) {
                         return new ChangeMove<>(variableDescriptor, entity, toValue);
@@ -107,14 +107,14 @@ public class ChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_
             }
         } else {
             if (chained) {
-                return new AbstractRandomChangeIterator<>(entitySelector, valueSelector) {
+                return new AbstractRandomChangeIterator<>(variableDescriptor, entitySelector, valueSelector) {
                     @Override
                     protected Move<Solution_> newChangeSelection(Object entity, Object toValue) {
                         return new ChainedChangeMove<>(variableDescriptor, entity, toValue, inverseVariableSupply);
                     }
                 };
             } else {
-                return new AbstractRandomChangeIterator<>(entitySelector, valueSelector) {
+                return new AbstractRandomChangeIterator<>(variableDescriptor, entitySelector, valueSelector) {
                     @Override
                     protected Move<Solution_> newChangeSelection(Object entity, Object toValue) {
                         return new ChangeMove<>(variableDescriptor, entity, toValue);
