@@ -1,3 +1,16 @@
+job_types:
+  setup-branch:
+    disabled: true
+  nightly:
+    disabled: true
+  other:
+    disabled: true
+  pullrequest:
+    disabled: false
+  release:
+    disabled: true
+  tools:
+    disabled: true
 environment:
   quarkus:
     main:
@@ -24,51 +37,49 @@ disable:
   triggers: false
 repositories:
 - name: optaplanner
-  branch: main
-- name: optaweb-vehicle-routing
-  branch: main
-- name: optaplanner-quickstarts
-  branch: development
-- name: optaplanner-website
-  branch: main
+# - name: optaweb-vehicle-routing
+#   branch: main
+# - name: optaplanner-quickstarts
+#   branch: development
 git:
   author:
-    name: kiegroup
-    credentials_id: kie-ci
-    token_credentials_id: kie-ci3-token
+    name: radtriste
+    credentials_id: radtriste
+    token_credentials_id: radtriste-gh-token
   bot_author: # This is meant to disappear in the near future
-    name: bsig-gh-bot
-    credentials_id: bsig-gh-bot
+    name: radtriste-bot-account
+    credentials_id: radtriste-bot
   fork_author: # Used on repository where a fork is needed
-    name: kie-ci
-    credentials_id: kie-ci
+    name: radtriste-bot-account
+    credentials_id: radtriste-bot
   quarkus: # Used by quarkus platform jobs
     author:
-      name: quarkusio
-      credentials_id: kie-ci
+      name: radtriste
+      credentials_id: radtriste
     branch: main
   jenkins_config_path: .ci/jenkins
 maven:
-  settings_file_id: kogito_release_settings
+  settings_file_id: 2bd418aa-56fa-4403-9232-8c77a50fc528
   nexus:
-    release_url: https://repository.jboss.org/nexus
+    release_url: https://repository.stage.jboss.org/nexus
     release_repository: jboss-releases-repository
-    staging_profile_url: https://repository.jboss.org/nexus/content/groups/kogito-public/
+    staging_profile_url: https://repository.stage.jboss.org/nexus/content/groups/kogito-public/
     staging_profile_id: 2161b7b8da0080
-    build_promotion_profile_id: ea49ccd6f174
-  artifacts_repository: ''
+    build_promotion_profile_id: 1966c60aff37d
+  artifacts_repository: http://nexus3-tradisso-nexus.apps.kogito-cloud.hosted.psi.rdu2.redhat.com/repository/kogito-test/
+  #artifacts_repository: ''
   pr_checks:
     repository:
       url: https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/repositories/kogito-runtimes-pr-full-testing/
       creds_id: unpacks-zip-on-qa-nexus
 cloud:
   image:
-    registry_credentials: optaplanner-quay-token
+    registry_credentials: tradisso_registry_token
     registry: quay.io
-    namespace: optaplanner
+    namespace: tradisso
     latest_git_branch: main
 jenkins:
-  email_creds_id: OPTAPLANNER_CI_EMAIL
+  email_creds_id: KOGITO_CI_EMAIL_TO_PERSO
   default_tools:
     jdk: kie-jdk11
     maven: kie-maven-3.8.6

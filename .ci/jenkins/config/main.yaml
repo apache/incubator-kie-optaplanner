@@ -6,22 +6,17 @@ ecosystem:
     - opta.*
 git:
   branches:
-  - name: main
-    seed:
-      branch: main
-  - name: 8.29.x
-    seed:
-      branch: seed-optaplanner-8.29.x
+  - name: kogito-8111
   main_branch:
-    default: main
+    default: kogito-8111
 seed:
   config_file:
     git:
       repository: optaplanner
       author:
-        name: kiegroup
+        name: radtriste
         credentials_id: kie-ci
-      branch: main
+      branch: kogito-8111
     path: .ci/jenkins/config/branch.yaml
 jenkins:
   email_creds_id: OPTAPLANNER_CI_EMAIL
