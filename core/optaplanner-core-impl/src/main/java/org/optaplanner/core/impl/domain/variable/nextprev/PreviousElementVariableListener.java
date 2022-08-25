@@ -142,33 +142,15 @@ public class PreviousElementVariableListener<Solution_> implements ListVariableL
     public void afterSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        if (toIndex - fromIndex == 0) {
-            if (fromIndex < listVariable.size()) {
-                Object next = listVariable.get(fromIndex);
-                Object previous = fromIndex > 0 ? listVariable.get(fromIndex - 1) : null;
-                if (previous != shadowVariableDescriptor.getValue(next)) {
-                    innerScoreDirector.beforeVariableChanged(shadowVariableDescriptor, next);
-                    shadowVariableDescriptor.setValue(next, previous);
-                    innerScoreDirector.afterVariableChanged(shadowVariableDescriptor, next);
-                }
+        Object previous = fromIndex > 0 ? listVariable.get(fromIndex - 1) : null;
+        for (int i = fromIndex; i <= toIndex && i < listVariable.size(); i++) {
+            Object element = listVariable.get(i);
+            if (previous != shadowVariableDescriptor.getValue(element)) {
+                innerScoreDirector.beforeVariableChanged(shadowVariableDescriptor, element);
+                shadowVariableDescriptor.setValue(element, previous);
+                innerScoreDirector.afterVariableChanged(shadowVariableDescriptor, element);
             }
-        } else {
-            if (toIndex < listVariable.size()) {
-                Object next = listVariable.get(toIndex);
-                Object last = listVariable.get(toIndex - 1);
-                if (last != shadowVariableDescriptor.getValue(next)) {
-                    innerScoreDirector.beforeVariableChanged(shadowVariableDescriptor, next);
-                    shadowVariableDescriptor.setValue(next, last);
-                    innerScoreDirector.afterVariableChanged(shadowVariableDescriptor, next);
-                }
-            }
-            Object first = listVariable.get(fromIndex);
-            Object previous = fromIndex > 0 ? listVariable.get(fromIndex - 1) : null;
-            if (previous != shadowVariableDescriptor.getValue(first)) {
-                innerScoreDirector.beforeVariableChanged(shadowVariableDescriptor, first);
-                shadowVariableDescriptor.setValue(first, previous);
-                innerScoreDirector.afterVariableChanged(shadowVariableDescriptor, first);
-            }
+            previous = element;
         }
     }
 }

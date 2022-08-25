@@ -31,10 +31,10 @@
       <changeMoveSelector/>
       <swapMoveSelector/>
       <subListChangeMoveSelector>
-        <selectReversingMoveToo>false</selectReversingMoveToo>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
       </subListChangeMoveSelector>
       <subListSwapMoveSelector>
-        <selectReversingMoveToo>false</selectReversingMoveToo>
+        <selectReversingMoveToo>true</selectReversingMoveToo>
       </subListSwapMoveSelector>
       <!-- TODO use nearby selection to scale out -->
     </unionMoveSelector>
