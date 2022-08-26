@@ -26,14 +26,15 @@ import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 public final class DefaultConstraintVerifier<ConstraintProvider_ extends ConstraintProvider, Solution_, Score_ extends Score<Score_>>
         implements ConstraintVerifier<ConstraintProvider_, Solution_> {
 
-    private final ServiceLoader<ScoreDirectorFactoryService> serviceLoader;
+    private final ServiceLoader<ScoreDirectorFactoryService<Solution_, Score_>> serviceLoader;
     private final ConstraintProvider_ constraintProvider;
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private ConstraintStreamImplType constraintStreamImplType;
     private Boolean droolsAlphaNetworkCompilationEnabled;
 
     public DefaultConstraintVerifier(ConstraintProvider_ constraintProvider, SolutionDescriptor<Solution_> solutionDescriptor) {
-        this.serviceLoader = ServiceLoader.load(ScoreDirectorFactoryService.class);
+        ServiceLoader uncastServiceLoader = ServiceLoader.load(ScoreDirectorFactoryService.class);
+        this.serviceLoader = uncastServiceLoader;
         this.constraintProvider = constraintProvider;
         this.solutionDescriptor = solutionDescriptor;
     }
