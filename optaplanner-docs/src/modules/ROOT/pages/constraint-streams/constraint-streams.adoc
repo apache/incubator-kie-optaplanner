@@ -849,7 +849,11 @@ See <<constraintStreamsDealingWithDuplicateTuplesUsingDistinct,`distinct()`>> fo
 
 Constraint streams include the Constraint Verifier unit testing harness.
 To use it, first add a test scoped dependency to the `optaplanner-test` JAR.
-
+[WARNING]
+====
+You CANNOT use the same ConstraintVerifier instance in multiple concurrent tests. It is NOT thread safe and WILL cause errors that do not make sense.
+For example tests that have `@Execution(ExecutionMode.CONCURRENT)` on them.
+====
 [[constraintStreamsTestingIsolatedConstraints]]
 === Testing constraints in isolation
 
