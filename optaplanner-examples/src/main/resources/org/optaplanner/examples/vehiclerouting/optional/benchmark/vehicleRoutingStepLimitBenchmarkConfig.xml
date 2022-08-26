@@ -9,6 +9,7 @@
       <!--<environmentMode>FAST_ASSERT</environmentMode>-->
       <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
       <entityClass>org.optaplanner.examples.vehiclerouting.domain.Vehicle</entityClass>
+      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
 
       <scoreDirectorFactory>
         <constraintProviderClass>org.optaplanner.examples.vehiclerouting.score.VehicleRoutingConstraintProvider</constraintProviderClass>
@@ -32,12 +33,12 @@
         <unionMoveSelector>
           <changeMoveSelector/>
           <swapMoveSelector/>
-          <subChainChangeMoveSelector>
+          <subListChangeMoveSelector>
             <selectReversingMoveToo>false</selectReversingMoveToo>
-          </subChainChangeMoveSelector>
-          <subChainSwapMoveSelector>
+          </subListChangeMoveSelector>
+          <subListSwapMoveSelector>
             <selectReversingMoveToo>false</selectReversingMoveToo>
-          </subChainSwapMoveSelector>
+          </subListSwapMoveSelector>
         </unionMoveSelector>
         <acceptor>
           <entityTabuSize>9</entityTabuSize>

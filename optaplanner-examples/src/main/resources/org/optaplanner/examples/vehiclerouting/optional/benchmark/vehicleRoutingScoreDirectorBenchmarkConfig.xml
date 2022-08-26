@@ -8,6 +8,7 @@
     <solver>
       <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
       <entityClass>org.optaplanner.examples.vehiclerouting.domain.Vehicle</entityClass>
+      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
 
       <scoreDirectorFactory>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>

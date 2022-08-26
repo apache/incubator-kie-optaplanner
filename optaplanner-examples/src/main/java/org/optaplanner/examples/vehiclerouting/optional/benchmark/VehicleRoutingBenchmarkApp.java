@@ -15,10 +15,12 @@ public class VehicleRoutingBenchmarkApp extends CommonBenchmarkApp {
                 new ArgOption("stepLimit",
                         "org/optaplanner/examples/vehiclerouting/optional/benchmark/vehicleRoutingStepLimitBenchmarkConfig.xml"),
                 new ArgOption("scoreDirector",
-                        "org/optaplanner/examples/vehiclerouting/optional/benchmark/vehicleRoutingScoreDirectorBenchmarkConfig.xml"),
-                new ArgOption("template",
-                        "org/optaplanner/examples/vehiclerouting/optional/benchmark/vehicleRoutingBenchmarkConfigTemplate.xml.ftl",
-                        true));
+                        "org/optaplanner/examples/vehiclerouting/optional/benchmark/vehicleRoutingScoreDirectorBenchmarkConfig.xml")
+        // FIXME nearby not yet available with list variable.
+        // new ArgOption("template",
+        //         "org/optaplanner/examples/vehiclerouting/optional/benchmark/vehicleRoutingBenchmarkConfigTemplate.xml.ftl",
+        //         true)
+        );
     }
 
 }
