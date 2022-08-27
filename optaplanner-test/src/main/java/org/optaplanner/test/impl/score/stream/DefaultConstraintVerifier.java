@@ -20,7 +20,7 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
         implements ConstraintVerifier<ConstraintProvider_, Solution_> {
 
     /**
-     * Exists so that people can not, even by accident, pick the same constraint ID as the default map key.
+     * Exists so that people can not, even by accident, pick the same constraint ID as the default cache key.
      */
     private final String defaultScoreDirectorFactoryMapKey = UUID.randomUUID().toString();
 
