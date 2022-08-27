@@ -48,11 +48,6 @@ class CheapTimeConstraintProviderTest extends
     private static final Task TASK_2 = new Task(2, PERIOD_1, PERIOD_3, 1, 3_000_000,
             REQUIREMENT_TASK2_RESOURCE0, REQUIREMENT_TASK2_RESOURCE1, REQUIREMENT_TASK2_RESOURCE2);
 
-    @Override
-    protected ConstraintVerifier<CheapTimeConstraintProvider, CheapTimeSolution> createConstraintVerifier() {
-        return ConstraintVerifier.build(new CheapTimeConstraintProvider(), CheapTimeSolution.class, TaskAssignment.class);
-    }
-
     @ConstraintProviderTest
     void startTimeLimitsFrom(ConstraintVerifier<CheapTimeConstraintProvider, CheapTimeSolution> constraintVerifier) {
         // Actual task assignment falls on the minimum prescribed by the task.
@@ -149,6 +144,11 @@ class CheapTimeConstraintProviderTest extends
         constraintVerifier.verifyThat(CheapTimeConstraintProvider::startEarly)
                 .given(taskAssignment1, taskAssignment2)
                 .penalizesBy(taskAssignment1.getStartPeriod() + taskAssignment2.getStartPeriod());
+    }
+
+    @Override
+    protected ConstraintVerifier<CheapTimeConstraintProvider, CheapTimeSolution> createConstraintVerifier() {
+        return ConstraintVerifier.build(new CheapTimeConstraintProvider(), CheapTimeSolution.class, TaskAssignment.class);
     }
 
 }
