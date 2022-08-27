@@ -53,13 +53,12 @@ final class ScoreDirectorFactoryCache<ConstraintProvider_ extends ConstraintProv
 
     private AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> getScoreDirectorFactoryService() {
         ConstraintStreamImplType constraintStreamImplType = parent.getConstraintStreamImplType();
-        // CS-D will be picked if both are available.
         return serviceLoader.stream()
                 .map(ServiceLoader.Provider::get)
                 .filter(s -> s.getSupportedScoreDirectorType() == ScoreDirectorType.CONSTRAINT_STREAMS)
                 .map(s -> (AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_>) s)
                 .filter(s -> constraintStreamImplType == null || s.supportsImplType(constraintStreamImplType))
-                .max(Comparator.comparingInt(ScoreDirectorFactoryService::getPriority))
+                .max(Comparator.comparingInt(ScoreDirectorFactoryService::getPriority)) // Picks CS-D if both available.
                 .orElseThrow(() -> new IllegalStateException(
                         "Constraint Streams implementation was not found on the classpath.\n"
                                 + "Maybe include org.optaplanner:optaplanner-constraint-streams-drools dependency "
