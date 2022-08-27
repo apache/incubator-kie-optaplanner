@@ -17,7 +17,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.test.impl.score.stream.DefaultConstraintVerifier;
 
 /**
- * Implementations of this class must be thread-safe, in order to enable parallel test execution.
+ * Implementations must be thread-safe, in order to enable parallel test execution.
  *
  * @param <ConstraintProvider_>
  * @param <Solution_>
