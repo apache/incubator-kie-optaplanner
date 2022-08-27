@@ -48,8 +48,7 @@ final class ScoreDirectorFactoryCache<ConstraintProvider_ extends ConstraintProv
             SolutionDescriptor<Solution_> solutionDescriptor) {
         this.parent = Objects.requireNonNull(parent);
         this.solutionDescriptor = Objects.requireNonNull(solutionDescriptor);
-        ServiceLoader uncastServiceLoader = ServiceLoader.load(ScoreDirectorFactoryService.class);
-        this.serviceLoader = uncastServiceLoader;
+        this.serviceLoader = (ServiceLoader) ServiceLoader.load(ScoreDirectorFactoryService.class);
     }
 
     private AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> getScoreDirectorFactoryService() {
