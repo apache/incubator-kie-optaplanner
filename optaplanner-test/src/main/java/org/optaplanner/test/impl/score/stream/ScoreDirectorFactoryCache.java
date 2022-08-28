@@ -99,14 +99,13 @@ final class ScoreDirectorFactoryCache<ConstraintProvider_ extends ConstraintProv
      */
     public AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory(String key,
             ConstraintProvider constraintProvider) {
-        return scoreDirectorFactoryMap.compute(key, (k, v) -> {
-            AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> scoreDirectorFactoryService =
-                    getScoreDirectorFactoryService();
-            if (v == null || didParentConfigurationChange(scoreDirectorFactoryService)) {
-                return createScoreDirectorFactory(scoreDirectorFactoryService, constraintProvider);
-            }
-            return v;
-        });
+        AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> scoreDirectorFactoryService =
+                getScoreDirectorFactoryService();
+        if (didParentConfigurationChange(scoreDirectorFactoryService)) {
+            scoreDirectorFactoryMap.clear(); // Parent configuration changed; existing score directors invalid.
+        }
+        return scoreDirectorFactoryMap.computeIfAbsent(key,
+                k -> createScoreDirectorFactory(scoreDirectorFactoryService, constraintProvider));
     }
 
     private boolean didParentConfigurationChange(

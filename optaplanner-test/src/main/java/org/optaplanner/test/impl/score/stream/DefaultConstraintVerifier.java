@@ -50,6 +50,12 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     public ConstraintVerifier<ConstraintProvider_, Solution_> withConstraintStreamImplType(
             ConstraintStreamImplType constraintStreamImplType) {
         requireNonNull(constraintStreamImplType);
+        if (droolsAlphaNetworkCompilationEnabled != null &&
+                droolsAlphaNetworkCompilationEnabled &&
+                constraintStreamImplType != ConstraintStreamImplType.DROOLS) {
+            throw new IllegalArgumentException("Can not switch to " + ConstraintStreamImplType.class.getSimpleName()
+                    + "." + constraintStreamImplType + " while Drools Alpha Network Compilation enabled.");
+        }
         this.constraintStreamImplType = constraintStreamImplType;
         return this;
     }
@@ -65,6 +71,10 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     @Override
     public ConstraintVerifier<ConstraintProvider_, Solution_> withDroolsAlphaNetworkCompilationEnabled(
             boolean droolsAlphaNetworkCompilationEnabled) {
+        if (droolsAlphaNetworkCompilationEnabled && getConstraintStreamImplType() == ConstraintStreamImplType.BAVET) {
+            throw new IllegalArgumentException("Can not enable Drools Alpha Network Compilation with "
+                    + ConstraintStreamImplType.class.getSimpleName() + "." + ConstraintStreamImplType.BAVET + ".");
+        }
         this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
         return this;
     }
