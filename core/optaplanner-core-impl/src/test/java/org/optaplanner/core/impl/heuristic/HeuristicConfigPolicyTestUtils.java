@@ -1,20 +1,21 @@
-package org.optaplanner.core.impl.heuristic.selector;
+package org.optaplanner.core.impl.heuristic;
 
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
-public abstract class AbstractSelectorFactoryTest {
+public final class HeuristicConfigPolicyTestUtils {
 
-    public HeuristicConfigPolicy<TestdataSolution> buildHeuristicConfigPolicy() {
+    public static HeuristicConfigPolicy<TestdataSolution> buildHeuristicConfigPolicy() {
         return buildHeuristicConfigPolicy(TestdataSolution.buildSolutionDescriptor());
     }
 
-    public <Solution_> HeuristicConfigPolicy<Solution_>
+    public static <Solution_> HeuristicConfigPolicy<Solution_>
             buildHeuristicConfigPolicy(SolutionDescriptor<Solution_> solutionDescriptor) {
         return new HeuristicConfigPolicy.Builder<>(EnvironmentMode.REPRODUCIBLE, null, null, null, null, solutionDescriptor)
                 .build();
     }
 
+    private HeuristicConfigPolicyTestUtils() {
+    }
 }

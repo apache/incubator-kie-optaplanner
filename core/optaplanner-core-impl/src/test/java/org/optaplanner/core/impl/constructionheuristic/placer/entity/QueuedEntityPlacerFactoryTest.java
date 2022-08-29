@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.constructionheuristic.placer.entity.PlacementAssertions.assertEntityPlacement;
+import static org.optaplanner.core.impl.heuristic.HeuristicConfigPolicyTestUtils.buildHeuristicConfigPolicy;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -13,7 +14,6 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
-import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacer;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacerFactory;
@@ -68,12 +68,6 @@ class QueuedEntityPlacerFactoryTest {
         Placement<TestdataMultiVarSolution> placement = placementIterator.next();
 
         assertEntityPlacement(placement, "e1", "e1v1", "e1v2", "e2v1", "e2v2");
-    }
-
-    public HeuristicConfigPolicy<TestdataMultiVarSolution>
-            buildHeuristicConfigPolicy(SolutionDescriptor<TestdataMultiVarSolution> solutionDescriptor) {
-        return new HeuristicConfigPolicy.Builder<>(EnvironmentMode.REPRODUCIBLE, null, null, null, null, solutionDescriptor)
-                .build();
     }
 
     private TestdataMultiVarSolution generateTestdataSolution() {
