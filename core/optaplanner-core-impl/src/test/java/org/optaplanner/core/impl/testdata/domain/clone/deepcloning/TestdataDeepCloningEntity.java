@@ -27,11 +27,9 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     }
 
     private TestdataValue value;
-    // Will not be picked up for shallow cloning.
     private TestdataVariousTypes unannotatedCopiedTestdataVariousTypes;
-    // Will be picked for deep-cloning on account of the annotated getter.
     private TestdataVariousTypes unannotatedClonedTestdataVariousTypes;
-    // Will be picked for deep-cloning on account of the annotated class.
+    private TestdataVariousTypes annotatedClonedTestdataVariousTypes;
     private AnnotatedTestdataVariousTypes annotatedTestdataVariousTypes;
     private List<String> shadowVariableList;
     private Map<String, String> shadowVariableMap;
@@ -59,6 +57,7 @@ public class TestdataDeepCloningEntity extends TestdataObject {
 
     /**
      * Neither the type nor the method or the field are annotated; therefore we expect a shallow clone.
+     * 
      * @return
      */
     public TestdataVariousTypes getUnannotatedCopiedTestdataVariousTypes() {
@@ -70,7 +69,8 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     }
 
     /**
-     * Even though the return type is not annotated, the method is annotated, therefore we expect a deep-clone.
+     * Even though the return type is not annotated, the method is annotated, therefore we expect a deep clone.
+     * 
      * @return
      */
     @DeepPlanningClone
@@ -83,7 +83,25 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     }
 
     /**
-     * The return type is annotated. Therefore we expect a deep-cloned.
+     * Neither the return type nor the method are annotated, but the instance returned is of an annotated type.
+     * Therefore we expect a deep clone.
+     * 
+     * @return
+     */
+    public TestdataVariousTypes getAnnotatedClonedTestdataVariousTypes() {
+        return annotatedClonedTestdataVariousTypes;
+    }
+
+    public void setAnnotatedClonedTestdataVariousTypes(TestdataVariousTypes annotatedClonedTestdataVariousTypes) {
+        if (!(annotatedClonedTestdataVariousTypes instanceof AnnotatedTestdataVariousTypes)) {
+            throw new IllegalArgumentException("Unexpected value: " + annotatedClonedTestdataVariousTypes);
+        }
+        this.annotatedClonedTestdataVariousTypes = annotatedClonedTestdataVariousTypes;
+    }
+
+    /**
+     * The return type is annotated. Therefore we expect a deep clone.
+     * 
      * @return
      */
     public AnnotatedTestdataVariousTypes getAnnotatedTestdataVariousTypes() {

@@ -41,9 +41,8 @@ class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
     protected <Solution_> SolutionCloner<Solution_> createSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
         String className = GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor);
         final byte[][] classBytecodeHolder = new byte[1][];
-        ClassOutput classOutput = (path, byteCode) -> {
-            classBytecodeHolder[0] = byteCode;
-        };
+        ClassOutput classOutput =
+                GizmoSolutionClonerImplementor.createClassOutputWithDebuggingCapability(classBytecodeHolder);
         ClassCreator classCreator = ClassCreator.builder()
                 .className(className)
                 .interfaces(SolutionCloner.class)
@@ -65,7 +64,7 @@ class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
                 });
 
         GizmoSolutionClonerImplementor.defineClonerFor(classCreator, solutionDescriptor,
-                Arrays.asList(solutionDescriptor.getSolutionClass()),
+                Collections.singletonList(solutionDescriptor.getSolutionClass()),
                 memoizedSolutionOrEntityDescriptorMap, deepClonedClassSet);
         classCreator.close();
         final byte[] byteCode = classBytecodeHolder[0];

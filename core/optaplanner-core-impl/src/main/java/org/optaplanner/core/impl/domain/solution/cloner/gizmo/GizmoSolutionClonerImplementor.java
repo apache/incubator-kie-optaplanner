@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
@@ -167,13 +166,8 @@ public class GizmoSolutionClonerImplementor {
         }
     }
 
-    public static <T> SolutionCloner<T> createClonerFor(SolutionDescriptor<T> solutionDescriptor) {
-        String className = GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor);
-        if (classNameToBytecode.containsKey(className)) {
-            return createInstance(className);
-        }
-        final byte[][] classBytecodeHolder = new byte[1][];
-        ClassOutput classOutput = (path, byteCode) -> {
+    public static ClassOutput createClassOutputWithDebuggingCapability(byte[][] classBytecodeHolder) {
+        return (path, byteCode) -> {
             classBytecodeHolder[0] = byteCode;
 
             if (DEBUG) {
@@ -189,11 +183,19 @@ public class GizmoSolutionClonerImplementor {
                 }
             }
         };
+    }
+
+    public static <T> SolutionCloner<T> createClonerFor(SolutionDescriptor<T> solutionDescriptor) {
+        String className = GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor);
+        if (classNameToBytecode.containsKey(className)) {
+            return createInstance(className);
+        }
+        final byte[][] classBytecodeHolder = new byte[1][];
         ClassCreator classCreator = ClassCreator.builder()
                 .className(className)
                 .interfaces(SolutionCloner.class)
                 .superClass(Object.class)
-                .classOutput(classOutput)
+                .classOutput(createClassOutputWithDebuggingCapability(classBytecodeHolder))
                 .setFinal(true)
                 .build();
 
@@ -382,42 +384,9 @@ public class GizmoSolutionClonerImplementor {
             ResultHandle fieldValue = shallowlyClonedField.readMemberValue(methodCreator, thisObj);
             if (!entitySubclasses.isEmpty()) {
                 AssignableResultHandle cloneResultHolder = methodCreator.createVariable(type);
-                AtomicBoolean deepCloneDecision = new AtomicBoolean(false);
-                final Optional<Class<?>> maybeDeclaringClass = deepClonedClassesSortedSet.stream()
-                        .filter(deepCloneClass -> deepCloneClass.getName()
-                                .equals(shallowlyClonedField.getDeclaringClassName().replace("/", ".")))
-                        .findFirst();
-
-                if (maybeDeclaringClass.isPresent()) {
-                    final Class<?> declaringClass = maybeDeclaringClass.get();
-                    shallowlyClonedField.whenIsField(fieldDescriptor -> {
-                        try {
-                            Field field = declaringClass.getDeclaredField(fieldDescriptor.getName());
-                            deepCloneDecision.set(solutionInfo.getDeepCloningUtils().isFieldDeepCloned(field, declaringClass));
-                        } catch (NoSuchFieldException e) {
-                            throw new IllegalStateException("Impossible state: class ("
-                                    + declaringClass.getName() + " does not have field ("
-                                    + fieldDescriptor.getName() + ").", e);
-                        }
-                    });
-                    shallowlyClonedField.whenIsMethod(methodDescriptor -> {
-                        try {
-                            String fieldName = methodDescriptor.getName().substring(3);
-                            fieldName = Character.toLowerCase(fieldName.charAt(0)) + fieldName.substring(1);
-                            Field field = declaringClass.getDeclaredField(fieldName);
-                            deepCloneDecision.set(solutionInfo.getDeepCloningUtils().getDeepCloneDecision(field, declaringClass,
-                                    field.getType()));
-                        } catch (NoSuchFieldException e) {
-                            throw new IllegalStateException("Impossible state: class ("
-                                    + declaringClass.getName() + " does not have field " +
-                                    "corresponding to getter ("
-                                    + methodDescriptor.getName() + ").", e);
-                        }
-                    });
-                }
                 writeDeepCloneEntityOrFactInstructions(methodCreator, solutionInfo, type,
                         fieldValue, cloneResultHolder, createdCloneMap, deepClonedClassesSortedSet,
-                        deepCloneDecision.get());
+                        false);
                 fieldValue = cloneResultHolder;
             }
             if (!shallowlyClonedField.writeMemberValue(methodCreator, clone, fieldValue)) {
