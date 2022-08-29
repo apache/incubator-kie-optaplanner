@@ -20,9 +20,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.score.buildin.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
@@ -73,11 +71,7 @@ class QueuedEntityPlacerFactoryTest extends AbstractEntityPlacerTest {
 
     public HeuristicConfigPolicy<TestdataMultiVarSolution>
             buildHeuristicConfigPolicy(SolutionDescriptor<TestdataMultiVarSolution> solutionDescriptor) {
-        InnerScoreDirectorFactory<TestdataMultiVarSolution, SimpleScore> scoreDirectorFactory =
-                mock(InnerScoreDirectorFactory.class);
-        when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
-        when(scoreDirectorFactory.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
-        return new HeuristicConfigPolicy.Builder<>(EnvironmentMode.REPRODUCIBLE, null, null, null, scoreDirectorFactory)
+        return new HeuristicConfigPolicy.Builder<>(EnvironmentMode.REPRODUCIBLE, null, null, null, null, solutionDescriptor)
                 .build();
     }
 
