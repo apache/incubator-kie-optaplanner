@@ -1,0 +1,34 @@
+on:
+  # pull_request_target:
+  pull_request: # TODO to set back after testing
+    branches:
+      - main
+      - 8.*
+
+jobs:
+  label_pr:
+    name: Set correct label to PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if organization member belongs
+        id: is_organization_member
+        uses: radtriste/is-organization-member@debug_gha
+        with:
+          organization: kiegroup
+          username: ${{ github.event.pull_request.user.login }}
+          token: ${{ secrets.KIE_CI_READ_ORG_TOKEN }}
+      - name: Debug that user belongs to it
+        run: |
+          echo "Username = ${{ github.event.pull_request.user.login }}"
+          echo "User belongs = ${{ steps.is_organization_member.outputs.result }}"
+      
+      # - name: Check if organization member does not belong
+      #   id: is_organization_member_not_belong
+      #   uses: jamessingleton/is-organization-member@1.0.1
+      #   with:
+      #     organization: kiegroup13456
+      #     username: ${{ github.event.pull_request.user.login }}
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Debug that user NOT belongs to it
+      #   run: |
+      #     echo "User belongs = ${{ steps.is_organization_member_not_belong.outputs.result }}"
