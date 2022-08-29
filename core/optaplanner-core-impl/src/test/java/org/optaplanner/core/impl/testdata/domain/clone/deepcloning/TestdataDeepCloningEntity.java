@@ -30,6 +30,7 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     private TestdataVariousTypes unannotatedCopiedTestdataVariousTypes;
     private TestdataVariousTypes unannotatedClonedTestdataVariousTypes;
     private TestdataVariousTypes annotatedClonedTestdataVariousTypes;
+    private TestdataVariousTypes sameValueAsUnannotatedClonedTestdataVariousTypes;
     private AnnotatedTestdataVariousTypes annotatedTestdataVariousTypes;
     private List<String> shadowVariableList;
     private Map<String, String> shadowVariableMap;
@@ -83,6 +84,22 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     }
 
     /**
+     * This field originally gets the same value as {@link #getUnannotatedClonedTestdataVariousTypes()},
+     * but unlike that field, it is not annotated to be deep-cloned.
+     * Therefore we expect a shallow clone, even though the two methods on a will then return different instances.
+     *
+     * @return
+     */
+    public TestdataVariousTypes getSameValueAsUnannotatedClonedTestdataVariousTypes() {
+        return sameValueAsUnannotatedClonedTestdataVariousTypes;
+    }
+
+    public void setSameValueAsUnannotatedClonedTestdataVariousTypes(
+            TestdataVariousTypes sameValueAsUnannotatedClonedTestdataVariousTypes) {
+        this.sameValueAsUnannotatedClonedTestdataVariousTypes = sameValueAsUnannotatedClonedTestdataVariousTypes;
+    }
+
+    /**
      * Neither the return type nor the method are annotated, but the instance returned is of an annotated type.
      * Therefore we expect a deep clone.
      * 
@@ -94,7 +111,7 @@ public class TestdataDeepCloningEntity extends TestdataObject {
 
     public void setAnnotatedClonedTestdataVariousTypes(TestdataVariousTypes annotatedClonedTestdataVariousTypes) {
         if (annotatedClonedTestdataVariousTypes != null
-            && annotatedClonedTestdataVariousTypes.getClass() != AnnotatedTestdataVariousTypes.class) {
+                && annotatedClonedTestdataVariousTypes.getClass() != AnnotatedTestdataVariousTypes.class) {
             throw new IllegalArgumentException("Unexpected value: " + annotatedClonedTestdataVariousTypes);
         }
         this.annotatedClonedTestdataVariousTypes = annotatedClonedTestdataVariousTypes;

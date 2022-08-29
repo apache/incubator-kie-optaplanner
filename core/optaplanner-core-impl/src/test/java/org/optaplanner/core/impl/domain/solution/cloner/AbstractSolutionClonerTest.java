@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerImplementor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -778,6 +777,7 @@ public abstract class AbstractSolutionClonerTest {
         a.setUnannotatedClonedTestdataVariousTypes(new TestdataVariousTypes());
         a.setAnnotatedTestdataVariousTypes(new AnnotatedTestdataVariousTypes());
         a.setAnnotatedClonedTestdataVariousTypes(new AnnotatedTestdataVariousTypes());
+        a.setSameValueAsUnannotatedClonedTestdataVariousTypes(a.getUnannotatedClonedTestdataVariousTypes());
         List<String> aShadowVariableList = Arrays.asList("shadow a1", "shadow a2");
         a.setShadowVariableList(aShadowVariableList);
         TestdataDeepCloningEntity b = new TestdataDeepCloningEntity("b", val1);
@@ -836,6 +836,8 @@ public abstract class AbstractSolutionClonerTest {
         // Assert that all the various types have been treated properly.
         assertThat(cloneA.getUnannotatedCopiedTestdataVariousTypes())
                 .isSameAs(a.getUnannotatedCopiedTestdataVariousTypes());
+        assertThat(cloneA.getSameValueAsUnannotatedClonedTestdataVariousTypes())
+                .isSameAs(a.getSameValueAsUnannotatedClonedTestdataVariousTypes());
 
         TestdataVariousTypes originalUnannotatedTypes = a.getUnannotatedClonedTestdataVariousTypes();
         TestdataVariousTypes clonedUnannotatedTypes = cloneA.getUnannotatedClonedTestdataVariousTypes();

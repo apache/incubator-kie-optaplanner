@@ -1,12 +1,12 @@
 package org.optaplanner.core.impl.testdata.domain.clone.deepcloning;
 
-import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
+import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 
 public class TestdataVariousTypes {
 
