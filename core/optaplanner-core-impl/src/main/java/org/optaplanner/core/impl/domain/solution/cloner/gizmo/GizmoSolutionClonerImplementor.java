@@ -57,7 +57,7 @@ public class GizmoSolutionClonerImplementor {
             Object.class);
     private static final MethodDescriptor PUT_METHOD = MethodDescriptor.ofMethod(Map.class, "put", Object.class,
             Object.class, Object.class);
-    private static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     /**
      * A custom classloader that looks for the class in

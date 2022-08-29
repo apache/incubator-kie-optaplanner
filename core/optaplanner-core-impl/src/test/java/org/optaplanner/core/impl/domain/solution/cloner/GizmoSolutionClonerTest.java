@@ -37,6 +37,13 @@ import io.quarkus.gizmo.MethodDescriptor;
 
 class GizmoSolutionClonerTest extends AbstractSolutionClonerTest {
 
+    @Test
+    void debuggingDisabled() {
+        assertThat(GizmoSolutionClonerImplementor.DEBUG)
+                .as("Gizmo debugging is enabled. Please disable before merging changes.")
+                .isFalse();
+    }
+
     @Override
     protected <Solution_> SolutionCloner<Solution_> createSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
         String className = GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor);
