@@ -3,7 +3,6 @@ package org.optaplanner.core.impl.domain.solution.cloner.gizmo;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -30,7 +29,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
-import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberDescriptor;
 import org.optaplanner.core.impl.domain.solution.cloner.DeepCloningUtils;
@@ -407,23 +405,17 @@ public class GizmoSolutionClonerImplementor {
                             String fieldName = methodDescriptor.getName().substring(3);
                             fieldName = Character.toLowerCase(fieldName.charAt(0)) + fieldName.substring(1);
                             Field field = declaringClass.getDeclaredField(fieldName);
-                            Method method = declaringClass.getDeclaredMethod(methodDescriptor.getName());
                             deepCloneDecision.set(solutionInfo.getDeepCloningUtils().getDeepCloneDecision(field, declaringClass,
                                     field.getType()));
-                            System.out.println(fieldName + ": " + deepCloneDecision.get());
-                            System.out.println(Arrays.toString(method.getAnnotations()));
-                            System.out.println(method.isAnnotationPresent(DeepPlanningClone.class));
                         } catch (NoSuchFieldException e) {
                             throw new IllegalStateException("Impossible state: class ("
                                     + declaringClass.getName() + " does not have field " +
                                     "corresponding to getter ("
                                     + methodDescriptor.getName() + ").", e);
-                        } catch (NoSuchMethodException e) {
-                            throw new RuntimeException(e);
                         }
                     });
                 }
-                writeDeepCloneEntityInstructions(methodCreator, solutionInfo, type,
+                writeDeepCloneEntityOrFactInstructions(methodCreator, solutionInfo, type,
                         fieldValue, cloneResultHolder, createdCloneMap, deepClonedClassesSortedSet,
                         deepCloneDecision.get());
                 fieldValue = cloneResultHolder;
@@ -438,6 +430,10 @@ public class GizmoSolutionClonerImplementor {
         }
     }
 
+    /**
+     * @see #writeDeepCloneInstructions(BytecodeCreator, GizmoSolutionOrEntityDescriptor, Class, Type, ResultHandle,
+     *      AssignableResultHandle, ResultHandle, SortedSet)
+     */
     private static void writeDeepCloneInstructions(BytecodeCreator bytecodeCreator,
             GizmoSolutionOrEntityDescriptor solutionDescriptor, Field deeplyClonedField,
             GizmoMemberDescriptor gizmoMemberDescriptor, ResultHandle toClone, AssignableResultHandle cloneResultHolder,
@@ -464,30 +460,11 @@ public class GizmoSolutionClonerImplementor {
             writeDeepCloneArrayInstructions(isNotNullBranch, solutionDescriptor, deeplyClonedFieldClass,
                     toClone, cloneResultHolder, createdCloneMap, deepClonedClassesSortedSet);
         } else {
-            boolean forceDeepClone = solutionDescriptor.getDeepCloningUtils().isFieldDeepCloned(deeplyClonedField, deeplyClonedField.getDeclaringClass());
-            writeDeepCloneEntityInstructions(isNotNullBranch, solutionDescriptor, deeplyClonedFieldClass,
+            boolean forceDeepClone = solutionDescriptor.getDeepCloningUtils().isFieldDeepCloned(deeplyClonedField,
+                    deeplyClonedField.getDeclaringClass());
+            writeDeepCloneEntityOrFactInstructions(isNotNullBranch, solutionDescriptor, deeplyClonedFieldClass,
                     toClone, cloneResultHolder, createdCloneMap, deepClonedClassesSortedSet, forceDeepClone);
         }
-    }
-
-    private static void writeDeepCloneSolutionInstructions(BytecodeCreator bytecodeCreator,
-            GizmoSolutionOrEntityDescriptor solutionDescriptor, ResultHandle toClone, AssignableResultHandle cloneResultHolder,
-            ResultHandle createdCloneMap) {
-        BranchResult isNull = bytecodeCreator.ifNull(toClone);
-
-        BytecodeCreator isNullBranch = isNull.trueBranch();
-        isNullBranch.assign(cloneResultHolder, isNullBranch.loadNull());
-
-        BytecodeCreator isNotNullBranch = isNull.falseBranch();
-
-        ResultHandle clone = isNotNullBranch.invokeStaticMethod(
-                MethodDescriptor.ofMethod(
-                        GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor.getSolutionDescriptor()),
-                        "cloneSolutionRun", solutionDescriptor.getSolutionDescriptor().getSolutionClass(),
-                        solutionDescriptor.getSolutionDescriptor().getSolutionClass(), Map.class),
-                toClone,
-                createdCloneMap);
-        isNotNullBranch.assign(cloneResultHolder, clone);
     }
 
     /**
@@ -569,9 +546,29 @@ public class GizmoSolutionClonerImplementor {
                     toClone, cloneResultHolder, createdCloneMap, deepClonedClassesSortedSet);
         } else {
             // Clone entity
-            writeDeepCloneEntityInstructions(isNotNullBranch, solutionDescriptor, deeplyClonedFieldClass,
+            writeDeepCloneEntityOrFactInstructions(isNotNullBranch, solutionDescriptor, deeplyClonedFieldClass,
                     toClone, cloneResultHolder, createdCloneMap, deepClonedClassesSortedSet, false);
         }
+    }
+
+    private static void writeDeepCloneSolutionInstructions(BytecodeCreator bytecodeCreator,
+            GizmoSolutionOrEntityDescriptor solutionDescriptor, ResultHandle toClone, AssignableResultHandle cloneResultHolder,
+            ResultHandle createdCloneMap) {
+        BranchResult isNull = bytecodeCreator.ifNull(toClone);
+
+        BytecodeCreator isNullBranch = isNull.trueBranch();
+        isNullBranch.assign(cloneResultHolder, isNullBranch.loadNull());
+
+        BytecodeCreator isNotNullBranch = isNull.falseBranch();
+
+        ResultHandle clone = isNotNullBranch.invokeStaticMethod(
+                MethodDescriptor.ofMethod(
+                        GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor.getSolutionDescriptor()),
+                        "cloneSolutionRun", solutionDescriptor.getSolutionDescriptor().getSolutionClass(),
+                        solutionDescriptor.getSolutionDescriptor().getSolutionClass(), Map.class),
+                toClone,
+                createdCloneMap);
+        isNotNullBranch.assign(cloneResultHolder, clone);
     }
 
     /**
@@ -773,7 +770,7 @@ public class GizmoSolutionClonerImplementor {
                 .invokeInterfaceMethod(MethodDescriptor.ofMethod(Map.Entry.class, "getKey", Object.class), entry);
         if (!entitySubclasses.isEmpty()) {
             AssignableResultHandle keyCloneResultHolder = whileLoopBlock.createVariable(keyClass);
-            writeDeepCloneEntityInstructions(whileLoopBlock, solutionDescriptor, keyClass,
+            writeDeepCloneEntityOrFactInstructions(whileLoopBlock, solutionDescriptor, keyClass,
                     key, keyCloneResultHolder, createdCloneMap, deepClonedClassesSortedSet, false);
             whileLoopBlock.invokeInterfaceMethod(
                     PUT_METHOD,
@@ -842,49 +839,43 @@ public class GizmoSolutionClonerImplementor {
      * else if (toClone instanceof SubclassOfEntityN) {
      *     // ...
      * } else {
-     *     cloneResultHolder = toClone;
+     *     // shallow or deep clone based on whether deep cloning is forced
      * }
      * </pre>
      **/
-    private static void writeDeepCloneEntityInstructions(BytecodeCreator bytecodeCreator,
+    private static void writeDeepCloneEntityOrFactInstructions(BytecodeCreator bytecodeCreator,
             GizmoSolutionOrEntityDescriptor solutionDescriptor, Class<?> deeplyClonedFieldClass, ResultHandle toClone,
             AssignableResultHandle cloneResultHolder, ResultHandle createdCloneMap,
             SortedSet<Class<?>> deepClonedClassesSortedSet, boolean forceDeepClone) {
-        List<Class<?>> entitySubclasses = deepClonedClassesSortedSet.stream()
+        List<Class<?>> deepClonedSubclasses = deepClonedClassesSortedSet.stream()
                 .filter(deeplyClonedFieldClass::isAssignableFrom)
-                .filter(type -> forceDeepClone || solutionDescriptor.getDeepCloningUtils().isClassDeepCloned(type))
+                .filter(type -> solutionDescriptor.getDeepCloningUtils().isClassDeepCloned(type))
                 .collect(Collectors.toList());
-        if (entitySubclasses.isEmpty()) {
-            // Not an entity, can shallow copy
-            bytecodeCreator.assign(cloneResultHolder, toClone);
-        } else {
-            BytecodeCreator currentBranch = bytecodeCreator;
-            for (Class<?> entitySubclass : entitySubclasses) {
-                ResultHandle isInstance = currentBranch.instanceOf(toClone, entitySubclass);
-                BranchResult isInstanceBranchResult = currentBranch.ifTrue(isInstance);
-                BytecodeCreator isInstanceBranch = isInstanceBranchResult.trueBranch();
-                ResultHandle cloneObj = isInstanceBranch.invokeStaticMethod(
-                        MethodDescriptor.ofMethod(
-                                GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor.getSolutionDescriptor()),
-                                getEntityHelperMethodName(entitySubclass), entitySubclass, entitySubclass, Map.class),
-                        toClone, createdCloneMap);
-                isInstanceBranch.assign(cloneResultHolder, cloneObj);
-                currentBranch = isInstanceBranchResult.falseBranch();
-            }
-            // currentBranch is when the instance is of none of the entity subclass types
-            if (forceDeepClone) { // Deep cloning is still forced.
-                final BytecodeCreator notAnEntity = currentBranch;
-                ResultHandle cloneObj = notAnEntity.invokeStaticMethod(
-                        MethodDescriptor.ofMethod(
-                                GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor.getSolutionDescriptor()),
-                                getEntityHelperMethodName(deeplyClonedFieldClass), deeplyClonedFieldClass, deeplyClonedFieldClass, Map.class),
-                        toClone, createdCloneMap);
-                notAnEntity.assign(cloneResultHolder, cloneObj);
-            } else { // We can shallow clone.
-                final BytecodeCreator notAnEntity = currentBranch;
-                notAnEntity.assign(cloneResultHolder, toClone);
-            }
-
+        BytecodeCreator currentBranch = bytecodeCreator;
+        // If the field holds an instance of one of the field's declared type's subtypes, clone the subtype instead.
+        for (Class<?> deepClonedSubclass : deepClonedSubclasses) {
+            ResultHandle isInstance = currentBranch.instanceOf(toClone, deepClonedSubclass);
+            BranchResult isInstanceBranchResult = currentBranch.ifTrue(isInstance);
+            BytecodeCreator isInstanceBranch = isInstanceBranchResult.trueBranch();
+            ResultHandle cloneObj = isInstanceBranch.invokeStaticMethod(
+                    MethodDescriptor.ofMethod(
+                            GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor.getSolutionDescriptor()),
+                            getEntityHelperMethodName(deepClonedSubclass), deepClonedSubclass, deepClonedSubclass, Map.class),
+                    toClone, createdCloneMap);
+            isInstanceBranch.assign(cloneResultHolder, cloneObj);
+            currentBranch = isInstanceBranchResult.falseBranch();
+        }
+        // We are certain that the instance is of the same type as the declared field type.
+        if (forceDeepClone) { // Deep cloning is still forced.
+            ResultHandle cloneObj = currentBranch.invokeStaticMethod(
+                    MethodDescriptor.ofMethod(
+                            GizmoSolutionClonerFactory.getGeneratedClassName(solutionDescriptor.getSolutionDescriptor()),
+                            getEntityHelperMethodName(deeplyClonedFieldClass), deeplyClonedFieldClass,
+                            deeplyClonedFieldClass, Map.class),
+                    toClone, createdCloneMap);
+            currentBranch.assign(cloneResultHolder, cloneObj);
+        } else { // We can shallow clone.
+            currentBranch.assign(cloneResultHolder, toClone);
         }
     }
 

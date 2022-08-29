@@ -32,7 +32,7 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     // Will be picked for deep-cloning on account of the annotated getter.
     private TestdataVariousTypes unannotatedClonedTestdataVariousTypes;
     // Will be picked for deep-cloning on account of the annotated class.
-    private AnnotatedTestdataVariousTypes annotatedClonedTestdataVariousTypes;
+    private AnnotatedTestdataVariousTypes annotatedTestdataVariousTypes;
     private List<String> shadowVariableList;
     private Map<String, String> shadowVariableMap;
 
@@ -57,6 +57,10 @@ public class TestdataDeepCloningEntity extends TestdataObject {
         this.value = value;
     }
 
+    /**
+     * Neither the type nor the method or the field are annotated; therefore we expect a shallow clone.
+     * @return
+     */
     public TestdataVariousTypes getUnannotatedCopiedTestdataVariousTypes() {
         return unannotatedCopiedTestdataVariousTypes;
     }
@@ -65,6 +69,10 @@ public class TestdataDeepCloningEntity extends TestdataObject {
         this.unannotatedCopiedTestdataVariousTypes = unannotatedCopiedTestdataVariousTypes;
     }
 
+    /**
+     * Even though the return type is not annotated, the method is annotated, therefore we expect a deep-clone.
+     * @return
+     */
     @DeepPlanningClone
     public TestdataVariousTypes getUnannotatedClonedTestdataVariousTypes() {
         return unannotatedClonedTestdataVariousTypes;
@@ -74,12 +82,16 @@ public class TestdataDeepCloningEntity extends TestdataObject {
         this.unannotatedClonedTestdataVariousTypes = unannotatedClonedTestdataVariousTypes;
     }
 
-    public AnnotatedTestdataVariousTypes getAnnotatedClonedTestdataVariousTypes() {
-        return annotatedClonedTestdataVariousTypes;
+    /**
+     * The return type is annotated. Therefore we expect a deep-cloned.
+     * @return
+     */
+    public AnnotatedTestdataVariousTypes getAnnotatedTestdataVariousTypes() {
+        return annotatedTestdataVariousTypes;
     }
 
-    public void setAnnotatedClonedTestdataVariousTypes(AnnotatedTestdataVariousTypes annotatedClonedTestdataVariousTypes) {
-        this.annotatedClonedTestdataVariousTypes = annotatedClonedTestdataVariousTypes;
+    public void setAnnotatedTestdataVariousTypes(AnnotatedTestdataVariousTypes annotatedTestdataVariousTypes) {
+        this.annotatedTestdataVariousTypes = annotatedTestdataVariousTypes;
     }
 
     @DeepPlanningClone

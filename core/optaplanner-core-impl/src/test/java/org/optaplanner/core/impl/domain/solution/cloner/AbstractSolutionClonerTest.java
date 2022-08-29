@@ -774,7 +774,7 @@ public abstract class AbstractSolutionClonerTest {
         TestdataValue val3 = new TestdataValue("3");
         TestdataDeepCloningEntity a = new TestdataDeepCloningEntity("a", val1);
         a.setUnannotatedCopiedTestdataVariousTypes(new TestdataVariousTypes());
-        a.setAnnotatedClonedTestdataVariousTypes(new AnnotatedTestdataVariousTypes());
+        a.setAnnotatedTestdataVariousTypes(new AnnotatedTestdataVariousTypes());
         a.setUnannotatedClonedTestdataVariousTypes(new TestdataVariousTypes());
         List<String> aShadowVariableList = Arrays.asList("shadow a1", "shadow a2");
         a.setShadowVariableList(aShadowVariableList);
@@ -832,8 +832,91 @@ public abstract class AbstractSolutionClonerTest {
         assertThat(cloneB.getShadowVariableMap().get("shadow key b1")).isEqualTo("shadow value b1");
 
         // Assert that all the various types have been treated properly.
-        AnnotatedTestdataVariousTypes originalAnnotatedTypes = a.getAnnotatedClonedTestdataVariousTypes();
-        AnnotatedTestdataVariousTypes clonedAnnotatedTypes = cloneA.getAnnotatedClonedTestdataVariousTypes();
+        AnnotatedTestdataVariousTypes originalAnnotatedTypes = a.getAnnotatedTestdataVariousTypes();
+        AnnotatedTestdataVariousTypes clonedAnnotatedTypes = cloneA.getAnnotatedTestdataVariousTypes();
+        TestdataVariousTypes originalUnannotatedTypes = a.getUnannotatedClonedTestdataVariousTypes();
+        TestdataVariousTypes clonedUnannotatedTypes = cloneA.getUnannotatedClonedTestdataVariousTypes();
+        assertSoftly(softly -> {
+            softly.assertThat(clonedAnnotatedTypes).isNotSameAs(originalAnnotatedTypes);
+            softly.assertThat(clonedUnannotatedTypes).isNotSameAs(originalUnannotatedTypes);
+            softly.assertThat(cloneA.getUnannotatedCopiedTestdataVariousTypes())
+                    .isSameAs(a.getUnannotatedCopiedTestdataVariousTypes());
+        });
+        assertTestdataVariousTypes(originalUnannotatedTypes, clonedUnannotatedTypes);
+        assertTestdataVariousTypes(originalAnnotatedTypes, clonedAnnotatedTypes);
+    }
+
+    @Test
+    void deepPlanningCloneCornerCase() {
+        SolutionDescriptor<TestdataDeepCloningSolution> solutionDescriptor =
+                TestdataDeepCloningSolution.buildSolutionDescriptor();
+        SolutionCloner<TestdataDeepCloningSolution> cloner = createSolutionCloner(solutionDescriptor);
+
+        TestdataValue val1 = new TestdataValue("1");
+        TestdataValue val2 = new TestdataValue("2");
+        TestdataValue val3 = new TestdataValue("3");
+        TestdataDeepCloningEntity a = new TestdataDeepCloningEntity("a", val1);
+        a.setUnannotatedCopiedTestdataVariousTypes(new TestdataVariousTypes());
+        a.setAnnotatedTestdataVariousTypes(new AnnotatedTestdataVariousTypes());
+        a.setUnannotatedClonedTestdataVariousTypes(new TestdataVariousTypes());
+        List<String> aShadowVariableList = Arrays.asList("shadow a1", "shadow a2");
+        a.setShadowVariableList(aShadowVariableList);
+        TestdataDeepCloningEntity b = new TestdataDeepCloningEntity("b", val1);
+        Map<String, String> bShadowVariableMap = new HashMap<>();
+        bShadowVariableMap.put("shadow key b1", "shadow value b1");
+        bShadowVariableMap.put("shadow key b2", "shadow value b2");
+        b.setShadowVariableMap(bShadowVariableMap);
+        TestdataDeepCloningEntity c = new TestdataDeepCloningEntity("c", val3);
+        List<String> cShadowVariableList = Arrays.asList("shadow c1", "shadow c2");
+        c.setShadowVariableList(cShadowVariableList);
+        TestdataDeepCloningEntity d = new TestdataDeepCloningEntity("d", val3);
+
+        TestdataDeepCloningSolution original = new TestdataDeepCloningSolution("solution");
+        List<TestdataValue> valueList = Arrays.asList(val1, val2, val3);
+        original.setValueList(valueList);
+        List<TestdataDeepCloningEntity> originalEntityList = Arrays.asList(a, b, c, d);
+        original.setEntityList(originalEntityList);
+        List<String> generalShadowVariableList = Arrays.asList("shadow g1", "shadow g2");
+        original.setGeneralShadowVariableList(generalShadowVariableList);
+
+        TestdataDeepCloningSolution clone = cloner.cloneSolution(original);
+
+        assertThat(clone).isNotSameAs(original);
+        assertCode("solution", clone);
+        assertThat(clone.getValueList()).isSameAs(valueList);
+        assertThat(clone.getScore()).isEqualTo(original.getScore());
+
+        List<TestdataDeepCloningEntity> cloneEntityList = clone.getEntityList();
+        assertThat(cloneEntityList).isNotSameAs(originalEntityList);
+        assertThat(cloneEntityList.size()).isEqualTo(4);
+        TestdataDeepCloningEntity cloneA = cloneEntityList.get(0);
+        assertDeepCloningEntityClone(a, cloneA, "a");
+        TestdataDeepCloningEntity cloneB = cloneEntityList.get(1);
+        assertDeepCloningEntityClone(b, cloneB, "b");
+        TestdataDeepCloningEntity cloneC = cloneEntityList.get(2);
+        assertDeepCloningEntityClone(c, cloneC, "c");
+        TestdataDeepCloningEntity cloneD = cloneEntityList.get(3);
+        assertDeepCloningEntityClone(d, cloneD, "d");
+
+        List<String> cloneGeneralShadowVariableList = clone.getGeneralShadowVariableList();
+        assertThat(cloneGeneralShadowVariableList).isNotSameAs(generalShadowVariableList);
+        assertThat(cloneGeneralShadowVariableList.size()).isEqualTo(2);
+        assertThat(cloneGeneralShadowVariableList.get(0)).isSameAs(generalShadowVariableList.get(0));
+        assertThat(cloneGeneralShadowVariableList.get(1)).isEqualTo(generalShadowVariableList.get(1));
+
+        b.setValue(val2);
+        assertCode("2", b.getValue());
+        // Clone remains unchanged
+        assertCode("1", cloneB.getValue());
+
+        b.getShadowVariableMap().put("shadow key b1", "other shadow value b1");
+        assertThat(b.getShadowVariableMap().get("shadow key b1")).isEqualTo("other shadow value b1");
+        // Clone remains unchanged
+        assertThat(cloneB.getShadowVariableMap().get("shadow key b1")).isEqualTo("shadow value b1");
+
+        // Assert that all the various types have been treated properly.
+        AnnotatedTestdataVariousTypes originalAnnotatedTypes = a.getAnnotatedTestdataVariousTypes();
+        AnnotatedTestdataVariousTypes clonedAnnotatedTypes = cloneA.getAnnotatedTestdataVariousTypes();
         TestdataVariousTypes originalUnannotatedTypes = a.getUnannotatedClonedTestdataVariousTypes();
         TestdataVariousTypes clonedUnannotatedTypes = cloneA.getUnannotatedClonedTestdataVariousTypes();
         assertSoftly(softly -> {
