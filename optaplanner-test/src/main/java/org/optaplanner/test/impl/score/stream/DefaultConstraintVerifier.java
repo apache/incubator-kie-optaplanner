@@ -33,8 +33,8 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
      */
     private final AtomicReference<ConfiguredConstraintVerifier<ConstraintProvider_, Solution_, Score_>> configuredConstraintVerifierRef =
             new AtomicReference<>();
-    private final AtomicReference<ConstraintStreamImplType> constraintStreamImplType = new AtomicReference<>();
-    private final AtomicReference<Boolean> droolsAlphaNetworkCompilationEnabled = new AtomicReference<>();
+    private final AtomicReference<ConstraintStreamImplType> constraintStreamImplTypeRef = new AtomicReference<>();
+    private final AtomicReference<Boolean> droolsAlphaNetworkCompilationEnabledRef = new AtomicReference<>();
 
     public DefaultConstraintVerifier(ConstraintProvider_ constraintProvider, SolutionDescriptor<Solution_> solutionDescriptor) {
         this.constraintProvider = constraintProvider;
@@ -42,27 +42,27 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     }
 
     public ConstraintStreamImplType getConstraintStreamImplType() {
-        return constraintStreamImplType.get();
+        return constraintStreamImplTypeRef.get();
     }
 
     @Override
     public ConstraintVerifier<ConstraintProvider_, Solution_> withConstraintStreamImplType(
             ConstraintStreamImplType constraintStreamImplType) {
         requireNonNull(constraintStreamImplType);
-        var droolsAlphaNetworkCompilationEnabled = this.droolsAlphaNetworkCompilationEnabled.get();
+        var droolsAlphaNetworkCompilationEnabled = this.droolsAlphaNetworkCompilationEnabledRef.get();
         if (droolsAlphaNetworkCompilationEnabled != null &&
                 droolsAlphaNetworkCompilationEnabled &&
                 constraintStreamImplType != ConstraintStreamImplType.DROOLS) {
             throw new IllegalArgumentException("Can not switch to " + ConstraintStreamImplType.class.getSimpleName()
                     + "." + constraintStreamImplType + " while Drools Alpha Network Compilation enabled.");
         }
-        this.constraintStreamImplType.set(constraintStreamImplType);
+        this.constraintStreamImplTypeRef.set(constraintStreamImplType);
         this.configuredConstraintVerifierRef.set(null);
         return this;
     }
 
     public boolean isDroolsAlphaNetworkCompilationEnabled() {
-        return Objects.requireNonNullElse(droolsAlphaNetworkCompilationEnabled.get(), !ConfigUtils.isNativeImage());
+        return Objects.requireNonNullElse(droolsAlphaNetworkCompilationEnabledRef.get(), !ConfigUtils.isNativeImage());
     }
 
     @Override
@@ -72,7 +72,7 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
             throw new IllegalArgumentException("Can not enable Drools Alpha Network Compilation with "
                     + ConstraintStreamImplType.class.getSimpleName() + "." + ConstraintStreamImplType.BAVET + ".");
         }
-        this.droolsAlphaNetworkCompilationEnabled.set(droolsAlphaNetworkCompilationEnabled);
+        this.droolsAlphaNetworkCompilationEnabledRef.set(droolsAlphaNetworkCompilationEnabled);
         this.configuredConstraintVerifierRef.set(null);
         return this;
     }
