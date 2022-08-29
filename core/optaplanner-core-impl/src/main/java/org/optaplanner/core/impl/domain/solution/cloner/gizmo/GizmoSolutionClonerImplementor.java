@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.domain.solution.cloner.gizmo;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.nio.file.Files;
@@ -25,8 +26,10 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberDescriptor;
 import org.optaplanner.core.impl.domain.solution.cloner.DeepCloningUtils;
@@ -381,8 +384,48 @@ public class GizmoSolutionClonerImplementor {
             ResultHandle fieldValue = shallowlyClonedField.readMemberValue(methodCreator, thisObj);
             if (!entitySubclasses.isEmpty()) {
                 AssignableResultHandle cloneResultHolder = methodCreator.createVariable(type);
+                AtomicBoolean deepCloneDecision = new AtomicBoolean(false);
+                final Optional<Class<?>> maybeDeclaringClass = deepClonedClassesSortedSet.stream()
+                        .filter(deepCloneClass -> deepCloneClass.getName()
+                                .equals(shallowlyClonedField.getDeclaringClassName().replace("/", ".")))
+                        .findFirst();
+
+                if (maybeDeclaringClass.isPresent()) {
+                    final Class<?> declaringClass = maybeDeclaringClass.get();
+                    shallowlyClonedField.whenIsField(fieldDescriptor -> {
+                        try {
+                            Field field = declaringClass.getDeclaredField(fieldDescriptor.getName());
+                            deepCloneDecision.set(solutionInfo.getDeepCloningUtils().isFieldDeepCloned(field, declaringClass));
+                        } catch (NoSuchFieldException e) {
+                            throw new IllegalStateException("Impossible state: class ("
+                                    + declaringClass.getName() + " does not have field ("
+                                    + fieldDescriptor.getName() + ").", e);
+                        }
+                    });
+                    shallowlyClonedField.whenIsMethod(methodDescriptor -> {
+                        try {
+                            String fieldName = methodDescriptor.getName().substring(3);
+                            fieldName = Character.toLowerCase(fieldName.charAt(0)) + fieldName.substring(1);
+                            Field field = declaringClass.getDeclaredField(fieldName);
+                            Method method = declaringClass.getDeclaredMethod(methodDescriptor.getName());
+                            deepCloneDecision.set(solutionInfo.getDeepCloningUtils().getDeepCloneDecision(field, declaringClass,
+                                    field.getType()));
+                            System.out.println(fieldName + ": " + deepCloneDecision.get());
+                            System.out.println(Arrays.toString(method.getAnnotations()));
+                            System.out.println(method.isAnnotationPresent(DeepPlanningClone.class));
+                        } catch (NoSuchFieldException e) {
+                            throw new IllegalStateException("Impossible state: class ("
+                                    + declaringClass.getName() + " does not have field " +
+                                    "corresponding to getter ("
+                                    + methodDescriptor.getName() + ").", e);
+                        } catch (NoSuchMethodException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
+                }
                 writeDeepCloneEntityInstructions(methodCreator, solutionInfo, type,
-                        fieldValue, cloneResultHolder, createdCloneMap, deepClonedClassesSortedSet);
+                        fieldValue, cloneResultHolder, createdCloneMap, deepClonedClassesSortedSet,
+                        deepCloneDecision.get());
                 fieldValue = cloneResultHolder;
             }
             if (!shallowlyClonedField.writeMemberValue(methodCreator, clone, fieldValue)) {
@@ -481,7 +524,7 @@ public class GizmoSolutionClonerImplementor {
         } else {
             // Clone entity
             writeDeepCloneEntityInstructions(isNotNullBranch, solutionDescriptor, deeplyClonedFieldClass,
-                    toClone, cloneResultHolder, createdCloneMap, deepClonedClassesSortedSet);
+                    toClone, cloneResultHolder, createdCloneMap, deepClonedClassesSortedSet, false);
         }
     }
 
@@ -685,7 +728,7 @@ public class GizmoSolutionClonerImplementor {
         if (!entitySubclasses.isEmpty()) {
             AssignableResultHandle keyCloneResultHolder = whileLoopBlock.createVariable(keyClass);
             writeDeepCloneEntityInstructions(whileLoopBlock, solutionDescriptor, keyClass,
-                    key, keyCloneResultHolder, createdCloneMap, deepClonedClassesSortedSet);
+                    key, keyCloneResultHolder, createdCloneMap, deepClonedClassesSortedSet, false);
             whileLoopBlock.invokeInterfaceMethod(
                     PUT_METHOD,
                     cloneMap, keyCloneResultHolder, clonedElement);
@@ -761,10 +804,13 @@ public class GizmoSolutionClonerImplementor {
             GizmoSolutionOrEntityDescriptor solutionDescriptor,
             Class<?> deeplyClonedFieldClass, ResultHandle toClone, AssignableResultHandle cloneResultHolder,
             ResultHandle createdCloneMap,
-            SortedSet<Class<?>> deepClonedClassesSortedSet) {
+            SortedSet<Class<?>> deepClonedClassesSortedSet,
+            boolean forceDeepClone) {
         // Clone entity
         List<Class<?>> entitySubclasses = deepClonedClassesSortedSet.stream()
-                .filter(deeplyClonedFieldClass::isAssignableFrom).collect(Collectors.toList());
+                .filter(deeplyClonedFieldClass::isAssignableFrom)
+                .filter(type -> forceDeepClone || solutionDescriptor.getDeepCloningUtils().isClassDeepCloned(type))
+                .collect(Collectors.toList());
         if (entitySubclasses.isEmpty()) {
             // Not an entity, can shallow copy
             bytecodeCreator.assign(cloneResultHolder, toClone);

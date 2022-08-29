@@ -837,7 +837,8 @@ public abstract class AbstractSolutionClonerTest {
         AnnotatedTestdataVariousTypes originalAnnotatedTypes = a.getAnnotatedClonedTestdataVariousTypes();
         AnnotatedTestdataVariousTypes clonedAnnotatedTypes = cloneA.getAnnotatedClonedTestdataVariousTypes();
         assertSoftly(softly -> {
-            softly.assertThat(cloneA.getUnannotatedCopiedTestdataVariousTypes()).isSameAs(a.getUnannotatedCopiedTestdataVariousTypes());
+            softly.assertThat(cloneA.getUnannotatedCopiedTestdataVariousTypes())
+                    .isSameAs(a.getUnannotatedCopiedTestdataVariousTypes());
             softly.assertThat(clonedUnannotatedTypes).isNotSameAs(originalUnannotatedTypes);
             softly.assertThat(clonedAnnotatedTypes).isNotSameAs(originalAnnotatedTypes);
         });
