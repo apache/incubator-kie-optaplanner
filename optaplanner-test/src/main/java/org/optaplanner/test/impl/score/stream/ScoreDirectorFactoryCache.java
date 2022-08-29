@@ -23,6 +23,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorType;
 
 /**
  * Designed for access from a single thread.
+ * Callers are responsible for ensuring that instances are never run from a thread other than that which created them.
  *
  * @param <ConstraintProvider_>
  * @param <Solution_>
@@ -37,14 +38,11 @@ final class ScoreDirectorFactoryCache<ConstraintProvider_ extends ConstraintProv
     private final Map<String, AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_>> scoreDirectorFactoryMap =
             new HashMap<>();
 
-    private final DefaultConstraintVerifier<ConstraintProvider_, Solution_, Score_> parent;
+    private final ConfiguredConstraintVerifier<ConstraintProvider_, Solution_, Score_> parent;
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final ServiceLoader<ScoreDirectorFactoryService<Solution_, Score_>> serviceLoader;
 
-    private ConstraintStreamImplType lastKnownConstraintStreamImplType = null;
-    private boolean lastKnownDroolsAlphaNetworkCompilationEnabled = false;
-
-    public ScoreDirectorFactoryCache(DefaultConstraintVerifier<ConstraintProvider_, Solution_, Score_> parent,
+    public ScoreDirectorFactoryCache(ConfiguredConstraintVerifier<ConstraintProvider_, Solution_, Score_> parent,
             SolutionDescriptor<Solution_> solutionDescriptor) {
         this.parent = Objects.requireNonNull(parent);
         this.solutionDescriptor = Objects.requireNonNull(solutionDescriptor);
@@ -52,7 +50,7 @@ final class ScoreDirectorFactoryCache<ConstraintProvider_ extends ConstraintProv
     }
 
     private AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> getScoreDirectorFactoryService() {
-        ConstraintStreamImplType constraintStreamImplType = parent.getConstraintStreamImplType();
+        var constraintStreamImplType = parent.getConstraintStreamImplType();
         return serviceLoader.stream()
                 .map(ServiceLoader.Provider::get)
                 .filter(s -> s.getSupportedScoreDirectorType() == ScoreDirectorType.CONSTRAINT_STREAMS)
@@ -78,11 +76,10 @@ final class ScoreDirectorFactoryCache<ConstraintProvider_ extends ConstraintProv
     public AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory(
             BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction,
             ConstraintProvider_ constraintProvider) {
-        AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> scoreDirectorFactoryService =
-                getScoreDirectorFactoryService();
-        Constraint constraint = constraintFunction.apply(constraintProvider,
+        var scoreDirectorFactoryService = getScoreDirectorFactoryService();
+        var constraint = constraintFunction.apply(constraintProvider,
                 scoreDirectorFactoryService.buildConstraintFactory(solutionDescriptor));
-        String constraintId = constraint.getConstraintId();
+        var constraintId = constraint.getConstraintId();
         return getScoreDirectorFactory(constraintId,
                 constraintFactory -> new Constraint[] {
                         constraint
@@ -99,34 +96,14 @@ final class ScoreDirectorFactoryCache<ConstraintProvider_ extends ConstraintProv
      */
     public AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> getScoreDirectorFactory(String key,
             ConstraintProvider constraintProvider) {
-        AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> scoreDirectorFactoryService =
-                getScoreDirectorFactoryService();
-        if (didParentConfigurationChange(scoreDirectorFactoryService)) {
-            scoreDirectorFactoryMap.clear(); // Parent configuration changed; existing score directors invalid.
-        }
         return scoreDirectorFactoryMap.computeIfAbsent(key,
-                k -> createScoreDirectorFactory(scoreDirectorFactoryService, constraintProvider));
-    }
-
-    private boolean didParentConfigurationChange(
-            AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> scoreDirectorFactoryService) {
-        boolean currentDroolsAlphaNetworkCompilationEnabled =
-                determineDroolsAlphaNetworkCompilationEnabled(scoreDirectorFactoryService);
-        if (currentDroolsAlphaNetworkCompilationEnabled != lastKnownDroolsAlphaNetworkCompilationEnabled) {
-            return true;
-        }
-        ConstraintStreamImplType currentConstraintStreamImplType =
-                determineConstraintStreamImplType(scoreDirectorFactoryService);
-        return currentConstraintStreamImplType != lastKnownConstraintStreamImplType;
+                k -> createScoreDirectorFactory(getScoreDirectorFactoryService(), constraintProvider));
     }
 
     private boolean determineDroolsAlphaNetworkCompilationEnabled(
             AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> scoreDirectorFactoryService) {
-        Boolean parentDroolsAlphaNetworkCompilationEnabled = parent.getDroolsAlphaNetworkCompilationEnabled();
-        return parentDroolsAlphaNetworkCompilationEnabled == null
-                ? determineConstraintStreamImplType(scoreDirectorFactoryService) == DROOLS
-                        && parent.isDroolsAlphaNetworkCompilationEnabled()
-                : parentDroolsAlphaNetworkCompilationEnabled;
+        return parent.getDroolsAlphaNetworkCompilationEnabled() &&
+                determineConstraintStreamImplType(scoreDirectorFactoryService) == DROOLS;
     }
 
     private ConstraintStreamImplType determineConstraintStreamImplType(
@@ -137,12 +114,8 @@ final class ScoreDirectorFactoryCache<ConstraintProvider_ extends ConstraintProv
     private AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> createScoreDirectorFactory(
             AbstractConstraintStreamScoreDirectorFactoryService<Solution_, Score_> scoreDirectorFactoryService,
             ConstraintProvider constraintProvider) {
-        this.lastKnownConstraintStreamImplType = determineConstraintStreamImplType(scoreDirectorFactoryService);
-        this.lastKnownDroolsAlphaNetworkCompilationEnabled =
-                determineDroolsAlphaNetworkCompilationEnabled(scoreDirectorFactoryService);
-
         return scoreDirectorFactoryService.buildScoreDirectorFactory(solutionDescriptor, constraintProvider,
-                this.lastKnownDroolsAlphaNetworkCompilationEnabled);
+                determineDroolsAlphaNetworkCompilationEnabled(scoreDirectorFactoryService));
     }
 
 }
