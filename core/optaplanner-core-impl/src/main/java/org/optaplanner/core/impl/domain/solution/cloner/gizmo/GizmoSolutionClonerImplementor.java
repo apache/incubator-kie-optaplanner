@@ -313,9 +313,8 @@ public class GizmoSolutionClonerImplementor {
 
                 ResultHandle fieldValue = gizmoMemberDescriptor.readMemberValue(isSubclassBranch, thisObj);
                 AssignableResultHandle cloneValue = isSubclassBranch.createVariable(deeplyClonedField.getType());
-                writeDeepCloneInstructions(isSubclassBranch, solutionSubclassDescriptor,
-                        deeplyClonedField.getType(), gizmoMemberDescriptor.getType(), fieldValue, cloneValue, createdCloneMap,
-                        deepClonedClassesSortedSet);
+                writeDeepCloneInstructions(isSubclassBranch, solutionSubclassDescriptor, deeplyClonedField,
+                        gizmoMemberDescriptor, fieldValue, cloneValue, createdCloneMap, deepClonedClassesSortedSet);
 
                 if (!gizmoMemberDescriptor.writeMemberValue(isSubclassBranch, clone, cloneValue)) {
                     throw new IllegalStateException("The member (" + gizmoMemberDescriptor.getName() + ") of class (" +
@@ -436,6 +435,14 @@ public class GizmoSolutionClonerImplementor {
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Error creating Gizmo Solution Cloner", e);
         }
+    }
+
+    private static void writeDeepCloneInstructions(BytecodeCreator bytecodeCreator,
+            GizmoSolutionOrEntityDescriptor solutionDescriptor, Field deeplyClonedField,
+            GizmoMemberDescriptor gizmoMemberDescriptor, ResultHandle toClone, AssignableResultHandle cloneResultHolder,
+            ResultHandle createdCloneMap, SortedSet<Class<?>> deepClonedClassesSortedSet) {
+        writeDeepCloneInstructions(bytecodeCreator, solutionDescriptor, deeplyClonedField.getType(),
+                gizmoMemberDescriptor.getType(), toClone, cloneResultHolder, createdCloneMap, deepClonedClassesSortedSet);
     }
 
     /**
@@ -878,9 +885,8 @@ public class GizmoSolutionClonerImplementor {
             ResultHandle subfieldValue = gizmoMemberDescriptor.readMemberValue(noCloneBranch, toClone);
 
             AssignableResultHandle cloneValue = noCloneBranch.createVariable(deeplyClonedField.getType());
-            writeDeepCloneInstructions(noCloneBranch, entityDescriptor,
-                    deeplyClonedField.getType(), gizmoMemberDescriptor.getType(), subfieldValue, cloneValue, cloneMap,
-                    deepClonedClassesSortedSet);
+            writeDeepCloneInstructions(noCloneBranch, entityDescriptor, deeplyClonedField, gizmoMemberDescriptor, subfieldValue,
+                    cloneValue, cloneMap, deepClonedClassesSortedSet);
 
             if (!gizmoMemberDescriptor.writeMemberValue(noCloneBranch, cloneObj, cloneValue)) {
                 throw new IllegalStateException("The member (" + gizmoMemberDescriptor.getName() + ") of class (" +

@@ -832,15 +832,15 @@ public abstract class AbstractSolutionClonerTest {
         assertThat(cloneB.getShadowVariableMap().get("shadow key b1")).isEqualTo("shadow value b1");
 
         // Assert that all the various types have been treated properly.
-        TestdataVariousTypes originalUnannotatedTypes = a.getUnannotatedClonedTestdataVariousTypes();
-        TestdataVariousTypes clonedUnannotatedTypes = cloneA.getUnannotatedClonedTestdataVariousTypes();
         AnnotatedTestdataVariousTypes originalAnnotatedTypes = a.getAnnotatedClonedTestdataVariousTypes();
         AnnotatedTestdataVariousTypes clonedAnnotatedTypes = cloneA.getAnnotatedClonedTestdataVariousTypes();
+        TestdataVariousTypes originalUnannotatedTypes = a.getUnannotatedClonedTestdataVariousTypes();
+        TestdataVariousTypes clonedUnannotatedTypes = cloneA.getUnannotatedClonedTestdataVariousTypes();
         assertSoftly(softly -> {
+            softly.assertThat(clonedAnnotatedTypes).isNotSameAs(originalAnnotatedTypes);
+            softly.assertThat(clonedUnannotatedTypes).isNotSameAs(originalUnannotatedTypes);
             softly.assertThat(cloneA.getUnannotatedCopiedTestdataVariousTypes())
                     .isSameAs(a.getUnannotatedCopiedTestdataVariousTypes());
-            softly.assertThat(clonedUnannotatedTypes).isNotSameAs(originalUnannotatedTypes);
-            softly.assertThat(clonedAnnotatedTypes).isNotSameAs(originalAnnotatedTypes);
         });
         assertTestdataVariousTypes(originalUnannotatedTypes, clonedUnannotatedTypes);
         assertTestdataVariousTypes(originalAnnotatedTypes, clonedAnnotatedTypes);
