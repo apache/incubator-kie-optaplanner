@@ -26,8 +26,8 @@ class VehicleRoutingConstraintProviderTest
             ConstraintVerifier<VehicleRoutingConstraintProvider, VehicleRoutingSolution> constraintVerifier) {
         Vehicle vehicleA = new Vehicle(1L, 100, new Depot(1L, location1));
         Customer customer1 = new Customer(2L, location2, 80);
-        vehicleA.setCustomers(Arrays.asList(customer1));
-        customer1.setVehicle(vehicleA);
+
+        connect(vehicleA, customer1);
 
         constraintVerifier.verifyThat(VehicleRoutingConstraintProvider::vehicleCapacity)
                 .given(vehicleA, customer1)
@@ -40,9 +40,8 @@ class VehicleRoutingConstraintProviderTest
         Customer customer1 = new Customer(2L, location2, 80);
         Customer customer2 = new Customer(3L, location3, 40);
         Vehicle vehicleA = new Vehicle(1L, 100, new Depot(1L, location1));
-        vehicleA.setCustomers(Arrays.asList(customer1, customer2));
-        customer1.setVehicle(vehicleA);
-        customer2.setVehicle(vehicleA);
+
+        connect(vehicleA, customer1, customer2);
 
         constraintVerifier.verifyThat(VehicleRoutingConstraintProvider::vehicleCapacity)
                 .given(vehicleA, customer1, customer2)
@@ -55,11 +54,8 @@ class VehicleRoutingConstraintProviderTest
         Customer customer1 = new Customer(2L, location2, 80);
         Customer customer2 = new Customer(3L, location3, 40);
         Vehicle vehicleA = new Vehicle(1L, 100, new Depot(1L, location1));
-        vehicleA.setCustomers(Arrays.asList(customer1, customer2));
-        customer1.setVehicle(vehicleA);
-        customer1.setNextCustomer(customer2);
-        customer2.setVehicle(vehicleA);
-        customer2.setPreviousCustomer(customer1);
+
+        connect(vehicleA, customer1, customer2);
 
         constraintVerifier.verifyThat(VehicleRoutingConstraintProvider::distanceToPreviousStandstill)
                 .given(vehicleA, customer1, customer2)
@@ -72,11 +68,8 @@ class VehicleRoutingConstraintProviderTest
         Customer customer1 = new Customer(2L, location2, 80);
         Customer customer2 = new Customer(3L, location3, 40);
         Vehicle vehicleA = new Vehicle(1L, 100, new Depot(1L, location1));
-        vehicleA.setCustomers(Arrays.asList(customer1, customer2));
-        customer1.setVehicle(vehicleA);
-        customer1.setNextCustomer(customer2);
-        customer2.setVehicle(vehicleA);
-        customer2.setPreviousCustomer(customer1);
+
+        connect(vehicleA, customer1, customer2);
 
         constraintVerifier.verifyThat(VehicleRoutingConstraintProvider::distanceFromLastCustomerToDepot)
                 .given(vehicleA, customer1, customer2)
@@ -90,15 +83,26 @@ class VehicleRoutingConstraintProviderTest
         TimeWindowedCustomer customer2 = new TimeWindowedCustomer(3L, location3, 40, 8_00_00L, 9_00_00L, 1_00_00L);
         customer2.setArrivalTime(8_00_00L + 4000L + 1_00_00L + 5000L);
         Vehicle vehicleA = new Vehicle(1L, 100, new TimeWindowedDepot(1L, location1, 8_00_00L, 18_00_00L));
-        vehicleA.setCustomers(Arrays.asList(customer1, customer2));
-        customer1.setVehicle(vehicleA);
-        customer1.setNextCustomer(customer2);
-        customer2.setVehicle(vehicleA);
-        customer2.setPreviousCustomer(customer1);
+
+        connect(vehicleA, customer1, customer2);
 
         constraintVerifier.verifyThat(VehicleRoutingConstraintProvider::arrivalAfterDueTime)
                 .given(vehicleA, customer1, customer2)
                 .penalizesBy(90_00L);
+    }
+
+    static void connect(Vehicle vehicle, Customer... customers) {
+        vehicle.setCustomers(Arrays.asList(customers));
+        for (int i = 0; i < customers.length; i++) {
+            Customer customer = customers[i];
+            customer.setVehicle(vehicle);
+            if (i > 0) {
+                customer.setPreviousCustomer(customers[i - 1]);
+            }
+            if (i < customers.length - 1) {
+                customer.setNextCustomer(customers[i + 1]);
+            }
+        }
     }
 
     @Override
