@@ -33,48 +33,46 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
      */
     private final AtomicReference<ConfiguredConstraintVerifier<ConstraintProvider_, Solution_, Score_>> configuredConstraintVerifierRef =
             new AtomicReference<>();
-
-    // Volatile as these variables may be read and written by multiple threads.
-    // All access to these variables is synchronized.
-    private volatile ConstraintStreamImplType constraintStreamImplType;
-    private volatile Boolean droolsAlphaNetworkCompilationEnabled;
+    private final AtomicReference<ConstraintStreamImplType> constraintStreamImplType = new AtomicReference<>();
+    private final AtomicReference<Boolean> droolsAlphaNetworkCompilationEnabled = new AtomicReference<>();
 
     public DefaultConstraintVerifier(ConstraintProvider_ constraintProvider, SolutionDescriptor<Solution_> solutionDescriptor) {
         this.constraintProvider = constraintProvider;
         this.solutionDescriptor = solutionDescriptor;
     }
 
-    public synchronized ConstraintStreamImplType getConstraintStreamImplType() {
-        return constraintStreamImplType;
+    public ConstraintStreamImplType getConstraintStreamImplType() {
+        return constraintStreamImplType.get();
     }
 
     @Override
-    public synchronized ConstraintVerifier<ConstraintProvider_, Solution_> withConstraintStreamImplType(
+    public ConstraintVerifier<ConstraintProvider_, Solution_> withConstraintStreamImplType(
             ConstraintStreamImplType constraintStreamImplType) {
         requireNonNull(constraintStreamImplType);
+        var droolsAlphaNetworkCompilationEnabled = this.droolsAlphaNetworkCompilationEnabled.get();
         if (droolsAlphaNetworkCompilationEnabled != null &&
                 droolsAlphaNetworkCompilationEnabled &&
                 constraintStreamImplType != ConstraintStreamImplType.DROOLS) {
             throw new IllegalArgumentException("Can not switch to " + ConstraintStreamImplType.class.getSimpleName()
                     + "." + constraintStreamImplType + " while Drools Alpha Network Compilation enabled.");
         }
-        this.constraintStreamImplType = constraintStreamImplType;
+        this.constraintStreamImplType.set(constraintStreamImplType);
         this.configuredConstraintVerifierRef.set(null);
         return this;
     }
 
-    public synchronized boolean isDroolsAlphaNetworkCompilationEnabled() {
-        return Objects.requireNonNullElse(droolsAlphaNetworkCompilationEnabled, !ConfigUtils.isNativeImage());
+    public boolean isDroolsAlphaNetworkCompilationEnabled() {
+        return Objects.requireNonNullElse(droolsAlphaNetworkCompilationEnabled.get(), !ConfigUtils.isNativeImage());
     }
 
     @Override
-    public synchronized ConstraintVerifier<ConstraintProvider_, Solution_> withDroolsAlphaNetworkCompilationEnabled(
+    public ConstraintVerifier<ConstraintProvider_, Solution_> withDroolsAlphaNetworkCompilationEnabled(
             boolean droolsAlphaNetworkCompilationEnabled) {
         if (droolsAlphaNetworkCompilationEnabled && getConstraintStreamImplType() == ConstraintStreamImplType.BAVET) {
             throw new IllegalArgumentException("Can not enable Drools Alpha Network Compilation with "
                     + ConstraintStreamImplType.class.getSimpleName() + "." + ConstraintStreamImplType.BAVET + ".");
         }
-        this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
+        this.droolsAlphaNetworkCompilationEnabled.set(droolsAlphaNetworkCompilationEnabled);
         this.configuredConstraintVerifierRef.set(null);
         return this;
     }
@@ -86,12 +84,11 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     @Override
     public DefaultSingleConstraintVerification<Solution_, Score_> verifyThat(
             BiFunction<ConstraintProvider_, ConstraintFactory, Constraint> constraintFunction) {
-        var configuredConstraintVerifier = getOrCreateConfiguredConstraintVerifier();
-        return configuredConstraintVerifier.verifyThat(constraintFunction);
+        return getOrCreateConfiguredConstraintVerifier().verifyThat(constraintFunction);
     }
 
     private ConfiguredConstraintVerifier<ConstraintProvider_, Solution_, Score_> getOrCreateConfiguredConstraintVerifier() {
-        return this.configuredConstraintVerifierRef.updateAndGet(v -> {
+        return configuredConstraintVerifierRef.updateAndGet(v -> {
             if (v == null) {
                 return new ConfiguredConstraintVerifier<>(constraintProvider, solutionDescriptor,
                         getConstraintStreamImplType(), isDroolsAlphaNetworkCompilationEnabled());
@@ -102,8 +99,7 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
 
     @Override
     public DefaultMultiConstraintVerification<Solution_, Score_> verifyThat() {
-        var configuredConstraintVerifier = getOrCreateConfiguredConstraintVerifier();
-        return configuredConstraintVerifier.verifyThat();
+        return getOrCreateConfiguredConstraintVerifier().verifyThat();
     }
 
 }
