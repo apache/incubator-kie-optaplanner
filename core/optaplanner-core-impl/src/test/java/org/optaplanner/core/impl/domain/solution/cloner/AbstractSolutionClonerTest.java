@@ -833,17 +833,17 @@ public abstract class AbstractSolutionClonerTest {
         assertThat(cloneB.getShadowVariableMap().get("shadow key b1")).isEqualTo("shadow value b1");
 
         // Assert that all the various types have been treated properly.
-        AnnotatedTestdataVariousTypes originalAnnotatedTypes = a.getAnnotatedTestdataVariousTypes();
-        AnnotatedTestdataVariousTypes clonedAnnotatedTypes = cloneA.getAnnotatedTestdataVariousTypes();
+        assertThat(cloneA.getUnannotatedCopiedTestdataVariousTypes())
+                .isSameAs(a.getUnannotatedCopiedTestdataVariousTypes());
+
         TestdataVariousTypes originalUnannotatedTypes = a.getUnannotatedClonedTestdataVariousTypes();
         TestdataVariousTypes clonedUnannotatedTypes = cloneA.getUnannotatedClonedTestdataVariousTypes();
-        assertSoftly(softly -> {
-            softly.assertThat(clonedAnnotatedTypes).isNotSameAs(originalAnnotatedTypes);
-            softly.assertThat(clonedUnannotatedTypes).isNotSameAs(originalUnannotatedTypes);
-            softly.assertThat(cloneA.getUnannotatedCopiedTestdataVariousTypes())
-                    .isSameAs(a.getUnannotatedCopiedTestdataVariousTypes());
-        });
+        assertThat(clonedUnannotatedTypes).isNotSameAs(originalUnannotatedTypes);
         assertTestdataVariousTypes(originalUnannotatedTypes, clonedUnannotatedTypes);
+
+        AnnotatedTestdataVariousTypes originalAnnotatedTypes = a.getAnnotatedTestdataVariousTypes();
+        AnnotatedTestdataVariousTypes clonedAnnotatedTypes = cloneA.getAnnotatedTestdataVariousTypes();
+        assertThat(clonedAnnotatedTypes).isNotSameAs(originalAnnotatedTypes);
         assertTestdataVariousTypes(originalAnnotatedTypes, clonedAnnotatedTypes);
 
         TestdataVariousTypes originalAnnotatedClonedTypes = a.getAnnotatedClonedTestdataVariousTypes();
@@ -876,8 +876,23 @@ public abstract class AbstractSolutionClonerTest {
             softly.assertThat(cloned.longRef).isSameAs(original.longRef);
             softly.assertThat(cloned.floatRef).isSameAs(original.floatRef);
             softly.assertThat(cloned.doubleRef).isSameAs(original.doubleRef);
+            softly.assertThat(cloned.bigInteger).isSameAs(original.bigInteger);
+            softly.assertThat(cloned.bigDecimal).isSameAs(original.bigDecimal);
             softly.assertThat(cloned.uuidRef).isSameAs(original.uuidRef);
             softly.assertThat(cloned.stringRef).isSameAs(original.stringRef);
+        });
+        // Ensure that the rest is cloned properly too.
+        assertSoftly(softly -> {
+            softly.assertThat(cloned.deepClonedListRef).isNotSameAs(original.deepClonedListRef);
+            softly.assertThat(cloned.deepClonedListRef)
+                    .first()
+                    .isSameAs(original.deepClonedListRef.get(0));
+        });
+        assertSoftly(softly -> {
+            softly.assertThat(cloned.shallowClonedListRef).isSameAs(original.shallowClonedListRef);
+            softly.assertThat(cloned.shallowClonedListRef)
+                    .first()
+                    .isSameAs(original.shallowClonedListRef.get(0));
         });
     }
 

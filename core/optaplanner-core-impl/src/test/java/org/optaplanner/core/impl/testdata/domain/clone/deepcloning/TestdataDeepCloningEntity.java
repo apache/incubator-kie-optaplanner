@@ -93,7 +93,8 @@ public class TestdataDeepCloningEntity extends TestdataObject {
     }
 
     public void setAnnotatedClonedTestdataVariousTypes(TestdataVariousTypes annotatedClonedTestdataVariousTypes) {
-        if (!(annotatedClonedTestdataVariousTypes instanceof AnnotatedTestdataVariousTypes)) {
+        if (annotatedClonedTestdataVariousTypes != null
+            && annotatedClonedTestdataVariousTypes.getClass() != AnnotatedTestdataVariousTypes.class) {
             throw new IllegalArgumentException("Unexpected value: " + annotatedClonedTestdataVariousTypes);
         }
         this.annotatedClonedTestdataVariousTypes = annotatedClonedTestdataVariousTypes;

@@ -1,9 +1,16 @@
 package org.optaplanner.core.impl.testdata.domain.clone.deepcloning;
 
+import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 public class TestdataVariousTypes {
 
+    // Primitives.
     public boolean booleanValue = true;
     public byte byteValue = 1;
     public char charValue = 2;
@@ -13,6 +20,7 @@ public class TestdataVariousTypes {
     public float floatValue = 6;
     public double doubleValue = 7;
 
+    // Popular known immutables.
     public Boolean booleanRef = true;
     public Byte byteRef = 8;
     public Character charRef = 9;
@@ -21,7 +29,14 @@ public class TestdataVariousTypes {
     public Long longRef = 12L;
     public Float floatRef = 13f;
     public Double doubleRef = 14d;
+    public BigInteger bigInteger = BigInteger.valueOf(15);
+    public BigDecimal bigDecimal = BigDecimal.valueOf(16);
     public UUID uuidRef = UUID.randomUUID();
     public String stringRef = uuidRef.toString();
+
+    // And something mutable.
+    public List<String> shallowClonedListRef = Collections.singletonList(stringRef);
+    @DeepPlanningClone
+    public List<String> deepClonedListRef = Collections.singletonList(stringRef);
 
 }
