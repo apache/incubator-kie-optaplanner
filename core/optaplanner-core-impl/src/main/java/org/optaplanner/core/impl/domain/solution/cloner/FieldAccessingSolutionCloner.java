@@ -4,22 +4,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.MonthDay;
-import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.time.Period;
-import java.time.Year;
-import java.time.YearMonth;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,17 +17,12 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.OptionalLong;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
@@ -57,19 +36,6 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<Solution_> {
-
-    // Instances of these classes will never be cloned, always copied.
-    private static final Set<Class<?>> IMMUTABLE_JDK_CLASSES = Set.of(
-            // Numbers
-            Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, BigInteger.class, BigDecimal.class,
-            // Optional
-            Optional.class, OptionalInt.class, OptionalLong.class, OptionalDouble.class,
-            // Date and time
-            Duration.class, Instant.class, LocalDate.class, LocalDateTime.class, LocalTime.class, MonthDay.class,
-            OffsetDateTime.class, OffsetTime.class, Period.class, Year.class, YearMonth.class, ZonedDateTime.class,
-            ZoneId.class, ZoneOffset.class,
-            // Others
-            Boolean.class, Character.class, String.class, UUID.class);
 
     private final ConcurrentMap<Class<?>, Constructor<?>> constructorMemoization = new ConcurrentMemoization<>();
     private final ConcurrentMap<Class<?>, Map<Field, FieldCloner<?>>> fieldListMemoization = new ConcurrentMemoization<>();
@@ -157,7 +123,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
                 throw new IllegalStateException("Impossible state: The class (" + clazz + ") has a field (" + field
                         + ") of an unknown primitive type (" + fieldType + ").");
             }
-        } else if (fieldType.isEnum() || IMMUTABLE_JDK_CLASSES.contains(fieldType)) {
+        } else if (fieldType.isEnum() || DeepCloningUtils.IMMUTABLE_CLASSES.contains(fieldType)) {
             return ShallowCloningFieldCloner.getInstance();
         } else {
             return DeepCloningFieldCloner.getInstance();
