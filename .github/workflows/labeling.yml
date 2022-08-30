@@ -24,6 +24,7 @@ jobs:
           labels: jenkins-ci
       - name: User does not belong to the organization
         uses: peter-evans/create-or-update-comment@v2
+        if: ${{ ! steps.is_organization_member.outputs.result }}
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
