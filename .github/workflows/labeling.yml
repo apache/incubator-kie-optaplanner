@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Check if organization member belongs
         id: is_organization_member
-        uses: radtriste/is-organization-member@debug_gha
+        uses: radtriste/is-organization-member@kiegroup_use
         with:
           organization: kiegroup
           username: ${{ github.event.pull_request.user.login }}
