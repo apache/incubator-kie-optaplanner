@@ -1,7 +1,7 @@
 package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.lang.reflect.Field;
-import java.util.Optional;
+import java.util.function.Consumer;
 
 final class ShallowCloningFieldCloner<C> implements FieldCloner<C> {
 
@@ -12,11 +12,10 @@ final class ShallowCloningFieldCloner<C> implements FieldCloner<C> {
     }
 
     @Override
-    public Optional<Unprocessed> clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass,
-            C original, C clone) {
+    public void clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass,
+            C original, C clone, Consumer<Object> deferredValueConsumer) {
         Object originalValue = FieldCloner.getFieldValue(original, field);
         FieldCloner.setFieldValue(clone, field, originalValue);
-        return Optional.empty();
     }
 
     private ShallowCloningFieldCloner() {

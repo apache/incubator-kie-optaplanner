@@ -45,6 +45,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Consumer;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
@@ -77,7 +78,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
     public FieldAccessingSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
-        deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
+        this.deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
     }
 
     // ************************************************************************
@@ -204,10 +205,12 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
         protected <C> void copyFields(Class<C> clazz, Class<? extends C> instanceClass, C original, C clone) {
             for (Map.Entry<Field, FieldCloner<?>> entry : retrieveCachedFields(clazz).entrySet()) {
+                Field field = entry.getKey();
                 FieldCloner<C> fieldCloner = (FieldCloner<C>) entry.getValue();
-                Optional<Unprocessed> maybeUnprocessed =
-                        fieldCloner.clone(deepCloningUtils, entry.getKey(), instanceClass, original, clone);
-                maybeUnprocessed.ifPresent(unprocessedQueue::add);
+                Consumer<Object> unprocessedValueConsumer = fieldCloner.mayDeferClone()
+                        ? originalValue -> unprocessedQueue.add(new Unprocessed(clone, field, originalValue))
+                        : null;
+                fieldCloner.clone(deepCloningUtils, field, instanceClass, original, clone, unprocessedValueConsumer);
             }
             Class<? super C> superclass = clazz.getSuperclass();
             if (superclass != null) {
@@ -375,6 +378,20 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
                 }
             }
         }
+    }
+
+    private final static class Unprocessed {
+
+        final Object bean;
+        final Field field;
+        final Object originalValue;
+
+        public Unprocessed(Object bean, Field field, Object originalValue) {
+            this.bean = bean;
+            this.field = field;
+            this.originalValue = originalValue;
+        }
+
     }
 
 }
