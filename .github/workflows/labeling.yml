@@ -23,12 +23,8 @@ jobs:
         with:
           labels: jenkins-ci
       - name: User does not belong to the organization
-        uses: actions/github-script@v6
+        uses: peter-evans/create-or-update-comment@v2
         with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.pull_request.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '👋 Thanks for reporting!'
-            })
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            User is not allowed to launch Jenkins CI. Please 'any_mentioned_user', add the label manually.
