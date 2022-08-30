@@ -44,6 +44,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 
@@ -55,7 +56,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<Solution_> {
+public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<Solution_> {
 
     // Instances of these classes will never be cloned, always copied.
     private static final Set<Class<?>> IMMUTABLE_JDK_CLASSES = Set.of(
@@ -70,11 +71,10 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             // Others
             Boolean.class, Character.class, String.class, UUID.class);
 
-    protected final SolutionDescriptor<Solution_> solutionDescriptor;
-
-    protected final ConcurrentMap<Class<?>, Constructor<?>> constructorMemoization = new ConcurrentMemoization<>();
-    protected final ConcurrentMap<Class<?>, Map<Field, FieldCloner<?>>> fieldListMemoization = new ConcurrentMemoization<>();
-    protected final DeepCloningUtils deepCloningUtils;
+    private final ConcurrentMap<Class<?>, Constructor<?>> constructorMemoization = new ConcurrentMemoization<>();
+    private final ConcurrentMap<Class<?>, Map<Field, FieldCloner<?>>> fieldListMemoization = new ConcurrentMemoization<>();
+    private final SolutionDescriptor<Solution_> solutionDescriptor;
+    private final DeepCloningUtils deepCloningUtils;
 
     public FieldAccessingSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
@@ -87,7 +87,8 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
     @Override
     public Solution_ cloneSolution(Solution_ originalSolution) {
-        return new FieldAccessingSolutionClonerRun().cloneSolution(originalSolution);
+        return new FieldAccessingSolutionClonerRun(originalSolution)
+                .call();
     }
 
     /**
@@ -98,7 +99,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
      * @return never null
      */
     @SuppressWarnings("unchecked")
-    protected <C> Constructor<C> retrieveCachedConstructor(Class<C> clazz) {
+    private <C> Constructor<C> retrieveCachedConstructor(Class<C> clazz) {
         return (Constructor<C>) constructorMemoization.computeIfAbsent(clazz, key -> {
             Constructor<C> constructor;
             try {
@@ -119,7 +120,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
      * @param <C> type
      * @return never null
      */
-    protected <C> Map<Field, FieldCloner<?>> retrieveCachedFields(Class<C> clazz) {
+    private <C> Map<Field, FieldCloner<?>> retrieveCachedFields(Class<C> clazz) {
         return fieldListMemoization.computeIfAbsent(clazz, key -> {
             Field[] fields = key.getDeclaredFields();
             Map<Field, FieldCloner<?>> fieldMap = new IdentityHashMap<>(fields.length);
@@ -163,22 +164,28 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
         }
     }
 
-    protected class FieldAccessingSolutionClonerRun {
+    private final class FieldAccessingSolutionClonerRun implements Callable<Solution_> {
 
-        protected Map<Object, Object> originalToCloneMap;
-        protected Queue<Unprocessed> unprocessedQueue;
+        private final Solution_ originalSolution;
+        private final Map<Object, Object> originalToCloneMap;
+        private final Queue<Unprocessed> unprocessedQueue;
 
-        protected Solution_ cloneSolution(Solution_ originalSolution) {
+        private FieldAccessingSolutionClonerRun(Solution_ originalSolution) {
+            this.originalSolution = originalSolution;
             int entityCount = solutionDescriptor.getEntityCount(originalSolution);
-            unprocessedQueue = new ArrayDeque<>(entityCount + 1);
-            originalToCloneMap = new IdentityHashMap<>(entityCount + 1);
+            this.unprocessedQueue = new ArrayDeque<>(entityCount + 1);
+            this.originalToCloneMap = new IdentityHashMap<>(entityCount + 1);
+        }
+
+        @Override
+        public Solution_ call() {
             Solution_ cloneSolution = clone(originalSolution);
             processQueue();
             validateCloneSolution(originalSolution, cloneSolution);
             return cloneSolution;
         }
 
-        protected <C> C clone(C original) {
+        private <C> C clone(C original) {
             if (original == null) {
                 return null;
             }
@@ -193,7 +200,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             return clone;
         }
 
-        protected <C> C constructClone(Class<C> clazz) {
+        private <C> C constructClone(Class<C> clazz) {
             try {
                 Constructor<C> constructor = retrieveCachedConstructor(clazz);
                 return constructor.newInstance();
@@ -203,7 +210,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             }
         }
 
-        protected <C> void copyFields(Class<C> clazz, Class<? extends C> instanceClass, C original, C clone) {
+        private <C> void copyFields(Class<C> clazz, Class<? extends C> instanceClass, C original, C clone) {
             for (Map.Entry<Field, FieldCloner<?>> entry : retrieveCachedFields(clazz).entrySet()) {
                 Field field = entry.getKey();
                 FieldCloner<C> fieldCloner = (FieldCloner<C>) entry.getValue();
@@ -218,14 +225,14 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             }
         }
 
-        protected void processQueue() {
+        private void processQueue() {
             while (!unprocessedQueue.isEmpty()) {
                 Unprocessed unprocessed = unprocessedQueue.remove();
                 process(unprocessed);
             }
         }
 
-        protected void process(Unprocessed unprocessed) {
+        private void process(Unprocessed unprocessed) {
             Object cloneValue;
             Object originalValue = unprocessed.originalValue;
             Field field = unprocessed.field;
@@ -242,7 +249,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             FieldCloner.setFieldValue(unprocessed.bean, field, cloneValue);
         }
 
-        protected Object cloneArray(Class<?> expectedType, Object originalArray) {
+        private Object cloneArray(Class<?> expectedType, Object originalArray) {
             int arrayLength = Array.getLength(originalArray);
             Object cloneArray = Array.newInstance(originalArray.getClass().getComponentType(), arrayLength);
             if (!expectedType.isInstance(cloneArray)) {
@@ -258,7 +265,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             return cloneArray;
         }
 
-        protected <E> Collection<E> cloneCollection(Class<?> expectedType, Collection<E> originalCollection) {
+        private <E> Collection<E> cloneCollection(Class<?> expectedType, Collection<E> originalCollection) {
             Collection<E> cloneCollection = constructCloneCollection(originalCollection);
             if (!expectedType.isInstance(cloneCollection)) {
                 throw new IllegalStateException("The cloneCollectionClass (" + cloneCollection.getClass()
@@ -273,7 +280,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             return cloneCollection;
         }
 
-        protected <E> Collection<E> constructCloneCollection(Collection<E> originalCollection) {
+        private <E> Collection<E> constructCloneCollection(Collection<E> originalCollection) {
             // TODO Don't hardcode all standard collections
             if (originalCollection instanceof List) {
                 if (originalCollection instanceof ArrayList) {
@@ -302,7 +309,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             }
         }
 
-        protected <K, V> Map<K, V> cloneMap(Class<?> expectedType, Map<K, V> originalMap) {
+        private <K, V> Map<K, V> cloneMap(Class<?> expectedType, Map<K, V> originalMap) {
             Map<K, V> cloneMap = constructCloneMap(originalMap);
             if (!expectedType.isInstance(cloneMap)) {
                 throw new IllegalStateException("The cloneMapClass (" + cloneMap.getClass()
@@ -318,7 +325,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             return cloneMap;
         }
 
-        protected <K, V> Map<K, V> constructCloneMap(Map<K, V> originalMap) {
+        private <K, V> Map<K, V> constructCloneMap(Map<K, V> originalMap) {
             // Normally a Map will never be selected for cloning, but extending implementations might anyway
             if (originalMap instanceof SortedMap) {
                 Comparator<K> setComparator = ((SortedMap) originalMap).comparator();
@@ -333,7 +340,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             }
         }
 
-        protected <C> C cloneCollectionsElementIfNeeded(C original) {
+        private <C> C cloneCollectionsElementIfNeeded(C original) {
             // Because an element which is itself a Collection or Map might hold an entity, we clone it too
             // Also, the List<Long> in Map<String, List<Long>> needs to be cloned
             // if the List<Long> is a shadow, despite that Long never needs to be cloned (because it's immutable).
@@ -357,7 +364,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
          * @param originalSolution never null
          * @param cloneSolution never null
          */
-        protected void validateCloneSolution(Solution_ originalSolution, Solution_ cloneSolution) {
+        private void validateCloneSolution(Solution_ originalSolution, Solution_ cloneSolution) {
             for (MemberAccessor memberAccessor : solutionDescriptor.getEntityMemberAccessorMap().values()) {
                 validateCloneProperty(originalSolution, cloneSolution, memberAccessor);
             }
