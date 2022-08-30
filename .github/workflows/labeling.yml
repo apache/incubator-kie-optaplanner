@@ -19,16 +19,15 @@ jobs:
           token: ${{ secrets.KIE_CI_READ_ORG_TOKEN }}
       - name: Debug that user belongs to it
         run: |
-          echo "Username = ${{ github.event.pull_request.user.login }}"
-          echo "User belongs = ${{ steps.is_organization_member.outputs.result }}"
+          echo "User belongs to kiegroup = ${{ steps.is_organization_member.outputs.result }}"
       
-      # - name: Check if organization member does not belong
-      #   id: is_organization_member_not_belong
-      #   uses: jamessingleton/is-organization-member@1.0.1
-      #   with:
-      #     organization: kiegroup13456
-      #     username: ${{ github.event.pull_request.user.login }}
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      # - name: Debug that user NOT belongs to it
-      #   run: |
-      #     echo "User belongs = ${{ steps.is_organization_member_not_belong.outputs.result }}"
+      - name: Check if organization member does not belong
+        id: is_organization_member_not_belong
+        uses: radtriste/is-organization-member@debug_gha
+        with:
+          organization: kiegroup
+          username: anyuser
+          token: ${{ secrets.KIE_CI_READ_ORG_TOKEN }}
+      - name: Debug that user NOT belongs to it
+        run: |
+          echo "User belongs to  = ${{ steps.is_organization_member_not_belong.outputs.result }}"
