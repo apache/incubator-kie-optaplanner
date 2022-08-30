@@ -17,17 +17,18 @@ jobs:
           organization: kiegroup
           username: ${{ github.event.pull_request.user.login }}
           token: ${{ secrets.KIE_CI_READ_ORG_TOKEN }}
-      - name: Debug that user belongs to it
-        run: |
-          echo "User belongs to kiegroup = ${{ steps.is_organization_member.outputs.result }}"
-      
-      - name: Check if organization member does not belong
-        id: is_organization_member_not_belong
-        uses: radtriste/is-organization-member@debug_gha
+      - name: User belongs to organization - Add Jenkins CI label
+        uses: actions-ecosystem/action-add-labels@v1
+        if: ${{ steps.is_organization_member.outputs.result }}
         with:
-          organization: kiegroup
-          username: anyuser
-          token: ${{ secrets.KIE_CI_READ_ORG_TOKEN }}
-      - name: Debug that user NOT belongs to it
-        run: |
-          echo "User belongs to  = ${{ steps.is_organization_member_not_belong.outputs.result }}"
+          labels: jenkins-ci
+      - name: User does not belong to the organization
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.pull_request.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '👋 Thanks for reporting!'
+            })
