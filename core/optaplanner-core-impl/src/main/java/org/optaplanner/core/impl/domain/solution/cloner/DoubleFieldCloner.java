@@ -23,8 +23,7 @@ final class DoubleFieldCloner<C> implements FieldCloner<C> {
         try {
             return field.getDouble(bean);
         } catch (IllegalAccessException e) {
-            FieldCloner.failOnRead(bean, field, e);
-            return 0;
+            throw FieldCloner.createExceptionOnRead(bean, field, e);
         }
     }
 
@@ -32,7 +31,7 @@ final class DoubleFieldCloner<C> implements FieldCloner<C> {
         try {
             field.setDouble(bean, value);
         } catch (IllegalAccessException e) {
-            FieldCloner.failOnWrite(bean, field, value, e);
+            throw FieldCloner.createExceptionOnWrite(bean, field, value, e);
         }
     }
 

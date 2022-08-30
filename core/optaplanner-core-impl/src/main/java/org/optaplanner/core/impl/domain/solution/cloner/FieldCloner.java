@@ -10,13 +10,12 @@ interface FieldCloner<C> {
         try {
             return field.get(bean);
         } catch (IllegalAccessException e) {
-            failOnRead(bean, field, e);
-            return null;
+            throw createExceptionOnRead(bean, field, e);
         }
     }
 
-    static void failOnRead(Object bean, Field field, Exception rootCause) {
-        throw new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
+    static RuntimeException createExceptionOnRead(Object bean, Field field, Exception rootCause) {
+        return new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
                 + ") which cannot be read to create a planning clone.", rootCause);
     }
 
@@ -24,12 +23,12 @@ interface FieldCloner<C> {
         try {
             field.set(bean, value);
         } catch (IllegalAccessException e) {
-            failOnWrite(bean, field, value, e);
+            throw createExceptionOnWrite(bean, field, value, e);
         }
     }
 
-    static void failOnWrite(Object bean, Field field, Object value, Exception rootCause) {
-        throw new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
+    static RuntimeException createExceptionOnWrite(Object bean, Field field, Object value, Exception rootCause) {
+        return new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
                 + ") which cannot be written with the value (" + value + ") to create a planning clone.", rootCause);
     }
 

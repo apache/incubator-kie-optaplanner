@@ -23,8 +23,7 @@ final class BooleanFieldCloner<C> implements FieldCloner<C> {
         try {
             return field.getBoolean(bean);
         } catch (IllegalAccessException e) {
-            FieldCloner.failOnRead(bean, field, e);
-            return false;
+            throw FieldCloner.createExceptionOnRead(bean, field, e);
         }
     }
 
@@ -32,7 +31,7 @@ final class BooleanFieldCloner<C> implements FieldCloner<C> {
         try {
             field.setBoolean(bean, value);
         } catch (IllegalAccessException e) {
-            FieldCloner.failOnWrite(bean, field, value, e);
+            throw FieldCloner.createExceptionOnWrite(bean, field, value, e);
         }
     }
 
