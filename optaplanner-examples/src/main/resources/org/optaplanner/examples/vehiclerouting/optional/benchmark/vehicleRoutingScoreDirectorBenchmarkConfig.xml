@@ -36,14 +36,15 @@
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
-  <solverBenchmark>
-    <name>Incremental java</name>
-    <solver>
-      <scoreDirectorFactory>
-        <incrementalScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
-      </scoreDirectorFactory>
-    </solver>
-  </solverBenchmark>
+  <!-- FIXME restore when IncrementalScoreCalculator supports list variable: https://issues.redhat.com/browse/PLANNER-2711 -->
+  <!--<solverBenchmark>-->
+  <!--  <name>Incremental java</name>-->
+  <!--  <solver>-->
+  <!--    <scoreDirectorFactory>-->
+  <!--      <incrementalScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+  <!--    </scoreDirectorFactory>-->
+  <!--  </solver>-->
+  <!--</solverBenchmark>-->
   <solverBenchmark>
     <name>ConstraintStreams</name>
     <solver>
