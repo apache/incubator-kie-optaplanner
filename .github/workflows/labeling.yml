@@ -5,6 +5,10 @@ on:
       - 8.*
     types: [ labeled ] # TODO to set back after Jenkins DSL testing
 
+env:
+  LABEL_CI: 'safe_for_ci'
+  GATEKEEPER_TEAM: optaplanner_gatekeepers
+
 jobs:
   label_pr:
     name: Set correct label to PR
@@ -29,4 +33,5 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            User is not allowed to launch Jenkins CI. Please 'any_mentioned_user', add the label manually.
+            Could not determined if PR is safe for CI to run.
+            @${{ env.GATEKEEPER_TEAM }}, please review and add the `${{ env.LABEL_CI }}` label if PR is ok to run.
