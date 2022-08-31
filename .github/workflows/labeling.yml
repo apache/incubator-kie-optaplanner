@@ -7,7 +7,7 @@ on:
 
 env:
   LABEL_CI: 'safe_for_ci'
-  GATEKEEPER_TEAM: optaplanner_gatekeepers
+  GATEKEEPER_TEAM: optaplanner-gatekeepers
 
 jobs:
   label_pr:
@@ -33,5 +33,5 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            Could not determined if PR is safe for CI to run.
+            Could not determine if PR is safe for CI to run.
             @${{ env.GATEKEEPER_TEAM }}, please review and add the `${{ env.LABEL_CI }}` label if PR is ok to run.
