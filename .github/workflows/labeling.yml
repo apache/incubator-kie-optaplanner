@@ -18,11 +18,11 @@ jobs:
           organization: kiegroup
           username: ${{ github.event.pull_request.user.login }}
           token: ${{ secrets.KIE_CI_READ_ORG_TOKEN }}
-      - name: User belongs to organization - Add Jenkins CI label
+      - name: User belongs to organization - Add Safe for CI label
         uses: actions-ecosystem/action-add-labels@v1
         if: ${{ steps.is_organization_member.outputs.result }}
         with:
-          labels: jenkins-ci
+          labels: safe_for_ci
       - name: User does not belong to the organization
         uses: peter-evans/create-or-update-comment@v2
         if: ${{ ! steps.is_organization_member.outputs.result }}
