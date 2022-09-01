@@ -24,6 +24,7 @@ on:
       - '**.adoc'
       - '*.txt'
       - '.ci/**'
+      - '.github/**' # to remove
 
 defaults:
   run:
