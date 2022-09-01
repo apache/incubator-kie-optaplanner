@@ -75,7 +75,7 @@ Most links in this document take the 8.27.x branch as an example!
 Run
 https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/8.27.x/job/tools/job/update-drools-optaplanner/[update-drools-optaplanner]. +
 IMPORTANT: this job should be triggered only if the artifacts of Drools version (as an example `drools-bom`) are already on https://repo1.maven.org/maven2/org/drools/drools-bom[Maven Central].
-Also the Drools version has to be updated on OptaPlanner main branch running
+Also, the Drools version has to be updated on the OptaPlanner main branch by running
 https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/main/job/tools/job/update-drools-optaplanner/[update-drools-optaplanner] on main branch.
 
 === 4. Release OptaPlanner
