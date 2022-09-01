@@ -72,7 +72,7 @@ Most links in this document take the 8.27.x branch as an example!
 
 === 3. Update Drools
 
-Since OptaPlanner is not released anymore as a part of the Kogito release pipeline the Drools version is not upgraded automatically. This has to be done by running
+Run
 https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/8.27.x/job/tools/job/update-drools-optaplanner/[update-drools-optaplanner]. +
 IMPORTANT: this job should be triggered only if the artifacts of Drools version (as an example drools-bom) are already on https://repo1.maven.org/maven2/org/drools/drools-bom[Maven Central].
 Also the Drools version has to be updated on OptaPlanner main branch running
