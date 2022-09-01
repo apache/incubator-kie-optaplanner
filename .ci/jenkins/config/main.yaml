@@ -6,19 +6,17 @@ ecosystem:
     - opta.*
 git:
   branches:
-  - name: main
-    seed:
-      branch: main
+  - name: optaplanner_pr_jenkins_label_upstream
   main_branch:
-    default: main
+    default: optaplanner_pr_jenkins_label_upstream
 seed:
   config_file:
     git:
       repository: optaplanner
       author:
-        name: kiegroup
+        name: radtriste
         credentials_id: kie-ci
-      branch: main
+      branch: optaplanner_pr_jenkins_label_upstream
     path: .ci/jenkins/config/branch.yaml
 jenkins:
   email_creds_id: OPTAPLANNER_CI_EMAIL
