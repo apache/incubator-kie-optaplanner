@@ -80,7 +80,7 @@ https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/
 
 === 4. Release OptaPlanner
 
-The OptaPlanner release pipeline can be triggered now based on the created new branch in step 2.
+The OptaPlanner release pipeline can now be triggered using the branch created in step 2.
 Run https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/8.27.x/job/release/job/optaplanner-release[optaplanner-release].
 The OptaPlanner release pipeline runs the https://eng-jenkins-csb-business-automation.apps.ocp-c1.prod.psi.redhat.com/job/KIE/job/optaplanner/job/8.27.x/job/release/job/optaplanner-deploy[optaplanner-deploy] job
 which updates the project versions of OptaPlanner, Quickstarts and OptaWeb Vehicle Routing, builds these projects and deploys their artifacts to Nexus.
