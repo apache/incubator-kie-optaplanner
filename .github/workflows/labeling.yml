@@ -1,3 +1,5 @@
+name: Labelling
+
 on:
   # pull_request_target: # TODO set back
   pull_request:
@@ -11,8 +13,8 @@ env:
   GATEKEEPER_TEAM: optaplanner-gatekeepers
 
 jobs:
-  label_pr:
-    name: Set correct label to PR
+  safe_for_ci:
+    name: Check if safe for CI
     if: contains(github.event.pull_request.labels.*.name, 'dsl-test') # TODO to set back after Jenkins DSL testing
     runs-on: ubuntu-latest
     steps:
