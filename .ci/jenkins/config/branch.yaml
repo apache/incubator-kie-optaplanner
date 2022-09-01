@@ -20,11 +20,6 @@ disable:
   triggers: false
 repositories:
 - name: optaplanner
-  branch: main
-- name: optaweb-vehicle-routing
-  branch: main
-- name: optaplanner-quickstarts
-  branch: development
 git:
   author:
     name: kiegroup
