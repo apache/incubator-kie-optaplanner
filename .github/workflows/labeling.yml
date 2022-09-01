@@ -12,7 +12,7 @@ env:
 jobs:
   label_pr:
     name: Set correct label to PR
-    if: contains(github.event.pull_request.labels.*.name, 'dsl_test') # TODO to set back after Jenkins DSL testing
+    if: contains(github.event.pull_request.labels.*.name, 'dsl-test') # TODO to set back after Jenkins DSL testing
     runs-on: ubuntu-latest
     steps:
       - name: Check if organization member belongs
