@@ -91,9 +91,7 @@ public interface ConstraintStream {
      * @param constraintWeight never null
      * @return never null
      */
-    default Constraint penalize(String constraintName, Score<?> constraintWeight) {
-        return penalize(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight);
-    }
+    Constraint penalize(String constraintName, Score<?> constraintWeight);
 
     /**
      * As defined by {@link #penalize(String, Score)}.
@@ -118,9 +116,7 @@ public interface ConstraintStream {
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @return never null
      */
-    default Constraint penalizeConfigurable(String constraintName) {
-        return penalizeConfigurable(getConstraintFactory().getDefaultConstraintPackage(), constraintName);
-    }
+    Constraint penalizeConfigurable(String constraintName);
 
     /**
      * As defined by {@link #penalizeConfigurable(String)}.
@@ -143,9 +139,7 @@ public interface ConstraintStream {
      * @param constraintWeight never null
      * @return never null
      */
-    default Constraint reward(String constraintName, Score<?> constraintWeight) {
-        return reward(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight);
-    }
+    Constraint reward(String constraintName, Score<?> constraintWeight);
 
     /**
      * As defined by {@link #reward(String, Score)}.
@@ -170,9 +164,7 @@ public interface ConstraintStream {
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @return never null
      */
-    default Constraint rewardConfigurable(String constraintName) {
-        return rewardConfigurable(getConstraintFactory().getDefaultConstraintPackage(), constraintName);
-    }
+    Constraint rewardConfigurable(String constraintName);
 
     /**
      * As defined by {@link #rewardConfigurable(String)}.
@@ -195,9 +187,7 @@ public interface ConstraintStream {
      * @param constraintWeight never null
      * @return never null
      */
-    default Constraint impact(String constraintName, Score<?> constraintWeight) {
-        return impact(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight);
-    }
+    Constraint impact(String constraintName, Score<?> constraintWeight);
 
     /**
      * As defined by {@link #impact(String, Score)}.

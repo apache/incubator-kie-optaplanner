@@ -3,6 +3,7 @@ package org.optaplanner.constraint.streams.bavet.uni;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
@@ -21,6 +22,7 @@ import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.common.bi.BiJoinerComber;
 import org.optaplanner.constraint.streams.common.uni.InnerUniConstraintStream;
+import org.optaplanner.constraint.streams.common.uni.UniTerminatorImpl;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
@@ -29,6 +31,7 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
+import org.optaplanner.core.api.score.stream.uni.UniTerminator;
 
 public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends BavetAbstractConstraintStream<Solution_>
         implements InnerUniConstraintStream<A> {
@@ -384,75 +387,157 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     // ************************************************************************
 
     @Override
-    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ScoreImpactType impactType) {
-        BavetScoringUniConstraintStream<Solution_, A> stream = shareAndAddChild(
-                new BavetScoringUniConstraintStream<>(constraintFactory, this));
-        return buildConstraint(constraintPackage, constraintName, constraintWeight,
-                impactType, stream);
+    public Constraint penalize(String constraintName, Score<?> constraintWeight) {
+        return penalize(constraintWeight)
+                .as(constraintName);
     }
 
     @Override
-    public final Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
+    public final Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        return penalize(constraintWeight)
+                .as(constraintPackage, constraintName);
+    }
+
+    @Override
+    public Constraint penalizeConfigurable(String constraintName) {
+        return penalize()
+                .as(constraintName);
+    }
+
+    @Override
+    public final Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
+        return penalize()
+                .as(constraintPackage, constraintName);
+    }
+
+    @Override
+    public Constraint reward(String constraintName, Score<?> constraintWeight) {
+        return reward(constraintWeight)
+                .as(constraintName);
+    }
+
+    @Override
+    public final Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        return reward(constraintWeight)
+                .as(constraintPackage, constraintName);
+    }
+
+    @Override
+    public Constraint rewardConfigurable(String constraintName) {
+        return reward()
+                .as(constraintName);
+    }
+
+    @Override
+    public final Constraint rewardConfigurable(String constraintPackage, String constraintName) {
+        return penalize()
+                .as(constraintPackage, constraintName);
+    }
+
+    @Override
+    public Constraint impact(String constraintName, Score<?> constraintWeight) {
+        return impact(constraintWeight)
+                .as(constraintName);
+    }
+
+    @Override
+    public final Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        return impact(constraintWeight)
+                .as(constraintPackage, constraintName);
+    }
+
+    @Override
+    public UniTerminator<A> penalize(ToIntFunction<A> matchWeighter) {
+        BavetScoringUniConstraintStream<Solution_, A> stream = shareAndAddChild(
+                new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeighter));
+        return new UniTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
+                ScoreImpactType.PENALTY);
+    }
+
+    private Constraint build(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ScoreImpactType impactType, BavetScoringUniConstraintStream<Solution_, A> stream) {
+        String resolvedConstraintPackage =
+                Objects.requireNonNull(constraintPackage, this.constraintFactory.getDefaultConstraintPackage());
+        if (constraintWeight == null) {
+            return buildConstraint(resolvedConstraintPackage, constraintName, constraintWeight,
+                    impactType, stream);
+        } else {
+            return buildConstraintConfigurable(resolvedConstraintPackage, constraintName, impactType, stream);
+        }
+
+    }
+
+    @Override
+    public UniTerminator<A> penalizeLong(ToLongFunction<A> matchWeighter) {
+        BavetScoringUniConstraintStream<Solution_, A> stream = shareAndAddChild(
+                new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeighter));
+        return new UniTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
+                ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    public UniTerminator<A> penalizeBigDecimal(Function<A, BigDecimal> matchWeighter) {
+        BavetScoringUniConstraintStream<Solution_, A> stream = shareAndAddChild(
+                new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeighter));
+        return new UniTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
+                ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    public UniTerminator<A> reward(ToIntFunction<A> matchWeigher) {
         BavetScoringUniConstraintStream<Solution_, A> stream = shareAndAddChild(
                 new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
-        return buildConstraint(constraintPackage, constraintName, constraintWeight,
-                impactType, stream);
+        return new UniTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
+                ScoreImpactType.REWARD);
     }
 
     @Override
-    public final Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
+    public UniTerminator<A> rewardLong(ToLongFunction<A> matchWeigher) {
         BavetScoringUniConstraintStream<Solution_, A> stream = shareAndAddChild(
                 new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
-        return buildConstraint(constraintPackage, constraintName, constraintWeight,
-                impactType, stream);
+        return new UniTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
+                ScoreImpactType.REWARD);
     }
 
     @Override
-    public final Constraint impactScoreBigDecimal(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
+    public UniTerminator<A> rewardBigDecimal(Function<A, BigDecimal> matchWeigher) {
         BavetScoringUniConstraintStream<Solution_, A> stream = shareAndAddChild(
                 new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
-        return buildConstraint(constraintPackage, constraintName, constraintWeight,
-                impactType, stream);
+        return new UniTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
+                ScoreImpactType.REWARD);
     }
 
     @Override
-    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            ScoreImpactType impactType) {
-        BavetScoringUniConstraintStream<Solution_, A> stream = shareAndAddChild(
-                new BavetScoringUniConstraintStream<>(constraintFactory, this));
-        return buildConstraintConfigurable(constraintPackage, constraintName,
-                impactType, stream);
-    }
-
-    @Override
-    public final Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
+    public UniTerminator<A> impact(ToIntFunction<A> matchWeigher) {
         BavetScoringUniConstraintStream<Solution_, A> stream = shareAndAddChild(
                 new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
-        return buildConstraintConfigurable(constraintPackage, constraintName,
-                impactType, stream);
+        return new UniTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
+                ScoreImpactType.MIXED);
     }
 
     @Override
-    public final Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
-            ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
+    public UniTerminator<A> impactLong(ToLongFunction<A> matchWeigher) {
         BavetScoringUniConstraintStream<Solution_, A> stream = shareAndAddChild(
                 new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
-        return buildConstraintConfigurable(constraintPackage, constraintName,
-                impactType, stream);
+        return new UniTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
+                ScoreImpactType.MIXED);
     }
 
     @Override
-    public final Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
-            Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
+    public UniTerminator<A> impactBigDecimal(Function<A, BigDecimal> matchWeigher) {
         BavetScoringUniConstraintStream<Solution_, A> stream = shareAndAddChild(
                 new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
-        return buildConstraintConfigurable(constraintPackage, constraintName,
-                impactType, stream);
+        return new UniTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
+                ScoreImpactType.MIXED);
     }
 
 }
