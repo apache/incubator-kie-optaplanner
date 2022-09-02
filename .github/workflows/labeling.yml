@@ -6,7 +6,7 @@ on:
     branches:
       - main
       - 8.*
-    types: [ labeled ] # TODO to set back after Jenkins DSL testing
+    # types: [ labeled ] # TODO to set back after Jenkins DSL testing
 
 env:
   LABEL_CI: 'safe_for_ci'
@@ -15,7 +15,7 @@ env:
 jobs:
   safe_for_ci:
     name: Check if safe for CI
-    if: contains(github.event.pull_request.labels.*.name, 'dsl-test') # TODO to set back after Jenkins DSL testing
+    # if: contains(github.event.pull_request.labels.*.name, 'dsl-test') # TODO to set back after Jenkins DSL testing
     runs-on: ubuntu-latest
     steps:
       - name: Check if organization member belongs
