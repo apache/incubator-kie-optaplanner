@@ -229,7 +229,11 @@ Map getMultijobPRConfig(Folder jobFolder) {
 }
 
 // Optaplanner PR checks
-KogitoJobUtils.createAllEnvsPerRepoPRJobs(this) { jobFolder -> getMultijobPRConfig(jobFolder) }
+KogitoJobUtils.createAllEnvsPerRepoPRJobs(this, { jobFolder -> getMultijobPRConfig(jobFolder) }) {
+    def jobParams = KogitoJobUtils.getDefaultJobParams(this)
+    jobParams.pr.use_gha_label_triggers = true
+    return jobParams
+}
 setupDeployJob(Folder.PULLREQUEST_RUNTIMES_BDD)
 
 // Init branch
