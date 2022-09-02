@@ -209,16 +209,16 @@ Map getMultijobPRConfig(Folder jobFolder) {
                     // As we have only Community edition
                     DISABLE_SONARCLOUD: !Utils.isMainBranch(this),
                 ]
-            ], [
-                id: 'optaweb-vehicle-routing',
-                repository: 'optaweb-vehicle-routing'
-            ], [
-                id: 'optaplanner-quickstarts',
-                repository: 'optaplanner-quickstarts',
-                env : [
-                    BUILD_MVN_OPTS_CURRENT: '-Dfull',
-                    OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM: '-Dfull'
-                ]
+            // ], [
+            //     id: 'optaweb-vehicle-routing',
+            //     repository: 'optaweb-vehicle-routing'
+            // ], [
+            //     id: 'optaplanner-quickstarts',
+            //     repository: 'optaplanner-quickstarts',
+            //     env : [
+            //         BUILD_MVN_OPTS_CURRENT: '-Dfull',
+            //         OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM: '-Dfull'
+            //     ]
             ]
         ]
     ]
