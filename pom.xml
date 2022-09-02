@@ -13,6 +13,8 @@
     <relativePath/>
   </parent>
 
+         
+         
   <groupId>org.optaplanner</groupId>
   <artifactId>optaplanner-parent</artifactId>
   <packaging>pom</packaging>
