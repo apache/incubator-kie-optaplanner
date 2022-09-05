@@ -398,6 +398,22 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
                 ScoreImpactType.MIXED);
     }
 
+    @Override
+    public UniTerminator<A> impactLong(ToLongFunction<A> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return new UniTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
+                ScoreImpactType.MIXED);
+    }
+
+    @Override
+    public UniTerminator<A> impactBigDecimal(Function<A, BigDecimal> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return new UniTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
+                ScoreImpactType.MIXED);
+    }
+
     public abstract UniLeftHandSide<A> getLeftHandSide();
 
 }

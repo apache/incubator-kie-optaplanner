@@ -1,6 +1,6 @@
 package org.optaplanner.constraint.streams.drools.quad;
 
-import static org.optaplanner.constraint.streams.common.RetrievalSemantics.*;
+import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -9,6 +9,7 @@ import java.util.function.Function;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.common.quad.InnerQuadConstraintStream;
+import org.optaplanner.constraint.streams.common.quad.QuadTerminatorImpl;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.bi.DroolsGroupingBiConstraintStream;
 import org.optaplanner.constraint.streams.drools.common.DroolsAbstractConstraintStream;
@@ -27,6 +28,7 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
+import org.optaplanner.core.api.score.stream.quad.QuadTerminator;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
@@ -263,59 +265,136 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    protected Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ScoreImpactType impactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate();
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
+    public Constraint penalize(String constraintName, Score<?> constraintWeight) {
+        return penalize(constraintWeight)
+                .as(constraintName);
     }
 
     @Override
-    public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
+    public Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        return penalize(constraintWeight)
+                .as(constraintPackage, constraintName);
+    }
+
+    @Override
+    public Constraint penalizeConfigurable(String constraintName) {
+        return penalize()
+                .as(constraintName);
+    }
+
+    @Override
+    public Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
+        return penalize()
+                .as(constraintPackage, constraintName);
+    }
+
+    @Override
+    public Constraint reward(String constraintName, Score<?> constraintWeight) {
+        return reward(constraintWeight)
+                .as(constraintName);
+    }
+
+    @Override
+    public Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        return reward(constraintWeight)
+                .as(constraintPackage, constraintName);
+    }
+
+    @Override
+    public Constraint rewardConfigurable(String constraintName) {
+        return reward()
+                .as(constraintName);
+    }
+
+    @Override
+    public Constraint rewardConfigurable(String constraintPackage, String constraintName) {
+        return reward()
+                .as(constraintPackage, constraintName);
+    }
+
+    @Override
+    public Constraint impact(String constraintName, Score<?> constraintWeight) {
+        return impact(constraintWeight)
+                .as(constraintName);
+    }
+
+    @Override
+    public Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight) {
+        return impact(constraintWeight)
+                .as(constraintPackage, constraintName);
+    }
+
+    @Override
+    public QuadTerminator<A, B, C, D> penalize(ToIntQuadFunction<A, B, C, D> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
+        return new QuadTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
+                ScoreImpactType.PENALTY);
+
     }
 
     @Override
-    public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
+    public QuadTerminator<A, B, C, D> penalizeLong(ToLongQuadFunction<A, B, C, D> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
+        return new QuadTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
+                ScoreImpactType.PENALTY);
     }
 
     @Override
-    public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType) {
+    public QuadTerminator<A, B, C, D> penalizeBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraint(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
+        return new QuadTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
+                ScoreImpactType.PENALTY);
     }
 
     @Override
-    protected Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            ScoreImpactType impactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate();
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
-    }
-
-    @Override
-    public Constraint impactScoreConfigurable(String constraintPackage, String constraintName,
-            ToIntQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
+    public QuadTerminator<A, B, C, D> reward(ToIntQuadFunction<A, B, C, D> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
+        return new QuadTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
+                ScoreImpactType.REWARD);
     }
 
     @Override
-    public Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
-            ToLongQuadFunction<A, B, C, D> matchWeigher, ScoreImpactType impactType) {
+    public QuadTerminator<A, B, C, D> rewardLong(ToLongQuadFunction<A, B, C, D> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
+        return new QuadTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
+                ScoreImpactType.REWARD);
     }
 
     @Override
-    public Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
-            QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType impactType) {
+    public QuadTerminator<A, B, C, D> rewardBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return buildConstraintConfigurable(constraintPackage, constraintName, impactType, ruleBuilder);
+        return new QuadTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
+                ScoreImpactType.REWARD);
+    }
+
+    @Override
+    public QuadTerminator<A, B, C, D> impact(ToIntQuadFunction<A, B, C, D> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return new QuadTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
+                ScoreImpactType.MIXED);
+    }
+
+    @Override
+    public QuadTerminator<A, B, C, D> impactLong(ToLongQuadFunction<A, B, C, D> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return new QuadTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
+                ScoreImpactType.MIXED);
+    }
+
+    @Override
+    public QuadTerminator<A, B, C, D> impactBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return new QuadTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
+                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
+                ScoreImpactType.MIXED);
     }
 
     public abstract QuadLeftHandSide<A, B, C, D> getLeftHandSide();
