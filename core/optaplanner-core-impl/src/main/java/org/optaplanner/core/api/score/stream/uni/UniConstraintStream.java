@@ -1458,12 +1458,12 @@ public interface UniConstraintStream<A> extends ConstraintStream {
                 .as(constraintPackage, constraintName);
     }
 
-    default UniTerminator<A> penalize(Score<?> constraintWeight, ToIntFunction<A> matchWeighter) {
-        return penalize(matchWeighter)
+    default UniTerminator<A> penalize(Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
+        return penalize(matchWeigher)
                 .withWeight(constraintWeight);
     }
 
-    UniTerminator<A> penalize(ToIntFunction<A> matchWeighter);
+    UniTerminator<A> penalize(ToIntFunction<A> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
@@ -1494,12 +1494,12 @@ public interface UniConstraintStream<A> extends ConstraintStream {
                 .as(constraintPackage, constraintName);
     }
 
-    default UniTerminator<A> penalizeLong(Score<?> constraintWeight, ToLongFunction<A> matchWeighter) {
-        return penalizeLong(matchWeighter)
+    default UniTerminator<A> penalizeLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
+        return penalizeLong(matchWeigher)
                 .withWeight(constraintWeight);
     }
 
-    UniTerminator<A> penalizeLong(ToLongFunction<A> matchWeighter);
+    UniTerminator<A> penalizeLong(ToLongFunction<A> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
@@ -1531,12 +1531,12 @@ public interface UniConstraintStream<A> extends ConstraintStream {
                 .as(constraintPackage, constraintName);
     }
 
-    default UniTerminator<A> penalizeBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeighter) {
-        return penalizeBigDecimal(matchWeighter)
+    default UniTerminator<A> penalizeBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher) {
+        return penalizeBigDecimal(matchWeigher)
                 .withWeight(constraintWeight);
     }
 
-    UniTerminator<A> penalizeBigDecimal(Function<A, BigDecimal> matchWeighter);
+    UniTerminator<A> penalizeBigDecimal(Function<A, BigDecimal> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
@@ -1661,8 +1661,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
                 .as(constraintPackage, constraintName);
     }
 
-    default UniTerminator<A> reward(Score<?> constraintWeight, ToIntFunction<A> matchWeighter) {
-        return reward(matchWeighter)
+    default UniTerminator<A> reward(Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
+        return reward(matchWeigher)
                 .withWeight(constraintWeight);
     }
 
@@ -1697,8 +1697,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
                 .as(constraintPackage, constraintName);
     }
 
-    default UniTerminator<A> rewardLong(Score<?> constraintWeight, ToLongFunction<A> matchWeighter) {
-        return rewardLong(matchWeighter)
+    default UniTerminator<A> rewardLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
+        return rewardLong(matchWeigher)
                 .withWeight(constraintWeight);
     }
 
@@ -1734,8 +1734,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
                 .as(constraintPackage, constraintName);
     }
 
-    default UniTerminator<A> rewardBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeighter) {
-        return rewardBigDecimal(matchWeighter)
+    default UniTerminator<A> rewardBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher) {
+        return rewardBigDecimal(matchWeigher)
                 .withWeight(constraintWeight);
     }
 
@@ -1867,8 +1867,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
                 .as(constraintPackage, constraintName);
     }
 
-    default UniTerminator<A> impact(Score<?> constraintWeight, ToIntFunction<A> matchWeighter) {
-        return impact(matchWeighter)
+    default UniTerminator<A> impact(Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
+        return impact(matchWeigher)
                 .withWeight(constraintWeight);
     }
 
@@ -1906,8 +1906,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
                 .as(constraintPackage, constraintName);
     }
 
-    default UniTerminator<A> impactLong(Score<?> constraintWeight, ToLongFunction<A> matchWeighter) {
-        return impactLong(matchWeighter)
+    default UniTerminator<A> impactLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
+        return impactLong(matchWeigher)
                 .withWeight(constraintWeight);
     }
 
@@ -1946,8 +1946,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
                 .as(constraintPackage, constraintName);
     }
 
-    default UniTerminator<A> impactBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeighter) {
-        return impactBigDecimal(matchWeighter)
+    default UniTerminator<A> impactBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher) {
+        return impactBigDecimal(matchWeigher)
                 .withWeight(constraintWeight);
     }
 

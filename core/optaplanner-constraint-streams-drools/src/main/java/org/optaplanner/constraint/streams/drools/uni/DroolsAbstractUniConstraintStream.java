@@ -378,8 +378,8 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
-    public UniTerminator<A> penalize(ToIntFunction<A> matchWeighter) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeighter);
+    public UniTerminator<A> penalize(ToIntFunction<A> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return new UniTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
                 impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
                 ScoreImpactType.PENALTY);
@@ -387,16 +387,16 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
-    public UniTerminator<A> penalizeLong(ToLongFunction<A> matchWeighter) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeighter);
+    public UniTerminator<A> penalizeLong(ToLongFunction<A> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return new UniTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
                 impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
                 ScoreImpactType.PENALTY);
     }
 
     @Override
-    public UniTerminator<A> penalizeBigDecimal(Function<A, BigDecimal> matchWeighter) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeighter);
+    public UniTerminator<A> penalizeBigDecimal(Function<A, BigDecimal> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return new UniTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
                 impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
                 ScoreImpactType.PENALTY);

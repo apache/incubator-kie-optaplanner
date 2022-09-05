@@ -448,27 +448,27 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     @Override
-    public UniTerminator<A> penalize(ToIntFunction<A> matchWeighter) {
+    public UniTerminator<A> penalize(ToIntFunction<A> matchWeigher) {
         BavetScoringUniConstraintStream<Solution_, A> stream = shareAndAddChild(
-                new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeighter));
+                new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
         return new UniTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
                 impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
                 ScoreImpactType.PENALTY);
     }
 
     @Override
-    public UniTerminator<A> penalizeLong(ToLongFunction<A> matchWeighter) {
+    public UniTerminator<A> penalizeLong(ToLongFunction<A> matchWeigher) {
         BavetScoringUniConstraintStream<Solution_, A> stream = shareAndAddChild(
-                new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeighter));
+                new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
         return new UniTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
                 impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
                 ScoreImpactType.PENALTY);
     }
 
     @Override
-    public UniTerminator<A> penalizeBigDecimal(Function<A, BigDecimal> matchWeighter) {
+    public UniTerminator<A> penalizeBigDecimal(Function<A, BigDecimal> matchWeigher) {
         BavetScoringUniConstraintStream<Solution_, A> stream = shareAndAddChild(
-                new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeighter));
+                new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
         return new UniTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
                 impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
                 ScoreImpactType.PENALTY);
