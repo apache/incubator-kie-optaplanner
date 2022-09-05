@@ -407,7 +407,6 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
                 ScoreImpactType.MIXED);
     }
 
-
     public abstract BiLeftHandSide<A, B> getLeftHandSide();
 
 }
