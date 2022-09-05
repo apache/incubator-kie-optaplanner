@@ -1008,6 +1008,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalize(String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher) {
         return penalize(constraintWeight, matchWeigher)
@@ -1023,6 +1024,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher) {
         return penalize(constraintWeight, matchWeigher)
@@ -1045,6 +1047,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalizeLong(String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher) {
         return penalizeLong(constraintWeight, matchWeigher)
@@ -1060,6 +1063,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher) {
         return penalizeLong(constraintWeight, matchWeigher)
@@ -1082,6 +1086,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalizeBigDecimal(String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return penalizeBigDecimal(constraintWeight, matchWeigher)
@@ -1097,6 +1102,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return penalizeBigDecimal(constraintWeight, matchWeigher)
@@ -1122,6 +1128,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalizeConfigurable(String constraintName, ToIntTriFunction<A, B, C> matchWeigher) {
         return penalize(matchWeigher)
                 .as(constraintName);
@@ -1135,6 +1142,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalizeConfigurable(String constraintPackage, String constraintName,
             ToIntTriFunction<A, B, C> matchWeigher) {
         return penalize(matchWeigher)
@@ -1149,6 +1157,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalizeConfigurableLong(String constraintName, ToLongTriFunction<A, B, C> matchWeigher) {
         return penalizeLong(matchWeigher)
                 .as(constraintName);
@@ -1162,6 +1171,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalizeConfigurableLong(String constraintPackage, String constraintName,
             ToLongTriFunction<A, B, C> matchWeigher) {
         return penalizeLong(matchWeigher)
@@ -1176,6 +1186,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalizeConfigurableBigDecimal(String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return penalizeBigDecimal(matchWeigher)
@@ -1191,6 +1202,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return penalizeBigDecimal(matchWeigher)
@@ -1217,6 +1229,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint reward(String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher) {
         return reward(constraintWeight, matchWeigher)
@@ -1232,6 +1245,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher) {
         return reward(constraintWeight, matchWeigher)
@@ -1254,6 +1268,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint rewardLong(String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher) {
         return rewardLong(constraintWeight, matchWeigher)
@@ -1269,6 +1284,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher) {
         return rewardLong(constraintWeight, matchWeigher)
@@ -1291,6 +1307,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint rewardBigDecimal(String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return rewardBigDecimal(constraintWeight, matchWeigher)
@@ -1306,6 +1323,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return rewardBigDecimal(constraintWeight, matchWeigher)
@@ -1330,6 +1348,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint rewardConfigurable(String constraintName, ToIntTriFunction<A, B, C> matchWeigher) {
         return reward(matchWeigher)
                 .as(constraintName);
@@ -1343,6 +1362,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint rewardConfigurable(String constraintPackage, String constraintName,
             ToIntTriFunction<A, B, C> matchWeigher) {
         return reward(matchWeigher)
@@ -1357,6 +1377,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint rewardConfigurableLong(String constraintName, ToLongTriFunction<A, B, C> matchWeigher) {
         return rewardLong(matchWeigher)
                 .as(constraintName);
@@ -1371,6 +1392,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint rewardConfigurableLong(String constraintPackage, String constraintName,
             ToLongTriFunction<A, B, C> matchWeigher) {
         return rewardLong(matchWeigher)
@@ -1385,6 +1407,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint rewardConfigurableBigDecimal(String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return rewardBigDecimal(matchWeigher)
@@ -1399,6 +1422,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return rewardBigDecimal(matchWeigher)
@@ -1428,6 +1452,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impact(String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher) {
         return impact(constraintWeight, matchWeigher)
@@ -1443,6 +1468,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntTriFunction<A, B, C> matchWeigher) {
         return impact(constraintWeight, matchWeigher)
@@ -1468,6 +1494,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impactLong(String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher) {
         return impactLong(constraintWeight, matchWeigher)
@@ -1483,6 +1510,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impactLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongTriFunction<A, B, C> matchWeigher) {
         return impactLong(constraintWeight, matchWeigher)
@@ -1508,6 +1536,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impactBigDecimal(String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return impactBigDecimal(constraintWeight, matchWeigher)
@@ -1523,6 +1552,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impactBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return impactBigDecimal(constraintWeight, matchWeigher)
@@ -1556,6 +1586,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impactConfigurable(String constraintName, ToIntTriFunction<A, B, C> matchWeigher) {
         return impact(matchWeigher)
                 .as(constraintName);
@@ -1569,6 +1600,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impactConfigurable(String constraintPackage, String constraintName,
             ToIntTriFunction<A, B, C> matchWeigher) {
         return impact(matchWeigher)
@@ -1592,6 +1624,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impactConfigurableLong(String constraintName, ToLongTriFunction<A, B, C> matchWeigher) {
         return impactLong(matchWeigher)
                 .as(constraintName);
@@ -1605,6 +1638,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impactConfigurableLong(String constraintPackage, String constraintName,
             ToLongTriFunction<A, B, C> matchWeigher) {
         return impactLong(matchWeigher)
@@ -1628,6 +1662,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impactConfigurableBigDecimal(String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return impactBigDecimal(matchWeigher)
@@ -1642,6 +1677,7 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     default Constraint impactConfigurableBigDecimal(String constraintPackage, String constraintName,
             TriFunction<A, B, C, BigDecimal> matchWeigher) {
         return impactBigDecimal(matchWeigher)
