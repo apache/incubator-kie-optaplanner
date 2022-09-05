@@ -14,6 +14,7 @@ import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.bi.BavetJoinBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.BavetScoringConstraintStream;
 import org.optaplanner.constraint.streams.bavet.quad.BavetGroupQuadConstraintStream;
 import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.constraint.streams.bavet.tri.BavetGroupTriConstraintStream;
@@ -453,19 +454,6 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
         return new UniTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
                 impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
                 ScoreImpactType.PENALTY);
-    }
-
-    private Constraint build(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ScoreImpactType impactType, BavetScoringUniConstraintStream<Solution_, A> stream) {
-        String resolvedConstraintPackage =
-                Objects.requireNonNull(constraintPackage, this.constraintFactory.getDefaultConstraintPackage());
-        if (constraintWeight == null) {
-            return buildConstraint(resolvedConstraintPackage, constraintName, constraintWeight,
-                    impactType, stream);
-        } else {
-            return buildConstraintConfigurable(resolvedConstraintPackage, constraintName, impactType, stream);
-        }
-
     }
 
     @Override

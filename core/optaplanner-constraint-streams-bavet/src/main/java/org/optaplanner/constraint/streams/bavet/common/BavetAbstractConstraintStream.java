@@ -1,5 +1,6 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -10,6 +11,7 @@ import org.optaplanner.constraint.streams.common.AbstractConstraintStream;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
@@ -28,7 +30,19 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
     // Penalize/reward
     // ************************************************************************
 
-    protected BavetConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
+    protected Constraint build(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ScoreImpactType impactType, BavetScoringConstraintStream<Solution_> stream) {
+        String resolvedConstraintPackage =
+                Objects.requireNonNull(constraintPackage, this.constraintFactory.getDefaultConstraintPackage());
+        if (constraintWeight == null) {
+            return buildConstraint(resolvedConstraintPackage, constraintName, constraintWeight,
+                    impactType, stream);
+        } else {
+            return buildConstraintConfigurable(resolvedConstraintPackage, constraintName, impactType, stream);
+        }
+    }
+
+    private BavetConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ScoreImpactType impactType,
             BavetScoringConstraintStream<Solution_> scoringConstraintStream) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(
@@ -40,7 +54,7 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
         return constraint;
     }
 
-    protected BavetConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName,
+    private BavetConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType,
             BavetScoringConstraintStream<Solution_> scoringConstraintStream) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(

@@ -13,6 +13,7 @@ import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.drools.DroolsConstraint;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.Constraint;
 
 public abstract class DroolsAbstractConstraintStream<Solution_> extends AbstractConstraintStream<Solution_> {
 
@@ -26,7 +27,19 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
         this.constraintFactory = Objects.requireNonNull(constraintFactory);
     }
 
-    protected DroolsConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
+    protected Constraint build(String constraintPackage, String constraintName, Score<?> constraintWeight,
+            ScoreImpactType impactType, RuleBuilder<Solution_> ruleBuilder) {
+        String resolvedConstraintPackage =
+                Objects.requireNonNull(constraintPackage, this.constraintFactory.getDefaultConstraintPackage());
+        if (constraintWeight == null) {
+            return buildConstraint(resolvedConstraintPackage, constraintName, constraintWeight,
+                    impactType, ruleBuilder);
+        } else {
+            return buildConstraintConfigurable(resolvedConstraintPackage, constraintName, impactType, ruleBuilder);
+        }
+    }
+
+    private DroolsConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
             Score<?> constraintWeight, ScoreImpactType impactType, RuleBuilder<Solution_> ruleBuilder) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(constraintPackage,
                 constraintName, constraintWeight);
@@ -34,7 +47,7 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
                 impactType, false, ruleBuilder);
     }
 
-    protected DroolsConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName,
+    private DroolsConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName,
             ScoreImpactType impactType, RuleBuilder<Solution_> ruleBuilder) {
         Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(constraintPackage,
                 constraintName);
