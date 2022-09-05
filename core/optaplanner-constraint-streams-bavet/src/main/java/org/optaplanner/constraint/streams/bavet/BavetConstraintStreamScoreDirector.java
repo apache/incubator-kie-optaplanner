@@ -129,16 +129,6 @@ public final class BavetConstraintStreamScoreDirector<Solution_, Score_ extends 
     }
 
     @Override
-    public void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        session.update(sourceEntity);
-        if (sourceEntity != destinationEntity) {
-            session.update(destinationEntity);
-        }
-        super.afterElementMoved(variableDescriptor, sourceEntity, sourceIndex, destinationEntity, destinationIndex);
-    }
-
-    @Override
     public void afterSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
             int toIndex) {
         session.update(entity);

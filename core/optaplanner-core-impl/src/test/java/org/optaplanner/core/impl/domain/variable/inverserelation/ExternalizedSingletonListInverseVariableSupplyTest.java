@@ -43,10 +43,12 @@ class ExternalizedSingletonListInverseVariableSupplyTest {
         assertThat(supply.getInverseSingleton(v3)).isSameAs(e2);
 
         // Move v1 from e1[0] to e2[1].
-        supply.beforeElementMoved(scoreDirector, e1, 0, e2, 1);
+        supply.beforeSubListChanged(scoreDirector, e1, 0, 1);
         e1.getValueList().remove(v1);
+        supply.afterSubListChanged(scoreDirector, e1, 0, 0);
+        supply.beforeSubListChanged(scoreDirector, e2, 1, 1);
         e2.getValueList().add(v1);
-        supply.afterElementMoved(scoreDirector, e1, 0, e2, 1);
+        supply.afterSubListChanged(scoreDirector, e2, 1, 2);
 
         assertThat(supply.getInverseSingleton(v1)).isSameAs(e2);
 

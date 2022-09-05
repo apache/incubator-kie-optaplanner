@@ -2,6 +2,8 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import org.junit.jupiter.api.Test;
@@ -54,6 +56,13 @@ class ListSwapMoveTest {
         AbstractMove<TestdataListSolution> undoMove1 = move1.doMove(scoreDirector);
         assertThat(e1.getValueList()).containsExactly(v3, v2);
         assertThat(e2.getValueList()).containsExactly(v1);
+
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 0, 1);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 0, 1);
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e2, 0, 1);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e2, 0, 1);
+        verify(scoreDirector).triggerVariableListeners();
+        verifyNoMoreInteractions(scoreDirector);
 
         // undo
         undoMove1.doMove(scoreDirector);

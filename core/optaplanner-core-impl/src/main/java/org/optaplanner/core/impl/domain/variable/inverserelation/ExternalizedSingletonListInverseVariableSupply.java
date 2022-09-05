@@ -88,25 +88,6 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_> implement
     }
 
     @Override
-    public void beforeElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        // Do nothing
-    }
-
-    @Override
-    public void afterElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        Object element = sourceVariableDescriptor.getElement(destinationEntity, destinationIndex);
-        Object oldInverseEntity = inverseEntityMap.put(element, destinationEntity);
-        if (oldInverseEntity != sourceEntity) {
-            throw new IllegalStateException("The supply (" + this + ") is corrupted,"
-                    + " because the element (" + element
-                    + ") has an oldInverseEntity (" + oldInverseEntity
-                    + ") which is not the sourceEntity (" + sourceEntity + ").");
-        }
-    }
-
-    @Override
     public void beforeSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
         // Do nothing
     }

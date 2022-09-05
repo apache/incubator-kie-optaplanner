@@ -114,26 +114,6 @@ public class PreviousElementVariableListener<Solution_> implements ListVariableL
     }
 
     @Override
-    public void beforeElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Object sourceEntity, int sourceIndex,
-            Object destinationEntity, int destinationIndex) {
-        // Do nothing
-    }
-
-    @Override
-    public void afterElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Object sourceEntity, int sourceIndex,
-            Object destinationEntity, int destinationIndex) {
-        if (sourceEntity != destinationEntity) {
-            afterElementRemoved(scoreDirector, sourceEntity, sourceIndex);
-            afterElementAdded(scoreDirector, destinationEntity, destinationIndex);
-        } else {
-            afterElementRemoved(scoreDirector, sourceEntity, sourceIndex > destinationIndex ? sourceIndex + 1 : sourceIndex);
-            afterElementAdded(scoreDirector, destinationEntity, destinationIndex);
-        }
-    }
-
-    @Override
     public void beforeSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
         // Do nothing
     }

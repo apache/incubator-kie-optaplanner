@@ -83,19 +83,6 @@ public class ExternalizedIndexVariableSupply<Solution_> implements
     }
 
     @Override
-    public void beforeElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        // Do nothing
-    }
-
-    @Override
-    public void afterElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        updateIndexes(sourceEntity, sourceIndex);
-        updateIndexes(destinationEntity, destinationIndex);
-    }
-
-    @Override
     public void beforeSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
         // Do nothing
     }

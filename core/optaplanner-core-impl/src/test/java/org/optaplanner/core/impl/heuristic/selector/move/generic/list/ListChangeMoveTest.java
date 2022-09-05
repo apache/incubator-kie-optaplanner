@@ -4,6 +4,8 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import java.util.List;
@@ -66,6 +68,13 @@ class ListChangeMoveTest {
         assertThat(e1.getValueList()).containsExactly(v1);
         assertThat(e2.getValueList()).containsExactly(v3, v2);
 
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 1, 2);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 1, 1);
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e2, 1, 1);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e2, 1, 2);
+        verify(scoreDirector).triggerVariableListeners();
+        verifyNoMoreInteractions(scoreDirector);
+
         undoMove.doMove(scoreDirector);
 
         assertThat(e1.getValueList()).containsExactly(v1, v2);
@@ -77,18 +86,18 @@ class ListChangeMoveTest {
         // when V2 is moved to destinationIndex (arg0),
         // then the resulting valueList should be arg1.
         return Stream.of(
-                arguments(0, asList("V2", "V0", "V1", "V3", "V4")),
-                arguments(1, asList("V0", "V2", "V1", "V3", "V4")),
-                arguments(2, null), // undoable (no-op)
-                arguments(3, asList("V0", "V1", "V3", "V2", "V4")),
-                arguments(4, asList("V0", "V1", "V3", "V4", "V2")),
-                arguments(5, null) // undoable (out of bounds)
+                arguments(0, asList("V2", "V0", "V1", "V3", "V4"), 0, 3),
+                arguments(1, asList("V0", "V2", "V1", "V3", "V4"), 1, 3),
+                arguments(2, null, -1, -1), // undoable (no-op)
+                arguments(3, asList("V0", "V1", "V3", "V2", "V4"), 2, 4),
+                arguments(4, asList("V0", "V1", "V3", "V4", "V2"), 2, 5),
+                arguments(5, null, -1, -1) // undoable (out of bounds)
         );
     }
 
     @ParameterizedTest
     @MethodSource
-    void doAndUndoMoveOnTheSameEntity(int destinationIndex, List<String> expectedValueList) {
+    void doAndUndoMoveOnTheSameEntity(int destinationIndex, List<String> expectedValueList, int fromIndex, int toIndex) {
         // Given...
         final int sourceIndex = 2; // we're always moving V2
         TestdataListValue v0 = new TestdataListValue("V0");
@@ -121,6 +130,11 @@ class ListChangeMoveTest {
         assertThat(variableDescriptor.getElement(e, destinationIndex)).isEqualTo(v2);
         // ...and the modified value list matches the expectation.
         assertThat(e.getValueList()).map(TestdataObject::toString).isEqualTo(expectedValueList);
+
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e, fromIndex, toIndex);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e, fromIndex, toIndex);
+        verify(scoreDirector).triggerVariableListeners();
+        verifyNoMoreInteractions(scoreDirector);
 
         // Making an undo move...
         AbstractMove<TestdataListSolution> undoUndoMove = undoMove.doMove(scoreDirector);

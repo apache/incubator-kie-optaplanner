@@ -1,7 +1,9 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -62,6 +64,13 @@ class SubListChangeMoveTest {
         assertThat(e1.getValueList()).containsExactly(v1, v4);
         assertThat(e2.getValueList()).containsExactly(v2, v3, v5);
 
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 1, 3);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 1, 1);
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e2, 0, 0);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e2, 0, 2);
+        verify(scoreDirector).triggerVariableListeners();
+        verifyNoMoreInteractions(scoreDirector);
+
         undoMove.doMove(scoreDirector);
 
         assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4);
@@ -89,10 +98,53 @@ class SubListChangeMoveTest {
         assertThat(e1.getValueList()).containsExactly(v4);
         assertThat(e2.getValueList()).containsExactly(v5, v3, v2, v1);
 
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 0, 3);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 0, 0);
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e2, 1, 1);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e2, 1, 4);
+        verify(scoreDirector).triggerVariableListeners();
+        verifyNoMoreInteractions(scoreDirector);
+
         undoMove.doMove(scoreDirector);
 
         assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4);
         assertThat(e2.getValueList()).containsExactly(v5);
+    }
+
+    @Test
+    void doMoveOnSameEntity() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListValue v4 = new TestdataListValue("4");
+        TestdataListValue v5 = new TestdataListValue("5");
+        TestdataListValue v6 = new TestdataListValue("6");
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4, v5, v6);
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+
+        SubListChangeMove<TestdataListSolution> move =
+                new SubListChangeMove<>(variableDescriptor, e1, 3, 2, e1, 0, false);
+
+        AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
+
+        assertThat(e1.getValueList()).containsExactly(v4, v5, v1, v2, v3, v6);
+
+        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 0, 5);
+        verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 0, 5);
+        // TODO or this more fine-grained? (Do we allow multiple notifications per entity? (Yes))
+        // verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 3, 5);
+        // verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 5, 5);
+        // verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 0, 0);
+        // verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 0, 2);
+        verify(scoreDirector).triggerVariableListeners();
+        verifyNoMoreInteractions(scoreDirector);
+
+        undoMove.doMove(scoreDirector);
+
+        assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4, v5, v6);
     }
 
     @Test

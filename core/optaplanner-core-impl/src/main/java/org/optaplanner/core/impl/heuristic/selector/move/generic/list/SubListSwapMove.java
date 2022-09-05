@@ -90,6 +90,8 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
 
         Object leftEntity = leftSubList.getEntity();
         Object rightEntity = rightSubList.getEntity();
+        int leftSubListLength = leftSubList.getLength();
+        int rightSubListLength = rightSubList.getLength();
         int leftFromIndex = leftSubList.getFromIndex();
         List<Object> leftList = variableDescriptor.getListVariable(leftEntity);
         List<Object> rightList = variableDescriptor.getListVariable(rightEntity);
@@ -102,28 +104,36 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
             Collections.reverse(rightSubListCopy);
         }
 
-        int rightSubListDestinationIndex = leftFromIndex;
-        int leftSubListDestinationIndex = leftEntity != rightEntity ? rightFromIndex
-                : rightFromIndex + rightSubList.getLength() - leftSubList.getLength();
-
-        innerScoreDirector.beforeSubListChanged(variableDescriptor, leftEntity, rightSubListDestinationIndex,
-                rightSubListDestinationIndex + rightSubList.getLength());
-        innerScoreDirector.beforeSubListChanged(variableDescriptor, rightEntity, leftSubListDestinationIndex,
-                leftSubListDestinationIndex + leftSubList.getLength());
-
-        rightSubListView.clear();
-        if (leftEntity != rightEntity) {
-            leftSubListView.clear();
-        } else {
+        if (leftEntity == rightEntity) {
+            int fromIndex = Math.min(leftFromIndex, rightFromIndex);
+            int toIndex = leftFromIndex > rightFromIndex
+                    ? leftFromIndex + leftSubListLength
+                    : rightFromIndex + rightSubListLength;
+            int leftSubListDestinationIndex = rightFromIndex + rightSubListLength - leftSubListLength;
+            innerScoreDirector.beforeSubListChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
+            rightSubListView.clear();
             leftList.subList(leftFromIndex, leftToIndex).clear();
+            leftList.addAll(leftFromIndex, rightSubListCopy);
+            rightList.addAll(leftSubListDestinationIndex, leftSubListCopy);
+            innerScoreDirector.afterSubListChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
+        } else {
+            innerScoreDirector.beforeSubListChanged(variableDescriptor, leftEntity,
+                    leftFromIndex,
+                    leftFromIndex + leftSubListLength);
+            innerScoreDirector.beforeSubListChanged(variableDescriptor, rightEntity,
+                    rightFromIndex,
+                    rightFromIndex + rightSubListLength);
+            rightSubListView.clear();
+            leftSubListView.clear();
+            leftList.addAll(leftFromIndex, rightSubListCopy);
+            rightList.addAll(rightFromIndex, leftSubListCopy);
+            innerScoreDirector.afterSubListChanged(variableDescriptor, leftEntity,
+                    leftFromIndex,
+                    leftFromIndex + rightSubListLength);
+            innerScoreDirector.afterSubListChanged(variableDescriptor, rightEntity,
+                    rightFromIndex,
+                    rightFromIndex + leftSubListLength);
         }
-        leftList.addAll(rightSubListDestinationIndex, rightSubListCopy);
-        rightList.addAll(leftSubListDestinationIndex, leftSubListCopy);
-
-        innerScoreDirector.afterSubListChanged(variableDescriptor, leftEntity, rightSubListDestinationIndex,
-                rightSubListDestinationIndex + rightSubList.getLength());
-        innerScoreDirector.afterSubListChanged(variableDescriptor, rightEntity, leftSubListDestinationIndex,
-                leftSubListDestinationIndex + leftSubList.getLength());
     }
 
     @Override

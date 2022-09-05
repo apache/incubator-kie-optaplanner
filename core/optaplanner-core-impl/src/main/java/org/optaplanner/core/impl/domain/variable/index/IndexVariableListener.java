@@ -71,22 +71,6 @@ public class IndexVariableListener<Solution_> implements ListVariableListener<So
     }
 
     @Override
-    public void beforeElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Object sourceEntity, int sourceIndex,
-            Object destinationEntity, int destinationIndex) {
-        // Do nothing
-    }
-
-    @Override
-    public void afterElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Object sourceEntity, int sourceIndex,
-            Object destinationEntity, int destinationIndex) {
-        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
-        updateIndexes(innerScoreDirector, sourceEntity, sourceIndex);
-        updateIndexes(innerScoreDirector, destinationEntity, destinationIndex);
-    }
-
-    @Override
     public void beforeSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
         // Do nothing
     }

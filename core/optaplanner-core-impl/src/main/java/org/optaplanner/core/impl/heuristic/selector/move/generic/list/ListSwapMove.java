@@ -130,17 +130,21 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         Object leftElement = variableDescriptor.getElement(leftEntity, leftIndex);
         Object rightElement = variableDescriptor.getElement(rightEntity, rightIndex);
-        boolean notNeighbours = rightEntity != leftEntity || Math.abs(leftIndex - rightIndex) > 1;
 
-        innerScoreDirector.beforeElementMoved(variableDescriptor, leftEntity, leftIndex, rightEntity, rightIndex);
-        if (notNeighbours) {
-            innerScoreDirector.beforeElementMoved(variableDescriptor, rightEntity, rightIndex, leftEntity, leftIndex);
-        }
-        variableDescriptor.setElement(leftEntity, leftIndex, rightElement);
-        variableDescriptor.setElement(rightEntity, rightIndex, leftElement);
-        innerScoreDirector.afterElementMoved(variableDescriptor, leftEntity, leftIndex, rightEntity, rightIndex);
-        if (notNeighbours) {
-            innerScoreDirector.afterElementMoved(variableDescriptor, rightEntity, rightIndex, leftEntity, leftIndex);
+        if (leftEntity == rightEntity) {
+            int fromIndex = Math.min(leftIndex, rightIndex);
+            int toIndex = Math.max(leftIndex, rightIndex) + 1;
+            innerScoreDirector.beforeSubListChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
+            variableDescriptor.setElement(leftEntity, leftIndex, rightElement);
+            variableDescriptor.setElement(rightEntity, rightIndex, leftElement);
+            innerScoreDirector.afterSubListChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
+        } else {
+            innerScoreDirector.beforeSubListChanged(variableDescriptor, leftEntity, leftIndex, leftIndex + 1);
+            innerScoreDirector.beforeSubListChanged(variableDescriptor, rightEntity, rightIndex, rightIndex + 1);
+            variableDescriptor.setElement(leftEntity, leftIndex, rightElement);
+            variableDescriptor.setElement(rightEntity, rightIndex, leftElement);
+            innerScoreDirector.afterSubListChanged(variableDescriptor, leftEntity, leftIndex, leftIndex + 1);
+            innerScoreDirector.afterSubListChanged(variableDescriptor, rightEntity, rightIndex, rightIndex + 1);
         }
     }
 

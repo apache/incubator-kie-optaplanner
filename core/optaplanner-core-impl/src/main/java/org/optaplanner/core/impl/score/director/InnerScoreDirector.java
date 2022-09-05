@@ -292,14 +292,6 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
 
     void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
 
-    void beforeElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object sourceEntity, int sourceIndex,
-            Object destinationEntity, int destinationIndex);
-
-    void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object sourceEntity, int sourceIndex,
-            Object destinationEntity, int destinationIndex);
-
     /**
      * Notify the score director before a subList of a list variable changes. The subList is a continuous sequence of
      * the list variable elements starting at {@code fromIndex} (inclusive) and ending at {@code toIndex} (exclusive).

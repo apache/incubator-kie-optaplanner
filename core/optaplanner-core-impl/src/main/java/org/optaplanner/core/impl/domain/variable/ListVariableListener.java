@@ -13,14 +13,6 @@ public interface ListVariableListener<Solution_, Entity_> extends AbstractVariab
 
     void afterElementRemoved(ScoreDirector<Solution_> scoreDirector, Entity_ entity, int index);
 
-    void beforeElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Entity_ sourceEntity, int sourceIndex,
-            Entity_ destinationEntity, int destinationIndex);
-
-    void afterElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Entity_ sourceEntity, int sourceIndex,
-            Entity_ destinationEntity, int destinationIndex);
-
     void beforeSubListChanged(ScoreDirector<Solution_> scoreDirector, Entity_ entity, int fromIndex, int toIndex);
 
     void afterSubListChanged(ScoreDirector<Solution_> scoreDirector, Entity_ entity, int fromIndex, int toIndex);

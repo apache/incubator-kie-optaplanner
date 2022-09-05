@@ -175,18 +175,6 @@ public class IncrementalScoreDirector<Solution_, Score_ extends Score<Score_>>
     }
 
     @Override
-    public void beforeElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        throw new UnsupportedOperationException("Not yet supported.");
-    }
-
-    @Override
-    public void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        throw new UnsupportedOperationException("Not yet supported.");
-    }
-
-    @Override
     public void beforeElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
         throw new UnsupportedOperationException("Not yet supported.");
     }

@@ -139,12 +139,23 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
     protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
 
-        innerScoreDirector.beforeElementMoved(variableDescriptor,
-                sourceEntity, sourceIndex, destinationEntity, destinationIndex);
-        Object element = variableDescriptor.removeElement(sourceEntity, sourceIndex);
-        variableDescriptor.addElement(destinationEntity, destinationIndex, element);
-        innerScoreDirector.afterElementMoved(variableDescriptor,
-                sourceEntity, sourceIndex, destinationEntity, destinationIndex);
+        if (sourceEntity == destinationEntity) {
+            int fromIndex = Math.min(sourceIndex, destinationIndex);
+            int toIndex = Math.max(sourceIndex, destinationIndex) + 1;
+            innerScoreDirector.beforeSubListChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
+            Object element = variableDescriptor.removeElement(sourceEntity, sourceIndex);
+            variableDescriptor.addElement(destinationEntity, destinationIndex, element);
+            innerScoreDirector.afterSubListChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
+        } else {
+            innerScoreDirector.beforeSubListChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex + 1);
+            Object element = variableDescriptor.removeElement(sourceEntity, sourceIndex);
+            innerScoreDirector.afterSubListChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex);
+
+            innerScoreDirector.beforeSubListChanged(variableDescriptor, destinationEntity, destinationIndex, destinationIndex);
+            variableDescriptor.addElement(destinationEntity, destinationIndex, element);
+            innerScoreDirector.afterSubListChanged(variableDescriptor, destinationEntity, destinationIndex,
+                    destinationIndex + 1);
+        }
     }
 
     @Override

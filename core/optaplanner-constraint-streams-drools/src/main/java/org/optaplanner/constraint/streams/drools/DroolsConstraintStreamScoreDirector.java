@@ -154,16 +154,6 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
     }
 
     @Override
-    public void afterElementMoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object sourceEntity, int sourceIndex, Object destinationEntity, int destinationIndex) {
-        update(sourceEntity);
-        if (sourceEntity != destinationEntity) {
-            update(destinationEntity);
-        }
-        super.afterElementMoved(variableDescriptor, sourceEntity, sourceIndex, destinationEntity, destinationIndex);
-    }
-
-    @Override
     public void afterSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
             int toIndex) {
         update(entity);

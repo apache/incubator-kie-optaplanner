@@ -70,24 +70,6 @@ public class SingletonListInverseVariableListener<Solution_>
     }
 
     @Override
-    public void beforeElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Object sourceEntity, int sourceIndex,
-            Object destinationEntity, int destinationIndex) {
-        // Do nothing
-    }
-
-    @Override
-    public void afterElementMoved(ScoreDirector<Solution_> scoreDirector,
-            Object sourceEntity, int sourceIndex,
-            Object destinationEntity, int destinationIndex) {
-        if (sourceEntity == destinationEntity) {
-            return;
-        }
-        setInverse((InnerScoreDirector<Solution_, ?>) scoreDirector,
-                sourceVariableDescriptor.getElement(destinationEntity, destinationIndex), destinationEntity, sourceEntity);
-    }
-
-    @Override
     public void beforeSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
         // Do nothing
     }
@@ -96,8 +78,13 @@ public class SingletonListInverseVariableListener<Solution_>
     public void afterSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        for (int i = fromIndex; i < toIndex; i++) { // TODO test OBOE error
-            setInverse(innerScoreDirector, listVariable.get(i), entity, this); // TODO check expectedOldInverseEntity or not?
+        for (int i = fromIndex; i < toIndex; i++) {
+            Object element = listVariable.get(i);
+            if (shadowVariableDescriptor.getValue(element) != entity) {
+                innerScoreDirector.beforeVariableChanged(shadowVariableDescriptor, element);
+                shadowVariableDescriptor.setValue(element, entity);
+                innerScoreDirector.afterVariableChanged(shadowVariableDescriptor, element);
+            }
         }
     }
 
@@ -106,7 +93,8 @@ public class SingletonListInverseVariableListener<Solution_>
         Object oldInverseEntity = shadowVariableDescriptor.getValue(element);
         if (oldInverseEntity == inverseEntity) {
             return;
-        } else if (oldInverseEntity != expectedOldInverseEntity && expectedOldInverseEntity != this) {
+        }
+        if (oldInverseEntity != expectedOldInverseEntity) {
             throw new IllegalStateException("The entity (" + inverseEntity
                     + ") has a list variable (" + sourceVariableDescriptor.getVariableName()
                     + ") and one of its elements (" + element

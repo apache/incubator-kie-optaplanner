@@ -88,17 +88,22 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
             Collections.reverse(subListCopy);
         }
 
-        int sourceFromIndex = (sourceEntity == destinationEntity && destinationIndex < sourceIndex)
-                ? sourceIndex + length
-                : sourceIndex;
-        innerScoreDirector.beforeSubListChanged(variableDescriptor, sourceEntity, sourceFromIndex, sourceFromIndex);
-        subList.clear();
-        innerScoreDirector.afterSubListChanged(variableDescriptor, sourceEntity, sourceFromIndex, sourceFromIndex);
-
-        int destinationToIndex = destinationIndex + length;
-        innerScoreDirector.beforeSubListChanged(variableDescriptor, destinationEntity, destinationIndex, destinationToIndex);
-        variableDescriptor.getListVariable(destinationEntity).addAll(destinationIndex, subListCopy);
-        innerScoreDirector.afterSubListChanged(variableDescriptor, destinationEntity, destinationIndex, destinationToIndex);
+        if (sourceEntity == destinationEntity) {
+            int fromIndex = Math.min(sourceIndex, destinationIndex);
+            int toIndex = Math.max(sourceIndex, destinationIndex) + length;
+            innerScoreDirector.beforeSubListChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
+            subList.clear();
+            variableDescriptor.getListVariable(destinationEntity).addAll(destinationIndex, subListCopy);
+            innerScoreDirector.afterSubListChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
+        } else {
+            innerScoreDirector.beforeSubListChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex + length);
+            subList.clear();
+            innerScoreDirector.afterSubListChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex);
+            innerScoreDirector.beforeSubListChanged(variableDescriptor, destinationEntity, destinationIndex, destinationIndex);
+            variableDescriptor.getListVariable(destinationEntity).addAll(destinationIndex, subListCopy);
+            innerScoreDirector.afterSubListChanged(variableDescriptor, destinationEntity, destinationIndex,
+                    destinationIndex + length);
+        }
     }
 
     @Override

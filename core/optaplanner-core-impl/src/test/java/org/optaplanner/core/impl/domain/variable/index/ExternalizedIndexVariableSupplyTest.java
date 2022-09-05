@@ -43,10 +43,12 @@ class ExternalizedIndexVariableSupplyTest {
         assertThat(supply.getIndex(v3)).isEqualTo(0);
 
         // Move v3 from e2[0] to e1[2].
-        supply.beforeElementMoved(scoreDirector, e2, 0, e1, 2);
+        supply.beforeSubListChanged(scoreDirector, e2, 0, 1);
         e2.getValueList().remove(v3);
+        supply.afterSubListChanged(scoreDirector, e2, 0, 0);
+        supply.beforeSubListChanged(scoreDirector, e1, 2, 2);
         e1.getValueList().add(v3);
-        supply.afterElementMoved(scoreDirector, e2, 0, e1, 2);
+        supply.afterSubListChanged(scoreDirector, e1, 2, 3);
 
         assertThat(supply.getIndex(v3)).isEqualTo(2);
 
