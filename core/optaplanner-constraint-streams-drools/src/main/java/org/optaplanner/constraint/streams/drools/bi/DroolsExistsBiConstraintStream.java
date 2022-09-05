@@ -1,9 +1,13 @@
 package org.optaplanner.constraint.streams.drools.bi;
 
+import java.math.BigDecimal;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
+import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.common.BiLeftHandSide;
+import org.optaplanner.core.api.score.stream.bi.BiTerminator;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 
 public final class DroolsExistsBiConstraintStream<Solution_, A, B>

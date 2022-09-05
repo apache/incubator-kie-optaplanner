@@ -1831,7 +1831,6 @@ public interface UniConstraintStream<A> extends ConstraintStream {
         return impact(constraintWeight, a -> 1);
     }
 
-
     /**
      * Positively or negatively impact the {@link Score} by the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #impact(String, Score)}.

@@ -277,42 +277,6 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
         return stream;
     }
 
-    @Override
-    public Constraint impactScore(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToIntFunction<A> matchWeigher, ScoreImpactType impactType) {
-        return null;
-    }
-
-    @Override
-    public Constraint impactScoreLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
-        return null;
-    }
-
-    @Override
-    public Constraint impactScoreBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        return null;
-    }
-
-    @Override
-    public Constraint impactScoreConfigurable(String constraintPackage, String constraintName, ToIntFunction<A> matchWeigher,
-            ScoreImpactType impactType) {
-        return null;
-    }
-
-    @Override
-    public Constraint impactScoreConfigurableLong(String constraintPackage, String constraintName,
-            ToLongFunction<A> matchWeigher, ScoreImpactType impactType) {
-        return null;
-    }
-
-    @Override
-    public Constraint impactScoreConfigurableBigDecimal(String constraintPackage, String constraintName,
-            Function<A, BigDecimal> matchWeigher, ScoreImpactType impactType) {
-        return null;
-    }
-
     // ************************************************************************
     // Pattern creation
     // ************************************************************************
