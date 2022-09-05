@@ -68,24 +68,27 @@ public final class TravelingTournamentConstraintProvider implements ConstraintPr
         return constraintFactory.forEach(Match.class)
                 .join(Match.class, equal(Match::getHomeTeam, Match::getAwayTeam),
                         equal(match -> getDayIndex(match) + 1, TravelingTournamentConstraintProvider::getDayIndex))
-                .penalize("Home to away hop", HardSoftScore.ONE_SOFT,
-                        (match, otherMatch) -> match.getHomeTeam().getDistance(otherMatch.getHomeTeam()));
+                .penalize(HardSoftScore.ONE_SOFT,
+                        (match, otherMatch) -> match.getHomeTeam().getDistance(otherMatch.getHomeTeam()))
+                .as("Home to away hop");
     }
 
     private Constraint awayToAwayHop(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Match.class)
                 .join(Match.class, equal(Match::getAwayTeam, Match::getAwayTeam),
                         equal(match -> getDayIndex(match) + 1, TravelingTournamentConstraintProvider::getDayIndex))
-                .penalize("Away to away hop", HardSoftScore.ONE_SOFT,
-                        (match, otherMatch) -> match.getHomeTeam().getDistance(otherMatch.getHomeTeam()));
+                .penalize(HardSoftScore.ONE_SOFT,
+                        (match, otherMatch) -> match.getHomeTeam().getDistance(otherMatch.getHomeTeam()))
+                .as("Away to away hop");
     }
 
     private Constraint awayToHomeHop(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Match.class)
                 .join(Match.class, equal(Match::getAwayTeam, Match::getHomeTeam),
                         equal(match -> getDayIndex(match) + 1, TravelingTournamentConstraintProvider::getDayIndex))
-                .penalize("Away to home hop", HardSoftScore.ONE_SOFT,
-                        (match, otherMatch) -> match.getHomeTeam().getDistance(match.getAwayTeam()));
+                .penalize(HardSoftScore.ONE_SOFT,
+                        (match, otherMatch) -> match.getHomeTeam().getDistance(match.getAwayTeam()))
+                .as("Away to home hop");
     }
 
     private Constraint awayToEndHop(ConstraintFactory constraintFactory) {

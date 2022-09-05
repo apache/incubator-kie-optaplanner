@@ -1637,7 +1637,8 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                                 .penalize("myConstraint1", SimpleScore.ONE),
                         factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                .penalize("myConstraint2", SimpleScore.ONE, (entity, value) -> 20)
+                                .penalize(SimpleScore.ONE, (entity, value) -> 20)
+                                .as("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1663,7 +1664,8 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                                         .penalize("myConstraint1", SimpleLongScore.ONE),
                                 factory.forEach(TestdataEntity.class)
                                         .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                        .penalizeLong("myConstraint2", SimpleLongScore.ONE, (entity, value) -> 20L)
+                                        .penalizeLong(SimpleLongScore.ONE, (entity, value) -> 20L)
+                                        .as("myConstraint2")
                         });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1689,8 +1691,9 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                                         .penalize("myConstraint1", SimpleBigDecimalScore.ONE),
                                 factory.forEach(TestdataEntity.class)
                                         .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                        .penalizeBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE,
+                                        .penalizeBigDecimal(SimpleBigDecimalScore.ONE,
                                                 (entity, value) -> new BigDecimal("0.2"))
+                                        .as("myConstraint2")
                         });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1707,7 +1710,8 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
                         .join(TestdataLavishValue.class)
-                        .penalize(constraintName, SimpleScore.ONE, (entity, value) -> -1));
+                        .penalize(SimpleScore.ONE, (entity, value) -> -1)
+                        .as(constraintName));
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
@@ -1731,7 +1735,8 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                                 .reward("myConstraint1", SimpleScore.ONE),
                         factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                .reward("myConstraint2", SimpleScore.ONE, (entity, value) -> 20)
+                                .reward(SimpleScore.ONE, (entity, value) -> 20)
+                                .as("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1755,7 +1760,8 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                                 .reward("myConstraint1", SimpleLongScore.ONE),
                         factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                .rewardLong("myConstraint2", SimpleLongScore.ONE, (entity, value) -> 20L)
+                                .rewardLong(SimpleLongScore.ONE, (entity, value) -> 20L)
+                                .as("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1781,8 +1787,9 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
                                         .reward("myConstraint1", SimpleBigDecimalScore.ONE),
                                 factory.forEach(TestdataEntity.class)
                                         .join(TestdataValue.class, equal(TestdataEntity::getValue, Function.identity()))
-                                        .rewardBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE,
+                                        .rewardBigDecimal(SimpleBigDecimalScore.ONE,
                                                 (entity, value) -> new BigDecimal("0.2"))
+                                        .as("myConstraint2")
                         });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1799,7 +1806,8 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
                         .join(TestdataLavishValue.class)
-                        .reward(constraintName, SimpleScore.ONE, (entity, value) -> -1));
+                        .reward(SimpleScore.ONE, (entity, value) -> -1)
+                        .as(constraintName));
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);

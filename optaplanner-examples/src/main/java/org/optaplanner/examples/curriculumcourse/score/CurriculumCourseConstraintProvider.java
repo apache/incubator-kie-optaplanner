@@ -7,6 +7,7 @@ import static org.optaplanner.core.api.score.stream.ConstraintCollectors.countDi
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
@@ -51,8 +52,9 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
         return factory.forEachUniquePair(Lecture.class,
                 equal(Lecture::getPeriod),
                 equal(Lecture::getCourse))
-                .penalize("conflictingLecturesSameCourseInSamePeriod", ONE_HARD,
-                        (lecture1, lecture2) -> 1 + lecture1.getCurriculumSet().size());
+                .penalize(ONE_HARD,
+                        (lecture1, lecture2) -> 1 + lecture1.getCurriculumSet().size())
+                .as("conflictingLecturesSameCourseInSamePeriod");
     }
 
     Constraint roomOccupancy(ConstraintFactory factory) {
@@ -86,8 +88,9 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
         return factory.forEach(Lecture.class)
                 .groupBy(Lecture::getCourse, countDistinct(Lecture::getDay))
                 .filter((course, dayCount) -> course.getMinWorkingDaySize() > dayCount)
-                .penalize("minimumWorkingDays", ofSoft(5),
-                        (course, dayCount) -> course.getMinWorkingDaySize() - dayCount);
+                .penalize(ofSoft(5),
+                        (course, dayCount) -> course.getMinWorkingDaySize() - dayCount)
+                .as("minimumWorkingDays");
     }
 
     Constraint curriculumCompactness(ConstraintFactory factory) {
@@ -109,8 +112,9 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
         return factory.forEach(Lecture.class)
                 .groupBy(Lecture::getCourse, countDistinct(Lecture::getRoom))
                 .filter((course, roomCount) -> roomCount > 1)
-                .penalize("roomStability", ofSoft(1),
-                        (course, roomCount) -> roomCount - 1);
+                .penalize(HardSoftScore.ONE_SOFT,
+                        (course, roomCount) -> roomCount - 1)
+                .as("roomStability");
     }
 
 }

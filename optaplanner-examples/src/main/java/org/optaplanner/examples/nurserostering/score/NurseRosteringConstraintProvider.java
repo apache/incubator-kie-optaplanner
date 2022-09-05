@@ -100,8 +100,9 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                 .ifNotExists(ShiftAssignment.class,
                         Joiners.equal((contractLine, employee) -> employee, ShiftAssignment::getEmployee))
                 .filter((contract, employee) -> contract.isViolated(0))
-                .penalize("Minimum and maximum number of assignments (no assignments)", HardSoftScore.ONE_SOFT,
-                        (contract, employee) -> contract.getViolationAmount(0));
+                .penalize(HardSoftScore.ONE_SOFT,
+                        (contract, employee) -> contract.getViolationAmount(0))
+                .as("Minimum and maximum number of assignments (no assignments)");
     }
 
     // Min/Max consecutive working days
@@ -277,8 +278,9 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
         return constraintFactory.forEach(DayOffRequest.class)
                 .join(ShiftAssignment.class, Joiners.equal(DayOffRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(DayOffRequest::getShiftDate, ShiftAssignment::getShiftDate))
-                .penalize("dayOffRequest", HardSoftScore.ONE_SOFT,
-                        (dayOffRequest, shiftAssignment) -> dayOffRequest.getWeight());
+                .penalize(HardSoftScore.ONE_SOFT,
+                        (dayOffRequest, shiftAssignment) -> dayOffRequest.getWeight())
+                .as("dayOffRequest");
     }
 
     Constraint dayOnRequest(ConstraintFactory constraintFactory) {
@@ -294,8 +296,9 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
         return constraintFactory.forEach(ShiftOffRequest.class)
                 .join(ShiftAssignment.class, Joiners.equal(ShiftOffRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(ShiftOffRequest::getShift, ShiftAssignment::getShift))
-                .penalize("shiftOffRequest", HardSoftScore.ONE_SOFT,
-                        (shiftOffRequest, shiftAssignment) -> shiftOffRequest.getWeight());
+                .penalize(HardSoftScore.ONE_SOFT,
+                        (shiftOffRequest, shiftAssignment) -> shiftOffRequest.getWeight())
+                .as("shiftOffRequest");
     }
 
     Constraint shiftOnRequest(ConstraintFactory constraintFactory) {

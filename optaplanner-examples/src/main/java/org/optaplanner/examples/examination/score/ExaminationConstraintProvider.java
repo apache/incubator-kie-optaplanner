@@ -55,8 +55,8 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                 .ifExists(Exam.class,
                         equal((topicConflict, leftExam) -> topicConflict.getRightTopic(), Exam::getTopic),
                         equal((topicConflict, leftExam) -> leftExam.getPeriod(), Exam::getPeriod))
-                .penalizeConfigurable("conflictingExamsInSamePeriod",
-                        (topicConflict, leftExam) -> topicConflict.getStudentSize());
+                .penalize((topicConflict, leftExam) -> topicConflict.getStudentSize())
+                .as("conflictingExamsInSamePeriod");
     }
 
     protected Constraint periodDurationTooShort(ConstraintFactory constraintFactory) {
@@ -210,7 +210,8 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                 .filter(period -> period.getPenalty() != 0)
                 .join(Exam.class,
                         equal(Function.identity(), Exam::getPeriod))
-                .penalizeConfigurable("periodPenalty", (period, exam) -> period.getPenalty());
+                .penalize((period, exam) -> period.getPenalty())
+                .as("periodPenalty");
     }
 
     protected Constraint roomPenalty(ConstraintFactory constraintFactory) {
@@ -218,7 +219,8 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                 .filter(room -> room.getPenalty() != 0)
                 .join(Exam.class,
                         equal(Function.identity(), Exam::getRoom))
-                .penalizeConfigurable("roomPenalty", (room, exam) -> room.getPenalty());
+                .penalize((room, exam) -> room.getPenalty())
+                .as("roomPenalty");
     }
 
     private int getPeriodIndexDifferenceBetweenExams(Exam leftExam, Exam rightExam) {

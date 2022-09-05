@@ -29,9 +29,9 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
         return factory.forEach(Customer.class)
                 .groupBy(Customer::getVehicle, sum(Customer::getDemand))
                 .filter((vehicle, demand) -> demand > vehicle.getCapacity())
-                .penalizeLong("vehicleCapacity",
-                        HardSoftLongScore.ONE_HARD,
-                        (vehicle, demand) -> demand - vehicle.getCapacity());
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        (vehicle, demand) -> demand - vehicle.getCapacity())
+                .as("vehicleCapacity");
     }
 
     // ************************************************************************

@@ -29,9 +29,9 @@ public final class TspConstraintProvider implements ConstraintProvider {
                 .ifNotExists(Visit.class,
                         Joiners.equal(visit -> visit, Visit::getPreviousStandstill))
                 .join(Domicile.class)
-                .penalizeLong("Distance from last visit to domicile",
-                        SimpleLongScore.ONE,
-                        Visit::getDistanceTo);
+                .penalizeLong(SimpleLongScore.ONE,
+                        Visit::getDistanceTo)
+                .as("Distance from last visit to domicile");
     }
 
 }

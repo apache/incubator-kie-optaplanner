@@ -1096,8 +1096,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint penalizeBigDecimal(String constraintName, Score<?> constraintWeight,
             BiFunction<A, B, BigDecimal> matchWeigher) {
-        return penalizeBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName,
-                constraintWeight, matchWeigher);
+        return penalizeBigDecimal(constraintWeight, matchWeigher)
+                .as(constraintName);
     }
 
     /**
@@ -1314,8 +1314,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint rewardBigDecimal(String constraintName, Score<?> constraintWeight,
             BiFunction<A, B, BigDecimal> matchWeigher) {
-        return rewardBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
-                matchWeigher);
+        return rewardBigDecimal(constraintWeight, matchWeigher)
+                .as(constraintName);
     }
 
     /**
@@ -1454,8 +1454,8 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      */
     @Deprecated(forRemoval = true)
     default Constraint impact(String constraintName, Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
-        return impact(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
-                matchWeigher);
+        return impact(constraintWeight, matchWeigher)
+                .as(constraintName);
     }
 
     /**

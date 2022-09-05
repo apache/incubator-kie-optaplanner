@@ -34,8 +34,10 @@ public class InvestmentConstraintProvider implements ConstraintProvider {
                 .join(InvestmentParametrization.class)
                 .filter((deviation,
                         parametrization) -> deviation > parametrization.calculateSquaredStandardDeviationFemtosMaximum())
-                .penalizeLong(CONSTRAINT_PACKAGE, "Standard deviation maximum", HardSoftLongScore.ONE_HARD, (deviation,
-                        parametrization) -> deviation - parametrization.calculateSquaredStandardDeviationFemtosMaximum());
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        (deviation, parametrization) -> deviation
+                                - parametrization.calculateSquaredStandardDeviationFemtosMaximum())
+                .as(CONSTRAINT_PACKAGE, "Standard deviation maximum");
     }
 
     private Constraint regionQuantityGreaterThanMaximumPenalty(ConstraintFactory cf) {
@@ -43,8 +45,9 @@ public class InvestmentConstraintProvider implements ConstraintProvider {
                 .join(AssetClassAllocation.class, Joiners.equal(Function.identity(), AssetClassAllocation::getRegion))
                 .groupBy((region, asset) -> region, ConstraintCollectors.sumLong((region, asset) -> asset.getQuantityMillis()))
                 .filter((region, totalQuantity) -> totalQuantity > region.getQuantityMillisMaximum())
-                .penalizeLong(CONSTRAINT_PACKAGE, "Region quantity maximum", HardSoftLongScore.ONE_HARD,
-                        (region, totalQuantity) -> totalQuantity - region.getQuantityMillisMaximum());
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        (region, totalQuantity) -> totalQuantity - region.getQuantityMillisMaximum())
+                .as(CONSTRAINT_PACKAGE, "Region quantity maximum");
     }
 
     private Constraint sectorQuantityGreaterThanMaximumPenalty(ConstraintFactory cf) {
@@ -52,8 +55,9 @@ public class InvestmentConstraintProvider implements ConstraintProvider {
                 .join(AssetClassAllocation.class, Joiners.equal(Function.identity(), AssetClassAllocation::getSector))
                 .groupBy((sector, asset) -> sector, ConstraintCollectors.sumLong((sector, asset) -> asset.getQuantityMillis()))
                 .filter((sector, totalQuantity) -> totalQuantity > sector.getQuantityMillisMaximum())
-                .penalizeLong(CONSTRAINT_PACKAGE, "Sector quantity maximum", HardSoftLongScore.ONE_HARD,
-                        (sector, totalQuantity) -> totalQuantity - sector.getQuantityMillisMaximum());
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        (sector, totalQuantity) -> totalQuantity - sector.getQuantityMillisMaximum())
+                .as(CONSTRAINT_PACKAGE, "Sector quantity maximum");
     }
 
     private Constraint assetExpectedReturnReward(ConstraintFactory cf) {

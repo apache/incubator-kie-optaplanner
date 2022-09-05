@@ -76,9 +76,10 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                         equal((period, machine) -> machine, TaskAssignment::getMachine),
                         overlapping((period, machine) -> period.getIndex(), (period, machine) -> period.getIndex() + 1,
                                 TaskAssignment::getStartPeriod, TaskAssignment::getEndPeriod))
-                .penalizeLong("Active machine power cost", HardMediumSoftLongScore.ONE_MEDIUM,
+                .penalizeLong(HardMediumSoftLongScore.ONE_MEDIUM,
                         (period, machine) -> multiplyTwoMicros(machine.getPowerConsumptionMicros(),
-                                period.getPowerPriceMicros()));
+                                period.getPowerPriceMicros()))
+                .as("Active machine power cost");
     }
 
     protected Constraint activeMachineSpinUpAndDownCost(ConstraintFactory constraintFactory) {
@@ -114,9 +115,10 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                 .join(Period.class,
                         overlapping(TaskAssignment::getStartPeriod, TaskAssignment::getEndPeriod,
                                 Period::getIndex, period -> period.getIndex() + 1))
-                .penalizeLong("Task power cost", HardMediumSoftLongScore.ONE_MEDIUM,
+                .penalizeLong(HardMediumSoftLongScore.ONE_MEDIUM,
                         (taskAssignment, period) -> multiplyTwoMicros(taskAssignment.getTask().getPowerConsumptionMicros(),
-                                period.getPowerPriceMicros()));
+                                period.getPowerPriceMicros()))
+                .as("Task power cost");
     }
 
     protected Constraint startEarly(ConstraintFactory constraintFactory) {

@@ -32,27 +32,27 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
         return constraintFactory.forEach(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredCpuPower))
                 .filter((computer, requiredCpuPower) -> requiredCpuPower > computer.getCpuPower())
-                .penalize("requiredCpuPowerTotal",
-                        HardSoftScore.ONE_HARD,
-                        (computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower());
+                .penalize(HardSoftScore.ONE_HARD,
+                        (computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower())
+                .as("requiredCpuPowerTotal");
     }
 
     Constraint requiredMemoryTotal(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredMemory))
                 .filter((computer, requiredMemory) -> requiredMemory > computer.getMemory())
-                .penalize("requiredMemoryTotal",
-                        HardSoftScore.ONE_HARD,
-                        (computer, requiredMemory) -> requiredMemory - computer.getMemory());
+                .penalize(HardSoftScore.ONE_HARD,
+                        (computer, requiredMemory) -> requiredMemory - computer.getMemory())
+                .as("requiredMemoryTotal");
     }
 
     Constraint requiredNetworkBandwidthTotal(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(CloudProcess.class)
                 .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredNetworkBandwidth))
                 .filter((computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth > computer.getNetworkBandwidth())
-                .penalize("requiredNetworkBandwidthTotal",
-                        HardSoftScore.ONE_HARD,
-                        (computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth - computer.getNetworkBandwidth());
+                .penalize(HardSoftScore.ONE_HARD,
+                        (computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth - computer.getNetworkBandwidth())
+                .as("requiredNetworkBandwidthTotal");
     }
 
     // ************************************************************************

@@ -46,8 +46,8 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                 overlapping(assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
                         assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
                                 assignment.getMeeting().getDurationInGrains()))
-                .penalizeConfigurable("Room conflict",
-                        (leftAssignment, rightAssignment) -> rightAssignment.calculateOverlap(leftAssignment));
+                .penalize((leftAssignment, rightAssignment) -> rightAssignment.calculateOverlap(leftAssignment))
+                .as("Room conflict");
     }
 
     protected Constraint avoidOvertime(ConstraintFactory constraintFactory) {
@@ -177,7 +177,8 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                         overlapping(assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
                                         assignment.getMeeting().getDurationInGrains()))
-                .penalizeConfigurable("Overlapping meetings", MeetingAssignment::calculateOverlap);
+                .penalize(MeetingAssignment::calculateOverlap)
+                .as("Overlapping meetings");
     }
 
     // TODO: Unspecified bug marked in DRL
@@ -186,8 +187,8 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                 .filter(meetingAssignment -> meetingAssignment.getRoom() != null)
                 .join(Room.class,
                         lessThan(MeetingAssignment::getRoomCapacity, Room::getCapacity))
-                .penalizeConfigurable("Assign larger rooms first",
-                        (meetingAssignment, room) -> room.getCapacity() - meetingAssignment.getRoomCapacity());
+                .penalize((meetingAssignment, room) -> room.getCapacity() - meetingAssignment.getRoomCapacity())
+                .as("Assign larger rooms first");
     }
 
     protected Constraint roomStability(ConstraintFactory constraintFactory) {

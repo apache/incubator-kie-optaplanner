@@ -33,9 +33,9 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
                 .groupBy((requirement, allocation) -> requirement.getResource(),
                         ConstraintCollectors.sum((requirement, allocation) -> requirement.getRequirement()))
                 .filter((resource, requirements) -> requirements > resource.getCapacity())
-                .penalize("Non-renewable resource capacity",
-                        HardMediumSoftScore.ofHard(1),
-                        (resource, requirements) -> requirements - resource.getCapacity());
+                .penalize(HardMediumSoftScore.ONE_HARD,
+                        (resource, requirements) -> requirements - resource.getCapacity())
+                .as("Non-renewable resource capacity");
     }
 
     protected Constraint renewableResourceCapacity(ConstraintFactory constraintFactory) {

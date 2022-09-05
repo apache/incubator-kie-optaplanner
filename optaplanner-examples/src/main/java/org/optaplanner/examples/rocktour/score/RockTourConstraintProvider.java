@@ -71,7 +71,7 @@ public class RockTourConstraintProvider implements ConstraintProvider {
         return constraintFactory.forEach(RockShow.class)
                 .filter(rockShow -> rockShow.getPreviousStandstill() != null)
                 .penalizeLong(rockShow -> rockShow.getDrivingTimeFromPreviousStandstill() *
-                                rockShow.getDrivingTimeFromPreviousStandstill())
+                        rockShow.getDrivingTimeFromPreviousStandstill())
                 .as(SHORTEN_DRIVING_TIME_PER_MILLISECOND_SQUARED);
     }
 
