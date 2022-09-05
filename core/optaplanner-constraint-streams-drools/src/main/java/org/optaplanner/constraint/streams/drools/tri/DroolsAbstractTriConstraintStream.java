@@ -26,8 +26,6 @@ import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
@@ -279,72 +277,11 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public Constraint penalize(String constraintName, Score<?> constraintWeight) {
-        return penalize(constraintWeight)
-                .as(constraintName);
-    }
-
-    @Override
-    public Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        return penalize(constraintWeight)
-                .as(constraintPackage, constraintName);
-    }
-
-    @Override
-    public Constraint penalizeConfigurable(String constraintName) {
-        return penalize()
-                .as(constraintName);
-    }
-
-    @Override
-    public Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
-        return penalize()
-                .as(constraintPackage, constraintName);
-    }
-
-    @Override
-    public Constraint reward(String constraintName, Score<?> constraintWeight) {
-        return reward(constraintWeight)
-                .as(constraintName);
-    }
-
-    @Override
-    public Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        return reward(constraintWeight)
-                .as(constraintPackage, constraintName);
-    }
-
-    @Override
-    public Constraint rewardConfigurable(String constraintName) {
-        return reward()
-                .as(constraintName);
-    }
-
-    @Override
-    public Constraint rewardConfigurable(String constraintPackage, String constraintName) {
-        return reward()
-                .as(constraintPackage, constraintName);
-    }
-
-    @Override
-    public Constraint impact(String constraintName, Score<?> constraintWeight) {
-        return impact(constraintWeight)
-                .as(constraintName);
-    }
-
-    @Override
-    public Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        return impact(constraintWeight)
-                .as(constraintPackage, constraintName);
-    }
-
-    @Override
     public TriTerminator<A, B, C> penalize(ToIntTriFunction<A, B, C> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return new TriTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
                 impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
                 ScoreImpactType.PENALTY);
-
     }
 
     @Override

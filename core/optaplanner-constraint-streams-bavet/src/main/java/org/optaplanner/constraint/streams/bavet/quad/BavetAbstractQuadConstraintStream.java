@@ -363,66 +363,6 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    public Constraint penalize(String constraintName, Score<?> constraintWeight) {
-        return penalize(constraintWeight)
-                .as(constraintName);
-    }
-
-    @Override
-    public final Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        return penalize(constraintWeight)
-                .as(constraintPackage, constraintName);
-    }
-
-    @Override
-    public Constraint penalizeConfigurable(String constraintName) {
-        return penalize()
-                .as(constraintName);
-    }
-
-    @Override
-    public final Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
-        return penalize()
-                .as(constraintPackage, constraintName);
-    }
-
-    @Override
-    public Constraint reward(String constraintName, Score<?> constraintWeight) {
-        return reward(constraintWeight)
-                .as(constraintName);
-    }
-
-    @Override
-    public final Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        return reward(constraintWeight)
-                .as(constraintPackage, constraintName);
-    }
-
-    @Override
-    public Constraint rewardConfigurable(String constraintName) {
-        return reward()
-                .as(constraintName);
-    }
-
-    @Override
-    public final Constraint rewardConfigurable(String constraintPackage, String constraintName) {
-        return penalize()
-                .as(constraintPackage, constraintName);
-    }
-
-    @Override
-    public Constraint impact(String constraintName, Score<?> constraintWeight) {
-        return impact(constraintWeight)
-                .as(constraintName);
-    }
-
-    @Override
-    public final Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        return impact(constraintWeight)
-                .as(constraintPackage, constraintName);
-    }
-
-    @Override
     public QuadTerminator<A, B, C, D> penalize(ToIntQuadFunction<A, B, C, D> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
         return new QuadTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,

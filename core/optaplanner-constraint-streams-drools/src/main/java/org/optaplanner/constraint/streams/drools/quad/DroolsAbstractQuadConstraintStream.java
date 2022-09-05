@@ -22,8 +22,6 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
@@ -262,66 +260,6 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
                 new DroolsFlatteningQuadConstraintStream<>(constraintFactory, this, Objects.requireNonNull(mapping));
         addChildStream(stream);
         return stream;
-    }
-
-    @Override
-    public Constraint penalize(String constraintName, Score<?> constraintWeight) {
-        return penalize(constraintWeight)
-                .as(constraintName);
-    }
-
-    @Override
-    public Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        return penalize(constraintWeight)
-                .as(constraintPackage, constraintName);
-    }
-
-    @Override
-    public Constraint penalizeConfigurable(String constraintName) {
-        return penalize()
-                .as(constraintName);
-    }
-
-    @Override
-    public Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
-        return penalize()
-                .as(constraintPackage, constraintName);
-    }
-
-    @Override
-    public Constraint reward(String constraintName, Score<?> constraintWeight) {
-        return reward(constraintWeight)
-                .as(constraintName);
-    }
-
-    @Override
-    public Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        return reward(constraintWeight)
-                .as(constraintPackage, constraintName);
-    }
-
-    @Override
-    public Constraint rewardConfigurable(String constraintName) {
-        return reward()
-                .as(constraintName);
-    }
-
-    @Override
-    public Constraint rewardConfigurable(String constraintPackage, String constraintName) {
-        return reward()
-                .as(constraintPackage, constraintName);
-    }
-
-    @Override
-    public Constraint impact(String constraintName, Score<?> constraintWeight) {
-        return impact(constraintWeight)
-                .as(constraintName);
-    }
-
-    @Override
-    public Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight) {
-        return impact(constraintWeight)
-                .as(constraintPackage, constraintName);
     }
 
     @Override
