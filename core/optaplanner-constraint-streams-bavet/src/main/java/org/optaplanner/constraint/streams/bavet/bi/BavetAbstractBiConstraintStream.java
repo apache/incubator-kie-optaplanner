@@ -11,6 +11,7 @@ import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.BavetScoringConstraintStream;
 import org.optaplanner.constraint.streams.bavet.quad.BavetGroupQuadConstraintStream;
 import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.constraint.streams.bavet.tri.BavetGroupTriConstraintStream;
@@ -27,8 +28,6 @@ import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.common.bi.BiTerminatorImpl;
 import org.optaplanner.constraint.streams.common.bi.InnerBiConstraintStream;
 import org.optaplanner.constraint.streams.common.tri.TriJoinerComber;
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiTerminator;
@@ -388,73 +387,62 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     @Override
     public BiTerminator<A, B> penalize(ToIntBiFunction<A, B> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
-        return new BiTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
-                ScoreImpactType.PENALTY);
+        return newTerminator(stream, ScoreImpactType.PENALTY);
+    }
+
+    private BiTerminatorImpl<A, B> newTerminator(BavetScoringConstraintStream<Solution_> stream, ScoreImpactType impactType) {
+        return new BiTerminatorImpl<>(
+                (constraintPackage, constraintName, constraintWeight, impactType_) -> build(constraintPackage, constraintName,
+                        constraintWeight, impactType_, stream),
+                impactType);
     }
 
     @Override
     public BiTerminator<A, B> penalizeLong(ToLongBiFunction<A, B> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
-        return new BiTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
-                ScoreImpactType.PENALTY);
+        return newTerminator(stream, ScoreImpactType.PENALTY);
     }
 
     @Override
     public BiTerminator<A, B> penalizeBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
-        return new BiTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
-                ScoreImpactType.PENALTY);
+        return newTerminator(stream, ScoreImpactType.PENALTY);
     }
 
     @Override
     public BiTerminator<A, B> reward(ToIntBiFunction<A, B> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
-        return new BiTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
-                ScoreImpactType.REWARD);
+        return newTerminator(stream, ScoreImpactType.REWARD);
     }
 
     @Override
     public BiTerminator<A, B> rewardLong(ToLongBiFunction<A, B> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
-        return new BiTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
-                ScoreImpactType.REWARD);
+        return newTerminator(stream, ScoreImpactType.REWARD);
     }
 
     @Override
     public BiTerminator<A, B> rewardBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
-        return new BiTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
-                ScoreImpactType.REWARD);
+        return newTerminator(stream, ScoreImpactType.REWARD);
     }
 
     @Override
     public BiTerminator<A, B> impact(ToIntBiFunction<A, B> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
-        return new BiTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
-                ScoreImpactType.MIXED);
+        return newTerminator(stream, ScoreImpactType.MIXED);
     }
 
     @Override
     public BiTerminator<A, B> impactLong(ToLongBiFunction<A, B> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
-        return new BiTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
-                ScoreImpactType.MIXED);
+        return newTerminator(stream, ScoreImpactType.MIXED);
     }
 
     @Override
     public BiTerminator<A, B> impactBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
-        return new BiTerminatorImpl<>((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, stream),
-                ScoreImpactType.MIXED);
+        return newTerminator(stream, ScoreImpactType.MIXED);
     }
 
 }

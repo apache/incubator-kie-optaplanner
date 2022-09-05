@@ -275,74 +275,62 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     @Override
     public BiTerminator<A, B> penalize(ToIntBiFunction<A, B> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return new BiTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
-                ScoreImpactType.PENALTY);
+        return newTerminator(ruleBuilder, ScoreImpactType.PENALTY);
+    }
 
+    private BiTerminatorImpl<A, B> newTerminator(RuleBuilder<Solution_> ruleBuilder, ScoreImpactType impactType) {
+        return new BiTerminatorImpl<>(
+                (constraintPackage, constraintName, constraintWeight, impactType_) -> build(constraintPackage, constraintName,
+                        constraintWeight, impactType_, ruleBuilder),
+                impactType);
     }
 
     @Override
     public BiTerminator<A, B> penalizeLong(ToLongBiFunction<A, B> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return new BiTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
-                ScoreImpactType.PENALTY);
+        return newTerminator(ruleBuilder, ScoreImpactType.PENALTY);
     }
 
     @Override
     public BiTerminator<A, B> penalizeBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return new BiTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
-                ScoreImpactType.PENALTY);
+        return newTerminator(ruleBuilder, ScoreImpactType.PENALTY);
     }
 
     @Override
     public BiTerminator<A, B> reward(ToIntBiFunction<A, B> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return new BiTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
-                ScoreImpactType.REWARD);
+        return newTerminator(ruleBuilder, ScoreImpactType.REWARD);
     }
 
     @Override
     public BiTerminator<A, B> rewardLong(ToLongBiFunction<A, B> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return new BiTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
-                ScoreImpactType.REWARD);
+        return newTerminator(ruleBuilder, ScoreImpactType.REWARD);
     }
 
     @Override
     public BiTerminator<A, B> rewardBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return new BiTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
-                ScoreImpactType.REWARD);
+        return newTerminator(ruleBuilder, ScoreImpactType.REWARD);
     }
 
     @Override
     public BiTerminator<A, B> impact(ToIntBiFunction<A, B> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return new BiTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
-                impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
-                ScoreImpactType.MIXED);
+        return newTerminator(ruleBuilder, ScoreImpactType.MIXED);
     }
 
     @Override
     public BiTerminator<A, B> impactLong(ToLongBiFunction<A, B> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return new BiTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
-                                        impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
-                ScoreImpactType.MIXED);
+        return newTerminator(ruleBuilder, ScoreImpactType.MIXED);
     }
 
     @Override
     public BiTerminator<A, B> impactBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return new BiTerminatorImpl<>(((constraintPackage, constraintName, constraintWeight,
-                                        impactType) -> build(constraintPackage, constraintName, constraintWeight, impactType, ruleBuilder)),
-                ScoreImpactType.MIXED);
+        return newTerminator(ruleBuilder, ScoreImpactType.MIXED);
     }
 
     public abstract BiLeftHandSide<A, B> getLeftHandSide();
