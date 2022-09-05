@@ -285,8 +285,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
         return constraintFactory.forEach(DayOnRequest.class)
                 .ifNotExists(ShiftAssignment.class, Joiners.equal(DayOnRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(DayOnRequest::getShiftDate, ShiftAssignment::getShiftDate))
-                .penalize("dayOnRequest", HardSoftScore.ONE_SOFT,
-                        DayOnRequest::getWeight);
+                .penalize(HardSoftScore.ONE_SOFT, DayOnRequest::getWeight)
+                .as("dayOnRequest");
     }
 
     // Requested shift on/off
@@ -302,8 +302,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
         return constraintFactory.forEach(ShiftOnRequest.class)
                 .ifNotExists(ShiftAssignment.class, Joiners.equal(ShiftOnRequest::getEmployee, ShiftAssignment::getEmployee),
                         Joiners.equal(ShiftOnRequest::getShift, ShiftAssignment::getShift))
-                .penalize("shiftOnRequest", HardSoftScore.ONE_SOFT,
-                        ShiftOnRequest::getWeight);
+                .penalize(HardSoftScore.ONE_SOFT, ShiftOnRequest::getWeight)
+                .as("shiftOnRequest");
     }
 
     // Alternative skill

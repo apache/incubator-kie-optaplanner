@@ -62,9 +62,8 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
     Constraint computerCost(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(CloudComputer.class)
                 .ifExists(CloudProcess.class, equal(Function.identity(), CloudProcess::getComputer))
-                .penalize("computerCost",
-                        HardSoftScore.ONE_SOFT,
-                        CloudComputer::getCost);
+                .penalize(HardSoftScore.ONE_SOFT, CloudComputer::getCost)
+                .as("computerCost");
     }
 
 }

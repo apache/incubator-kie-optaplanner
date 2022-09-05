@@ -49,35 +49,37 @@ public class RockTourConstraintProvider implements ConstraintProvider {
     private Constraint revenueOpportunity(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(RockShow.class)
                 .filter(rockShow -> rockShow.getDate() != null)
-                .rewardConfigurableLong(REVENUE_OPPORTUNITY, RockShow::getRevenueOpportunity);
+                .rewardLong(RockShow::getRevenueOpportunity)
+                .as(REVENUE_OPPORTUNITY);
     }
 
     private Constraint delayShowCostPerDay(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(RockShow.class)
                 .filter(rockShow -> rockShow.getDate() != null)
-                .penalizeConfigurableLong(DELAY_SHOW_COST_PER_DAY, RockShow::getDaysAfterBusDeparture);
+                .penalizeLong(RockShow::getDaysAfterBusDeparture)
+                .as(DELAY_SHOW_COST_PER_DAY);
     }
 
     private Constraint drivingTimeToShowPerSecond(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(RockShow.class)
                 .filter(rockShow -> rockShow.getPreviousStandstill() != null)
-                .penalizeConfigurableLong(DRIVING_TIME_TO_SHOW_PER_SECOND,
-                        RockShow::getDrivingTimeFromPreviousStandstill);
+                .penalizeLong(RockShow::getDrivingTimeFromPreviousStandstill)
+                .as(DRIVING_TIME_TO_SHOW_PER_SECOND);
     }
 
     private Constraint shortenDrivingTimePerMillisecondSquared(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(RockShow.class)
                 .filter(rockShow -> rockShow.getPreviousStandstill() != null)
-                .penalizeConfigurableLong(SHORTEN_DRIVING_TIME_PER_MILLISECOND_SQUARED,
-                        rockShow -> rockShow.getDrivingTimeFromPreviousStandstill() *
-                                rockShow.getDrivingTimeFromPreviousStandstill());
+                .penalizeLong(rockShow -> rockShow.getDrivingTimeFromPreviousStandstill() *
+                                rockShow.getDrivingTimeFromPreviousStandstill())
+                .as(SHORTEN_DRIVING_TIME_PER_MILLISECOND_SQUARED);
     }
 
     private Constraint drivingTimeToBusArrivalPerSecond(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(RockShow.class)
                 .filter(rockShow -> rockShow.getBus() != null)
                 .filter(rockShow -> rockShow.getNextShow() == null)
-                .penalizeConfigurableLong(DRIVING_TIME_TO_BUS_ARRIVAL_PER_SECOND,
-                        RockShow::getDrivingTimeToBusArrivalLocation);
+                .penalizeLong(RockShow::getDrivingTimeToBusArrivalLocation)
+                .as(DRIVING_TIME_TO_BUS_ARRIVAL_PER_SECOND);
     }
 }

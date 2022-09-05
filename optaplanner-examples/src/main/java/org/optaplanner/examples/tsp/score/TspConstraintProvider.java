@@ -20,9 +20,8 @@ public final class TspConstraintProvider implements ConstraintProvider {
 
     private Constraint distanceToPreviousStandstill(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Visit.class)
-                .penalizeLong("Distance to previous standstill",
-                        SimpleLongScore.ONE,
-                        Visit::getDistanceFromPreviousStandstill);
+                .penalizeLong(SimpleLongScore.ONE, Visit::getDistanceFromPreviousStandstill)
+                .as("Distance to previous standstill");
     }
 
     private Constraint distanceFromLastVisitToDomicile(ConstraintFactory constraintFactory) {

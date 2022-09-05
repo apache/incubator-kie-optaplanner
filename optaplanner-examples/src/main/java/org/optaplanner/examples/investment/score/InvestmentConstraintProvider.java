@@ -58,7 +58,7 @@ public class InvestmentConstraintProvider implements ConstraintProvider {
 
     private Constraint assetExpectedReturnReward(ConstraintFactory cf) {
         return cf.forEach(AssetClassAllocation.class)
-                .rewardLong(CONSTRAINT_PACKAGE, "Maximize expected return", HardSoftLongScore.ONE_SOFT,
-                        AssetClassAllocation::getQuantifiedExpectedReturnMicros);
+                .rewardLong(HardSoftLongScore.ONE_SOFT, AssetClassAllocation::getQuantifiedExpectedReturnMicros)
+                .as(CONSTRAINT_PACKAGE, "Maximize expected return");
     }
 }

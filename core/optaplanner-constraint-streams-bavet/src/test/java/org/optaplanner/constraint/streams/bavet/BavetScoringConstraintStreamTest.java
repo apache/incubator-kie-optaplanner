@@ -46,7 +46,8 @@ class BavetScoringConstraintStreamTest extends AbstractScoringConstraintStreamTe
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
-                        .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, entity -> 2));
+                        .penalize(SimpleScore.ONE, entity -> 2)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -61,7 +62,8 @@ class BavetScoringConstraintStreamTest extends AbstractScoringConstraintStreamTe
                 TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
                 factory -> new Constraint[] {
                         factory.forEach(TestdataEntity.class)
-                                .penalizeLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, entity -> 2L)
+                                .penalizeLong(SimpleLongScore.ONE, entity -> 2L)
+                                .as(TEST_CONSTRAINT_NAME)
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -76,8 +78,8 @@ class BavetScoringConstraintStreamTest extends AbstractScoringConstraintStreamTe
         InnerScoreDirector<TestdataSimpleBigDecimalScoreSolution, SimpleBigDecimalScore> scoreDirector =
                 buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
                         factory -> new Constraint[] { factory.forEach(TestdataEntity.class)
-                                .penalizeBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
-                                        entity -> BigDecimal.valueOf(2)) });
+                                .penalizeBigDecimal(SimpleBigDecimalScore.ONE, entity -> BigDecimal.valueOf(2))
+                                .as(TEST_CONSTRAINT_NAME) });
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -103,7 +105,8 @@ class BavetScoringConstraintStreamTest extends AbstractScoringConstraintStreamTe
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
-                        .reward(TEST_CONSTRAINT_NAME, SimpleScore.ONE, entity -> 2));
+                        .reward(SimpleScore.ONE, entity -> 2)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -118,7 +121,8 @@ class BavetScoringConstraintStreamTest extends AbstractScoringConstraintStreamTe
                 TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
                 factory -> new Constraint[] {
                         factory.forEach(TestdataEntity.class)
-                                .rewardLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, entity -> 2L)
+                                .rewardLong(SimpleLongScore.ONE, entity -> 2L)
+                                .as(TEST_CONSTRAINT_NAME)
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -134,8 +138,9 @@ class BavetScoringConstraintStreamTest extends AbstractScoringConstraintStreamTe
                 buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
                         factory -> new Constraint[] {
                                 factory.forEach(TestdataEntity.class)
-                                        .rewardBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                        .rewardBigDecimal(SimpleBigDecimalScore.ONE,
                                                 entity -> BigDecimal.valueOf(2))
+                                        .as(TEST_CONSTRAINT_NAME)
                         });
 
         scoreDirector.setWorkingSolution(solution);
@@ -162,7 +167,8 @@ class BavetScoringConstraintStreamTest extends AbstractScoringConstraintStreamTe
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
-                        .impact(TEST_CONSTRAINT_NAME, SimpleScore.ONE, entity -> 2));
+                        .impact(SimpleScore.ONE, entity -> 2)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -177,7 +183,8 @@ class BavetScoringConstraintStreamTest extends AbstractScoringConstraintStreamTe
                 TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
                 factory -> new Constraint[] {
                         factory.forEach(TestdataEntity.class)
-                                .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, entity -> 2L)
+                                .impactLong(SimpleLongScore.ONE, entity -> 2L)
+                                .as(TEST_CONSTRAINT_NAME)
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -193,8 +200,9 @@ class BavetScoringConstraintStreamTest extends AbstractScoringConstraintStreamTe
                 buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
                         factory -> new Constraint[] {
                                 factory.forEach(TestdataEntity.class)
-                                        .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                        .impactBigDecimal(SimpleBigDecimalScore.ONE,
                                                 entity -> BigDecimal.valueOf(2))
+                                        .as(TEST_CONSTRAINT_NAME)
                         });
 
         scoreDirector.setWorkingSolution(solution);
@@ -208,7 +216,8 @@ class BavetScoringConstraintStreamTest extends AbstractScoringConstraintStreamTe
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
-                        .impact(TEST_CONSTRAINT_NAME, SimpleScore.ONE, entity -> -2));
+                        .impact(SimpleScore.ONE, entity -> -2)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -223,7 +232,8 @@ class BavetScoringConstraintStreamTest extends AbstractScoringConstraintStreamTe
                 TestdataSimpleLongScoreSolution.buildSolutionDescriptor(),
                 factory -> new Constraint[] {
                         factory.forEach(TestdataEntity.class)
-                                .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, entity -> -2L)
+                                .impactLong(SimpleLongScore.ONE, entity -> -2L)
+                                .as(TEST_CONSTRAINT_NAME)
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -239,8 +249,9 @@ class BavetScoringConstraintStreamTest extends AbstractScoringConstraintStreamTe
                 buildScoreDirector(TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(),
                         factory -> new Constraint[] {
                                 factory.forEach(TestdataEntity.class)
-                                        .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                        .impactBigDecimal(SimpleBigDecimalScore.ONE,
                                                 entity -> BigDecimal.valueOf(-2))
+                                        .as(TEST_CONSTRAINT_NAME)
                         });
 
         scoreDirector.setWorkingSolution(solution);

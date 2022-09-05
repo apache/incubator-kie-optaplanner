@@ -59,8 +59,9 @@ public final class TravelingTournamentConstraintProvider implements ConstraintPr
         return constraintFactory.forEach(Match.class)
                 .ifNotExists(Day.class,
                         equal(match -> getDayIndex(match) - 1, Day::getIndex))
-                .penalize("Start to away hop", HardSoftScore.ONE_SOFT,
-                        match -> match.getAwayTeam().getDistance(match.getHomeTeam()));
+                .penalize(HardSoftScore.ONE_SOFT,
+                        match -> match.getAwayTeam().getDistance(match.getHomeTeam()))
+                .as("Start to away hop");
     }
 
     private Constraint homeToAwayHop(ConstraintFactory constraintFactory) {
@@ -90,8 +91,9 @@ public final class TravelingTournamentConstraintProvider implements ConstraintPr
     private Constraint awayToEndHop(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Match.class)
                 .ifNotExists(Day.class, equal(match -> getDayIndex(match) + 1, Day::getIndex))
-                .penalize("Away to end hop", HardSoftScore.ONE_SOFT,
-                        match -> match.getHomeTeam().getDistance(match.getAwayTeam()));
+                .penalize(HardSoftScore.ONE_SOFT,
+                        match -> match.getHomeTeam().getDistance(match.getAwayTeam()))
+                .as("Away to end hop");
     }
 
     private static int getDayIndex(Match match) {

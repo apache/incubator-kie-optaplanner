@@ -540,15 +540,15 @@ public abstract class AbstractQuadConstraintStreamTest
          */
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
-                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
-                    .join(TestdataLavishEntity.class, equal((entity, group, value) -> group,
-                            TestdataLavishEntity::getEntityGroup))
-                    .groupBy(countQuad())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, count -> count);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                        .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
+                        .join(TestdataLavishEntity.class, equal((entity, group, value) -> group,
+                                TestdataLavishEntity::getEntityGroup))
+                        .groupBy(countQuad())
+                        .penalize(SimpleScore.ONE, count -> count)
+                        .as(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);

@@ -1032,11 +1032,11 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     public void groupBy_0Mapping1Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 5, 2, 3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .groupBy(countBi())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (count) -> count);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .groupBy(countBi())
+                        .penalize(SimpleScore.ONE, (count) -> count)
+                        .as(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);

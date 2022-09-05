@@ -101,6 +101,7 @@ public interface ConstraintStream {
      * @param constraintWeight never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight);
 
     /**
@@ -125,6 +126,7 @@ public interface ConstraintStream {
      * @param constraintName never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     Constraint penalizeConfigurable(String constraintPackage, String constraintName);
 
     /**
@@ -149,6 +151,7 @@ public interface ConstraintStream {
      * @param constraintWeight never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight);
 
     /**
@@ -173,6 +176,7 @@ public interface ConstraintStream {
      * @param constraintName never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     Constraint rewardConfigurable(String constraintPackage, String constraintName);
 
     /**
@@ -197,6 +201,7 @@ public interface ConstraintStream {
      * @param constraintWeight never null
      * @return never null
      */
+    @Deprecated(forRemoval = true)
     Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight);
 
 }

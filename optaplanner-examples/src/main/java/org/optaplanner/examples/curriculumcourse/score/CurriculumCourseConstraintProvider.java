@@ -77,8 +77,9 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
     Constraint roomCapacity(ConstraintFactory factory) {
         return factory.forEach(Lecture.class)
                 .filter(lecture -> lecture.getStudentSize() > lecture.getRoom().getCapacity())
-                .penalize("roomCapacity", ofSoft(1),
-                        lecture -> lecture.getStudentSize() - lecture.getRoom().getCapacity());
+                .penalize(ofSoft(1),
+                        lecture -> lecture.getStudentSize() - lecture.getRoom().getCapacity())
+                .as("roomCapacity");
     }
 
     Constraint minimumWorkingDays(ConstraintFactory factory) {

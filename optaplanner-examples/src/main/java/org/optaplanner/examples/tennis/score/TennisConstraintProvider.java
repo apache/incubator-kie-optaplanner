@@ -100,8 +100,9 @@ public final class TennisConstraintProvider implements ConstraintProvider {
     Constraint fairAssignmentCountPerTeam(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(TeamAssignment.class)
                 .groupBy(loadBalance(TeamAssignment::getTeam))
-                .penalize("fairAssignmentCountPerTeam", HardMediumSoftScore.ONE_MEDIUM,
-                        result -> (int) result.getZeroDeviationSquaredSumRootMillis());
+                .penalize(HardMediumSoftScore.ONE_MEDIUM,
+                        result -> (int) result.getZeroDeviationSquaredSumRootMillis())
+                .as("fairAssignmentCountPerTeam");
     }
 
     Constraint evenlyConfrontationCount(ConstraintFactory constraintFactory) {
@@ -111,8 +112,9 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                         lessThan(assignment -> assignment.getTeam().getId()))
                 .groupBy(loadBalance(
                         (assignment, otherAssignment) -> Pair.of(assignment.getTeam(), otherAssignment.getTeam())))
-                .penalize("evenlyConfrontationCount", HardMediumSoftScore.ONE_SOFT,
-                        result -> (int) result.getZeroDeviationSquaredSumRootMillis());
+                .penalize(HardMediumSoftScore.ONE_SOFT,
+                        result -> (int) result.getZeroDeviationSquaredSumRootMillis())
+                .as("evenlyConfrontationCount");
     }
 
     private static final class LoadBalanceData {

@@ -33,8 +33,9 @@ public class TestdataConstraintProvider implements ConstraintProvider {
 
     public Constraint impactEveryEntity(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(TestdataEntity.class)
-                .impact("Impact every entity", SimpleScore.ONE,
-                        entity -> Objects.equals(entity.getCode(), "A") ? 1 : -1);
+                .impact(SimpleScore.ONE,
+                        entity -> Objects.equals(entity.getCode(), "A") ? 1 : -1)
+                .as("Impact every entity");
     }
 
     public Constraint differentStringEntityHaveDifferentValues(ConstraintFactory constraintFactory) {

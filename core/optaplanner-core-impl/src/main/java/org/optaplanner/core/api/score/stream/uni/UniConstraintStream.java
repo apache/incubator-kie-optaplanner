@@ -1693,8 +1693,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      */
     @Deprecated(forRemoval = true)
     default Constraint rewardLong(String constraintName, Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
-        return rewardLong(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
-                matchWeigher);
+        return rewardLong(constraintWeight, matchWeigher)
+                .as(constraintName);
     }
 
     /**
@@ -1732,8 +1732,8 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint rewardBigDecimal(String constraintName, Score<?> constraintWeight,
             Function<A, BigDecimal> matchWeigher) {
-        return rewardBigDecimal(getConstraintFactory().getDefaultConstraintPackage(), constraintName, constraintWeight,
-                matchWeigher);
+        return rewardBigDecimal(constraintWeight, matchWeigher)
+                .as(constraintName);
     }
 
     /**

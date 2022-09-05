@@ -27,7 +27,6 @@ import static org.optaplanner.examples.conferencescheduling.domain.ConferenceCon
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PROHIBITED_ROOM_TAGS;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PROHIBITED_TIMESLOT_TAGS;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_REQUIRED_ROOM_TAGS;
-import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_REQUIRED_TIMESLOT_TAGS;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_UNAVAILABLE_TIMESLOT;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_UNDESIRED_ROOM_TAGS;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_UNDESIRED_TIMESLOT_TAGS;
@@ -108,7 +107,8 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     protected Constraint roomUnavailableTimeslot(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(Talk::hasUnavailableRoom)
-                .penalizeConfigurable(ROOM_UNAVAILABLE_TIMESLOT, Talk::getDurationInMinutes);
+                .penalize(Talk::getDurationInMinutes)
+                .as(ROOM_UNAVAILABLE_TIMESLOT);
     }
 
     protected Constraint roomConflict(ConstraintFactory factory) {
@@ -176,57 +176,57 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     protected Constraint speakerRequiredTimeslotTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingSpeakerRequiredTimeslotTagCount() > 0)
-                .penalizeConfigurable(SPEAKER_REQUIRED_TIMESLOT_TAGS,
-                        talk -> talk.missingSpeakerRequiredTimeslotTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.missingSpeakerRequiredTimeslotTagCount() * talk.getDurationInMinutes())
+                .as(SPEAKER_PREFERRED_TIMESLOT_TAGS);
     }
 
     protected Constraint speakerProhibitedTimeslotTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingSpeakerProhibitedTimeslotTagCount() > 0)
-                .penalizeConfigurable(SPEAKER_PROHIBITED_TIMESLOT_TAGS,
-                        talk -> talk.prevailingSpeakerProhibitedTimeslotTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.prevailingSpeakerProhibitedTimeslotTagCount() * talk.getDurationInMinutes())
+                .as(SPEAKER_PROHIBITED_TIMESLOT_TAGS);
     }
 
     protected Constraint talkRequiredTimeslotTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingRequiredTimeslotTagCount() > 0)
-                .penalizeConfigurable(TALK_REQUIRED_TIMESLOT_TAGS,
-                        talk -> talk.missingRequiredTimeslotTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.missingRequiredTimeslotTagCount() * talk.getDurationInMinutes())
+                .as(TALK_REQUIRED_TIMESLOT_TAGS);
     }
 
     protected Constraint talkProhibitedTimeslotTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingProhibitedTimeslotTagCount() > 0)
-                .penalizeConfigurable(TALK_PROHIBITED_TIMESLOT_TAGS,
-                        talk -> talk.prevailingProhibitedTimeslotTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.prevailingProhibitedTimeslotTagCount() * talk.getDurationInMinutes())
+                .as(TALK_PROHIBITED_TIMESLOT_TAGS);
     }
 
     protected Constraint speakerRequiredRoomTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingSpeakerRequiredRoomTagCount() > 0)
-                .penalizeConfigurable(SPEAKER_REQUIRED_ROOM_TAGS,
-                        talk -> talk.missingSpeakerRequiredRoomTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.missingSpeakerRequiredRoomTagCount() * talk.getDurationInMinutes())
+                .as(SPEAKER_REQUIRED_ROOM_TAGS);
     }
 
     protected Constraint speakerProhibitedRoomTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingSpeakerProhibitedRoomTagCount() > 0)
-                .penalizeConfigurable(SPEAKER_PROHIBITED_ROOM_TAGS,
-                        talk -> talk.prevailingSpeakerProhibitedRoomTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.prevailingSpeakerProhibitedRoomTagCount() * talk.getDurationInMinutes())
+                .as(SPEAKER_PROHIBITED_ROOM_TAGS);
     }
 
     protected Constraint talkRequiredRoomTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingRequiredRoomTagCount() > 0)
-                .penalizeConfigurable(TALK_REQUIRED_ROOM_TAGS,
-                        talk -> talk.missingRequiredRoomTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.missingRequiredRoomTagCount() * talk.getDurationInMinutes())
+                .as(TALK_REQUIRED_ROOM_TAGS);
     }
 
     protected Constraint talkProhibitedRoomTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingProhibitedRoomTagCount() > 0)
-                .penalizeConfigurable(TALK_PROHIBITED_ROOM_TAGS,
-                        talk -> talk.prevailingProhibitedRoomTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.prevailingProhibitedRoomTagCount() * talk.getDurationInMinutes())
+                .as(TALK_PROHIBITED_ROOM_TAGS);
     }
 
     // ************************************************************************
@@ -355,57 +355,57 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     protected Constraint speakerPreferredTimeslotTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingSpeakerPreferredTimeslotTagCount() > 0)
-                .penalizeConfigurable(SPEAKER_PREFERRED_TIMESLOT_TAGS,
-                        talk -> talk.missingSpeakerPreferredTimeslotTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.missingSpeakerPreferredTimeslotTagCount() * talk.getDurationInMinutes())
+                .as(SPEAKER_PREFERRED_TIMESLOT_TAGS);
     }
 
     protected Constraint speakerUndesiredTimeslotTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingSpeakerUndesiredTimeslotTagCount() > 0)
-                .penalizeConfigurable(SPEAKER_UNDESIRED_TIMESLOT_TAGS,
-                        talk -> talk.prevailingSpeakerUndesiredTimeslotTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.prevailingSpeakerUndesiredTimeslotTagCount() * talk.getDurationInMinutes())
+                .as(SPEAKER_UNDESIRED_TIMESLOT_TAGS);
     }
 
     protected Constraint talkPreferredTimeslotTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingPreferredTimeslotTagCount() > 0)
-                .penalizeConfigurable(TALK_PREFERRED_TIMESLOT_TAGS,
-                        talk -> talk.missingPreferredTimeslotTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.missingPreferredTimeslotTagCount() * talk.getDurationInMinutes())
+                .as(TALK_PREFERRED_TIMESLOT_TAGS);
     }
 
     protected Constraint talkUndesiredTimeslotTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingUndesiredTimeslotTagCount() > 0)
-                .penalizeConfigurable(TALK_UNDESIRED_TIMESLOT_TAGS,
-                        talk -> talk.prevailingUndesiredTimeslotTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.prevailingUndesiredTimeslotTagCount() * talk.getDurationInMinutes())
+                .as(TALK_UNDESIRED_TIMESLOT_TAGS);
     }
 
     protected Constraint speakerPreferredRoomTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingSpeakerPreferredRoomTagCount() > 0)
-                .penalizeConfigurable(SPEAKER_PREFERRED_ROOM_TAGS,
-                        talk -> talk.missingSpeakerPreferredRoomTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.missingSpeakerPreferredRoomTagCount() * talk.getDurationInMinutes())
+                .as(SPEAKER_PREFERRED_ROOM_TAGS);
     }
 
     protected Constraint speakerUndesiredRoomTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingSpeakerUndesiredRoomTagCount() > 0)
-                .penalizeConfigurable(SPEAKER_UNDESIRED_ROOM_TAGS,
-                        talk -> talk.prevailingSpeakerUndesiredRoomTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.prevailingSpeakerUndesiredRoomTagCount() * talk.getDurationInMinutes())
+                .as(SPEAKER_UNDESIRED_ROOM_TAGS);
     }
 
     protected Constraint talkPreferredRoomTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingPreferredRoomTagCount() > 0)
-                .penalizeConfigurable(TALK_PREFERRED_ROOM_TAGS,
-                        talk -> talk.missingPreferredRoomTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.missingPreferredRoomTagCount() * talk.getDurationInMinutes())
+                .as(TALK_PREFERRED_ROOM_TAGS);
     }
 
     protected Constraint talkUndesiredRoomTags(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.prevailingUndesiredRoomTagCount() > 0)
-                .penalizeConfigurable(TALK_UNDESIRED_ROOM_TAGS,
-                        talk -> talk.prevailingUndesiredRoomTagCount() * talk.getDurationInMinutes());
+                .penalize(talk -> talk.prevailingUndesiredRoomTagCount() * talk.getDurationInMinutes())
+                .as(TALK_UNDESIRED_ROOM_TAGS);
     }
 
 }

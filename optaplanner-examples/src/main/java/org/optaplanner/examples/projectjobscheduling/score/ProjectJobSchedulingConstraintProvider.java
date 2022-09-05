@@ -59,9 +59,9 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
         return constraintFactory.forEach(Allocation.class)
                 .filter(allocation -> allocation.getEndDate() != null)
                 .filter(allocation -> allocation.getJobType() == JobType.SINK)
-                .impact("Total project delay",
-                        HardMediumSoftScore.ofMedium(1),
-                        allocation -> allocation.getProjectCriticalPathEndDate() - allocation.getEndDate());
+                .impact(HardMediumSoftScore.ONE_MEDIUM,
+                        allocation -> allocation.getProjectCriticalPathEndDate() - allocation.getEndDate())
+                .as("Total project delay");
     }
 
     protected Constraint totalMakespan(ConstraintFactory constraintFactory) {
@@ -69,9 +69,8 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
                 .filter(allocation -> allocation.getEndDate() != null)
                 .filter(allocation -> allocation.getJobType() == JobType.SINK)
                 .groupBy(ConstraintCollectors.max(Allocation::getEndDate))
-                .penalize("Total makespan",
-                        HardMediumSoftScore.ofSoft(1),
-                        maxEndDate -> maxEndDate);
+                .penalize(HardMediumSoftScore.ONE_SOFT, maxEndDate -> maxEndDate)
+                .as("Total makespan");
     }
 
 }

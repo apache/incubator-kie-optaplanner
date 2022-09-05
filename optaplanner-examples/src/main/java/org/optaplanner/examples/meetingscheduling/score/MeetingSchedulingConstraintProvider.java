@@ -55,7 +55,8 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                 .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null)
                 .ifNotExists(TimeGrain.class,
                         equal(MeetingAssignment::getLastTimeGrainIndex, TimeGrain::getGrainIndex))
-                .penalizeConfigurable("Don't go in overtime", MeetingAssignment::getLastTimeGrainIndex);
+                .penalize(MeetingAssignment::getLastTimeGrainIndex)
+                .as("Don't go in overtime");
     }
 
     protected Constraint requiredAttendanceConflict(ConstraintFactory constraintFactory) {
@@ -82,8 +83,8 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     protected Constraint requiredRoomCapacity(ConstraintFactory constraintFactory) {
         return constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
                 .filter(meetingAssignment -> meetingAssignment.getRequiredCapacity() > meetingAssignment.getRoomCapacity())
-                .penalizeConfigurable("Required room capacity",
-                        meetingAssignment -> meetingAssignment.getRequiredCapacity() - meetingAssignment.getRoomCapacity());
+                .penalize(meetingAssignment -> meetingAssignment.getRequiredCapacity() - meetingAssignment.getRoomCapacity())
+                .as("Required room capacity");
     }
 
     protected Constraint startAndEndOnSameDay(ConstraintFactory constraintFactory) {
@@ -152,8 +153,8 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     protected Constraint doMeetingsAsSoonAsPossible(ConstraintFactory constraintFactory) {
         return constraintFactory.forEachIncludingNullVars(MeetingAssignment.class)
                 .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null)
-                .penalizeConfigurable("Do all meetings as soon as possible",
-                        MeetingAssignment::getLastTimeGrainIndex);
+                .penalize(MeetingAssignment::getLastTimeGrainIndex)
+                .as("Do all meetings as soon as possible");
     }
 
     protected Constraint oneBreakBetweenConsecutiveMeetings(ConstraintFactory constraintFactory) {

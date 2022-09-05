@@ -62,7 +62,8 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
     protected Constraint periodDurationTooShort(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Exam.class)
                 .filter(exam -> exam.getTopicDuration() > exam.getPeriodDuration())
-                .penalizeConfigurable("periodDurationTooShort", Exam::getTopicStudentSize);
+                .penalize(Exam::getTopicStudentSize)
+                .as("periodDurationTooShort");
     }
 
     protected Constraint roomCapacityTooSmall(ConstraintFactory constraintFactory) {

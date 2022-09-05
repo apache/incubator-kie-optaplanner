@@ -46,7 +46,8 @@ public class FlightCrewSchedulingConstraintProvider implements ConstraintProvide
     private Constraint transferBetweenTwoFlights(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Employee.class)
                 .filter(employee -> employee.countInvalidConnections() > 0)
-                .penalizeLong("Transfer between two flights", HardSoftLongScore.ofHard(1), Employee::countInvalidConnections);
+                .penalizeLong(HardSoftLongScore.ofHard(1), Employee::countInvalidConnections)
+                .as("Transfer between two flights");
     }
 
     private Constraint employeeUnavailability(ConstraintFactory constraintFactory) {

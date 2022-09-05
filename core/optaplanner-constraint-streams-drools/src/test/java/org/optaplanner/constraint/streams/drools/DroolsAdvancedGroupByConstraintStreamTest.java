@@ -45,7 +45,8 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         .groupBy(e -> e.getCode().substring(0, 1), count())
                         .groupBy(Pair::of)
                         .filter(pair -> !pair.getKey().equals("G"))
-                        .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, Pair::getValue));
+                        .penalize(SimpleScore.ONE, Pair::getValue)
+                        .as(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -71,12 +72,12 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                 solution.getFirstValue());
         solution.getEntityList().add(entity3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .groupBy(count())
-                    .filter(count -> count == 10)
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, i -> i);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .groupBy(count())
+                        .filter(count -> count == 10)
+                        .penalize(SimpleScore.ONE, i -> i)
+                        .as(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -95,12 +96,12 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
     void collectedFilteredRecollected() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 2);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .groupBy(toSet())
-                    .groupBy(sum(Set::size))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, count -> count);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .groupBy(toSet())
+                        .groupBy(sum(Set::size))
+                        .penalize(SimpleScore.ONE, count -> count)
+                        .as(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -118,12 +119,12 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
     void uniGroupByRecollected() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2, 2, 2);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .groupBy(TestdataLavishEntity::getEntityGroup)
-                    .groupBy(toSet())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, Set::size);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .groupBy(TestdataLavishEntity::getEntityGroup)
+                        .groupBy(toSet())
+                        .penalize(SimpleScore.ONE, Set::size)
+                        .as(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
