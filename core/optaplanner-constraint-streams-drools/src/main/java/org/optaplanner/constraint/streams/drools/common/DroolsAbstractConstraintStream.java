@@ -30,12 +30,11 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
     protected Constraint build(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType, RuleBuilder<Solution_> ruleBuilder) {
         String resolvedConstraintPackage =
-                Objects.requireNonNull(constraintPackage, this.constraintFactory.getDefaultConstraintPackage());
+                Objects.requireNonNullElseGet(constraintPackage, this.constraintFactory::getDefaultConstraintPackage);
         if (constraintWeight == null) {
-            return buildConstraint(resolvedConstraintPackage, constraintName, constraintWeight,
-                    impactType, ruleBuilder);
-        } else {
             return buildConstraintConfigurable(resolvedConstraintPackage, constraintName, impactType, ruleBuilder);
+        } else {
+            return buildConstraint(resolvedConstraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
         }
     }
 

@@ -1,19 +1,8 @@
 package org.optaplanner.constraint.streams.common.bi;
 
 import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
-import static org.optaplanner.constraint.streams.common.ScoreImpactType.MIXED;
-import static org.optaplanner.constraint.streams.common.ScoreImpactType.PENALTY;
-import static org.optaplanner.constraint.streams.common.ScoreImpactType.REWARD;
-
-import java.math.BigDecimal;
-import java.util.function.BiFunction;
-import java.util.function.ToIntBiFunction;
-import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
-import org.optaplanner.constraint.streams.common.ScoreImpactType;
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;

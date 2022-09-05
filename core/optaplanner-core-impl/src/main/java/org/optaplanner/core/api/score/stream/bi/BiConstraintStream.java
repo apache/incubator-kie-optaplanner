@@ -6,7 +6,6 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
-import java.util.function.ToIntFunction;
 import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.core.api.domain.constraintweight.ConstraintConfiguration;
@@ -24,7 +23,6 @@ import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
-import org.optaplanner.core.api.score.stream.uni.UniTerminator;
 
 /**
  * A {@link ConstraintStream} that matches two facts.
@@ -1415,7 +1413,6 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     default BiTerminator<A, B> impact(Score<?> constraintWeight) {
         return impact(constraintWeight, (a, b) -> 1);
     }
-
 
     /**
      * Positively or negatively impact the {@link Score} by the constraintWeight multiplied by the match weight.

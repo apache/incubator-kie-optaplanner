@@ -33,12 +33,11 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
     protected Constraint build(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType, BavetScoringConstraintStream<Solution_> stream) {
         String resolvedConstraintPackage =
-                Objects.requireNonNull(constraintPackage, this.constraintFactory.getDefaultConstraintPackage());
+                Objects.requireNonNullElseGet(constraintPackage, this.constraintFactory::getDefaultConstraintPackage);
         if (constraintWeight == null) {
-            return buildConstraint(resolvedConstraintPackage, constraintName, constraintWeight,
-                    impactType, stream);
-        } else {
             return buildConstraintConfigurable(resolvedConstraintPackage, constraintName, impactType, stream);
+        } else {
+            return buildConstraint(resolvedConstraintPackage, constraintName, constraintWeight, impactType, stream);
         }
     }
 

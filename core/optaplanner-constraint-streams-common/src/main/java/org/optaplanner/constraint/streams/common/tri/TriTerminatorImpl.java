@@ -6,7 +6,6 @@ import org.optaplanner.constraint.streams.common.ConstraintBuilder;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.bi.BiTerminator;
 import org.optaplanner.core.api.score.stream.tri.TriTerminator;
 
 public final class TriTerminatorImpl<A, B, C> implements TriTerminator<A, B, C> {

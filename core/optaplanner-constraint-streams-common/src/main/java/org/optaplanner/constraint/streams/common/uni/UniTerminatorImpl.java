@@ -1,12 +1,12 @@
 package org.optaplanner.constraint.streams.common.uni;
 
+import java.util.Objects;
+
 import org.optaplanner.constraint.streams.common.ConstraintBuilder;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.uni.UniTerminator;
-
-import java.util.Objects;
 
 public final class UniTerminatorImpl<A> implements UniTerminator<A> {
 

@@ -7,9 +7,7 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.ToIntBiFunction;
-import java.util.function.ToIntFunction;
 import java.util.function.ToLongBiFunction;
-import java.util.function.ToLongFunction;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
@@ -23,7 +21,6 @@ import org.optaplanner.constraint.streams.bavet.uni.BavetGroupUniConstraintStrea
 import org.optaplanner.constraint.streams.bavet.uni.BavetIfExistsBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetMapUniConstraintStream;
-import org.optaplanner.constraint.streams.bavet.bi.BavetScoringBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;

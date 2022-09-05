@@ -7,7 +7,6 @@ import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.bi.BiTerminator;
-import org.optaplanner.core.api.score.stream.uni.UniTerminator;
 
 public final class BiTerminatorImpl<A, B> implements BiTerminator<A, B> {
 
