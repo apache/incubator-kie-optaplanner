@@ -872,16 +872,16 @@ public abstract class AbstractQuadConstraintStreamTest
     public void groupBy_2Mapping2Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
-                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
-                    .join(TestdataLavishEntity.class, equal((entity, group, value) -> group,
-                            TestdataLavishEntity::getEntityGroup))
-                    .groupBy((entity1, group, value, entity2) -> group, (entity1, group, value, entity2) -> value,
-                            countQuad(), countQuad())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (group, value, count, sameCount) -> count + sameCount);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                        .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
+                        .join(TestdataLavishEntity.class, equal((entity, group, value) -> group,
+                                TestdataLavishEntity::getEntityGroup))
+                        .groupBy((entity1, group, value, entity2) -> group, (entity1, group, value, entity2) -> value,
+                                countQuad(), countQuad())
+                        .penalize(SimpleScore.ONE, (group, value, count, sameCount) -> count + sameCount)
+                        .as(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1347,7 +1347,8 @@ public abstract class AbstractQuadConstraintStreamTest
                     return new Constraint[] {
                             base.penalize(SimpleScore.ONE)
                                     .as("myConstraint1"),
-                            base.penalize("myConstraint2", SimpleScore.ONE, (entity1, entity2, value, extra) -> 20)
+                            base.penalize(SimpleScore.ONE, (entity1, entity2, value, extra) -> 20)
+                                    .as("myConstraint2")
                     };
                 });
 
@@ -1375,8 +1376,9 @@ public abstract class AbstractQuadConstraintStreamTest
                     return new Constraint[] {
                             base.penalize(SimpleLongScore.ONE)
                                     .as("myConstraint1"),
-                            base.penalizeLong("myConstraint2", SimpleLongScore.ONE,
+                            base.penalizeLong(SimpleLongScore.ONE,
                                     (entity1, entity2, value, extra) -> 20L)
+                                    .as("myConstraint2")
                     };
                 });
 
@@ -1405,8 +1407,9 @@ public abstract class AbstractQuadConstraintStreamTest
                             return new Constraint[] {
                                     base.penalize(SimpleBigDecimalScore.ONE)
                                             .as("myConstraint1"),
-                                    base.penalizeBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE,
+                                    base.penalizeBigDecimal(SimpleBigDecimalScore.ONE,
                                             (entity1, entity2, value, extra) -> new BigDecimal("0.2"))
+                                            .as("myConstraint2")
                             };
                         });
 
@@ -1425,7 +1428,8 @@ public abstract class AbstractQuadConstraintStreamTest
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
                         .join(TestdataLavishEntityGroup.class)
                         .join(TestdataLavishValue.class)
-                        .penalize(constraintName, SimpleScore.ONE, (entityA, entityB, group, value) -> -1));
+                        .penalize(SimpleScore.ONE, (entityA, entityB, group, value) -> -1)
+                        .as(constraintName));
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
@@ -1452,7 +1456,8 @@ public abstract class AbstractQuadConstraintStreamTest
                         factory.forEachUniquePair(TestdataEntity.class)
                                 .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
                                 .join(TestdataValue.class)
-                                .reward("myConstraint2", SimpleScore.ONE, (entity1, entity2, value, extra) -> 20)
+                                .reward(SimpleScore.ONE, (entity1, entity2, value, extra) -> 20)
+                                .as("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1480,8 +1485,9 @@ public abstract class AbstractQuadConstraintStreamTest
                         factory.forEachUniquePair(TestdataEntity.class)
                                 .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
                                 .join(TestdataValue.class)
-                                .rewardLong("myConstraint2", SimpleLongScore.ONE,
+                                .rewardLong(SimpleLongScore.ONE,
                                         (entity1, entity2, value, extra) -> 20L)
+                                .as("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1510,8 +1516,9 @@ public abstract class AbstractQuadConstraintStreamTest
                                 factory.forEachUniquePair(TestdataEntity.class)
                                         .join(TestdataValue.class, equal((entity1, entity2) -> e1.getValue(), identity()))
                                         .join(TestdataValue.class)
-                                        .rewardBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE,
+                                        .rewardBigDecimal(SimpleBigDecimalScore.ONE,
                                                 (entity1, entity2, value, extra) -> new BigDecimal("0.2"))
+                                        .as("myConstraint2")
                         });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1529,7 +1536,8 @@ public abstract class AbstractQuadConstraintStreamTest
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
                         .join(TestdataLavishEntityGroup.class)
                         .join(TestdataLavishValue.class)
-                        .reward(constraintName, SimpleScore.ONE, (entityA, entityB, group, value) -> -1));
+                        .reward(SimpleScore.ONE, (entityA, entityB, group, value) -> -1)
+                        .as(constraintName));
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);

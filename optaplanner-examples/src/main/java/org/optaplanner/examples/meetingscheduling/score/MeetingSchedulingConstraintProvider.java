@@ -75,9 +75,9 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
                                         assignment.getMeeting().getDurationInGrains()))
-                .penalizeConfigurable("Required attendance conflict",
-                        (leftRequiredAttendance, rightRequiredAttendance, leftAssignment, rightAssignment) -> rightAssignment
-                                .calculateOverlap(leftAssignment));
+                .penalize((leftRequiredAttendance, rightRequiredAttendance, leftAssignment, rightAssignment) -> rightAssignment
+                        .calculateOverlap(leftAssignment))
+                .as("Required attendance conflict");
     }
 
     protected Constraint requiredRoomCapacity(ConstraintFactory constraintFactory) {
@@ -120,9 +120,9 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
                                         assignment.getMeeting().getDurationInGrains()))
-                .penalizeConfigurable("Required and preferred attendance conflict",
-                        (requiredAttendance, preferredAttendance, leftAssignment, rightAssignment) -> rightAssignment
-                                .calculateOverlap(leftAssignment));
+                .penalize((requiredAttendance, preferredAttendance, leftAssignment, rightAssignment) -> rightAssignment
+                        .calculateOverlap(leftAssignment))
+                .as("Required and preferred attendance conflict");
     }
 
     protected Constraint preferredAttendanceConflict(ConstraintFactory constraintFactory) {
@@ -142,9 +142,10 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
                                         assignment.getMeeting().getDurationInGrains()))
-                .penalizeConfigurable("Preferred attendance conflict",
+                .penalize(
                         (leftPreferredAttendance, rightPreferredAttendance, leftAssignment, rightAssignment) -> rightAssignment
-                                .calculateOverlap(leftAssignment));
+                                .calculateOverlap(leftAssignment))
+                .as("Preferred attendance conflict");
     }
 
     // ************************************************************************

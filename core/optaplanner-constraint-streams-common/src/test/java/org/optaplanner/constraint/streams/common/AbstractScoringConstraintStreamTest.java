@@ -775,7 +775,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
                         .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
                         .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
-                        .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (entity, entity2, value, value2) -> 2));
+                        .penalize(SimpleScore.ONE, (entity, entity2, value, value2) -> 2)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -792,7 +793,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
                         factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
                                 .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
                                 .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                                .penalizeLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L)
+                                .penalizeLong(SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L)
+                                .as(TEST_CONSTRAINT_NAME)
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -810,8 +812,9 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
                                 factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
                                         .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
                                         .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                                        .penalizeBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                        .penalizeBigDecimal(SimpleBigDecimalScore.ONE,
                                                 (entity, entity2, value, value2) -> BigDecimal.valueOf(2))
+                                        .as(TEST_CONSTRAINT_NAME)
                         });
 
         scoreDirector.setWorkingSolution(solution);
@@ -843,7 +846,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
                         .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
                         .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
-                        .reward(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (entity, entity2, value, value2) -> 2));
+                        .reward(SimpleScore.ONE, (entity, entity2, value, value2) -> 2)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -860,7 +864,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
                         factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
                                 .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
                                 .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                                .rewardLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L)
+                                .rewardLong(SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L)
+                                .as(TEST_CONSTRAINT_NAME)
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -878,8 +883,9 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
                                 factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
                                         .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
                                         .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                                        .rewardBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                        .rewardBigDecimal(SimpleBigDecimalScore.ONE,
                                                 (entity, entity2, value, value2) -> BigDecimal.valueOf(2))
+                                        .as(TEST_CONSTRAINT_NAME)
                         });
 
         scoreDirector.setWorkingSolution(solution);
@@ -911,7 +917,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
                         .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
                         .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
-                        .impact(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (entity, entity2, value, value2) -> 2));
+                        .impact(SimpleScore.ONE, (entity, entity2, value, value2) -> 2)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -928,7 +935,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
                         factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
                                 .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
                                 .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                                .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L)
+                                .impactLong(SimpleLongScore.ONE, (entity, entity2, value, value2) -> 2L)
+                                .as(TEST_CONSTRAINT_NAME)
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -946,8 +954,9 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
                                 factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
                                         .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
                                         .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                                        .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                        .impactBigDecimal(SimpleBigDecimalScore.ONE,
                                                 (entity, entity2, value, value2) -> BigDecimal.valueOf(2))
+                                        .as(TEST_CONSTRAINT_NAME)
                         });
 
         scoreDirector.setWorkingSolution(solution);
@@ -963,7 +972,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
                         .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
                         .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
-                        .impact(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (entity, entity2, value, value2) -> -2));
+                        .impact(SimpleScore.ONE, (entity, entity2, value, value2) -> -2)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -980,7 +990,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
                         factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
                                 .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
                                 .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                                .impactLong(TEST_CONSTRAINT_NAME, SimpleLongScore.ONE, (entity, entity2, value, value2) -> -2L)
+                                .impactLong(SimpleLongScore.ONE, (entity, entity2, value, value2) -> -2L)
+                                .as(TEST_CONSTRAINT_NAME)
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -998,8 +1009,9 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
                                 factory.forEachUniquePair(TestdataEntity.class, equal(TestdataEntity::getValue))
                                         .join(TestdataValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
                                         .join(TestdataValue.class, equal((entity, entity2, value) -> value, identity()))
-                                        .impactBigDecimal(TEST_CONSTRAINT_NAME, SimpleBigDecimalScore.ONE,
+                                        .impactBigDecimal(SimpleBigDecimalScore.ONE,
                                                 (entity, entity2, value, value2) -> BigDecimal.valueOf(-2))
+                                        .as(TEST_CONSTRAINT_NAME)
                         });
 
         scoreDirector.setWorkingSolution(solution);

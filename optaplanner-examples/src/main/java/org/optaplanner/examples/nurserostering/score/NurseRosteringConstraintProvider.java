@@ -158,7 +158,7 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                     }
                     return false;
                 })
-                .penalize("consecutiveFreeDays", HardSoftScore.ONE_SOFT,
+                .penalize(HardSoftScore.ONE_SOFT,
                         (employee, contract, shiftSequence, nrp) -> {
                             int total = 0;
                             if (!shiftSequence.isFirst()) {
@@ -177,7 +177,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                                 }
                             }
                             return total;
-                        });
+                        })
+                .as("consecutiveFreeDays");
     }
 
     Constraint maximumConsecutiveFreeDaysNoAssignments(ConstraintFactory constraintFactory) {
@@ -275,8 +276,9 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                         (contract, date, sa) -> Pair.of(sa.getShiftType(), date), // No 4-key groupBy overload
                         ConstraintCollectors.countTri())
                 .filter((contract, employee, type, count) -> count < employee.getWeekendLength())
-                .penalize("identicalShiftTypesDuringWeekend", HardSoftScore.ONE_SOFT,
-                        (contract, employee, type, count) -> (employee.getWeekendLength() - count) * contract.getWeight());
+                .penalize(HardSoftScore.ONE_SOFT,
+                        (contract, employee, type, count) -> (employee.getWeekendLength() - count) * contract.getWeight())
+                .as("identicalShiftTypesDuringWeekend");
     }
 
     // Requested day on/off
@@ -407,7 +409,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
                                 (contractLine, shift1, shift2) -> ((ShiftType3DaysPattern) contractLine.getPattern())
                                         .getDayIndex2ShiftType(),
                                 ShiftAssignment::getShiftType))
-                .penalize("unwantedPatternShiftType3DaysPattern", HardSoftScore.ONE_SOFT,
-                        (contractLine, shift1, shift2, shift3) -> contractLine.getPattern().getWeight());
+                .penalize(HardSoftScore.ONE_SOFT,
+                        (contractLine, shift1, shift2, shift3) -> contractLine.getPattern().getWeight())
+                .as("unwantedPatternShiftType3DaysPattern");
     }
 }

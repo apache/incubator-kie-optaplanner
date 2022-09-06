@@ -1182,14 +1182,14 @@ public abstract class AbstractTriConstraintStreamTest
     public void groupBy_2Mapping2Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
-                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
-                    .groupBy((entity, group, value) -> group, (entity, group, value) -> value, countTri(), countTri())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE,
-                            (group, value, count, sameCount) -> count + sameCount);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                        .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
+                        .groupBy((entity, group, value) -> group, (entity, group, value) -> value, countTri(), countTri())
+                        .penalize(SimpleScore.ONE,
+                                (group, value, count, sameCount) -> count + sameCount)
+                        .as(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);

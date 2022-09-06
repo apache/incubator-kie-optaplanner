@@ -150,7 +150,8 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
                         (penalty, processAssignment) -> processAssignment.getMachine(),
                         sumLong((penalty, processAssignment) -> processAssignment.getUsage(penalty.getOriginResource())),
                         sumLong((penalty, processAssignment) -> processAssignment.getUsage(penalty.getTargetResource())))
-                .penalizeLong(MrConstraints.BALANCE_COST, HardSoftLongScore.ONE_SOFT, this::balanceCost);
+                .penalizeLong(HardSoftLongScore.ONE_SOFT, this::balanceCost)
+                .as(MrConstraints.BALANCE_COST);
     }
 
     private long balanceCost(MrBalancePenalty penalty, MrMachine machine, long originalUsage, long targetUsage) {

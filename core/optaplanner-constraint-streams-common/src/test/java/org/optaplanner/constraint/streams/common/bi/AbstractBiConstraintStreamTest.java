@@ -1207,12 +1207,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
     public void groupBy_2Mapping2Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 1, 2, 4);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class)
-                    .groupBy((a, b) -> a.getEntityGroup(), (a, b) -> b.getEntityGroup(), countBi(), countBi())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE,
-                            (entityGroup1, entityGroup2, count, sameCount) -> count + sameCount);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .groupBy((a, b) -> a.getEntityGroup(), (a, b) -> b.getEntityGroup(), countBi(), countBi())
+                        .penalize(SimpleScore.ONE,
+                                (entityGroup1, entityGroup2, count, sameCount) -> count + sameCount)
+                        .as(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);

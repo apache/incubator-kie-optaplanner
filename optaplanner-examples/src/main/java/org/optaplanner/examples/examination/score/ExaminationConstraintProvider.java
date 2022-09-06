@@ -175,8 +175,8 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                         filtering((config, topicConflict, leftExam,
                                 rightExam) -> getPeriodIndexDifferenceBetweenExams(leftExam,
                                         rightExam) < (config.getPeriodSpreadLength() + 1)))
-                .penalizeConfigurable("periodSpread",
-                        (config, topicConflict, leftExam, rightExam) -> topicConflict.getStudentSize());
+                .penalize((config, topicConflict, leftExam, rightExam) -> topicConflict.getStudentSize())
+                .as("periodSpread");
     }
 
     protected Constraint mixedDurations(ConstraintFactory constraintFactory) {

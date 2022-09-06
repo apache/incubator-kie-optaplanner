@@ -65,8 +65,9 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                         (taskAssignment, resource, period) -> taskAssignment.getMachine(),
                         sum((taskAssignment, resource, period) -> taskAssignment.getTask().getUsage(resource)))
                 .filter((period, resource, machine, usage) -> machine.getCapacity(resource) < usage)
-                .penalizeLong("Maximum resource capacity", HardMediumSoftLongScore.ONE_HARD,
-                        (period, resource, machine, usage) -> usage - machine.getCapacity(resource));
+                .penalizeLong(HardMediumSoftLongScore.ONE_HARD,
+                        (period, resource, machine, usage) -> usage - machine.getCapacity(resource))
+                .as("Maximum resource capacity");
     }
 
     protected Constraint activeMachinePowerCost(ConstraintFactory constraintFactory) {
