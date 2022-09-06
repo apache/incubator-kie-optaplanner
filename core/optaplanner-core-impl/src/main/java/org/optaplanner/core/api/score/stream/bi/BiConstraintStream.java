@@ -1000,6 +1000,84 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
         return penalize(constraintWeight, (a, b) -> 1);
     }
 
+    default BiTerminator<A, B> penalize(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
+        return penalizeConfigurable(matchWeigher)
+                .withWeight(constraintWeight);
+    }
+
+    default BiTerminator<A, B> penalizeLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
+        return penalizeConfigurableLong(matchWeigher)
+                .withWeight(constraintWeight);
+    }
+
+    default BiTerminator<A, B> penalizeBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
+        return penalizeConfigurableBigDecimal(matchWeigher)
+                .withWeight(constraintWeight);
+    }
+
+    default BiTerminator<A, B> penalizeConfigurable() {
+        return penalizeConfigurable((a, b) -> 1);
+    }
+
+    BiTerminator<A, B> penalizeConfigurable(ToIntBiFunction<A, B> matchWeigher);
+
+    BiTerminator<A, B> penalizeConfigurableLong(ToLongBiFunction<A, B> matchWeigher);
+
+    BiTerminator<A, B> penalizeConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher);
+
+    default BiTerminator<A, B> reward(Score<?> constraintWeight) {
+        return reward(constraintWeight, (a, b) -> 1);
+    }
+
+    default BiTerminator<A, B> reward(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
+        return rewardConfigurable(matchWeigher)
+                .withWeight(constraintWeight);
+    }
+
+    default BiTerminator<A, B> rewardLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
+        return rewardConfigurableLong(matchWeigher)
+                .withWeight(constraintWeight);
+    }
+
+    default BiTerminator<A, B> rewardBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
+        return rewardConfigurableBigDecimal(matchWeigher)
+                .withWeight(constraintWeight);
+    }
+
+    default BiTerminator<A, B> rewardConfigurable() {
+        return rewardConfigurable((a, b) -> 1);
+    }
+
+    BiTerminator<A, B> rewardConfigurable(ToIntBiFunction<A, B> matchWeigher);
+
+    BiTerminator<A, B> rewardConfigurableLong(ToLongBiFunction<A, B> matchWeigher);
+
+    BiTerminator<A, B> rewardConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher);
+
+    default BiTerminator<A, B> impact(Score<?> constraintWeight) {
+        return impact(constraintWeight, (a, b) -> 1);
+    }
+
+    default BiTerminator<A, B> impactLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
+        return impactConfigurableLong(matchWeigher)
+                .withWeight(constraintWeight);
+    }
+
+    default BiTerminator<A, B> impactBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
+        return impactConfigurableBigDecimal(matchWeigher)
+                .withWeight(constraintWeight);
+    }
+
+    default BiTerminator<A, B> impactConfigurable() {
+        return impactConfigurable((a, b) -> 1);
+    }
+
+    BiTerminator<A, B> impactConfigurable(ToIntBiFunction<A, B> matchWeigher);
+
+    BiTerminator<A, B> impactConfigurableLong(ToLongBiFunction<A, B> matchWeigher);
+
+    BiTerminator<A, B> impactConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher);
+
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
@@ -1034,11 +1112,6 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
                 .as(constraintPackage, constraintName);
     }
 
-    default BiTerminator<A, B> penalize(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
-        return penalizeConfigurable(matchWeigher)
-                .withWeight(constraintWeight);
-    }
-
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
@@ -1069,11 +1142,6 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
             ToLongBiFunction<A, B> matchWeigher) {
         return penalizeLong(constraintWeight, matchWeigher)
                 .as(constraintPackage, constraintName);
-    }
-
-    default BiTerminator<A, B> penalizeLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
-        return penalizeConfigurableLong(matchWeigher)
-                .withWeight(constraintWeight);
     }
 
     /**
@@ -1107,21 +1175,6 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
         return penalizeBigDecimal(constraintWeight, matchWeigher)
                 .as(constraintPackage, constraintName);
     }
-
-    default BiTerminator<A, B> penalizeBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
-        return penalizeConfigurableBigDecimal(matchWeigher)
-                .withWeight(constraintWeight);
-    }
-
-    default BiTerminator<A, B> penalizeConfigurable() {
-        return penalizeConfigurable((a, b) -> 1);
-    }
-
-    BiTerminator<A, B> penalizeConfigurable(ToIntBiFunction<A, B> matchWeigher);
-
-    BiTerminator<A, B> penalizeConfigurableLong(ToLongBiFunction<A, B> matchWeigher);
-
-    BiTerminator<A, B> penalizeConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
@@ -1214,10 +1267,6 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
                 .as(constraintPackage, constraintName);
     }
 
-    default BiTerminator<A, B> reward(Score<?> constraintWeight) {
-        return reward(constraintWeight, (a, b) -> 1);
-    }
-
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
@@ -1252,11 +1301,6 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
                 .as(constraintPackage, constraintName);
     }
 
-    default BiTerminator<A, B> reward(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
-        return rewardConfigurable(matchWeigher)
-                .withWeight(constraintWeight);
-    }
-
     /**
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
@@ -1287,11 +1331,6 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
             ToLongBiFunction<A, B> matchWeigher) {
         return rewardLong(constraintWeight, matchWeigher)
                 .as(constraintPackage, constraintName);
-    }
-
-    default BiTerminator<A, B> rewardLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
-        return rewardConfigurableLong(matchWeigher)
-                .withWeight(constraintWeight);
     }
 
     /**
@@ -1326,21 +1365,6 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
                 .as(constraintPackage, constraintName);
     }
 
-    default BiTerminator<A, B> rewardBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
-        return rewardConfigurableBigDecimal(matchWeigher)
-                .withWeight(constraintWeight);
-    }
-
-    default BiTerminator<A, B> rewardConfigurable() {
-        return rewardConfigurable((a, b) -> 1);
-    }
-
-    BiTerminator<A, B> rewardConfigurable(ToIntBiFunction<A, B> matchWeigher);
-
-    BiTerminator<A, B> rewardConfigurableLong(ToLongBiFunction<A, B> matchWeigher);
-
-    BiTerminator<A, B> rewardConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher);
-
     /**
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
@@ -1366,6 +1390,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * @param matchWeigher never null
      * @return never null
      */
+    @Deprecated
     default Constraint rewardConfigurable(String constraintPackage, String constraintName, ToIntBiFunction<A, B> matchWeigher) {
         return rewardConfigurable(matchWeigher)
                 .as(constraintPackage, constraintName);
@@ -1427,10 +1452,6 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
             BiFunction<A, B, BigDecimal> matchWeigher) {
         return rewardConfigurableBigDecimal(matchWeigher)
                 .as(constraintPackage, constraintName);
-    }
-
-    default BiTerminator<A, B> impact(Score<?> constraintWeight) {
-        return impact(constraintWeight, (a, b) -> 1);
     }
 
     /**
@@ -1510,11 +1531,6 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
                 .as(constraintPackage, constraintName);
     }
 
-    default BiTerminator<A, B> impactLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
-        return impactConfigurableLong(matchWeigher)
-                .withWeight(constraintWeight);
-    }
-
     /**
      * Positively or negatively impact the {@link Score} by the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #impact(String, Score)}.
@@ -1549,21 +1565,6 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
         return impactBigDecimal(constraintWeight, matchWeigher)
                 .as(constraintPackage, constraintName);
     }
-
-    default BiTerminator<A, B> impactBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
-        return impactConfigurableBigDecimal(matchWeigher)
-                .withWeight(constraintWeight);
-    }
-
-    default BiTerminator<A, B> impactConfigurable() {
-        return impactConfigurable((a, b) -> 1);
-    }
-
-    BiTerminator<A, B> impactConfigurable(ToIntBiFunction<A, B> matchWeigher);
-
-    BiTerminator<A, B> impactConfigurableLong(ToLongBiFunction<A, B> matchWeigher);
-
-    BiTerminator<A, B> impactConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher);
 
     /**
      * Positively or negatively impact the {@link Score} by the {@link ConstraintWeight} multiplied by the match weight.
