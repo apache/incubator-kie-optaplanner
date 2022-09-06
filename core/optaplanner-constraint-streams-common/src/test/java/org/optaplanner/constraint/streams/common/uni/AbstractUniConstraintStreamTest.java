@@ -296,13 +296,13 @@ public abstract class AbstractUniConstraintStreamTest
                                 .join(TestdataLavishValue.class,
                                         equal(TestdataLavishEntity::getValue, value -> value))
                                 .penalize(SimpleScore.ONE)
-                                .as("testConstaint1"),
+                                .as("testConstraint1"),
                         // B.join(A)
                         factory.forEach(TestdataLavishValue.class)
                                 .join(TestdataLavishEntity.class,
                                         equal(value -> value, TestdataLavishEntity::getValue))
                                 .penalize(SimpleScore.ONE)
-                                .as("testConstaint2")
+                                .as("testConstraint2")
                 });
 
         // From scratch

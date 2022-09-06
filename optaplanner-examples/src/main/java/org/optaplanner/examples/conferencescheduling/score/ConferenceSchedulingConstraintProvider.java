@@ -27,6 +27,7 @@ import static org.optaplanner.examples.conferencescheduling.domain.ConferenceCon
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PROHIBITED_ROOM_TAGS;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_PROHIBITED_TIMESLOT_TAGS;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_REQUIRED_ROOM_TAGS;
+import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_REQUIRED_TIMESLOT_TAGS;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_UNAVAILABLE_TIMESLOT;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_UNDESIRED_ROOM_TAGS;
 import static org.optaplanner.examples.conferencescheduling.domain.ConferenceConstraintConfiguration.SPEAKER_UNDESIRED_TIMESLOT_TAGS;
@@ -182,7 +183,7 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.missingSpeakerRequiredTimeslotTagCount() > 0)
                 .penalize(talk -> talk.missingSpeakerRequiredTimeslotTagCount() * talk.getDurationInMinutes())
-                .as(SPEAKER_PREFERRED_TIMESLOT_TAGS);
+                .as(SPEAKER_REQUIRED_TIMESLOT_TAGS);
     }
 
     protected Constraint speakerProhibitedTimeslotTags(ConstraintFactory factory) {
