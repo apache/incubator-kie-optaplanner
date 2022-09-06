@@ -1485,6 +1485,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #penalizeLong(String, Score, ToLongFunction)} or
      * {@link #penalizeBigDecimal(String, Score, Function)} instead.
      *
+     * @deprecated Prefer {@link #penalize(Score, ToIntFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1499,6 +1500,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #penalize(String, Score, ToIntFunction)}.
      *
+     * @deprecated Prefer {@link #penalize(Score, ToIntFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1516,6 +1518,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
      *
+     * @deprecated Prefer {@link #penalizeLong(Score, ToIntFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1530,6 +1533,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeLong(String, Score, ToLongFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeLong(Score, ToIntFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1547,6 +1551,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
      *
+     * @deprecated Prefer {@link #penalizeBigDecimal(Score, Function)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1562,6 +1567,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeBigDecimal(String, Score, Function)}.
      *
+     * @deprecated Prefer {@link #penalizeBigDecimal(Score, Function)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1582,6 +1588,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #penalizeConfigurableLong(String, ToLongFunction)} or
      * {@link #penalizeConfigurableBigDecimal(String, Function)} instead.
      *
+     * @deprecated Prefer {@link #penalizeConfigurable(ToIntFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1595,6 +1602,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeConfigurable(String, ToIntFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurable(ToIntFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1610,6 +1618,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableLong(ToLongFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1623,6 +1632,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeConfigurableLong(String, ToLongFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableLong(ToLongFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1639,6 +1649,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableBigDecimal(Function)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1652,6 +1663,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeConfigurableBigDecimal(String, Function)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableBigDecimal(Function)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1671,6 +1683,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #rewardLong(String, Score, ToLongFunction)} or
      * {@link #rewardBigDecimal(String, Score, Function)} instead.
      *
+     * @deprecated Prefer {@link #reward(Score, ToIntFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1685,6 +1698,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #reward(String, Score, ToIntFunction)}.
      *
+     * @deprecated Prefer {@link #reward(Score, ToIntFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1702,6 +1716,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
      *
+     * @deprecated Prefer {@link #rewardLong(Score, ToLongFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1716,6 +1731,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #rewardLong(String, Score, ToLongFunction)}.
      *
+     * @deprecated Prefer {@link #rewardLong(Score, ToLongFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1733,6 +1749,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
      *
+     * @deprecated Prefer {@link #rewardBigDecimal(Score, Function)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1748,6 +1765,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #rewardBigDecimal(String, Score, Function)}.
      *
+     * @deprecated Prefer {@link #rewardBigDecimal(Score, Function)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1768,6 +1786,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #rewardConfigurableLong(String, ToLongFunction)} or
      * {@link #rewardConfigurableBigDecimal(String, Function)} instead.
      *
+     * @deprecated Prefer {@link #rewardConfigurable(ToIntFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1781,6 +1800,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #rewardConfigurable(String, ToIntFunction)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurable(ToIntFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1796,6 +1816,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableLong(ToLongFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1809,6 +1830,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #rewardConfigurableLong(String, ToLongFunction)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableLong(ToLongFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1824,6 +1846,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableBigDecimal(Function)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1837,6 +1860,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #rewardConfigurableBigDecimal(String, Function)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableBigDecimal(Function)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1859,6 +1883,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #impactLong(String, Score, ToLongFunction)} or
      * {@link #impactBigDecimal(String, Score, Function)} instead.
      *
+     * @deprecated Prefer {@link #impact(Score, ToIntFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1873,6 +1898,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #impact(String, Score, ToIntFunction)}.
      *
+     * @deprecated Prefer {@link #impact(Score, ToIntFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1893,6 +1919,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Use {@code penalizeLong(...)} or {@code rewardLong(...)} instead, unless this constraint can both have positive
      * and negative weights.
      *
+     * @deprecated Prefer {@link #impactLong(Score, ToLongFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1907,6 +1934,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #impactLong(String, Score, ToLongFunction)}.
      *
+     * @deprecated Prefer {@link #impactLong(Score, ToLongFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1927,6 +1955,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Use {@code penalizeBigDecimal(...)} or {@code rewardBigDecimal(...)} instead, unless this constraint can both
      * have positive and negative weights.
      *
+     * @deprecated Prefer {@link #impactBigDecimal(Score, Function)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1942,6 +1971,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #impactBigDecimal(String, Score, Function)}.
      *
+     * @deprecated Prefer {@link #impactBigDecimal(Score, Function)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1971,6 +2001,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link #impactConfigurable(ToIntFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1984,6 +2015,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #impactConfigurable(String, ToIntFunction)}.
      *
+     * @deprecated Prefer {@link #impactConfigurable(ToIntFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -2008,6 +2040,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link #impactConfigurableLong(ToLongFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -2022,6 +2055,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #impactConfigurableLong(String, ToLongFunction)}.
      *
+     * @deprecated Prefer {@link #impactConfigurableLong(ToLongFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -2046,6 +2080,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link #impactConfigurableBigDecimal(Function)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -2060,6 +2095,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #impactConfigurableBigDecimal(String, Function)}.
      *
+     * @deprecated Prefer {@link #impactConfigurableBigDecimal(Function)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null

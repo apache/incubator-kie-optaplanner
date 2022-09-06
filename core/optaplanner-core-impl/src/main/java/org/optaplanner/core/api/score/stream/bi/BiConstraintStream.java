@@ -1063,6 +1063,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #penalizeLong(String, Score, ToLongBiFunction)} or
      * {@link #penalizeBigDecimal(String, Score, BiFunction)} instead.
      *
+     * @deprecated Prefer {@link #penalize(Score, ToIntBiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1077,6 +1078,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #penalize(String, Score, ToIntBiFunction)}.
      *
+     * @deprecated Prefer {@link #penalize(Score, ToIntBiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1094,6 +1096,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
      *
+     * @deprecated Prefer {@link #penalizeLong(Score, ToLongBiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1109,6 +1112,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeLong(String, Score, ToLongBiFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeLong(Score, ToLongBiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1126,6 +1130,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
      *
+     * @deprecated Prefer {@link #penalizeBigDecimal(Score, BiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1141,6 +1146,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeBigDecimal(String, Score, BiFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeBigDecimal(Score, BiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1161,6 +1167,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #penalizeConfigurableLong(String, ToLongBiFunction)} or
      * {@link #penalizeConfigurableBigDecimal(String, BiFunction)} instead.
      *
+     * @deprecated Prefer {@link #penalizeConfigurable(ToIntBiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1174,6 +1181,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeConfigurable(String, ToIntBiFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurable(ToIntBiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1190,6 +1198,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableLong(ToLongBiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1203,6 +1212,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeConfigurableLong(String, ToLongBiFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableLong(ToLongBiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1219,6 +1229,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableBigDecimal(BiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1233,6 +1244,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeConfigurableBigDecimal(String, BiFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableBigDecimal(BiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1252,6 +1264,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #rewardLong(String, Score, ToLongBiFunction)} or
      * {@link #rewardBigDecimal(String, Score, BiFunction)} instead.
      *
+     * @deprecated Prefer {@link #reward(Score, ToIntBiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1266,6 +1279,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #reward(String, Score, ToIntBiFunction)}.
      *
+     * @deprecated Prefer {@link #reward(Score, ToIntBiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1283,6 +1297,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
      *
+     * @deprecated Prefer {@link #rewardLong(Score, ToLongBiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1298,6 +1313,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #rewardLong(String, Score, ToLongBiFunction)}.
      *
+     * @deprecated Prefer {@link #rewardLong(Score, ToLongBiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1315,6 +1331,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
      *
+     * @deprecated Prefer {@link #rewardBigDecimal(Score, BiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1330,6 +1347,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #rewardBigDecimal(String, Score, BiFunction)}.
      *
+     * @deprecated Prefer {@link #rewardBigDecimal(Score, BiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1350,6 +1368,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #rewardConfigurableLong(String, ToLongBiFunction)} or
      * {@link #rewardConfigurableBigDecimal(String, BiFunction)} instead.
      *
+     * @deprecated Prefer {@link #rewardConfigurable(ToIntBiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1363,6 +1382,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #rewardConfigurable(String, ToIntBiFunction)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurable(ToIntBiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1378,6 +1398,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableLong(ToLongBiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1391,6 +1412,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #rewardConfigurableLong(String, ToLongBiFunction)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableLong(ToLongBiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1407,6 +1429,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableBigDecimal(BiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1420,6 +1443,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #rewardConfigurableBigDecimal(String, BiFunction)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableBigDecimal(BiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1442,6 +1466,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #impactLong(String, Score, ToLongBiFunction)} or
      * {@link #impactBigDecimal(String, Score, BiFunction)} instead.
      *
+     * @deprecated Prefer {@link #impact(Score, ToIntBiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1456,6 +1481,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #impact(String, Score, ToIntBiFunction)}.
      *
+     * @deprecated Prefer {@link #impact(Score, ToIntBiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1476,6 +1502,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Use {@code penalizeLong(...)} or {@code rewardLong(...)} instead, unless this constraint can both have positive
      * and negative weights.
      *
+     * @deprecated Prefer {@link #impactLong(Score, ToLongBiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1491,6 +1518,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #impactLong(String, Score, ToLongBiFunction)}.
      *
+     * @deprecated Prefer {@link #impactLong(Score, ToLongBiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1511,6 +1539,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * Use {@code penalizeBigDecimal(...)} or {@code rewardBigDecimal(...)} instead, unless this constraint can both
      * have positive and negative weights.
      *
+     * @deprecated Prefer {@link #impactBigDecimal(Score, BiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1526,6 +1555,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #impactBigDecimal(String, Score, BiFunction)}.
      *
+     * @deprecated Prefer {@link #impactBigDecimal(Score, BiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1552,6 +1582,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link #impactConfigurable(ToIntBiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1565,6 +1596,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #impactConfigurable(String, ToIntBiFunction)}.
      *
+     * @deprecated Prefer {@link #impactConfigurable(ToIntBiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1590,6 +1622,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link #impactConfigurableLong(ToLongBiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1603,6 +1636,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #impactConfigurableLong(String, ToLongBiFunction)}.
      *
+     * @deprecated Prefer {@link #impactConfigurableLong(ToLongBiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1628,6 +1662,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link #impactConfigurableBigDecimal(BiFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1642,6 +1677,7 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     /**
      * As defined by {@link #impactConfigurableBigDecimal(String, BiFunction)}.
      *
+     * @deprecated Prefer {@link #impactConfigurableBigDecimal(BiFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null

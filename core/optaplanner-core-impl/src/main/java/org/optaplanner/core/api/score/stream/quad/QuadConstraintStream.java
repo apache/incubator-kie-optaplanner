@@ -846,6 +846,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #penalizeLong(String, Score, ToLongQuadFunction)} or
      * {@link #penalizeBigDecimal(String, Score, QuadFunction)} instead.
      *
+     * @deprecated Prefer {@link #penalize(Score, ToIntQuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -860,6 +861,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #penalize(String, Score, ToIntQuadFunction)}.
      *
+     * @deprecated Prefer {@link #penalize(Score, ToIntQuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -877,6 +879,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
      *
+     * @deprecated Prefer {@link #penalizeLong(Score, ToLongQuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -892,6 +895,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeLong(String, Score, ToLongQuadFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeLong(Score, ToLongQuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -909,6 +913,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
      *
+     * @deprecated Prefer {@link #penalizeBigDecimal(Score, QuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -924,6 +929,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeBigDecimal(String, Score, QuadFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeBigDecimal(Score, QuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -944,6 +950,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #penalizeConfigurableLong(String, ToLongQuadFunction)} or
      * {@link #penalizeConfigurableBigDecimal(String, QuadFunction)} instead.
      *
+     * @deprecated Prefer {@link #penalizeConfigurable(ToIntQuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -957,6 +964,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeConfigurable(String, ToIntQuadFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurable(ToIntQuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -973,6 +981,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableLong(ToLongQuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -986,6 +995,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeConfigurableLong(String, ToLongQuadFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableLong(ToLongQuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1002,6 +1012,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #penalizeConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableBigDecimal(QuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1016,6 +1027,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeConfigurableBigDecimal(String, QuadFunction)}.
      *
+     * @deprecated Prefer {@link #penalizeConfigurableBigDecimal(QuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1035,6 +1047,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #rewardLong(String, Score, ToLongQuadFunction)} or
      * {@link #rewardBigDecimal(String, Score, QuadFunction)} instead.
      *
+     * @deprecated Prefer {@link #reward(Score, ToIntQuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1050,6 +1063,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #reward(String, Score, ToIntQuadFunction)}.
      *
+     * @deprecated Prefer {@link #reward(Score, ToIntQuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1067,6 +1081,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
      *
+     * @deprecated Prefer {@link #rewardLong(Score, ToLongQuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1082,6 +1097,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #rewardLong(String, Score, ToLongQuadFunction)}.
      *
+     * @deprecated Prefer {@link #rewardLong(Score, ToLongQuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1099,6 +1115,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Positively impact the {@link Score}: add the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #reward(String, Score)}.
      *
+     * @deprecated Prefer {@link #rewardBigDecimal(Score, QuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1114,6 +1131,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #rewardBigDecimal(String, Score, QuadFunction)}.
      *
+     * @deprecated Prefer {@link #rewardBigDecimal(Score, QuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1134,6 +1152,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #rewardConfigurableLong(String, ToLongQuadFunction)} or
      * {@link #rewardConfigurableBigDecimal(String, QuadFunction)} instead.
      *
+     * @deprecated Prefer {@link #rewardConfigurable(ToIntQuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1147,6 +1166,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #rewardConfigurable(String, ToIntQuadFunction)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurable(ToIntQuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1163,6 +1183,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableLong(ToLongQuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1176,6 +1197,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #rewardConfigurableLong(String, ToLongQuadFunction)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableLong(ToLongQuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1192,6 +1214,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Positively impact the {@link Score}: add the {@link ConstraintWeight} multiplied by the match weight.
      * Otherwise as defined by {@link #rewardConfigurable(String)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableBigDecimal(QuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1206,6 +1229,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #rewardConfigurableBigDecimal(String, QuadFunction)}.
      *
+     * @deprecated Prefer {@link #rewardConfigurableBigDecimal(QuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1228,6 +1252,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * For non-int {@link Score} types use {@link #impactLong(String, Score, ToLongQuadFunction)} or
      * {@link #impactBigDecimal(String, Score, QuadFunction)} instead.
      *
+     * @deprecated Prefer {@link #impact(Score, ToIntQuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1243,6 +1268,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #impact(String, Score, ToIntQuadFunction)}.
      *
+     * @deprecated Prefer {@link #impact(Score, ToIntQuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1263,6 +1289,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Use {@code penalizeLong(...)} or {@code rewardLong(...)} instead, unless this constraint can both have positive
      * and negative weights.
      *
+     * @deprecated Prefer {@link #impactLong(Score, ToLongQuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1278,6 +1305,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #impactLong(String, Score, ToLongQuadFunction)}.
      *
+     * @deprecated Prefer {@link #impactLong(Score, ToLongQuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1298,6 +1326,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * Use {@code penalizeBigDecimal(...)} or {@code rewardBigDecimal(...)} instead, unless this constraint can both
      * have positive and negative weights.
      *
+     * @deprecated Prefer {@link #impactBigDecimal(Score, QuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1313,6 +1342,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #impactBigDecimal(String, Score, QuadFunction)}.
      *
+     * @deprecated Prefer {@link #impactBigDecimal(Score, QuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -1342,6 +1372,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link #impactConfigurable(ToIntQuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1355,6 +1386,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #impactConfigurable(String, ToIntQuadFunction)}.
      *
+     * @deprecated Prefer {@link #impactConfigurable(ToIntQuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1380,6 +1412,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link #impactConfigurableLong(ToLongQuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1393,6 +1426,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #impactConfigurableLong(String, ToLongQuadFunction)}.
      *
+     * @deprecated Prefer {@link #impactConfigurableLong(ToLongQuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null
@@ -1418,6 +1452,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link #impactConfigurableBigDecimal(QuadFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
      * @return never null
@@ -1432,6 +1467,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * As defined by {@link #impactConfigurableBigDecimal(String, QuadFunction)}.
      *
+     * @deprecated Prefer {@link #impactConfigurableBigDecimal(QuadFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param matchWeigher never null

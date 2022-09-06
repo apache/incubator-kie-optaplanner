@@ -87,6 +87,7 @@ public interface ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
      *
+     * @deprecated Prefer {@link UniConstraintStream#penalize(Score)} and equivalent bi/tri/... overloads.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @return never null
@@ -97,6 +98,7 @@ public interface ConstraintStream {
     /**
      * As defined by {@link #penalize(String, Score)}.
      *
+     * @deprecated Prefer {@link UniConstraintStream#penalize(Score)} and equivalent bi/tri/... overloads.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -115,6 +117,7 @@ public interface ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link UniConstraintStream#penalizeConfigurable()} and equivalent bi/tri/... overloads.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @return never null
      */
@@ -124,6 +127,7 @@ public interface ConstraintStream {
     /**
      * As defined by {@link #penalizeConfigurable(String)}.
      *
+     * @deprecated Prefer {@link UniConstraintStream#penalizeConfigurable()} and equivalent bi/tri/... overloads.
      * @param constraintPackage never null
      * @param constraintName never null
      * @return never null
@@ -139,6 +143,7 @@ public interface ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
      *
+     * @deprecated Prefer {@link UniConstraintStream#reward(Score)} and equivalent bi/tri/... overloads.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @return never null
@@ -149,6 +154,7 @@ public interface ConstraintStream {
     /**
      * As defined by {@link #reward(String, Score)}.
      *
+     * @deprecated Prefer {@link UniConstraintStream#reward(Score)} and equivalent bi/tri/... overloads.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
@@ -167,6 +173,7 @@ public interface ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to {@link ConstraintConfiguration#constraintPackage()}.
      *
+     * @deprecated Prefer {@link UniConstraintStream#rewardConfigurable()} and equivalent bi/tri/... overloads.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @return never null
      */
@@ -176,6 +183,7 @@ public interface ConstraintStream {
     /**
      * As defined by {@link #rewardConfigurable(String)}.
      *
+     * @deprecated Prefer {@link UniConstraintStream#rewardConfigurable()} and equivalent bi/tri/... overloads.
      * @param constraintPackage never null
      * @param constraintName never null
      * @return never null
@@ -191,6 +199,7 @@ public interface ConstraintStream {
      * <p>
      * The {@link Constraint#getConstraintPackage()} defaults to the package of the {@link PlanningSolution} class.
      *
+     * @deprecated Prefer {@link UniConstraintStream#impact(Score)} and equivalent bi/tri/... overloads.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @return never null
@@ -201,6 +210,7 @@ public interface ConstraintStream {
     /**
      * As defined by {@link #impact(String, Score)}.
      *
+     * @deprecated Prefer {@link UniConstraintStream#impact(Score)} and equivalent bi/tri/... overloads.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
