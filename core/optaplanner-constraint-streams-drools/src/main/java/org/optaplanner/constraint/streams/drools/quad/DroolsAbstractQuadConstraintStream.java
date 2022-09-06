@@ -22,6 +22,7 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
@@ -263,16 +264,40 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
+    public QuadTerminator<A, B, C, D> penalize(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    private QuadTerminatorImpl<A, B, C, D> newTerminator(RuleBuilder<Solution_> ruleBuilder, ScoreImpactType impactType,
+            Score<?> constraintWeight) {
+        return new QuadTerminatorImpl<>(
+                (constraintPackage, constraintName, constraintWeight_, impactType_) -> build(constraintPackage, constraintName,
+                        constraintWeight_, impactType_, ruleBuilder),
+                impactType, constraintWeight);
+    }
+
+    @Override
+    public QuadTerminator<A, B, C, D> penalizeLong(Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    @Override
+    public QuadTerminator<A, B, C, D> penalizeBigDecimal(Score<?> constraintWeight,
+            QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    @Override
     public QuadTerminator<A, B, C, D> penalizeConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.PENALTY);
     }
 
     private QuadTerminatorImpl<A, B, C, D> newTerminator(RuleBuilder<Solution_> ruleBuilder, ScoreImpactType impactType) {
-        return new QuadTerminatorImpl<>(
-                (constraintPackage, constraintName, constraintWeight, impactType_) -> build(constraintPackage, constraintName,
-                        constraintWeight, impactType_, ruleBuilder),
-                impactType);
+        return newTerminator(ruleBuilder, impactType, null);
     }
 
     @Override
@@ -285,6 +310,25 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     public QuadTerminator<A, B, C, D> penalizeConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    public QuadTerminator<A, B, C, D> reward(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.REWARD, constraintWeight);
+    }
+
+    @Override
+    public QuadTerminator<A, B, C, D> rewardLong(Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.REWARD, constraintWeight);
+    }
+
+    @Override
+    public QuadTerminator<A, B, C, D> rewardBigDecimal(Score<?> constraintWeight,
+            QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.REWARD, constraintWeight);
     }
 
     @Override
@@ -303,6 +347,25 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     public QuadTerminator<A, B, C, D> rewardConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    public QuadTerminator<A, B, C, D> impact(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.MIXED, constraintWeight);
+    }
+
+    @Override
+    public QuadTerminator<A, B, C, D> impactLong(Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.MIXED, constraintWeight);
+    }
+
+    @Override
+    public QuadTerminator<A, B, C, D> impactBigDecimal(Score<?> constraintWeight,
+            QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.MIXED, constraintWeight);
     }
 
     @Override

@@ -26,6 +26,7 @@ import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
@@ -277,16 +278,39 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
+    public TriTerminator<A, B, C> penalize(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    private TriTerminatorImpl<A, B, C> newTerminator(RuleBuilder<Solution_> ruleBuilder, ScoreImpactType impactType,
+            Score<?> constraintWeight) {
+        return new TriTerminatorImpl<>(
+                (constraintPackage, constraintName, constraintWeight_, impactType_) -> build(constraintPackage, constraintName,
+                        constraintWeight_, impactType_, ruleBuilder),
+                impactType, constraintWeight);
+    }
+
+    @Override
+    public TriTerminator<A, B, C> penalizeLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    @Override
+    public TriTerminator<A, B, C> penalizeBigDecimal(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    @Override
     public TriTerminator<A, B, C> penalizeConfigurable(ToIntTriFunction<A, B, C> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.PENALTY);
     }
 
     private TriTerminatorImpl<A, B, C> newTerminator(RuleBuilder<Solution_> ruleBuilder, ScoreImpactType impactType) {
-        return new TriTerminatorImpl<>(
-                (constraintPackage, constraintName, constraintWeight, impactType_) -> build(constraintPackage, constraintName,
-                        constraintWeight, impactType_, ruleBuilder),
-                impactType);
+        return newTerminator(ruleBuilder, impactType, null);
     }
 
     @Override
@@ -299,6 +323,24 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     public TriTerminator<A, B, C> penalizeConfigurableBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    public TriTerminator<A, B, C> reward(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.REWARD, constraintWeight);
+    }
+
+    @Override
+    public TriTerminator<A, B, C> rewardLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.REWARD, constraintWeight);
+    }
+
+    @Override
+    public TriTerminator<A, B, C> rewardBigDecimal(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.REWARD, constraintWeight);
     }
 
     @Override
@@ -317,6 +359,24 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     public TriTerminator<A, B, C> rewardConfigurableBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    public TriTerminator<A, B, C> impact(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.MIXED, constraintWeight);
+    }
+
+    @Override
+    public TriTerminator<A, B, C> impactLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.MIXED, constraintWeight);
+    }
+
+    @Override
+    public TriTerminator<A, B, C> impactBigDecimal(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.MIXED, constraintWeight);
     }
 
     @Override

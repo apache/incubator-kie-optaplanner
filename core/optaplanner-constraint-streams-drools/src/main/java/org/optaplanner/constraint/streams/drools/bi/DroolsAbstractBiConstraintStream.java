@@ -26,6 +26,7 @@ import org.optaplanner.constraint.streams.drools.tri.DroolsJoinTriConstraintStre
 import org.optaplanner.constraint.streams.drools.uni.DroolsAbstractUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsGroupingUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsMappingUniConstraintStream;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiTerminator;
@@ -273,16 +274,39 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     }
 
     @Override
+    public BiTerminator<A, B> penalize(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    private BiTerminatorImpl<A, B> newTerminator(RuleBuilder<Solution_> ruleBuilder, ScoreImpactType impactType,
+            Score<?> constraintWeight) {
+        return new BiTerminatorImpl<>(
+                (constraintPackage, constraintName, constraintWeight_, impactType_) -> build(constraintPackage, constraintName,
+                        constraintWeight_, impactType_, ruleBuilder),
+                impactType, constraintWeight);
+    }
+
+    @Override
+    public BiTerminator<A, B> penalizeLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    @Override
+    public BiTerminator<A, B> penalizeBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    @Override
     public BiTerminator<A, B> penalizeConfigurable(ToIntBiFunction<A, B> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.PENALTY);
     }
 
     private BiTerminatorImpl<A, B> newTerminator(RuleBuilder<Solution_> ruleBuilder, ScoreImpactType impactType) {
-        return new BiTerminatorImpl<>(
-                (constraintPackage, constraintName, constraintWeight, impactType_) -> build(constraintPackage, constraintName,
-                        constraintWeight, impactType_, ruleBuilder),
-                impactType);
+        return newTerminator(ruleBuilder, impactType, null);
     }
 
     @Override
@@ -295,6 +319,24 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public BiTerminator<A, B> penalizeConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    public BiTerminator<A, B> reward(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.REWARD, constraintWeight);
+    }
+
+    @Override
+    public BiTerminator<A, B> rewardLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.REWARD, constraintWeight);
+    }
+
+    @Override
+    public BiTerminator<A, B> rewardBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.REWARD, constraintWeight);
     }
 
     @Override
@@ -313,6 +355,24 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     public BiTerminator<A, B> rewardConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    public BiTerminator<A, B> impact(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.MIXED, constraintWeight);
+    }
+
+    @Override
+    public BiTerminator<A, B> impactLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.MIXED, constraintWeight);
+    }
+
+    @Override
+    public BiTerminator<A, B> impactBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.MIXED, constraintWeight);
     }
 
     @Override

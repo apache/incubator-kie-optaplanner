@@ -992,21 +992,11 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
         return penalize(constraintWeight, (a, b, c) -> 1);
     }
 
-    default TriTerminator<A, B, C> penalize(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher) {
-        return penalizeConfigurable(matchWeigher)
-                .withWeight(constraintWeight);
-    }
+    TriTerminator<A, B, C> penalize(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher);
 
-    default TriTerminator<A, B, C> penalizeLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher) {
-        return penalizeConfigurableLong(matchWeigher)
-                .withWeight(constraintWeight);
-    }
+    TriTerminator<A, B, C> penalizeLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher);
 
-    default TriTerminator<A, B, C> penalizeBigDecimal(Score<?> constraintWeight,
-            TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        return penalizeConfigurableBigDecimal(matchWeigher)
-                .withWeight(constraintWeight);
-    }
+    TriTerminator<A, B, C> penalizeBigDecimal(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher);
 
     default TriTerminator<A, B, C> penalizeConfigurable() {
         return penalizeConfigurable((a, b, c) -> 1);
@@ -1022,20 +1012,11 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
         return reward(constraintWeight, (a, b, c) -> 1);
     }
 
-    default TriTerminator<A, B, C> reward(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher) {
-        return rewardConfigurable(matchWeigher)
-                .withWeight(constraintWeight);
-    }
+    TriTerminator<A, B, C> reward(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher);
 
-    default TriTerminator<A, B, C> rewardLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher) {
-        return rewardConfigurableLong(matchWeigher)
-                .withWeight(constraintWeight);
-    }
+    TriTerminator<A, B, C> rewardLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher);
 
-    default TriTerminator<A, B, C> rewardBigDecimal(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        return rewardConfigurableBigDecimal(matchWeigher)
-                .withWeight(constraintWeight);
-    }
+    TriTerminator<A, B, C> rewardBigDecimal(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher);
 
     default TriTerminator<A, B, C> rewardConfigurable() {
         return rewardConfigurable((a, b, c) -> 1);
@@ -1051,20 +1032,11 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
         return impact(constraintWeight, (a, b, c) -> 1);
     }
 
-    default TriTerminator<A, B, C> impact(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher) {
-        return impactConfigurable(matchWeigher)
-                .withWeight(constraintWeight);
-    }
+    TriTerminator<A, B, C> impact(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher);
 
-    default TriTerminator<A, B, C> impactLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher) {
-        return impactConfigurableLong(matchWeigher)
-                .withWeight(constraintWeight);
-    }
+    TriTerminator<A, B, C> impactLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher);
 
-    default TriTerminator<A, B, C> impactBigDecimal(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        return impactConfigurableBigDecimal(matchWeigher)
-                .withWeight(constraintWeight);
-    }
+    TriTerminator<A, B, C> impactBigDecimal(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher);
 
     default TriTerminator<A, B, C> impactConfigurable() {
         return impactConfigurable((a, b, c) -> 1);

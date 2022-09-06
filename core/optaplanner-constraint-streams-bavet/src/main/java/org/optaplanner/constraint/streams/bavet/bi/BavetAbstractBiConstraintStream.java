@@ -28,6 +28,7 @@ import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.common.bi.BiTerminatorImpl;
 import org.optaplanner.constraint.streams.common.bi.InnerBiConstraintStream;
 import org.optaplanner.constraint.streams.common.tri.TriJoinerComber;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiTerminator;
@@ -385,16 +386,39 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     // ************************************************************************
 
     @Override
+    public BiTerminator<A, B> penalize(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    private BiTerminatorImpl<A, B> newTerminator(BavetScoringConstraintStream<Solution_> stream, ScoreImpactType impactType,
+            Score<?> constraintWeight) {
+        return new BiTerminatorImpl<>(
+                (constraintPackage, constraintName, constraintWeight_, impactType_) -> build(constraintPackage, constraintName,
+                        constraintWeight_, impactType_, stream),
+                impactType, constraintWeight);
+    }
+
+    @Override
+    public BiTerminator<A, B> penalizeLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    @Override
+    public BiTerminator<A, B> penalizeBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    @Override
     public BiTerminator<A, B> penalizeConfigurable(ToIntBiFunction<A, B> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
         return newTerminator(stream, ScoreImpactType.PENALTY);
     }
 
     private BiTerminatorImpl<A, B> newTerminator(BavetScoringConstraintStream<Solution_> stream, ScoreImpactType impactType) {
-        return new BiTerminatorImpl<>(
-                (constraintPackage, constraintName, constraintWeight, impactType_) -> build(constraintPackage, constraintName,
-                        constraintWeight, impactType_, stream),
-                impactType);
+        return newTerminator(stream, impactType, null);
     }
 
     @Override
@@ -407,6 +431,24 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     public BiTerminator<A, B> penalizeConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
         return newTerminator(stream, ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    public BiTerminator<A, B> reward(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.REWARD, constraintWeight);
+    }
+
+    @Override
+    public BiTerminator<A, B> rewardLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.REWARD, constraintWeight);
+    }
+
+    @Override
+    public BiTerminator<A, B> rewardBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.REWARD, constraintWeight);
     }
 
     @Override
@@ -425,6 +467,24 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     public BiTerminator<A, B> rewardConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
         return newTerminator(stream, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    public BiTerminator<A, B> impact(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.MIXED, constraintWeight);
+    }
+
+    @Override
+    public BiTerminator<A, B> impactLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.MIXED, constraintWeight);
+    }
+
+    @Override
+    public BiTerminator<A, B> impactBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringBiConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.MIXED, constraintWeight);
     }
 
     @Override

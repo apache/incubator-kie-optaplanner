@@ -23,6 +23,7 @@ import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.common.bi.BiJoinerComber;
 import org.optaplanner.constraint.streams.common.uni.InnerUniConstraintStream;
 import org.optaplanner.constraint.streams.common.uni.UniTerminatorImpl;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
@@ -385,16 +386,39 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     // ************************************************************************
 
     @Override
+    public UniTerminator<A> penalize(Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    private UniTerminatorImpl<A> newTerminator(BavetScoringConstraintStream<Solution_> stream, ScoreImpactType impactType,
+            Score<?> constraintWeight) {
+        return new UniTerminatorImpl<>(
+                (constraintPackage, constraintName, constraintWeight_, impactType_) -> build(constraintPackage, constraintName,
+                        constraintWeight_, impactType_, stream),
+                impactType, constraintWeight);
+    }
+
+    @Override
+    public UniTerminator<A> penalizeLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    @Override
+    public UniTerminator<A> penalizeBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    @Override
     public UniTerminator<A> penalizeConfigurable(ToIntFunction<A> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
         return newTerminator(stream, ScoreImpactType.PENALTY);
     }
 
     private UniTerminatorImpl<A> newTerminator(BavetScoringConstraintStream<Solution_> stream, ScoreImpactType impactType) {
-        return new UniTerminatorImpl<>(
-                (constraintPackage, constraintName, constraintWeight, impactType_) -> build(constraintPackage, constraintName,
-                        constraintWeight, impactType_, stream),
-                impactType);
+        return newTerminator(stream, impactType, null);
     }
 
     @Override
@@ -407,6 +431,24 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     public UniTerminator<A> penalizeConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
         return newTerminator(stream, ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    public UniTerminator<A> reward(Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.REWARD, constraintWeight);
+    }
+
+    @Override
+    public UniTerminator<A> rewardLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.REWARD, constraintWeight);
+    }
+
+    @Override
+    public UniTerminator<A> rewardBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.REWARD, constraintWeight);
     }
 
     @Override
@@ -425,6 +467,24 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     public UniTerminator<A> rewardConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher) {
         var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
         return newTerminator(stream, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    public UniTerminator<A> impact(Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.MIXED, constraintWeight);
+    }
+
+    @Override
+    public UniTerminator<A> impactLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.MIXED, constraintWeight);
+    }
+
+    @Override
+    public UniTerminator<A> impactBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher) {
+        var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, ScoreImpactType.MIXED, constraintWeight);
     }
 
     @Override

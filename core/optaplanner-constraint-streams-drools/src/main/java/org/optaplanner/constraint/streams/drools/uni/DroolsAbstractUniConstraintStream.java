@@ -23,6 +23,7 @@ import org.optaplanner.constraint.streams.drools.common.RuleBuilder;
 import org.optaplanner.constraint.streams.drools.common.UniLeftHandSide;
 import org.optaplanner.constraint.streams.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.constraint.streams.drools.tri.DroolsGroupingTriConstraintStream;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
@@ -280,16 +281,39 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     // ************************************************************************
 
     @Override
+    public UniTerminator<A> penalize(Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    private UniTerminatorImpl<A> newTerminator(RuleBuilder<Solution_> ruleBuilder, ScoreImpactType impactType,
+            Score<?> constraintWeight) {
+        return new UniTerminatorImpl<>(
+                (constraintPackage, constraintName, constraintWeight_, impactType_) -> build(constraintPackage, constraintName,
+                        constraintWeight_, impactType_, ruleBuilder),
+                impactType, constraintWeight);
+    }
+
+    @Override
+    public UniTerminator<A> penalizeLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    @Override
+    public UniTerminator<A> penalizeBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.PENALTY, constraintWeight);
+    }
+
+    @Override
     public UniTerminator<A> penalizeConfigurable(ToIntFunction<A> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.PENALTY);
     }
 
     private UniTerminatorImpl<A> newTerminator(RuleBuilder<Solution_> ruleBuilder, ScoreImpactType impactType) {
-        return new UniTerminatorImpl<>(
-                (constraintPackage, constraintName, constraintWeight, impactType_) -> build(constraintPackage, constraintName,
-                        constraintWeight, impactType_, ruleBuilder),
-                impactType);
+        return newTerminator(ruleBuilder, impactType, null);
     }
 
     @Override
@@ -302,6 +326,24 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     public UniTerminator<A> penalizeConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    public UniTerminator<A> reward(Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.REWARD, constraintWeight);
+    }
+
+    @Override
+    public UniTerminator<A> rewardLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.REWARD, constraintWeight);
+    }
+
+    @Override
+    public UniTerminator<A> rewardBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.REWARD, constraintWeight);
     }
 
     @Override
@@ -320,6 +362,24 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     public UniTerminator<A> rewardConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    public UniTerminator<A> impact(Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.MIXED, constraintWeight);
+    }
+
+    @Override
+    public UniTerminator<A> impactLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.MIXED, constraintWeight);
+    }
+
+    @Override
+    public UniTerminator<A> impactBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, ScoreImpactType.MIXED, constraintWeight);
     }
 
     @Override
