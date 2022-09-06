@@ -34,7 +34,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
                 .filter((computer, requiredCpuPower) -> requiredCpuPower > computer.getCpuPower())
                 .penalize(HardSoftScore.ONE_HARD,
                         (computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower())
-                .as("requiredCpuPowerTotal");
+                .asConstraint("requiredCpuPowerTotal");
     }
 
     Constraint requiredMemoryTotal(ConstraintFactory constraintFactory) {
@@ -43,7 +43,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
                 .filter((computer, requiredMemory) -> requiredMemory > computer.getMemory())
                 .penalize(HardSoftScore.ONE_HARD,
                         (computer, requiredMemory) -> requiredMemory - computer.getMemory())
-                .as("requiredMemoryTotal");
+                .asConstraint("requiredMemoryTotal");
     }
 
     Constraint requiredNetworkBandwidthTotal(ConstraintFactory constraintFactory) {
@@ -52,7 +52,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
                 .filter((computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth > computer.getNetworkBandwidth())
                 .penalize(HardSoftScore.ONE_HARD,
                         (computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth - computer.getNetworkBandwidth())
-                .as("requiredNetworkBandwidthTotal");
+                .asConstraint("requiredNetworkBandwidthTotal");
     }
 
     // ************************************************************************
@@ -63,7 +63,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
         return constraintFactory.forEach(CloudComputer.class)
                 .ifExists(CloudProcess.class, equal(Function.identity(), CloudProcess::getComputer))
                 .penalize(HardSoftScore.ONE_SOFT, CloudComputer::getCost)
-                .as("computerCost");
+                .asConstraint("computerCost");
     }
 
 }

@@ -40,61 +40,61 @@ public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A
     @Override
     default Constraint penalize(String constraintName, Score<?> constraintWeight) {
         return penalize(constraintWeight)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     @Override
     default Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight) {
         return penalize(constraintWeight)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     @Override
     default Constraint penalizeConfigurable(String constraintName) {
         return penalizeConfigurable()
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     @Override
     default Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
         return penalizeConfigurable()
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     @Override
     default Constraint reward(String constraintName, Score<?> constraintWeight) {
         return reward(constraintWeight)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     @Override
     default Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight) {
         return reward(constraintWeight)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     @Override
     default Constraint rewardConfigurable(String constraintName) {
         return rewardConfigurable()
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     @Override
     default Constraint rewardConfigurable(String constraintPackage, String constraintName) {
         return penalizeConfigurable()
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     @Override
     default Constraint impact(String constraintName, Score<?> constraintWeight) {
         return impact(constraintWeight)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     @Override
     default Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight) {
         return impact(constraintWeight)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
 }

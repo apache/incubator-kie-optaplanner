@@ -39,34 +39,34 @@ public final class TaskAssigningConstraintProvider implements ConstraintProvider
                 .filter(task -> task.getMissingSkillCount() > 0)
                 .penalize(BendableScore.ofHard(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 0, 1),
                         Task::getMissingSkillCount)
-                .as("No missing skills");
+                .asConstraint("No missing skills");
     }
 
     private Constraint criticalPriorityBasedTaskEndTime(ConstraintFactory constraintFactory) {
         return getTaskWithPriority(constraintFactory, Priority.CRITICAL)
                 .penalize(BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 0, 1),
                         Task::getEndTime)
-                .as("Critical priority task end time");
+                .asConstraint("Critical priority task end time");
     }
 
     private Constraint minimizeMakespan(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Employee.class)
                 .penalize(BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 1, 1),
                         employee -> employee.getEndTime() * employee.getEndTime())
-                .as("Minimize makespan, latest ending employee first");
+                .asConstraint("Minimize makespan, latest ending employee first");
     }
 
     private Constraint majorPriorityTaskEndTime(ConstraintFactory constraintFactory) {
         return getTaskWithPriority(constraintFactory, Priority.MAJOR)
                 .penalize(BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 2, 1),
                         Task::getEndTime)
-                .as("Major priority task end time");
+                .asConstraint("Major priority task end time");
     }
 
     private Constraint minorPriorityTaskEndTime(ConstraintFactory constraintFactory) {
         return getTaskWithPriority(constraintFactory, Priority.MINOR)
                 .penalize(BendableScore.ofSoft(BENDABLE_SCORE_HARD_LEVELS_SIZE, BENDABLE_SCORE_SOFT_LEVELS_SIZE, 3, 1),
                         Task::getEndTime)
-                .as("Minor priority task end time");
+                .asConstraint("Minor priority task end time");
     }
 }

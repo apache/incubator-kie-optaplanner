@@ -87,7 +87,7 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                         equal(TeamAssignment::getDay),
                         lessThan(TeamAssignment::getId))
                 .penalize(HardMediumSoftScore.ONE_HARD)
-                .as("oneAssignmentPerDatePerTeam");
+                .asConstraint("oneAssignmentPerDatePerTeam");
     }
 
     Constraint unavailabilityPenalty(ConstraintFactory constraintFactory) {
@@ -96,7 +96,7 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                         equal(UnavailabilityPenalty::getTeam, TeamAssignment::getTeam),
                         equal(UnavailabilityPenalty::getDay, TeamAssignment::getDay))
                 .penalize(HardMediumSoftScore.ONE_HARD)
-                .as("unavailabilityPenalty");
+                .asConstraint("unavailabilityPenalty");
     }
 
     Constraint fairAssignmentCountPerTeam(ConstraintFactory constraintFactory) {
@@ -104,7 +104,7 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                 .groupBy(loadBalance(TeamAssignment::getTeam))
                 .penalize(HardMediumSoftScore.ONE_MEDIUM,
                         result -> (int) result.getZeroDeviationSquaredSumRootMillis())
-                .as("fairAssignmentCountPerTeam");
+                .asConstraint("fairAssignmentCountPerTeam");
     }
 
     Constraint evenlyConfrontationCount(ConstraintFactory constraintFactory) {
@@ -116,7 +116,7 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                         (assignment, otherAssignment) -> Pair.of(assignment.getTeam(), otherAssignment.getTeam())))
                 .penalize(HardMediumSoftScore.ONE_SOFT,
                         result -> (int) result.getZeroDeviationSquaredSumRootMillis())
-                .as("evenlyConfrontationCount");
+                .asConstraint("evenlyConfrontationCount");
     }
 
     private static final class LoadBalanceData {

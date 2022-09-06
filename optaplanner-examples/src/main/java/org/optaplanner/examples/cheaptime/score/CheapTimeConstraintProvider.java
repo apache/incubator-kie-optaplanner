@@ -41,7 +41,7 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                 .filter(taskAssignment -> taskAssignment.getStartPeriod() < taskAssignment.getTask().getStartPeriodRangeFrom())
                 .penalizeLong(HardMediumSoftLongScore.ONE_HARD,
                         taskAssignment -> taskAssignment.getTask().getStartPeriodRangeFrom() - taskAssignment.getStartPeriod())
-                .as("Task starts too early");
+                .asConstraint("Task starts too early");
     }
 
     protected Constraint startTimeLimitsTo(ConstraintFactory constraintFactory) {
@@ -49,7 +49,7 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                 .filter(taskAssignment -> taskAssignment.getStartPeriod() >= taskAssignment.getTask().getStartPeriodRangeTo())
                 .penalizeLong(HardMediumSoftLongScore.ONE_HARD,
                         taskAssignment -> taskAssignment.getStartPeriod() - taskAssignment.getTask().getStartPeriodRangeTo())
-                .as("Task starts too late");
+                .asConstraint("Task starts too late");
     }
 
     protected Constraint maximumCapacity(ConstraintFactory constraintFactory) {
@@ -67,7 +67,7 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                 .filter((period, resource, machine, usage) -> machine.getCapacity(resource) < usage)
                 .penalizeLong(HardMediumSoftLongScore.ONE_HARD,
                         (period, resource, machine, usage) -> usage - machine.getCapacity(resource))
-                .as("Maximum resource capacity");
+                .asConstraint("Maximum resource capacity");
     }
 
     protected Constraint activeMachinePowerCost(ConstraintFactory constraintFactory) {
@@ -80,7 +80,7 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                 .penalizeLong(HardMediumSoftLongScore.ONE_MEDIUM,
                         (period, machine) -> multiplyTwoMicros(machine.getPowerConsumptionMicros(),
                                 period.getPowerPriceMicros()))
-                .as("Active machine power cost");
+                .asConstraint("Active machine power cost");
     }
 
     protected Constraint activeMachineSpinUpAndDownCost(ConstraintFactory constraintFactory) {
@@ -88,7 +88,7 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                 .ifExists(TaskAssignment.class,
                         equal(Function.identity(), TaskAssignment::getMachine))
                 .penalizeLong(HardMediumSoftLongScore.ONE_MEDIUM, Machine::getSpinUpDownCostMicros)
-                .as("Active machine spin up and down cost");
+                .asConstraint("Active machine spin up and down cost");
     }
 
     protected Constraint idleCosts(ConstraintFactory constraintFactory) {
@@ -109,7 +109,7 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                             // Shutting down and restarting the machine may be cheaper than keeping it idle.
                             return Math.min(idleCost, machine.getSpinUpDownCostMicros());
                         })
-                .as("Machine idle costs");
+                .asConstraint("Machine idle costs");
     }
 
     protected Constraint taskPowerCost(ConstraintFactory constraintFactory) {
@@ -120,13 +120,13 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                 .penalizeLong(HardMediumSoftLongScore.ONE_MEDIUM,
                         (taskAssignment, period) -> multiplyTwoMicros(taskAssignment.getTask().getPowerConsumptionMicros(),
                                 period.getPowerPriceMicros()))
-                .as("Task power cost");
+                .asConstraint("Task power cost");
     }
 
     protected Constraint startEarly(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(TaskAssignment.class)
                 .penalize(HardMediumSoftLongScore.ONE_SOFT, TaskAssignment::getStartPeriod)
-                .as("Prefer early task start");
+                .asConstraint("Prefer early task start");
     }
 
 }

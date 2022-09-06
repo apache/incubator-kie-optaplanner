@@ -46,7 +46,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         .groupBy(Pair::of)
                         .filter(pair -> !pair.getKey().equals("G"))
                         .penalize(SimpleScore.ONE, Pair::getValue)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -77,7 +77,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         .groupBy(count())
                         .filter(count -> count == 10)
                         .penalize(SimpleScore.ONE, i -> i)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -101,7 +101,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         .groupBy(toSet())
                         .groupBy(sum(Set::size))
                         .penalize(SimpleScore.ONE, count -> count)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -124,7 +124,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         .groupBy(TestdataLavishEntity::getEntityGroup)
                         .groupBy(toSet())
                         .penalize(SimpleScore.ONE, Set::size)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -152,7 +152,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         .groupBy((a, b) -> a.getEntityGroup(), countBi())
                         .groupBy(toMap((g, c) -> g, (g, c) -> c, Integer::sum))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -183,7 +183,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         .groupBy((a, b, c) -> a.getEntityGroup(), countTri())
                         .groupBy(toMap((g, c) -> g, (g, c) -> c, Integer::sum))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -217,7 +217,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                 .groupBy((a, b, c, d) -> a.getEntityGroup(), countQuad())
                 .groupBy(toMap((g, c) -> g, (g, c) -> c, Integer::sum))
                 .penalize(SimpleScore.ONE)
-                .as(TEST_CONSTRAINT_NAME));
+                .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -245,7 +245,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         .groupBy((a, b) -> a.getEntityGroup())
                         .groupBy(Function.identity(), count())
                         .penalize(SimpleScore.ONE, (group, count) -> count)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -278,7 +278,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         .groupBy((a, b, c) -> a.getEntityGroup())
                         .groupBy(Function.identity(), count())
                         .penalize(SimpleScore.ONE, (group, count) -> count)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -315,7 +315,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         .groupBy((a, b, c, d) -> a.getEntityGroup())
                         .groupBy(Function.identity(), count())
                         .penalize(SimpleScore.ONE, (group, count) -> count)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -345,7 +345,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         .groupBy(Function.identity(), count())
                         .groupBy((group, count) -> group.toString(), countBi())
                         .penalize(SimpleScore.ONE, (groupName, count) -> count)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -379,7 +379,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         .groupBy(Function.identity(), count())
                         .groupBy((group, count) -> group.toString(), countBi())
                         .penalize(SimpleScore.ONE, (groupName, count) -> count)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -417,7 +417,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         .groupBy(Function.identity(), count())
                         .groupBy((group, count) -> group.toString(), countBi())
                         .penalize(SimpleScore.ONE, (groupName, count) -> count)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -453,7 +453,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         .groupBy(TestdataLavishEntity::getEntityGroup, count())
                         .ifExists(TestdataLavishEntityGroup.class, equal((groupA, count) -> groupA, Function.identity()))
                         .penalize(SimpleScore.ONE, (groupA, count) -> count)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -488,7 +488,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                                 equal(TestdataLavishEntity::getEntityGroup, Function.identity()))
                         .groupBy(TestdataLavishEntity::getEntityGroup, count())
                         .penalize(SimpleScore.ONE, (groupA, count) -> count)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -523,7 +523,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                                 equal((e1, e2) -> e1.getEntityGroup(), Function.identity()))
                         .groupBy((e1, e2) -> e1.getEntityGroup(), countBi())
                         .penalize(SimpleScore.ONE, (groupA, count) -> count)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -557,7 +557,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         Joiners.equal(TestdataLavishEntity::getEntityGroup),
                         Joiners.filtering((e1, e2) -> !e1.getCode().contains("My"))) // Filtering() caused PLANNER-2139.
                 .penalize(SimpleScore.ONE)
-                .as(TEST_CONSTRAINT_NAME));
+                .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -580,7 +580,7 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                         (group, value, entity) -> entity,
                         sum((group, count, entity) -> 1))
                 .penalize(SimpleScore.ONE)
-                .as(TEST_CONSTRAINT_NAME)))
+                .asConstraint(TEST_CONSTRAINT_NAME)))
                         .doesNotThrowAnyException();
     }
 

@@ -13,7 +13,7 @@ public class TestdataInterfaceEntityConstraintProvider implements ConstraintProv
         return new Constraint[] {
                 constraintFactory.forEach(TestdataInterfaceEntity.class)
                         .penalize(SimpleScore.ONE, TestdataInterfaceEntity::getValue)
-                        .as("Minimize value")
+                        .asConstraint("Minimize value")
         };
     }
 }

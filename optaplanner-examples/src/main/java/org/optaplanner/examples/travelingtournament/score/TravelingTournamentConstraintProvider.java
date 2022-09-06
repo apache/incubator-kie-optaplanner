@@ -34,7 +34,7 @@ public final class TravelingTournamentConstraintProvider implements ConstraintPr
                 .ifExists(Match.class, equal(Match::getHomeTeam),
                         equal(match -> getDayIndex(match) + 3, TravelingTournamentConstraintProvider::getDayIndex))
                 .penalize(HardSoftScore.ONE_HARD)
-                .as("4 consecutive home matches");
+                .asConstraint("4 consecutive home matches");
     }
 
     private Constraint fourConsecutiveAwayMatches(ConstraintFactory constraintFactory) {
@@ -46,7 +46,7 @@ public final class TravelingTournamentConstraintProvider implements ConstraintPr
                 .ifExists(Match.class, equal(Match::getAwayTeam),
                         equal(match -> getDayIndex(match) + 3, TravelingTournamentConstraintProvider::getDayIndex))
                 .penalize(HardSoftScore.ONE_HARD)
-                .as("4 consecutive away matches");
+                .asConstraint("4 consecutive away matches");
     }
 
     private Constraint repeatMatchOnTheNextDay(ConstraintFactory constraintFactory) {
@@ -55,7 +55,7 @@ public final class TravelingTournamentConstraintProvider implements ConstraintPr
                         equal(Match::getAwayTeam, Match::getHomeTeam),
                         equal(match -> getDayIndex(match) + 1, TravelingTournamentConstraintProvider::getDayIndex))
                 .penalize(HardSoftScore.ONE_HARD)
-                .as("Repeat match on the next day");
+                .asConstraint("Repeat match on the next day");
     }
 
     private Constraint startToAwayHop(ConstraintFactory constraintFactory) {
@@ -64,7 +64,7 @@ public final class TravelingTournamentConstraintProvider implements ConstraintPr
                         equal(match -> getDayIndex(match) - 1, Day::getIndex))
                 .penalize(HardSoftScore.ONE_SOFT,
                         match -> match.getAwayTeam().getDistance(match.getHomeTeam()))
-                .as("Start to away hop");
+                .asConstraint("Start to away hop");
     }
 
     private Constraint homeToAwayHop(ConstraintFactory constraintFactory) {
@@ -73,7 +73,7 @@ public final class TravelingTournamentConstraintProvider implements ConstraintPr
                         equal(match -> getDayIndex(match) + 1, TravelingTournamentConstraintProvider::getDayIndex))
                 .penalize(HardSoftScore.ONE_SOFT,
                         (match, otherMatch) -> match.getHomeTeam().getDistance(otherMatch.getHomeTeam()))
-                .as("Home to away hop");
+                .asConstraint("Home to away hop");
     }
 
     private Constraint awayToAwayHop(ConstraintFactory constraintFactory) {
@@ -82,7 +82,7 @@ public final class TravelingTournamentConstraintProvider implements ConstraintPr
                         equal(match -> getDayIndex(match) + 1, TravelingTournamentConstraintProvider::getDayIndex))
                 .penalize(HardSoftScore.ONE_SOFT,
                         (match, otherMatch) -> match.getHomeTeam().getDistance(otherMatch.getHomeTeam()))
-                .as("Away to away hop");
+                .asConstraint("Away to away hop");
     }
 
     private Constraint awayToHomeHop(ConstraintFactory constraintFactory) {
@@ -91,7 +91,7 @@ public final class TravelingTournamentConstraintProvider implements ConstraintPr
                         equal(match -> getDayIndex(match) + 1, TravelingTournamentConstraintProvider::getDayIndex))
                 .penalize(HardSoftScore.ONE_SOFT,
                         (match, otherMatch) -> match.getHomeTeam().getDistance(match.getAwayTeam()))
-                .as("Away to home hop");
+                .asConstraint("Away to home hop");
     }
 
     private Constraint awayToEndHop(ConstraintFactory constraintFactory) {
@@ -99,7 +99,7 @@ public final class TravelingTournamentConstraintProvider implements ConstraintPr
                 .ifNotExists(Day.class, equal(match -> getDayIndex(match) + 1, Day::getIndex))
                 .penalize(HardSoftScore.ONE_SOFT,
                         match -> match.getHomeTeam().getDistance(match.getAwayTeam()))
-                .as("Away to end hop");
+                .asConstraint("Away to end hop");
     }
 
     private static int getDayIndex(Match match) {

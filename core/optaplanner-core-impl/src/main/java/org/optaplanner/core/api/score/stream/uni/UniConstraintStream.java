@@ -1418,65 +1418,65 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     // Penalize/reward
     // ************************************************************************
 
-    default UniTerminator<A> penalize(Score<?> constraintWeight) {
+    default UniConstraintBuilder<A> penalize(Score<?> constraintWeight) {
         return penalize(constraintWeight, a -> 1);
     }
 
-    UniTerminator<A> penalize(Score<?> constraintWeight, ToIntFunction<A> matchWeigher);
+    UniConstraintBuilder<A> penalize(Score<?> constraintWeight, ToIntFunction<A> matchWeigher);
 
-    UniTerminator<A> penalizeLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher);
+    UniConstraintBuilder<A> penalizeLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher);
 
-    UniTerminator<A> penalizeBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher);
+    UniConstraintBuilder<A> penalizeBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher);
 
-    default UniTerminator<A> penalizeConfigurable() {
+    default UniConstraintBuilder<A> penalizeConfigurable() {
         return penalizeConfigurable(a -> 1);
     }
 
-    UniTerminator<A> penalizeConfigurable(ToIntFunction<A> matchWeigher);
+    UniConstraintBuilder<A> penalizeConfigurable(ToIntFunction<A> matchWeigher);
 
-    UniTerminator<A> penalizeConfigurableLong(ToLongFunction<A> matchWeigher);
+    UniConstraintBuilder<A> penalizeConfigurableLong(ToLongFunction<A> matchWeigher);
 
-    UniTerminator<A> penalizeConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher);
+    UniConstraintBuilder<A> penalizeConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher);
 
-    default UniTerminator<A> reward(Score<?> constraintWeight) {
+    default UniConstraintBuilder<A> reward(Score<?> constraintWeight) {
         return reward(constraintWeight, a -> 1);
     }
 
-    UniTerminator<A> reward(Score<?> constraintWeight, ToIntFunction<A> matchWeigher);
+    UniConstraintBuilder<A> reward(Score<?> constraintWeight, ToIntFunction<A> matchWeigher);
 
-    UniTerminator<A> rewardLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher);
+    UniConstraintBuilder<A> rewardLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher);
 
-    UniTerminator<A> rewardBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher);
+    UniConstraintBuilder<A> rewardBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher);
 
-    default UniTerminator<A> rewardConfigurable() {
+    default UniConstraintBuilder<A> rewardConfigurable() {
         return rewardConfigurable(a -> 1);
     }
 
-    UniTerminator<A> rewardConfigurable(ToIntFunction<A> matchWeigher);
+    UniConstraintBuilder<A> rewardConfigurable(ToIntFunction<A> matchWeigher);
 
-    UniTerminator<A> rewardConfigurableLong(ToLongFunction<A> matchWeigher);
+    UniConstraintBuilder<A> rewardConfigurableLong(ToLongFunction<A> matchWeigher);
 
-    UniTerminator<A> rewardConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher);
+    UniConstraintBuilder<A> rewardConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher);
 
-    default UniTerminator<A> impact(Score<?> constraintWeight) {
+    default UniConstraintBuilder<A> impact(Score<?> constraintWeight) {
         return impact(constraintWeight, a -> 1);
     }
 
-    UniTerminator<A> impact(Score<?> constraintWeight, ToIntFunction<A> matchWeigher);
+    UniConstraintBuilder<A> impact(Score<?> constraintWeight, ToIntFunction<A> matchWeigher);
 
-    UniTerminator<A> impactLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher);
+    UniConstraintBuilder<A> impactLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher);
 
-    UniTerminator<A> impactBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher);
+    UniConstraintBuilder<A> impactBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher);
 
-    default UniTerminator<A> impactConfigurable() {
+    default UniConstraintBuilder<A> impactConfigurable() {
         return impactConfigurable(a -> 1);
     }
 
-    UniTerminator<A> impactConfigurable(ToIntFunction<A> matchWeigher);
+    UniConstraintBuilder<A> impactConfigurable(ToIntFunction<A> matchWeigher);
 
-    UniTerminator<A> impactConfigurableLong(ToLongFunction<A> matchWeigher);
+    UniConstraintBuilder<A> impactConfigurableLong(ToLongFunction<A> matchWeigher);
 
-    UniTerminator<A> impactConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher);
+    UniConstraintBuilder<A> impactConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
@@ -1493,7 +1493,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint penalize(String constraintName, Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
         return penalize(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1509,7 +1509,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntFunction<A> matchWeigher) {
         return penalize(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1524,7 +1524,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint penalizeLong(String constraintName, Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
         return penalizeLong(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1540,7 +1540,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongFunction<A> matchWeigher) {
         return penalizeLong(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1556,7 +1556,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint penalizeBigDecimal(String constraintName, Score<?> constraintWeight,
             Function<A, BigDecimal> matchWeigher) {
         return penalizeBigDecimal(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1572,7 +1572,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             Function<A, BigDecimal> matchWeigher) {
         return penalizeBigDecimal(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1589,7 +1589,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint penalizeConfigurable(String constraintName, ToIntFunction<A> matchWeigher) {
         return penalizeConfigurable(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1603,7 +1603,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint penalizeConfigurable(String constraintPackage, String constraintName, ToIntFunction<A> matchWeigher) {
         return penalizeConfigurable(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1617,7 +1617,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint penalizeConfigurableLong(String constraintName, ToLongFunction<A> matchWeigher) {
         return penalizeConfigurableLong(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1632,7 +1632,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint penalizeConfigurableLong(String constraintPackage, String constraintName,
             ToLongFunction<A> matchWeigher) {
         return penalizeConfigurableLong(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1646,7 +1646,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint penalizeConfigurableBigDecimal(String constraintName, Function<A, BigDecimal> matchWeigher) {
         return penalizeConfigurableBigDecimal(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1661,7 +1661,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName,
             Function<A, BigDecimal> matchWeigher) {
         return penalizeConfigurableBigDecimal(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1679,7 +1679,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint reward(String constraintName, Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
         return reward(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1695,7 +1695,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntFunction<A> matchWeigher) {
         return reward(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1710,7 +1710,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint rewardLong(String constraintName, Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
         return rewardLong(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1726,7 +1726,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongFunction<A> matchWeigher) {
         return rewardLong(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1742,7 +1742,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint rewardBigDecimal(String constraintName, Score<?> constraintWeight,
             Function<A, BigDecimal> matchWeigher) {
         return rewardBigDecimal(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1758,7 +1758,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             Function<A, BigDecimal> matchWeigher) {
         return rewardBigDecimal(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1775,7 +1775,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint rewardConfigurable(String constraintName, ToIntFunction<A> matchWeigher) {
         return rewardConfigurable(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1789,7 +1789,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint rewardConfigurable(String constraintPackage, String constraintName, ToIntFunction<A> matchWeigher) {
         return rewardConfigurable(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1803,7 +1803,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint rewardConfigurableLong(String constraintName, ToLongFunction<A> matchWeigher) {
         return rewardConfigurableLong(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1817,7 +1817,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint rewardConfigurableLong(String constraintPackage, String constraintName, ToLongFunction<A> matchWeigher) {
         return rewardConfigurableLong(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1831,7 +1831,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint rewardConfigurableBigDecimal(String constraintName, Function<A, BigDecimal> matchWeigher) {
         return rewardConfigurableBigDecimal(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1846,7 +1846,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName,
             Function<A, BigDecimal> matchWeigher) {
         return rewardConfigurableBigDecimal(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1867,7 +1867,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint impact(String constraintName, Score<?> constraintWeight, ToIntFunction<A> matchWeigher) {
         return impact(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1883,7 +1883,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntFunction<A> matchWeigher) {
         return impact(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1901,7 +1901,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint impactLong(String constraintName, Score<?> constraintWeight, ToLongFunction<A> matchWeigher) {
         return impactLong(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1917,7 +1917,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint impactLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongFunction<A> matchWeigher) {
         return impactLong(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1936,7 +1936,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint impactBigDecimal(String constraintName, Score<?> constraintWeight,
             Function<A, BigDecimal> matchWeigher) {
         return impactBigDecimal(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1952,7 +1952,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint impactBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             Function<A, BigDecimal> matchWeigher) {
         return impactBigDecimal(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1978,7 +1978,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint impactConfigurable(String constraintName, ToIntFunction<A> matchWeigher) {
         return impactConfigurable(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1992,7 +1992,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint impactConfigurable(String constraintPackage, String constraintName, ToIntFunction<A> matchWeigher) {
         return impactConfigurable(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -2015,7 +2015,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint impactConfigurableLong(String constraintName, ToLongFunction<A> matchWeigher) {
         return impactConfigurableLong(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
 
     }
 
@@ -2030,7 +2030,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint impactConfigurableLong(String constraintPackage, String constraintName, ToLongFunction<A> matchWeigher) {
         return impactConfigurableLong(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -2053,7 +2053,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint impactConfigurableBigDecimal(String constraintName, Function<A, BigDecimal> matchWeigher) {
         return impactConfigurableBigDecimal(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
 
     }
 
@@ -2069,7 +2069,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     default Constraint impactConfigurableBigDecimal(String constraintPackage, String constraintName,
             Function<A, BigDecimal> matchWeigher) {
         return impactConfigurableBigDecimal(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
 }

@@ -17,7 +17,7 @@ public class PrivateNoArgsConstructorConstraintProvider implements ConstraintPro
                 constraintFactory.forEachUniquePair(PrivateNoArgsConstructorEntity.class,
                         Joiners.equal(p -> p.value))
                         .penalize(SimpleScore.ONE)
-                        .as("Same value")
+                        .asConstraint("Same value")
         };
     }
 }

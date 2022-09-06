@@ -37,7 +37,7 @@ public class InvestmentConstraintProvider implements ConstraintProvider {
                 .penalizeLong(HardSoftLongScore.ONE_HARD,
                         (deviation, parametrization) -> deviation
                                 - parametrization.calculateSquaredStandardDeviationFemtosMaximum())
-                .as(CONSTRAINT_PACKAGE, "Standard deviation maximum");
+                .asConstraint(CONSTRAINT_PACKAGE, "Standard deviation maximum");
     }
 
     private Constraint regionQuantityGreaterThanMaximumPenalty(ConstraintFactory cf) {
@@ -47,7 +47,7 @@ public class InvestmentConstraintProvider implements ConstraintProvider {
                 .filter((region, totalQuantity) -> totalQuantity > region.getQuantityMillisMaximum())
                 .penalizeLong(HardSoftLongScore.ONE_HARD,
                         (region, totalQuantity) -> totalQuantity - region.getQuantityMillisMaximum())
-                .as(CONSTRAINT_PACKAGE, "Region quantity maximum");
+                .asConstraint(CONSTRAINT_PACKAGE, "Region quantity maximum");
     }
 
     private Constraint sectorQuantityGreaterThanMaximumPenalty(ConstraintFactory cf) {
@@ -57,12 +57,12 @@ public class InvestmentConstraintProvider implements ConstraintProvider {
                 .filter((sector, totalQuantity) -> totalQuantity > sector.getQuantityMillisMaximum())
                 .penalizeLong(HardSoftLongScore.ONE_HARD,
                         (sector, totalQuantity) -> totalQuantity - sector.getQuantityMillisMaximum())
-                .as(CONSTRAINT_PACKAGE, "Sector quantity maximum");
+                .asConstraint(CONSTRAINT_PACKAGE, "Sector quantity maximum");
     }
 
     private Constraint assetExpectedReturnReward(ConstraintFactory cf) {
         return cf.forEach(AssetClassAllocation.class)
                 .rewardLong(HardSoftLongScore.ONE_SOFT, AssetClassAllocation::getQuantifiedExpectedReturnMicros)
-                .as(CONSTRAINT_PACKAGE, "Maximize expected return");
+                .asConstraint(CONSTRAINT_PACKAGE, "Maximize expected return");
     }
 }

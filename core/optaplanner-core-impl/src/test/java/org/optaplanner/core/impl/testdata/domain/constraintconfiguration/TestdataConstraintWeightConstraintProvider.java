@@ -16,7 +16,7 @@ public final class TestdataConstraintWeightConstraintProvider implements Constra
     private Constraint onlyConstraint(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(TestdataEntity.class)
                 .rewardConfigurable()
-                .as("First weight");
+                .asConstraint("First weight");
     }
 
 }

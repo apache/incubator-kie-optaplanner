@@ -38,35 +38,35 @@ public class RockTourConstraintProvider implements ConstraintProvider {
         return getShowWithoutDate(constraintFactory)
                 .filter(RockShow::isRequired)
                 .penalizeConfigurable()
-                .as(REQUIRED_SHOW);
+                .asConstraint(REQUIRED_SHOW);
     }
 
     private Constraint unassignedShow(ConstraintFactory constraintFactory) {
         return getShowWithoutDate(constraintFactory)
                 .filter(rockShow -> rockShow.getBus() != null)
                 .penalizeConfigurable()
-                .as(UNASSIGNED_SHOW);
+                .asConstraint(UNASSIGNED_SHOW);
     }
 
     private Constraint revenueOpportunity(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(RockShow.class)
                 .filter(rockShow -> rockShow.getDate() != null)
                 .rewardConfigurableLong(RockShow::getRevenueOpportunity)
-                .as(REVENUE_OPPORTUNITY);
+                .asConstraint(REVENUE_OPPORTUNITY);
     }
 
     private Constraint delayShowCostPerDay(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(RockShow.class)
                 .filter(rockShow -> rockShow.getDate() != null)
                 .penalizeConfigurableLong(RockShow::getDaysAfterBusDeparture)
-                .as(DELAY_SHOW_COST_PER_DAY);
+                .asConstraint(DELAY_SHOW_COST_PER_DAY);
     }
 
     private Constraint drivingTimeToShowPerSecond(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(RockShow.class)
                 .filter(rockShow -> rockShow.getPreviousStandstill() != null)
                 .penalizeConfigurableLong(RockShow::getDrivingTimeFromPreviousStandstill)
-                .as(DRIVING_TIME_TO_SHOW_PER_SECOND);
+                .asConstraint(DRIVING_TIME_TO_SHOW_PER_SECOND);
     }
 
     private Constraint shortenDrivingTimePerMillisecondSquared(ConstraintFactory constraintFactory) {
@@ -74,7 +74,7 @@ public class RockTourConstraintProvider implements ConstraintProvider {
                 .filter(rockShow -> rockShow.getPreviousStandstill() != null)
                 .penalizeConfigurableLong(rockShow -> rockShow.getDrivingTimeFromPreviousStandstill() *
                         rockShow.getDrivingTimeFromPreviousStandstill())
-                .as(SHORTEN_DRIVING_TIME_PER_MILLISECOND_SQUARED);
+                .asConstraint(SHORTEN_DRIVING_TIME_PER_MILLISECOND_SQUARED);
     }
 
     private Constraint drivingTimeToBusArrivalPerSecond(ConstraintFactory constraintFactory) {
@@ -82,6 +82,6 @@ public class RockTourConstraintProvider implements ConstraintProvider {
                 .filter(rockShow -> rockShow.getBus() != null)
                 .filter(rockShow -> rockShow.getNextShow() == null)
                 .penalizeConfigurableLong(RockShow::getDrivingTimeToBusArrivalLocation)
-                .as(DRIVING_TIME_TO_BUS_ARRIVAL_PER_SECOND);
+                .asConstraint(DRIVING_TIME_TO_BUS_ARRIVAL_PER_SECOND);
     }
 }

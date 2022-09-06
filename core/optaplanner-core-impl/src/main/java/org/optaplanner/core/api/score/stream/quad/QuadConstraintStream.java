@@ -776,65 +776,68 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     // Penalize/reward
     // ************************************************************************
 
-    default QuadTerminator<A, B, C, D> penalize(Score<?> constraintWeight) {
+    default QuadConstraintBuilder<A, B, C, D> penalize(Score<?> constraintWeight) {
         return penalize(constraintWeight, (a, b, c, d) -> 1);
     }
 
-    QuadTerminator<A, B, C, D> penalize(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> penalize(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher);
 
-    QuadTerminator<A, B, C, D> penalizeLong(Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> penalizeLong(Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher);
 
-    QuadTerminator<A, B, C, D> penalizeBigDecimal(Score<?> constraintWeight, QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> penalizeBigDecimal(Score<?> constraintWeight,
+            QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
 
-    default QuadTerminator<A, B, C, D> penalizeConfigurable() {
+    default QuadConstraintBuilder<A, B, C, D> penalizeConfigurable() {
         return penalizeConfigurable((a, b, c, d) -> 1);
     }
 
-    QuadTerminator<A, B, C, D> penalizeConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> penalizeConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher);
 
-    QuadTerminator<A, B, C, D> penalizeConfigurableLong(ToLongQuadFunction<A, B, C, D> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> penalizeConfigurableLong(ToLongQuadFunction<A, B, C, D> matchWeigher);
 
-    QuadTerminator<A, B, C, D> penalizeConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> penalizeConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
 
-    default QuadTerminator<A, B, C, D> reward(Score<?> constraintWeight) {
+    default QuadConstraintBuilder<A, B, C, D> reward(Score<?> constraintWeight) {
         return reward(constraintWeight, (a, b, c, d) -> 1);
     }
 
-    QuadTerminator<A, B, C, D> reward(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> reward(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher);
 
-    QuadTerminator<A, B, C, D> rewardLong(Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> rewardLong(Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher);
 
-    QuadTerminator<A, B, C, D> rewardBigDecimal(Score<?> constraintWeight, QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> rewardBigDecimal(Score<?> constraintWeight,
+            QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
 
-    default QuadTerminator<A, B, C, D> rewardConfigurable() {
+    default QuadConstraintBuilder<A, B, C, D> rewardConfigurable() {
         return rewardConfigurable((a, b, c, d) -> 1);
     }
 
-    QuadTerminator<A, B, C, D> rewardConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> rewardConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher);
 
-    QuadTerminator<A, B, C, D> rewardConfigurableLong(ToLongQuadFunction<A, B, C, D> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> rewardConfigurableLong(ToLongQuadFunction<A, B, C, D> matchWeigher);
 
-    QuadTerminator<A, B, C, D> rewardConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> rewardConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
 
-    default QuadTerminator<A, B, C, D> impact(Score<?> constraintWeight) {
+    default QuadConstraintBuilder<A, B, C, D> impact(Score<?> constraintWeight) {
         return impact(constraintWeight, (a, b, c, d) -> 1);
     }
 
-    QuadTerminator<A, B, C, D> impact(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> impact(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher);
 
-    QuadTerminator<A, B, C, D> impactLong(Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> impactLong(Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher);
 
-    QuadTerminator<A, B, C, D> impactBigDecimal(Score<?> constraintWeight, QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> impactBigDecimal(Score<?> constraintWeight,
+            QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
 
-    default QuadTerminator<A, B, C, D> impactConfigurable() {
+    default QuadConstraintBuilder<A, B, C, D> impactConfigurable() {
         return impactConfigurable((a, b, c, d) -> 1);
     }
 
-    QuadTerminator<A, B, C, D> impactConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> impactConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher);
 
-    QuadTerminator<A, B, C, D> impactConfigurableLong(ToLongQuadFunction<A, B, C, D> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> impactConfigurableLong(ToLongQuadFunction<A, B, C, D> matchWeigher);
 
-    QuadTerminator<A, B, C, D> impactConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
+    QuadConstraintBuilder<A, B, C, D> impactConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
 
     /**
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
@@ -851,7 +854,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint penalize(String constraintName, Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher) {
         return penalize(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -867,7 +870,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint penalize(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntQuadFunction<A, B, C, D> matchWeigher) {
         return penalize(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -883,7 +886,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint penalizeLong(String constraintName, Score<?> constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher) {
         return penalizeLong(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -899,7 +902,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint penalizeLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher) {
         return penalizeLong(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -915,7 +918,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint penalizeBigDecimal(String constraintName, Score<?> constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         return penalizeBigDecimal(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -931,7 +934,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint penalizeBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         return penalizeBigDecimal(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -948,7 +951,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint penalizeConfigurable(String constraintName, ToIntQuadFunction<A, B, C, D> matchWeigher) {
         return penalizeConfigurable(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -963,7 +966,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint penalizeConfigurable(String constraintPackage, String constraintName,
             ToIntQuadFunction<A, B, C, D> matchWeigher) {
         return penalizeConfigurable(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -977,7 +980,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint penalizeConfigurableLong(String constraintName, ToLongQuadFunction<A, B, C, D> matchWeigher) {
         return penalizeConfigurableLong(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -992,7 +995,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint penalizeConfigurableLong(String constraintPackage, String constraintName,
             ToLongQuadFunction<A, B, C, D> matchWeigher) {
         return penalizeConfigurableLong(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1007,7 +1010,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint penalizeConfigurableBigDecimal(String constraintName,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         return penalizeConfigurableBigDecimal(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1022,7 +1025,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint penalizeConfigurableBigDecimal(String constraintPackage, String constraintName,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         return penalizeConfigurableBigDecimal(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1041,7 +1044,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint reward(String constraintName, Score<?> constraintWeight,
             ToIntQuadFunction<A, B, C, D> matchWeigher) {
         return reward(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1057,7 +1060,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint reward(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntQuadFunction<A, B, C, D> matchWeigher) {
         return reward(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1073,7 +1076,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint rewardLong(String constraintName, Score<?> constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher) {
         return rewardLong(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1089,7 +1092,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint rewardLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher) {
         return rewardLong(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1105,7 +1108,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint rewardBigDecimal(String constraintName, Score<?> constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         return rewardBigDecimal(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1121,7 +1124,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint rewardBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         return rewardBigDecimal(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1138,7 +1141,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint rewardConfigurable(String constraintName, ToIntQuadFunction<A, B, C, D> matchWeigher) {
         return rewardConfigurable(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1153,7 +1156,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint rewardConfigurable(String constraintPackage, String constraintName,
             ToIntQuadFunction<A, B, C, D> matchWeigher) {
         return rewardConfigurable(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1167,7 +1170,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint rewardConfigurableLong(String constraintName, ToLongQuadFunction<A, B, C, D> matchWeigher) {
         return rewardConfigurableLong(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1182,7 +1185,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint rewardConfigurableLong(String constraintPackage, String constraintName,
             ToLongQuadFunction<A, B, C, D> matchWeigher) {
         return rewardConfigurableLong(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1197,7 +1200,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint rewardConfigurableBigDecimal(String constraintName,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         return rewardConfigurableBigDecimal(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1212,7 +1215,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint rewardConfigurableBigDecimal(String constraintPackage, String constraintName,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         return rewardConfigurableBigDecimal(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1234,7 +1237,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint impact(String constraintName, Score<?> constraintWeight,
             ToIntQuadFunction<A, B, C, D> matchWeigher) {
         return impact(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1250,7 +1253,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint impact(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToIntQuadFunction<A, B, C, D> matchWeigher) {
         return impact(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1269,7 +1272,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint impactLong(String constraintName, Score<?> constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher) {
         return impactLong(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1285,7 +1288,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint impactLong(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ToLongQuadFunction<A, B, C, D> matchWeigher) {
         return impactLong(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1304,7 +1307,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint impactBigDecimal(String constraintName, Score<?> constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         return impactBigDecimal(constraintWeight, matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1320,7 +1323,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint impactBigDecimal(String constraintPackage, String constraintName, Score<?> constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         return impactBigDecimal(constraintWeight, matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1346,7 +1349,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint impactConfigurable(String constraintName, ToIntQuadFunction<A, B, C, D> matchWeigher) {
         return impactConfigurable(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1361,7 +1364,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint impactConfigurable(String constraintPackage, String constraintName,
             ToIntQuadFunction<A, B, C, D> matchWeigher) {
         return impactConfigurable(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1384,7 +1387,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     @Deprecated(forRemoval = true)
     default Constraint impactConfigurableLong(String constraintName, ToLongQuadFunction<A, B, C, D> matchWeigher) {
         return impactConfigurableLong(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1399,7 +1402,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint impactConfigurableLong(String constraintPackage, String constraintName,
             ToLongQuadFunction<A, B, C, D> matchWeigher) {
         return impactConfigurableLong(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
     /**
@@ -1423,7 +1426,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint impactConfigurableBigDecimal(String constraintName,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         return impactConfigurableBigDecimal(matchWeigher)
-                .as(constraintName);
+                .asConstraint(constraintName);
     }
 
     /**
@@ -1438,7 +1441,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     default Constraint impactConfigurableBigDecimal(String constraintPackage, String constraintName,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         return impactConfigurableBigDecimal(matchWeigher)
-                .as(constraintPackage, constraintName);
+                .asConstraint(constraintPackage, constraintName);
     }
 
 }

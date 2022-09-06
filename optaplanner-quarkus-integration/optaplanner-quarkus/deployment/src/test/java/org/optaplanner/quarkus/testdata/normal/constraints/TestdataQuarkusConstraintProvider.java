@@ -16,7 +16,7 @@ public class TestdataQuarkusConstraintProvider implements ConstraintProvider {
                         .join(TestdataQuarkusEntity.class, Joiners.equal(TestdataQuarkusEntity::getValue))
                         .filter((a, b) -> a != b)
                         .penalize(SimpleScore.ONE)
-                        .as("Don't assign 2 entities the same value.")
+                        .asConstraint("Don't assign 2 entities the same value.")
         };
     }
 

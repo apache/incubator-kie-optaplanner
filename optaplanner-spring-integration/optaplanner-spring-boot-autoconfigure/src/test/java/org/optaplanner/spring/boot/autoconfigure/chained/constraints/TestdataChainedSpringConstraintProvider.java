@@ -17,7 +17,7 @@ public class TestdataChainedSpringConstraintProvider implements ConstraintProvid
                         .ifNotExists(TestdataChainedSpringEntity.class,
                                 Joiners.equal((anchor) -> anchor, TestdataChainedSpringEntity::getPrevious))
                         .penalize(SimpleScore.ONE)
-                        .as("Assign at least one entity to each anchor.")
+                        .asConstraint("Assign at least one entity to each anchor.")
         };
     }
 

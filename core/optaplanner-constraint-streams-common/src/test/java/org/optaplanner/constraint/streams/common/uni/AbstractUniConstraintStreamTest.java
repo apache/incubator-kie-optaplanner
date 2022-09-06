@@ -73,7 +73,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishValueGroup.class)
                         .filter(valueGroup -> valueGroup.getCode().startsWith("MyValueGroup"))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -107,7 +107,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .filter(entity -> entity.getEntityGroup() == entityGroup)
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -157,7 +157,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .filter(entity -> !Objects.equals(entity, entity2))
                         .filter(entity -> !Objects.equals(entity, entity3))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -179,7 +179,7 @@ public abstract class AbstractUniConstraintStreamTest
         assertThatThrownBy(() -> buildScoreDirector(factory -> factory.forEach(TestdataLavishValueGroup.class)
                 .join(Integer.class)
                 .penalize(SimpleScore.ONE)
-                .as(TEST_CONSTRAINT_NAME)))
+                .asConstraint(TEST_CONSTRAINT_NAME)))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessageContaining(Integer.class.getCanonicalName())
                         .hasMessageContaining("assignable from");
@@ -198,7 +198,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishValueGroup.class)
                         .join(TestdataLavishEntityGroup.class)
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -236,7 +236,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .join(TestdataLavishEntity.class,
                                 equal(TestdataLavishEntity::getValue))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -296,13 +296,13 @@ public abstract class AbstractUniConstraintStreamTest
                                 .join(TestdataLavishValue.class,
                                         equal(TestdataLavishEntity::getValue, value -> value))
                                 .penalize(SimpleScore.ONE)
-                                .as("testConstraint1"),
+                                .asConstraint("testConstraint1"),
                         // B.join(A)
                         factory.forEach(TestdataLavishValue.class)
                                 .join(TestdataLavishEntity.class,
                                         equal(value -> value, TestdataLavishEntity::getValue))
                                 .penalize(SimpleScore.ONE)
-                                .as("testConstraint2")
+                                .asConstraint("testConstraint2")
                 });
 
         // From scratch
@@ -346,7 +346,7 @@ public abstract class AbstractUniConstraintStreamTest
                                 equal(TestdataLavishEntity::getEntityGroup),
                                 equal(TestdataLavishEntity::getIntegerProperty))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -393,7 +393,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .groupBy(countDistinct(TestdataLavishEntity::getValue))
                         .join(TestdataLavishExtra.class)
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -428,7 +428,7 @@ public abstract class AbstractUniConstraintStreamTest
         assertThatThrownBy(() -> buildScoreDirector(factory -> factory.forEach(TestdataLavishValueGroup.class)
                 .ifExists(Integer.class)
                 .penalize(SimpleScore.ONE)
-                .as(TEST_CONSTRAINT_NAME)))
+                .asConstraint(TEST_CONSTRAINT_NAME)))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessageContaining(Integer.class.getCanonicalName())
                         .hasMessageContaining("assignable from");
@@ -447,7 +447,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishValueGroup.class)
                         .ifExists(TestdataLavishEntityGroup.class)
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -481,7 +481,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .ifExists(TestdataLavishEntityGroup.class,
                                 filtering((entity, group) -> Objects.equals(entity.getEntityGroup(), group)))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -515,7 +515,7 @@ public abstract class AbstractUniConstraintStreamTest
                 .forEach(TestdataLavishEntity.class)
                 .ifExists(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, Function.identity()))
                 .penalize(SimpleScore.ONE)
-                .as(TEST_CONSTRAINT_NAME));
+                .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -552,7 +552,7 @@ public abstract class AbstractUniConstraintStreamTest
                                 filtering((entity, group) -> entity.getCode().contains("MyEntity")
                                         || group.getCode().contains("MyEntity")))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -583,7 +583,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .ifExistsOther(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -619,7 +619,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .ifExistsOther(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -657,7 +657,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.from(TestdataLavishEntity.class)
                         .ifExistsOther(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -681,7 +681,7 @@ public abstract class AbstractUniConstraintStreamTest
         assertThatThrownBy(() -> buildScoreDirector(factory -> factory.forEach(TestdataLavishValueGroup.class)
                 .ifNotExists(Integer.class)
                 .penalize(SimpleScore.ONE)
-                .as(TEST_CONSTRAINT_NAME)))
+                .asConstraint(TEST_CONSTRAINT_NAME)))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessageContaining(Integer.class.getCanonicalName())
                         .hasMessageContaining("assignable from");
@@ -700,7 +700,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishValueGroup.class)
                         .ifNotExists(TestdataLavishEntityGroup.class)
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -730,7 +730,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .ifNotExists(TestdataLavishEntityGroup.class,
                                 filtering((entity, group) -> Objects.equals(entity.getEntityGroup(), group)))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -761,7 +761,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .ifNotExists(TestdataLavishEntityGroup.class,
                                 equal(TestdataLavishEntity::getEntityGroup, Function.identity()))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -794,7 +794,7 @@ public abstract class AbstractUniConstraintStreamTest
                                 filtering((entity, group) -> entity.getCode().contains("MyEntity")
                                         || group.getCode().contains("MyEntity")))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -825,7 +825,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .ifNotExistsOther(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -858,7 +858,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.from(TestdataLavishEntity.class)
                         .ifNotExistsOther(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -888,7 +888,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .ifNotExistsOther(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -925,7 +925,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .groupBy(countDistinct(TestdataLavishEntity::getValue))
                         .ifExists(TestdataLavishExtra.class)
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -955,7 +955,7 @@ public abstract class AbstractUniConstraintStreamTest
     public void forEach_unknownClass() {
         assertThatThrownBy(() -> buildScoreDirector(factory -> factory.forEach(Integer.class)
                 .penalize(SimpleScore.ONE)
-                .as(TEST_CONSTRAINT_NAME)))
+                .asConstraint(TEST_CONSTRAINT_NAME)))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessageContaining(Integer.class.getCanonicalName())
                         .hasMessageContaining("assignable from");
@@ -977,10 +977,10 @@ public abstract class AbstractUniConstraintStreamTest
                 factory -> new Constraint[] {
                         factory.forEach(TestdataEntity.class)
                                 .penalize(SimpleScore.ONE)
-                                .as("superclassConstraint"),
+                                .asConstraint("superclassConstraint"),
                         factory.forEach(TestdataUnannotatedExtendedEntity.class)
                                 .penalize(SimpleScore.ONE)
-                                .as("subclassConstraint")
+                                .asConstraint("subclassConstraint")
                 });
 
         // From scratch
@@ -1009,7 +1009,7 @@ public abstract class AbstractUniConstraintStreamTest
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
                 buildScoreDirector(factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1038,7 +1038,7 @@ public abstract class AbstractUniConstraintStreamTest
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> factory
                 .forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getIntegerProperty))
                 .penalize(SimpleScore.ONE)
-                .as(TEST_CONSTRAINT_NAME));
+                .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1075,7 +1075,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .groupBy(TestdataLavishEntity::getEntityGroup)
                         .filter(entityGroup -> Objects.equals(entityGroup, entityGroup1))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector, assertMatchWithScore(-1, entityGroup1));
@@ -1099,7 +1099,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .groupBy(TestdataLavishEntity::getEntityGroup, count())
                         .filter((entityGroup, count) -> count > 1)
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
@@ -1126,7 +1126,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .join(TestdataLavishEntity.class, equal(Function.identity(), TestdataLavishEntity::getEntityGroup))
                         .filter((group, entity) -> group.equals(entityGroup1))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
@@ -1152,7 +1152,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .groupBy(TestdataLavishEntity::getEntityGroup)
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1177,7 +1177,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .groupBy(TestdataLavishEntity::getEntityGroup, count())
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1206,7 +1206,7 @@ public abstract class AbstractUniConstraintStreamTest
                                 count(),
                                 toSet())
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -1238,7 +1238,7 @@ public abstract class AbstractUniConstraintStreamTest
                                 countDistinct(),
                                 toSet())
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -1277,7 +1277,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .groupBy(count())
                         .penalize(SimpleScore.ONE, count -> count)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1299,7 +1299,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .groupBy(count(),
                                 countDistinct())
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
 
@@ -1324,7 +1324,7 @@ public abstract class AbstractUniConstraintStreamTest
                                 min(TestdataLavishEntity::getIntegerProperty),
                                 max(TestdataLavishEntity::getIntegerProperty))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         entity1.setIntegerProperty(0);
@@ -1357,7 +1357,7 @@ public abstract class AbstractUniConstraintStreamTest
                                 max(TestdataLavishEntity::getIntegerProperty),
                                 toSet())
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         entity1.setIntegerProperty(0);
@@ -1399,7 +1399,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .groupBy(TestdataLavishEntity::getIntegerProperty, count())
                         .penalize(SimpleScore.ONE, (integerProperty, count) -> count)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1435,7 +1435,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .groupBy(TestdataLavishEntity::getEntityGroup, TestdataLavishEntity::getValue)
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1492,7 +1492,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .groupBy(TestdataLavishEntity::getEntityGroup, TestdataLavishEntity::getValue, count())
                         .penalize(SimpleScore.ONE, (entityGroup, value, count) -> count)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1529,7 +1529,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .groupBy(TestdataLavishEntity::getEntityGroup, TestdataLavishEntity::getValue, count(), count())
                         .penalize(SimpleScore.ONE, (entityGroup, value, count, sameCount) -> count)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1557,7 +1557,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .groupBy(TestdataLavishEntity::getEntityGroup, TestdataLavishEntity::getValue,
                                 TestdataLavishEntity::getCode)
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -1600,7 +1600,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .groupBy(TestdataLavishEntity::getEntityGroup, TestdataLavishEntity::getValue,
                                 TestdataLavishEntity::getCode, ConstraintCollectors.toSet())
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -1643,7 +1643,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .groupBy(Function.identity(), TestdataLavishEntity::getEntityGroup, TestdataLavishEntity::getValue,
                                 TestdataLavishEntity::getCode)
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -1688,7 +1688,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .distinct()
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntity entity1 = solution.getFirstEntity();
         TestdataLavishEntity entity2 = solution.getEntityList().get(1);
@@ -1708,7 +1708,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .map(TestdataLavishEntity::getEntityGroup) // Two entities, just one group => duplicates.
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group = solution.getFirstEntityGroup();
 
@@ -1736,7 +1736,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .map(TestdataLavishEntity::getEntityGroup) // Two entities, two groups => no duplicates.
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1766,7 +1766,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .map(TestdataLavishEntity::getEntityGroup) // Two entities, just one group => duplicates.
                         .distinct() // Duplicate copies removed here.
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group = solution.getFirstEntityGroup();
 
@@ -1794,7 +1794,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .map(TestdataLavishEntity::getEntityGroup) // Two entities, two groups => no duplicates.
                         .distinct()
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1826,7 +1826,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .flattenLast(entity -> Arrays.asList(group1, group1, group2))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1858,7 +1858,7 @@ public abstract class AbstractUniConstraintStreamTest
                 buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
                         .flattenLast(entity -> Collections.singletonList(entity.getEntityGroup()))
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1891,7 +1891,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .flattenLast(entity -> Arrays.asList(group1, group1, group2))
                         .distinct()
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -1919,7 +1919,7 @@ public abstract class AbstractUniConstraintStreamTest
                         .flattenLast(entity -> Collections.singletonList(entity.getEntityGroup()))
                         .distinct()
                         .penalize(SimpleScore.ONE)
-                        .as(TEST_CONSTRAINT_NAME));
+                        .asConstraint(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1959,10 +1959,10 @@ public abstract class AbstractUniConstraintStreamTest
                 factory -> new Constraint[] {
                         factory.forEach(TestdataEntity.class)
                                 .penalize(SimpleScore.ONE)
-                                .as("myConstraint1"),
+                                .asConstraint("myConstraint1"),
                         factory.forEach(TestdataEntity.class)
                                 .penalize(SimpleScore.ONE, entity -> 20)
-                                .as("myConstraint2")
+                                .asConstraint("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1984,10 +1984,10 @@ public abstract class AbstractUniConstraintStreamTest
                 factory -> new Constraint[] {
                         factory.forEach(TestdataEntity.class)
                                 .penalize(SimpleLongScore.ONE)
-                                .as("myConstraint1"),
+                                .asConstraint("myConstraint1"),
                         factory.forEach(TestdataEntity.class)
                                 .penalizeLong(SimpleLongScore.ONE, entity -> 20L)
-                                .as("myConstraint2")
+                                .asConstraint("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -2010,10 +2010,10 @@ public abstract class AbstractUniConstraintStreamTest
                         factory -> new Constraint[] {
                                 factory.forEach(TestdataEntity.class)
                                         .penalize(SimpleBigDecimalScore.ONE)
-                                        .as("myConstraint1"),
+                                        .asConstraint("myConstraint1"),
                                 factory.forEach(TestdataEntity.class)
                                         .penalizeBigDecimal(SimpleBigDecimalScore.ONE, entity -> new BigDecimal("0.2"))
-                                        .as("myConstraint2")
+                                        .asConstraint("myConstraint2")
                         });
 
         scoreDirector.setWorkingSolution(solution);
@@ -2030,7 +2030,7 @@ public abstract class AbstractUniConstraintStreamTest
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
                         .penalize(SimpleScore.ONE, e -> -1)
-                        .as(constraintName));
+                        .asConstraint(constraintName));
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
@@ -2051,10 +2051,10 @@ public abstract class AbstractUniConstraintStreamTest
                 factory -> new Constraint[] {
                         factory.forEach(TestdataEntity.class)
                                 .reward(SimpleScore.ONE)
-                                .as("myConstraint1"),
+                                .asConstraint("myConstraint1"),
                         factory.forEach(TestdataEntity.class)
                                 .reward(SimpleScore.ONE, entity -> 20)
-                                .as("myConstraint2")
+                                .asConstraint("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -2076,10 +2076,10 @@ public abstract class AbstractUniConstraintStreamTest
                 factory -> new Constraint[] {
                         factory.forEach(TestdataEntity.class)
                                 .reward(SimpleLongScore.ONE)
-                                .as("myConstraint1"),
+                                .asConstraint("myConstraint1"),
                         factory.forEach(TestdataEntity.class)
                                 .rewardLong(SimpleLongScore.ONE, entity -> 20L)
-                                .as("myConstraint2")
+                                .asConstraint("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -2101,10 +2101,10 @@ public abstract class AbstractUniConstraintStreamTest
                         TestdataSimpleBigDecimalScoreSolution.buildSolutionDescriptor(), factory -> new Constraint[] {
                                 factory.forEach(TestdataEntity.class)
                                         .reward(SimpleBigDecimalScore.ONE)
-                                        .as("myConstraint1"),
+                                        .asConstraint("myConstraint1"),
                                 factory.forEach(TestdataEntity.class)
                                         .rewardBigDecimal(SimpleBigDecimalScore.ONE, entity -> new BigDecimal("0.2"))
-                                        .as("myConstraint2")
+                                        .asConstraint("myConstraint2")
                         });
 
         scoreDirector.setWorkingSolution(solution);
@@ -2121,7 +2121,7 @@ public abstract class AbstractUniConstraintStreamTest
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
                         .reward(SimpleScore.ONE, e -> -1)
-                        .as(constraintName));
+                        .asConstraint(constraintName));
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
@@ -2136,10 +2136,10 @@ public abstract class AbstractUniConstraintStreamTest
         ConstraintProvider constraintProvider = factory -> new Constraint[] {
                 factory.forEach(TestdataLavishEntity.class)
                         .penalize(SimpleScore.ONE)
-                        .as("duplicateConstraintName"),
+                        .asConstraint("duplicateConstraintName"),
                 factory.forEach(TestdataLavishEntity.class)
                         .penalize(SimpleScore.ONE)
-                        .as("duplicateConstraintName")
+                        .asConstraint("duplicateConstraintName")
         };
         assertThatIllegalStateException().isThrownBy(() -> buildScoreDirector(
                 TestdataLavishSolution.buildSolutionDescriptor(),
@@ -2171,14 +2171,14 @@ public abstract class AbstractUniConstraintStreamTest
                                     return true;
                                 })
                                 .penalize(SimpleScore.ZERO)
-                                .as("myConstraint1"),
+                                .asConstraint("myConstraint1"),
                         factory.forEach(TestdataLavishEntity.class)
                                 .filter(entity -> {
                                     oneWeightMonitorCount.getAndIncrement();
                                     return true;
                                 })
                                 .penalize(SimpleScore.ONE)
-                                .as("myConstraint2")
+                                .asConstraint("myConstraint2")
                 });
 
         // From scratch
@@ -2216,11 +2216,11 @@ public abstract class AbstractUniConstraintStreamTest
                         factory.forEach(TestdataLavishEntity.class)
                                 .filter(predicate)
                                 .penalize(SimpleScore.ONE)
-                                .as("myConstraint1"),
+                                .asConstraint("myConstraint1"),
                         factory.forEach(TestdataLavishEntity.class)
                                 .filter(predicate)
                                 .penalize(SimpleScore.ONE)
-                                .as("myConstraint2")
+                                .asConstraint("myConstraint2")
                 });
 
         // From scratch
@@ -2249,8 +2249,8 @@ public abstract class AbstractUniConstraintStreamTest
                     UniConstraintStream<TestdataLavishEntity> base = factory.forEach(TestdataLavishEntity.class)
                             .filter(predicate);
                     return new Constraint[] {
-                            base.penalize(SimpleScore.ONE).as("myConstraint1"),
-                            base.penalize(SimpleScore.ONE).as("myConstraint2")
+                            base.penalize(SimpleScore.ONE).asConstraint("myConstraint1"),
+                            base.penalize(SimpleScore.ONE).asConstraint("myConstraint2")
                     };
                 });
 
@@ -2276,10 +2276,10 @@ public abstract class AbstractUniConstraintStreamTest
                     UniConstraintStream<TestdataLavishEntityGroup> base = factory.forEach(TestdataLavishEntity.class)
                             .groupBy(TestdataLavishEntity::getEntityGroup);
                     return new Constraint[] {
-                            base.penalize(SimpleScore.ONE).as("myConstraint1"),
+                            base.penalize(SimpleScore.ONE).asConstraint("myConstraint1"),
                             base.filter(e -> !Objects.equals(e, entityGroup1))
                                     .penalize(SimpleScore.ONE)
-                                    .as("myConstraint2")
+                                    .asConstraint("myConstraint2")
                     };
                 });
 
@@ -2306,7 +2306,7 @@ public abstract class AbstractUniConstraintStreamTest
                 constraintFactory -> new Constraint[] {
                         constraintFactory.from(TestdataNullableEntity.class)
                                 .penalize(SimpleScore.ONE)
-                                .as(TEST_CONSTRAINT_NAME)
+                                .asConstraint(TEST_CONSTRAINT_NAME)
                 });
 
         scoreDirector.setWorkingSolution(solution);

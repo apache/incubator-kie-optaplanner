@@ -26,19 +26,19 @@ public class NQueensConstraintProvider implements ConstraintProvider {
     protected Constraint horizontalConflict(ConstraintFactory factory) {
         return factory.forEachUniquePair(Queen.class, equal(Queen::getRowIndex))
                 .penalize(SimpleScore.ONE)
-                .as("Horizontal conflict");
+                .asConstraint("Horizontal conflict");
     }
 
     protected Constraint ascendingDiagonalConflict(ConstraintFactory factory) {
         return factory.forEachUniquePair(Queen.class, equal(Queen::getAscendingDiagonalIndex))
                 .penalize(SimpleScore.ONE)
-                .as("Ascending diagonal conflict");
+                .asConstraint("Ascending diagonal conflict");
     }
 
     protected Constraint descendingDiagonalConflict(ConstraintFactory factory) {
         return factory.forEachUniquePair(Queen.class, equal(Queen::getDescendingDiagonalIndex))
                 .penalize(SimpleScore.ONE)
-                .as("Descending diagonal conflict");
+                .asConstraint("Descending diagonal conflict");
     }
 
 }

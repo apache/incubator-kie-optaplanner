@@ -16,10 +16,10 @@ public class TestdataStringLengthConstraintProvider implements ConstraintProvide
                         .join(TestdataStringLengthShadowEntity.class, Joiners.equal(TestdataStringLengthShadowEntity::getValue))
                         .filter((a, b) -> a != b)
                         .penalize(HardSoftScore.ONE_HARD)
-                        .as("Don't assign 2 entities the same value."),
+                        .asConstraint("Don't assign 2 entities the same value."),
                 factory.forEach(TestdataStringLengthShadowEntity.class)
                         .reward(HardSoftScore.ONE_SOFT, TestdataStringLengthShadowEntity::getLength)
-                        .as("Maximize value length")
+                        .asConstraint("Maximize value length")
         };
     }
 

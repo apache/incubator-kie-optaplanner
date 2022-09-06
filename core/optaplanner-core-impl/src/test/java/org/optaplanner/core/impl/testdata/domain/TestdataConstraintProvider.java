@@ -15,7 +15,7 @@ public final class TestdataConstraintProvider implements ConstraintProvider {
     private Constraint alwaysPenalizingConstraint(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(TestdataEntity.class)
                 .penalize(SimpleScore.ONE)
-                .as("Always penalize");
+                .asConstraint("Always penalize");
     }
 
 }

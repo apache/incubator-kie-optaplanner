@@ -35,7 +35,7 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
                 .filter((resource, requirements) -> requirements > resource.getCapacity())
                 .penalize(HardMediumSoftScore.ONE_HARD,
                         (resource, requirements) -> requirements - resource.getCapacity())
-                .as("Non-renewable resource capacity");
+                .asConstraint("Non-renewable resource capacity");
     }
 
     protected Constraint renewableResourceCapacity(ConstraintFactory constraintFactory) {
@@ -52,7 +52,7 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
                 .filter((resourceReq, date, totalRequirement) -> totalRequirement > resourceReq.getCapacity())
                 .penalize(HardMediumSoftScore.ONE_HARD,
                         (resourceReq, date, totalRequirement) -> totalRequirement - resourceReq.getCapacity())
-                .as("Renewable resource capacity");
+                .asConstraint("Renewable resource capacity");
     }
 
     protected Constraint totalProjectDelay(ConstraintFactory constraintFactory) {
@@ -61,7 +61,7 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
                 .filter(allocation -> allocation.getJobType() == JobType.SINK)
                 .impact(HardMediumSoftScore.ONE_MEDIUM,
                         allocation -> allocation.getProjectCriticalPathEndDate() - allocation.getEndDate())
-                .as("Total project delay");
+                .asConstraint("Total project delay");
     }
 
     protected Constraint totalMakespan(ConstraintFactory constraintFactory) {
@@ -70,7 +70,7 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
                 .filter(allocation -> allocation.getJobType() == JobType.SINK)
                 .groupBy(ConstraintCollectors.max(Allocation::getEndDate))
                 .penalize(HardMediumSoftScore.ONE_SOFT, maxEndDate -> maxEndDate)
-                .as("Total makespan");
+                .asConstraint("Total makespan");
     }
 
 }

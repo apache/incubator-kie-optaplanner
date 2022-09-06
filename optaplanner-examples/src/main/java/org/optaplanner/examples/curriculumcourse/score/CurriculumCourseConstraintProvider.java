@@ -46,7 +46,7 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
                 .filter(((courseConflict, lecture1, lecture2) -> lecture1 != lecture2))
                 .penalize(ONE_HARD,
                         (courseConflict, lecture1, lecture2) -> courseConflict.getConflictCount())
-                .as("conflictingLecturesDifferentCourseInSamePeriod");
+                .asConstraint("conflictingLecturesDifferentCourseInSamePeriod");
     }
 
     Constraint conflictingLecturesSameCourseInSamePeriod(ConstraintFactory factory) {
@@ -55,7 +55,7 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
                 equal(Lecture::getCourse))
                 .penalize(ONE_HARD,
                         (lecture1, lecture2) -> 1 + lecture1.getCurriculumSet().size())
-                .as("conflictingLecturesSameCourseInSamePeriod");
+                .asConstraint("conflictingLecturesSameCourseInSamePeriod");
     }
 
     Constraint roomOccupancy(ConstraintFactory factory) {
@@ -63,7 +63,7 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
                 equal(Lecture::getRoom),
                 equal(Lecture::getPeriod))
                 .penalize(ONE_HARD)
-                .as("roomOccupancy");
+                .asConstraint("roomOccupancy");
     }
 
     Constraint unavailablePeriodPenalty(ConstraintFactory factory) {
@@ -72,7 +72,7 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
                         equal(UnavailablePeriodPenalty::getCourse, Lecture::getCourse),
                         equal(UnavailablePeriodPenalty::getPeriod, Lecture::getPeriod))
                 .penalize(ofHard(10))
-                .as("unavailablePeriodPenalty");
+                .asConstraint("unavailablePeriodPenalty");
     }
 
     // ************************************************************************
@@ -84,7 +84,7 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
                 .filter(lecture -> lecture.getStudentSize() > lecture.getRoom().getCapacity())
                 .penalize(ofSoft(1),
                         lecture -> lecture.getStudentSize() - lecture.getRoom().getCapacity())
-                .as("roomCapacity");
+                .asConstraint("roomCapacity");
     }
 
     Constraint minimumWorkingDays(ConstraintFactory factory) {
@@ -93,7 +93,7 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
                 .filter((course, dayCount) -> course.getMinWorkingDaySize() > dayCount)
                 .penalize(ofSoft(5),
                         (course, dayCount) -> course.getMinWorkingDaySize() - dayCount)
-                .as("minimumWorkingDays");
+                .asConstraint("minimumWorkingDays");
     }
 
     Constraint curriculumCompactness(ConstraintFactory factory) {
@@ -109,7 +109,7 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
                         equal((curriculum, lecture) -> lecture.getTimeslotIndex(), lecture -> lecture.getTimeslotIndex() - 1),
                         filtering((curriculum, lectureA, lectureB) -> lectureB.getCurriculumSet().contains(curriculum)))
                 .penalize(ofSoft(2))
-                .as("curriculumCompactness");
+                .asConstraint("curriculumCompactness");
     }
 
     Constraint roomStability(ConstraintFactory factory) {
@@ -118,7 +118,7 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
                 .filter((course, roomCount) -> roomCount > 1)
                 .penalize(HardSoftScore.ONE_SOFT,
                         (course, roomCount) -> roomCount - 1)
-                .as("roomStability");
+                .asConstraint("roomStability");
     }
 
 }
