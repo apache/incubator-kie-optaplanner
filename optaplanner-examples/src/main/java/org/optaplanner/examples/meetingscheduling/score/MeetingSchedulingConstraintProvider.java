@@ -94,7 +94,8 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                         equal(MeetingAssignment::getLastTimeGrainIndex, TimeGrain::getGrainIndex),
                         filtering((meetingAssignment,
                                 timeGrain) -> meetingAssignment.getStartingTimeGrain().getDay() != timeGrain.getDay()))
-                .penalizeConfigurable("Start and end on same day");
+                .penalize()
+                .as("Start and end on same day");
     }
 
     // ************************************************************************
@@ -164,7 +165,8 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                         .filter(assignment -> assignment.getStartingTimeGrain() != null),
                         equal(MeetingAssignment::getLastTimeGrainIndex,
                                 (rightAssignment) -> rightAssignment.getStartingTimeGrain().getGrainIndex() - 1))
-                .penalizeConfigurable("One TimeGrain break between two consecutive meetings");
+                .penalize()
+                .as("One TimeGrain break between two consecutive meetings");
     }
 
     protected Constraint overlappingMeetings(ConstraintFactory constraintFactory) {
@@ -211,6 +213,7 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                                 rightAssignment) -> rightAssignment.getStartingTimeGrain().getGrainIndex() -
                                         leftAttendance.getMeeting().getDurationInGrains() -
                                         leftAssignment.getStartingTimeGrain().getGrainIndex() <= 2))
-                .penalizeConfigurable("Room stability");
+                .penalize()
+                .as("Room stability");
     }
 }

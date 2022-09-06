@@ -61,7 +61,8 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
         return factory.forEachUniquePair(Lecture.class,
                 equal(Lecture::getRoom),
                 equal(Lecture::getPeriod))
-                .penalize("roomOccupancy", ONE_HARD);
+                .penalize(ONE_HARD)
+                .as("roomOccupancy");
     }
 
     Constraint unavailablePeriodPenalty(ConstraintFactory factory) {
@@ -69,7 +70,8 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
                 .join(Lecture.class,
                         equal(UnavailablePeriodPenalty::getCourse, Lecture::getCourse),
                         equal(UnavailablePeriodPenalty::getPeriod, Lecture::getPeriod))
-                .penalize("unavailablePeriodPenalty", ofHard(10));
+                .penalize(ofHard(10))
+                .as("unavailablePeriodPenalty");
     }
 
     // ************************************************************************
@@ -105,7 +107,8 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
                         equal((curriculum, lecture) -> lecture.getDay(), Lecture::getDay),
                         equal((curriculum, lecture) -> lecture.getTimeslotIndex(), lecture -> lecture.getTimeslotIndex() - 1),
                         filtering((curriculum, lectureA, lectureB) -> lectureB.getCurriculumSet().contains(curriculum)))
-                .penalize("curriculumCompactness", ofSoft(2));
+                .penalize(ofSoft(2))
+                .as("curriculumCompactness");
     }
 
     Constraint roomStability(ConstraintFactory factory) {

@@ -86,7 +86,8 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                         equal(TeamAssignment::getTeam),
                         equal(TeamAssignment::getDay),
                         lessThan(TeamAssignment::getId))
-                .penalize("oneAssignmentPerDatePerTeam", HardMediumSoftScore.ONE_HARD);
+                .penalize(HardMediumSoftScore.ONE_HARD)
+                .as("oneAssignmentPerDatePerTeam");
     }
 
     Constraint unavailabilityPenalty(ConstraintFactory constraintFactory) {
@@ -94,7 +95,8 @@ public final class TennisConstraintProvider implements ConstraintProvider {
                 .ifExists(TeamAssignment.class,
                         equal(UnavailabilityPenalty::getTeam, TeamAssignment::getTeam),
                         equal(UnavailabilityPenalty::getDay, TeamAssignment::getDay))
-                .penalize("unavailabilityPenalty", HardMediumSoftScore.ONE_HARD);
+                .penalize(HardMediumSoftScore.ONE_HARD)
+                .as("unavailabilityPenalty");
     }
 
     Constraint fairAssignmentCountPerTeam(ConstraintFactory constraintFactory) {

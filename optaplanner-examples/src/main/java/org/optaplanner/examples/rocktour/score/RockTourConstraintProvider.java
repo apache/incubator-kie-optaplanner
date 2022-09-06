@@ -37,13 +37,15 @@ public class RockTourConstraintProvider implements ConstraintProvider {
     private Constraint requiredShow(ConstraintFactory constraintFactory) {
         return getShowWithoutDate(constraintFactory)
                 .filter(RockShow::isRequired)
-                .penalizeConfigurable(REQUIRED_SHOW);
+                .penalize()
+                .as(REQUIRED_SHOW);
     }
 
     private Constraint unassignedShow(ConstraintFactory constraintFactory) {
         return getShowWithoutDate(constraintFactory)
                 .filter(rockShow -> rockShow.getBus() != null)
-                .penalizeConfigurable(UNASSIGNED_SHOW);
+                .penalize()
+                .as(UNASSIGNED_SHOW);
     }
 
     private Constraint revenueOpportunity(ConstraintFactory constraintFactory) {

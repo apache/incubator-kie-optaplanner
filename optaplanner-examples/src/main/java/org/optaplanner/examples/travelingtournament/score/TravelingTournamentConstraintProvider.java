@@ -33,7 +33,8 @@ public final class TravelingTournamentConstraintProvider implements ConstraintPr
                         equal(match -> getDayIndex(match) + 2, TravelingTournamentConstraintProvider::getDayIndex))
                 .ifExists(Match.class, equal(Match::getHomeTeam),
                         equal(match -> getDayIndex(match) + 3, TravelingTournamentConstraintProvider::getDayIndex))
-                .penalize("4 consecutive home matches", HardSoftScore.ONE_HARD);
+                .penalize(HardSoftScore.ONE_HARD)
+                .as("4 consecutive home matches");
     }
 
     private Constraint fourConsecutiveAwayMatches(ConstraintFactory constraintFactory) {
@@ -44,7 +45,8 @@ public final class TravelingTournamentConstraintProvider implements ConstraintPr
                         equal(match -> getDayIndex(match) + 2, TravelingTournamentConstraintProvider::getDayIndex))
                 .ifExists(Match.class, equal(Match::getAwayTeam),
                         equal(match -> getDayIndex(match) + 3, TravelingTournamentConstraintProvider::getDayIndex))
-                .penalize("4 consecutive away matches", HardSoftScore.ONE_HARD);
+                .penalize(HardSoftScore.ONE_HARD)
+                .as("4 consecutive away matches");
     }
 
     private Constraint repeatMatchOnTheNextDay(ConstraintFactory constraintFactory) {
@@ -52,7 +54,8 @@ public final class TravelingTournamentConstraintProvider implements ConstraintPr
                 .ifExists(Match.class, equal(Match::getHomeTeam, Match::getAwayTeam),
                         equal(Match::getAwayTeam, Match::getHomeTeam),
                         equal(match -> getDayIndex(match) + 1, TravelingTournamentConstraintProvider::getDayIndex))
-                .penalize("Repeat match on the next day", HardSoftScore.ONE_HARD);
+                .penalize(HardSoftScore.ONE_HARD)
+                .as("Repeat match on the next day");
     }
 
     private Constraint startToAwayHop(ConstraintFactory constraintFactory) {

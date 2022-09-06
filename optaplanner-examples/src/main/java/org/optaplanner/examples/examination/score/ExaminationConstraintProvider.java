@@ -196,13 +196,15 @@ public class ExaminationConstraintProvider implements ConstraintProvider {
                         equal((leftExam, rightExam) -> leftExam.getRoom(), Exam::getRoom),
                         equal((leftExam, rightExam) -> rightExam.getTopicDuration(), Exam::getTopicDuration),
                         greaterThan((leftExam, rightExam) -> rightExam.getId(), Exam::getId))
-                .penalizeConfigurable("mixedDurations");
+                .penalize()
+                .as("mixedDurations");
     }
 
     protected Constraint frontLoad(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(Exam.class)
                 .filter(exam -> exam.isTopicFrontLoadLarge() && exam.isPeriodFrontLoadLast())
-                .penalizeConfigurable("frontLoad");
+                .penalize()
+                .as("frontLoad");
     }
 
     protected Constraint periodPenalty(ConstraintFactory constraintFactory) {

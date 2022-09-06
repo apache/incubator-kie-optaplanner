@@ -242,7 +242,8 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.getPublishedTimeslot() != null
                         && talk.getTimeslot() != talk.getPublishedTimeslot())
-                .penalizeConfigurable(PUBLISHED_TIMESLOT);
+                .penalize()
+                .as(PUBLISHED_TIMESLOT);
     }
 
     // ************************************************************************
@@ -252,7 +253,8 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
     protected Constraint publishedRoom(ConstraintFactory factory) {
         return factory.forEach(Talk.class)
                 .filter(talk -> talk.getPublishedRoom() != null && talk.getRoom() != talk.getPublishedRoom())
-                .penalizeConfigurable(PUBLISHED_ROOM);
+                .penalize()
+                .as(PUBLISHED_ROOM);
     }
 
     protected Constraint themeTrackConflict(ConstraintFactory factory) {

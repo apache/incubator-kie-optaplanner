@@ -146,13 +146,13 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
     void biGroupByRecollected() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 3, 2, 5);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
-                    // Stream of all unique entity bi tuples that share a group
-                    .groupBy((a, b) -> a.getEntityGroup(), countBi())
-                    .groupBy(toMap((g, c) -> g, (g, c) -> c, Integer::sum))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
+                        // Stream of all unique entity bi tuples that share a group
+                        .groupBy((a, b) -> a.getEntityGroup(), countBi())
+                        .groupBy(toMap((g, c) -> g, (g, c) -> c, Integer::sum))
+                        .penalize(SimpleScore.ONE)
+                        .as(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -174,16 +174,16 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
     void triGroupByRecollected() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 3, 2, 6);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
-                    .join(TestdataLavishEntity.class,
-                            equal((a, b) -> a.getEntityGroup(), TestdataLavishEntity::getEntityGroup),
-                            filtering((a, b, c) -> !Objects.equals(a, c) && !Objects.equals(b, c)))
-                    // Stream of all unique entity tri tuples that share a group
-                    .groupBy((a, b, c) -> a.getEntityGroup(), countTri())
-                    .groupBy(toMap((g, c) -> g, (g, c) -> c, Integer::sum))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
+                        .join(TestdataLavishEntity.class,
+                                equal((a, b) -> a.getEntityGroup(), TestdataLavishEntity::getEntityGroup),
+                                filtering((a, b, c) -> !Objects.equals(a, c) && !Objects.equals(b, c)))
+                        // Stream of all unique entity tri tuples that share a group
+                        .groupBy((a, b, c) -> a.getEntityGroup(), countTri())
+                        .groupBy(toMap((g, c) -> g, (g, c) -> c, Integer::sum))
+                        .penalize(SimpleScore.ONE)
+                        .as(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -205,19 +205,19 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
     void quadGroupByRecollected() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 3, 2, 8);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
-                    .join(TestdataLavishEntity.class,
-                            equal((a, b) -> a.getEntityGroup(), TestdataLavishEntity::getEntityGroup),
-                            filtering((a, b, c) -> !Objects.equals(a, c) && !Objects.equals(b, c)))
-                    .join(TestdataLavishEntity.class,
-                            equal((a, b, c) -> a.getEntityGroup(), TestdataLavishEntity::getEntityGroup),
-                            filtering((a, b, c, d) -> !Objects.equals(a, d) && !Objects.equals(b, d) && !Objects.equals(c, d)))
-                    // Stream of all unique entity quad tuples that share a group
-                    .groupBy((a, b, c, d) -> a.getEntityGroup(), countQuad())
-                    .groupBy(toMap((g, c) -> g, (g, c) -> c, Integer::sum))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> factory
+                .forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getEntityGroup))
+                .join(TestdataLavishEntity.class,
+                        equal((a, b) -> a.getEntityGroup(), TestdataLavishEntity::getEntityGroup),
+                        filtering((a, b, c) -> !Objects.equals(a, c) && !Objects.equals(b, c)))
+                .join(TestdataLavishEntity.class,
+                        equal((a, b, c) -> a.getEntityGroup(), TestdataLavishEntity::getEntityGroup),
+                        filtering((a, b, c, d) -> !Objects.equals(a, d) && !Objects.equals(b, d) && !Objects.equals(c, d)))
+                // Stream of all unique entity quad tuples that share a group
+                .groupBy((a, b, c, d) -> a.getEntityGroup(), countQuad())
+                .groupBy(toMap((g, c) -> g, (g, c) -> c, Integer::sum))
+                .penalize(SimpleScore.ONE)
+                .as(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -552,12 +552,12 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
                 solution.getFirstValue());
         solution.getEntityList().add(entity3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEachUniquePair(TestdataLavishEntity.class,
-                    Joiners.equal(TestdataLavishEntity::getEntityGroup),
-                    Joiners.filtering((e1, e2) -> !e1.getCode().contains("My"))) // Filtering() caused PLANNER-2139.
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> factory
+                .forEachUniquePair(TestdataLavishEntity.class,
+                        Joiners.equal(TestdataLavishEntity::getEntityGroup),
+                        Joiners.filtering((e1, e2) -> !e1.getCode().contains("My"))) // Filtering() caused PLANNER-2139.
+                .penalize(SimpleScore.ONE)
+                .as(TEST_CONSTRAINT_NAME));
 
         // From scratch
         scoreDirector.setWorkingSolution(solution);
@@ -573,15 +573,15 @@ final class DroolsAdvancedGroupByConstraintStreamTest extends AbstractAdvancedGr
 
     @TestTemplate
     void groupByThenJoinThenGroupBy() { // PLANNER-2270
-        assertThatCode(() -> buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .groupBy(TestdataLavishEntity::getEntityGroup, TestdataLavishEntity::getValue)
-                    .join(TestdataLavishEntity.class)
-                    .groupBy((group, value, entity) -> group,
-                            (group, value, entity) -> entity,
-                            sum((group, count, entity) -> 1))
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE);
-        })).doesNotThrowAnyException();
+        assertThatCode(() -> buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                .groupBy(TestdataLavishEntity::getEntityGroup, TestdataLavishEntity::getValue)
+                .join(TestdataLavishEntity.class)
+                .groupBy((group, value, entity) -> group,
+                        (group, value, entity) -> entity,
+                        sum((group, count, entity) -> 1))
+                .penalize(SimpleScore.ONE)
+                .as(TEST_CONSTRAINT_NAME)))
+                        .doesNotThrowAnyException();
     }
 
 }

@@ -64,7 +64,8 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
         return factory.forEachUniquePair(MrProcessAssignment.class,
                 equal(MrProcessAssignment::getMachine, MrProcessAssignment::getMachine),
                 equal(MrProcessAssignment::getService, MrProcessAssignment::getService))
-                .penalize(MrConstraints.SERVICE_CONFLICT, HardSoftLongScore.ONE_HARD);
+                .penalize(HardSoftLongScore.ONE_HARD)
+                .as(MrConstraints.SERVICE_CONFLICT);
     }
 
     /**
@@ -93,7 +94,8 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
                                 MrProcessAssignment::getService),
                         filtering((serviceDependency, processFrom,
                                 processTo) -> !processFrom.getNeighborhood().equals(processTo.getNeighborhood())))
-                .penalize(MrConstraints.SERVICE_DEPENDENCY, HardSoftLongScore.ONE_HARD);
+                .penalize(HardSoftLongScore.ONE_HARD)
+                .as(MrConstraints.SERVICE_DEPENDENCY);
     }
 
     /**

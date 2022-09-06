@@ -23,12 +23,14 @@ public class TestdataConstraintProvider implements ConstraintProvider {
 
     public Constraint penalizeEveryEntity(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(TestdataEntity.class)
-                .penalize("Penalize every entity", SimpleScore.ONE);
+                .penalize(SimpleScore.ONE)
+                .as("Penalize every entity");
     }
 
     public Constraint rewardEveryEntity(ConstraintFactory constraintFactory) {
         return constraintFactory.forEach(TestdataEntity.class)
-                .reward("Reward every entity", SimpleScore.ONE);
+                .reward(SimpleScore.ONE)
+                .as("Reward every entity");
     }
 
     public Constraint impactEveryEntity(ConstraintFactory constraintFactory) {
@@ -41,7 +43,8 @@ public class TestdataConstraintProvider implements ConstraintProvider {
     public Constraint differentStringEntityHaveDifferentValues(ConstraintFactory constraintFactory) {
         return constraintFactory.forEachUniquePair(TestdataStringPlanningIdEntity.class,
                 Joiners.equal(TestdataStringPlanningIdEntity::getValue))
-                .penalize("Different String Entity Have Different Values", SimpleScore.ONE);
+                .penalize(SimpleScore.ONE)
+                .as("Different String Entity Have Different Values");
     }
 
 }

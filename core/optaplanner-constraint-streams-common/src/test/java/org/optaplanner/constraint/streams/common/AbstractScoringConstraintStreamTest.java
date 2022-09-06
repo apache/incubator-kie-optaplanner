@@ -32,7 +32,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
-                        .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE));
+                        .penalize(SimpleScore.ONE)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -91,7 +92,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
-                        .reward(TEST_CONSTRAINT_NAME, SimpleScore.ONE));
+                        .reward(SimpleScore.ONE)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -152,7 +154,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
-                        .impact(TEST_CONSTRAINT_NAME, SimpleScore.ONE));
+                        .impact(SimpleScore.ONE)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -263,7 +266,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
-                        .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE));
+                        .penalize(SimpleScore.ONE)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -325,7 +329,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
-                        .reward(TEST_CONSTRAINT_NAME, SimpleScore.ONE));
+                        .reward(SimpleScore.ONE)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -387,7 +392,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
 
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
-                        .impact(TEST_CONSTRAINT_NAME, SimpleScore.ONE));
+                        .impact(SimpleScore.ONE)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -499,7 +505,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
                         .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                        .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE));
+                        .penalize(SimpleScore.ONE)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -562,7 +569,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
                         .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                        .reward(TEST_CONSTRAINT_NAME, SimpleScore.ONE));
+                        .reward(SimpleScore.ONE)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -625,7 +633,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
                         .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
-                        .impact(TEST_CONSTRAINT_NAME, SimpleScore.ONE));
+                        .impact(SimpleScore.ONE)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -738,7 +747,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
                         .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
                         .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
-                        .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE));
+                        .penalize(SimpleScore.ONE)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -805,7 +815,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
                         .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
                         .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
-                        .reward(TEST_CONSTRAINT_NAME, SimpleScore.ONE));
+                        .reward(SimpleScore.ONE)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
@@ -872,7 +883,8 @@ public abstract class AbstractScoringConstraintStreamTest extends AbstractConstr
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class, equal(TestdataLavishEntity::getValue))
                         .join(TestdataLavishValue.class, equal((entity, entity2) -> entity.getValue(), identity()))
                         .join(TestdataLavishValue.class, equal((entity, entity2, value) -> value, identity()))
-                        .impact(TEST_CONSTRAINT_NAME, SimpleScore.ONE));
+                        .impact(SimpleScore.ONE)
+                        .as(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();

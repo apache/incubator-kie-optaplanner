@@ -70,7 +70,8 @@ public class NurseRosteringConstraintProvider implements ConstraintProvider {
         return constraintFactory.forEachUniquePair(ShiftAssignment.class,
                 Joiners.equal(ShiftAssignment::getEmployee),
                 Joiners.equal(ShiftAssignment::getShiftDate))
-                .penalize("oneShiftPerDay", HardSoftScore.ONE_HARD);
+                .penalize(HardSoftScore.ONE_HARD)
+                .as("oneShiftPerDay");
     }
 
     // ############################################################################
