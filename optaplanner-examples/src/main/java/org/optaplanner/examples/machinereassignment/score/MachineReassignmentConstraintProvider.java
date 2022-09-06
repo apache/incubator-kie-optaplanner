@@ -56,8 +56,9 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
                         sumLong((machineCapacity, processAssignment) -> processAssignment
                                 .getUsage(machineCapacity.getResource())))
                 .filter(((machine, machineCapacity, usage) -> machineCapacity.getMaximumCapacity() < usage))
-                .penalizeLong(MrConstraints.MAXIMUM_CAPACITY, HardSoftLongScore.ONE_HARD,
-                        (machine, machineCapacity, usage) -> usage - machineCapacity.getMaximumCapacity());
+                .penalizeLong(HardSoftLongScore.ONE_HARD,
+                        (machine, machineCapacity, usage) -> usage - machineCapacity.getMaximumCapacity())
+                .as(MrConstraints.MAXIMUM_CAPACITY);
     }
 
     protected Constraint serviceConflict(ConstraintFactory factory) {

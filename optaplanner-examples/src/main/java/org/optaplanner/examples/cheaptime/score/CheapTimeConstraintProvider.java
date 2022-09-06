@@ -102,12 +102,13 @@ public class CheapTimeConstraintProvider implements ConstraintProvider {
                 .groupBy((machine, brk, idlePeriod) -> machine,
                         (machine, brk, idlePeriod) -> brk,
                         sumLong((machine, brk, idlePeriod) -> idlePeriod.getPowerPriceMicros()))
-                .penalizeLong("Machine idle costs", HardMediumSoftLongScore.ONE_MEDIUM,
+                .penalizeLong(HardMediumSoftLongScore.ONE_MEDIUM,
                         (machine, brk, powerCost) -> {
                             long idleCost = multiplyTwoMicros(machine.getPowerConsumptionMicros(), powerCost);
                             // Shutting down and restarting the machine may be cheaper than keeping it idle.
                             return Math.min(idleCost, machine.getSpinUpDownCostMicros());
-                        });
+                        })
+                .as("Machine idle costs");
     }
 
     protected Constraint taskPowerCost(ConstraintFactory constraintFactory) {

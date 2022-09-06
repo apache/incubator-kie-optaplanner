@@ -134,8 +134,8 @@ public final class ConferenceSchedulingConstraintProvider implements ConstraintP
                 overlapping(t -> t.getTimeslot().getStartDateTime(), t -> t.getTimeslot().getEndDateTime()))
                 .join(Speaker.class,
                         filtering((talk1, talk2, speaker) -> talk1.hasSpeaker(speaker) && talk2.hasSpeaker(speaker)))
-                .penalizeConfigurable(SPEAKER_CONFLICT,
-                        (talk1, talk2, speaker) -> talk2.overlappingDurationInMinutes(talk1));
+                .penalize((talk1, talk2, speaker) -> talk2.overlappingDurationInMinutes(talk1))
+                .as(SPEAKER_CONFLICT);
     }
 
     protected Constraint talkPrerequisiteTalks(ConstraintFactory factory) {

@@ -44,8 +44,9 @@ public class CurriculumCourseConstraintProvider implements ConstraintProvider {
                         equal((courseConflict, lecture1) -> courseConflict.getRightCourse(), Lecture::getCourse),
                         equal((courseConflict, lecture1) -> lecture1.getPeriod(), Lecture::getPeriod))
                 .filter(((courseConflict, lecture1, lecture2) -> lecture1 != lecture2))
-                .penalize("conflictingLecturesDifferentCourseInSamePeriod", ONE_HARD,
-                        (courseConflict, lecture1, lecture2) -> courseConflict.getConflictCount());
+                .penalize(ONE_HARD,
+                        (courseConflict, lecture1, lecture2) -> courseConflict.getConflictCount())
+                .as("conflictingLecturesDifferentCourseInSamePeriod");
     }
 
     Constraint conflictingLecturesSameCourseInSamePeriod(ConstraintFactory factory) {

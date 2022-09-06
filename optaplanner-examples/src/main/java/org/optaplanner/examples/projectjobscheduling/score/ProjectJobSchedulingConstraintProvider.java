@@ -50,9 +50,9 @@ public class ProjectJobSchedulingConstraintProvider implements ConstraintProvide
                         (resourceReq, date) -> date,
                         ConstraintCollectors.sum((resourceReq, date) -> resourceReq.getRequirement()))
                 .filter((resourceReq, date, totalRequirement) -> totalRequirement > resourceReq.getCapacity())
-                .penalize("Renewable resource capacity",
-                        HardMediumSoftScore.ofHard(1),
-                        (resourceReq, date, totalRequirement) -> totalRequirement - resourceReq.getCapacity());
+                .penalize(HardMediumSoftScore.ONE_HARD,
+                        (resourceReq, date, totalRequirement) -> totalRequirement - resourceReq.getCapacity())
+                .as("Renewable resource capacity");
     }
 
     protected Constraint totalProjectDelay(ConstraintFactory constraintFactory) {

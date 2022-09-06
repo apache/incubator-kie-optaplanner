@@ -1148,13 +1148,13 @@ public abstract class AbstractTriConstraintStreamTest
     public void groupBy_2Mapping1Collector() {
         TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(1, 2, 2, 3);
 
-        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(factory -> {
-            return factory.forEach(TestdataLavishEntity.class)
-                    .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
-                    .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
-                    .groupBy((entity, group, value) -> group, (entity, group, value) -> value, countTri())
-                    .penalize(TEST_CONSTRAINT_NAME, SimpleScore.ONE, (group, value, count) -> count);
-        });
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector =
+                buildScoreDirector(factory -> factory.forEach(TestdataLavishEntity.class)
+                        .join(TestdataLavishEntityGroup.class, equal(TestdataLavishEntity::getEntityGroup, identity()))
+                        .join(TestdataLavishValue.class, equal((entity, group) -> entity.getValue(), identity()))
+                        .groupBy((entity, group, value) -> group, (entity, group, value) -> value, countTri())
+                        .penalize(SimpleScore.ONE, (group, value, count) -> count)
+                        .as(TEST_CONSTRAINT_NAME));
 
         TestdataLavishEntityGroup group1 = solution.getFirstEntityGroup();
         TestdataLavishEntityGroup group2 = solution.getEntityGroupList().get(1);
@@ -1624,7 +1624,8 @@ public abstract class AbstractTriConstraintStreamTest
                         factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                 .join(TestdataValue.class)
-                                .penalize("myConstraint2", SimpleScore.ONE, (entity, value, extra) -> 20)
+                                .penalize(SimpleScore.ONE, (entity, value, extra) -> 20)
+                                .as("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1652,7 +1653,8 @@ public abstract class AbstractTriConstraintStreamTest
                         factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                 .join(TestdataValue.class)
-                                .penalizeLong("myConstraint2", SimpleLongScore.ONE, (entity, value, extra) -> 20L)
+                                .penalizeLong(SimpleLongScore.ONE, (entity, value, extra) -> 20L)
+                                .as("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1680,8 +1682,9 @@ public abstract class AbstractTriConstraintStreamTest
                         factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                 .join(TestdataValue.class)
-                                .penalizeBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE,
+                                .penalizeBigDecimal(SimpleBigDecimalScore.ONE,
                                         (entity, value, extra) -> new BigDecimal("0.2"))
+                                .as("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1699,7 +1702,8 @@ public abstract class AbstractTriConstraintStreamTest
                 factory -> factory.forEach(TestdataLavishEntity.class)
                         .join(TestdataLavishEntityGroup.class)
                         .join(TestdataLavishValue.class)
-                        .penalize(constraintName, SimpleScore.ONE, (entity, group, value) -> -1));
+                        .penalize(SimpleScore.ONE, (entity, group, value) -> -1)
+                        .as(constraintName));
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
@@ -1726,7 +1730,8 @@ public abstract class AbstractTriConstraintStreamTest
                         factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                 .join(TestdataValue.class)
-                                .reward("myConstraint2", SimpleScore.ONE, (entity, value, extra) -> 20)
+                                .reward(SimpleScore.ONE, (entity, value, extra) -> 20)
+                                .as("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1754,7 +1759,8 @@ public abstract class AbstractTriConstraintStreamTest
                         factory.forEach(TestdataEntity.class)
                                 .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                 .join(TestdataValue.class)
-                                .rewardLong("myConstraint2", SimpleLongScore.ONE, (entity, value, extra) -> 20L)
+                                .rewardLong(SimpleLongScore.ONE, (entity, value, extra) -> 20L)
+                                .as("myConstraint2")
                 });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1782,8 +1788,9 @@ public abstract class AbstractTriConstraintStreamTest
                                 factory.forEach(TestdataEntity.class)
                                         .join(TestdataValue.class, equal(TestdataEntity::getValue, identity()))
                                         .join(TestdataValue.class)
-                                        .rewardBigDecimal("myConstraint2", SimpleBigDecimalScore.ONE,
+                                        .rewardBigDecimal(SimpleBigDecimalScore.ONE,
                                                 (entity, value, extra) -> new BigDecimal("0.2"))
+                                        .as("myConstraint2")
                         });
 
         scoreDirector.setWorkingSolution(solution);
@@ -1801,7 +1808,8 @@ public abstract class AbstractTriConstraintStreamTest
                 factory -> factory.forEach(TestdataLavishEntity.class)
                         .join(TestdataLavishEntityGroup.class)
                         .join(TestdataLavishValue.class)
-                        .reward(constraintName, SimpleScore.ONE, (entity, group, value) -> -1));
+                        .reward(SimpleScore.ONE, (entity, group, value) -> -1)
+                        .as(constraintName));
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
