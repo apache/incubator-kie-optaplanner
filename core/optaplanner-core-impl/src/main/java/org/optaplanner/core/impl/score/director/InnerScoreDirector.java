@@ -300,11 +300,11 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
      * <ol>
      * <li>{@code fromIndex} must be greater than or equal to 0; {@code toIndex} must be less than or equal to the list variable
      * size.</li>
-     * <li>{@code fromIndex} and {@code toIndex} must be the same in both {@code beforeSubListChanged} and
-     * {@link #afterSubListChanged}.</li>
-     * <li>After the change, the subList must contain all elements that have changed and must not contain any elements that
-     * haven't changed.
-     * </li>
+     * <li>{@code toIndex} must be greater than or equal to {@code fromIndex}.</li>
+     * <li>The subList must contain all elements that are going to be changed by the move.</li>
+     * <li>The subList is allowed to contain elements that are not going to be changed by the move.</li>
+     * <li>The subList may be empty ({@code fromIndex} equals {@code toIndex}) if none of the existing list variable elements
+     * are going to be changed by the move.</li>
      * </ol>
      *
      * @param variableDescriptor descriptor of the variable being changed
@@ -315,7 +315,19 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
     void beforeSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex, int toIndex);
 
     /**
-     * See {@link #beforeSubListChanged}.
+     * Notify the score director after a subList of a list variable has changed. The subList is a continuous sequence of
+     * the list variable elements starting at {@code fromIndex} (inclusive) and ending at {@code toIndex} (exclusive).
+     * <p>
+     * The subList has to comply with the following contract:
+     * <ol>
+     * <li>{@code fromIndex} must be greater than or equal to 0; {@code toIndex} must be less than or equal to the list variable
+     * size.</li>
+     * <li>{@code toIndex} must be greater than or equal to {@code fromIndex}.</li>
+     * <li>The subList must contain all elements that have been changed by the move.</li>
+     * <li>The subList is allowed to contain elements that have not been changed by the move.</li>
+     * <li>The subList may be empty ({@code fromIndex} equals {@code toIndex}) if all of the changed elements have been
+     * moved to another list variable.</li>
+     * </ol>
      *
      * @param variableDescriptor descriptor of the variable being changed
      * @param entity the entity owning the variable being changed
