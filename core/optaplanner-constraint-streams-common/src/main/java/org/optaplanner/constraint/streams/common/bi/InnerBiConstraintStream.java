@@ -53,13 +53,13 @@ public interface InnerBiConstraintStream<A, B> extends BiConstraintStream<A, B> 
 
     @Override
     default Constraint penalizeConfigurable(String constraintName) {
-        return penalize()
+        return penalizeConfigurable()
                 .as(constraintName);
     }
 
     @Override
     default Constraint penalizeConfigurable(String constraintPackage, String constraintName) {
-        return penalize()
+        return penalizeConfigurable()
                 .as(constraintPackage, constraintName);
     }
 
@@ -77,13 +77,13 @@ public interface InnerBiConstraintStream<A, B> extends BiConstraintStream<A, B> 
 
     @Override
     default Constraint rewardConfigurable(String constraintName) {
-        return reward()
+        return rewardConfigurable()
                 .as(constraintName);
     }
 
     @Override
     default Constraint rewardConfigurable(String constraintPackage, String constraintName) {
-        return penalize()
+        return penalizeConfigurable()
                 .as(constraintPackage, constraintName);
     }
 

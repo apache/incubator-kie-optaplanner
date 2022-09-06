@@ -280,7 +280,7 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     // ************************************************************************
 
     @Override
-    public UniTerminator<A> penalize(ToIntFunction<A> matchWeigher) {
+    public UniTerminator<A> penalizeConfigurable(ToIntFunction<A> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.PENALTY);
     }
@@ -293,49 +293,49 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
-    public UniTerminator<A> penalizeLong(ToLongFunction<A> matchWeigher) {
+    public UniTerminator<A> penalizeConfigurableLong(ToLongFunction<A> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.PENALTY);
     }
 
     @Override
-    public UniTerminator<A> penalizeBigDecimal(Function<A, BigDecimal> matchWeigher) {
+    public UniTerminator<A> penalizeConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.PENALTY);
     }
 
     @Override
-    public UniTerminator<A> reward(ToIntFunction<A> matchWeigher) {
+    public UniTerminator<A> rewardConfigurable(ToIntFunction<A> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.REWARD);
     }
 
     @Override
-    public UniTerminator<A> rewardLong(ToLongFunction<A> matchWeigher) {
+    public UniTerminator<A> rewardConfigurableLong(ToLongFunction<A> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.REWARD);
     }
 
     @Override
-    public UniTerminator<A> rewardBigDecimal(Function<A, BigDecimal> matchWeigher) {
+    public UniTerminator<A> rewardConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.REWARD);
     }
 
     @Override
-    public UniTerminator<A> impact(ToIntFunction<A> matchWeigher) {
+    public UniTerminator<A> impactConfigurable(ToIntFunction<A> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.MIXED);
     }
 
     @Override
-    public UniTerminator<A> impactLong(ToLongFunction<A> matchWeigher) {
+    public UniTerminator<A> impactConfigurableLong(ToLongFunction<A> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.MIXED);
     }
 
     @Override
-    public UniTerminator<A> impactBigDecimal(Function<A, BigDecimal> matchWeigher) {
+    public UniTerminator<A> impactConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, ScoreImpactType.MIXED);
     }
