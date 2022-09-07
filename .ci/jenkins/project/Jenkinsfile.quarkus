@@ -103,7 +103,7 @@ pipeline {
 }
 
 void sendErrorNotification() {
-    String additionalInfo = "[${getBuildBranch()}] Optaplanner - Quarkus ${getQuarkusBranch()}}"
+    String additionalInfo = "**[${getBuildBranch()}] Optaplanner - Quarkus ${getQuarkusBranch()}**"
     mailer.sendMarkdownTestSummaryNotification("CI failures", [env.OPTAPLANNER_CI_EMAIL_TO], additionalInfo)
 }
 

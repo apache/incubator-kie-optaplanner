@@ -96,7 +96,7 @@ void sendErrorNotification() {
 
 String getNotificationAdditionalInfo() {
     return """
-    [${getBuildBranch()}] Optaplanner - Turtle tests
-    "${getConstraintStreamImplType()}"
+    **[${getBuildBranch()}] Optaplanner - Turtle tests**
+    **"${getConstraintStreamImplType()}"**
     """
 }
