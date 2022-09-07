@@ -788,7 +788,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Applies a negative {@link Score} impact,
      * subtracting the constraintWeight multiplied by the match weight,
-     * and returns a builder to apply optional constraint configuration.
+     * and returns a builder to apply optional constraint properties.
      * <p>
      * For non-int {@link Score} types use {@link #penalizeLong(Score, ToLongQuadFunction)} or
      * {@link #penalizeBigDecimal(Score, QuadFunction)} instead.
@@ -813,7 +813,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Negatively impacts the {@link Score},
      * subtracting the {@link ConstraintWeight} for each match,
-     * and returns a builder to apply optional constraint configuration.
+     * and returns a builder to apply optional constraint properties.
      * <p>
      * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
      * so end users can change the constraint weights dynamically.
@@ -829,7 +829,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Negatively impacts the {@link Score},
      * subtracting the {@link ConstraintWeight} multiplied by match weight for each match,
-     * and returns a builder to apply optional constraint configuration.
+     * and returns a builder to apply optional constraint properties.
      * <p>
      * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
      * so end users can change the constraint weights dynamically.
@@ -867,7 +867,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Applies a positive {@link Score} impact,
      * adding the constraintWeight multiplied by the match weight,
-     * and returns a builder to apply optional constraint configuration.
+     * and returns a builder to apply optional constraint properties.
      * <p>
      * For non-int {@link Score} types use {@link #rewardLong(Score, ToLongQuadFunction)} or
      * {@link #rewardBigDecimal(Score, QuadFunction)} instead.
@@ -892,7 +892,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Positively impacts the {@link Score},
      * adding the {@link ConstraintWeight} for each match,
-     * and returns a builder to apply optional constraint configuration.
+     * and returns a builder to apply optional constraint properties.
      * <p>
      * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
      * so end users can change the constraint weights dynamically.
@@ -908,7 +908,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     /**
      * Positively impacts the {@link Score},
      * adding the {@link ConstraintWeight} multiplied by match weight for each match,
-     * and returns a builder to apply optional constraint configuration.
+     * and returns a builder to apply optional constraint properties.
      * <p>
      * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
      * so end users can change the constraint weights dynamically.
@@ -936,7 +936,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * Positively or negatively impacts the {@link Score} by the constraintWeight for each match
-     * and returns a builder to apply optional constraint configuration.
+     * and returns a builder to apply optional constraint properties.
      * <p>
      * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
      * negative weights.
@@ -950,7 +950,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * Positively or negatively impacts the {@link Score} by constraintWeight multiplied by matchWeight for each match
-     * and returns a builder to apply optional constraint configuration.
+     * and returns a builder to apply optional constraint properties.
      * <p>
      * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
      * negative weights.
@@ -974,7 +974,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * Positively impacts the {@link Score} by the {@link ConstraintWeight} for each match,
-     * and returns a builder to apply optional constraint configuration.
+     * and returns a builder to apply optional constraint properties.
      * <p>
      * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
      * so end users can change the constraint weights dynamically.
@@ -989,7 +989,7 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
 
     /**
      * Positively impacts the {@link Score} by the {@link ConstraintWeight} multiplied by match weight for each match,
-     * and returns a builder to apply optional constraint configuration.
+     * and returns a builder to apply optional constraint properties.
      * <p>
      * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
      * so end users can change the constraint weights dynamically.
