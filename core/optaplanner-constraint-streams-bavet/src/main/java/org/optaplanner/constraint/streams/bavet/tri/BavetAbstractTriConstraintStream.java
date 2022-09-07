@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -406,8 +407,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     private TriConstraintBuilderImpl<A, B, C> newTerminator(BavetScoringConstraintStream<Solution_> stream,
             Score<?> constraintWeight, ScoreImpactType impactType) {
         return new TriConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) ->
-                        buildConstraint(constraintPackage, constraintName, constraintWeight_, impactType_, stream),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) -> buildConstraint(
+                        constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction, stream),
                 impactType, constraintWeight);
     }
 
@@ -423,6 +424,11 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
             ScoreImpactType scoreImpactType) {
         var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
         return newTerminator(stream, constraintWeight, scoreImpactType);
+    }
+
+    @Override
+    protected final TriFunction<A, B, C, Object> getDefaultJustificationFunction() {
+        return Arrays::asList;
     }
 
 }

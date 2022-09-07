@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.bavet.uni;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -395,8 +396,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     private UniConstraintBuilderImpl<A> newTerminator(BavetScoringConstraintStream<Solution_> stream,
             Score<?> constraintWeight, ScoreImpactType impactType) {
         return new UniConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) ->
-                        buildConstraint(constraintPackage, constraintName, constraintWeight_, impactType_, stream),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) -> buildConstraint(
+                        constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction, stream),
                 impactType, constraintWeight);
     }
 
@@ -412,6 +413,11 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
             ScoreImpactType scoreImpactType) {
         var stream = shareAndAddChild(new BavetScoringUniConstraintStream<>(constraintFactory, this, matchWeigher));
         return newTerminator(stream, constraintWeight, scoreImpactType);
+    }
+
+    @Override
+    protected final Function<A, Object> getDefaultJustificationFunction() {
+        return Collections::singletonList;
     }
 
 }

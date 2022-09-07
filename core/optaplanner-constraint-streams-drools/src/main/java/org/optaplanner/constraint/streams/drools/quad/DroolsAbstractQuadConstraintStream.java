@@ -3,6 +3,7 @@ package org.optaplanner.constraint.streams.drools.quad;
 import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -273,8 +274,8 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     private QuadConstraintBuilderImpl<A, B, C, D> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
             ScoreImpactType impactType) {
         return new QuadConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) ->
-                        buildConstraint(constraintPackage, constraintName, constraintWeight_, impactType_, ruleBuilder),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) -> buildConstraint(
+                        constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction, ruleBuilder),
                 impactType, constraintWeight);
     }
 
@@ -290,6 +291,11 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
+    }
+
+    @Override
+    protected final QuadFunction<A, B, C, D, Object> getDefaultJustificationFunction() {
+        return Arrays::asList;
     }
 
     public abstract QuadLeftHandSide<A, B, C, D> getLeftHandSide();

@@ -3,6 +3,7 @@ package org.optaplanner.constraint.streams.drools.tri;
 import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -301,9 +302,14 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     private TriConstraintBuilderImpl<A, B, C> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
             ScoreImpactType impactType) {
         return new TriConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) ->
-                        buildConstraint(constraintPackage, constraintName, constraintWeight_, impactType_, ruleBuilder),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) -> buildConstraint(
+                        constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction, ruleBuilder),
                 impactType, constraintWeight);
+    }
+
+    @Override
+    protected final TriFunction<A, B, C, Object> getDefaultJustificationFunction() {
+        return Arrays::asList;
     }
 
     public abstract TriLeftHandSide<A, B, C> getLeftHandSide();

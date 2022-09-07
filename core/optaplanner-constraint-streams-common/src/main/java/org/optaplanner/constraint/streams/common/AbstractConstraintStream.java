@@ -84,4 +84,6 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
     @Override
     public abstract InnerConstraintFactory<Solution_, ?> getConstraintFactory();
 
+    protected abstract <JustificationFunction_> JustificationFunction_ getDefaultJustificationFunction();
+
 }

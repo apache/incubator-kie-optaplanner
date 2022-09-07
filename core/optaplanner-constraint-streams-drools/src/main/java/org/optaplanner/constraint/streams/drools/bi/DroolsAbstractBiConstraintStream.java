@@ -3,6 +3,7 @@ package org.optaplanner.constraint.streams.drools.bi;
 import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -283,8 +284,8 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     private BiConstraintBuilderImpl<A, B> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
             ScoreImpactType impactType) {
         return new BiConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) ->
-                        buildConstraint(constraintPackage, constraintName, constraintWeight_, impactType_, ruleBuilder),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) -> buildConstraint(
+                        constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction, ruleBuilder),
                 impactType, constraintWeight);
     }
 
@@ -300,6 +301,11 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
             ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
+    }
+
+    @Override
+    protected final BiFunction<A, B, Object> getDefaultJustificationFunction() {
+        return Arrays::asList;
     }
 
     public abstract BiLeftHandSide<A, B> getLeftHandSide();

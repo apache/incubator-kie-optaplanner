@@ -17,10 +17,14 @@ public abstract class AbstractConstraint<Solution_, Constraint_ extends Abstract
     private final Function<Solution_, Score<?>> constraintWeightExtractor;
     private final ScoreImpactType scoreImpactType;
     private final boolean isConstraintWeightConfigurable;
+    /**
+     * Constraint is not generic in uni/bi/..., therefore this can not be typed.
+     */
+    private final Object justificationFunction;
 
     protected AbstractConstraint(ConstraintFactory_ constraintFactory, String constraintPackage, String constraintName,
             Function<Solution_, Score<?>> constraintWeightExtractor, ScoreImpactType scoreImpactType,
-            boolean isConstraintWeightConfigurable) {
+            boolean isConstraintWeightConfigurable, Object justificationFunction) {
         this.constraintFactory = constraintFactory;
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
@@ -28,6 +32,7 @@ public abstract class AbstractConstraint<Solution_, Constraint_ extends Abstract
         this.constraintWeightExtractor = constraintWeightExtractor;
         this.scoreImpactType = scoreImpactType;
         this.isConstraintWeightConfigurable = isConstraintWeightConfigurable;
+        this.justificationFunction = justificationFunction;
     }
 
     public final <Score_ extends Score<Score_>> Score_ extractConstraintWeight(Solution_ workingSolution) {
@@ -110,5 +115,10 @@ public abstract class AbstractConstraint<Solution_, Constraint_ extends Abstract
 
     public final ScoreImpactType getScoreImpactType() {
         return scoreImpactType;
+    }
+
+    public <JustificationFunction_> JustificationFunction_ getJustificationFunction() {
+        // It is the job of the code constructing the constraint to ensure that this cast is correct.
+        return (JustificationFunction_) justificationFunction;
     }
 }

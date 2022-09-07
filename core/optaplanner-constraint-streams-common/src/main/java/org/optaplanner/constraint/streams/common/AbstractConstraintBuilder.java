@@ -28,7 +28,8 @@ public abstract class AbstractConstraintBuilder<ConstraintBuilder_ extends Const
 
     @Override
     public final Constraint asConstraint(String constraintPackage, String constraintName) {
-        return constraintConstructor.apply(constraintPackage, constraintName, constraintWeight, impactType, getJustificationFunction());
+        return constraintConstructor.apply(constraintPackage, constraintName, constraintWeight, impactType,
+                getJustificationFunction());
     }
 
 }

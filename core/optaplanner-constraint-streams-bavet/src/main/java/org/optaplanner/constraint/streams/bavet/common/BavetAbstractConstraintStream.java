@@ -30,16 +30,18 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
     // ************************************************************************
 
     protected Constraint buildConstraint(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ScoreImpactType impactType, BavetScoringConstraintStream<Solution_> stream) {
+            ScoreImpactType impactType, Object justificationFunction, BavetScoringConstraintStream<Solution_> stream) {
         var resolvedConstraintPackage =
                 Objects.requireNonNullElseGet(constraintPackage, this.constraintFactory::getDefaultConstraintPackage);
+        var resolvedJustificationFunction =
+                Objects.requireNonNullElseGet(justificationFunction, this::getDefaultJustificationFunction);
         var isConstraintWeightConfigurable = constraintWeight == null;
         var constraintWeightExtractor = isConstraintWeightConfigurable
                 ? buildConstraintWeightExtractor(resolvedConstraintPackage, constraintName)
                 : buildConstraintWeightExtractor(resolvedConstraintPackage, constraintName, constraintWeight);
         var constraint =
                 new BavetConstraint<>(constraintFactory, resolvedConstraintPackage, constraintName, constraintWeightExtractor,
-                        impactType, isConstraintWeightConfigurable, stream);
+                        impactType, resolvedJustificationFunction, isConstraintWeightConfigurable, stream);
         stream.setConstraint(constraint);
         return constraint;
     }
