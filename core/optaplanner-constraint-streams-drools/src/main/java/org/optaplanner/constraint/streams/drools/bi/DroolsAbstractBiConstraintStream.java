@@ -283,9 +283,8 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     private BiConstraintBuilderImpl<A, B> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
             ScoreImpactType impactType) {
         return new BiConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_) -> buildConstraint(constraintPackage,
-                        constraintName,
-                        constraintWeight_, impactType_, ruleBuilder),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) ->
+                        buildConstraint(constraintPackage, constraintName, constraintWeight_, impactType_, ruleBuilder),
                 impactType, constraintWeight);
     }
 

@@ -4,9 +4,9 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 
 @FunctionalInterface
-public interface ConstraintConstructor {
+public interface ConstraintConstructor<JustificationFunction_> {
 
     Constraint apply(String constraintPackage, String constraintName, Score<?> constraintWeight,
-            ScoreImpactType impactType);
+            ScoreImpactType impactType, JustificationFunction_ justificationFunction);
 
 }

@@ -19,14 +19,16 @@ public abstract class AbstractConstraintBuilder<ConstraintBuilder_ extends Const
         this.constraintWeight = constraintWeight;
     }
 
+    protected abstract <JustificationFunction_> JustificationFunction_ getJustificationFunction();
+
     @Override
     public final Constraint asConstraint(String constraintName) {
-        return constraintConstructor.apply(null, constraintName, constraintWeight, impactType);
+        return constraintConstructor.apply(null, constraintName, constraintWeight, impactType, getJustificationFunction());
     }
 
     @Override
     public final Constraint asConstraint(String constraintPackage, String constraintName) {
-        return constraintConstructor.apply(constraintPackage, constraintName, constraintWeight, impactType);
+        return constraintConstructor.apply(constraintPackage, constraintName, constraintWeight, impactType, getJustificationFunction());
     }
 
 }

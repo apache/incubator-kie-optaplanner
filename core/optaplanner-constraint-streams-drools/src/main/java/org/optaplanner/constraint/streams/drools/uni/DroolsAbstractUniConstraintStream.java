@@ -290,9 +290,8 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     private UniConstraintBuilderImpl<A> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
             ScoreImpactType impactType) {
         return new UniConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_) -> buildConstraint(constraintPackage,
-                        constraintName,
-                        constraintWeight_, impactType_, ruleBuilder),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) ->
+                        buildConstraint(constraintPackage, constraintName, constraintWeight_, impactType_, ruleBuilder),
                 impactType, constraintWeight);
     }
 

@@ -406,8 +406,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     private TriConstraintBuilderImpl<A, B, C> newTerminator(BavetScoringConstraintStream<Solution_> stream,
             Score<?> constraintWeight, ScoreImpactType impactType) {
         return new TriConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_) -> buildConstraint(constraintPackage,
-                        constraintName, constraintWeight_, impactType_, stream),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) ->
+                        buildConstraint(constraintPackage, constraintName, constraintWeight_, impactType_, stream),
                 impactType, constraintWeight);
     }
 

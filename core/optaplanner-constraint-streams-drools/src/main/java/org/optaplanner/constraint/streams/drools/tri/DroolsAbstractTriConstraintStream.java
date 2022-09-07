@@ -301,8 +301,8 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     private TriConstraintBuilderImpl<A, B, C> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
             ScoreImpactType impactType) {
         return new TriConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_) -> buildConstraint(constraintPackage,
-                        constraintName, constraintWeight_, impactType_, ruleBuilder),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) ->
+                        buildConstraint(constraintPackage, constraintName, constraintWeight_, impactType_, ruleBuilder),
                 impactType, constraintWeight);
     }
 

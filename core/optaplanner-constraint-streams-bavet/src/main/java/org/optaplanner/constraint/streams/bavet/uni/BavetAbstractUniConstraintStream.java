@@ -395,9 +395,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     private UniConstraintBuilderImpl<A> newTerminator(BavetScoringConstraintStream<Solution_> stream,
             Score<?> constraintWeight, ScoreImpactType impactType) {
         return new UniConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_) -> buildConstraint(constraintPackage,
-                        constraintName,
-                        constraintWeight_, impactType_, stream),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) ->
+                        buildConstraint(constraintPackage, constraintName, constraintWeight_, impactType_, stream),
                 impactType, constraintWeight);
     }
 
