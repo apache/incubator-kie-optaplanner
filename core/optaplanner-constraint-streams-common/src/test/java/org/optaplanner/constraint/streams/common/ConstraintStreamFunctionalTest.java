@@ -132,6 +132,8 @@ public interface ConstraintStreamFunctionalTest {
 
     void penalize_negative();
 
+    void penalize_customJustification();
+
     void reward_Int();
 
     void reward_Long();
@@ -139,5 +141,7 @@ public interface ConstraintStreamFunctionalTest {
     void reward_BigDecimal();
 
     void reward_negative();
+
+    void reward_customJustification();
 
 }

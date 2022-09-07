@@ -2038,6 +2038,23 @@ public abstract class AbstractUniConstraintStreamTest
 
     @Override
     @TestTemplate
+    public void penalize_customJustification() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEach(TestdataLavishEntity.class)
+                        .penalize(SimpleScore.ONE, e -> e.getIntegerProperty() * 2)
+                        .justifiedWith(TestdataLavishEntity::getValue)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-2, solution.getFirstEntity().getValue()),
+                assertMatchWithScore(-2, solution.getEntityList().get(1).getValue()));
+    }
+
+    @Override
+    @TestTemplate
     public void reward_Int() {
         TestdataSolution solution = new TestdataSolution();
         TestdataValue v1 = new TestdataValue("v1");
@@ -2125,6 +2142,23 @@ public abstract class AbstractUniConstraintStreamTest
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
+    }
+
+    @Override
+    @TestTemplate
+    public void reward_customJustification() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEach(TestdataLavishEntity.class)
+                        .reward(SimpleScore.ONE, e -> e.getIntegerProperty() * 2)
+                        .justifiedWith(TestdataLavishEntity::getValue)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(2, solution.getFirstEntity().getValue()),
+                assertMatchWithScore(2, solution.getEntityList().get(1).getValue()));
     }
 
     // ************************************************************************

@@ -1722,6 +1722,22 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
 
     @Override
     @TestTemplate
+    public void penalize_customJustification() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .penalize(SimpleScore.ONE, (a, b) -> a.getIntegerProperty() + b.getIntegerProperty())
+                        .justifiedWith((a, b) -> a.toString() + "_" + b.toString())
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-2, new Object[] { "Generated Entity 0_Generated Entity 1" }));
+    }
+
+    @Override
+    @TestTemplate
     public void reward_Int() {
         TestdataSolution solution = new TestdataSolution();
         TestdataValue v1 = new TestdataValue("v1");
@@ -1817,6 +1833,22 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
+    }
+
+    @Override
+    @TestTemplate
+    public void reward_customJustification() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 2);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .reward(SimpleScore.ONE, (a, b) -> a.getIntegerProperty() + b.getIntegerProperty())
+                        .justifiedWith((a, b) -> a.toString() + "_" + b.toString())
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(2, new Object[] { "Generated Entity 0_Generated Entity 1" }));
     }
 
     // ************************************************************************

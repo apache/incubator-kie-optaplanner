@@ -1437,6 +1437,33 @@ public abstract class AbstractQuadConstraintStreamTest
 
     @Override
     @TestTemplate
+    public void penalize_customJustification() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 3);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .join(TestdataLavishEntity.class)
+                        .filter((a, b, c) -> a != c && b != c)
+                        .join(TestdataLavishEntity.class)
+                        .filter((a, b, c, d) -> a == d)
+                        .penalize(SimpleScore.ONE,
+                                (a, b, c, d) -> a.getIntegerProperty() + b.getIntegerProperty() + c.getIntegerProperty()
+                                        + d.getIntegerProperty())
+                        .justifiedWith((a, b, c, d) -> a + "_" + b + "_" + c + "_" + d)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(-4,
+                        new Object[] { "Generated Entity 0_Generated Entity 1_Generated Entity 2_Generated Entity 0" }),
+                assertMatchWithScore(-4,
+                        new Object[] { "Generated Entity 0_Generated Entity 2_Generated Entity 1_Generated Entity 0" }),
+                assertMatchWithScore(-4,
+                        new Object[] { "Generated Entity 1_Generated Entity 2_Generated Entity 0_Generated Entity 1" }));
+    }
+
+    @Override
+    @TestTemplate
     public void reward_Int() {
         TestdataSolution solution = new TestdataSolution();
         TestdataValue v1 = new TestdataValue("v1");
@@ -1541,6 +1568,33 @@ public abstract class AbstractQuadConstraintStreamTest
 
         scoreDirector.setWorkingSolution(solution);
         assertThatThrownBy(scoreDirector::calculateScore).hasMessageContaining(constraintName);
+    }
+
+    @Override
+    @TestTemplate
+    public void reward_customJustification() {
+        TestdataLavishSolution solution = TestdataLavishSolution.generateSolution(2, 3);
+
+        InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
+                factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
+                        .join(TestdataLavishEntity.class)
+                        .filter((a, b, c) -> a != c && b != c)
+                        .join(TestdataLavishEntity.class)
+                        .filter((a, b, c, d) -> a == d)
+                        .reward(SimpleScore.ONE,
+                                (a, b, c, d) -> a.getIntegerProperty() + b.getIntegerProperty() + c.getIntegerProperty()
+                                        + d.getIntegerProperty())
+                        .justifiedWith((a, b, c, d) -> a + "_" + b + "_" + c + "_" + d)
+                        .asConstraint(TEST_CONSTRAINT_NAME));
+
+        scoreDirector.setWorkingSolution(solution);
+        assertScore(scoreDirector,
+                assertMatchWithScore(4,
+                        new Object[] { "Generated Entity 0_Generated Entity 1_Generated Entity 2_Generated Entity 0" }),
+                assertMatchWithScore(4,
+                        new Object[] { "Generated Entity 0_Generated Entity 2_Generated Entity 1_Generated Entity 0" }),
+                assertMatchWithScore(4,
+                        new Object[] { "Generated Entity 1_Generated Entity 2_Generated Entity 0_Generated Entity 1" }));
     }
 
 }

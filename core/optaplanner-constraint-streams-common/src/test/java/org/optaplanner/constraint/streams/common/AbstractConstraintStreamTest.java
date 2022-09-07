@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.composeConstraintId;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -138,7 +139,10 @@ public abstract class AbstractConstraintStreamTest {
             if (!constraintName.equals(constraintMatch.getConstraintName())) {
                 return false;
             }
-            List<Object> actualJustificationList = constraintMatch.getJustification();
+            Object justification = constraintMatch.getJustification();
+            List<Object> actualJustificationList = justification instanceof List
+                    ? (List<Object>) justification
+                    : Collections.singletonList(justification); // Support for custom justification function.
             // Can't simply compare the lists, since the elements may be in different orders. The order is not relevant.
             if (actualJustificationList.size() != justificationList.size()) {
                 return false;
