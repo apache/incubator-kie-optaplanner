@@ -1,7 +1,5 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import static java.util.Collections.singletonList;
-
 import java.math.BigDecimal;
 import java.util.Set;
 import java.util.function.Function;
@@ -108,27 +106,28 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's an endpoint.");
         }
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraint, constraintWeight);
+        Function<A, Object> justificationFunction = constraint.getJustificationFunction();
         Function<A, UndoScoreImpacter> scoreImpacter;
         if (intMatchWeigher != null) {
             scoreImpacter = a -> {
                 int matchWeight = intMatchWeigher.applyAsInt(a);
                 constraint.assertCorrectImpact(matchWeight);
-                return weightedScoreImpacter.impactScore(matchWeight, () -> singletonList(a));
+                return weightedScoreImpacter.impactScore(matchWeight, () -> justificationFunction.apply(a));
             };
         } else if (longMatchWeigher != null) {
             scoreImpacter = a -> {
                 long matchWeight = longMatchWeigher.applyAsLong(a);
                 constraint.assertCorrectImpact(matchWeight);
-                return weightedScoreImpacter.impactScore(matchWeight, () -> singletonList(a));
+                return weightedScoreImpacter.impactScore(matchWeight, () -> justificationFunction.apply(a));
             };
         } else if (bigDecimalMatchWeigher != null) {
             scoreImpacter = a -> {
                 BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a);
                 constraint.assertCorrectImpact(matchWeight);
-                return weightedScoreImpacter.impactScore(matchWeight, () -> singletonList(a));
+                return weightedScoreImpacter.impactScore(matchWeight, () -> justificationFunction.apply(a));
             };
         } else if (noMatchWeigher) {
-            scoreImpacter = a -> weightedScoreImpacter.impactScore(1, () -> singletonList(a));
+            scoreImpacter = a -> weightedScoreImpacter.impactScore(1, () -> justificationFunction.apply(a));
         } else {
             throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }

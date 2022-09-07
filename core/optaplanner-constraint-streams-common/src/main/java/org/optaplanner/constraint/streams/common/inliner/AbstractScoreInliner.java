@@ -1,6 +1,8 @@
 package org.optaplanner.constraint.streams.common.inliner;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,18 +118,28 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
     public abstract WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint, Score_ constraintWeight);
 
     protected final Runnable addConstraintMatch(Constraint constraint, Score_ constraintWeight, Score_ score,
-            List<Object> justificationList) {
+            Object justification) {
         String constraintPackage = constraint.getConstraintPackage();
         String constraintName = constraint.getConstraintName();
         DefaultConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotalMap.computeIfAbsent(
                 constraint.getConstraintId(),
                 key -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight));
+        /*
+         * The default justification function creates a list of facts in the constraint match's tuple.
+         * A custom justification function may return any arbitrary type.
+         * Whatever the type returned is, we convert it to a list; in the latter case, a list of one element.
+         */
+        List<Object> justificationList = (justification instanceof Collection)
+                ? (justification instanceof List)
+                        ? (List<Object>) justification
+                        : List.copyOf((Collection<?>) justification)
+                : Collections.singletonList(justification);
         ConstraintMatch<Score_> constraintMatch = constraintMatchTotal.addConstraintMatch(justificationList, score);
         DefaultIndictment<Score_>[] indictments = justificationList.stream()
                 .distinct() // One match might have the same justification twice
-                .map(justification -> {
-                    DefaultIndictment<Score_> indictment = indictmentMap.computeIfAbsent(justification,
-                            key -> new DefaultIndictment<>(justification, constraintMatch.getScore().zero()));
+                .map(justificationPart -> {
+                    DefaultIndictment<Score_> indictment = indictmentMap.computeIfAbsent(justificationPart,
+                            key -> new DefaultIndictment<>(justificationPart, constraintMatch.getScore().zero()));
                     indictment.addConstraintMatch(constraintMatch);
                     return indictment;
                 }).toArray(DefaultIndictment[]::new);

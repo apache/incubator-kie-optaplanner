@@ -1,6 +1,5 @@
 package org.optaplanner.constraint.streams.common.inliner;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -11,5 +10,5 @@ import java.util.function.Supplier;
  * So justifications are created lazily, outside of the typical hot path.
  */
 @FunctionalInterface
-public interface JustificationsSupplier extends Supplier<List<Object>> {
+public interface JustificationsSupplier extends Supplier<Object> {
 }
