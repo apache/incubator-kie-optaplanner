@@ -90,7 +90,7 @@ void sendErrorNotification() {
     mailer.sendMarkdownTestSummaryNotification("CI failures", [env.OPTAPLANNER_CI_EMAIL_TO], getNotificationAdditionalInfo())
 }
 
-void sendErrorNotification() {
+void sendSuccessNotification() {
     mailer.sendMarkdownTestSummaryNotification("CI success", [env.OPTAPLANNER_CI_EMAIL_TO], getNotificationAdditionalInfo())
 }
 
