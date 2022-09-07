@@ -1,10 +1,17 @@
 package org.optaplanner.constraint.streams.common.tri;
 
+import java.math.BigDecimal;
+
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
+import org.optaplanner.constraint.streams.common.ScoreImpactType;
+import org.optaplanner.core.api.function.ToIntTriFunction;
+import org.optaplanner.core.api.function.ToLongTriFunction;
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
+import org.optaplanner.core.api.score.stream.tri.TriConstraintBuilder;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 
 public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A, B, C> {
@@ -36,6 +43,108 @@ public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A
             return groupBy((a, b, c) -> a, (a, b, c) -> b, (a, b, c) -> c);
         }
     }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> penalize(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> penalizeLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> penalizeBigDecimal(Score<?> constraintWeight,
+            TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> penalizeConfigurable(ToIntTriFunction<A, B, C> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> penalizeConfigurableLong(ToLongTriFunction<A, B, C> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> penalizeConfigurableBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.PENALTY);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> reward(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> rewardLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> rewardBigDecimal(Score<?> constraintWeight,
+            TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> rewardConfigurable(ToIntTriFunction<A, B, C> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> rewardConfigurableLong(ToLongTriFunction<A, B, C> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> rewardConfigurableBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.REWARD);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> impact(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.MIXED);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> impactLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.MIXED);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> impactBigDecimal(Score<?> constraintWeight,
+            TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        return innerImpact(constraintWeight, matchWeigher, ScoreImpactType.MIXED);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> impactConfigurable(ToIntTriFunction<A, B, C> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.MIXED);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> impactConfigurableLong(ToLongTriFunction<A, B, C> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.MIXED);
+    }
+
+    @Override
+    default TriConstraintBuilder<A, B, C> impactConfigurableBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher) {
+        return innerImpact(null, matchWeigher, ScoreImpactType.MIXED);
+    }
+
+    TriConstraintBuilder<A, B, C> innerImpact(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher,
+            ScoreImpactType scoreImpactType);
+
+    TriConstraintBuilder<A, B, C> innerImpact(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher,
+            ScoreImpactType scoreImpactType);
+
+    TriConstraintBuilder<A, B, C> innerImpact(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher,
+            ScoreImpactType scoreImpactType);
 
     @Override
     default Constraint penalize(String constraintName, Score<?> constraintWeight) {

@@ -397,128 +397,32 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     // ************************************************************************
 
     @Override
-    public TriConstraintBuilder<A, B, C> penalize(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher) {
+    public TriConstraintBuilder<A, B, C> innerImpact(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher,
+            ScoreImpactType scoreImpactType) {
         var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.PENALTY, constraintWeight);
+        return newTerminator(stream, constraintWeight, scoreImpactType);
     }
 
     private TriConstraintBuilderImpl<A, B, C> newTerminator(BavetScoringConstraintStream<Solution_> stream,
-            ScoreImpactType impactType,
-            Score<?> constraintWeight) {
+            Score<?> constraintWeight, ScoreImpactType impactType) {
         return new TriConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_) -> build(constraintPackage, constraintName,
-                        constraintWeight_, impactType_, stream),
+                (constraintPackage, constraintName, constraintWeight_, impactType_) -> buildConstraint(constraintPackage,
+                        constraintName, constraintWeight_, impactType_, stream),
                 impactType, constraintWeight);
     }
 
     @Override
-    public TriConstraintBuilder<A, B, C> penalizeLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher) {
+    public TriConstraintBuilder<A, B, C> innerImpact(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher,
+            ScoreImpactType scoreImpactType) {
         var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.PENALTY, constraintWeight);
+        return newTerminator(stream, constraintWeight, scoreImpactType);
     }
 
     @Override
-    public TriConstraintBuilder<A, B, C> penalizeBigDecimal(Score<?> constraintWeight,
-            TriFunction<A, B, C, BigDecimal> matchWeigher) {
+    public TriConstraintBuilder<A, B, C> innerImpact(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher,
+            ScoreImpactType scoreImpactType) {
         var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.PENALTY, constraintWeight);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> penalizeConfigurable(ToIntTriFunction<A, B, C> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.PENALTY);
-    }
-
-    private TriConstraintBuilderImpl<A, B, C> newTerminator(BavetScoringConstraintStream<Solution_> stream,
-            ScoreImpactType impactType) {
-        return newTerminator(stream, impactType, null);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> penalizeConfigurableLong(ToLongTriFunction<A, B, C> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.PENALTY);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> penalizeConfigurableBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.PENALTY);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> reward(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.REWARD, constraintWeight);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> rewardLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.REWARD, constraintWeight);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> rewardBigDecimal(Score<?> constraintWeight,
-            TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.REWARD, constraintWeight);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> rewardConfigurable(ToIntTriFunction<A, B, C> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.REWARD);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> rewardConfigurableLong(ToLongTriFunction<A, B, C> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.REWARD);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> rewardConfigurableBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.REWARD);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> impact(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.MIXED, constraintWeight);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> impactLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.MIXED, constraintWeight);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> impactBigDecimal(Score<?> constraintWeight,
-            TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.MIXED, constraintWeight);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> impactConfigurable(ToIntTriFunction<A, B, C> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.MIXED);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> impactConfigurableLong(ToLongTriFunction<A, B, C> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.MIXED);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> impactConfigurableBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringTriConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.MIXED);
+        return newTerminator(stream, constraintWeight, scoreImpactType);
     }
 
 }

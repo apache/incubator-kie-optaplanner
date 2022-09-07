@@ -363,131 +363,32 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
     // ************************************************************************
 
     @Override
-    public QuadConstraintBuilder<A, B, C, D> penalize(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher) {
+    public QuadConstraintBuilder<A, B, C, D> innerImpact(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher,
+            ScoreImpactType scoreImpactType) {
         var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.PENALTY, constraintWeight);
+        return newTerminator(stream, constraintWeight, scoreImpactType);
+    }
+
+    @Override
+    public QuadConstraintBuilder<A, B, C, D> innerImpact(Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher,
+            ScoreImpactType scoreImpactType) {
+        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
+        return newTerminator(stream, constraintWeight, scoreImpactType);
     }
 
     private QuadConstraintBuilderImpl<A, B, C, D> newTerminator(BavetScoringConstraintStream<Solution_> stream,
-            ScoreImpactType impactType,
-            Score<?> constraintWeight) {
+            Score<?> constraintWeight, ScoreImpactType impactType) {
         return new QuadConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_) -> build(constraintPackage, constraintName,
-                        constraintWeight_, impactType_, stream),
+                (constraintPackage, constraintName, constraintWeight_, impactType_) -> buildConstraint(constraintPackage,
+                        constraintName, constraintWeight_, impactType_, stream),
                 impactType, constraintWeight);
     }
 
     @Override
-    public QuadConstraintBuilder<A, B, C, D> penalizeLong(Score<?> constraintWeight,
-            ToLongQuadFunction<A, B, C, D> matchWeigher) {
+    public QuadConstraintBuilder<A, B, C, D> innerImpact(Score<?> constraintWeight,
+            QuadFunction<A, B, C, D, BigDecimal> matchWeigher, ScoreImpactType scoreImpactType) {
         var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.PENALTY, constraintWeight);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> penalizeBigDecimal(Score<?> constraintWeight,
-            QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.PENALTY, constraintWeight);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> penalizeConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.PENALTY);
-    }
-
-    private QuadConstraintBuilderImpl<A, B, C, D> newTerminator(BavetScoringConstraintStream<Solution_> stream,
-            ScoreImpactType impactType) {
-        return newTerminator(stream, impactType, null);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> penalizeConfigurableLong(ToLongQuadFunction<A, B, C, D> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.PENALTY);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> penalizeConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.PENALTY);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> reward(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.REWARD, constraintWeight);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> rewardLong(Score<?> constraintWeight,
-            ToLongQuadFunction<A, B, C, D> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.REWARD, constraintWeight);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> rewardBigDecimal(Score<?> constraintWeight,
-            QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.REWARD, constraintWeight);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> rewardConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.REWARD);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> rewardConfigurableLong(ToLongQuadFunction<A, B, C, D> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.REWARD);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> rewardConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.REWARD);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> impact(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.MIXED, constraintWeight);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> impactLong(Score<?> constraintWeight,
-            ToLongQuadFunction<A, B, C, D> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.MIXED, constraintWeight);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> impactBigDecimal(Score<?> constraintWeight,
-            QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.MIXED, constraintWeight);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> impactConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.MIXED);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> impactConfigurableLong(ToLongQuadFunction<A, B, C, D> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.MIXED);
-    }
-
-    @Override
-    public QuadConstraintBuilder<A, B, C, D> impactConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
-        var stream = shareAndAddChild(new BavetScoringQuadConstraintStream<>(constraintFactory, this, matchWeigher));
-        return newTerminator(stream, ScoreImpactType.MIXED);
+        return newTerminator(stream, constraintWeight, scoreImpactType);
     }
 
 }

@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintStream;
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
@@ -27,31 +26,16 @@ public abstract class DroolsAbstractConstraintStream<Solution_> extends Abstract
         this.constraintFactory = Objects.requireNonNull(constraintFactory);
     }
 
-    protected Constraint build(String constraintPackage, String constraintName, Score<?> constraintWeight,
+    protected Constraint buildConstraint(String constraintPackage, String constraintName, Score<?> constraintWeight,
             ScoreImpactType impactType, RuleBuilder<Solution_> ruleBuilder) {
-        String resolvedConstraintPackage =
+        var resolvedConstraintPackage =
                 Objects.requireNonNullElseGet(constraintPackage, this.constraintFactory::getDefaultConstraintPackage);
-        if (constraintWeight == null) {
-            return buildConstraintConfigurable(resolvedConstraintPackage, constraintName, impactType, ruleBuilder);
-        } else {
-            return buildConstraint(resolvedConstraintPackage, constraintName, constraintWeight, impactType, ruleBuilder);
-        }
-    }
-
-    private DroolsConstraint<Solution_> buildConstraint(String constraintPackage, String constraintName,
-            Score<?> constraintWeight, ScoreImpactType impactType, RuleBuilder<Solution_> ruleBuilder) {
-        Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(constraintPackage,
-                constraintName, constraintWeight);
-        return new DroolsConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
-                impactType, false, ruleBuilder);
-    }
-
-    private DroolsConstraint<Solution_> buildConstraintConfigurable(String constraintPackage, String constraintName,
-            ScoreImpactType impactType, RuleBuilder<Solution_> ruleBuilder) {
-        Function<Solution_, Score<?>> constraintWeightExtractor = buildConstraintWeightExtractor(constraintPackage,
-                constraintName);
-        return new DroolsConstraint<>(constraintFactory, constraintPackage, constraintName, constraintWeightExtractor,
-                impactType, true, ruleBuilder);
+        var isConstraintWeightConfigurable = constraintWeight == null;
+        var constraintWeightExtractor = isConstraintWeightConfigurable
+                ? buildConstraintWeightExtractor(resolvedConstraintPackage, constraintName)
+                : buildConstraintWeightExtractor(resolvedConstraintPackage, constraintName, constraintWeight);
+        return new DroolsConstraint<>(constraintFactory, resolvedConstraintPackage, constraintName, constraintWeightExtractor,
+                impactType, isConstraintWeightConfigurable, ruleBuilder);
     }
 
     public void addChildStream(DroolsAbstractConstraintStream<Solution_> childStream) {
