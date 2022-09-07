@@ -97,6 +97,6 @@ void sendSuccessNotification() {
 String getNotificationAdditionalInfo() {
     return """
     **[${getBuildBranch()}] Optaplanner - Turtle tests**
-    **"${getConstraintStreamImplType()}"**
+    **${getConstraintStreamImplType()}**
     """
 }
