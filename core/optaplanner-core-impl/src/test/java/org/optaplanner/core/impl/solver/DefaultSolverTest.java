@@ -60,6 +60,10 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
+import org.optaplanner.core.impl.testdata.domain.chained.multientity.TestdataChainedBrownEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.multientity.TestdataChainedGreenEntity;
+import org.optaplanner.core.impl.testdata.domain.chained.multientity.TestdataChainedMultiEntityAnchor;
+import org.optaplanner.core.impl.testdata.domain.chained.multientity.TestdataChainedMultiEntitySolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
@@ -797,13 +801,12 @@ class DefaultSolverTest {
     }
 
     @Test
-    void defaultSolveWithMultipleGenuinePlanningEntities() {
+    void solveWithMultipleGenuinePlanningEntities() {
         SolverConfig solverConfig = new SolverConfig()
                 .withSolutionClass(TestdataMultiEntitySolution.class)
                 .withEntityClasses(TestdataLeadEntity.class, TestdataHerdEntity.class)
                 .withEasyScoreCalculatorClass(DummySimpleScoreEasyScoreCalculator.class)
-                .withTerminationConfig(new TerminationConfig()
-                        .withBestScoreLimit("0"));
+                .withTerminationConfig(new TerminationConfig().withBestScoreLimit("0"));
         SolverFactory<TestdataMultiEntitySolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataMultiEntitySolution> solver = solverFactory.buildSolver();
 
@@ -811,6 +814,35 @@ class DefaultSolverTest {
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
         solution.setLeadEntityList(Arrays.asList(new TestdataLeadEntity("lead1"), new TestdataLeadEntity("lead2")));
         solution.setHerdEntityList(Arrays.asList(new TestdataHerdEntity("herd1"), new TestdataHerdEntity("herd2")));
+
+        solution = solver.solve(solution);
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isTrue();
+    }
+
+    @Test
+    void solveWithMultipleChainedPlanningEntities() {
+        SolverConfig solverConfig = new SolverConfig()
+                .withSolutionClass(TestdataChainedMultiEntitySolution.class)
+                .withEntityClasses(TestdataChainedBrownEntity.class, TestdataChainedGreenEntity.class)
+                .withEasyScoreCalculatorClass(DummySimpleScoreEasyScoreCalculator.class)
+                .withTerminationConfig(new TerminationConfig().withBestScoreLimit("0"));
+        SolverFactory<TestdataChainedMultiEntitySolution> solverFactory = SolverFactory.create(solverConfig);
+        Solver<TestdataChainedMultiEntitySolution> solver = solverFactory.buildSolver();
+
+        List<TestdataChainedMultiEntityAnchor> anchors = List.of(
+                new TestdataChainedMultiEntityAnchor("a1"),
+                new TestdataChainedMultiEntityAnchor("a2"),
+                new TestdataChainedMultiEntityAnchor("a3"));
+        List<TestdataChainedBrownEntity> brownEntities = List.of(
+                new TestdataChainedBrownEntity("b1"),
+                new TestdataChainedBrownEntity("b2"));
+        List<TestdataChainedGreenEntity> greenEntities = List.of(
+                new TestdataChainedGreenEntity("g1"),
+                new TestdataChainedGreenEntity("g2"),
+                new TestdataChainedGreenEntity("g3"));
+        TestdataChainedMultiEntitySolution solution =
+                new TestdataChainedMultiEntitySolution(brownEntities, greenEntities, anchors);
 
         solution = solver.solve(solution);
         assertThat(solution).isNotNull();

@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.optaplanner.core.api.domain.entity.PinningFilter;
@@ -542,6 +543,11 @@ public class EntityDescriptor<Solution_> {
 
     public List<Object> extractEntities(Solution_ solution) {
         return solutionDescriptor.getEntityListByEntityClass(solution, entityClass);
+    }
+
+    public void visitAllEntities(Solution_ solution, Consumer<Object> visitor) {
+        solutionDescriptor.visitEntitiesByEntityClass(solution, entityClass, visitor,
+                collection -> collection.forEach(visitor));
     }
 
     public long getMaximumValueCount(Solution_ solution, Object entity) {

@@ -927,6 +927,34 @@ public class SolutionDescriptor<Solution_> {
         }
     }
 
+    public void visitEntitiesByEntityClass(Solution_ solution, Class<?> entityClass, Consumer<Object> visitor,
+            Consumer<Collection<Object>> collectionVisitor) {
+        for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
+            // TODO test this condition
+            if (entityClass.isAssignableFrom(entityMemberAccessor.getType())) {
+                Object entity = extractMemberObject(entityMemberAccessor, solution);
+                if (entity != null) {
+                    visitor.accept(entity);
+                }
+            }
+        }
+        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
+            // TODO simplify this (it's overly complex because it's intended for config validation)
+            Class<?> typeParameter = ConfigUtils.extractCollectionGenericTypeParameterLeniently(
+                    "FIXME", entityCollectionMemberAccessor.getDeclaringClass(),
+                    entityCollectionMemberAccessor.getType(),
+                    entityCollectionMemberAccessor.getGenericType(),
+                    null,
+                    entityCollectionMemberAccessor.getName());
+            // TODO test this condition
+            if (entityClass.isAssignableFrom(typeParameter)) {
+                Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution,
+                        false);
+                collectionVisitor.accept(entityCollection);
+            }
+        }
+    }
+
     public List<Object> getEntityListByEntityClass(Solution_ solution, Class<?> entityClass) {
         List<Object> entityList = new ArrayList<>();
         for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
