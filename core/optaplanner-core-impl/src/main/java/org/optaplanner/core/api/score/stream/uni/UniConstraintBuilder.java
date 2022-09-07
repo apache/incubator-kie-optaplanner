@@ -18,6 +18,8 @@ public interface UniConstraintBuilder<A> extends ConstraintBuilder<UniConstraint
 
     /**
      * Sets a custom function to apply on a constraint match to justify it.
+     * That function must not return a {@link java.util.Collection},
+     * else {@link IllegalStateException} will be thrown during score calculation.
      *
      * @see ConstraintMatch
      * @param justificationFunction never null

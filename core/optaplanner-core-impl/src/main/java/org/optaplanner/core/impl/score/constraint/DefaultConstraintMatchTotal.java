@@ -4,7 +4,6 @@ import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.optaplanner.core.api.score.Score;
@@ -66,10 +65,10 @@ public final class DefaultConstraintMatchTotal<Score_ extends Score<Score_>> imp
     // Worker methods
     // ************************************************************************
 
-    public ConstraintMatch<Score_> addConstraintMatch(List<Object> justificationList, Score_ score) {
+    public ConstraintMatch<Score_> addConstraintMatch(Object justification, Score_ score) {
         this.score = this.score == null ? score : this.score.add(score);
         ConstraintMatch<Score_> constraintMatch = new ConstraintMatch<>(constraintPackage, constraintName,
-                justificationList, score);
+                justification, score);
         constraintMatchSet.add(constraintMatch);
         return constraintMatch;
     }

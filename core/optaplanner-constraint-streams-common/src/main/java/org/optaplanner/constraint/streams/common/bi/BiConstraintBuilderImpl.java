@@ -1,5 +1,6 @@
 package org.optaplanner.constraint.streams.common.bi;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
@@ -21,7 +22,16 @@ public final class BiConstraintBuilderImpl<A, B>
 
     @Override
     protected BiFunction<A, B, Object> getJustificationFunction() {
-        return justificationFunction;
+        if (justificationFunction == null) {
+            return null; // Will use the default.
+        }
+        return (a, b) -> {
+            Object justification = justificationFunction.apply(a, b);
+            if (justification instanceof Collection) {
+                throw new IllegalStateException("Justification function returned a collection (" + justification + ").");
+            }
+            return justification;
+        };
     }
 
     @Override

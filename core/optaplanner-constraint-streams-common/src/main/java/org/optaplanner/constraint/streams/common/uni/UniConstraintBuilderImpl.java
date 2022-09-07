@@ -1,5 +1,6 @@
 package org.optaplanner.constraint.streams.common.uni;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -21,7 +22,16 @@ public final class UniConstraintBuilderImpl<A>
 
     @Override
     protected Function<A, Object> getJustificationFunction() {
-        return justificationFunction;
+        if (justificationFunction == null) {
+            return null; // Will use the default.
+        }
+        return a -> {
+            Object justification = justificationFunction.apply(a);
+            if (justification instanceof Collection) {
+                throw new IllegalStateException("Justification function returned a collection (" + justification + ").");
+            }
+            return justification;
+        };
     }
 
     @Override

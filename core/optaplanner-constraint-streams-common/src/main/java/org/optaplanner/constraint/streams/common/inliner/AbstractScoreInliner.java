@@ -1,11 +1,10 @@
 package org.optaplanner.constraint.streams.common.inliner;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -124,25 +123,18 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
         DefaultConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotalMap.computeIfAbsent(
                 constraint.getConstraintId(),
                 key -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight));
+        ConstraintMatch<Score_> constraintMatch = constraintMatchTotal.addConstraintMatch(justification, score);
         /*
          * The default justification function creates a list of facts in the constraint match's tuple.
-         * A custom justification function may return any arbitrary type.
-         * Whatever the type returned is, we convert it to a list; in the latter case, a list of one element.
+         * A custom justification function may return any arbitrary type, but it must not be a collection.
+         * Therefore if we see a collection, it is a list of justifications that each need to be processed.
          */
-        List<Object> justificationList = (justification instanceof Collection)
-                ? (justification instanceof List)
-                        ? (List<Object>) justification
-                        : List.copyOf((Collection<?>) justification)
-                : Collections.singletonList(justification);
-        ConstraintMatch<Score_> constraintMatch = constraintMatchTotal.addConstraintMatch(justificationList, score);
-        DefaultIndictment<Score_>[] indictments = justificationList.stream()
-                .distinct() // One match might have the same justification twice
-                .map(justificationPart -> {
-                    DefaultIndictment<Score_> indictment = indictmentMap.computeIfAbsent(justificationPart,
-                            key -> new DefaultIndictment<>(justificationPart, constraintMatch.getScore().zero()));
-                    indictment.addConstraintMatch(constraintMatch);
-                    return indictment;
-                }).toArray(DefaultIndictment[]::new);
+        List<DefaultIndictment<Score_>> indictments = (justification instanceof List)
+                ? ((List<Object>) justification).stream()
+                        .distinct() // One match might have the same justification twice
+                        .map(justificationPart -> processJustification(constraintMatch, justificationPart))
+                        .collect(Collectors.toList())
+                : List.of(processJustification(constraintMatch, justification));
         return () -> {
             constraintMatchTotal.removeConstraintMatch(constraintMatch);
             if (constraintMatchTotal.getConstraintMatchSet().isEmpty()) {
@@ -155,6 +147,13 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
                 }
             }
         };
+    }
+
+    private DefaultIndictment<Score_> processJustification(ConstraintMatch<Score_> constraintMatch, Object justificationPart) {
+        DefaultIndictment<Score_> indictment = indictmentMap.computeIfAbsent(justificationPart,
+                key -> new DefaultIndictment<>(justificationPart, constraintMatch.getScore().zero()));
+        indictment.addConstraintMatch(constraintMatch);
+        return indictment;
     }
 
     public final Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {

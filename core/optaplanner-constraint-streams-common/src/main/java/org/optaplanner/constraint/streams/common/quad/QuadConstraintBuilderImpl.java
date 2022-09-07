@@ -1,5 +1,6 @@
 package org.optaplanner.constraint.streams.common.quad;
 
+import java.util.Collection;
 import java.util.Objects;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintBuilder;
@@ -21,7 +22,16 @@ public final class QuadConstraintBuilderImpl<A, B, C, D>
 
     @Override
     protected QuadFunction<A, B, C, D, Object> getJustificationFunction() {
-        return justificationFunction;
+        if (justificationFunction == null) {
+            return null; // Will use the default.
+        }
+        return (a, b, c, d) -> {
+            Object justification = justificationFunction.apply(a, b, c, d);
+            if (justification instanceof Collection) {
+                throw new IllegalStateException("Justification function returned a collection (" + justification + ").");
+            }
+            return justification;
+        };
     }
 
     @Override

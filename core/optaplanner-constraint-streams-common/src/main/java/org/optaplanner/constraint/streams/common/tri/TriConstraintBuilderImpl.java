@@ -1,5 +1,6 @@
 package org.optaplanner.constraint.streams.common.tri;
 
+import java.util.Collection;
 import java.util.Objects;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintBuilder;
@@ -21,7 +22,16 @@ public final class TriConstraintBuilderImpl<A, B, C>
 
     @Override
     protected TriFunction<A, B, C, Object> getJustificationFunction() {
-        return justificationFunction;
+        if (justificationFunction == null) {
+            return null; // Will use the default.
+        }
+        return (a, b, c) -> {
+            Object justification = justificationFunction.apply(a, b, c);
+            if (justification instanceof Collection) {
+                throw new IllegalStateException("Justification function returned a collection (" + justification + ").");
+            }
+            return justification;
+        };
     }
 
     @Override

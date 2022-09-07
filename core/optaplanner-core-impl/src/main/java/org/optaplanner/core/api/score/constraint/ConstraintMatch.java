@@ -2,6 +2,7 @@ package org.optaplanner.core.api.score.constraint;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
     private final String constraintName;
     private final String constraintId;
 
-    private final List<Object> justificationList;
+    private final Object justification;
     private final Score_ score;
 
     private Comparator<Object> classAndIdPlanningComparator;
@@ -42,7 +43,16 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
         this.constraintPackage = requireNonNull(constraintPackage);
         this.constraintName = requireNonNull(constraintName);
         this.constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
-        this.justificationList = requireNonNull(justificationList);
+        this.justification = requireNonNull(justificationList);
+        this.score = requireNonNull(score);
+    }
+
+    public ConstraintMatch(String constraintPackage, String constraintName, Object justification,
+            Score_ score) {
+        this.constraintPackage = requireNonNull(constraintPackage);
+        this.constraintName = requireNonNull(constraintName);
+        this.constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
+        this.justification = requireNonNull(justification);
         this.score = requireNonNull(score);
     }
 
@@ -54,8 +64,44 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
         return constraintName;
     }
 
+    /**
+     * Return a list of justifications for the constraint.
+     * <p>
+     * This method has a different meaning based on which score director the constraint comes from.
+     * <ul>
+     * <li>For Score DRL, it returns every object that Drools considers to be part of the match.
+     * This is largely undefined.</li>
+     * <li>For incremental score calculation, it returns what the calculator is implemented to return.</li>
+     * <li>For constraint streams, it returns either a list of facts from the matching tuple
+     * (eg. [A, B] for a bi stream), unless a custom justification function was provided,
+     * in which case it returns a list with one value, which is the return value of the function.</li>
+     * </ul>
+     *
+     * @deprecated Prefer {@link #getJustification()}.
+     * @return never null
+     */
+    @Deprecated(forRemoval = true)
     public List<Object> getJustificationList() {
-        return justificationList;
+        return (List<Object>) justification;
+    }
+
+    /**
+     * Return a singular justification for the constraint.
+     * <p>
+     * This method has a different meaning based on which score director the constraint comes from.
+     * <ul>
+     * <li>For Score DRL, it returns a list of all objects that Drools considers to be part of the match.
+     * This is largely undefined.</li>
+     * <li>For incremental score calculation, it returns what the calculator is implemented to return.</li>
+     * <li>For constraint streams, it returns either a list of facts from the matching tuple
+     * (eg. [A, B] for a bi stream), unless a custom justification function was provided,
+     * in which case it returns the return value of that function.</li>
+     * </ul>
+     *
+     * @return never null
+     */
+    public <Justification_> Justification_ getJustification() {
+        return (Justification_) justification;
     }
 
     public Score_ getScore() {
@@ -71,7 +117,7 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
     }
 
     public String getIdentificationString() {
-        return getConstraintId() + "/" + justificationList;
+        return getConstraintId() + "/" + justification;
     }
 
     @Override
@@ -80,21 +126,29 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
             return constraintId.compareTo(other.constraintId);
         } else if (!score.equals(other.score)) {
             return score.compareTo(other.score);
-        } else if (justificationList.size() != other.justificationList.size()) {
-            return Integer.compare(justificationList.size(), other.justificationList.size());
-        } else {
-            Comparator<Object> comparator = getClassAndIdPlanningComparator(other);
-            for (int i = 0; i < justificationList.size(); i++) {
-                Object left = justificationList.get(i);
-                Object right = other.justificationList.get(i);
-                int comparison = comparator.compare(left, right);
-                if (comparison != 0) {
-                    return comparison;
+        } else if (justification instanceof Comparable) {
+            return ((Comparable) justification).compareTo(other.justification);
+        } else if (justification instanceof Collection) {
+            Collection<Object> justificationCollection = (Collection<Object>) justification;
+            Collection<Object> otherJustificationCollection = (Collection<Object>) other.justification;
+            if (justificationCollection.size() != otherJustificationCollection.size()) {
+                return Integer.compare(justificationCollection.size(), otherJustificationCollection.size());
+            } else if (justificationCollection instanceof List) {
+                List<Object> justificationList = (List<Object>) justificationCollection;
+                List<Object> otherJustificationList = (List<Object>) otherJustificationCollection;
+                Comparator<Object> comparator = getClassAndIdPlanningComparator(other);
+                for (int i = 0; i < justificationCollection.size(); i++) {
+                    Object left = justificationList.get(i);
+                    Object right = otherJustificationList.get(i);
+                    int comparison = comparator.compare(left, right);
+                    if (comparison != 0) {
+                        return comparison;
+                    }
                 }
             }
-            return Integer.compare(System.identityHashCode(this),
-                    System.identityHashCode(other));
         }
+        return Integer.compare(System.identityHashCode(justification),
+                System.identityHashCode(other.justification));
     }
 
     private Comparator<Object> getClassAndIdPlanningComparator(ConstraintMatch<Score_> other) {

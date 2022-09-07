@@ -131,14 +131,14 @@ public abstract class AbstractConstraintStreamTest {
             this.score = score;
         }
 
-        public boolean isEqualTo(ConstraintMatch constraintMatch) {
+        public boolean isEqualTo(ConstraintMatch<?> constraintMatch) {
             if (score != ((SimpleScore) constraintMatch.getScore()).getScore()) {
                 return false;
             }
             if (!constraintName.equals(constraintMatch.getConstraintName())) {
                 return false;
             }
-            List<Object> actualJustificationList = constraintMatch.getJustificationList();
+            List<Object> actualJustificationList = constraintMatch.getJustification();
             // Can't simply compare the lists, since the elements may be in different orders. The order is not relevant.
             if (actualJustificationList.size() != justificationList.size()) {
                 return false;
