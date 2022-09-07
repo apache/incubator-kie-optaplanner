@@ -996,64 +996,239 @@ public interface BiConstraintStream<A, B> extends ConstraintStream {
     // Penalize/reward
     // ************************************************************************
 
+    /**
+     * As defined by {@link #penalize(Score, ToIntBiFunction)}, where the match weight is one (1).
+     *
+     * @return never null
+     */
     default BiConstraintBuilder<A, B> penalize(Score<?> constraintWeight) {
         return penalize(constraintWeight, (a, b) -> 1);
     }
 
+    /**
+     * Applies a negative {@link Score} impact,
+     * subtracting the constraintWeight multiplied by the match weight,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * For non-int {@link Score} types use {@link #penalizeLong(Score, ToLongBiFunction)} or
+     * {@link #penalizeBigDecimal(Score, BiFunction)} instead.
+     *
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     BiConstraintBuilder<A, B> penalize(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher);
 
+    /**
+     * As defined by {@link #penalize(Score, ToIntBiFunction)}, with a penalty of type long.
+     */
     BiConstraintBuilder<A, B> penalizeLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher);
 
+    /**
+     * As defined by {@link #penalize(Score, ToIntBiFunction)}, with a penalty of type {@link BigDecimal}.
+     */
     BiConstraintBuilder<A, B> penalizeBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher);
 
+    /**
+     * Negatively impacts the {@link Score},
+     * subtracting the {@link ConstraintWeight} for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalize(Score)} instead.
+     *
+     * @return never null
+     */
     default BiConstraintBuilder<A, B> penalizeConfigurable() {
         return penalizeConfigurable((a, b) -> 1);
     }
 
+    /**
+     * Negatively impacts the {@link Score},
+     * subtracting the {@link ConstraintWeight} multiplied by match weight for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalize(Score, ToIntBiFunction)} instead.
+     *
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     BiConstraintBuilder<A, B> penalizeConfigurable(ToIntBiFunction<A, B> matchWeigher);
 
+    /**
+     * As defined by {@link #penalizeConfigurable(ToIntBiFunction)}, with a penalty of type long.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalizeLong(Score, ToLongBiFunction)} instead.
+     */
     BiConstraintBuilder<A, B> penalizeConfigurableLong(ToLongBiFunction<A, B> matchWeigher);
 
+    /**
+     * As defined by {@link #penalizeConfigurable(ToIntBiFunction)}, with a penalty of type {@link BigDecimal}.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalizeBigDecimal(Score, BiFunction)} instead.
+     */
     BiConstraintBuilder<A, B> penalizeConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher);
 
+    /**
+     * As defined by {@link #reward(Score, ToIntBiFunction)}, where the match weight is one (1).
+     *
+     * @return never null
+     */
     default BiConstraintBuilder<A, B> reward(Score<?> constraintWeight) {
         return reward(constraintWeight, (a, b) -> 1);
     }
 
+    /**
+     * Applies a positive {@link Score} impact,
+     * adding the constraintWeight multiplied by the match weight,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * For non-int {@link Score} types use {@link #rewardLong(Score, ToLongBiFunction)} or
+     * {@link #rewardBigDecimal(Score, BiFunction)} instead.
+     *
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     BiConstraintBuilder<A, B> reward(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher);
 
+    /**
+     * As defined by {@link #reward(Score, ToIntBiFunction)}, with a penalty of type long.
+     */
     BiConstraintBuilder<A, B> rewardLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher);
 
+    /**
+     * As defined by {@link #reward(Score, ToIntBiFunction)}, with a penalty of type {@link BigDecimal}.
+     */
     BiConstraintBuilder<A, B> rewardBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher);
 
+    /**
+     * Positively impacts the {@link Score},
+     * adding the {@link ConstraintWeight} for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #reward(Score)} instead.
+     *
+     * @return never null
+     */
     default BiConstraintBuilder<A, B> rewardConfigurable() {
         return rewardConfigurable((a, b) -> 1);
     }
 
+    /**
+     * Positively impacts the {@link Score},
+     * adding the {@link ConstraintWeight} multiplied by match weight for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #reward(Score, ToIntBiFunction)} instead.
+     *
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     BiConstraintBuilder<A, B> rewardConfigurable(ToIntBiFunction<A, B> matchWeigher);
 
+    /**
+     * As defined by {@link #rewardConfigurable(ToIntBiFunction)}, with a penalty of type long.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #rewardLong(Score, ToLongBiFunction)} instead.
+     */
     BiConstraintBuilder<A, B> rewardConfigurableLong(ToLongBiFunction<A, B> matchWeigher);
 
+    /**
+     * As defined by {@link #rewardConfigurable(ToIntBiFunction)}, with a penalty of type {@link BigDecimal}.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #rewardBigDecimal(Score, BiFunction)} instead.
+     */
     BiConstraintBuilder<A, B> rewardConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher);
 
+    /**
+     * Positively or negatively impacts the {@link Score} by the constraintWeight for each match
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
+     * negative weights.
+     *
+     * @param constraintWeight never null
+     * @return never null
+     */
     default BiConstraintBuilder<A, B> impact(Score<?> constraintWeight) {
         return impact(constraintWeight, (a, b) -> 1);
     }
 
+    /**
+     * Positively or negatively impacts the {@link Score} by constraintWeight multiplied by matchWeight for each match
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
+     * negative weights.
+     *
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     BiConstraintBuilder<A, B> impact(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher);
 
+    /**
+     * As defined by {@link #impact(Score, ToIntBiFunction)}, with an impact of type long.
+     */
     BiConstraintBuilder<A, B> impactLong(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher);
 
+    /**
+     * As defined by {@link #impact(Score, ToIntBiFunction)}, with an impact of type {@link BigDecimal}.
+     */
     BiConstraintBuilder<A, B> impactBigDecimal(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher);
 
+    /**
+     * Positively impacts the {@link Score} by the {@link ConstraintWeight} for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(Score)} instead.
+     *
+     * @return never null
+     */
     default BiConstraintBuilder<A, B> impactConfigurable() {
         return impactConfigurable((a, b) -> 1);
     }
 
+    /**
+     * Positively impacts the {@link Score} by the {@link ConstraintWeight} multiplied by match weight for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(Score, ToIntBiFunction)} instead.
+     *
+     * @return never null
+     */
     BiConstraintBuilder<A, B> impactConfigurable(ToIntBiFunction<A, B> matchWeigher);
 
+    /**
+     * As defined by {@link #impactConfigurable(ToIntBiFunction)}, with an impact of type long.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #impactLong(Score, ToLongBiFunction)} instead.
+     */
     BiConstraintBuilder<A, B> impactConfigurableLong(ToLongBiFunction<A, B> matchWeigher);
 
+    /**
+     * As defined by {@link #impactConfigurable(ToIntBiFunction)}, with an impact of type BigDecimal.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #impactBigDecimal(Score, BiFunction)} instead.
+     */
     BiConstraintBuilder<A, B> impactConfigurableBigDecimal(BiFunction<A, B, BigDecimal> matchWeigher);
 
     /**

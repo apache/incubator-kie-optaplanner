@@ -776,67 +776,242 @@ public interface QuadConstraintStream<A, B, C, D> extends ConstraintStream {
     // Penalize/reward
     // ************************************************************************
 
+    /**
+     * As defined by {@link #penalize(Score, ToIntQuadFunction)}, where the match weight is one (1).
+     *
+     * @return never null
+     */
     default QuadConstraintBuilder<A, B, C, D> penalize(Score<?> constraintWeight) {
         return penalize(constraintWeight, (a, b, c, d) -> 1);
     }
 
+    /**
+     * Applies a negative {@link Score} impact,
+     * subtracting the constraintWeight multiplied by the match weight,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * For non-int {@link Score} types use {@link #penalizeLong(Score, ToLongQuadFunction)} or
+     * {@link #penalizeBigDecimal(Score, QuadFunction)} instead.
+     *
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     QuadConstraintBuilder<A, B, C, D> penalize(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher);
 
+    /**
+     * As defined by {@link #penalize(Score, ToIntQuadFunction)}, with a penalty of type long.
+     */
     QuadConstraintBuilder<A, B, C, D> penalizeLong(Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher);
 
+    /**
+     * As defined by {@link #penalize(Score, ToIntQuadFunction)}, with a penalty of type {@link BigDecimal}.
+     */
     QuadConstraintBuilder<A, B, C, D> penalizeBigDecimal(Score<?> constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
 
+    /**
+     * Negatively impacts the {@link Score},
+     * subtracting the {@link ConstraintWeight} for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalize(Score)} instead.
+     *
+     * @return never null
+     */
     default QuadConstraintBuilder<A, B, C, D> penalizeConfigurable() {
         return penalizeConfigurable((a, b, c, d) -> 1);
     }
 
+    /**
+     * Negatively impacts the {@link Score},
+     * subtracting the {@link ConstraintWeight} multiplied by match weight for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalize(Score, ToIntQuadFunction)} instead.
+     *
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     QuadConstraintBuilder<A, B, C, D> penalizeConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher);
 
+    /**
+     * As defined by {@link #penalizeConfigurable(ToIntQuadFunction)}, with a penalty of type long.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalizeLong(Score, ToLongQuadFunction)} instead.
+     */
     QuadConstraintBuilder<A, B, C, D> penalizeConfigurableLong(ToLongQuadFunction<A, B, C, D> matchWeigher);
 
+    /**
+     * As defined by {@link #penalizeConfigurable(ToIntQuadFunction)}, with a penalty of type {@link BigDecimal}.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalizeBigDecimal(Score, QuadFunction)} instead.
+     */
     QuadConstraintBuilder<A, B, C, D> penalizeConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
 
+    /**
+     * As defined by {@link #reward(Score, ToIntQuadFunction)}, where the match weight is one (1).
+     *
+     * @return never null
+     */
     default QuadConstraintBuilder<A, B, C, D> reward(Score<?> constraintWeight) {
         return reward(constraintWeight, (a, b, c, d) -> 1);
     }
 
+    /**
+     * Applies a positive {@link Score} impact,
+     * adding the constraintWeight multiplied by the match weight,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * For non-int {@link Score} types use {@link #rewardLong(Score, ToLongQuadFunction)} or
+     * {@link #rewardBigDecimal(Score, QuadFunction)} instead.
+     *
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     QuadConstraintBuilder<A, B, C, D> reward(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher);
 
+    /**
+     * As defined by {@link #reward(Score, ToIntQuadFunction)}, with a penalty of type long.
+     */
     QuadConstraintBuilder<A, B, C, D> rewardLong(Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher);
 
+    /**
+     * As defined by {@link #reward(Score, ToIntQuadFunction)}, with a penalty of type {@link BigDecimal}.
+     */
     QuadConstraintBuilder<A, B, C, D> rewardBigDecimal(Score<?> constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
 
+    /**
+     * Positively impacts the {@link Score},
+     * adding the {@link ConstraintWeight} for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #reward(Score)} instead.
+     *
+     * @return never null
+     */
     default QuadConstraintBuilder<A, B, C, D> rewardConfigurable() {
         return rewardConfigurable((a, b, c, d) -> 1);
     }
 
+    /**
+     * Positively impacts the {@link Score},
+     * adding the {@link ConstraintWeight} multiplied by match weight for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #reward(Score, ToIntQuadFunction)} instead.
+     *
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     QuadConstraintBuilder<A, B, C, D> rewardConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher);
 
+    /**
+     * As defined by {@link #rewardConfigurable(ToIntQuadFunction)}, with a penalty of type long.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #rewardLong(Score, ToLongQuadFunction)} instead.
+     */
     QuadConstraintBuilder<A, B, C, D> rewardConfigurableLong(ToLongQuadFunction<A, B, C, D> matchWeigher);
 
+    /**
+     * As defined by {@link #rewardConfigurable(ToIntQuadFunction)}, with a penalty of type {@link BigDecimal}.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #rewardBigDecimal(Score, QuadFunction)} instead.
+     */
     QuadConstraintBuilder<A, B, C, D> rewardConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
 
+    /**
+     * Positively or negatively impacts the {@link Score} by the constraintWeight for each match
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
+     * negative weights.
+     *
+     * @param constraintWeight never null
+     * @return never null
+     */
     default QuadConstraintBuilder<A, B, C, D> impact(Score<?> constraintWeight) {
         return impact(constraintWeight, (a, b, c, d) -> 1);
     }
 
+    /**
+     * Positively or negatively impacts the {@link Score} by constraintWeight multiplied by matchWeight for each match
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
+     * negative weights.
+     *
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     QuadConstraintBuilder<A, B, C, D> impact(Score<?> constraintWeight, ToIntQuadFunction<A, B, C, D> matchWeigher);
 
+    /**
+     * As defined by {@link #impact(Score, ToIntQuadFunction)}, with an impact of type long.
+     */
     QuadConstraintBuilder<A, B, C, D> impactLong(Score<?> constraintWeight, ToLongQuadFunction<A, B, C, D> matchWeigher);
 
+    /**
+     * As defined by {@link #impact(Score, ToIntQuadFunction)}, with an impact of type {@link BigDecimal}.
+     */
     QuadConstraintBuilder<A, B, C, D> impactBigDecimal(Score<?> constraintWeight,
             QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
 
+    /**
+     * Positively impacts the {@link Score} by the {@link ConstraintWeight} for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(Score)} instead.
+     *
+     * @return never null
+     */
     default QuadConstraintBuilder<A, B, C, D> impactConfigurable() {
         return impactConfigurable((a, b, c, d) -> 1);
     }
 
+    /**
+     * Positively impacts the {@link Score} by the {@link ConstraintWeight} multiplied by match weight for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(Score, ToIntQuadFunction)} instead.
+     *
+     * @return never null
+     */
     QuadConstraintBuilder<A, B, C, D> impactConfigurable(ToIntQuadFunction<A, B, C, D> matchWeigher);
 
+    /**
+     * As defined by {@link #impactConfigurable(ToIntQuadFunction)}, with an impact of type long.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #impactLong(Score, ToLongQuadFunction)} instead.
+     */
     QuadConstraintBuilder<A, B, C, D> impactConfigurableLong(ToLongQuadFunction<A, B, C, D> matchWeigher);
 
+    /**
+     * As defined by {@link #impactConfigurable(ToIntQuadFunction)}, with an impact of type BigDecimal.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #impactBigDecimal(Score, QuadFunction)} instead.
+     */
     QuadConstraintBuilder<A, B, C, D> impactConfigurableBigDecimal(QuadFunction<A, B, C, D, BigDecimal> matchWeigher);
 
     /**

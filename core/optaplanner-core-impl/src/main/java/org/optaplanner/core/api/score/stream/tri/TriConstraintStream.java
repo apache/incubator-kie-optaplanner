@@ -988,64 +988,239 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     // Penalize/reward
     // ************************************************************************
 
+    /**
+     * As defined by {@link #penalize(Score, ToIntTriFunction)}, where the match weight is one (1).
+     *
+     * @return never null
+     */
     default TriConstraintBuilder<A, B, C> penalize(Score<?> constraintWeight) {
         return penalize(constraintWeight, (a, b, c) -> 1);
     }
 
+    /**
+     * Applies a negative {@link Score} impact,
+     * subtracting the constraintWeight multiplied by the match weight,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * For non-int {@link Score} types use {@link #penalizeLong(Score, ToLongTriFunction)} or
+     * {@link #penalizeBigDecimal(Score, TriFunction)} instead.
+     *
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     TriConstraintBuilder<A, B, C> penalize(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher);
 
+    /**
+     * As defined by {@link #penalize(Score, ToIntTriFunction)}, with a penalty of type long.
+     */
     TriConstraintBuilder<A, B, C> penalizeLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher);
 
+    /**
+     * As defined by {@link #penalize(Score, ToIntTriFunction)}, with a penalty of type {@link BigDecimal}.
+     */
     TriConstraintBuilder<A, B, C> penalizeBigDecimal(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher);
 
+    /**
+     * Negatively impacts the {@link Score},
+     * subtracting the {@link ConstraintWeight} for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalize(Score)} instead.
+     *
+     * @return never null
+     */
     default TriConstraintBuilder<A, B, C> penalizeConfigurable() {
         return penalizeConfigurable((a, b, c) -> 1);
     }
 
+    /**
+     * Negatively impacts the {@link Score},
+     * subtracting the {@link ConstraintWeight} multiplied by match weight for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalize(Score, ToIntTriFunction)} instead.
+     *
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     TriConstraintBuilder<A, B, C> penalizeConfigurable(ToIntTriFunction<A, B, C> matchWeigher);
 
+    /**
+     * As defined by {@link #penalizeConfigurable(ToIntTriFunction)}, with a penalty of type long.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalizeLong(Score, ToLongTriFunction)} instead.
+     */
     TriConstraintBuilder<A, B, C> penalizeConfigurableLong(ToLongTriFunction<A, B, C> matchWeigher);
 
+    /**
+     * As defined by {@link #penalizeConfigurable(ToIntTriFunction)}, with a penalty of type {@link BigDecimal}.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalizeBigDecimal(Score, TriFunction)} instead.
+     */
     TriConstraintBuilder<A, B, C> penalizeConfigurableBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher);
 
+    /**
+     * As defined by {@link #reward(Score, ToIntTriFunction)}, where the match weight is one (1).
+     *
+     * @return never null
+     */
     default TriConstraintBuilder<A, B, C> reward(Score<?> constraintWeight) {
         return reward(constraintWeight, (a, b, c) -> 1);
     }
 
+    /**
+     * Applies a positive {@link Score} impact,
+     * adding the constraintWeight multiplied by the match weight,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * For non-int {@link Score} types use {@link #rewardLong(Score, ToLongTriFunction)} or
+     * {@link #rewardBigDecimal(Score, TriFunction)} instead.
+     *
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     TriConstraintBuilder<A, B, C> reward(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher);
 
+    /**
+     * As defined by {@link #reward(Score, ToIntTriFunction)}, with a penalty of type long.
+     */
     TriConstraintBuilder<A, B, C> rewardLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher);
 
+    /**
+     * As defined by {@link #reward(Score, ToIntTriFunction)}, with a penalty of type {@link BigDecimal}.
+     */
     TriConstraintBuilder<A, B, C> rewardBigDecimal(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher);
 
+    /**
+     * Positively impacts the {@link Score},
+     * adding the {@link ConstraintWeight} for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #reward(Score)} instead.
+     *
+     * @return never null
+     */
     default TriConstraintBuilder<A, B, C> rewardConfigurable() {
         return rewardConfigurable((a, b, c) -> 1);
     }
 
+    /**
+     * Positively impacts the {@link Score},
+     * adding the {@link ConstraintWeight} multiplied by match weight for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #reward(Score, ToIntTriFunction)} instead.
+     *
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     TriConstraintBuilder<A, B, C> rewardConfigurable(ToIntTriFunction<A, B, C> matchWeigher);
 
+    /**
+     * As defined by {@link #rewardConfigurable(ToIntTriFunction)}, with a penalty of type long.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #rewardLong(Score, ToLongTriFunction)} instead.
+     */
     TriConstraintBuilder<A, B, C> rewardConfigurableLong(ToLongTriFunction<A, B, C> matchWeigher);
 
+    /**
+     * As defined by {@link #rewardConfigurable(ToIntTriFunction)}, with a penalty of type {@link BigDecimal}.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #rewardBigDecimal(Score, TriFunction)} instead.
+     */
     TriConstraintBuilder<A, B, C> rewardConfigurableBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher);
 
+    /**
+     * Positively or negatively impacts the {@link Score} by the constraintWeight for each match
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
+     * negative weights.
+     *
+     * @param constraintWeight never null
+     * @return never null
+     */
     default TriConstraintBuilder<A, B, C> impact(Score<?> constraintWeight) {
         return impact(constraintWeight, (a, b, c) -> 1);
     }
 
+    /**
+     * Positively or negatively impacts the {@link Score} by constraintWeight multiplied by matchWeight for each match
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
+     * negative weights.
+     *
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     TriConstraintBuilder<A, B, C> impact(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher);
 
+    /**
+     * As defined by {@link #impact(Score, ToIntTriFunction)}, with an impact of type long.
+     */
     TriConstraintBuilder<A, B, C> impactLong(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher);
 
+    /**
+     * As defined by {@link #impact(Score, ToIntTriFunction)}, with an impact of type {@link BigDecimal}.
+     */
     TriConstraintBuilder<A, B, C> impactBigDecimal(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher);
 
+    /**
+     * Positively impacts the {@link Score} by the {@link ConstraintWeight} for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(Score)} instead.
+     *
+     * @return never null
+     */
     default TriConstraintBuilder<A, B, C> impactConfigurable() {
         return impactConfigurable((a, b, c) -> 1);
     }
 
+    /**
+     * Positively impacts the {@link Score} by the {@link ConstraintWeight} multiplied by match weight for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(Score, ToIntTriFunction)} instead.
+     *
+     * @return never null
+     */
     TriConstraintBuilder<A, B, C> impactConfigurable(ToIntTriFunction<A, B, C> matchWeigher);
 
+    /**
+     * As defined by {@link #impactConfigurable(ToIntTriFunction)}, with an impact of type long.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #impactLong(Score, ToLongTriFunction)} instead.
+     */
     TriConstraintBuilder<A, B, C> impactConfigurableLong(ToLongTriFunction<A, B, C> matchWeigher);
 
+    /**
+     * As defined by {@link #impactConfigurable(ToIntTriFunction)}, with an impact of type BigDecimal.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #impactBigDecimal(Score, TriFunction)} instead.
+     */
     TriConstraintBuilder<A, B, C> impactConfigurableBigDecimal(TriFunction<A, B, C, BigDecimal> matchWeigher);
 
     /**

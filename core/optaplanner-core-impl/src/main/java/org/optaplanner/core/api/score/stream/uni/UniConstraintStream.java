@@ -1418,64 +1418,239 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     // Penalize/reward
     // ************************************************************************
 
+    /**
+     * As defined by {@link #penalize(Score, ToIntFunction)}, where the match weight is one (1).
+     *
+     * @return never null
+     */
     default UniConstraintBuilder<A> penalize(Score<?> constraintWeight) {
         return penalize(constraintWeight, a -> 1);
     }
 
+    /**
+     * Applies a negative {@link Score} impact,
+     * subtracting the constraintWeight multiplied by the match weight,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * For non-int {@link Score} types use {@link #penalizeLong(Score, ToLongFunction)} or
+     * {@link #penalizeBigDecimal(Score, Function)} instead.
+     *
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     UniConstraintBuilder<A> penalize(Score<?> constraintWeight, ToIntFunction<A> matchWeigher);
 
+    /**
+     * As defined by {@link #penalize(Score, ToIntFunction)}, with a penalty of type long.
+     */
     UniConstraintBuilder<A> penalizeLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher);
 
+    /**
+     * As defined by {@link #penalize(Score, ToIntFunction)}, with a penalty of type {@link BigDecimal}.
+     */
     UniConstraintBuilder<A> penalizeBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher);
 
+    /**
+     * Negatively impacts the {@link Score},
+     * subtracting the {@link ConstraintWeight} for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalize(Score)} instead.
+     *
+     * @return never null
+     */
     default UniConstraintBuilder<A> penalizeConfigurable() {
         return penalizeConfigurable(a -> 1);
     }
 
+    /**
+     * Negatively impacts the {@link Score},
+     * subtracting the {@link ConstraintWeight} multiplied by match weight for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalize(Score, ToIntFunction)} instead.
+     *
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     UniConstraintBuilder<A> penalizeConfigurable(ToIntFunction<A> matchWeigher);
 
+    /**
+     * As defined by {@link #penalizeConfigurable(ToIntFunction)}, with a penalty of type long.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalizeLong(Score, ToLongFunction)} instead.
+     */
     UniConstraintBuilder<A> penalizeConfigurableLong(ToLongFunction<A> matchWeigher);
 
+    /**
+     * As defined by {@link #penalizeConfigurable(ToIntFunction)}, with a penalty of type {@link BigDecimal}.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #penalizeBigDecimal(Score, Function)} instead.
+     */
     UniConstraintBuilder<A> penalizeConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher);
 
+    /**
+     * As defined by {@link #reward(Score, ToIntFunction)}, where the match weight is one (1).
+     *
+     * @return never null
+     */
     default UniConstraintBuilder<A> reward(Score<?> constraintWeight) {
         return reward(constraintWeight, a -> 1);
     }
 
+    /**
+     * Applies a positive {@link Score} impact,
+     * adding the constraintWeight multiplied by the match weight,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * For non-int {@link Score} types use {@link #rewardLong(Score, ToLongFunction)} or
+     * {@link #rewardBigDecimal(Score, Function)} instead.
+     *
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     UniConstraintBuilder<A> reward(Score<?> constraintWeight, ToIntFunction<A> matchWeigher);
 
+    /**
+     * As defined by {@link #reward(Score, ToIntFunction)}, with a penalty of type long.
+     */
     UniConstraintBuilder<A> rewardLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher);
 
+    /**
+     * As defined by {@link #reward(Score, ToIntFunction)}, with a penalty of type {@link BigDecimal}.
+     */
     UniConstraintBuilder<A> rewardBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher);
 
+    /**
+     * Positively impacts the {@link Score},
+     * adding the {@link ConstraintWeight} for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #reward(Score)} instead.
+     *
+     * @return never null
+     */
     default UniConstraintBuilder<A> rewardConfigurable() {
         return rewardConfigurable(a -> 1);
     }
 
+    /**
+     * Positively impacts the {@link Score},
+     * adding the {@link ConstraintWeight} multiplied by match weight for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #reward(Score, ToIntFunction)} instead.
+     *
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     UniConstraintBuilder<A> rewardConfigurable(ToIntFunction<A> matchWeigher);
 
+    /**
+     * As defined by {@link #rewardConfigurable(ToIntFunction)}, with a penalty of type long.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #rewardLong(Score, ToLongFunction)} instead.
+     */
     UniConstraintBuilder<A> rewardConfigurableLong(ToLongFunction<A> matchWeigher);
 
+    /**
+     * As defined by {@link #rewardConfigurable(ToIntFunction)}, with a penalty of type {@link BigDecimal}.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #rewardBigDecimal(Score, Function)} instead.
+     */
     UniConstraintBuilder<A> rewardConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher);
 
+    /**
+     * Positively or negatively impacts the {@link Score} by the constraintWeight for each match
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
+     * negative weights.
+     *
+     * @param constraintWeight never null
+     * @return never null
+     */
     default UniConstraintBuilder<A> impact(Score<?> constraintWeight) {
         return impact(constraintWeight, a -> 1);
     }
 
+    /**
+     * Positively or negatively impacts the {@link Score} by constraintWeight multiplied by matchWeight for each match
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * Use {@code penalize(...)} or {@code reward(...)} instead, unless this constraint can both have positive and
+     * negative weights.
+     *
+     * @param constraintWeight never null
+     * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
+     * @return never null
+     */
     UniConstraintBuilder<A> impact(Score<?> constraintWeight, ToIntFunction<A> matchWeigher);
 
+    /**
+     * As defined by {@link #impact(Score, ToIntFunction)}, with an impact of type long.
+     */
     UniConstraintBuilder<A> impactLong(Score<?> constraintWeight, ToLongFunction<A> matchWeigher);
 
+    /**
+     * As defined by {@link #impact(Score, ToIntFunction)}, with an impact of type {@link BigDecimal}.
+     */
     UniConstraintBuilder<A> impactBigDecimal(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher);
 
+    /**
+     * Positively impacts the {@link Score} by the {@link ConstraintWeight} for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(Score)} instead.
+     *
+     * @return never null
+     */
     default UniConstraintBuilder<A> impactConfigurable() {
         return impactConfigurable(a -> 1);
     }
 
+    /**
+     * Positively impacts the {@link Score} by the {@link ConstraintWeight} multiplied by match weight for each match,
+     * and returns a builder to apply optional constraint configuration.
+     * <p>
+     * The constraintWeight comes from an {@link ConstraintWeight} annotated member on the {@link ConstraintConfiguration},
+     * so end users can change the constraint weights dynamically.
+     * This constraint may be deactivated if the {@link ConstraintWeight} is zero.
+     * If there is no {@link ConstraintConfiguration}, use {@link #impact(Score, ToIntFunction)} instead.
+     *
+     * @return never null
+     */
     UniConstraintBuilder<A> impactConfigurable(ToIntFunction<A> matchWeigher);
 
+    /**
+     * As defined by {@link #impactConfigurable(ToIntFunction)}, with an impact of type long.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #impactLong(Score, ToLongFunction)} instead.
+     */
     UniConstraintBuilder<A> impactConfigurableLong(ToLongFunction<A> matchWeigher);
 
+    /**
+     * As defined by {@link #impactConfigurable(ToIntFunction)}, with an impact of type BigDecimal.
+     * <p>
+     * If there is no {@link ConstraintConfiguration}, use {@link #impactBigDecimal(Score, Function)} instead.
+     */
     UniConstraintBuilder<A> impactConfigurableBigDecimal(Function<A, BigDecimal> matchWeigher);
 
     /**
@@ -1518,7 +1693,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
      * Negatively impact the {@link Score}: subtract the constraintWeight multiplied by the match weight.
      * Otherwise as defined by {@link #penalize(String, Score)}.
      *
-     * @deprecated Prefer {@link #penalizeLong(Score, ToIntFunction)}.
+     * @deprecated Prefer {@link #penalizeLong(Score, ToLongFunction)}.
      * @param constraintName never null, shows up in {@link ConstraintMatchTotal} during score justification
      * @param constraintWeight never null
      * @param matchWeigher never null, the result of this function (matchWeight) is multiplied by the constraintWeight
@@ -1533,7 +1708,7 @@ public interface UniConstraintStream<A> extends ConstraintStream {
     /**
      * As defined by {@link #penalizeLong(String, Score, ToLongFunction)}.
      *
-     * @deprecated Prefer {@link #penalizeLong(Score, ToIntFunction)}.
+     * @deprecated Prefer {@link #penalizeLong(Score, ToLongFunction)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param constraintWeight never null
