@@ -63,7 +63,7 @@ public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListC
 
     @Override
     public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
-        throw new UnsupportedOperationException("Not yet implemented.");
+        visitCommonReferencedClasses(classVisitor);
     }
 
     @Override
