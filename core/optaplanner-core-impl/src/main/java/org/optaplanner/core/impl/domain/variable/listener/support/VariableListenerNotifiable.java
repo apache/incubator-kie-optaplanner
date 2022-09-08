@@ -21,9 +21,9 @@ final class VariableListenerNotifiable<Solution_> extends AbstractNotifiable<Sol
         super(scoreDirector, variableListener, notificationQueue, globalOrder);
     }
 
-    public void notifyBefore(Notification<Solution_, VariableListener<Solution_, Object>> notification) {
-        if (notificationQueue.add(notification)) {
-            notification.triggerBefore(variableListener, scoreDirector);
+    public void notifyBefore(BasicVariableNotification<Solution_> notification) {
+        if (storeForLater(notification)) {
+            triggerBefore(notification);
         }
     }
 }

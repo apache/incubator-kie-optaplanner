@@ -23,11 +23,11 @@ final class ListVariableListenerNotifiable<Solution_>
         super(scoreDirector, variableListener, notificationQueue, globalOrder);
     }
 
-    public void notifyBefore(Notification<Solution_, ListVariableListener<Solution_, Object>> notification) {
-        notification.triggerBefore(variableListener, scoreDirector);
+    public void notifyBefore(ListVariableNotification<Solution_> notification) {
+        triggerBefore(notification);
     }
 
-    public void notifyAfter(Notification<Solution_, ListVariableListener<Solution_, Object>> notification) {
-        notificationQueue.add(notification);
+    public void notifyAfter(ListVariableNotification<Solution_> notification) {
+        storeForLater(notification);
     }
 }

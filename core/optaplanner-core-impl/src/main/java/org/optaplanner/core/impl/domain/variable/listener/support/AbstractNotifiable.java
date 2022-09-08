@@ -19,9 +19,9 @@ import org.optaplanner.core.impl.util.ListBasedScalingOrderedSet;
 abstract class AbstractNotifiable<Solution_, T extends AbstractVariableListener<Solution_, Object>>
         implements EntityNotifiable<Solution_> {
 
-    protected final ScoreDirector<Solution_> scoreDirector;
-    protected final T variableListener;
-    protected final Collection<Notification<Solution_, ? super T>> notificationQueue;
+    private final ScoreDirector<Solution_> scoreDirector;
+    private final T variableListener;
+    private final Collection<Notification<Solution_, ? super T>> notificationQueue;
     private final int globalOrder;
 
     static <Solution_> EntityNotifiable<Solution_> buildNotifiable(
@@ -60,6 +60,14 @@ abstract class AbstractNotifiable<Solution_, T extends AbstractVariableListener<
         if (notificationQueue.add(notification)) {
             notification.triggerBefore(variableListener, scoreDirector);
         }
+    }
+
+    protected boolean storeForLater(Notification<Solution_, T> notification) {
+        return notificationQueue.add(notification);
+    }
+
+    protected void triggerBefore(Notification<Solution_, T> notification) {
+        notification.triggerBefore(variableListener, scoreDirector);
     }
 
     @Override
