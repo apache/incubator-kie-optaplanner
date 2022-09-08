@@ -2,8 +2,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.heuristic.HeuristicConfigPolicyTestUtils.buildHeuristicConfigPolicy;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
@@ -20,8 +19,8 @@ class SubListSwapMoveSelectorFactoryTest {
         SubListSwapMoveSelectorConfig config = new SubListSwapMoveSelectorConfig();
         SubListSwapMoveSelectorFactory<TestdataListSolution> factory = new SubListSwapMoveSelectorFactory<>(config);
 
-        HeuristicConfigPolicy<TestdataListSolution> heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
-        when(heuristicConfigPolicy.getSolutionDescriptor()).thenReturn(TestdataListSolution.buildSolutionDescriptor());
+        HeuristicConfigPolicy<TestdataListSolution> heuristicConfigPolicy =
+                buildHeuristicConfigPolicy(TestdataListSolution.buildSolutionDescriptor());
 
         RandomSubListSwapMoveSelector<TestdataListSolution> selector =
                 (RandomSubListSwapMoveSelector<TestdataListSolution>) factory.buildBaseMoveSelector(heuristicConfigPolicy,
@@ -37,8 +36,8 @@ class SubListSwapMoveSelectorFactoryTest {
         config.setSelectReversingMoveToo(false);
         SubListSwapMoveSelectorFactory<TestdataListSolution> factory = new SubListSwapMoveSelectorFactory<>(config);
 
-        HeuristicConfigPolicy<TestdataListSolution> heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
-        when(heuristicConfigPolicy.getSolutionDescriptor()).thenReturn(TestdataListSolution.buildSolutionDescriptor());
+        HeuristicConfigPolicy<TestdataListSolution> heuristicConfigPolicy =
+                buildHeuristicConfigPolicy(TestdataListSolution.buildSolutionDescriptor());
 
         RandomSubListSwapMoveSelector<TestdataListSolution> selector =
                 (RandomSubListSwapMoveSelector<TestdataListSolution>) factory.buildBaseMoveSelector(heuristicConfigPolicy,
@@ -52,8 +51,7 @@ class SubListSwapMoveSelectorFactoryTest {
         SubListSwapMoveSelectorConfig config = new SubListSwapMoveSelectorConfig();
         SubListSwapMoveSelectorFactory<TestdataSolution> factory = new SubListSwapMoveSelectorFactory<>(config);
 
-        HeuristicConfigPolicy<TestdataSolution> heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
-        when(heuristicConfigPolicy.getSolutionDescriptor()).thenReturn(TestdataSolution.buildSolutionDescriptor());
+        HeuristicConfigPolicy<TestdataSolution> heuristicConfigPolicy = buildHeuristicConfigPolicy();
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> factory.buildBaseMoveSelector(heuristicConfigPolicy, SelectionCacheType.JUST_IN_TIME, true))
