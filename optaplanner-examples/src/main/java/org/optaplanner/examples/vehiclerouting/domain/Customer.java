@@ -94,7 +94,7 @@ public class Customer extends AbstractPersistable {
         return previousCustomer.getLocation().getDistanceTo(location);
     }
 
-    public long getDistanceTo(Vehicle vehicle) {
+    public long getDistanceToDepot() {
         return location.getDistanceTo(vehicle.getLocation());
     }
 
