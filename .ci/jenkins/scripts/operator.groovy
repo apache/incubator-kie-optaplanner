@@ -6,35 +6,31 @@ void loginRegistry() {
 }
 
 String getOperatorImageRegistryCredentials() {
-    return params[constructKey('REGISTRY_CREDENTIALS')]
+    return params.OPERATOR_IMAGE_REGISTRY_CREDENTIALS
 }
 
 String getOperatorImageRegistry() {
-    return params[operatorImageParamKey('registry')]
+    return params.OPERATOR_IMAGE_REGISTRY
 }
 
 String getOperatorImageNamespace() {
-    return params[operatorImageParamKey('namespace')]
+    return params.OPERATOR_IMAGE_NAMESPACE
 }
 
 String getOperatorImageName() {
-    return params[operatorImageParamKey('name')]
+    return env.OPERATOR_IMAGE_NAME
 }
 
 String getOperatorImageTag() {
-    return params[operatorImageParamKey('tag')] ?: getProjectVersion()
+    return params.OPERATOR_IMAGE_TAG ?: getProjectVersion() ?: 'latest'
 }
 
-String getTemporaryImage() {
-    return params[operatorImageParamKey('temporary_image')]
-}
-
-String operatorImageParamKey(String suffix) {
-    return "operator.image.$suffix"
+String getProjectVersion() {
+    return params.PROJECT_VERSION
 }
 
 String getOperatorImageLocalName() {
-    return "${getOperatorImageNamespace()}/${env.OPERATOR_IMAGE_NAME}:${getProjectVersion()}"
+    return "${getOperatorImageName()}:latest"
 }
 
 String getOperatorImageFullName(String tag = null) {
@@ -51,18 +47,18 @@ String pushTemporaryImage() {
     String temporaryTag = "${getOperatorImageTag()}-temporary"
     String temporaryFullImageName = getOperatorImageFullNameWithRegistry(temporaryTag)
     tagImage(getOperatorImageLocalName(), temporaryFullImageName)
+
+    loginRegistry()
     pushImage(temporaryFullImageName)
     return temporaryFullImageName
 }
 
-void pushFinalImage() {
-    String temporaryImageName = getTemporaryImage()
-
+void pushFinalImage(String temporaryImage) {
     loginRegistry()
-    operator.pullImage(temporaryImageName)
+    pullImage(temporaryImage)
 
     String finalImageName = getOperatorImageFullNameWithRegistry()
-    tagImage(temporaryImageName, finalImageName)
+    tagImage(temporaryImage, finalImageName)
     pushImage(finalImageName)
     String finalImageLatestName = getOperatorImageFullNameWithRegistry('latest')
     tagImage(finalImageName, finalImageLatestName)

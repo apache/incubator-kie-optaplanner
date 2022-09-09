@@ -215,7 +215,8 @@ pipeline {
             }
             steps {
                 script {
-                    operator.pushFinalImage()
+                    String temporaryImage = getDeployProperty('operator.temporary_image')
+                    operator.pushFinalImage(temporaryImage)
                 }
             }
         }

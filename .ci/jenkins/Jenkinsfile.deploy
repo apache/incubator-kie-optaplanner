@@ -121,142 +121,149 @@ pipeline {
                 }
             }
         }
-        stage('Build OptaPlanner') {
-            steps {
-                script {
-                    getOptaplannerMavenCommand().withProperty('maven.test.failure.ignore', true).skipTests(params.SKIP_TESTS).run('clean install')
-                    if (isRelease()) {
-                        updateAntoraYaml(optaplannerRepository)
-                    }
-                }
-            }
-            post {
-                always {
-                    script {
-                        archiveJUnitTestResults()
-                        util.archiveConsoleLog()
-                    }
-                }
-            }
-        }
-
         /* TODO: remove after testing
+       stage('Build OptaPlanner') {
+           steps {
+               script {
+                   getOptaplannerMavenCommand().withProperty('maven.test.failure.ignore', true).skipTests(params.SKIP_TESTS).run('clean install')
+                   if (isRelease()) {
+                       updateAntoraYaml(optaplannerRepository)
+                   }
+               }
+           }
+           post {
+               always {
+                   script {
+                       archiveJUnitTestResults()
+                       util.archiveConsoleLog()
+                   }
+               }
+           }
+       }
 
-        stage('Build Quickstarts') {
-            steps {
-                script {
-                    getOptaplannerQuickstartsMavenCommand().withProperty('maven.test.failure.ignore', true).skipTests(params.SKIP_TESTS).run('clean install')
-                }
-            }
-            post {
-                always {
-                    script {
-                        archiveJUnitTestResults()
-                        util.archiveConsoleLog()
-                    }
-                }
-            }
-        }
 
-        stage('Build Vehicle Routing') {
-            steps {
-                script {
-                    buildOptaweb(getOptawebVehicleRoutingMavenCommand())
-                }
-            }
-            post {
-                always {
-                    script {
-                        archiveJUnitTestResults()
-                        archiveCypressArtifacts()
-                        util.archiveConsoleLog()
-                    }
-                }
-            }
-        }
 
-        stage('Deploy to repository') {
-            when {
-                expression { return !shouldStageArtifacts() && !isSpecificArtifactsUpload() && shouldDeployToRepository() }
-            }
-            steps {
-                script {
-                    runMavenDeploy(getOptaplannerMavenCommand())
-                    runMavenDeploy(getOptaplannerQuickstartsMavenCommand().withOptions(['-pl', ':optaplanner-distribution']))
-                    runMavenDeploy(getOptawebVehicleRoutingMavenCommand())
-                }
-            }
-        }
-        stage('Deploy locally') {
-            when {
-                expression { return shouldStageArtifacts() || isSpecificArtifactsUpload() }
-            }
-            steps {
-                script {
-                    runMavenDeploy(getOptaplannerMavenCommand(), optaplannerRepository)
-                    runMavenDeploy(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
-                }
-            }
-        }
-        stage('Upload artifacts to given repository') {
-            when {
-                expression { return isSpecificArtifactsUpload() }
-            }
-            steps {
-                script {
-                    // Deploy to specific repository with credentials
-                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(optaplannerRepository), getMavenRepoZipUrl())
-                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(vehicleRoutingRepository), getMavenRepoZipUrl())
-                }
-            }
-        }
-        stage('Stage artifacts') {
-            when {
-                expression { return shouldStageArtifacts() }
-            }
-            steps {
-                script {
-                    // Stage release artifacts
-                    runMavenStage(getOptaplannerMavenCommand(), optaplannerRepository)
-                    runMavenStage(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
-                }
-            }
-        }
+       stage('Build Quickstarts') {
+           steps {
+               script {
+                   getOptaplannerQuickstartsMavenCommand().withProperty('maven.test.failure.ignore', true).skipTests(params.SKIP_TESTS).run('clean install')
+               }
+           }
+           post {
+               always {
+                   script {
+                       archiveJUnitTestResults()
+                       util.archiveConsoleLog()
+                   }
+               }
+           }
+       }
 
-        stage('Create PRs') {
-            when {
-                expression { return isRelease() || isCreatePr()  }
-            }
-            steps {
-                commitAndCreatePR(optaplannerRepository, getBuildBranch())
-                commitAndCreatePRIgnoringNpmRegistry(vehicleRoutingRepository, getBuildBranch())
-                commitAndCreatePR(quickstartsRepository, getQuickStartsBranch())
-            }
-            post {
-                success {
-                    script {
-                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${optaplannerRepository}")
-                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.source.ref", getBotBranch())
-                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${optaplannerRepository}")
-                        setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.ref", getBuildBranch())
+       stage('Build Vehicle Routing') {
+           steps {
+               script {
+                   buildOptaweb(getOptawebVehicleRoutingMavenCommand())
+               }
+           }
+           post {
+               always {
+                   script {
+                       archiveJUnitTestResults()
+                       archiveCypressArtifacts()
+                       util.archiveConsoleLog()
+                   }
+               }
+           }
+       }
 
-                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${vehicleRoutingRepository}")
-                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.source.ref", getBotBranch())
-                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${vehicleRoutingRepository}")
-                        setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.ref", getBuildBranch())
-                    }
-                }
-            }
-        }*/
+       stage('Deploy to repository') {
+           when {
+               expression { return !shouldStageArtifacts() && !isSpecificArtifactsUpload() && shouldDeployToRepository() }
+           }
+           steps {
+               script {
+                   runMavenDeploy(getOptaplannerMavenCommand())
+                   runMavenDeploy(getOptaplannerQuickstartsMavenCommand().withOptions(['-pl', ':optaplanner-distribution']))
+                   runMavenDeploy(getOptawebVehicleRoutingMavenCommand())
+               }
+           }
+       }
+       stage('Deploy locally') {
+           when {
+               expression { return shouldStageArtifacts() || isSpecificArtifactsUpload() }
+           }
+           steps {
+               script {
+                   runMavenDeploy(getOptaplannerMavenCommand(), optaplannerRepository)
+                   runMavenDeploy(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
+               }
+           }
+       }
+       stage('Upload artifacts to given repository') {
+           when {
+               expression { return isSpecificArtifactsUpload() }
+           }
+           steps {
+               script {
+                   // Deploy to specific repository with credentials
+                   maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(optaplannerRepository), getMavenRepoZipUrl())
+                   maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(vehicleRoutingRepository), getMavenRepoZipUrl())
+               }
+           }
+       }
+       stage('Stage artifacts') {
+           when {
+               expression { return shouldStageArtifacts() }
+           }
+           steps {
+               script {
+                   // Stage release artifacts
+                   runMavenStage(getOptaplannerMavenCommand(), optaplannerRepository)
+                   runMavenStage(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
+               }
+           }
+       }
+
+       stage('Create PRs') {
+           when {
+               expression { return isRelease() || isCreatePr()  }
+           }
+           steps {
+               commitAndCreatePR(optaplannerRepository, getBuildBranch())
+               commitAndCreatePRIgnoringNpmRegistry(vehicleRoutingRepository, getBuildBranch())
+               commitAndCreatePR(quickstartsRepository, getQuickStartsBranch())
+           }
+           post {
+               success {
+                   script {
+                       setDeployPropertyIfNeeded("${optaplannerRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${optaplannerRepository}")
+                       setDeployPropertyIfNeeded("${optaplannerRepository}.pr.source.ref", getBotBranch())
+                       setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${optaplannerRepository}")
+                       setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.ref", getBuildBranch())
+
+                       setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.source.uri", "https://github.com/${getBotAuthor()}/${vehicleRoutingRepository}")
+                       setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.source.ref", getBotBranch())
+                       setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${vehicleRoutingRepository}")
+                       setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.ref", getBuildBranch())
+                   }
+               }
+           }
+       }*/
 
         stage('Push a temporary operator image to a registry') {
             steps {
                 script {
-                    operator.loginRegistry()
+                    getMavenDefaultCommand()
+                            .inDirectory("$optaplannerRepository/optaplanner-operator")
+                            .withProperty('full')
+                            .withProperty('maven.test.failure.ignore', true)
+                            .skipTests(params.SKIP_TESTS)
+                            .run('clean install')
+
                     String temporaryImage = operator.pushTemporaryImage()
 
                     // Store image deployment information
-                    setDeployPropertyIfNeeded(operator.operatorImageParamKey('temporary_image'), temporaryImage)
+                    setDeployPropertyIfNeeded('operator.temporary_image', temporaryImage)
                 }
             }
         }
