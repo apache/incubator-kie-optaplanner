@@ -89,8 +89,8 @@ pipeline {
         stage('Clone repositories') {
             steps {
                 checkoutRepo(optaplannerRepository)
-                checkoutQuickstarts()
-                checkoutRepo(vehicleRoutingRepository)
+                //TODO: remove after testing    checkoutQuickstarts()
+                //TODO: remove after testing    checkoutRepo(vehicleRoutingRepository)
             }
         }
 
@@ -100,8 +100,8 @@ pipeline {
             }
             steps {
                 prepareForPR(optaplannerRepository)
-                prepareForPR(vehicleRoutingRepository)
-                prepareForPR(quickstartsRepository)
+                //TODO: remove after testing    prepareForPR(vehicleRoutingRepository)
+                //TODO: remove after testing    prepareForPR(quickstartsRepository)
             }
         }
 
@@ -115,9 +115,9 @@ pipeline {
 
                     mavenCleanInstallOptaPlannerParents()
 
-                    maven.mvnVersionsUpdateParentAndChildModules(getOptawebVehicleRoutingMavenCommand(), getProjectVersion(), !isRelease())
+                    //TODO: remove after testing    maven.mvnVersionsUpdateParentAndChildModules(getOptawebVehicleRoutingMavenCommand(), getProjectVersion(), !isRelease())
 
-                    updateQuickstartsVersions()
+                    //TODO: remove after testing    updateQuickstartsVersions()
                 }
             }
         }
@@ -139,6 +139,8 @@ pipeline {
                 }
             }
         }
+
+        /* TODO: remove after testing
 
         stage('Build Quickstarts') {
             steps {
@@ -245,7 +247,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
         stage('Push a temporary operator image to a registry') {
             steps {
