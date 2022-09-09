@@ -31,7 +31,7 @@ git:
     credentials_id: rsynek-bot
   jenkins_config_path: .ci/jenkins
 maven:
-  settings_file_id: 2bd418aa-56fa-4403-9232-8c77a50fc528
+  settings_file_id: kogito_release_settings
   nexus:
     release_url: https://repository.stage.jboss.org/nexus
     release_repository: jboss-releases-repository
