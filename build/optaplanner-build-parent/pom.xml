@@ -20,14 +20,14 @@
     <!-- Dependencies -->
     <!-- ************************************************************************ -->
     <!-- SNAPSHOT and KIE dependency versions -->
-    <version.org.drools>8.25.0.Beta</version.org.drools>
+    <version.org.drools>8.27.0.Beta</version.org.drools>
 
     <!-- Normal dependency versions -->
     <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
     <version.org.apache.logging.log4j>2.17.2</version.org.apache.logging.log4j>
     <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
     <version.io.quarkiverse.operatorsdk>4.0.0</version.io.quarkiverse.operatorsdk>
-    <version.io.quarkus>2.12.0.Final</version.io.quarkus>
+    <version.io.quarkus>2.12.1.Final</version.io.quarkus>
     <version.io.strimzi>0.28.0</version.io.strimzi>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
     <version.org.apache.commons.text>1.9</version.org.apache.commons.text>
@@ -510,7 +510,7 @@
         <plugin>
           <groupId>net.revelc.code</groupId>
           <artifactId>impsort-maven-plugin</artifactId>
-          <version>1.4.1</version>
+          <version>1.7.0</version>
           <configuration>
             <groups>java.,javax.,org.,com.</groups>
             <staticGroups>*</staticGroups>
