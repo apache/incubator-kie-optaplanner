@@ -316,6 +316,9 @@ void setupDeployJob(Folder jobFolder) {
 
             MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
             MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+
+            OPERATOR_IMAGE_NAME: 'optaplanner-operator',
+            MAX_REGISTRY_RETRIES: 3,
         ])
         if (jobFolder.isRelease()) {
             jobParams.env.putAll([
@@ -350,6 +353,12 @@ void setupDeployJob(Folder jobFolder) {
 
             //Build branch name for quickstarts
             stringParam('QUICKSTARTS_BUILD_BRANCH_NAME', Utils.isMainBranch(this) ? 'development' : "${GIT_BRANCH}", 'Base branch for quickstarts. Set if you are not on a multibranch pipeline.')
+
+            stringParam('OPERATOR_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images.')
+            // TODO: when do we use the 'registry_credentials_release'?
+            stringParam('OPERATOR_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS_NIGHTLY}", 'Image registry credentials.')
+            stringParam('OPERATOR_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Operator image namespace to use to deploy image.')
+            stringParam('OPERATOR_IMAGE_TAG', '', 'Image tag to use to deploy the operator image. OptaPlanner project version if not set.')
         }
     }
 }

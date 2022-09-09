@@ -10,6 +10,8 @@ optaplannerRepository = 'optaplanner'
 quickstartsRepository = 'optaplanner-quickstarts'
 vehicleRoutingRepository = 'optaweb-vehicle-routing'
 
+operator = null
+
 pipeline {
     agent {
         label 'kie-rhel7 && kie-mem16g && !master'
@@ -44,6 +46,13 @@ pipeline {
     }
 
     stages {
+        stage('Load scripts') {
+            steps {
+                script {
+                    operator = load '.ci/jenkins/scripts/operator.groovy'
+                }
+            }
+        }
         stage('Initialize') {
             steps {
                 script {
@@ -234,6 +243,18 @@ pipeline {
                         setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${vehicleRoutingRepository}")
                         setDeployPropertyIfNeeded("${vehicleRoutingRepository}.pr.target.ref", getBuildBranch())
                     }
+                }
+            }
+        }
+
+        stage('Push a temporary operator image to a registry') {
+            steps {
+                script {
+                    operator.loginRegistry()
+                    String temporaryImage = operator.pushTemporaryImage()
+
+                    // Store image deployment information
+                    setDeployPropertyIfNeeded(operator.operatorImageParamKey('temporary_image'), temporaryImage)
                 }
             }
         }

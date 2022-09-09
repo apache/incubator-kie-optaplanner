@@ -10,6 +10,8 @@ String optaplannerRepository = 'optaplanner'
 String vehicleRoutingRepository = 'optaweb-vehicle-routing'
 String quickstartsRepository = 'optaplanner-quickstarts'
 
+operator = null
+
 pipeline {
     agent {
         label 'kie-rhel7 && !master'
@@ -39,6 +41,13 @@ pipeline {
     }
 
     stages {
+        stage('Load scripts') {
+            steps {
+                script {
+                    operator = load '.ci/jenkins/scripts/operator.groovy'
+                }
+            }
+        }
         stage('Initialization') {
             steps {
                 script {
@@ -197,6 +206,16 @@ pipeline {
                         sh "git checkout ${getBuildBranch()}"
                         mergeAndPush(getPipelinePrLink(quickstartsRepository))
                     }
+                }
+            }
+        }
+        stage('Push the final OptaPlanner operator image') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    operator.pushFinalImage()
                 }
             }
         }
