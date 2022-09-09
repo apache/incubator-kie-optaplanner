@@ -48,8 +48,7 @@ rule "distanceFromLastCustomerToDepot"
     when
         $customer : Customer(vehicle != null, nextCustomer == null)
     then
-        Vehicle vehicle = $customer.getVehicle();
-        scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getDistanceTo(vehicle));
+        scoreHolder.addSoftConstraintMatch(kcontext, - $customer.getDistanceToDepot());
 end
 
 
