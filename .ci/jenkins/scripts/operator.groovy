@@ -1,5 +1,5 @@
-containerEngine = 'podman'
-containerTlsOptions = '--tls-verify=false'
+containerEngine = 'docker'
+containerTlsOptions = ''//'--tls-verify=false'
 
 void loginRegistry() {
     loginContainerRegistry(getOperatorImageRegistry(), getOperatorImageRegistryCredentials())
