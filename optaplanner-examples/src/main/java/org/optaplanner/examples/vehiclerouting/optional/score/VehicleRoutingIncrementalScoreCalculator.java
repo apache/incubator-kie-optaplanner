@@ -62,54 +62,78 @@ public class VehicleRoutingIncrementalScoreCalculator
         }
     }
 
-    // @Override
-    // public void afterElementAdded(Object entity, String variableName, int index) {
-    //     insertVehicle(((Vehicle) entity).getCustomers().get(index));
-    // }
-    //
-    // @Override
-    // public void beforeElementRemoved(Object entity, String variableName, int index) {
-    //     retractVehicle(((Vehicle) entity).getCustomers().get(index));
-    // }
-
     @Override
     public void beforeVariableChanged(Object entity, String variableName) {
-        switch (variableName) {
-            case "previousCustomer":
-                retractPreviousCustomer((Customer) entity);
-                break;
-            case "vehicle":
-                retractVehicle((Customer) entity);
-                break;
-            case "nextCustomer":
-                retractNextCustomer((Customer) entity);
-                break;
-            case "arrivalTime":
-                retractArrivalTime((TimeWindowedCustomer) entity);
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported variableName (" + variableName + ").");
-        }
     }
 
     @Override
     public void afterVariableChanged(Object entity, String variableName) {
-        switch (variableName) {
-            case "previousCustomer":
-                insertPreviousCustomer((Customer) entity);
-                break;
-            case "vehicle":
-                insertVehicle((Customer) entity);
-                break;
-            case "nextCustomer":
-                insertNextCustomer((Customer) entity);
-                break;
-            case "arrivalTime":
-                insertArrivalTime((TimeWindowedCustomer) entity);
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported variableName (" + variableName + ").");
+    }
+
+    private long getDistanceToDepot(Vehicle vehicle, Customer customer, int index) {
+        if (index == vehicle.getCustomers().size() - 1) {
+            return customer.getLocation().getDistanceTo(vehicle.getLocation());
         }
+        return 0;
+    }
+
+    @Override
+    public void beforeListVariableChanged(Object entity, String variableName, int fromIndex, int toIndex) {
+        Vehicle vehicle = (Vehicle) entity;
+        for (int index = fromIndex; index < toIndex; index++) {
+            Customer customer = vehicle.getCustomers().get(index);
+            // Score constraint vehicleCapacity
+            int capacity = vehicle.getCapacity();
+            int oldDemand = vehicleDemandMap.get(vehicle);
+            int newDemand = oldDemand - customer.getDemand();
+            hardScore += Math.min(capacity - newDemand, 0) - Math.min(capacity - oldDemand, 0);
+            vehicleDemandMap.put(vehicle, newDemand);
+            // Score constraint distanceFromPreviousCustomer
+            softScore += getDistanceFromPreviousStandstill(vehicle, customer, index);
+        }
+        if (toIndex < vehicle.getCustomers().size()) {
+            softScore += getDistanceFromPreviousStandstill(vehicle, toIndex);
+        } else if (toIndex > 0) {
+            // Score constraint distanceFromLastCustomerToDepot
+            softScore += getDistanceToDepot(vehicle, toIndex - 1);
+        }
+    }
+
+    @Override
+    public void afterListVariableChanged(Object entity, String variableName, int fromIndex, int toIndex) {
+        Vehicle vehicle = (Vehicle) entity;
+        for (int index = fromIndex; index < toIndex; index++) {
+            Customer customer = vehicle.getCustomers().get(index);
+            // Score constraint vehicleCapacity
+            int capacity = vehicle.getCapacity();
+            int oldDemand = vehicleDemandMap.get(vehicle);
+            int newDemand = oldDemand + customer.getDemand();
+            hardScore += Math.min(capacity - newDemand, 0) - Math.min(capacity - oldDemand, 0);
+            vehicleDemandMap.put(vehicle, newDemand);
+            // Score constraint distanceFromPreviousCustomer
+            softScore -= getDistanceFromPreviousStandstill(vehicle, customer, index);
+        }
+        if (toIndex < vehicle.getCustomers().size()) {
+            softScore -= getDistanceFromPreviousStandstill(vehicle, toIndex);
+        } else if (toIndex > 0) {
+            // Score constraint distanceFromLastCustomerToDepot
+            softScore -= getDistanceToDepot(vehicle, toIndex - 1);
+        }
+    }
+
+    private long getDistanceToDepot(Vehicle vehicle, int index) {
+        return getDistanceToDepot(vehicle, vehicle.getCustomers().get(index), index);
+    }
+
+    private long getDistanceFromPreviousStandstill(Vehicle vehicle, int index) {
+        return getDistanceFromPreviousStandstill(vehicle, vehicle.getCustomers().get(index), index);
+    }
+
+    private long getDistanceFromPreviousStandstill(Vehicle vehicle, Customer customer, int index) {
+        if (index == 0) {
+            return vehicle.getLocation().getDistanceTo(customer.getLocation());
+        }
+        return vehicle.getCustomers().get(index - 1).getLocation().getDistanceTo(customer.getLocation());
     }
 
     @Override
@@ -179,26 +203,6 @@ public class VehicleRoutingIncrementalScoreCalculator
             if (customer.getPreviousCustomer() == null) {
                 softScore += customer.getDistanceFromPreviousStandstill();
             }
-            if (customer.getNextCustomer() == null) {
-                // Score constraint distanceFromLastCustomerToDepot
-                softScore += customer.getDistanceToDepot();
-            }
-        }
-    }
-
-    private void insertNextCustomer(Customer customer) {
-        Vehicle vehicle = customer.getVehicle();
-        if (vehicle != null) {
-            if (customer.getNextCustomer() == null) {
-                // Score constraint distanceFromLastCustomerToDepot
-                softScore -= customer.getDistanceToDepot();
-            }
-        }
-    }
-
-    private void retractNextCustomer(Customer customer) {
-        Vehicle vehicle = customer.getVehicle();
-        if (vehicle != null) {
             if (customer.getNextCustomer() == null) {
                 // Score constraint distanceFromLastCustomerToDepot
                 softScore += customer.getDistanceToDepot();
