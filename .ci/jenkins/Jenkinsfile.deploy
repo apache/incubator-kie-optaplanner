@@ -68,7 +68,7 @@ pipeline {
 
                         if (isRelease()) {
                             // Verify if on right release branch
-                            assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
+                            // TODO: remove comment after testing  assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                         }
                     }
                 }
@@ -93,18 +93,18 @@ pipeline {
                 //TODO: remove after testing    checkoutRepo(vehicleRoutingRepository)
             }
         }
-
+/* TODO: remove after testing
         stage('Prepare for PR') {
             when {
                 expression { return isRelease() || isCreatePr()  }
             }
             steps {
                 prepareForPR(optaplannerRepository)
-                //TODO: remove after testing    prepareForPR(vehicleRoutingRepository)
-                //TODO: remove after testing    prepareForPR(quickstartsRepository)
+                prepareForPR(vehicleRoutingRepository)
+                prepareForPR(quickstartsRepository)
             }
         }
-
+*/
         stage('Update project version') {
             when {
                 expression { return getProjectVersion() != '' }

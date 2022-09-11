@@ -63,12 +63,12 @@ pipeline {
                         // Verify version is set and if on right release branch
                         assert getProjectVersion()
 
-                        assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
+                      // TODO: remove comment after testing  assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                     }
                 }
             }
         }
-
+/* TODO: remove comment after testing
         stage('Merge OptaPlanner deploy PR and tag') {
             when {
                 expression { return isRelease() }
@@ -209,6 +209,8 @@ pipeline {
                 }
             }
         }
+
+ */
         stage('Push the final OptaPlanner operator image') {
             when {
                 expression { return isRelease() }
