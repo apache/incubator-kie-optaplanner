@@ -263,7 +263,7 @@ pipeline {
                     String temporaryImage = operator.pushTemporaryImage()
 
                     // Store image deployment information
-                    setDeployPropertyIfNeeded('operator.temporary_image', temporaryImage)
+                    setDeployPropertyIfNeeded('operator.image.temporary_tag', temporaryImage)
                 }
             }
         }

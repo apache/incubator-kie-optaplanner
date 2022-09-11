@@ -215,8 +215,9 @@ pipeline {
             }
             steps {
                 script {
-                    String temporaryImage = getDeployProperty('operator.temporary_image')
-                    operator.pushFinalImage(temporaryImage)
+                    String temporaryImageTag = getDeployProperty('operator.image.temporary_tag')
+                    operator.pushFinalImage(temporaryImageTag)
+                    operator.removeTemporaryQuayTag(temporaryImageTag)
                 }
             }
         }

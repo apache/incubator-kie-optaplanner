@@ -53,8 +53,9 @@ String pushTemporaryImage() {
     return temporaryFullImageName
 }
 
-void pushFinalImage(String temporaryImage) {
+void pushFinalImage(String temporaryImageTag) {
     loginRegistry()
+    String temporaryImage = getOperatorImageFullNameWithRegistry(temporaryImageTag)
     pullImage(temporaryImage)
 
     String finalImageName = getOperatorImageFullNameWithRegistry()
@@ -84,6 +85,21 @@ void pushImage(String image) {
 void loginContainerRegistry(String registry, String credsId) {
     withCredentials([usernamePassword(credentialsId: credsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
         sh "${containerEngine} login ${containerTlsOptions} -u ${REGISTRY_USER} -p ${REGISTRY_PWD} ${registry}"
+    }
+}
+
+boolean removeTemporaryQuayTag(String temporaryTag) {
+    String namespace = getOperatorImageNamespace()
+    String image = getOperatorImageName()
+    echo "Removing a temporary image tag ${namespace}/${image}:${temporaryTag}"
+    try {
+        def output = 'false'
+        withCredentials([usernamePassword(credentialsId: env.CLOUD_IMAGE_REGISTRY_CREDENTIALS_NIGHTLY, usernameVariable: 'QUAY_USER', passwordVariable: 'QUAY_TOKEN')]) {
+            output = sh(returnStdout: true, script: "curl -H 'Content-Type: application/json' -H 'Authorization: Bearer ${QUAY_TOKEN}' -X DELETE https://quay.io/api/v1/repository/${namespace}/${repository}/tag/${temporaryTag} | jq '.success'").trim()
+        }
+        return output == 'true'
+    } catch (err) {
+        echo "[ERROR] Cannot remove a temporary image tag quay.io/${namespace}/${repository}:${temporaryTag}."
     }
 }
 
