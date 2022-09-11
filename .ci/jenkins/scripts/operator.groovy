@@ -43,14 +43,17 @@ String getOperatorImageFullNameWithRegistry(String tag = null) {
     return "${getOperatorImageRegistry()}/${operatorImageFullName}"
 }
 
-String pushTemporaryImage() {
-    String temporaryTag = "${getOperatorImageTag()}-temporary"
-    String temporaryFullImageName = getOperatorImageFullNameWithRegistry(temporaryTag)
+String pushTemporaryImage(String temporaryImageTag) {
+    String temporaryFullImageName = getOperatorImageFullNameWithRegistry(temporaryImageTag)
     tagImage(getOperatorImageLocalName(), temporaryFullImageName)
 
     loginRegistry()
     pushImage(temporaryFullImageName)
     return temporaryFullImageName
+}
+
+String getTemporaryImageTag() {
+    return "${getOperatorImageTag()}-temporary"
 }
 
 void pushFinalImage(String temporaryImageTag) {

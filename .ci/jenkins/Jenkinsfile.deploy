@@ -260,10 +260,11 @@ pipeline {
                             .skipTests(params.SKIP_TESTS)
                             .run('clean install')
 
-                    String temporaryImage = operator.pushTemporaryImage()
+                    String temporaryImageTag = operator.getTemporaryImageTag()
+                    operator.pushTemporaryImage(temporaryImageTag)
 
                     // Store image deployment information
-                    setDeployPropertyIfNeeded('operator.image.temporary_tag', temporaryImage)
+                    setDeployPropertyIfNeeded('operator.image.temporary_tag', temporaryImageTag)
                 }
             }
         }
