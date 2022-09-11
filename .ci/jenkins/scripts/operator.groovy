@@ -86,6 +86,7 @@ void pushImage(String image) {
 }
 
 void loginContainerRegistry(String registry, String credsId) {
+    echo "Using credentials ($credsId) to login to registry ($registry)"
     withCredentials([usernamePassword(credentialsId: credsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
         sh "${containerEngine} login ${containerTlsOptions} -u ${REGISTRY_USER} -p ${REGISTRY_PWD} ${registry}"
     }
