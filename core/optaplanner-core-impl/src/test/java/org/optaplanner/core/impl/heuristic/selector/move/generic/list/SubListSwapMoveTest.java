@@ -32,23 +32,17 @@ class SubListSwapMoveTest {
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
         // same entity, overlap => not doable
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 3), sub(e1, 2, 3), false).isMoveDoable(scoreDirector))
-                .isFalse();
+        assertThat(new SubListSwapMove<>(variableDescriptor, e1, 0, 3, e1, 2, 5, false).isMoveDoable(scoreDirector)).isFalse();
         // same entity, overlap => not doable
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 5), sub(e1, 1, 1), false).isMoveDoable(scoreDirector))
-                .isFalse();
+        assertThat(new SubListSwapMove<>(variableDescriptor, e1, 0, 5, e1, 1, 2, false).isMoveDoable(scoreDirector)).isFalse();
         // same entity, no overlap (with gap) => doable
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 1), sub(e1, 4, 1), false).isMoveDoable(scoreDirector))
-                .isTrue();
+        assertThat(new SubListSwapMove<>(variableDescriptor, e1, 0, 1, e1, 4, 5, false).isMoveDoable(scoreDirector)).isTrue();
         // same entity, no overlap (with touch) => doable
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 3), sub(e1, 3, 2), false).isMoveDoable(scoreDirector))
-                .isTrue();
+        assertThat(new SubListSwapMove<>(variableDescriptor, e1, 0, 3, e1, 3, 5, false).isMoveDoable(scoreDirector)).isTrue();
         // same entity, no overlap (with touch, right below left) => doable
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 2, 3), sub(e1, 0, 2), false).isMoveDoable(scoreDirector))
-                .isTrue();
+        assertThat(new SubListSwapMove<>(variableDescriptor, e1, 2, 5, e1, 0, 2, false).isMoveDoable(scoreDirector)).isTrue();
         // different entities => doable
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 5), sub(e2, 0, 1), false).isMoveDoable(scoreDirector))
-                .isTrue();
+        assertThat(new SubListSwapMove<>(variableDescriptor, e1, 0, 5, e2, 0, 1, false).isMoveDoable(scoreDirector)).isTrue();
     }
 
     @Test
@@ -65,8 +59,7 @@ class SubListSwapMoveTest {
         ListVariableDescriptor<TestdataListSolution> variableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
-        SubListSwapMove<TestdataListSolution> move =
-                new SubListSwapMove<>(variableDescriptor, sub(e1, 1, 2), sub(e2, 0, 1), false);
+        SubListSwapMove<TestdataListSolution> move = new SubListSwapMove<>(variableDescriptor, e1, 1, 3, e2, 0, 1, false);
 
         AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
 
@@ -101,8 +94,7 @@ class SubListSwapMoveTest {
         ListVariableDescriptor<TestdataListSolution> variableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
-        SubListSwapMove<TestdataListSolution> move =
-                new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 3), sub(e2, 0, 2), true);
+        SubListSwapMove<TestdataListSolution> move = new SubListSwapMove<>(variableDescriptor, e1, 0, 3, e2, 0, 2, true);
 
         AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
 
@@ -137,8 +129,7 @@ class SubListSwapMoveTest {
         ListVariableDescriptor<TestdataListSolution> variableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
-        SubListSwapMove<TestdataListSolution> move =
-                new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 1), sub(e1, 4, 3), false);
+        SubListSwapMove<TestdataListSolution> move = new SubListSwapMove<>(variableDescriptor, e1, 0, 1, e1, 4, 7, false);
 
         AbstractMove<TestdataListSolution> undoMove = move.doMove(scoreDirector);
 
@@ -229,15 +220,11 @@ class SubListSwapMoveTest {
         ListVariableDescriptor<TestdataListSolution> variableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 1, 3), sub(e1, 0, 1), false))
+        assertThat(new SubListSwapMove<>(variableDescriptor, e1, 1, 4, e1, 0, 1, false))
                 .hasToString("{e1[0..1]} <-> {e1[1..4]}");
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 1), sub(e2, 1, 5), false))
+        assertThat(new SubListSwapMove<>(variableDescriptor, e1, 0, 1, e2, 1, 6, false))
                 .hasToString("{e1[0..1]} <-> {e2[1..6]}");
-        assertThat(new SubListSwapMove<>(variableDescriptor, sub(e1, 0, 1), sub(e2, 1, 5), true))
+        assertThat(new SubListSwapMove<>(variableDescriptor, e1, 0, 1, e2, 1, 6, true))
                 .hasToString("{e1[0..1]} <-reversing-> {e2[1..6]}");
-    }
-
-    static SubList sub(TestdataListEntity entity, int fromIndex, int length) {
-        return new SubList(entity, fromIndex, length);
     }
 }
