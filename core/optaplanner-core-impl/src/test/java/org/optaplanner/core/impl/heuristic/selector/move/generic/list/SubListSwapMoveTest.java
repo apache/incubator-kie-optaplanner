@@ -6,8 +6,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -17,19 +15,22 @@ import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
 
 class SubListSwapMoveTest {
 
+    private final TestdataListValue v1 = new TestdataListValue("1");
+    private final TestdataListValue v2 = new TestdataListValue("2");
+    private final TestdataListValue v3 = new TestdataListValue("3");
+    private final TestdataListValue v4 = new TestdataListValue("4");
+    private final TestdataListValue v5 = new TestdataListValue("5");
+    private final TestdataListValue v6 = new TestdataListValue("6");
+    private final TestdataListValue v7 = new TestdataListValue("7");
+
+    private final InnerScoreDirector<TestdataListSolution, ?> scoreDirector = mock(InnerScoreDirector.class);
+    private final ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+            TestdataListEntity.buildVariableDescriptorForValueList();
+
     @Test
     void isMoveDoable() {
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListValue v4 = new TestdataListValue("4");
-        TestdataListValue v5 = new TestdataListValue("5");
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4);
         TestdataListEntity e2 = new TestdataListEntity("e2", v5);
-
-        ScoreDirector<TestdataListSolution> scoreDirector = mock(ScoreDirector.class);
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
 
         // same entity, overlap => not doable
         assertThat(new SubListSwapMove<>(variableDescriptor, e1, 0, 3, e1, 2, 5, false).isMoveDoable(scoreDirector)).isFalse();
@@ -47,17 +48,8 @@ class SubListSwapMoveTest {
 
     @Test
     void doMove() {
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListValue v4 = new TestdataListValue("4");
-        TestdataListValue v5 = new TestdataListValue("5");
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4);
         TestdataListEntity e2 = new TestdataListEntity("e2", v5);
-
-        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
 
         SubListSwapMove<TestdataListSolution> move = new SubListSwapMove<>(variableDescriptor, e1, 1, 3, e2, 0, 1, false);
 
@@ -81,18 +73,8 @@ class SubListSwapMoveTest {
 
     @Test
     void doReversingMove() {
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListValue v4 = new TestdataListValue("4");
-        TestdataListValue v5 = new TestdataListValue("5");
-        TestdataListValue v6 = new TestdataListValue("6");
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4);
         TestdataListEntity e2 = new TestdataListEntity("e2", v5, v6);
-
-        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
 
         SubListSwapMove<TestdataListSolution> move = new SubListSwapMove<>(variableDescriptor, e1, 0, 3, e2, 0, 2, true);
 
@@ -116,18 +98,7 @@ class SubListSwapMoveTest {
 
     @Test
     void doMoveOnSameEntity() {
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListValue v4 = new TestdataListValue("4");
-        TestdataListValue v5 = new TestdataListValue("5");
-        TestdataListValue v6 = new TestdataListValue("6");
-        TestdataListValue v7 = new TestdataListValue("7");
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4, v5, v6, v7);
-
-        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
 
         SubListSwapMove<TestdataListSolution> move = new SubListSwapMove<>(variableDescriptor, e1, 0, 1, e1, 4, 7, false);
 
@@ -152,18 +123,9 @@ class SubListSwapMoveTest {
 
     @Test
     void tabuIntrospection_twoEntities() {
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListValue v4 = new TestdataListValue("4");
-        TestdataListValue v5 = new TestdataListValue("5");
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4);
         TestdataListEntity e2 = new TestdataListEntity("e2", v5);
         TestdataListEntity e3 = new TestdataListEntity("e3");
-
-        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
 
         SubListSwapMove<TestdataListSolution> moveTwoEntities =
                 new SubListSwapMove<>(variableDescriptor, e1, 0, 3, e2, 0, 1, false);
@@ -191,15 +153,7 @@ class SubListSwapMoveTest {
 
     @Test
     void tabuIntrospection_oneEntity() {
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListValue v4 = new TestdataListValue("4");
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4);
-
-        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
 
         SubListSwapMove<TestdataListSolution> moveOneEntity =
                 new SubListSwapMove<>(variableDescriptor, e1, 3, 4, e1, 0, 2, false);
@@ -216,9 +170,6 @@ class SubListSwapMoveTest {
     void toStringTest() {
         TestdataListEntity e1 = new TestdataListEntity("e1");
         TestdataListEntity e2 = new TestdataListEntity("e2");
-
-        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
 
         assertThat(new SubListSwapMove<>(variableDescriptor, e1, 1, 4, e1, 0, 1, false))
                 .hasToString("{e1[0..1]} <-> {e1[1..4]}");
