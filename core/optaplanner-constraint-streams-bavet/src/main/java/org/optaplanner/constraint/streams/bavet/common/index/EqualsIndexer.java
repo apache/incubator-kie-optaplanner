@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
+import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
 
 final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_>
         implements Indexer<Tuple_, Value_> {
@@ -81,4 +83,58 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_>
     public boolean isEmpty() {
         return downstreamIndexerMap.isEmpty();
     }
+
+    @Override
+    public TupleListEntry<Tuple_> putGGG(IndexProperties indexProperties, Tuple_ tuple) {
+        Key_ indexKey = indexProperties.toKey(indexKeyFrom, indexKeyTo);
+        // Avoids computeIfAbsent in order to not create lambdas on the hot path.
+        Indexer<Tuple_, Value_> downstreamIndexer = downstreamIndexerMap.get(indexKey);
+        if (downstreamIndexer == null) {
+            downstreamIndexer = downstreamIndexerSupplier.get();
+            downstreamIndexerMap.put(indexKey, downstreamIndexer);
+        }
+        return downstreamIndexer.putGGG(indexProperties, tuple);
+    }
+
+    @Override
+    public void removeGGG(IndexProperties indexProperties, TupleListEntry<Tuple_> entry) {
+        Key_ indexKey = indexProperties.toKey(indexKeyFrom, indexKeyTo);
+        Indexer<Tuple_, Value_> downstreamIndexer = getDownstreamIndexer(indexProperties, indexKey, entry);
+        downstreamIndexer.removeGGG(indexProperties, entry);
+        if (downstreamIndexer.isEmptyGGG()) {
+            downstreamIndexerMap.remove(indexKey);
+        }
+    }
+
+    private Indexer<Tuple_, Value_> getDownstreamIndexer(IndexProperties indexProperties, Key_ indexerKey,
+            TupleListEntry<Tuple_> entry) {
+        Indexer<Tuple_, Value_> downstreamIndexer = downstreamIndexerMap.get(indexerKey);
+        if (downstreamIndexer == null) {
+            throw new IllegalStateException("Impossible state: the tuple (" + entry.getTuple()
+                    + ") with indexProperties (" + indexProperties
+                    + ") doesn't exist in the indexer " + this + ".");
+        }
+        return downstreamIndexer;
+    }
+
+    @Override
+    public void visitGGG(IndexProperties indexProperties, Consumer<TupleListEntry<Tuple_>> entryVisitor) {
+        Key_ indexKey = indexProperties.toKey(indexKeyFrom, indexKeyTo);
+        Indexer<Tuple_, Value_> downstreamIndexer = downstreamIndexerMap.get(indexKey);
+        if (downstreamIndexer == null || downstreamIndexer.isEmpty()) {
+            return;
+        }
+        downstreamIndexer.visitGGG(indexProperties, entryVisitor);
+    }
+
+    @Override
+    public boolean isEmptyGGG() {
+        return downstreamIndexerMap.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        return "size = " + downstreamIndexerMap.size();
+    }
+
 }

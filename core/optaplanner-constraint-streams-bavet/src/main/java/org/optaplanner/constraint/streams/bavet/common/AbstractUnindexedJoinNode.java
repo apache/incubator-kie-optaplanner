@@ -1,12 +1,8 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
+import org.optaplanner.constraint.streams.bavet.common.collection.TupleList;
+import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.core.impl.util.FieldBasedScalingMap;
 
 /**
  * There is a strong likelihood that any change made to this class
@@ -19,30 +15,65 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         extends AbstractJoinNode<LeftTuple_, Right_, OutTuple_, MutableOutTuple_>
         implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
 
-    private final Map<LeftTuple_, Map<UniTuple<Right_>, MutableOutTuple_>> leftToRightMap = new LinkedHashMap<>();
-    private final Set<UniTuple<Right_>> rightSet = new LinkedHashSet<>();
+    private final int inputStoreIndexLeftEntry;
+    private final int inputStoreIndexLeftOutTupleList;
+    private final int inputStoreIndexRightEntry;
+    private final int inputStoreIndexRightOutTupleList;
 
-    protected AbstractUnindexedJoinNode(TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
+    private final int outputStoreIndexLeftOutEntry;
+    private final int outputStoreIndexRightOutEntry;
+
+    private final TupleList<LeftTuple_> leftTupleList = new TupleList<>();
+    private final TupleList<UniTuple<Right_>> rightTupleList = new TupleList<>();
+
+    protected AbstractUnindexedJoinNode(
+            int inputStoreIndexLeftEntry, int inputStoreIndexLeftOutTupleList,
+            int inputStoreIndexRightEntry, int inputStoreIndexRightOutTupleList,
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle,
+            int outputStoreIndexLeftOutEntry, int outputStoreIndexRightOutEntry) {
         super(nextNodesTupleLifecycle);
+        this.inputStoreIndexLeftEntry = inputStoreIndexLeftEntry;
+        this.inputStoreIndexLeftOutTupleList = inputStoreIndexLeftOutTupleList;
+        this.inputStoreIndexRightEntry = inputStoreIndexRightEntry;
+        this.inputStoreIndexRightOutTupleList = inputStoreIndexRightOutTupleList;
+        this.outputStoreIndexLeftOutEntry = outputStoreIndexLeftOutEntry;
+        this.outputStoreIndexRightOutEntry = outputStoreIndexRightOutEntry;
     }
 
     @Override
     public final void insertLeft(LeftTuple_ leftTuple) {
-        Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = new FieldBasedScalingMap<>(LinkedHashMap::new);
-        leftToRightMap.put(leftTuple, outTupleMapLeft);
-        for (UniTuple<Right_> rightTuple : rightSet) {
-            insertTuple(outTupleMapLeft, leftTuple, rightTuple);
+        if (leftTuple.getStore(inputStoreIndexLeftEntry) != null) {
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + leftTuple
+                    + ") was already added in the tupleStore.");
+        }
+        TupleListEntry<LeftTuple_> leftEntry = leftTupleList.add(leftTuple);
+        leftTuple.setStore(inputStoreIndexLeftEntry, leftEntry);
+        TupleList<MutableOutTuple_> outTupleListLeft = new TupleList<>();
+        leftTuple.setStore(inputStoreIndexLeftOutTupleList, outTupleListLeft);
+        for (TupleListEntry<UniTuple<Right_>> rightEntry = rightTupleList.first(); rightEntry != null; rightEntry =
+                rightEntry.next()) {
+            UniTuple<Right_> rightTuple = rightEntry.getTuple();
+            MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
+            TupleListEntry<MutableOutTuple_> outEntryLeft = outTupleListLeft.add(outTuple);
+            outTuple.setStore(outputStoreIndexLeftOutEntry, outEntryLeft);
+            TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
+            TupleListEntry<MutableOutTuple_> outEntryRight = outTupleListRight.add(outTuple);
+            outTuple.setStore(outputStoreIndexRightOutEntry, outEntryRight);
+            dirtyTupleQueue.add(outTuple);
         }
     }
 
     @Override
     public final void updateLeft(LeftTuple_ leftTuple) {
-        Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = leftToRightMap.get(leftTuple);
-        if (outTupleMapLeft == null) { // We don't track which tuples made it through the filter predicate(s).
+        TupleListEntry<LeftTuple_> leftEntry = leftTuple.getStore(inputStoreIndexLeftEntry);
+        if (leftEntry == null) { // We don't track which tuples made it through the filter predicate(s).
             insertLeft(leftTuple);
             return;
         }
-        for (MutableOutTuple_ outTuple : outTupleMapLeft.values()) {
+        TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
+        for (TupleListEntry<MutableOutTuple_> outEntryLeft = outTupleListLeft.first(); outEntryLeft != null; outEntryLeft =
+                outEntryLeft.next()) {
+            MutableOutTuple_ outTuple = outEntryLeft.getTuple();
             updateOutTupleLeft(outTuple, leftTuple);
             updateTuple(outTuple);
         }
@@ -50,59 +81,84 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
 
     @Override
     public final void retractLeft(LeftTuple_ leftTuple) {
-        Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = leftToRightMap.remove(leftTuple);
-        if (outTupleMapLeft == null) { // We don't track which tuples made it through the filter predicate(s).
+        TupleListEntry<LeftTuple_> leftEntry = leftTuple.getStore(inputStoreIndexLeftEntry);
+        if (leftEntry == null) { // We don't track which tuples made it through the filter predicate(s).
             return;
         }
-        for (OutTuple_ outTuple : outTupleMapLeft.values()) {
+        leftTuple.setStore(inputStoreIndexLeftEntry, null);
+        TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
+        leftTuple.setStore(inputStoreIndexLeftOutTupleList, null);
+
+        leftEntry.remove();
+        for (TupleListEntry<MutableOutTuple_> outEntryLeft = outTupleListLeft.first(); outEntryLeft != null; outEntryLeft =
+                outEntryLeft.next()) {
+            MutableOutTuple_ outTuple = outEntryLeft.getTuple();
+            // No need for outEntryLeft.remove(); because outTupleListLeft is garbage collected
+            TupleListEntry<MutableOutTuple_> outEntryRight = outTuple.getStore(outputStoreIndexRightOutEntry);
+            outEntryRight.remove();
+            outTuple.setStore(outputStoreIndexLeftOutEntry, null);
+            outTuple.setStore(outputStoreIndexRightOutEntry, null);
             retractTuple(outTuple);
         }
     }
 
     @Override
     public final void insertRight(UniTuple<Right_> rightTuple) {
-        rightSet.add(rightTuple);
-        for (Map.Entry<LeftTuple_, Map<UniTuple<Right_>, MutableOutTuple_>> entry : leftToRightMap.entrySet()) {
-            LeftTuple_ leftTuple = entry.getKey();
-            Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = entry.getValue();
-            insertTuple(outTupleMapLeft, leftTuple, rightTuple);
+        if (rightTuple.getStore(inputStoreIndexRightEntry) != null) {
+            throw new IllegalStateException("Impossible state: the input for the tuple (" + rightTuple
+                    + ") was already added in the tupleStore.");
+        }
+        TupleListEntry<UniTuple<Right_>> rightEntry = rightTupleList.add(rightTuple);
+        rightTuple.setStore(inputStoreIndexRightEntry, rightEntry);
+        TupleList<MutableOutTuple_> outTupleListRight = new TupleList<>();
+        rightTuple.setStore(inputStoreIndexRightOutTupleList, outTupleListRight);
+        for (TupleListEntry<LeftTuple_> leftEntry = leftTupleList.first(); leftEntry != null; leftEntry = leftEntry.next()) {
+            LeftTuple_ leftTuple = leftEntry.getTuple();
+            MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
+            TupleListEntry<MutableOutTuple_> outEntryRight = outTupleListRight.add(outTuple);
+            outTuple.setStore(outputStoreIndexRightOutEntry, outEntryRight);
+            TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
+            TupleListEntry<MutableOutTuple_> outEntryLeft = outTupleListLeft.add(outTuple);
+            outTuple.setStore(outputStoreIndexLeftOutEntry, outEntryLeft);
+            dirtyTupleQueue.add(outTuple);
         }
     }
 
     @Override
     public final void updateRight(UniTuple<Right_> rightTuple) {
-        if (!rightSet.contains(rightTuple)) { // We don't track which tuples made it through the filter predicate(s).
+        TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.getStore(inputStoreIndexRightEntry);
+        if (rightEntry == null) { // We don't track which tuples made it through the filter predicate(s).
             insertRight(rightTuple);
             return;
         }
-        for (Map.Entry<LeftTuple_, Map<UniTuple<Right_>, MutableOutTuple_>> entry : leftToRightMap.entrySet()) {
-            LeftTuple_ leftTuple = entry.getKey();
-            Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = entry.getValue();
-            MutableOutTuple_ outTuple = outTupleMapLeft.get(rightTuple);
+        TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
+        for (TupleListEntry<MutableOutTuple_> outEntryRight = outTupleListRight.first(); outEntryRight != null; outEntryRight =
+                outEntryRight.next()) {
+            MutableOutTuple_ outTuple = outEntryRight.getTuple();
             updateOutTupleRight(outTuple, rightTuple);
-            if (outTuple == null) {
-                throw new IllegalStateException("Impossible state: the tuple (" + leftTuple
-                        + ") has tuples on the right side that didn't exist on the left side.");
-            }
             updateTuple(outTuple);
         }
     }
 
     @Override
     public final void retractRight(UniTuple<Right_> rightTuple) {
-        boolean removed = rightSet.remove(rightTuple);
-        if (!removed) {
-            // We don't track which tuples made it through the filter predicate(s).
+        TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.getStore(inputStoreIndexRightEntry);
+        if (rightEntry == null) { // We don't track which tuples made it through the filter predicate(s).
             return;
         }
-        for (Map.Entry<LeftTuple_, Map<UniTuple<Right_>, MutableOutTuple_>> entry : leftToRightMap.entrySet()) {
-            LeftTuple_ leftTuple = entry.getKey();
-            Map<UniTuple<Right_>, MutableOutTuple_> outTupleMapLeft = entry.getValue();
-            OutTuple_ outTuple = outTupleMapLeft.remove(rightTuple);
-            if (outTuple == null) {
-                throw new IllegalStateException("Impossible state: the tuple (" + leftTuple
-                        + ") has tuples on the right side that didn't exist on the left side.");
-            }
+        rightTuple.setStore(inputStoreIndexRightEntry, null);
+        TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
+        rightTuple.setStore(inputStoreIndexRightOutTupleList, null);
+
+        rightEntry.remove();
+        for (TupleListEntry<MutableOutTuple_> outEntryRight = outTupleListRight.first(); outEntryRight != null; outEntryRight =
+                outEntryRight.next()) {
+            MutableOutTuple_ outTuple = outEntryRight.getTuple();
+            // No need for outEntryRight.remove(); because outTupleListRight is garbage collected
+            TupleListEntry<MutableOutTuple_> outEntryLeft = outTuple.getStore(outputStoreIndexLeftOutEntry);
+            outEntryLeft.remove();
+            outTuple.setStore(outputStoreIndexRightOutEntry, null);
+            outTuple.setStore(outputStoreIndexLeftOutEntry, null);
             retractTuple(outTuple);
         }
     }

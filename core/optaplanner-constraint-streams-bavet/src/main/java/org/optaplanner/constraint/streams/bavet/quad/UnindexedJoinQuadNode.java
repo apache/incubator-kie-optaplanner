@@ -10,8 +10,15 @@ final class UnindexedJoinQuadNode<A, B, C, D>
 
     private final int outputStoreSize;
 
-    public UnindexedJoinQuadNode(TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(nextNodesTupleLifecycle);
+    public UnindexedJoinQuadNode(
+            int inputStoreIndexLeftEntry, int inputStoreIndexLeftOutTupleList,
+            int inputStoreIndexRightEntry, int inputStoreIndexRightOutTupleList,
+            TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize,
+            int outputStoreIndexLeftOutEntry, int outputStoreIndexRightOutEntry) {
+        super(inputStoreIndexLeftEntry, inputStoreIndexLeftOutTupleList,
+                inputStoreIndexRightEntry, inputStoreIndexRightOutTupleList,
+                nextNodesTupleLifecycle,
+                outputStoreIndexLeftOutEntry, outputStoreIndexRightOutEntry);
         this.outputStoreSize = outputStoreSize;
     }
 

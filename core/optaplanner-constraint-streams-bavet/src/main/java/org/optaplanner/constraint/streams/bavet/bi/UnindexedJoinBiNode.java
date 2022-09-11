@@ -9,8 +9,15 @@ final class UnindexedJoinBiNode<A, B>
 
     private final int outputStoreSize;
 
-    public UnindexedJoinBiNode(TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(nextNodesTupleLifecycle);
+    public UnindexedJoinBiNode(
+            int inputStoreIndexLeftEntry, int inputStoreIndexLeftOutTupleList,
+            int inputStoreIndexRightEntry, int inputStoreIndexRightOutTupleList,
+            TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize,
+            int outputStoreIndexLeftOutEntry, int outputStoreIndexRightOutEntry) {
+        super(inputStoreIndexLeftEntry, inputStoreIndexLeftOutTupleList,
+                inputStoreIndexRightEntry, inputStoreIndexRightOutTupleList,
+                nextNodesTupleLifecycle,
+                outputStoreIndexLeftOutEntry, outputStoreIndexRightOutEntry);
         this.outputStoreSize = outputStoreSize;
     }
 

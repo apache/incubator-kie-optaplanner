@@ -10,8 +10,15 @@ final class UnindexedJoinTriNode<A, B, C>
 
     private final int outputStoreSize;
 
-    public UnindexedJoinTriNode(TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(nextNodesTupleLifecycle);
+    public UnindexedJoinTriNode(
+            int inputStoreIndexLeftEntry, int inputStoreIndexLeftOutTupleList,
+            int inputStoreIndexRightEntry, int inputStoreIndexRightOutTupleList,
+            TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle, int outputStoreSize,
+            int outputStoreIndexLeftOutEntry, int outputStoreIndexRightOutEntry) {
+        super(inputStoreIndexLeftEntry, inputStoreIndexLeftOutTupleList,
+                inputStoreIndexRightEntry, inputStoreIndexRightOutTupleList,
+                nextNodesTupleLifecycle,
+                outputStoreIndexLeftOutEntry, outputStoreIndexRightOutEntry);
         this.outputStoreSize = outputStoreSize;
     }
 

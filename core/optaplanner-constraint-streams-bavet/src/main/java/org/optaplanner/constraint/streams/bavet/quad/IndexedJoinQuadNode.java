@@ -1,6 +1,5 @@
 package org.optaplanner.constraint.streams.bavet.quad;
 
-import java.util.Map;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractIndexedJoinNode;
@@ -18,12 +17,19 @@ final class IndexedJoinQuadNode<A, B, C, D>
     private final int outputStoreSize;
 
     public IndexedJoinQuadNode(TriFunction<A, B, C, IndexProperties> mappingABC, Function<D, IndexProperties> mappingD,
-            int inputStoreIndexAB, int inputStoreIndexC,
+            int inputStoreIndexABC, int inputStoreIndexEntryABC, int inputStoreIndexOutTupleListABC,
+            int inputStoreIndexD, int inputStoreIndexEntryD, int inputStoreIndexOutTupleListD,
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle,
             int outputStoreSize,
-            Indexer<TriTuple<A, B, C>, Map<UniTuple<D>, QuadTupleImpl<A, B, C, D>>> indexerABC,
-            Indexer<UniTuple<D>, Map<TriTuple<A, B, C>, QuadTupleImpl<A, B, C, D>>> indexerD) {
-        super(mappingD, inputStoreIndexAB, inputStoreIndexC, nextNodesTupleLifecycle, indexerABC, indexerD);
+            int outputStoreIndexOutEntryABC, int outputStoreIndexOutEntryD,
+            Indexer<TriTuple<A, B, C>, Void> indexerABC,
+            Indexer<UniTuple<D>, Void> indexerD) {
+        super(mappingD,
+                inputStoreIndexABC, inputStoreIndexEntryABC, inputStoreIndexOutTupleListABC,
+                inputStoreIndexD, inputStoreIndexEntryD, inputStoreIndexOutTupleListD,
+                nextNodesTupleLifecycle,
+                outputStoreIndexOutEntryABC, outputStoreIndexOutEntryD,
+                indexerABC, indexerD);
         this.mappingABC = mappingABC;
         this.outputStoreSize = outputStoreSize;
     }

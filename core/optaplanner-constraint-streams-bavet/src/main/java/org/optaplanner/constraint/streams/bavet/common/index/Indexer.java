@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import org.optaplanner.constraint.streams.bavet.common.AbstractIndexedJoinNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
+import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
 
 /**
  * An indexer for entity or fact {@code X},
@@ -21,12 +22,12 @@ import org.optaplanner.constraint.streams.bavet.common.Tuple;
  * For example {@link AbstractIndexedJoinNode} uses the value to store a set of child tuples justified by the X instance.
  * <p>
  * The fact X is wrapped in a Tuple, because the {@link BavetTupleState} is needed by clients of
- * {@link #visit(IndexProperties, Consumer)}.
+ * {@link #visit(IndexProperties, BiConsumer)}.
  *
  * @param <Tuple_> For example for {@code from(A).join(B)}, the tuple is {@code UniTuple<A>} xor {@code UniTuple<B>}.
  *        For example for {@code Bi<A, B>.join(C)}, the tuple is {@code BiTuple<A, B>} xor {@code UniTuple<C>}.
- * @param <Value_> For example for {@code from(A).join(B)}, the value is {@code Set<BiTuple<A, B>>}.
- *        For example for {@code Bi<A, B>.join(C)}, the value is {@code Set<TriTuple<A, B, C>>}.
+ * @param <Value_> For example for {@code from(A).join(B)}, the value is a collection of {@code BiTuple<A, B>}.
+ *        For example for {@code Bi<A, B>.join(C)}, the value is a collection of {@code TriTuple<A, B, C>}.
  */
 public interface Indexer<Tuple_ extends Tuple, Value_> {
 
@@ -68,4 +69,11 @@ public interface Indexer<Tuple_ extends Tuple, Value_> {
 
     boolean isEmpty();
 
+    TupleListEntry<Tuple_> putGGG(IndexProperties indexProperties, Tuple_ tuple);
+
+    void removeGGG(IndexProperties indexProperties, TupleListEntry<Tuple_> entry);
+
+    void visitGGG(IndexProperties indexProperties, Consumer<TupleListEntry<Tuple_>> entryVisitor);
+
+    boolean isEmptyGGG();
 }
