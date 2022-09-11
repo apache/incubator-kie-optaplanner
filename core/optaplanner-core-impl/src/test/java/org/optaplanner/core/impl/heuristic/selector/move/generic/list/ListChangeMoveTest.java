@@ -194,21 +194,37 @@ class ListChangeMoveTest {
     }
 
     @Test
-    void tabuIntrospection() {
+    void tabuIntrospection_twoEntities() {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");
         TestdataListValue v3 = new TestdataListValue("3");
         TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
         TestdataListEntity e2 = new TestdataListEntity("e2", v3);
 
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
         ListVariableDescriptor<TestdataListSolution> variableDescriptor =
                 TestdataListEntity.buildVariableDescriptorForValueList();
 
         ListChangeMove<TestdataListSolution> moveTwoEntities = new ListChangeMove<>(variableDescriptor, e1, 1, e2, 1);
+        // Do the move first because that might affect the returned values.
+        moveTwoEntities.doMoveOnGenuineVariables(scoreDirector);
         assertThat(moveTwoEntities.getPlanningEntities()).containsExactly(e1, e2);
         assertThat(moveTwoEntities.getPlanningValues()).containsExactly(v2);
+    }
+
+    @Test
+    void tabuIntrospection_oneEntity() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2);
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
 
         ListChangeMove<TestdataListSolution> moveOneEntity = new ListChangeMove<>(variableDescriptor, e1, 0, e1, 1);
+        // Do the move first because that might affect the returned values.
+        moveOneEntity.doMoveOnGenuineVariables(scoreDirector);
         assertThat(moveOneEntity.getPlanningEntities()).containsExactly(e1);
         assertThat(moveOneEntity.getPlanningValues()).containsExactly(v1);
     }

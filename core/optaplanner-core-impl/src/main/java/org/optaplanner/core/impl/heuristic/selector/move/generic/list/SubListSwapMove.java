@@ -1,8 +1,14 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -22,6 +28,9 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
     private final boolean reversing;
     private final int rightFromIndex;
     private final int leftToIndex;
+
+    private Collection<Object> leftPlanningValues;
+    private Collection<Object> rightPlanningValues;
 
     public SubListSwapMove(ListVariableDescriptor<Solution_> variableDescriptor,
             Object leftEntity, int leftFromIndex, int leftToIndex,
@@ -95,14 +104,17 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
         int leftFromIndex = leftSubList.getFromIndex();
         List<Object> leftList = variableDescriptor.getListVariable(leftEntity);
         List<Object> rightList = variableDescriptor.getListVariable(rightEntity);
-        List<Object> leftSubListView = leftList.subList(leftFromIndex, leftSubList.getToIndex());
-        List<Object> rightSubListView = rightList.subList(rightFromIndex, rightSubList.getToIndex());
+        List<Object> leftSubListView = subList(leftSubList);
+        List<Object> rightSubListView = subList(rightSubList);
         List<Object> leftSubListCopy = new ArrayList<>(leftSubListView);
         List<Object> rightSubListCopy = new ArrayList<>(rightSubListView);
         if (reversing) {
             Collections.reverse(leftSubListCopy);
             Collections.reverse(rightSubListCopy);
         }
+
+        leftPlanningValues = leftSubListCopy;
+        rightPlanningValues = rightSubListCopy;
 
         if (leftEntity == rightEntity) {
             int fromIndex = Math.min(leftFromIndex, rightFromIndex);
@@ -112,7 +124,7 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
             int leftSubListDestinationIndex = rightFromIndex + rightSubListLength - leftSubListLength;
             innerScoreDirector.beforeSubListChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
             rightSubListView.clear();
-            leftList.subList(leftFromIndex, leftToIndex).clear();
+            subList(leftSubList).clear();
             leftList.addAll(leftFromIndex, rightSubListCopy);
             rightList.addAll(leftSubListDestinationIndex, leftSubListCopy);
             innerScoreDirector.afterSubListChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
@@ -134,6 +146,54 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
                     rightFromIndex,
                     rightFromIndex + leftSubListLength);
         }
+    }
+
+    // ************************************************************************
+    // Introspection methods
+    // ************************************************************************
+
+    @Override
+    public String getSimpleMoveTypeDescription() {
+        return getClass().getSimpleName() + "(" + variableDescriptor.getSimpleEntityAndVariableName() + ")";
+    }
+
+    @Override
+    public Collection<Object> getPlanningEntities() {
+        // Use LinkedHashSet for predictable iteration order.
+        Set<Object> entities = new LinkedHashSet<>(2);
+        entities.add(leftSubList.getEntity());
+        entities.add(rightSubList.getEntity());
+        return entities;
+    }
+
+    @Override
+    public Collection<Object> getPlanningValues() {
+        return Stream.concat(leftPlanningValues.stream(), rightPlanningValues.stream()).collect(Collectors.toList());
+    }
+
+    private List<Object> subList(SubList subList) {
+        // TODO move this to the descriptor?
+        return variableDescriptor.getListVariable(subList.getEntity()).subList(subList.getFromIndex(), subList.getToIndex());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SubListSwapMove<?> other = (SubListSwapMove<?>) o;
+        return reversing == other.reversing && rightFromIndex == other.rightFromIndex && leftToIndex == other.leftToIndex
+                && variableDescriptor.equals(other.variableDescriptor)
+                && leftSubList.equals(other.leftSubList)
+                && rightSubList.equals(other.rightSubList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(variableDescriptor, leftSubList, rightSubList, reversing, rightFromIndex, leftToIndex);
     }
 
     @Override

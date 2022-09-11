@@ -148,6 +148,63 @@ class SubListChangeMoveTest {
     }
 
     @Test
+    void tabuIntrospection_twoEntities() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListValue v4 = new TestdataListValue("4");
+        TestdataListValue v5 = new TestdataListValue("5");
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4);
+        TestdataListEntity e2 = new TestdataListEntity("e2", v5);
+        TestdataListEntity e3 = new TestdataListEntity("e3");
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+
+        SubListChangeMove<TestdataListSolution> moveTwoEntities =
+                new SubListChangeMove<>(variableDescriptor, e1, 1, 3, e2, 0, false);
+        // Do the move first because that might affect the returned values.
+        moveTwoEntities.doMoveOnGenuineVariables(scoreDirector);
+        assertThat(moveTwoEntities.getPlanningEntities()).containsExactly(e1, e2);
+        assertThat(moveTwoEntities.getPlanningValues()).containsExactly(v2, v3, v4);
+
+        assertThat(new SubListChangeMove<>(variableDescriptor, e1, 1, 3, e2, 0, true)).isNotEqualTo(moveTwoEntities);
+        //                                                                      ^
+        assertThat(new SubListChangeMove<>(variableDescriptor, e1, 1, 3, e2, 1, false)).isNotEqualTo(moveTwoEntities);
+        //                                                                   ^
+        assertThat(new SubListChangeMove<>(variableDescriptor, e1, 1, 3, e3, 0, false)).isNotEqualTo(moveTwoEntities);
+        //                                                               ^
+        assertThat(new SubListChangeMove<>(variableDescriptor, e1, 1, 2, e2, 0, false)).isNotEqualTo(moveTwoEntities);
+        //                                                            ^
+        assertThat(new SubListChangeMove<>(variableDescriptor, e1, 2, 4, e2, 0, false)).isNotEqualTo(moveTwoEntities);
+        //                                                         ^  ^
+        assertThat(new SubListChangeMove<>(variableDescriptor, e3, 1, 3, e2, 0, false)).isNotEqualTo(moveTwoEntities);
+        //                                                     ^
+        assertThat(new SubListChangeMove<>(variableDescriptor, e1, 1, 3, e2, 0, false)).isEqualTo(moveTwoEntities);
+    }
+
+    @Test
+    void tabuIntrospection_oneEntity() {
+        TestdataListValue v1 = new TestdataListValue("1");
+        TestdataListValue v2 = new TestdataListValue("2");
+        TestdataListValue v3 = new TestdataListValue("3");
+        TestdataListValue v4 = new TestdataListValue("4");
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4);
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector = mock(InnerScoreDirector.class);
+        ListVariableDescriptor<TestdataListSolution> variableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+
+        SubListChangeMove<TestdataListSolution> moveOneEntity =
+                new SubListChangeMove<>(variableDescriptor, e1, 0, 2, e1, 2, false);
+        // Do the move first because that might affect the returned values.
+        moveOneEntity.doMoveOnGenuineVariables(scoreDirector);
+        assertThat(moveOneEntity.getPlanningEntities()).containsExactly(e1);
+        assertThat(moveOneEntity.getPlanningValues()).containsExactly(v1, v2);
+    }
+
+    @Test
     void toStringTest() {
         TestdataListValue v1 = new TestdataListValue("1");
         TestdataListValue v2 = new TestdataListValue("2");

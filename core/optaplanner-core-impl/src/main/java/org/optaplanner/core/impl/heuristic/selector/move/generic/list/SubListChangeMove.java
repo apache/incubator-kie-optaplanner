@@ -1,8 +1,12 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -23,6 +27,8 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
     private final Object destinationEntity;
     private final int destinationIndex;
     private final boolean reversing;
+
+    private Collection<Object> planningValues;
 
     public SubListChangeMove(ListVariableDescriptor<Solution_> variableDescriptor, SubList subList, Object destinationEntity,
             int destinationIndex, boolean reversing) {
@@ -72,6 +78,13 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
     }
 
     @Override
+    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
+        return destinationEntity != sourceEntity
+                || destinationIndex + length <= variableDescriptor.getListSize(destinationEntity)
+                        && destinationIndex != sourceIndex;
+    }
+
+    @Override
     protected AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         return new SubListChangeMove<>(variableDescriptor, destinationEntity, destinationIndex, length, sourceEntity,
                 sourceIndex, reversing);
@@ -87,6 +100,7 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
         if (reversing) {
             Collections.reverse(subListCopy);
         }
+        planningValues = subListCopy;
 
         if (sourceEntity == destinationEntity) {
             int fromIndex = Math.min(sourceIndex, destinationIndex);
@@ -106,11 +120,49 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
         }
     }
 
+    // ************************************************************************
+    // Introspection methods
+    // ************************************************************************
+
     @Override
-    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
-        return destinationEntity != sourceEntity
-                || destinationIndex + length <= variableDescriptor.getListSize(destinationEntity)
-                        && destinationIndex != sourceIndex;
+    public String getSimpleMoveTypeDescription() {
+        return getClass().getSimpleName() + "(" + variableDescriptor.getSimpleEntityAndVariableName() + ")";
+    }
+
+    @Override
+    public Collection<Object> getPlanningEntities() {
+        // Use LinkedHashSet for predictable iteration order.
+        Set<Object> entities = new LinkedHashSet<>(2);
+        entities.add(sourceEntity);
+        entities.add(destinationEntity);
+        return entities;
+    }
+
+    @Override
+    public Collection<Object> getPlanningValues() {
+        return planningValues;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SubListChangeMove<?> other = (SubListChangeMove<?>) o;
+        return sourceIndex == other.sourceIndex && length == other.length
+                && destinationIndex == other.destinationIndex && reversing == other.reversing
+                && variableDescriptor.equals(other.variableDescriptor)
+                && sourceEntity.equals(other.sourceEntity)
+                && destinationEntity.equals(other.destinationEntity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(variableDescriptor, sourceEntity, sourceIndex, length, destinationEntity, destinationIndex,
+                reversing);
     }
 
     @Override

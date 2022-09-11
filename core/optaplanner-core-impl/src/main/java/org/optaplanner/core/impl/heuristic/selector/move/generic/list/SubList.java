@@ -1,5 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
+import java.util.Objects;
+
 public final class SubList {
 
     private final Object entity;
@@ -26,6 +28,23 @@ public final class SubList {
 
     public int getToIndex() {
         return fromIndex + length;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SubList other = (SubList) o;
+        return fromIndex == other.fromIndex && length == other.length && entity.equals(other.entity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(entity, fromIndex, length);
     }
 
     @Override

@@ -30,6 +30,8 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
     private final Object destinationEntity;
     private final int destinationIndex;
 
+    private Object planningValue;
+
     /**
      * The move removes a planning value element from {@code sourceEntity.listVariable[sourceIndex]}
      * and inserts the planning value at {@code destinationEntity.listVariable[destinationIndex]}.
@@ -146,6 +148,7 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
             Object element = variableDescriptor.removeElement(sourceEntity, sourceIndex);
             variableDescriptor.addElement(destinationEntity, destinationIndex, element);
             innerScoreDirector.afterSubListChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
+            planningValue = element;
         } else {
             innerScoreDirector.beforeSubListChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex + 1);
             Object element = variableDescriptor.removeElement(sourceEntity, sourceIndex);
@@ -155,6 +158,7 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
             variableDescriptor.addElement(destinationEntity, destinationIndex, element);
             innerScoreDirector.afterSubListChanged(variableDescriptor, destinationEntity, destinationIndex,
                     destinationIndex + 1);
+            planningValue = element;
         }
     }
 
@@ -186,7 +190,7 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public Collection<Object> getPlanningValues() {
-        return Collections.singleton(getMovedValue());
+        return Collections.singleton(planningValue);
     }
 
     @Override
