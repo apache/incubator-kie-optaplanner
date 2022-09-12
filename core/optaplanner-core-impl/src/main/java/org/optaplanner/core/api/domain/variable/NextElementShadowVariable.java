@@ -12,7 +12,7 @@ import org.optaplanner.core.api.solver.Solver;
 
 /**
  * Specifies that a bean property (or a field) is an element in the same {@link PlanningListVariable} with an index that is
- * higher by 1 than this element's index. May be {@code null} if this element's index is 0.
+ * higher by 1 than this element's index. May be {@code null} if this is the last element in the list variable.
  * <p>
  * It is specified on a getter of a java bean property (or a field) of a {@link PlanningEntity} class.
  * <p>
