@@ -25,6 +25,12 @@ public final class TupleListEntry<Tuple_ extends Tuple> {
         return next;
     }
 
+    public TupleListEntry<Tuple_> removeAndNext() {
+        TupleListEntry<Tuple_> next = this.next;
+        remove(); // Sets this.next = null
+        return next;
+    }
+
     public void remove() {
         tupleList.remove(this);
     }
