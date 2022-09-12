@@ -124,8 +124,6 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
         return comparisonMap.isEmpty();
     }
 
-
-
     @Override
     public TupleListEntry<Tuple_> putGGG(IndexProperties indexProperties, Tuple_ tuple) {
         Key_ indexKey = indexProperties.toKey(indexKeyPosition);

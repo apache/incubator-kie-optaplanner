@@ -121,7 +121,7 @@ final class EqualsIndexer<Tuple_ extends Tuple, Value_, Key_>
     public void visitGGG(IndexProperties indexProperties, Consumer<TupleListEntry<Tuple_>> entryVisitor) {
         Key_ indexKey = indexProperties.toKey(indexKeyFrom, indexKeyTo);
         Indexer<Tuple_, Value_> downstreamIndexer = downstreamIndexerMap.get(indexKey);
-        if (downstreamIndexer == null || downstreamIndexer.isEmpty()) {
+        if (downstreamIndexer == null || downstreamIndexer.isEmptyGGG()) {
             return;
         }
         downstreamIndexer.visitGGG(indexProperties, entryVisitor);
