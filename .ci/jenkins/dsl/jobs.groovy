@@ -398,6 +398,11 @@ void setupPromoteJob(Folder jobFolder) {
             stringParam('GIT_TAG', '', 'Git tag to set, if different from PROJECT_VERSION')
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
+
+            stringParam('OPERATOR_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images.')
+            // TODO: when do we use the 'registry_credentials_release'?
+            stringParam('OPERATOR_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS_NIGHTLY}", 'Image registry credentials.')
+            stringParam('OPERATOR_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Operator image namespace to use to deploy image.')
         }
     }
 }

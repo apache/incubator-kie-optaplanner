@@ -10,7 +10,7 @@ optaplannerRepository = 'optaplanner'
 quickstartsRepository = 'optaplanner-quickstarts'
 vehicleRoutingRepository = 'optaweb-vehicle-routing'
 
-operator = null
+imageUtils = null
 
 pipeline {
     agent {
@@ -49,7 +49,7 @@ pipeline {
         stage('Load scripts') {
             steps {
                 script {
-                    operator = load '.ci/jenkins/scripts/operator.groovy'
+                    imageUtils = load '.ci/jenkins/scripts/imageUtils.groovy'
                 }
             }
         }
@@ -260,11 +260,12 @@ pipeline {
                             .skipTests(params.SKIP_TESTS)
                             .run('clean install')
 
-                    String temporaryImageTag = operator.getTemporaryImageTag()
-                    operator.pushTemporaryImage(temporaryImageTag)
+                    pushOperatorTemporaryImage()
 
                     // Store image deployment information
-                    setDeployPropertyIfNeeded('operator.image.temporary_tag', temporaryImageTag)
+                    setDeployPropertyIfNeeded('operator.image.name', getOperatorImageName())
+                    setDeployPropertyIfNeeded('operator.image.tag', getOperatorImageTag())
+                    setDeployPropertyIfNeeded('operator.image.temporary_tag', getOperatorImageTemporaryTag())
                 }
             }
         }
@@ -555,4 +556,35 @@ void updateAntoraYaml(String directory) {
     } else {
         echo 'No updateAntoraYaml due to testing build'
     }
+}
+
+/* OptaPlanner Operator */
+
+String getOperatorImageRegistry() {
+    return params.OPERATOR_IMAGE_REGISTRY
+}
+
+String getOperatorImageNamespace() {
+    return params.OPERATOR_IMAGE_NAMESPACE
+}
+
+String getOperatorImageName() {
+    return env.OPERATOR_IMAGE_NAME
+}
+
+String getOperatorImageTag() {
+    return params.OPERATOR_IMAGE_TAG ?: getProjectVersion() ?: 'latest'
+}
+
+String getOperatorImageTemporaryTag() {
+    return "${getOperatorImageTag()}-temporary"
+}
+
+void pushOperatorTemporaryImage() {
+    String localImage = "${getOperatorImageName()}:latest"
+    String temporaryImageTag = getOperatorImageTemporaryTag()
+    String temporaryImageFullName = imageUtils.getImageFullNameWithRegistry(getOperatorImageRegistry(),
+            getOperatorImageNamespace(), getOperatorImageName(), temporaryImageTag)
+    imageUtils.tagImage(localImage, temporaryImageFullName)
+    imageUtils.pushImage(temporaryImageFullName)
 }
