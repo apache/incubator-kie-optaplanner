@@ -50,8 +50,8 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         leftTuple.setStore(inputStoreIndexLeftEntry, leftEntry);
         TupleList<MutableOutTuple_> outTupleListLeft = new TupleList<>();
         leftTuple.setStore(inputStoreIndexLeftOutTupleList, outTupleListLeft);
-        for (TupleListEntry<UniTuple<Right_>> rightEntry = rightTupleList.first();
-                rightEntry != null; rightEntry = rightEntry.next()) {
+        for (TupleListEntry<UniTuple<Right_>> rightEntry = rightTupleList.first(); rightEntry != null; rightEntry =
+                rightEntry.next()) {
             UniTuple<Right_> rightTuple = rightEntry.getTuple();
             MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
             TupleListEntry<MutableOutTuple_> outEntryLeft = outTupleListLeft.add(outTuple);
@@ -71,8 +71,8 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
             return;
         }
         TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
-        for (TupleListEntry<MutableOutTuple_> outEntryLeft = outTupleListLeft.first();
-                outEntryLeft != null; outEntryLeft = outEntryLeft.next()) {
+        for (TupleListEntry<MutableOutTuple_> outEntryLeft = outTupleListLeft.first(); outEntryLeft != null; outEntryLeft =
+                outEntryLeft.next()) {
             MutableOutTuple_ outTuple = outEntryLeft.getTuple();
             updateOutTupleLeft(outTuple, leftTuple);
             updateTuple(outTuple);
@@ -91,8 +91,8 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
 
         leftEntry.remove();
         // No need for outEntryLeft.removeAndNext(); because outTupleListLeft is garbage collected
-        for (TupleListEntry<MutableOutTuple_> outEntryLeft = outTupleListLeft.first();
-                outEntryLeft != null; outEntryLeft = outEntryLeft.next()) {
+        for (TupleListEntry<MutableOutTuple_> outEntryLeft = outTupleListLeft.first(); outEntryLeft != null; outEntryLeft =
+                outEntryLeft.next()) {
             MutableOutTuple_ outTuple = outEntryLeft.getTuple();
             TupleListEntry<MutableOutTuple_> outEntryRight = outTuple.getStore(outputStoreIndexRightOutEntry);
             outEntryRight.remove();
@@ -112,8 +112,7 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         rightTuple.setStore(inputStoreIndexRightEntry, rightEntry);
         TupleList<MutableOutTuple_> outTupleListRight = new TupleList<>();
         rightTuple.setStore(inputStoreIndexRightOutTupleList, outTupleListRight);
-        for (TupleListEntry<LeftTuple_> leftEntry = leftTupleList.first();
-                leftEntry != null; leftEntry = leftEntry.next()) {
+        for (TupleListEntry<LeftTuple_> leftEntry = leftTupleList.first(); leftEntry != null; leftEntry = leftEntry.next()) {
             LeftTuple_ leftTuple = leftEntry.getTuple();
             MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
             TupleListEntry<MutableOutTuple_> outEntryRight = outTupleListRight.add(outTuple);
@@ -133,8 +132,8 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
             return;
         }
         TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
-        for (TupleListEntry<MutableOutTuple_> outEntryRight = outTupleListRight.first();
-                outEntryRight != null; outEntryRight = outEntryRight.next()) {
+        for (TupleListEntry<MutableOutTuple_> outEntryRight = outTupleListRight.first(); outEntryRight != null; outEntryRight =
+                outEntryRight.next()) {
             MutableOutTuple_ outTuple = outEntryRight.getTuple();
             updateOutTupleRight(outTuple, rightTuple);
             updateTuple(outTuple);
@@ -153,8 +152,8 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
 
         rightEntry.remove();
         // No need for outEntryRight.removeAndNext(); because outTupleListRight is garbage collected
-        for (TupleListEntry<MutableOutTuple_> outEntryRight = outTupleListRight.first();
-                outEntryRight != null; outEntryRight = outEntryRight.next()) {
+        for (TupleListEntry<MutableOutTuple_> outEntryRight = outTupleListRight.first(); outEntryRight != null; outEntryRight =
+                outEntryRight.next()) {
             MutableOutTuple_ outTuple = outEntryRight.getTuple();
             TupleListEntry<MutableOutTuple_> outEntryLeft = outTuple.getStore(outputStoreIndexLeftOutEntry);
             outEntryLeft.remove();
