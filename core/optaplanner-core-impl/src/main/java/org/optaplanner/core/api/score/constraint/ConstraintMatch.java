@@ -2,14 +2,11 @@ package org.optaplanner.core.api.score.constraint;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
-import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
-import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 
 /**
  * Retrievable from {@link ConstraintMatchTotal#getConstraintMatchSet()}
@@ -27,27 +24,28 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
     private final String constraintName;
     private final String constraintId;
 
-    private final Object justification;
+    private final ConstraintJustification justification;
     private final Score_ score;
-
-    private Comparator<Object> classAndIdPlanningComparator;
 
     /**
      * @param constraintPackage never null
      * @param constraintName never null
      * @param justificationList never null, sometimes empty
      * @param score never null
+     * @deprecated Prefer {@link ConstraintMatch#ConstraintMatch(String, String, ConstraintJustification, Score)}.
      */
-    public ConstraintMatch(String constraintPackage, String constraintName, List<Object> justificationList,
-            Score_ score) {
-        this.constraintPackage = requireNonNull(constraintPackage);
-        this.constraintName = requireNonNull(constraintName);
-        this.constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
-        this.justification = requireNonNull(justificationList);
-        this.score = requireNonNull(score);
+    @Deprecated(forRemoval = true)
+    public ConstraintMatch(String constraintPackage, String constraintName, List<Object> justificationList, Score_ score) {
+        this(constraintPackage, constraintName, DefaultConstraintJustification.of(justificationList), score);
     }
 
-    public ConstraintMatch(String constraintPackage, String constraintName, Object justification,
+    /**
+     * @param constraintPackage never null
+     * @param constraintName never null
+     * @param justification never null
+     * @param score never null
+     */
+    public ConstraintMatch(String constraintPackage, String constraintName, ConstraintJustification justification,
             Score_ score) {
         this.constraintPackage = requireNonNull(constraintPackage);
         this.constraintName = requireNonNull(constraintName);
@@ -72,9 +70,10 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
      * <li>For Score DRL, it returns every object that Drools considers to be part of the match.
      * This is largely undefined.</li>
      * <li>For incremental score calculation, it returns what the calculator is implemented to return.</li>
-     * <li>For constraint streams, it returns either a list of facts from the matching tuple
-     * (eg. [A, B] for a bi stream), unless a custom justification function was provided,
-     * in which case it returns a list with one value, which is the return value of the function.</li>
+     * <li>For constraint streams, it returns a list of facts from the matching tuple for backwards compatibility
+     * (eg. [A, B] for a bi stream),
+     * unless a custom justification function was provided, in which case it throws an exception,
+     * pointing users towards {@link #getJustification()}.</li>
      * </ul>
      *
      * @deprecated Prefer {@link #getJustification()}.
@@ -82,7 +81,13 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
      */
     @Deprecated(forRemoval = true)
     public List<Object> getJustificationList() {
-        return (List<Object>) justification;
+        if (justification instanceof DefaultConstraintJustification) { // No custom function provided.
+            return ((DefaultConstraintJustification) justification).getFacts();
+        } else {
+            throw new IllegalStateException("Cannot retrieve list of facts from a custom constraint justification ("
+                    + justification + ").\n" +
+                    "Use ConstraintMatch#getJustification() method instead.");
+        }
     }
 
     /**
@@ -90,17 +95,18 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
      * <p>
      * This method has a different meaning based on which score director the constraint comes from.
      * <ul>
-     * <li>For Score DRL, it returns a list of all objects that Drools considers to be part of the match.
+     * <li>For Score DRL, it returns {@link DefaultConstraintJustification} of all objects
+     * that Drools considers to be part of the match.
      * This is largely undefined.</li>
      * <li>For incremental score calculation, it returns what the calculator is implemented to return.</li>
-     * <li>For constraint streams, it returns either a list of facts from the matching tuple
+     * <li>For constraint streams, it returns {@link DefaultConstraintJustification} from the matching tuple
      * (eg. [A, B] for a bi stream), unless a custom justification function was provided,
      * in which case it returns the return value of that function.</li>
      * </ul>
      *
      * @return never null
      */
-    public <Justification_> Justification_ getJustification() {
+    public <Justification_ extends ConstraintJustification> Justification_ getJustification() {
         return (Justification_) justification;
     }
 
@@ -128,52 +134,9 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
             return score.compareTo(other.score);
         } else if (justification instanceof Comparable) {
             return ((Comparable) justification).compareTo(other.justification);
-        } else if (justification instanceof Collection) {
-            Collection<Object> justificationCollection = (Collection<Object>) justification;
-            Collection<Object> otherJustificationCollection = (Collection<Object>) other.justification;
-            if (justificationCollection.size() != otherJustificationCollection.size()) {
-                return Integer.compare(justificationCollection.size(), otherJustificationCollection.size());
-            } else if (justificationCollection instanceof List) {
-                List<Object> justificationList = (List<Object>) justificationCollection;
-                List<Object> otherJustificationList = (List<Object>) otherJustificationCollection;
-                Comparator<Object> comparator = getClassAndIdPlanningComparator(other);
-                for (int i = 0; i < justificationCollection.size(); i++) {
-                    Object left = justificationList.get(i);
-                    Object right = otherJustificationList.get(i);
-                    int comparison = comparator.compare(left, right);
-                    if (comparison != 0) {
-                        return comparison;
-                    }
-                }
-            }
         }
         return Integer.compare(System.identityHashCode(justification),
                 System.identityHashCode(other.justification));
-    }
-
-    private Comparator<Object> getClassAndIdPlanningComparator(ConstraintMatch<Score_> other) {
-        /*
-         * The comparator performs some expensive operations, which can be cached.
-         * For optimal performance, this cache (MemberAccessFactory) needs to be shared between comparators.
-         * In order to prevent the comparator from being shared in a static field creating a de-facto memory leak,
-         * we cache the comparator inside this class, and we minimize the number of instances that will be created
-         * by creating the comparator when none of the constraint matches already carry it,
-         * and we store it in both.
-         */
-        if (classAndIdPlanningComparator != null) {
-            return classAndIdPlanningComparator;
-        } else if (other.classAndIdPlanningComparator != null) {
-            return other.classAndIdPlanningComparator;
-        } else {
-            /*
-             * FIXME Using reflection will break Quarkus once we don't open up classes for reflection any more.
-             * Use cases which need to operate safely within Quarkus should use SolutionDescriptor's MemberAccessorFactory.
-             */
-            classAndIdPlanningComparator =
-                    new ClassAndPlanningIdComparator(new MemberAccessorFactory(), DomainAccessType.REFLECTION, false);
-            other.classAndIdPlanningComparator = classAndIdPlanningComparator;
-            return classAndIdPlanningComparator;
-        }
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.drools.model.DSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 
 final class BiRuleContext<A, B> extends AbstractRuleContext {
 
@@ -25,7 +26,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntBiFunction<A, B> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    BiFunction<A, B, Object> justificationFunction = constraint.getJustificationFunction();
+                    BiFunction<A, B, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
                                 JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a, b);
@@ -39,7 +40,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongBiFunction<A, B> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    BiFunction<A, B, Object> justificationFunction = constraint.getJustificationFunction();
+                    BiFunction<A, B, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
                                 JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a, b);
@@ -53,7 +54,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(BiFunction<A, B, BigDecimal> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    BiFunction<A, B, Object> justificationFunction = constraint.getJustificationFunction();
+                    BiFunction<A, B, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
                                 JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a, b);

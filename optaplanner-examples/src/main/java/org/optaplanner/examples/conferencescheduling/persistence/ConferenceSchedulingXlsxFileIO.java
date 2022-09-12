@@ -87,6 +87,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
 import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
@@ -1639,7 +1640,8 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     .filter(constraintMatch -> filteredConstraintNameList == null
                             || filteredConstraintNameList.contains(constraintMatch.getConstraintName()))
                     .filter(constraintMatch -> isValidJustificationList == null
-                            || isValidJustificationList.test(constraintMatch.getJustificationList()))
+                            || isValidJustificationList
+                                    .test(((DefaultConstraintJustification) constraintMatch.getJustification()).getFacts()))
                     .map(ConstraintMatch::getScore)
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getMediumScore() >= 0
@@ -1689,14 +1691,19 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                             List<ConstraintMatch<?>> filteredConstraintMatchList = constraintMatchSet.stream()
                                     .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName)
                                             && (isValidJustificationList == null
-                                                    || isValidJustificationList.test(constraintMatch.getJustificationList())))
+                                                    || isValidJustificationList
+                                                            .test(((DefaultConstraintJustification) constraintMatch
+                                                                    .getJustification()).getFacts())))
                                     .collect(toList());
                             HardMediumSoftScore sum = filteredConstraintMatchList.stream()
                                     .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
                                     .reduce(HardMediumSoftScore::add)
                                     .orElse(HardMediumSoftScore.ZERO);
                             String justificationTalkCodes = filteredConstraintMatchList.stream()
-                                    .flatMap(constraintMatch -> constraintMatch.getJustificationList().stream())
+                                    .flatMap(constraintMatch -> ((DefaultConstraintJustification) constraintMatch
+                                            .getJustification())
+                                                    .getFacts()
+                                                    .stream())
                                     .filter(justification -> justification instanceof Talk && justification != talk)
                                     .distinct().map(o -> ((Talk) o).getCode()).collect(joining(", "));
                             commentString.append("\n    ").append(sum.toShortString())

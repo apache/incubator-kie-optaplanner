@@ -6,10 +6,13 @@ import org.optaplanner.constraint.streams.common.AbstractConstraint;
 import org.optaplanner.constraint.streams.common.InnerConstraintFactory;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 public abstract class AbstractScoreInlinerTest<Solution_, Score_ extends Score<Score_>> {
+
+    protected static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = DefaultConstraintJustification::of;
 
     protected final boolean constraintMatchEnabled = true;
     private final TestConstraintFactory<Solution_, Score_> constraintFactory =

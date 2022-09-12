@@ -2,6 +2,8 @@ package org.optaplanner.constraint.streams.common.inliner;
 
 import java.util.function.Supplier;
 
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
+
 /**
  * This interface allows to create justifications lazily
  * if and only if constraint matches are enabled.
@@ -10,5 +12,5 @@ import java.util.function.Supplier;
  * So justifications are created lazily, outside of the typical hot path.
  */
 @FunctionalInterface
-public interface JustificationsSupplier extends Supplier<Object> {
+public interface JustificationsSupplier extends Supplier<ConstraintJustification> {
 }

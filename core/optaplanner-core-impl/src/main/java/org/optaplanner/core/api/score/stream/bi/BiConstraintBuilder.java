@@ -5,6 +5,7 @@ import java.util.function.BiFunction;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintBuilder;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 
 /**
  * Used to build a {@link Constraint} out of a {@link BiConstraintStream}, applying optional configuration.
@@ -25,6 +26,7 @@ public interface BiConstraintBuilder<A, B> extends ConstraintBuilder<BiConstrain
      * @param justificationFunction never null
      * @return this
      */
-    BiConstraintBuilder<A, B> justifiedWith(BiFunction<A, B, Object> justificationFunction);
+    <ConstraintJustification_ extends ConstraintJustification> BiConstraintBuilder<A, B> justifiedWith(
+            BiFunction<A, B, ConstraintJustification_> justificationFunction);
 
 }

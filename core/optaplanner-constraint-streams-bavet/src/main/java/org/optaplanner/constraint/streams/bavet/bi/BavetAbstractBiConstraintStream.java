@@ -2,7 +2,6 @@ package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -30,6 +29,7 @@ import org.optaplanner.constraint.streams.common.bi.BiConstraintBuilderImpl;
 import org.optaplanner.constraint.streams.common.bi.InnerBiConstraintStream;
 import org.optaplanner.constraint.streams.common.tri.TriJoinerComber;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintBuilder;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
@@ -416,8 +416,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     }
 
     @Override
-    protected final BiFunction<A, B, Object> getDefaultJustificationFunction() {
-        return Arrays::asList;
+    protected final BiFunction<A, B, DefaultConstraintJustification> getDefaultJustificationFunction() {
+        return DefaultConstraintJustification::of;
     }
 
 }

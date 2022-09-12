@@ -3,7 +3,6 @@ package org.optaplanner.constraint.streams.common.inliner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
@@ -12,8 +11,6 @@ import org.optaplanner.core.impl.testdata.domain.score.TestdataBendableBigDecima
 
 class BendableBigDecimalScoreInlinerTest
         extends AbstractScoreInlinerTest<TestdataBendableBigDecimalScoreSolution, BendableBigDecimalScore> {
-
-    private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
     void defaultScore() {

@@ -64,12 +64,11 @@ public interface ScoreExplanation<Solution_, Score_ extends Score<Score_>> {
     /**
      * Explains the impact of each planning entity or problem fact on the {@link Score}.
      * An {@link Indictment} is basically the inverse of a {@link ConstraintMatchTotal}:
-     * it is a {@link Score} total for each justification {@link Object}
-     * in {@link ConstraintMatch#getJustificationList()}.
+     * it is a {@link Score} total for a {@link ConstraintMatch#getJustification() constraint justification}.
      * <p>
-     * The sum of {@link ConstraintMatchTotal#getScore()} differs from {@link #getScore()} ()}
+     * The sum of {@link ConstraintMatchTotal#getScore()} differs from {@link #getScore()}
      * because each {@link ConstraintMatch#getScore()} is counted
-     * for each justification in {@link ConstraintMatch#getJustificationList()}.
+     * for each {@link ConstraintMatch#getJustification() constraint justification}.
      *
      * @return never null, the key is a {@link ProblemFactCollectionProperty problem fact} or a
      *         {@link PlanningEntity planning entity}

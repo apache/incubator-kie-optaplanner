@@ -15,6 +15,7 @@ import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.constraint.streams.common.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetScoringUniConstraintStream<Solution_, A>
@@ -106,7 +107,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's an endpoint.");
         }
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraint, constraintWeight);
-        Function<A, Object> justificationFunction = constraint.getJustificationFunction();
+        Function<A, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
         Function<A, UndoScoreImpacter> scoreImpacter;
         if (intMatchWeigher != null) {
             scoreImpacter = a -> {

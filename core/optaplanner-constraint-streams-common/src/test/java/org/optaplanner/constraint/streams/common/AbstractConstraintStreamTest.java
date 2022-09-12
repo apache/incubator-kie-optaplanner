@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.optaplanner.core.api.score.constraint.ConstraintMatchTotal.composeConstraintId;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -13,6 +12,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -22,7 +22,9 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.score.lavish.TestdataLavishSolution;
@@ -139,15 +141,21 @@ public abstract class AbstractConstraintStreamTest {
             if (!constraintName.equals(constraintMatch.getConstraintName())) {
                 return false;
             }
-            Object justification = constraintMatch.getJustification();
-            List<Object> actualJustificationList = justification instanceof List
-                    ? (List<Object>) justification
-                    : Collections.singletonList(justification); // Support for custom justification function.
-            // Can't simply compare the lists, since the elements may be in different orders. The order is not relevant.
-            if (actualJustificationList.size() != justificationList.size()) {
-                return false;
+            ConstraintJustification justification = constraintMatch.getJustification();
+            if (justification instanceof DefaultConstraintJustification) {
+                List<Object> actualJustificationList = ((DefaultConstraintJustification) justification).getFacts();
+                if (actualJustificationList.size() != justificationList.size()) {
+                    return false;
+                }
+                // Can't simply compare the lists, since the elements may be in different orders. The order is not relevant.
+                return justificationList.containsAll(actualJustificationList);
+            } else { // Support for custom justification function.
+                if (justificationList.size() != 1) {
+                    Assertions.fail("Expected number of justifications (" + justificationList.size() +
+                            ") does not match actual (1; " + justification + ").");
+                }
+                return justification == justificationList.get(0);
             }
-            return justificationList.containsAll(actualJustificationList);
         }
 
         @Override

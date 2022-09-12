@@ -49,6 +49,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
 import org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp;
 import org.optaplanner.examples.meetingscheduling.domain.Attendance;
@@ -964,7 +965,10 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                 .reduce(HardMediumSoftScore::add)
                                 .orElse(HardMediumSoftScore.ZERO);
                         String justificationTalkCodes = filteredConstraintMatchList.stream()
-                                .flatMap(constraintMatch -> constraintMatch.getJustificationList().stream())
+                                .flatMap(
+                                        constraintMatch -> ((DefaultConstraintJustification) constraintMatch.getJustification())
+                                                .getFacts()
+                                                .stream())
                                 .filter(justification -> justification instanceof MeetingAssignment
                                         && justification != meetingAssignment)
                                 .distinct().map(o -> Long.toString(((MeetingAssignment) o).getMeeting().getId()))

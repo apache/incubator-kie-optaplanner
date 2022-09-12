@@ -1,7 +1,6 @@
 package org.optaplanner.examples.machinereassignment.optional.score;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +11,7 @@ import org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncremental
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrBalancePenalty;
@@ -462,7 +462,7 @@ public class MachineReassignmentIncrementalScoreCalculator
             MrService service = serviceScorePart.service;
             if (service.getLocationSpread() > serviceScorePart.locationBag.size()) {
                 serviceLocationSpreadMatchTotal.addConstraintMatch(
-                        Arrays.asList(service),
+                        DefaultConstraintJustification.of(service),
                         HardSoftLongScore.of(
                                 -(service.getLocationSpread() - serviceScorePart.locationBag.size()), 0));
             }
@@ -471,12 +471,12 @@ public class MachineReassignmentIncrementalScoreCalculator
             for (MrMachineCapacityScorePart machineCapacityScorePart : machineScorePart.machineCapacityScorePartList) {
                 if (machineCapacityScorePart.maximumAvailable < 0L) {
                     maximumCapacityMatchTotal.addConstraintMatch(
-                            Arrays.asList(machineCapacityScorePart.machineCapacity),
+                            DefaultConstraintJustification.of(machineCapacityScorePart.machineCapacity),
                             HardSoftLongScore.of(machineCapacityScorePart.maximumAvailable, 0));
                 }
                 if (machineCapacityScorePart.safetyAvailable < 0L) {
                     loadCostMatchTotal.addConstraintMatch(
-                            Arrays.asList(machineCapacityScorePart.machineCapacity),
+                            DefaultConstraintJustification.of(machineCapacityScorePart.machineCapacity),
                             HardSoftLongScore.of(0, machineCapacityScorePart.safetyAvailable
                                     * machineCapacityScorePart.machineCapacity.getResource().getLoadCostWeight()));
                 }
@@ -491,7 +491,7 @@ public class MachineReassignmentIncrementalScoreCalculator
                     // targetAvailable might be negative, but that's ok (and even avoids score traps)
                     if (targetAvailable < minimumTargetAvailable) {
                         balanceCostMatchTotal.addConstraintMatch(
-                                Arrays.asList(machineScorePart.machine, balancePenalty),
+                                DefaultConstraintJustification.of(machineScorePart.machine, balancePenalty),
                                 HardSoftLongScore.of(0,
                                         -(minimumTargetAvailable - targetAvailable) * balancePenalty.getWeight()));
                     }
@@ -501,7 +501,7 @@ public class MachineReassignmentIncrementalScoreCalculator
                 Integer serviceProcessCount = entry.getValue();
                 if (serviceProcessCount > 1) {
                     serviceConflictMatchTotal.addConstraintMatch(
-                            Arrays.asList(machineScorePart.machine, entry.getKey()),
+                            DefaultConstraintJustification.of(machineScorePart.machine, entry.getKey()),
                             HardSoftLongScore.of(-(serviceProcessCount - 1), 0));
                 }
             }
@@ -513,18 +513,18 @@ public class MachineReassignmentIncrementalScoreCalculator
                         serviceScorePart.neighborhoodBag.getOrDefault(processAssignment.getNeighborhood(), 0);
                 if (toDependencyNeighborhoodProcessCount == 0) {
                     serviceDependencyMatchTotal.addConstraintMatch(
-                            Arrays.asList(processAssignment, toDependencyService),
+                            DefaultConstraintJustification.of(processAssignment, toDependencyService),
                             HardSoftLongScore.of(-1, 0));
                 }
             }
             if (processAssignment.isMoved()) {
                 processMoveCostMatchTotal.addConstraintMatch(
-                        Arrays.asList(processAssignment),
+                        DefaultConstraintJustification.of(processAssignment),
                         HardSoftLongScore.of(0,
                                 -((long) processAssignment.getProcessMoveCost()
                                         * globalPenaltyInfo.getProcessMoveCostWeight())));
                 machineMoveCostMatchTotal.addConstraintMatch(
-                        Arrays.asList(processAssignment),
+                        DefaultConstraintJustification.of(processAssignment),
                         HardSoftLongScore.of(0,
                                 -((long) processAssignment.getMachineMoveCost()
                                         * globalPenaltyInfo.getMachineMoveCostWeight())));
@@ -532,7 +532,7 @@ public class MachineReassignmentIncrementalScoreCalculator
         }
         for (int i = 0; i < serviceMoveCost; i++) {
             serviceMoveCostMatchTotal.addConstraintMatch(
-                    Arrays.asList(i),
+                    DefaultConstraintJustification.of(i),
                     HardSoftLongScore.of(0, -globalPenaltyInfo.getServiceMoveCostWeight()));
         }
 

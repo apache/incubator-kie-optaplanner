@@ -2,7 +2,6 @@ package org.optaplanner.constraint.streams.bavet.tri;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -30,6 +29,7 @@ import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
@@ -427,8 +427,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     }
 
     @Override
-    protected final TriFunction<A, B, C, Object> getDefaultJustificationFunction() {
-        return Arrays::asList;
+    protected final TriFunction<A, B, C, DefaultConstraintJustification> getDefaultJustificationFunction() {
+        return DefaultConstraintJustification::of;
     }
 
 }

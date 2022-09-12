@@ -27,6 +27,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -1720,14 +1721,14 @@ public abstract class AbstractTriConstraintStreamTest
                         .filter((a, b, c) -> a != c && b != c)
                         .penalize(SimpleScore.ONE,
                                 (a, b, c) -> a.getIntegerProperty() + b.getIntegerProperty() + c.getIntegerProperty())
-                        .justifiedWith((a, b, c) -> a + "_" + b + "_" + c)
+                        .justifiedWith((a, b, c) -> DefaultConstraintJustification.of(a.toString(), b.toString(), c.toString()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                assertMatchWithScore(-3, new Object[] { "Generated Entity 0_Generated Entity 1_Generated Entity 2" }),
-                assertMatchWithScore(-3, new Object[] { "Generated Entity 0_Generated Entity 2_Generated Entity 1" }),
-                assertMatchWithScore(-3, new Object[] { "Generated Entity 1_Generated Entity 2_Generated Entity 0" }));
+                assertMatchWithScore(-3, new Object[] { "Generated Entity 0", "Generated Entity 1", "Generated Entity 2" }),
+                assertMatchWithScore(-3, new Object[] { "Generated Entity 0", "Generated Entity 2", "Generated Entity 1" }),
+                assertMatchWithScore(-3, new Object[] { "Generated Entity 1", "Generated Entity 2", "Generated Entity 0" }));
     }
 
     @Override
@@ -1847,14 +1848,14 @@ public abstract class AbstractTriConstraintStreamTest
                         .filter((a, b, c) -> a != c && b != c)
                         .reward(SimpleScore.ONE,
                                 (a, b, c) -> a.getIntegerProperty() + b.getIntegerProperty() + c.getIntegerProperty())
-                        .justifiedWith((a, b, c) -> a + "_" + b + "_" + c)
+                        .justifiedWith((a, b, c) -> DefaultConstraintJustification.of(a.toString(), b.toString(), c.toString()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                assertMatchWithScore(3, new Object[] { "Generated Entity 0_Generated Entity 1_Generated Entity 2" }),
-                assertMatchWithScore(3, new Object[] { "Generated Entity 0_Generated Entity 2_Generated Entity 1" }),
-                assertMatchWithScore(3, new Object[] { "Generated Entity 1_Generated Entity 2_Generated Entity 0" }));
+                assertMatchWithScore(3, new Object[] { "Generated Entity 0", "Generated Entity 1", "Generated Entity 2" }),
+                assertMatchWithScore(3, new Object[] { "Generated Entity 0", "Generated Entity 2", "Generated Entity 1" }),
+                assertMatchWithScore(3, new Object[] { "Generated Entity 1", "Generated Entity 2", "Generated Entity 0" }));
     }
 
 }

@@ -4,6 +4,7 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintBuilder;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 
 /**
  * Used to build a {@link Constraint} out of a {@link TriConstraintStream}, applying optional configuration.
@@ -24,6 +25,7 @@ public interface TriConstraintBuilder<A, B, C> extends ConstraintBuilder<TriCons
      * @param justificationFunction never null
      * @return this
      */
-    TriConstraintBuilder<A, B, C> justifiedWith(TriFunction<A, B, C, Object> justificationFunction);
+    <ConstraintJustification_ extends ConstraintJustification> TriConstraintBuilder<A, B, C> justifiedWith(
+            TriFunction<A, B, C, ConstraintJustification_> justificationFunction);
 
 }

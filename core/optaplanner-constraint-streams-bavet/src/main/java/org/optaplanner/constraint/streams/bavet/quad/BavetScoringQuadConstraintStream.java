@@ -15,6 +15,7 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetScoringQuadConstraintStream<Solution_, A, B, C, D>
@@ -103,7 +104,7 @@ public final class BavetScoringQuadConstraintStream<Solution_, A, B, C, D>
         Score_ constraintWeight = buildHelper.getConstraintWeight(constraint);
         AbstractScoreInliner<Score_> scoreInliner = buildHelper.getScoreInliner();
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraint, constraintWeight);
-        QuadFunction<A, B, C, D, Object> justificationFunction = constraint.getJustificationFunction();
+        QuadFunction<A, B, C, D, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
         QuadFunction<A, B, C, D, UndoScoreImpacter> scoreImpacter;
         if (intMatchWeigher != null) {
             scoreImpacter = (a, b, c, d) -> {

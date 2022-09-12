@@ -10,6 +10,7 @@ import org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 
 final class TriRuleContext<A, B, C> extends AbstractRuleContext {
 
@@ -28,7 +29,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntTriFunction<A, B, C> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    TriFunction<A, B, C, Object> justificationFunction = constraint.getJustificationFunction();
+                    TriFunction<A, B, C, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                             .execute((drools, scoreImpacter, a, b, c) -> {
                                 JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a, b, c);
@@ -42,7 +43,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongTriFunction<A, B, C> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    TriFunction<A, B, C, Object> justificationFunction = constraint.getJustificationFunction();
+                    TriFunction<A, B, C, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                             .execute((drools, scoreImpacter, a, b, c) -> {
                                 JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a, b, c);
@@ -56,7 +57,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(TriFunction<A, B, C, BigDecimal> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    TriFunction<A, B, C, Object> justificationFunction = constraint.getJustificationFunction();
+                    TriFunction<A, B, C, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                             .execute((drools, scoreImpacter, a, b, c) -> {
                                 JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a, b, c);

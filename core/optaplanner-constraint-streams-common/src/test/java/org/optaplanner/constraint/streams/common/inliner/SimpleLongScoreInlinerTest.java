@@ -2,16 +2,12 @@ package org.optaplanner.constraint.streams.common.inliner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Collections;
-
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataSimpleLongScoreSolution;
 
 class SimpleLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataSimpleLongScoreSolution, SimpleLongScore> {
-
-    private static final JustificationsSupplier EMPTY_JUSTIFICATIONS_SUPPLIER = Collections::emptyList;
 
     @Test
     void defaultScore() {

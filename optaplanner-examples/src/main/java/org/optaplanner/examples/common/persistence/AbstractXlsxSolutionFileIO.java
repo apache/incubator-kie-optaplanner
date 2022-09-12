@@ -37,6 +37,7 @@ import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
@@ -516,7 +517,9 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                                     nextCell();
                                     nextCell(scoreStyle).setCellValue(constraintMatch.getScore().toShortString());
                                     nextCell().setCellValue(
-                                            justificationListFormatter.apply(constraintMatch.getJustificationList()));
+                                            justificationListFormatter
+                                                    .apply(((DefaultConstraintJustification) constraintMatch.getJustification())
+                                                            .getFacts()));
                                 });
                     });
             autoSizeColumnsWithHeader();

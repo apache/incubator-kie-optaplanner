@@ -2,7 +2,6 @@ package org.optaplanner.constraint.streams.bavet.quad;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -28,6 +27,7 @@ import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintBuilder;
@@ -393,8 +393,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    protected final QuadFunction<A, B, C, D, Object> getDefaultJustificationFunction() {
-        return Arrays::asList;
+    protected final QuadFunction<A, B, C, D, DefaultConstraintJustification> getDefaultJustificationFunction() {
+        return DefaultConstraintJustification::of;
     }
 
 }

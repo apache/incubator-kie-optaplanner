@@ -10,6 +10,7 @@ import org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 
 final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
 
@@ -30,7 +31,8 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntQuadFunction<A, B, C, D> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    QuadFunction<A, B, C, D, Object> justificationFunction = constraint.getJustificationFunction();
+                    QuadFunction<A, B, C, D, ConstraintJustification> justificationFunction =
+                            constraint.getJustificationFunction();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC, variableD)
                             .execute((drools, scoreImpacter, a, b, c, d) -> {
                                 JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a, b, c, d);
@@ -44,7 +46,8 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongQuadFunction<A, B, C, D> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    QuadFunction<A, B, C, D, Object> justificationFunction = constraint.getJustificationFunction();
+                    QuadFunction<A, B, C, D, ConstraintJustification> justificationFunction =
+                            constraint.getJustificationFunction();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC, variableD)
                             .execute((drools, scoreImpacter, a, b, c, d) -> {
                                 JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a, b, c, d);
@@ -58,7 +61,8 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(QuadFunction<A, B, C, D, BigDecimal> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    QuadFunction<A, B, C, D, Object> justificationFunction = constraint.getJustificationFunction();
+                    QuadFunction<A, B, C, D, ConstraintJustification> justificationFunction =
+                            constraint.getJustificationFunction();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC, variableD)
                             .execute((drools, scoreImpacter, a, b, c, d) -> {
                                 JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a, b, c, d);

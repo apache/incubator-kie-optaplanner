@@ -55,8 +55,10 @@ public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score
                             .sorted(constraintMatchComparator)
                             .limit(constraintMatchLimit)
                             .forEach(constraintMatch -> scoreExplanation
-                                    .append("            ").append(constraintMatch.getScore().toShortString())
-                                    .append(": justifications (").append(constraintMatch.getJustificationList())
+                                    .append("            ")
+                                    .append(constraintMatch.getScore().toShortString())
+                                    .append(": justifications (")
+                                    .append(constraintMatch.getJustification().toString())
                                     .append(")\n"));
                     if (constraintMatchSet.size() > constraintMatchLimit) {
                         scoreExplanation.append("            ...\n");

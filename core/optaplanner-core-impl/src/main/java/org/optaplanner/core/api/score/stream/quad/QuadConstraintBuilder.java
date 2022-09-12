@@ -4,6 +4,7 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintBuilder;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 
 /**
  * Used to build a {@link Constraint} out of a {@link QuadConstraintStream}, applying optional configuration.
@@ -24,6 +25,7 @@ public interface QuadConstraintBuilder<A, B, C, D> extends ConstraintBuilder<Qua
      * @param justificationFunction never null
      * @return this
      */
-    QuadConstraintBuilder<A, B, C, D> justifiedWith(QuadFunction<A, B, C, D, Object> justificationFunction);
+    <ConstraintJustification_ extends ConstraintJustification> QuadConstraintBuilder<A, B, C, D> justifiedWith(
+            QuadFunction<A, B, C, D, ConstraintJustification_> justificationFunction);
 
 }

@@ -3,7 +3,6 @@ package org.optaplanner.constraint.streams.drools.uni;
 import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -25,6 +24,7 @@ import org.optaplanner.constraint.streams.drools.common.UniLeftHandSide;
 import org.optaplanner.constraint.streams.drools.quad.DroolsGroupingQuadConstraintStream;
 import org.optaplanner.constraint.streams.drools.tri.DroolsGroupingTriConstraintStream;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
@@ -311,8 +311,8 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
-    protected final Function<A, Object> getDefaultJustificationFunction() {
-        return Collections::singletonList;
+    protected final Function<A, DefaultConstraintJustification> getDefaultJustificationFunction() {
+        return DefaultConstraintJustification::of;
     }
 
     public abstract UniLeftHandSide<A> getLeftHandSide();

@@ -26,6 +26,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -1728,12 +1729,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
                         .penalize(SimpleScore.ONE, (a, b) -> a.getIntegerProperty() + b.getIntegerProperty())
-                        .justifiedWith((a, b) -> a.toString() + "_" + b.toString())
+                        .justifiedWith((a, b) -> DefaultConstraintJustification.of(a.toString(), b.toString()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                assertMatchWithScore(-2, new Object[] { "Generated Entity 0_Generated Entity 1" }));
+                assertMatchWithScore(-2, new Object[] { "Generated Entity 0", "Generated Entity 1" }));
     }
 
     @Override
@@ -1843,12 +1844,12 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
                         .reward(SimpleScore.ONE, (a, b) -> a.getIntegerProperty() + b.getIntegerProperty())
-                        .justifiedWith((a, b) -> a.toString() + "_" + b.toString())
+                        .justifiedWith((a, b) -> DefaultConstraintJustification.of(a.toString(), b.toString()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
-                assertMatchWithScore(2, new Object[] { "Generated Entity 0_Generated Entity 1" }));
+                assertMatchWithScore(2, new Object[] { "Generated Entity 0", "Generated Entity 1" }));
     }
 
     // ************************************************************************

@@ -28,6 +28,7 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -1449,17 +1450,22 @@ public abstract class AbstractQuadConstraintStreamTest
                         .penalize(SimpleScore.ONE,
                                 (a, b, c, d) -> a.getIntegerProperty() + b.getIntegerProperty() + c.getIntegerProperty()
                                         + d.getIntegerProperty())
-                        .justifiedWith((a, b, c, d) -> a + "_" + b + "_" + c + "_" + d)
+                        .justifiedWith(
+                                (a, b, c, d) -> DefaultConstraintJustification.of(a.toString(), b.toString(), c.toString(),
+                                        d.toString()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
                 assertMatchWithScore(-4,
-                        new Object[] { "Generated Entity 0_Generated Entity 1_Generated Entity 2_Generated Entity 0" }),
+                        new Object[] { "Generated Entity 0", "Generated Entity 1", "Generated Entity 2",
+                                "Generated Entity 0" }),
                 assertMatchWithScore(-4,
-                        new Object[] { "Generated Entity 0_Generated Entity 2_Generated Entity 1_Generated Entity 0" }),
+                        new Object[] { "Generated Entity 0", "Generated Entity 2", "Generated Entity 1",
+                                "Generated Entity 0" }),
                 assertMatchWithScore(-4,
-                        new Object[] { "Generated Entity 1_Generated Entity 2_Generated Entity 0_Generated Entity 1" }));
+                        new Object[] { "Generated Entity 1", "Generated Entity 2", "Generated Entity 0",
+                                "Generated Entity 1" }));
     }
 
     @Override
@@ -1584,17 +1590,22 @@ public abstract class AbstractQuadConstraintStreamTest
                         .reward(SimpleScore.ONE,
                                 (a, b, c, d) -> a.getIntegerProperty() + b.getIntegerProperty() + c.getIntegerProperty()
                                         + d.getIntegerProperty())
-                        .justifiedWith((a, b, c, d) -> a + "_" + b + "_" + c + "_" + d)
+                        .justifiedWith(
+                                (a, b, c, d) -> DefaultConstraintJustification.of(a.toString(), b.toString(), c.toString(),
+                                        d.toString()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
         assertScore(scoreDirector,
                 assertMatchWithScore(4,
-                        new Object[] { "Generated Entity 0_Generated Entity 1_Generated Entity 2_Generated Entity 0" }),
+                        new Object[] { "Generated Entity 0", "Generated Entity 1", "Generated Entity 2",
+                                "Generated Entity 0" }),
                 assertMatchWithScore(4,
-                        new Object[] { "Generated Entity 0_Generated Entity 2_Generated Entity 1_Generated Entity 0" }),
+                        new Object[] { "Generated Entity 0", "Generated Entity 2", "Generated Entity 1",
+                                "Generated Entity 0" }),
                 assertMatchWithScore(4,
-                        new Object[] { "Generated Entity 1_Generated Entity 2_Generated Entity 0_Generated Entity 1" }));
-    }
+                        new Object[] { "Generated Entity 1", "Generated Entity 2", "Generated Entity 0",
+                                "Generated Entity 1" }));
 
+    }
 }

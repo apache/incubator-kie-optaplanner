@@ -4,11 +4,13 @@ import static java.util.Objects.hash;
 import static java.util.Objects.requireNonNull;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 
 public final class DefaultConstraintMatchTotal<Score_ extends Score<Score_>> implements ConstraintMatchTotal<Score_>,
         Comparable<DefaultConstraintMatchTotal<Score_>> {
@@ -65,7 +67,23 @@ public final class DefaultConstraintMatchTotal<Score_ extends Score<Score_>> imp
     // Worker methods
     // ************************************************************************
 
-    public ConstraintMatch<Score_> addConstraintMatch(Object justification, Score_ score) {
+    /**
+     *
+     * @param justification never null
+     * @param score never null
+     * @deprecated Prefer {@link #addConstraintMatch(ConstraintJustification, Score)}.
+     * @return never null
+     */
+    @Deprecated(forRemoval = true)
+    public ConstraintMatch<Score_> addConstraintMatch(List<Object> justification, Score_ score) {
+        this.score = this.score == null ? score : this.score.add(score);
+        ConstraintMatch<Score_> constraintMatch = new ConstraintMatch<>(constraintPackage, constraintName,
+                justification, score);
+        constraintMatchSet.add(constraintMatch);
+        return constraintMatch;
+    }
+
+    public ConstraintMatch<Score_> addConstraintMatch(ConstraintJustification justification, Score_ score) {
         this.score = this.score == null ? score : this.score.add(score);
         ConstraintMatch<Score_> constraintMatch = new ConstraintMatch<>(constraintPackage, constraintName,
                 justification, score);

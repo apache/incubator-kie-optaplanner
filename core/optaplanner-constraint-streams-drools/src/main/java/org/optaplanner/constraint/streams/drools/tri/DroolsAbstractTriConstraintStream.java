@@ -3,7 +3,6 @@ package org.optaplanner.constraint.streams.drools.tri;
 import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -28,6 +27,7 @@ import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
@@ -308,8 +308,8 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    protected final TriFunction<A, B, C, Object> getDefaultJustificationFunction() {
-        return Arrays::asList;
+    protected final TriFunction<A, B, C, DefaultConstraintJustification> getDefaultJustificationFunction() {
+        return DefaultConstraintJustification::of;
     }
 
     public abstract TriLeftHandSide<A, B, C> getLeftHandSide();

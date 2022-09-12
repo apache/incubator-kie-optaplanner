@@ -5,6 +5,7 @@ import java.util.function.Function;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintBuilder;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 
 /**
  * Used to build a {@link Constraint} out of a {@link UniConstraintStream}, applying optional configuration.
@@ -25,6 +26,7 @@ public interface UniConstraintBuilder<A> extends ConstraintBuilder<UniConstraint
      * @param justificationFunction never null
      * @return this
      */
-    UniConstraintBuilder<A> justifiedWith(Function<A, Object> justificationFunction);
+    <ConstraintJustification_ extends ConstraintJustification> UniConstraintBuilder<A> justifiedWith(
+            Function<A, ConstraintJustification_> justificationFunction);
 
 }

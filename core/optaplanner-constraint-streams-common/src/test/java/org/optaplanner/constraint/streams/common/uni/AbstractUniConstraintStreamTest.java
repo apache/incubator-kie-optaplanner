@@ -31,6 +31,7 @@ import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -2044,7 +2045,7 @@ public abstract class AbstractUniConstraintStreamTest
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
                         .penalize(SimpleScore.ONE, e -> e.getIntegerProperty() * 2)
-                        .justifiedWith(TestdataLavishEntity::getValue)
+                        .justifiedWith(a -> DefaultConstraintJustification.of(a.getValue()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
@@ -2152,7 +2153,7 @@ public abstract class AbstractUniConstraintStreamTest
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
                         .reward(SimpleScore.ONE, e -> e.getIntegerProperty() * 2)
-                        .justifiedWith(TestdataLavishEntity::getValue)
+                        .justifiedWith(a -> DefaultConstraintJustification.of(a.getValue()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);

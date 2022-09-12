@@ -15,6 +15,7 @@ import org.optaplanner.constraint.streams.common.inliner.AbstractScoreInliner;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.constraint.streams.common.inliner.WeightedScoreImpacter;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetScoringBiConstraintStream<Solution_, A, B>
@@ -103,7 +104,7 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
         Score_ constraintWeight = buildHelper.getConstraintWeight(constraint);
         AbstractScoreInliner<Score_> scoreInliner = buildHelper.getScoreInliner();
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraint, constraintWeight);
-        BiFunction<A, B, Object> justificationFunction = constraint.getJustificationFunction();
+        BiFunction<A, B, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
         BiFunction<A, B, UndoScoreImpacter> scoreImpacter;
         if (intMatchWeigher != null) {
             scoreImpacter = (a, b) -> {

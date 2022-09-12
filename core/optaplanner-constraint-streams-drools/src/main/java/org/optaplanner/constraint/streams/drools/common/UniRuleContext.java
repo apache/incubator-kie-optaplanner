@@ -10,6 +10,7 @@ import org.drools.model.DSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 
 final class UniRuleContext<A> extends AbstractRuleContext {
 
@@ -23,7 +24,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntFunction<A> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    Function<A, Object> justificationFunction = constraint.getJustificationFunction();
+                    Function<A, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
                     return DSL.on(scoreImpacterGlobal, variable)
                             .execute((drools, scoreImpacter, a) -> {
                                 JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a);
@@ -37,7 +38,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongFunction<A> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    Function<A, Object> justificationFunction = constraint.getJustificationFunction();
+                    Function<A, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
                     return DSL.on(scoreImpacterGlobal, variable)
                             .execute((drools, scoreImpacter, a) -> {
                                 JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a);
@@ -51,7 +52,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(Function<A, BigDecimal> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    Function<A, Object> justificationFunction = constraint.getJustificationFunction();
+                    Function<A, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
                     return DSL.on(scoreImpacterGlobal, variable)
                             .execute((drools, scoreImpacter, a) -> {
                                 JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a);

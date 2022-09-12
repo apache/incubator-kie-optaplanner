@@ -15,6 +15,7 @@ import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
@@ -103,7 +104,7 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
         Score_ constraintWeight = buildHelper.getConstraintWeight(constraint);
         AbstractScoreInliner<Score_> scoreInliner = buildHelper.getScoreInliner();
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraint, constraintWeight);
-        TriFunction<A, B, C, Object> justificationFunction = constraint.getJustificationFunction();
+        TriFunction<A, B, C, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
         TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter;
         if (intMatchWeigher != null) {
             scoreImpacter = (a, b, c) -> {

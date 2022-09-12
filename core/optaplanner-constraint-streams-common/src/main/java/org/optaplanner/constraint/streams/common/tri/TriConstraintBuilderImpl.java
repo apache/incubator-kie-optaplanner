@@ -1,19 +1,19 @@
 package org.optaplanner.constraint.streams.common.tri;
 
-import java.util.Collection;
 import java.util.Objects;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintBuilder;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintBuilder;
 
 public final class TriConstraintBuilderImpl<A, B, C>
         extends AbstractConstraintBuilder<TriConstraintBuilder<A, B, C>>
         implements TriConstraintBuilder<A, B, C> {
 
-    private TriFunction<A, B, C, Object> justificationFunction;
+    private TriFunction<A, B, C, ConstraintJustification> justificationFunction;
 
     public TriConstraintBuilderImpl(TriConstraintConstructor<A, B, C> constraintConstructor, ScoreImpactType impactType,
             Score<?> constraintWeight) {
@@ -21,25 +21,21 @@ public final class TriConstraintBuilderImpl<A, B, C>
     }
 
     @Override
-    protected TriFunction<A, B, C, Object> getJustificationFunction() {
+    protected TriFunction<A, B, C, ConstraintJustification> getJustificationFunction() {
         if (justificationFunction == null) {
             return null; // Will use the default.
         }
-        return (a, b, c) -> {
-            Object justification = justificationFunction.apply(a, b, c);
-            if (justification instanceof Collection) {
-                throw new IllegalStateException("Justification function returned a collection (" + justification + ").");
-            }
-            return justification;
-        };
+        return justificationFunction;
     }
 
     @Override
-    public TriConstraintBuilder<A, B, C> justifiedWith(TriFunction<A, B, C, Object> justificationFunction) {
+    public <ConstraintJustification_ extends ConstraintJustification> TriConstraintBuilder<A, B, C> justifiedWith(
+            TriFunction<A, B, C, ConstraintJustification_> justificationFunction) {
         if (this.justificationFunction != null) {
             throw new IllegalStateException("Justification function already set (" + justificationFunction + ").");
         }
-        this.justificationFunction = Objects.requireNonNull(justificationFunction);
+        this.justificationFunction =
+                (TriFunction<A, B, C, ConstraintJustification>) Objects.requireNonNull(justificationFunction);
         return this;
     }
 
