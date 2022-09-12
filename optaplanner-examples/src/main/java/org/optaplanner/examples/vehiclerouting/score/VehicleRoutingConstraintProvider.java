@@ -50,7 +50,6 @@ public class VehicleRoutingConstraintProvider implements ConstraintProvider {
     protected Constraint distanceFromLastCustomerToDepot(ConstraintFactory factory) {
         return factory.forEach(Customer.class)
                 .filter(customer -> customer.getVehicle() != null && customer.getNextCustomer() == null)
-                .filter(customer -> customer.getNextCustomer() == null)
                 .penalizeLong(HardSoftLongScore.ONE_SOFT,
                         Customer::getDistanceToDepot)
                 .asConstraint("distanceFromLastCustomerToDepot");
