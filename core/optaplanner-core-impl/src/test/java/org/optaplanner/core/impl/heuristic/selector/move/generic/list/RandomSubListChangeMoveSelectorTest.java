@@ -53,7 +53,7 @@ class RandomSubListChangeMoveSelectorTest {
                 false);
 
         final int destinationIndexRange = 6; // value count + entity count
-        final int b0 = destinationIndexRange - 1; // value count + entity count
+        final int b0 = destinationIndexRange - 1; // the last position
         // Alternating subList and destination indexes.
         TestRandom random = new TestRandom(0, b0, 1, b0, 2, b0, 3, b0, 4, b0, 5, b0, 6, b0, 7, b0, 8, b0, 9, b0, 99, 99);
 
@@ -100,7 +100,7 @@ class RandomSubListChangeMoveSelectorTest {
                 true);
 
         final int destinationIndexRange = 6; // value count + entity count
-        final int b0 = destinationIndexRange - 1; // value count + entity count
+        final int b0 = destinationIndexRange - 1; // the last position
         // Each row is consumed by 1 createUpcomingSelection() call.
         // Columns are: subList index, destination index, reversing flag.
         TestRandom random = new TestRandom(
