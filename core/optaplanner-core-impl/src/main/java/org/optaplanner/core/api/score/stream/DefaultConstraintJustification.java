@@ -1,5 +1,6 @@
 package org.optaplanner.core.api.score.stream;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -14,6 +15,12 @@ import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
  */
 public final class DefaultConstraintJustification
         implements ConstraintJustification, Comparable<DefaultConstraintJustification> {
+
+    private static final DefaultConstraintJustification EMPTY = DefaultConstraintJustification.of(Collections.emptyList());
+
+    public static DefaultConstraintJustification empty() {
+        return EMPTY;
+    }
 
     public static DefaultConstraintJustification of(Object fact) {
         return new DefaultConstraintJustification(List.of(fact));

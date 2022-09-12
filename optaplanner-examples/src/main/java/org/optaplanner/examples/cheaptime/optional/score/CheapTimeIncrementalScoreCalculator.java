@@ -564,8 +564,7 @@ public class CheapTimeIncrementalScoreCalculator
             }
         }
         // Individual taskConsumption isn't tracked for performance
-        taskConsumptionMatchTotal.addConstraintMatch(
-                DefaultConstraintJustification.of(),
+        taskConsumptionMatchTotal.addConstraintMatch(DefaultConstraintJustification.empty(),
                 HardMediumSoftLongScore.of(0, taskConsumptionWeight, 0));
         // Individual taskStartPeriod isn't tracked for performance
         // but we mimic it
