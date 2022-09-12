@@ -42,6 +42,7 @@ class RandomSubListChangeMoveSelectorTest {
 
         int minimumSubListSize = 1;
         int maximumSubListSize = Integer.MAX_VALUE;
+
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 mockEntitySelector(a, b),
@@ -89,6 +90,7 @@ class RandomSubListChangeMoveSelectorTest {
 
         int minimumSubListSize = 1;
         int maximumSubListSize = Integer.MAX_VALUE;
+
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 mockEntitySelector(a, b),
@@ -146,6 +148,7 @@ class RandomSubListChangeMoveSelectorTest {
 
         int minimumSubListSize = 2;
         int maximumSubListSize = 3;
+
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 mockEntitySelector(a, b),
@@ -186,6 +189,8 @@ class RandomSubListChangeMoveSelectorTest {
                 PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         int minimumSubListSize = 100;
+        int maximumSubListSize = Integer.MAX_VALUE;
+
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 mockEntitySelector(a),
@@ -193,7 +198,7 @@ class RandomSubListChangeMoveSelectorTest {
                 // to be never ending, so it must not be exhausted after the last asserted code.
                 mockEntityIndependentValueSelector(v1, v1, v1),
                 minimumSubListSize,
-                Integer.MAX_VALUE,
+                maximumSubListSize,
                 false);
 
         TestRandom random = new TestRandom(new int[] {});
@@ -218,6 +223,7 @@ class RandomSubListChangeMoveSelectorTest {
 
         int minimumSubListSize = 2;
         int maximumSubListSize = 2;
+
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 mockEntitySelector(a, b, c),
@@ -262,13 +268,16 @@ class RandomSubListChangeMoveSelectorTest {
         assertThat(subListCount).isEqualTo(nthTriangle(listSize(a)) + nthTriangle(listSize(b)) + nthTriangle(listSize(c)));
         int destinationIndexRange = 8; // value count + entity count
 
+        int minimumSubListSize = 1;
+        int maximumSubListSize = Integer.MAX_VALUE;
+
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 // Selectors must be accurate; their sizes affect the moveSelector size.
                 mockEntitySelector(a, b, c),
                 mockEntityIndependentValueSelector(v1, v2, v3, v4, v5),
-                1,
-                Integer.MAX_VALUE,
+                minimumSubListSize,
+                maximumSubListSize,
                 false);
 
         TestRandom random = new TestRandom(0, 0);

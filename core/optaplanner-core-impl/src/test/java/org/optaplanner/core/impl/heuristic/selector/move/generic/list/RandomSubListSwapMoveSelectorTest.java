@@ -221,6 +221,8 @@ class RandomSubListSwapMoveSelectorTest {
                 PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         int minimumSubListSize = 100;
+        int maximumSubListSize = Integer.MAX_VALUE;
+
         RandomSubListSwapMoveSelector<TestdataListSolution> moveSelector = new RandomSubListSwapMoveSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 mockEntitySelector(a),
@@ -229,7 +231,7 @@ class RandomSubListSwapMoveSelectorTest {
                 mockEntityIndependentValueSelector(v1, v1, v1),
                 mockEntityIndependentValueSelector(v1, v1, v1),
                 minimumSubListSize,
-                Integer.MAX_VALUE,
+                maximumSubListSize,
                 false);
 
         TestRandom random = new TestRandom(new int[] {});
@@ -254,6 +256,7 @@ class RandomSubListSwapMoveSelectorTest {
 
         int minimumSubListSize = 2;
         int maximumSubListSize = 2;
+
         RandomSubListSwapMoveSelector<TestdataListSolution> moveSelector = new RandomSubListSwapMoveSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 mockEntitySelector(a, b, c),
@@ -300,14 +303,17 @@ class RandomSubListSwapMoveSelectorTest {
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
+        int minimumSubListSize = 1;
+        int maximumSubListSize = Integer.MAX_VALUE;
+
         RandomSubListSwapMoveSelector<TestdataListSolution> moveSelector = new RandomSubListSwapMoveSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 // Selectors must be accurate; their sizes affect the moveSelector size.
                 mockEntitySelector(a, b, c),
                 mockEntityIndependentValueSelector(v1, v2, v3, v4),
                 mockEntityIndependentValueSelector(v1, v2, v3, v4),
-                1,
-                Integer.MAX_VALUE,
+                minimumSubListSize,
+                maximumSubListSize,
                 false);
 
         TestRandom random = new TestRandom(0, 0);
@@ -343,6 +349,7 @@ class RandomSubListSwapMoveSelectorTest {
 
         int minimumSubListSize = 3;
         int maximumSubListSize = 5;
+
         RandomSubListSwapMoveSelector<TestdataListSolution> moveSelector = new RandomSubListSwapMoveSelector<>(
                 getListVariableDescriptor(scoreDirector),
                 // Selectors must be accurate; their sizes affect the moveSelector size.
