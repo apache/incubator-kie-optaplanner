@@ -148,9 +148,9 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         leftTuple.setStore(inputStoreIndexLeftOutTupleList, null);
 
         indexerLeft.removeGGG(indexProperties, leftEntry);
-        // No need for outEntryLeft.removeAndNext(); because outTupleListLeft is garbage collected
+        // No need for outEntryRight.removeAndNext() as outTupleListRight is garbage collected, but this is GC-friendly
         for (TupleListEntry<MutableOutTuple_> outEntryLeft = outTupleListLeft.first(); outEntryLeft != null; outEntryLeft =
-                outEntryLeft.next()) {
+                outEntryLeft.removeAndNext()) {
             MutableOutTuple_ outTuple = outEntryLeft.getTuple();
             TupleListEntry<MutableOutTuple_> outEntryRight = outTuple.getStore(outputStoreIndexRightOutEntry);
             outEntryRight.remove();
@@ -251,9 +251,9 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         rightTuple.setStore(inputStoreIndexRightOutTupleList, null);
 
         indexerRight.removeGGG(indexProperties, rightEntry);
-        // No need for outEntryRight.removeAndNext(); because outTupleListRight is garbage collected
+        // No need for outEntryRight.removeAndNext() as outTupleListRight is garbage collected, but this is GC-friendly
         for (TupleListEntry<MutableOutTuple_> outEntryRight = outTupleListRight.first(); outEntryRight != null; outEntryRight =
-                outEntryRight.next()) {
+                outEntryRight.removeAndNext()) {
             MutableOutTuple_ outTuple = outEntryRight.getTuple();
             TupleListEntry<MutableOutTuple_> outEntryLeft = outTuple.getStore(outputStoreIndexLeftOutEntry);
             outEntryLeft.remove();
