@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.bavet.common.collection;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.Tuple;
 
@@ -57,6 +58,16 @@ public final class TupleList<Tuple_ extends Tuple> {
 
     public int size() {
         return size;
+    }
+
+    public void forEach(Consumer<Tuple_> tupleConsumer) {
+        TupleListEntry<Tuple_> entry = first;
+        while (entry != null) {
+            // Extract next before processing it, in case the entry is removed and entry.next becomes null
+            TupleListEntry<Tuple_> next = entry.next;
+            tupleConsumer.accept(entry.getTuple());
+            entry = next;
+        }
     }
 
     @Override
