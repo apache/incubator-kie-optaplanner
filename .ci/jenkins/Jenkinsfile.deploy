@@ -251,6 +251,9 @@ pipeline {
        }*/
 
         stage('Push a temporary operator image to a registry') {
+            when {
+                expression { return isRelease() }
+            }
             steps {
                 script {
                     getMavenDefaultCommand()
