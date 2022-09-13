@@ -74,6 +74,15 @@
           <include>**/application.properties</include>
         </includes>
       </resource>
+      <resource>
+        <directory>src/k8s</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>crd-solver.yml</include>
+          <include>optaplanner-operator.yml</include>
+        </includes>
+        <targetPath>${project.build.directory}/install</targetPath>
+      </resource>
     </resources>
 
     <plugins>
