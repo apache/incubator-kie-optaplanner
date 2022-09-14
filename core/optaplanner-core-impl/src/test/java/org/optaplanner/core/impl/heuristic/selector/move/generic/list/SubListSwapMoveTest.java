@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -119,6 +121,47 @@ class SubListSwapMoveTest {
         undoMove.doMove(scoreDirector);
 
         assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4, v5, v6, v7);
+    }
+
+    @Test
+    void rebase() {
+        TestdataListEntity e1 = new TestdataListEntity("e1");
+        TestdataListEntity e2 = new TestdataListEntity("e2");
+
+        TestdataListEntity destinationE1 = new TestdataListEntity("e1");
+        TestdataListEntity destinationE2 = new TestdataListEntity("e2");
+
+        ScoreDirector<TestdataListSolution> destinationScoreDirector = mockRebasingScoreDirector(
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][] {
+                        { e1, destinationE1 },
+                        { e2, destinationE2 },
+                });
+
+        boolean reversing = false;
+        int leftFromIndex = 7;
+        int leftToIndex = 11;
+        int rightFromIndex = 3;
+        int rightToIndex = 9;
+        assertSameProperties(destinationE1, leftFromIndex, leftToIndex, destinationE2, rightFromIndex, rightToIndex, reversing,
+                new SubListSwapMove<>(variableDescriptor, e1, leftFromIndex, leftToIndex, e2, rightFromIndex, rightToIndex,
+                        reversing)
+                                .rebase(destinationScoreDirector));
+    }
+
+    static void assertSameProperties(
+            Object leftEntity, int leftFromIndex, int leftToIndex,
+            Object rightEntity, int rightFromIndex, int rightToIndex,
+            boolean reversing,
+            SubListSwapMove<?> move) {
+        SubList leftSubList = move.getLeftSubList();
+        assertThat(leftSubList.getEntity()).isSameAs(leftEntity);
+        assertThat(leftSubList.getFromIndex()).isEqualTo(leftFromIndex);
+        assertThat(leftSubList.getToIndex()).isEqualTo(leftToIndex);
+        SubList rightSubList = move.getRightSubList();
+        assertThat(rightSubList.getEntity()).isSameAs(rightEntity);
+        assertThat(rightSubList.getFromIndex()).isEqualTo(rightFromIndex);
+        assertThat(rightSubList.getToIndex()).isEqualTo(rightToIndex);
+        assertThat(move.isReversing()).isEqualTo(reversing);
     }
 
     @Test

@@ -2,6 +2,8 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.Objects;
 
+import org.optaplanner.core.api.score.director.ScoreDirector;
+
 public final class SubList {
 
     private final Object entity;
@@ -28,6 +30,10 @@ public final class SubList {
 
     public int getToIndex() {
         return fromIndex + length;
+    }
+
+    public SubList rebase(ScoreDirector<?> destinationScoreDirector) {
+        return new SubList(destinationScoreDirector.lookUpWorkingObject(entity), fromIndex, length);
     }
 
     @Override

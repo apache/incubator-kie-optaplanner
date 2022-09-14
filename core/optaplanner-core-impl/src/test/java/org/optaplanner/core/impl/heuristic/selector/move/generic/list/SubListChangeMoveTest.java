@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -117,6 +119,42 @@ class SubListChangeMoveTest {
         undoMove.doMove(scoreDirector);
 
         assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4, v5, v6);
+    }
+
+    @Test
+    void rebase() {
+        TestdataListEntity e1 = new TestdataListEntity("e1");
+        TestdataListEntity e2 = new TestdataListEntity("e2");
+
+        TestdataListEntity destinationE1 = new TestdataListEntity("e1");
+        TestdataListEntity destinationE2 = new TestdataListEntity("e2");
+
+        ScoreDirector<TestdataListSolution> destinationScoreDirector = mockRebasingScoreDirector(
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor(), new Object[][] {
+                        { e1, destinationE1 },
+                        { e2, destinationE2 },
+                });
+
+        int sourceIndex = 3;
+        int length = 5;
+        int destinationIndex = 7;
+        boolean reversing = false;
+        assertSameProperties(destinationE1, sourceIndex, length, destinationE2, destinationIndex, reversing,
+                new SubListChangeMove<>(variableDescriptor, e1, sourceIndex, length, e2, destinationIndex, reversing)
+                        .rebase(destinationScoreDirector));
+    }
+
+    static void assertSameProperties(
+            Object sourceEntity, int fromIndex, int length,
+            Object destinationEntity, int destinationIndex,
+            boolean reversing,
+            SubListChangeMove<?> move) {
+        assertThat(move.getSourceEntity()).isSameAs(sourceEntity);
+        assertThat(move.getFromIndex()).isEqualTo(fromIndex);
+        assertThat(move.getSubListSize()).isSameAs(length);
+        assertThat(move.getDestinationEntity()).isSameAs(destinationEntity);
+        assertThat(move.getDestinationIndex()).isEqualTo(destinationIndex);
+        assertThat(move.isReversing()).isEqualTo(reversing);
     }
 
     @Test

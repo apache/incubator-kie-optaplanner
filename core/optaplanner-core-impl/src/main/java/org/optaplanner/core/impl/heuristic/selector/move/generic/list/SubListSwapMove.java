@@ -148,6 +148,15 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
         }
     }
 
+    @Override
+    public SubListSwapMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        return new SubListSwapMove<>(
+                variableDescriptor,
+                leftSubList.rebase(destinationScoreDirector),
+                rightSubList.rebase(destinationScoreDirector),
+                reversing);
+    }
+
     // ************************************************************************
     // Introspection methods
     // ************************************************************************

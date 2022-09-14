@@ -120,6 +120,15 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
         }
     }
 
+    @Override
+    public SubListChangeMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        return new SubListChangeMove<>(
+                variableDescriptor,
+                destinationScoreDirector.lookUpWorkingObject(sourceEntity), sourceIndex, length,
+                destinationScoreDirector.lookUpWorkingObject(destinationEntity), destinationIndex,
+                reversing);
+    }
+
     // ************************************************************************
     // Introspection methods
     // ************************************************************************
