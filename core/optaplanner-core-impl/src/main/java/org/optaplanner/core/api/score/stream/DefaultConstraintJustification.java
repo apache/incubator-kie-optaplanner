@@ -11,7 +11,7 @@ import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 
 /**
  * Default implementation of {@link ConstraintJustification}, returned by {@link ConstraintMatch#getJustification()}
- * unless the user defined a custom justification function.
+ * unless the user defined a custom justification mapping.
  */
 public final class DefaultConstraintJustification
         implements ConstraintJustification, Comparable<DefaultConstraintJustification> {

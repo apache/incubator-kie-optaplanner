@@ -1729,7 +1729,7 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
                         .penalize(SimpleScore.ONE, (a, b) -> a.getIntegerProperty() + b.getIntegerProperty())
-                        .justifiedWith((a, b) -> DefaultConstraintJustification.of(a.toString(), b.toString()))
+                        .justifyWith((a, b) -> DefaultConstraintJustification.of(a.toString(), b.toString()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
@@ -1844,7 +1844,7 @@ public abstract class AbstractBiConstraintStreamTest extends AbstractConstraintS
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEachUniquePair(TestdataLavishEntity.class)
                         .reward(SimpleScore.ONE, (a, b) -> a.getIntegerProperty() + b.getIntegerProperty())
-                        .justifiedWith((a, b) -> DefaultConstraintJustification.of(a.toString(), b.toString()))
+                        .justifyWith((a, b) -> DefaultConstraintJustification.of(a.toString(), b.toString()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);

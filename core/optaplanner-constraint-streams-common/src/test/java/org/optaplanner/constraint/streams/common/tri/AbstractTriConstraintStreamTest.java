@@ -1721,7 +1721,7 @@ public abstract class AbstractTriConstraintStreamTest
                         .filter((a, b, c) -> a != c && b != c)
                         .penalize(SimpleScore.ONE,
                                 (a, b, c) -> a.getIntegerProperty() + b.getIntegerProperty() + c.getIntegerProperty())
-                        .justifiedWith((a, b, c) -> DefaultConstraintJustification.of(a.toString(), b.toString(), c.toString()))
+                        .justifyWith((a, b, c) -> DefaultConstraintJustification.of(a.toString(), b.toString(), c.toString()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
@@ -1848,7 +1848,7 @@ public abstract class AbstractTriConstraintStreamTest
                         .filter((a, b, c) -> a != c && b != c)
                         .reward(SimpleScore.ONE,
                                 (a, b, c) -> a.getIntegerProperty() + b.getIntegerProperty() + c.getIntegerProperty())
-                        .justifiedWith((a, b, c) -> DefaultConstraintJustification.of(a.toString(), b.toString(), c.toString()))
+                        .justifyWith((a, b, c) -> DefaultConstraintJustification.of(a.toString(), b.toString(), c.toString()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);

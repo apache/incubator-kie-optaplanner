@@ -29,13 +29,13 @@ public final class QuadConstraintBuilderImpl<A, B, C, D>
     }
 
     @Override
-    public <ConstraintJustification_ extends ConstraintJustification> QuadConstraintBuilder<A, B, C, D> justifiedWith(
-            QuadFunction<A, B, C, D, ConstraintJustification_> justificationFunction) {
+    public <ConstraintJustification_ extends ConstraintJustification> QuadConstraintBuilder<A, B, C, D> justifyWith(
+            QuadFunction<A, B, C, D, ConstraintJustification_> justificationMapping) {
         if (this.justificationFunction != null) {
-            throw new IllegalStateException("Justification function already set (" + justificationFunction + ").");
+            throw new IllegalStateException("Justification function already set (" + justificationMapping + ").");
         }
         this.justificationFunction =
-                (QuadFunction<A, B, C, D, ConstraintJustification>) Objects.requireNonNull(justificationFunction);
+                (QuadFunction<A, B, C, D, ConstraintJustification>) Objects.requireNonNull(justificationMapping);
         return this;
     }
 

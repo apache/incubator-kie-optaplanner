@@ -29,13 +29,13 @@ public final class TriConstraintBuilderImpl<A, B, C>
     }
 
     @Override
-    public <ConstraintJustification_ extends ConstraintJustification> TriConstraintBuilder<A, B, C> justifiedWith(
-            TriFunction<A, B, C, ConstraintJustification_> justificationFunction) {
+    public <ConstraintJustification_ extends ConstraintJustification> TriConstraintBuilder<A, B, C> justifyWith(
+            TriFunction<A, B, C, ConstraintJustification_> justificationMapping) {
         if (this.justificationFunction != null) {
-            throw new IllegalStateException("Justification function already set (" + justificationFunction + ").");
+            throw new IllegalStateException("Justification function already set (" + justificationMapping + ").");
         }
         this.justificationFunction =
-                (TriFunction<A, B, C, ConstraintJustification>) Objects.requireNonNull(justificationFunction);
+                (TriFunction<A, B, C, ConstraintJustification>) Objects.requireNonNull(justificationMapping);
         return this;
     }
 

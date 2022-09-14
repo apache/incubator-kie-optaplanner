@@ -29,12 +29,12 @@ public final class BiConstraintBuilderImpl<A, B>
     }
 
     @Override
-    public <ConstraintJustification_ extends ConstraintJustification> BiConstraintBuilder<A, B> justifiedWith(
-            BiFunction<A, B, ConstraintJustification_> justificationFunction) {
+    public <ConstraintJustification_ extends ConstraintJustification> BiConstraintBuilder<A, B> justifyWith(
+            BiFunction<A, B, ConstraintJustification_> justificationMapping) {
         if (this.justificationFunction != null) {
-            throw new IllegalStateException("Justification function already set (" + justificationFunction + ").");
+            throw new IllegalStateException("Justification function already set (" + justificationMapping + ").");
         }
-        this.justificationFunction = (BiFunction<A, B, ConstraintJustification>) Objects.requireNonNull(justificationFunction);
+        this.justificationFunction = (BiFunction<A, B, ConstraintJustification>) Objects.requireNonNull(justificationMapping);
         return this;
     }
 

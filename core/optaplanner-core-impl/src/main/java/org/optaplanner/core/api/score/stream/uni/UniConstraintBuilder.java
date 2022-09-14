@@ -11,9 +11,7 @@ import org.optaplanner.core.api.score.stream.ConstraintJustification;
  * Used to build a {@link Constraint} out of a {@link UniConstraintStream}, applying optional configuration.
  * To build the constraint, use one of the terminal operations, such as {@link #asConstraint(String)}.
  * <p>
- * Unless {@link #justifiedWith(Function)} is called,
- * the default justification function will be used.
- * This function takes the input arguments and converts them into a {@link java.util.List}.
+ * Unless {@link #justifyWith(Function)} is called, the default justification mapping will be used.
  */
 public interface UniConstraintBuilder<A> extends ConstraintBuilder<UniConstraintBuilder<A>> {
 
@@ -23,10 +21,10 @@ public interface UniConstraintBuilder<A> extends ConstraintBuilder<UniConstraint
      * else {@link IllegalStateException} will be thrown during score calculation.
      *
      * @see ConstraintMatch
-     * @param justificationFunction never null
+     * @param justificationMapping never null
      * @return this
      */
-    <ConstraintJustification_ extends ConstraintJustification> UniConstraintBuilder<A> justifiedWith(
-            Function<A, ConstraintJustification_> justificationFunction);
+    <ConstraintJustification_ extends ConstraintJustification> UniConstraintBuilder<A> justifyWith(
+            Function<A, ConstraintJustification_> justificationMapping);
 
 }

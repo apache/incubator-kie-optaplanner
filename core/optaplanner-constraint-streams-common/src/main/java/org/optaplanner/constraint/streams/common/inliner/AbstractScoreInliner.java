@@ -125,11 +125,6 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
                 constraint.getConstraintId(),
                 key -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight));
         ConstraintMatch<Score_> constraintMatch = constraintMatchTotal.addConstraintMatch(justification, score);
-        /*
-         * The default justification function creates a list of facts in the constraint match's tuple.
-         * A custom justification function may return any arbitrary type, but it must not be a collection.
-         * Therefore if we see a collection, it is a list of justifications that each need to be processed.
-         */
         List<DefaultIndictment<Score_>> indictments = (justification instanceof List)
                 ? ((List<Object>) justification).stream()
                         .distinct() // One match might have the same justification twice

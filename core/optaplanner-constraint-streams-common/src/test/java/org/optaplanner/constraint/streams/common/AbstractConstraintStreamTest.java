@@ -149,7 +149,7 @@ public abstract class AbstractConstraintStreamTest {
                 }
                 // Can't simply compare the lists, since the elements may be in different orders. The order is not relevant.
                 return justificationList.containsAll(actualJustificationList);
-            } else { // Support for custom justification function.
+            } else { // Support for custom justification mapping.
                 if (justificationList.size() != 1) {
                     Assertions.fail("Expected number of justifications (" + justificationList.size() +
                             ") does not match actual (1; " + justification + ").");

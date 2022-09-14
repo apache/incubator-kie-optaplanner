@@ -29,12 +29,12 @@ public final class UniConstraintBuilderImpl<A>
     }
 
     @Override
-    public <ConstraintJustification_ extends ConstraintJustification> UniConstraintBuilder<A> justifiedWith(
-            Function<A, ConstraintJustification_> justificationFunction) {
+    public <ConstraintJustification_ extends ConstraintJustification> UniConstraintBuilder<A> justifyWith(
+            Function<A, ConstraintJustification_> justificationMapping) {
         if (this.justificationFunction != null) {
-            throw new IllegalStateException("Justification function already set (" + justificationFunction + ").");
+            throw new IllegalStateException("Justification function already set (" + justificationMapping + ").");
         }
-        this.justificationFunction = (Function<A, ConstraintJustification>) Objects.requireNonNull(justificationFunction);
+        this.justificationFunction = (Function<A, ConstraintJustification>) Objects.requireNonNull(justificationMapping);
         return this;
     }
 

@@ -18,4 +18,5 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
  * @see ConstraintMatch#getJustification()
  */
 public interface ConstraintJustification {
+
 }
