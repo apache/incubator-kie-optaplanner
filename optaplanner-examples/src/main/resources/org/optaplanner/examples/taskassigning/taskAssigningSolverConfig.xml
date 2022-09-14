@@ -18,21 +18,4 @@
   <!--<termination>-->
     <!--<minutesSpentLimit>5</minutesSpentLimit>-->
   <!--</termination>-->
-  <constructionHeuristic/>
-  <localSearch>
-    <unionMoveSelector>
-      <changeMoveSelector/>
-      <swapMoveSelector/>
-      <subListChangeMoveSelector>
-        <minimumSubListSize>2</minimumSubListSize>
-        <maximumSubListSize>6</maximumSubListSize>
-        <selectReversingMoveToo>true</selectReversingMoveToo>
-      </subListChangeMoveSelector>
-      <subListSwapMoveSelector>
-        <minimumSubListSize>3</minimumSubListSize>
-        <maximumSubListSize>5</maximumSubListSize>
-        <selectReversingMoveToo>true</selectReversingMoveToo>
-      </subListSwapMoveSelector>
-    </unionMoveSelector>
-  </localSearch>
 </solver>
