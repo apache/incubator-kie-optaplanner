@@ -1,5 +1,5 @@
 containerEngine = 'docker'
-containerTlsOptions = ''//'--tls-verify=false'
+containerTlsOptions = ''
 
 void loginRegistry() {
     loginContainerRegistry(getOperatorImageRegistry(), getOperatorImageRegistryCredentials())

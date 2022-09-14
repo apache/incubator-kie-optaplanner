@@ -355,7 +355,6 @@ void setupDeployJob(Folder jobFolder) {
             stringParam('QUICKSTARTS_BUILD_BRANCH_NAME', Utils.isMainBranch(this) ? 'development' : "${GIT_BRANCH}", 'Base branch for quickstarts. Set if you are not on a multibranch pipeline.')
 
             stringParam('OPERATOR_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images.')
-            // TODO: when do we use the 'registry_credentials_release'?
             stringParam('OPERATOR_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS_NIGHTLY}", 'Image registry credentials.')
             stringParam('OPERATOR_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Operator image namespace to use to deploy image.')
             stringParam('OPERATOR_IMAGE_TAG', '', 'Image tag to use to deploy the operator image. OptaPlanner project version if not set.')
@@ -400,7 +399,6 @@ void setupPromoteJob(Folder jobFolder) {
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
 
             stringParam('OPERATOR_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images.')
-            // TODO: when do we use the 'registry_credentials_release'?
             stringParam('OPERATOR_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS_NIGHTLY}", 'Image registry credentials.')
             stringParam('OPERATOR_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Operator image namespace to use to deploy image.')
         }
