@@ -1,5 +1,6 @@
 package org.optaplanner.constraint.streams.common.bi;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
@@ -13,7 +14,8 @@ public final class BiConstraintBuilderImpl<A, B>
         extends AbstractConstraintBuilder<BiConstraintBuilder<A, B>>
         implements BiConstraintBuilder<A, B> {
 
-    private BiFunction<A, B, ConstraintJustification> justificationFunction;
+    private BiFunction<A, B, ConstraintJustification> justificationMapping;
+    private BiFunction<A, B, Collection<?>> indictedObjectsMapping;
 
     public BiConstraintBuilderImpl(BiConstraintConstructor<A, B> constraintConstructor, ScoreImpactType impactType,
             Score<?> constraintWeight) {
@@ -21,20 +23,32 @@ public final class BiConstraintBuilderImpl<A, B>
     }
 
     @Override
-    protected BiFunction<A, B, ConstraintJustification> getJustificationFunction() {
-        if (justificationFunction == null) {
-            return null; // Will use the default.
-        }
-        return justificationFunction;
+    protected BiFunction<A, B, ConstraintJustification> getJustificationMapping() {
+        return justificationMapping;
     }
 
     @Override
     public <ConstraintJustification_ extends ConstraintJustification> BiConstraintBuilder<A, B> justifyWith(
             BiFunction<A, B, ConstraintJustification_> justificationMapping) {
-        if (this.justificationFunction != null) {
-            throw new IllegalStateException("Justification function already set (" + justificationMapping + ").");
+        if (this.justificationMapping != null) {
+            throw new IllegalStateException("Justification mapping already set (" + justificationMapping + ").");
         }
-        this.justificationFunction = (BiFunction<A, B, ConstraintJustification>) Objects.requireNonNull(justificationMapping);
+        this.justificationMapping =
+                (BiFunction<A, B, ConstraintJustification>) Objects.requireNonNull(justificationMapping);
+        return this;
+    }
+
+    @Override
+    protected BiFunction<A, B, Collection<?>> getIndictedObjectsMapping() {
+        return indictedObjectsMapping;
+    }
+
+    @Override
+    public BiConstraintBuilder<A, B> indictWith(BiFunction<A, B, Collection<?>> indictedObjectsMapping) {
+        if (this.indictedObjectsMapping != null) {
+            throw new IllegalStateException("Indicted objects' mapping already set (" + indictedObjectsMapping + ").");
+        }
+        this.indictedObjectsMapping = Objects.requireNonNull(indictedObjectsMapping);
         return this;
     }
 

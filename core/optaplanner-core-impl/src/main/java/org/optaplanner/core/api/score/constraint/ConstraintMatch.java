@@ -2,6 +2,7 @@ package org.optaplanner.core.api.score.constraint;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.optaplanner.core.api.score.Score;
@@ -25,18 +26,20 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
     private final String constraintId;
 
     private final ConstraintJustification justification;
+    private final List<Object> indictedObjects;
     private final Score_ score;
 
     /**
+     * @deprecated Prefer {@link ConstraintMatch#ConstraintMatch(String, String, ConstraintJustification, Collection, Score)}.
      * @param constraintPackage never null
      * @param constraintName never null
      * @param justificationList never null, sometimes empty
      * @param score never null
-     * @deprecated Prefer {@link ConstraintMatch#ConstraintMatch(String, String, ConstraintJustification, Score)}.
      */
     @Deprecated(forRemoval = true)
     public ConstraintMatch(String constraintPackage, String constraintName, List<Object> justificationList, Score_ score) {
-        this(constraintPackage, constraintName, DefaultConstraintJustification.of(justificationList), score);
+        this(constraintPackage, constraintName, DefaultConstraintJustification.of(justificationList), justificationList,
+                score);
     }
 
     /**
@@ -46,11 +49,14 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
      * @param score never null
      */
     public ConstraintMatch(String constraintPackage, String constraintName, ConstraintJustification justification,
-            Score_ score) {
+            Collection<?> indictedObjects, Score_ score) {
         this.constraintPackage = requireNonNull(constraintPackage);
         this.constraintName = requireNonNull(constraintName);
         this.constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
         this.justification = requireNonNull(justification);
+        this.indictedObjects = requireNonNull(indictedObjects) instanceof List
+                ? (List<Object>) indictedObjects
+                : List.copyOf(indictedObjects);
         this.score = requireNonNull(score);
     }
 
@@ -72,17 +78,17 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
      * <li>For incremental score calculation, it returns what the calculator is implemented to return.</li>
      * <li>For constraint streams, it returns a list of facts from the matching tuple for backwards compatibility
      * (eg. [A, B] for a bi stream),
-     * unless a custom justification function was provided, in which case it throws an exception,
+     * unless a custom justification mapping was provided, in which case it throws an exception,
      * pointing users towards {@link #getJustification()}.</li>
      * </ul>
      *
-     * @deprecated Prefer {@link #getJustification()}.
+     * @deprecated Prefer {@link #getJustification()} or {@link #getIndictedObjectList()}.
      * @return never null
      */
     @Deprecated(forRemoval = true)
     public List<Object> getJustificationList() {
         if (justification instanceof DefaultConstraintJustification) { // No custom function provided.
-            return ((DefaultConstraintJustification) justification).getFacts();
+            return (List<Object>) ((DefaultConstraintJustification) justification).getFacts();
         } else {
             throw new IllegalStateException("Cannot retrieve list of facts from a custom constraint justification ("
                     + justification + ").\n" +
@@ -100,7 +106,7 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
      * This is largely undefined.</li>
      * <li>For incremental score calculation, it returns what the calculator is implemented to return.</li>
      * <li>For constraint streams, it returns {@link DefaultConstraintJustification} from the matching tuple
-     * (eg. [A, B] for a bi stream), unless a custom justification function was provided,
+     * (eg. [A, B] for a bi stream), unless a custom justification mapping was provided,
      * in which case it returns the return value of that function.</li>
      * </ul>
      *
@@ -108,6 +114,26 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
      */
     public <Justification_ extends ConstraintJustification> Justification_ getJustification() {
         return (Justification_) justification;
+    }
+
+    /**
+     * Returns a set of objects indicted for causing this constraint match.
+     * <p>
+     * This method has a different meaning based on which score director the constraint comes from.
+     * <ul>
+     * <li>For Score DRL, it returns {@link DefaultConstraintJustification} of all objects
+     * that Drools considers to be part of the match.
+     * This is largely undefined.</li>
+     * <li>For incremental score calculation, it returns what the calculator is implemented to return.</li>
+     * <li>For constraint streams, it returns the facts from the matching tuple
+     * (eg. [A, B] for a bi stream), unless a custom indictment mapping was provided,
+     * in which case it returns the return value of that function.</li>
+     * </ul>
+     *
+     * @return never null, may be empty
+     */
+    public List<Object> getIndictedObjectList() {
+        return indictedObjects;
     }
 
     public Score_ getScore() {

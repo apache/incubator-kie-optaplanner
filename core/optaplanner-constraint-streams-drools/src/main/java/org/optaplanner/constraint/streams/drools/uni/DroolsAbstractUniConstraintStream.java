@@ -3,6 +3,8 @@ package org.optaplanner.constraint.streams.drools.uni;
 import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -291,8 +293,9 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     private UniConstraintBuilderImpl<A> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
             ScoreImpactType impactType) {
         return new UniConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) -> buildConstraint(
-                        constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction, ruleBuilder),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationMapping,
+                        indictedObjectsMapping) -> buildConstraint(constraintPackage, constraintName, constraintWeight_,
+                                impactType_, justificationMapping, indictedObjectsMapping, ruleBuilder),
                 impactType, constraintWeight);
     }
 
@@ -311,8 +314,13 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
-    protected final Function<A, DefaultConstraintJustification> getDefaultJustificationFunction() {
+    protected final Function<A, DefaultConstraintJustification> getDefaultJustificationMapping() {
         return DefaultConstraintJustification::of;
+    }
+
+    @Override
+    protected Function<A, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return List::of;
     }
 
     public abstract UniLeftHandSide<A> getLeftHandSide();

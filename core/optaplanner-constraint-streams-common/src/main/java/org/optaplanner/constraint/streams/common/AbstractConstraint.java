@@ -17,14 +17,13 @@ public abstract class AbstractConstraint<Solution_, Constraint_ extends Abstract
     private final Function<Solution_, Score<?>> constraintWeightExtractor;
     private final ScoreImpactType scoreImpactType;
     private final boolean isConstraintWeightConfigurable;
-    /**
-     * Constraint is not generic in uni/bi/..., therefore this can not be typed.
-     */
-    private final Object justificationFunction;
+    // Constraint is not generic in uni/bi/..., therefore these can not be typed.
+    private final Object justificationMapping;
+    private final Object indictedObjectsMapping;
 
     protected AbstractConstraint(ConstraintFactory_ constraintFactory, String constraintPackage, String constraintName,
             Function<Solution_, Score<?>> constraintWeightExtractor, ScoreImpactType scoreImpactType,
-            boolean isConstraintWeightConfigurable, Object justificationFunction) {
+            boolean isConstraintWeightConfigurable, Object justificationMapping, Object indictedObjectsMapping) {
         this.constraintFactory = constraintFactory;
         this.constraintPackage = constraintPackage;
         this.constraintName = constraintName;
@@ -32,7 +31,8 @@ public abstract class AbstractConstraint<Solution_, Constraint_ extends Abstract
         this.constraintWeightExtractor = constraintWeightExtractor;
         this.scoreImpactType = scoreImpactType;
         this.isConstraintWeightConfigurable = isConstraintWeightConfigurable;
-        this.justificationFunction = justificationFunction;
+        this.justificationMapping = justificationMapping;
+        this.indictedObjectsMapping = indictedObjectsMapping;
     }
 
     public final <Score_ extends Score<Score_>> Score_ extractConstraintWeight(Solution_ workingSolution) {
@@ -117,8 +117,14 @@ public abstract class AbstractConstraint<Solution_, Constraint_ extends Abstract
         return scoreImpactType;
     }
 
-    public <JustificationFunction_> JustificationFunction_ getJustificationFunction() {
+    public <JustificationMapping_> JustificationMapping_ getJustificationMapping() {
         // It is the job of the code constructing the constraint to ensure that this cast is correct.
-        return (JustificationFunction_) justificationFunction;
+        return (JustificationMapping_) justificationMapping;
     }
+
+    public <IndictedObjectsMapping_> IndictedObjectsMapping_ getIndictedObjectsMapping() {
+        // It is the job of the code constructing the constraint to ensure that this cast is correct.
+        return (IndictedObjectsMapping_) indictedObjectsMapping;
+    }
+
 }

@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -403,8 +404,9 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     private BiConstraintBuilderImpl<A, B> newTerminator(BavetScoringConstraintStream<Solution_> stream,
             ScoreImpactType impactType, Score<?> constraintWeight) {
         return new BiConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) -> buildConstraint(
-                        constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction, stream),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationMapping,
+                        indictedObjectsMapping) -> buildConstraint(constraintPackage, constraintName, constraintWeight_,
+                                impactType_, justificationMapping, indictedObjectsMapping, stream),
                 impactType, constraintWeight);
     }
 
@@ -416,8 +418,13 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     }
 
     @Override
-    protected final BiFunction<A, B, DefaultConstraintJustification> getDefaultJustificationFunction() {
+    protected final BiFunction<A, B, DefaultConstraintJustification> getDefaultJustificationMapping() {
         return DefaultConstraintJustification::of;
+    }
+
+    @Override
+    protected final BiFunction<A, B, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return List::of;
     }
 
 }

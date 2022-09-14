@@ -33,6 +33,10 @@ public interface WeightedScoreImpacter {
         return new BigDecimalWeightedScoreImpacter(impactFunction);
     }
 
+    default UndoScoreImpacter impactScore(int matchWeight) {
+        return impactScore(matchWeight, JustificationsSupplier.empty());
+    }
+
     /**
      * @param matchWeight never null
      * @param justificationsSupplier never null
@@ -40,12 +44,20 @@ public interface WeightedScoreImpacter {
      */
     UndoScoreImpacter impactScore(int matchWeight, JustificationsSupplier justificationsSupplier);
 
+    default UndoScoreImpacter impactScore(long matchWeight) {
+        return impactScore(matchWeight, JustificationsSupplier.empty());
+    }
+
     /**
      * @param matchWeight never null
      * @param justificationsSupplier never null
      * @return never null
      */
     UndoScoreImpacter impactScore(long matchWeight, JustificationsSupplier justificationsSupplier);
+
+    default UndoScoreImpacter impactScore(BigDecimal matchWeight) {
+        return impactScore(matchWeight, JustificationsSupplier.empty());
+    }
 
     /**
      * @param matchWeight never null

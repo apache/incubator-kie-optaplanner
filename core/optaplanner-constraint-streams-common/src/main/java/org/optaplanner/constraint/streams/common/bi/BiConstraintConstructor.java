@@ -1,10 +1,12 @@
 package org.optaplanner.constraint.streams.common.bi;
 
+import java.util.Collection;
 import java.util.function.BiFunction;
 
 import org.optaplanner.constraint.streams.common.ConstraintConstructor;
 
 @FunctionalInterface
-public interface BiConstraintConstructor<A, B> extends ConstraintConstructor<BiFunction<A, B, Object>> {
+public interface BiConstraintConstructor<A, B>
+        extends ConstraintConstructor<BiFunction<A, B, Object>, BiFunction<A, B, Collection<?>>> {
 
 }

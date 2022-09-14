@@ -46,14 +46,14 @@ public final class DefaultConstraintJustification
         return new DefaultConstraintJustification(facts);
     }
 
-    private final List<Object> facts;
+    private final List<?> facts;
     private Comparator<Object> classAndIdPlanningComparator;
 
     private DefaultConstraintJustification(List<Object> facts) {
         this.facts = facts;
     }
 
-    public List<Object> getFacts() {
+    public List<?> getFacts() {
         return facts;
     }
 
@@ -64,8 +64,8 @@ public final class DefaultConstraintJustification
 
     @Override
     public int compareTo(DefaultConstraintJustification other) {
-        List<Object> justificationList = this.getFacts();
-        List<Object> otherJustificationList = other.getFacts();
+        List<?> justificationList = this.getFacts();
+        List<?> otherJustificationList = other.getFacts();
         if (justificationList != otherJustificationList) {
             if (justificationList.size() != otherJustificationList.size()) {
                 return Integer.compare(justificationList.size(), otherJustificationList.size());

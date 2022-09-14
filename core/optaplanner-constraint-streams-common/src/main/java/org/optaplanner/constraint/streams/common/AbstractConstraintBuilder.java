@@ -19,17 +19,20 @@ public abstract class AbstractConstraintBuilder<ConstraintBuilder_ extends Const
         this.constraintWeight = constraintWeight;
     }
 
-    protected abstract <JustificationFunction_> JustificationFunction_ getJustificationFunction();
+    protected abstract <JustificationMapping_> JustificationMapping_ getJustificationMapping();
+
+    protected abstract <IndictedObjectsMapping_> IndictedObjectsMapping_ getIndictedObjectsMapping();
 
     @Override
     public final Constraint asConstraint(String constraintName) {
-        return constraintConstructor.apply(null, constraintName, constraintWeight, impactType, getJustificationFunction());
+        return constraintConstructor.apply(null, constraintName, constraintWeight, impactType,
+                getJustificationMapping(), getIndictedObjectsMapping());
     }
 
     @Override
     public final Constraint asConstraint(String constraintPackage, String constraintName) {
         return constraintConstructor.apply(constraintPackage, constraintName, constraintWeight, impactType,
-                getJustificationFunction());
+                getJustificationMapping(), getIndictedObjectsMapping());
     }
 
 }

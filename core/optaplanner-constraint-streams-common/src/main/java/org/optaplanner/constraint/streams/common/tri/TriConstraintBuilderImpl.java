@@ -1,5 +1,6 @@
 package org.optaplanner.constraint.streams.common.tri;
 
+import java.util.Collection;
 import java.util.Objects;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintBuilder;
@@ -13,7 +14,8 @@ public final class TriConstraintBuilderImpl<A, B, C>
         extends AbstractConstraintBuilder<TriConstraintBuilder<A, B, C>>
         implements TriConstraintBuilder<A, B, C> {
 
-    private TriFunction<A, B, C, ConstraintJustification> justificationFunction;
+    private TriFunction<A, B, C, ConstraintJustification> justificationMapping;
+    private TriFunction<A, B, C, Collection<?>> indictedObjectsMapping;
 
     public TriConstraintBuilderImpl(TriConstraintConstructor<A, B, C> constraintConstructor, ScoreImpactType impactType,
             Score<?> constraintWeight) {
@@ -21,21 +23,32 @@ public final class TriConstraintBuilderImpl<A, B, C>
     }
 
     @Override
-    protected TriFunction<A, B, C, ConstraintJustification> getJustificationFunction() {
-        if (justificationFunction == null) {
-            return null; // Will use the default.
-        }
-        return justificationFunction;
+    protected TriFunction<A, B, C, ConstraintJustification> getJustificationMapping() {
+        return justificationMapping;
     }
 
     @Override
     public <ConstraintJustification_ extends ConstraintJustification> TriConstraintBuilder<A, B, C> justifyWith(
             TriFunction<A, B, C, ConstraintJustification_> justificationMapping) {
-        if (this.justificationFunction != null) {
-            throw new IllegalStateException("Justification function already set (" + justificationMapping + ").");
+        if (this.justificationMapping != null) {
+            throw new IllegalStateException("Justification mapping already set (" + justificationMapping + ").");
         }
-        this.justificationFunction =
+        this.justificationMapping =
                 (TriFunction<A, B, C, ConstraintJustification>) Objects.requireNonNull(justificationMapping);
+        return this;
+    }
+
+    @Override
+    protected TriFunction<A, B, C, Collection<?>> getIndictedObjectsMapping() {
+        return indictedObjectsMapping;
+    }
+
+    @Override
+    public TriConstraintBuilder<A, B, C> indictWith(TriFunction<A, B, C, Collection<?>> indictedObjectsMapping) {
+        if (this.indictedObjectsMapping != null) {
+            throw new IllegalStateException("Indicted objects' mapping already set (" + indictedObjectsMapping + ").");
+        }
+        this.indictedObjectsMapping = Objects.requireNonNull(indictedObjectsMapping);
         return this;
     }
 

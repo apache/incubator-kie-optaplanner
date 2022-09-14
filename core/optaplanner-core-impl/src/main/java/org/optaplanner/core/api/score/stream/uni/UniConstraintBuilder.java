@@ -1,5 +1,6 @@
 package org.optaplanner.core.api.score.stream.uni;
 
+import java.util.Collection;
 import java.util.function.Function;
 
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -26,5 +27,7 @@ public interface UniConstraintBuilder<A> extends ConstraintBuilder<UniConstraint
      */
     <ConstraintJustification_ extends ConstraintJustification> UniConstraintBuilder<A> justifyWith(
             Function<A, ConstraintJustification_> justificationMapping);
+
+    UniConstraintBuilder<A> indictWith(Function<A, Collection<?>> indictedObjectsMapping);
 
 }

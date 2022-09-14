@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataSimpleBigDecimalScoreSolution;
 
@@ -28,11 +27,11 @@ class SimpleBigDecimalScoreInlinerTest
         SimpleBigDecimalScore constraintWeight = SimpleBigDecimalScore.of(BigDecimal.valueOf(10));
         WeightedScoreImpacter hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
-        UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.TEN, DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.TEN);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(100)));
 
-        UndoScoreImpacter undo2 = hardImpacter.impactScore(BigDecimal.valueOf(20), DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(BigDecimal.valueOf(20));
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(SimpleBigDecimalScore.of(BigDecimal.valueOf(300)));
 

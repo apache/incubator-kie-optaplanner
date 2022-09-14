@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
-import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataBendableBigDecimalScoreSolution;
 
@@ -27,11 +26,11 @@ class BendableBigDecimalScoreInlinerTest
         BendableBigDecimalScore constraintWeight = buildScore(90, 0, 0);
         WeightedScoreImpacter hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
-        UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE, DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(90, 0, 0));
 
-        UndoScoreImpacter undo2 = hardImpacter.impactScore(BigDecimal.valueOf(2), DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(BigDecimal.valueOf(2));
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(270, 0, 0));
 
@@ -51,11 +50,11 @@ class BendableBigDecimalScoreInlinerTest
         BendableBigDecimalScore constraintWeight = buildScore(0, 90, 0);
         WeightedScoreImpacter hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
-        UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE, DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(0, 90, 0));
 
-        UndoScoreImpacter undo2 = hardImpacter.impactScore(BigDecimal.valueOf(2), DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(BigDecimal.valueOf(2));
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(0, 270, 0));
 
@@ -75,11 +74,11 @@ class BendableBigDecimalScoreInlinerTest
         BendableBigDecimalScore constraintWeight = buildScore(0, 0, 90);
         WeightedScoreImpacter hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
-        UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE, DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.ONE);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(0, 0, 90));
 
-        UndoScoreImpacter undo2 = hardImpacter.impactScore(BigDecimal.valueOf(2), DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(BigDecimal.valueOf(2));
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(0, 0, 270));
 
@@ -99,11 +98,11 @@ class BendableBigDecimalScoreInlinerTest
         BendableBigDecimalScore constraintWeight = buildScore(10, 100, 1_000);
         WeightedScoreImpacter hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
-        UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.TEN, DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(BigDecimal.TEN);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(100, 1_000, 10_000));
 
-        UndoScoreImpacter undo2 = hardImpacter.impactScore(BigDecimal.valueOf(20), DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(BigDecimal.valueOf(20));
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(buildScore(300, 3_000, 30_000));
 

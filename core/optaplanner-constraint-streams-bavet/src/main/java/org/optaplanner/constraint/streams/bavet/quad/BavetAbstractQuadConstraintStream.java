@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.bavet.quad;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -380,8 +381,9 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
     private QuadConstraintBuilderImpl<A, B, C, D> newTerminator(BavetScoringConstraintStream<Solution_> stream,
             Score<?> constraintWeight, ScoreImpactType impactType) {
         return new QuadConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) -> buildConstraint(
-                        constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction, stream),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationMapping,
+                        indictedObjectsMapping) -> buildConstraint(constraintPackage, constraintName, constraintWeight_,
+                                impactType_, justificationMapping, indictedObjectsMapping, stream),
                 impactType, constraintWeight);
     }
 
@@ -393,8 +395,13 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    protected final QuadFunction<A, B, C, D, DefaultConstraintJustification> getDefaultJustificationFunction() {
+    protected final QuadFunction<A, B, C, D, DefaultConstraintJustification> getDefaultJustificationMapping() {
         return DefaultConstraintJustification::of;
+    }
+
+    @Override
+    protected final QuadFunction<A, B, C, D, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return List::of;
     }
 
 }

@@ -3,6 +3,8 @@ package org.optaplanner.constraint.streams.drools.tri;
 import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -302,14 +304,20 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     private TriConstraintBuilderImpl<A, B, C> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
             ScoreImpactType impactType) {
         return new TriConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) -> buildConstraint(
-                        constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction, ruleBuilder),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationMapping,
+                        indictedObjectsMapping) -> buildConstraint(constraintPackage, constraintName, constraintWeight_,
+                                impactType_, justificationMapping, indictedObjectsMapping, ruleBuilder),
                 impactType, constraintWeight);
     }
 
     @Override
-    protected final TriFunction<A, B, C, DefaultConstraintJustification> getDefaultJustificationFunction() {
+    protected final TriFunction<A, B, C, DefaultConstraintJustification> getDefaultJustificationMapping() {
         return DefaultConstraintJustification::of;
+    }
+
+    @Override
+    protected TriFunction<A, B, C, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return List::of;
     }
 
     public abstract TriLeftHandSide<A, B, C> getLeftHandSide();

@@ -1,6 +1,9 @@
 package org.optaplanner.constraint.streams.drools.common;
 
+import static org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier.of;
+
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
@@ -26,10 +29,12 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntBiFunction<A, B> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    BiFunction<A, B, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
+                    BiFunction<A, B, ConstraintJustification> justificationMapping = constraint.getJustificationMapping();
+                    BiFunction<A, B, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
-                                JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a, b);
+                                JustificationsSupplier justificationsSupplier = of(() -> justificationMapping.apply(a, b),
+                                        () -> indictedObjectsMapping.apply(a, b));
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsInt(a, b),
                                         justificationsSupplier);
                             });
@@ -40,10 +45,12 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongBiFunction<A, B> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    BiFunction<A, B, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
+                    BiFunction<A, B, ConstraintJustification> justificationMapping = constraint.getJustificationMapping();
+                    BiFunction<A, B, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
-                                JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a, b);
+                                JustificationsSupplier justificationsSupplier = of(() -> justificationMapping.apply(a, b),
+                                        () -> indictedObjectsMapping.apply(a, b));
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsLong(a, b),
                                         justificationsSupplier);
                             });
@@ -54,10 +61,12 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(BiFunction<A, B, BigDecimal> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    BiFunction<A, B, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
+                    BiFunction<A, B, ConstraintJustification> justificationMapping = constraint.getJustificationMapping();
+                    BiFunction<A, B, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
-                                JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a, b);
+                                JustificationsSupplier justificationsSupplier = of(() -> justificationMapping.apply(a, b),
+                                        () -> indictedObjectsMapping.apply(a, b));
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.apply(a, b),
                                         justificationsSupplier);
                             });

@@ -3,6 +3,8 @@ package org.optaplanner.constraint.streams.drools.bi;
 import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -284,8 +286,9 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     private BiConstraintBuilderImpl<A, B> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
             ScoreImpactType impactType) {
         return new BiConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) -> buildConstraint(
-                        constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction, ruleBuilder),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationMapping,
+                        indictedObjectsMapping) -> buildConstraint(constraintPackage, constraintName, constraintWeight_,
+                                impactType_, justificationMapping, indictedObjectsMapping, ruleBuilder),
                 impactType, constraintWeight);
     }
 
@@ -304,8 +307,13 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     }
 
     @Override
-    protected final BiFunction<A, B, DefaultConstraintJustification> getDefaultJustificationFunction() {
+    protected final BiFunction<A, B, DefaultConstraintJustification> getDefaultJustificationMapping() {
         return DefaultConstraintJustification::of;
+    }
+
+    @Override
+    protected BiFunction<A, B, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return List::of;
     }
 
     public abstract BiLeftHandSide<A, B> getLeftHandSide();

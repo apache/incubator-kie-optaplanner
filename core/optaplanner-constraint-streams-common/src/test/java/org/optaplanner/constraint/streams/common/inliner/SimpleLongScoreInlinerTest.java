@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataSimpleLongScoreSolution;
 
@@ -25,11 +24,11 @@ class SimpleLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataSimple
         SimpleLongScore constraintWeight = SimpleLongScore.of(10);
         WeightedScoreImpacter hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
-        UndoScoreImpacter undo1 = hardImpacter.impactScore(10, DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(10);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(SimpleLongScore.of(100));
 
-        UndoScoreImpacter undo2 = hardImpacter.impactScore(20, DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(20);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(SimpleLongScore.of(300));
 

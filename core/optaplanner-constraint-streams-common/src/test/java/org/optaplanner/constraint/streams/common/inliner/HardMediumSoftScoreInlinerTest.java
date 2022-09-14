@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.score.TestdataHardMediumSoftScoreSolution;
 
@@ -26,11 +25,11 @@ class HardMediumSoftScoreInlinerTest
         HardMediumSoftScore constraintWeight = HardMediumSoftScore.ofHard(90);
         WeightedScoreImpacter hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
-        UndoScoreImpacter undo1 = hardImpacter.impactScore(1, DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(1);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftScore.of(90, 0, 0));
 
-        UndoScoreImpacter undo2 = hardImpacter.impactScore(2, DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(2);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftScore.of(270, 0, 0));
 
@@ -51,11 +50,11 @@ class HardMediumSoftScoreInlinerTest
         HardMediumSoftScore constraintWeight = HardMediumSoftScore.ofMedium(90);
         WeightedScoreImpacter hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
-        UndoScoreImpacter undo1 = hardImpacter.impactScore(1, DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(1);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftScore.of(0, 90, 0));
 
-        UndoScoreImpacter undo2 = hardImpacter.impactScore(2, DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(2);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftScore.of(0, 270, 0));
 
@@ -76,11 +75,11 @@ class HardMediumSoftScoreInlinerTest
         HardMediumSoftScore constraintWeight = HardMediumSoftScore.ofSoft(90);
         WeightedScoreImpacter hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
-        UndoScoreImpacter undo1 = hardImpacter.impactScore(1, DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(1);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftScore.of(0, 0, 90));
 
-        UndoScoreImpacter undo2 = hardImpacter.impactScore(2, DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(2);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftScore.of(0, 0, 270));
 
@@ -101,11 +100,11 @@ class HardMediumSoftScoreInlinerTest
         HardMediumSoftScore constraintWeight = HardMediumSoftScore.of(10, 100, 1_000);
         WeightedScoreImpacter hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
-        UndoScoreImpacter undo1 = hardImpacter.impactScore(10, DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(10);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftScore.of(100, 1_000, 10_000));
 
-        UndoScoreImpacter undo2 = hardImpacter.impactScore(20, DefaultConstraintJustification::empty);
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(20);
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(HardMediumSoftScore.of(300, 3_000, 30_000));
 

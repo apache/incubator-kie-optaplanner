@@ -26,7 +26,6 @@ import javax.swing.table.TableColumnModel;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 
 public class ConstraintMatchesDialog extends JDialog {
@@ -101,7 +100,7 @@ public class ConstraintMatchesDialog extends JDialog {
         Set<? extends ConstraintMatch<?>> constraintMatchSet = constraintMatchTotal.getConstraintMatchSet();
         StringBuilder text = new StringBuilder(constraintMatchSet.size() * 80);
         for (ConstraintMatch<?> constraintMatch : constraintMatchSet) {
-            text.append(((DefaultConstraintJustification) constraintMatch.getJustification()).getFacts())
+            text.append(constraintMatch.getIndictedObjectList().toString())
                     .append(" = ")
                     .append(constraintMatch.getScore().toShortString()).append("\n");
         }

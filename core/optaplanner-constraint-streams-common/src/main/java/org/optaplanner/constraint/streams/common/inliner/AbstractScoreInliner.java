@@ -11,7 +11,6 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintJustification;
 import org.optaplanner.core.impl.score.buildin.BendableBigDecimalScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.BendableLongScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.BendableScoreDefinition;
@@ -118,19 +117,20 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
     public abstract WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint, Score_ constraintWeight);
 
     protected final Runnable addConstraintMatch(Constraint constraint, Score_ constraintWeight, Score_ score,
-            ConstraintJustification justification) {
+            JustificationsSupplier justificationsSupplier) {
         String constraintPackage = constraint.getConstraintPackage();
         String constraintName = constraint.getConstraintName();
         DefaultConstraintMatchTotal<Score_> constraintMatchTotal = constraintMatchTotalMap.computeIfAbsent(
                 constraint.getConstraintId(),
                 key -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight));
-        ConstraintMatch<Score_> constraintMatch = constraintMatchTotal.addConstraintMatch(justification, score);
-        List<DefaultIndictment<Score_>> indictments = (justification instanceof List)
-                ? ((List<Object>) justification).stream()
-                        .distinct() // One match might have the same justification twice
-                        .map(justificationPart -> processJustification(constraintMatch, justificationPart))
-                        .collect(Collectors.toList())
-                : List.of(processJustification(constraintMatch, justification));
+        ConstraintMatch<Score_> constraintMatch =
+                constraintMatchTotal.addConstraintMatch(justificationsSupplier.createConstraintJustification(),
+                        justificationsSupplier.createIndictedObjects(), score);
+        List<DefaultIndictment<Score_>> indictments = constraintMatch.getIndictedObjectList()
+                .stream()
+                .distinct() // One match might have the same justification twice
+                .map(justificationPart -> processJustification(constraintMatch, justificationPart))
+                .collect(Collectors.toList());
         return () -> {
             constraintMatchTotal.removeConstraintMatch(constraintMatch);
             if (constraintMatchTotal.getConstraintMatchSet().isEmpty()) {

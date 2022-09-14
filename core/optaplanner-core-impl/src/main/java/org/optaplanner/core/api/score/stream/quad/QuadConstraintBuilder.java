@@ -1,5 +1,7 @@
 package org.optaplanner.core.api.score.stream.quad;
 
+import java.util.Collection;
+
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -23,5 +25,7 @@ public interface QuadConstraintBuilder<A, B, C, D> extends ConstraintBuilder<Qua
      */
     <ConstraintJustification_ extends ConstraintJustification> QuadConstraintBuilder<A, B, C, D> justifyWith(
             QuadFunction<A, B, C, D, ConstraintJustification_> justificationMapping);
+
+    QuadConstraintBuilder<A, B, C, D> indictWith(QuadFunction<A, B, C, D, Collection<?>> indictedObjectsMapping);
 
 }

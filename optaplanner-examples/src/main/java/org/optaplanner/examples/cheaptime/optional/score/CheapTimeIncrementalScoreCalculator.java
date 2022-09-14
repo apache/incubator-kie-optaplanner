@@ -2,6 +2,7 @@ package org.optaplanner.examples.cheaptime.optional.score;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -11,7 +12,6 @@ import org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncremental
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
@@ -544,35 +544,31 @@ public class CheapTimeIncrementalScoreCalculator
                 for (int i = 0; i < machinePeriod.resourceAvailableList.length; i++) {
                     int resourceAvailable = machinePeriod.resourceAvailableList[i];
                     if (resourceAvailable < 0) {
-                        resourceCapacityMatchTotal.addConstraintMatch(
-                                DefaultConstraintJustification.of(machine, period, resourceList.get(i)),
+                        resourceCapacityMatchTotal.addConstraintMatch(List.of(machine, period, resourceList.get(i)),
                                 HardMediumSoftLongScore.of(resourceAvailable, 0, 0));
                     }
                 }
                 if (machinePeriod.status == MachinePeriodStatus.SPIN_UP_AND_ACTIVE) {
-                    spinUpDownMatchTotal.addConstraintMatch(
-                            DefaultConstraintJustification.of(machine, period),
+                    spinUpDownMatchTotal.addConstraintMatch(List.of(machine, period),
                             HardMediumSoftLongScore.of(0, -machine.getSpinUpDownCostMicros(), 0));
                     taskConsumptionWeight += machine.getSpinUpDownCostMicros();
                 }
                 if (machinePeriod.status != MachinePeriodStatus.OFF) {
-                    machineConsumptionMatchTotal.addConstraintMatch(
-                            DefaultConstraintJustification.of(machine, period),
+                    machineConsumptionMatchTotal.addConstraintMatch(List.of(machine, period),
                             HardMediumSoftLongScore.of(0, -machinePeriod.machineCostMicros, 0));
                     taskConsumptionWeight += machinePeriod.machineCostMicros;
                 }
             }
         }
         // Individual taskConsumption isn't tracked for performance
-        taskConsumptionMatchTotal.addConstraintMatch(DefaultConstraintJustification.empty(),
+        taskConsumptionMatchTotal.addConstraintMatch(Collections.emptyList(),
                 HardMediumSoftLongScore.of(0, taskConsumptionWeight, 0));
         // Individual taskStartPeriod isn't tracked for performance
         // but we mimic it
         for (TaskAssignment taskAssignment : cheapTimeSolution.getTaskAssignmentList()) {
             Integer startPeriod = taskAssignment.getStartPeriod();
             if (startPeriod != null) {
-                minimizeTaskStartPeriodMatchTotal.addConstraintMatch(
-                        DefaultConstraintJustification.of(taskAssignment),
+                minimizeTaskStartPeriodMatchTotal.addConstraintMatch(List.of(taskAssignment),
                         HardMediumSoftLongScore.of(0, 0, -startPeriod));
             }
 

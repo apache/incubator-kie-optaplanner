@@ -1,6 +1,9 @@
 package org.optaplanner.constraint.streams.drools.common;
 
+import static org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier.of;
+
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
@@ -24,10 +27,12 @@ final class UniRuleContext<A> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntFunction<A> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    Function<A, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
+                    Function<A, ConstraintJustification> justificationMapping = constraint.getJustificationMapping();
+                    Function<A, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variable)
                             .execute((drools, scoreImpacter, a) -> {
-                                JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a);
+                                JustificationsSupplier justificationsSupplier = of(() -> justificationMapping.apply(a),
+                                        () -> indictedObjectsMapping.apply(a));
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsInt(a),
                                         justificationsSupplier);
                             });
@@ -38,10 +43,12 @@ final class UniRuleContext<A> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongFunction<A> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    Function<A, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
+                    Function<A, ConstraintJustification> justificationMapping = constraint.getJustificationMapping();
+                    Function<A, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variable)
                             .execute((drools, scoreImpacter, a) -> {
-                                JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a);
+                                JustificationsSupplier justificationsSupplier = of(() -> justificationMapping.apply(a),
+                                        () -> indictedObjectsMapping.apply(a));
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsLong(a),
                                         justificationsSupplier);
                             });
@@ -52,10 +59,12 @@ final class UniRuleContext<A> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(Function<A, BigDecimal> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    Function<A, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
+                    Function<A, ConstraintJustification> justificationMapping = constraint.getJustificationMapping();
+                    Function<A, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variable)
                             .execute((drools, scoreImpacter, a) -> {
-                                JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a);
+                                JustificationsSupplier justificationsSupplier = of(() -> justificationMapping.apply(a),
+                                        () -> indictedObjectsMapping.apply(a));
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.apply(a),
                                         justificationsSupplier);
                             });

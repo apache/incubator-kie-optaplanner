@@ -1,6 +1,9 @@
 package org.optaplanner.constraint.streams.drools.common;
 
+import static org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier.of;
+
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Objects;
 
 import org.drools.model.DSL;
@@ -29,10 +32,12 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToIntTriFunction<A, B, C> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    TriFunction<A, B, C, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
+                    TriFunction<A, B, C, ConstraintJustification> justificationMapping = constraint.getJustificationMapping();
+                    TriFunction<A, B, C, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                             .execute((drools, scoreImpacter, a, b, c) -> {
-                                JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a, b, c);
+                                JustificationsSupplier justificationsSupplier = of(() -> justificationMapping.apply(a, b, c),
+                                        () -> indictedObjectsMapping.apply(a, b, c));
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsInt(a, b, c),
                                         justificationsSupplier);
                             });
@@ -43,10 +48,12 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(ToLongTriFunction<A, B, C> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    TriFunction<A, B, C, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
+                    TriFunction<A, B, C, ConstraintJustification> justificationMapping = constraint.getJustificationMapping();
+                    TriFunction<A, B, C, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                             .execute((drools, scoreImpacter, a, b, c) -> {
-                                JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a, b, c);
+                                JustificationsSupplier justificationsSupplier = of(() -> justificationMapping.apply(a, b, c),
+                                        () -> indictedObjectsMapping.apply(a, b, c));
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsLong(a, b, c),
                                         justificationsSupplier);
                             });
@@ -57,10 +64,12 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
     public <Solution_> RuleBuilder<Solution_> newRuleBuilder(TriFunction<A, B, C, BigDecimal> matchWeigher) {
         ConsequenceBuilder<Solution_> consequenceBuilder =
                 (constraint, scoreImpacterGlobal) -> {
-                    TriFunction<A, B, C, ConstraintJustification> justificationFunction = constraint.getJustificationFunction();
+                    TriFunction<A, B, C, ConstraintJustification> justificationMapping = constraint.getJustificationMapping();
+                    TriFunction<A, B, C, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                             .execute((drools, scoreImpacter, a, b, c) -> {
-                                JustificationsSupplier justificationsSupplier = () -> justificationFunction.apply(a, b, c);
+                                JustificationsSupplier justificationsSupplier = of(() -> justificationMapping.apply(a, b, c),
+                                        () -> indictedObjectsMapping.apply(a, b, c));
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.apply(a, b, c),
                                         justificationsSupplier);
                             });

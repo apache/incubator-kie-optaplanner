@@ -38,6 +38,7 @@ public class TestdataIncrementalScoreCalculator
                     score -= 1;
                     ConstraintMatch<SimpleScore> constraintMatch =
                             constraintMatchTotal.addConstraintMatch(DefaultConstraintJustification.of(left, right),
+                                    DefaultIndictment.getDefaultIndictmentMapping(left, right),
                                     SimpleScore.ONE);
                     Stream.of(left, right)
                             .forEach(entity -> indictmentMap

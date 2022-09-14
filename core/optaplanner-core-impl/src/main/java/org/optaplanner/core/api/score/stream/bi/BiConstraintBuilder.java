@@ -1,5 +1,6 @@
 package org.optaplanner.core.api.score.stream.bi;
 
+import java.util.Collection;
 import java.util.function.BiFunction;
 
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -26,5 +27,7 @@ public interface BiConstraintBuilder<A, B> extends ConstraintBuilder<BiConstrain
      */
     <ConstraintJustification_ extends ConstraintJustification> BiConstraintBuilder<A, B> justifyWith(
             BiFunction<A, B, ConstraintJustification_> justificationMapping);
+
+    BiConstraintBuilder<A, B> indictWith(BiFunction<A, B, Collection<?>> indictedObjectsMapping);
 
 }

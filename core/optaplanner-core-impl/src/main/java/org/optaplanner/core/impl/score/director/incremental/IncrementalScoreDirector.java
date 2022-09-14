@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.toMap;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -15,8 +14,6 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.director.ScoreDirector;
-import org.optaplanner.core.api.score.stream.ConstraintJustification;
-import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -119,16 +116,15 @@ public class IncrementalScoreDirector<Solution_, Score_ extends Score<Score_>>
         Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap = getConstraintMatchTotalMap();
         for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotalMap.values()) {
             for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
-                ConstraintJustification justification = constraintMatch.getJustification();
-                Stream<Object> facts = justification instanceof DefaultConstraintJustification
-                        ? ((DefaultConstraintJustification) justification).getFacts().stream()
-                                .distinct() // One match might have the same justification twice
-                        : Stream.of(justification);
-                facts.forEach(fact -> {
-                    DefaultIndictment<Score_> indictment = (DefaultIndictment<Score_>) indictmentMap.computeIfAbsent(fact,
-                            k -> new DefaultIndictment<>(fact, zeroScore));
-                    indictment.addConstraintMatch(constraintMatch);
-                });
+                constraintMatch.getIndictedObjectList()
+                        .stream()
+                        .distinct() // One match might have the same indictment twice.
+                        .forEach(fact -> {
+                            DefaultIndictment<Score_> indictment =
+                                    (DefaultIndictment<Score_>) indictmentMap.computeIfAbsent(fact,
+                                            k -> new DefaultIndictment<>(fact, zeroScore));
+                            indictment.addConstraintMatch(constraintMatch);
+                        });
             }
         }
         return indictmentMap;

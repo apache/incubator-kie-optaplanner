@@ -3,6 +3,8 @@ package org.optaplanner.constraint.streams.drools.quad;
 import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -274,8 +276,9 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     private QuadConstraintBuilderImpl<A, B, C, D> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
             ScoreImpactType impactType) {
         return new QuadConstraintBuilderImpl<>(
-                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction) -> buildConstraint(
-                        constraintPackage, constraintName, constraintWeight_, impactType_, justificationFunction, ruleBuilder),
+                (constraintPackage, constraintName, constraintWeight_, impactType_, justificationMapping,
+                        indictedObjectsMapping) -> buildConstraint(constraintPackage, constraintName, constraintWeight_,
+                                impactType_, justificationMapping, indictedObjectsMapping, ruleBuilder),
                 impactType, constraintWeight);
     }
 
@@ -294,8 +297,13 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    protected final QuadFunction<A, B, C, D, DefaultConstraintJustification> getDefaultJustificationFunction() {
+    protected final QuadFunction<A, B, C, D, DefaultConstraintJustification> getDefaultJustificationMapping() {
         return DefaultConstraintJustification::of;
+    }
+
+    @Override
+    protected QuadFunction<A, B, C, D, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return List::of;
     }
 
     public abstract QuadLeftHandSide<A, B, C, D> getLeftHandSide();

@@ -1,6 +1,8 @@
 package org.optaplanner.core.impl.score.constraint;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.optaplanner.core.api.score.Score;
@@ -8,6 +10,22 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
 
 public final class DefaultIndictment<Score_ extends Score<Score_>> implements Indictment<Score_> {
+
+    public static <A> Collection<?> getDefaultIndictmentMapping(A factA) {
+        return List.of(factA);
+    }
+
+    public static <A, B> Collection<?> getDefaultIndictmentMapping(A factA, B factB) {
+        return List.of(factA, factB);
+    }
+
+    public static <A, B, C> Collection<?> getDefaultIndictmentMapping(A factA, B factB, C factC) {
+        return List.of(factA, factB, factC);
+    }
+
+    public static <A, B, C, D> Collection<?> getDefaultIndictmentMapping(A factA, B factB, C factC, D factD) {
+        return List.of(factA, factB, factC, factD);
+    }
 
     private final Object justification;
 

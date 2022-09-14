@@ -1,5 +1,7 @@
 package org.optaplanner.core.api.score.stream.tri;
 
+import java.util.Collection;
+
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -23,5 +25,7 @@ public interface TriConstraintBuilder<A, B, C> extends ConstraintBuilder<TriCons
      */
     <ConstraintJustification_ extends ConstraintJustification> TriConstraintBuilder<A, B, C> justifyWith(
             TriFunction<A, B, C, ConstraintJustification_> justificationMapping);
+
+    TriConstraintBuilder<A, B, C> indictWith(TriFunction<A, B, C, Collection<?>> indictedObjectsMapping);
 
 }

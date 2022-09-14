@@ -1640,8 +1640,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                     .filter(constraintMatch -> filteredConstraintNameList == null
                             || filteredConstraintNameList.contains(constraintMatch.getConstraintName()))
                     .filter(constraintMatch -> isValidJustificationList == null
-                            || isValidJustificationList
-                                    .test(((DefaultConstraintJustification) constraintMatch.getJustification()).getFacts()))
+                            || isValidJustificationList.test(constraintMatch.getIndictedObjectList()))
                     .map(ConstraintMatch::getScore)
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getMediumScore() >= 0
@@ -1691,9 +1690,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                             List<ConstraintMatch<?>> filteredConstraintMatchList = constraintMatchSet.stream()
                                     .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName)
                                             && (isValidJustificationList == null
-                                                    || isValidJustificationList
-                                                            .test(((DefaultConstraintJustification) constraintMatch
-                                                                    .getJustification()).getFacts())))
+                                                    || isValidJustificationList.test(constraintMatch.getIndictedObjectList())))
                                     .collect(toList());
                             HardMediumSoftScore sum = filteredConstraintMatchList.stream()
                                     .map(constraintMatch -> (HardMediumSoftScore) constraintMatch.getScore())
