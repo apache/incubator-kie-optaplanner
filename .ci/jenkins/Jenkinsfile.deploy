@@ -255,13 +255,6 @@ pipeline {
             }
             steps {
                 script {
-                    getMavenDefaultCommand()
-                            .inDirectory("$optaplannerRepository/optaplanner-operator")
-                            .withProperty('full')
-                            .withProperty('maven.test.failure.ignore', true)
-                            .skipTests(params.SKIP_TESTS)
-                            .run('clean install')
-
                     pushOperatorTemporaryImage()
 
                     // Store image deployment information

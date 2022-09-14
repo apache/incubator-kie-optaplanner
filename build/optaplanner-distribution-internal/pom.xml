@@ -92,16 +92,10 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-test</artifactId>
     </dependency>
-
-    <!-- TODO: enable after
-     https://github.com/quarkiverse/quarkus-operator-sdk/pull/390 is merged and a new version
-     with the fix released. -->
-    <!--
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-operator</artifactId>
     </dependency>
-    -->
 
     <!-- Examples -->
     <dependency>
