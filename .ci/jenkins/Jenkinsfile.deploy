@@ -125,7 +125,11 @@ pipeline {
         stage('Build OptaPlanner') {
             steps {
                 script {
-                    getOptaplannerMavenCommand().withProperty('maven.test.failure.ignore', true).skipTests(params.SKIP_TESTS).run('clean install')
+                    getOptaplannerMavenCommand()
+                            .withProperty('maven.test.failure.ignore', true)
+                            .withProperty('image')
+                            .skipTests(params.SKIP_TESTS)
+                            .run('clean install')
                     if (isRelease()) {
                         updateAntoraYaml(optaplannerRepository)
                     }

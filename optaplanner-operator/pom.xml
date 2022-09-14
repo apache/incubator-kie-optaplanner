@@ -180,10 +180,10 @@
       </dependencies>
     </profile>
     <profile>
-      <id>full</id>
+      <id>image</id>
       <activation>
         <property>
-          <name>full</name>
+          <name>image</name>
         </property>
       </activation>
       <properties>
