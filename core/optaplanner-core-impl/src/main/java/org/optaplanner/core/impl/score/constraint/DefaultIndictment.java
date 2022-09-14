@@ -27,20 +27,19 @@ public final class DefaultIndictment<Score_ extends Score<Score_>> implements In
         return List.of(factA, factB, factC, factD);
     }
 
-    private final Object justification;
-
+    private final Object indictedObject;
     private final Set<ConstraintMatch<Score_>> constraintMatchSet;
     private Score_ score;
 
-    public DefaultIndictment(Object justification, Score_ zeroScore) {
-        this.justification = justification;
+    public DefaultIndictment(Object indictedObject, Score_ zeroScore) {
+        this.indictedObject = indictedObject;
         constraintMatchSet = new LinkedHashSet<>();
         score = zeroScore;
     }
 
     @Override
-    public Object getJustification() {
-        return justification;
+    public <IndictedObject_> IndictedObject_ getIndictedObject() {
+        return (IndictedObject_) indictedObject;
     }
 
     @Override
@@ -87,7 +86,7 @@ public final class DefaultIndictment<Score_ extends Score<Score_>> implements In
             return true;
         } else if (o instanceof DefaultIndictment) {
             DefaultIndictment<Score_> other = (DefaultIndictment<Score_>) o;
-            return justification.equals(other.justification);
+            return indictedObject.equals(other.indictedObject);
         } else {
             return false;
         }
@@ -95,12 +94,12 @@ public final class DefaultIndictment<Score_ extends Score<Score_>> implements In
 
     @Override
     public int hashCode() {
-        return justification.hashCode();
+        return indictedObject.hashCode();
     }
 
     @Override
     public String toString() {
-        return justification + "=" + score;
+        return indictedObject + "=" + score;
     }
 
 }

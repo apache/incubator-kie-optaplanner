@@ -15,9 +15,25 @@ import org.optaplanner.core.api.score.ScoreExplanation;
 public interface Indictment<Score_ extends Score<Score_>> {
 
     /**
+     * As defined by {@link #getIndictedObject()}.
+     *
+     * @deprecated Prefer {@link #getIndictedObject()}.
      * @return never null
      */
-    Object getJustification();
+    @Deprecated(forRemoval = true)
+    default Object getJustification() {
+        return getIndictedObject();
+    }
+
+    /**
+     * The object that was involved in causing the constraints to match.
+     * It is part of {@link ConstraintMatch#getIndictedObjectList()} of every {@link ConstraintMatch}
+     * returned by {@link #getConstraintMatchSet()}.
+     *
+     * @return never null
+     * @param <IndictedObject_> Shorthand so that the user does not need to cast in user code.
+     */
+    <IndictedObject_> IndictedObject_ getIndictedObject();
 
     /**
      * @return never null

@@ -139,15 +139,15 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
             for (DefaultIndictment<Score_> indictment : indictments) {
                 indictment.removeConstraintMatch(constraintMatch);
                 if (indictment.getConstraintMatchSet().isEmpty()) {
-                    indictmentMap.remove(indictment.getJustification());
+                    indictmentMap.remove(indictment.getIndictedObject());
                 }
             }
         };
     }
 
-    private DefaultIndictment<Score_> processJustification(ConstraintMatch<Score_> constraintMatch, Object justificationPart) {
-        DefaultIndictment<Score_> indictment = indictmentMap.computeIfAbsent(justificationPart,
-                key -> new DefaultIndictment<>(justificationPart, constraintMatch.getScore().zero()));
+    private DefaultIndictment<Score_> processJustification(ConstraintMatch<Score_> constraintMatch, Object indictedObject) {
+        DefaultIndictment<Score_> indictment = indictmentMap.computeIfAbsent(indictedObject,
+                key -> new DefaultIndictment<>(indictedObject, constraintMatch.getScore().zero()));
         indictment.addConstraintMatch(constraintMatch);
         return indictment;
     }
