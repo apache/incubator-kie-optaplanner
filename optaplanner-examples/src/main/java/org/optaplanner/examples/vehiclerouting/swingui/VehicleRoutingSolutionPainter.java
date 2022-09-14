@@ -133,30 +133,28 @@ public class VehicleRoutingSolutionPainter {
             long longestNonDepotDistance = -1L;
             int load = 0;
             for (int i = 0; i < vehicle.getCustomers().size(); i++) {
-                if (true) { // TODO remove
-                    Customer customer = vehicle.getCustomers().get(i);
-                    load += customer.getDemand();
-                    Location previousLocation = i == 0
-                            ? vehicle.getLocation()
-                            : vehicle.getCustomers().get(i - 1).getLocation();
-                    Location location = customer.getLocation();
-                    translator.drawRoute(g, previousLocation.getLongitude(), previousLocation.getLatitude(),
-                            location.getLongitude(), location.getLatitude(),
-                            location instanceof AirLocation, false);
-                    // Determine where to draw the vehicle info
-                    long distance = previousLocation.getDistanceTo(location);
-                    if (longestNonDepotDistance < distance) {
-                        longestNonDepotDistance = distance;
-                        previousVehicleInfoLocation = previousLocation;
-                        vehicleInfoLocation = location;
-                    }
-                    // Line back to the vehicle depot
-                    if (i == vehicle.getCustomers().size() - 1) {
-                        Location vehicleLocation = vehicle.getLocation();
-                        translator.drawRoute(g, location.getLongitude(), location.getLatitude(),
-                                vehicleLocation.getLongitude(), vehicleLocation.getLatitude(),
-                                location instanceof AirLocation, true);
-                    }
+                Customer customer = vehicle.getCustomers().get(i);
+                load += customer.getDemand();
+                Location previousLocation = i == 0
+                        ? vehicle.getLocation()
+                        : vehicle.getCustomers().get(i - 1).getLocation();
+                Location location = customer.getLocation();
+                translator.drawRoute(g, previousLocation.getLongitude(), previousLocation.getLatitude(),
+                        location.getLongitude(), location.getLatitude(),
+                        location instanceof AirLocation, false);
+                // Determine where to draw the vehicle info
+                long distance = previousLocation.getDistanceTo(location);
+                if (longestNonDepotDistance < distance) {
+                    longestNonDepotDistance = distance;
+                    previousVehicleInfoLocation = previousLocation;
+                    vehicleInfoLocation = location;
+                }
+                // Line back to the vehicle depot
+                if (i == vehicle.getCustomers().size() - 1) {
+                    Location vehicleLocation = vehicle.getLocation();
+                    translator.drawRoute(g, location.getLongitude(), location.getLatitude(),
+                            vehicleLocation.getLongitude(), vehicleLocation.getLatitude(),
+                            location instanceof AirLocation, true);
                 }
             }
             // Draw vehicle info
@@ -164,15 +162,12 @@ public class VehicleRoutingSolutionPainter {
                 if (load > vehicle.getCapacity()) {
                     g.setColor(TangoColorFactory.SCARLET_2);
                 }
-                // TODO inline
-                Location previousLocation = previousVehicleInfoLocation;
-                Location location = vehicleInfoLocation;
-                double longitude = (previousLocation.getLongitude() + location.getLongitude()) / 2.0;
+                double longitude = (previousVehicleInfoLocation.getLongitude() + vehicleInfoLocation.getLongitude()) / 2.0;
                 int x = translator.translateLongitudeToX(longitude);
-                double latitude = (previousLocation.getLatitude() + location.getLatitude()) / 2.0;
+                double latitude = (previousVehicleInfoLocation.getLatitude() + vehicleInfoLocation.getLatitude()) / 2.0;
                 int y = translator.translateLatitudeToY(latitude);
-                boolean ascending = (previousLocation.getLongitude() < location.getLongitude())
-                        ^ (previousLocation.getLatitude() < location.getLatitude());
+                boolean ascending = (previousVehicleInfoLocation.getLongitude() < vehicleInfoLocation.getLongitude())
+                        ^ (previousVehicleInfoLocation.getLatitude() < vehicleInfoLocation.getLatitude());
 
                 ImageIcon vehicleImageIcon = vehicleImageIcons[colorIndex];
                 int vehicleInfoHeight = vehicleImageIcon.getIconHeight() + 2 + TEXT_SIZE;
