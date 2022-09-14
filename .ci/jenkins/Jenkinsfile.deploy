@@ -46,13 +46,6 @@ pipeline {
     }
 
     stages {
-        stage('Load scripts') {
-            steps {
-                script {
-                    imageUtils = load '.ci/jenkins/scripts/imageUtils.groovy'
-                }
-            }
-        }
         stage('Initialize') {
             steps {
                 script {
@@ -71,6 +64,9 @@ pipeline {
                             assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                         }
                     }
+
+                    checkout scm // To make sure the repository containing the script is available on the Jenkins node.
+                    imageUtils = load '.ci/jenkins/scripts/imageUtils.groovy'
                 }
             }
             post {
@@ -127,7 +123,7 @@ pipeline {
                 script {
                     getOptaplannerMavenCommand()
                             .withProperty('maven.test.failure.ignore', true)
-                            .withProperty('image')
+                            .withProperty('operator.image.build')
                             .skipTests(params.SKIP_TESTS)
                             .run('clean install')
                     if (isRelease()) {
@@ -144,7 +140,6 @@ pipeline {
                 }
             }
         }
-
 
         stage('Build Quickstarts') {
             steps {

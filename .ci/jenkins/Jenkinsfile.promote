@@ -41,13 +41,6 @@ pipeline {
     }
 
     stages {
-        stage('Load scripts') {
-            steps {
-                script {
-                    imageUtils = load '.ci/jenkins/scripts/imageUtils.groovy'
-                }
-            }
-        }
         stage('Initialization') {
             steps {
                 script {
@@ -65,6 +58,9 @@ pipeline {
 
                         assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                     }
+
+                    checkout scm // To make sure the repository containing the script is available on the Jenkins node.
+                    imageUtils = load '.ci/jenkins/scripts/imageUtils.groovy'
                 }
             }
         }

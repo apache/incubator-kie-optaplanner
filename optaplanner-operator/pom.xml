@@ -180,10 +180,11 @@
       </dependencies>
     </profile>
     <profile>
+      <!-- The image build does not work on Windows GHA, thus it cannot be a part of the full profile. -->
       <id>image</id>
       <activation>
         <property>
-          <name>image</name>
+          <name>operator.image.build</name>
         </property>
       </activation>
       <properties>
