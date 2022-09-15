@@ -135,4 +135,9 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
             return new SubList(sourceEntity, sourceIndex, subListLength);
         }
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + valueSelector + ")";
+    }
 }

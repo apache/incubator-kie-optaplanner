@@ -77,4 +77,9 @@ public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelec
     boolean isSelectReversingMoveToo() {
         return selectReversingMoveToo;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + subListSelector + ")";
+    }
 }
