@@ -1,10 +1,12 @@
 package org.optaplanner.core.api.score.constraint;
 
+import java.util.List;
 import java.util.Set;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 
 /**
  * Explains the {@link Score} of a {@link PlanningSolution}, from the opposite side than {@link ConstraintMatchTotal}.
@@ -16,6 +18,9 @@ public interface Indictment<Score_ extends Score<Score_>> {
 
     /**
      * As defined by {@link #getIndictedObject()}.
+     * <p>
+     * This is a poorly named legacy method, which does not in fact return a justification, but an indicted object.
+     * Each indictment may have multiple justifications, and they are accessed by {@link #getJustificationList()}.
      *
      * @deprecated Prefer {@link #getIndictedObject()}.
      * @return never null
@@ -46,6 +51,16 @@ public interface Indictment<Score_ extends Score<Score_>> {
     default int getConstraintMatchCount() {
         return getConstraintMatchSet().size();
     }
+
+    /**
+     * Retrieve {@link ConstraintJustification} instances associated with {@link ConstraintMatch}es in
+     * {@link #getConstraintMatchSet()}.
+     * This is equivalent to retrieving {@link #getConstraintMatchSet()}
+     * and collecting all {@link ConstraintMatch#getJustification()} objects into a list.
+     *
+     * @return never null, guaranteed to contain unique instances
+     */
+    List<ConstraintJustification> getJustificationList();
 
     /**
      * Sum of the {@link #getConstraintMatchSet()}'s {@link ConstraintMatch#getScore()}.

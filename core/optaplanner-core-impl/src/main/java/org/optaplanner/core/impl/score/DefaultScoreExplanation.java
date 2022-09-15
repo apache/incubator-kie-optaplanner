@@ -84,7 +84,7 @@ public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score
                     Set<ConstraintMatch<Score_>> constraintMatchSet = indictment.getConstraintMatchSet();
                     scoreExplanation
                             .append("        ").append(indictment.getScore().toShortString())
-                            .append(": justification (").append(indictment.getIndictedObject().toString())
+                            .append(": indicted object (").append(indictment.getIndictedObject().toString())
                             .append(") has ").append(constraintMatchSet.size()).append(" matches:\n");
                     constraintMatchSet.stream()
                             .sorted(constraintMatchScoreComparator)
