@@ -17,25 +17,29 @@ environment:
     enabled: true
 productized_branch: true
 disable:
-  triggers: true
+  triggers: false
 repositories:
-- name: optaplanner
-  branch: PLANNER-2770
+  - name: optaplanner
+    branch: main
+  - name: optaweb-vehicle-routing
+    branch: main
+  - name: optaplanner-quickstarts
+    branch: development
 git:
   author:
-    name: rsynek
-    credentials_id: rsynek
-    token_credentials_id: rsynek-gh-token
+    name: kiegroup
+    credentials_id: kie-ci
+    token_credentials_id: kie-ci3-token
   bot_author:
-    name: rsynek-bot-account
-    credentials_id: rsynek-bot
+    name: bsig-gh-bot
+    credentials_id: bsig-gh-bot
   jenkins_config_path: .ci/jenkins
 maven:
   settings_file_id: kogito_release_settings
   nexus:
-    release_url: https://repository.stage.jboss.org/nexus
+    release_url: https://repository.jboss.org/nexus
     release_repository: jboss-releases-repository
-    staging_profile_url: https://repository.stage.jboss.org/nexus/content/groups/kogito-public/
+    staging_profile_url: https://repository.jboss.org/nexus/content/groups/kogito-public/
     staging_profile_id: 2161b7b8da0080
     build_promotion_profile_id: ea49ccd6f174
   artifacts_repository: ''
@@ -45,12 +49,14 @@ maven:
       creds_id: unpacks-zip-on-qa-nexus
 cloud:
   image:
-    registry_credentials: rsynek_registry_token
+    registry_credentials: optaplanner-quay-token
+    registry_credentials_release: release_kogito
     registry: quay.io
-    namespace: rsynek
+    namespace: kiegroup
     latest_git_branch: main
 jenkins:
-  email_creds_id: RSYNEK_EMAIL
+  email_creds_id: OPTAPLANNER_CI_EMAIL
   default_tools:
     jdk: kie-jdk11
     maven: kie-maven-3.8.6
+
