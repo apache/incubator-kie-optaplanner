@@ -24,11 +24,11 @@ class SimpleLongScoreInlinerTest extends AbstractScoreInlinerTest<TestdataSimple
         SimpleLongScore constraintWeight = SimpleLongScore.of(10);
         WeightedScoreImpacter hardImpacter =
                 scoreInliner.buildWeightedScoreImpacter(buildConstraint(constraintWeight), constraintWeight);
-        UndoScoreImpacter undo1 = hardImpacter.impactScore(10);
+        UndoScoreImpacter undo1 = hardImpacter.impactScore(10, JustificationsSupplier.empty());
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(SimpleLongScore.of(100));
 
-        UndoScoreImpacter undo2 = hardImpacter.impactScore(20);
+        UndoScoreImpacter undo2 = hardImpacter.impactScore(20, JustificationsSupplier.empty());
         assertThat(scoreInliner.extractScore(0))
                 .isEqualTo(SimpleLongScore.of(300));
 

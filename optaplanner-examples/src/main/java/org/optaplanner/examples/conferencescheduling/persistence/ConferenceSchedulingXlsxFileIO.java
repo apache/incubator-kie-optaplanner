@@ -87,7 +87,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionFileIO;
 import org.optaplanner.examples.common.util.Pair;
 import org.optaplanner.examples.conferencescheduling.app.ConferenceSchedulingApp;
@@ -1697,10 +1696,7 @@ public class ConferenceSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<C
                                     .reduce(HardMediumSoftScore::add)
                                     .orElse(HardMediumSoftScore.ZERO);
                             String justificationTalkCodes = filteredConstraintMatchList.stream()
-                                    .flatMap(constraintMatch -> ((DefaultConstraintJustification) constraintMatch
-                                            .getJustification())
-                                                    .getFacts()
-                                                    .stream())
+                                    .flatMap(constraintMatch -> constraintMatch.getIndictedObjectList().stream())
                                     .filter(justification -> justification instanceof Talk && justification != talk)
                                     .distinct().map(o -> ((Talk) o).getCode()).collect(joining(", "));
                             commentString.append("\n    ").append(sum.toShortString())
