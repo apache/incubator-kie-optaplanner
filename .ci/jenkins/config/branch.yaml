@@ -45,8 +45,7 @@ maven:
       creds_id: unpacks-zip-on-qa-nexus
 cloud:
   image:
-    registry_credentials_nightly: rsynek_registry_token
-    registry_credentials_release: rsynek_registry_token
+    registry_credentials: rsynek_registry_token
     registry: quay.io
     namespace: rsynek
     latest_git_branch: main
