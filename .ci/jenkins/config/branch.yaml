@@ -17,7 +17,7 @@ environment:
     enabled: true
 productized_branch: false
 disable:
-  triggers: false
+  triggers: true
 repositories:
 - name: optaplanner
   branch: 8.27.x
