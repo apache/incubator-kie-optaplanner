@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintBuilder;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
+import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintJustification;
@@ -14,7 +15,7 @@ public final class TriConstraintBuilderImpl<A, B, C>
         extends AbstractConstraintBuilder<TriConstraintBuilder<A, B, C>>
         implements TriConstraintBuilder<A, B, C> {
 
-    private TriFunction<A, B, C, ConstraintJustification> justificationMapping;
+    private QuadFunction<A, B, C, Score<?>, ConstraintJustification> justificationMapping;
     private TriFunction<A, B, C, Collection<?>> indictedObjectsMapping;
 
     public TriConstraintBuilderImpl(TriConstraintConstructor<A, B, C> constraintConstructor, ScoreImpactType impactType,
@@ -23,18 +24,18 @@ public final class TriConstraintBuilderImpl<A, B, C>
     }
 
     @Override
-    protected TriFunction<A, B, C, ConstraintJustification> getJustificationMapping() {
+    protected QuadFunction<A, B, C, Score<?>, ConstraintJustification> getJustificationMapping() {
         return justificationMapping;
     }
 
     @Override
     public <ConstraintJustification_ extends ConstraintJustification> TriConstraintBuilder<A, B, C> justifyWith(
-            TriFunction<A, B, C, ConstraintJustification_> justificationMapping) {
+            QuadFunction<A, B, C, Score<?>, ConstraintJustification_> justificationMapping) {
         if (this.justificationMapping != null) {
             throw new IllegalStateException("Justification mapping already set (" + justificationMapping + ").");
         }
         this.justificationMapping =
-                (TriFunction<A, B, C, ConstraintJustification>) Objects.requireNonNull(justificationMapping);
+                (QuadFunction<A, B, C, Score<?>, ConstraintJustification>) Objects.requireNonNull(justificationMapping);
         return this;
     }
 

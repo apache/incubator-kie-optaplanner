@@ -38,8 +38,8 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
      */
     @Deprecated(forRemoval = true)
     public ConstraintMatch(String constraintPackage, String constraintName, List<Object> justificationList, Score_ score) {
-        this(constraintPackage, constraintName, DefaultConstraintJustification.of(justificationList), justificationList,
-                score);
+        this(constraintPackage, constraintName, DefaultConstraintJustification.of(score, justificationList),
+                justificationList, score);
     }
 
     /**

@@ -2,7 +2,9 @@ package org.optaplanner.core.api.score.stream.quad;
 
 import java.util.Collection;
 
+import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
@@ -14,7 +16,7 @@ import org.optaplanner.core.api.score.stream.ConstraintJustification;
  * Used to build a {@link Constraint} out of a {@link QuadConstraintStream}, applying optional configuration.
  * To build the constraint, use one of the terminal operations, such as {@link #asConstraint(String)}.
  * <p>
- * Unless {@link #justifyWith(QuadFunction)} is called, the default justification mapping will be used.
+ * Unless {@link #justifyWith(PentaFunction)} is called, the default justification mapping will be used.
  * The function takes the input arguments and converts them into a {@link java.util.List}.
  * <p>
  * Unless {@link #indictWith(QuadFunction)} is called, the default indicted objects' mapping will be used.
@@ -30,7 +32,7 @@ public interface QuadConstraintBuilder<A, B, C, D> extends ConstraintBuilder<Qua
      * @return this
      */
     <ConstraintJustification_ extends ConstraintJustification> QuadConstraintBuilder<A, B, C, D> justifyWith(
-            QuadFunction<A, B, C, D, ConstraintJustification_> justificationMapping);
+            PentaFunction<A, B, C, D, Score<?>, ConstraintJustification_> justificationMapping);
 
     /**
      * Sets a custom function to mark any object returned by it as responsible for causing the constraint to match.

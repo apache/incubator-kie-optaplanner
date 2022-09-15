@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintBuilder;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
+import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintJustification;
@@ -14,7 +15,7 @@ public final class QuadConstraintBuilderImpl<A, B, C, D>
         extends AbstractConstraintBuilder<QuadConstraintBuilder<A, B, C, D>>
         implements QuadConstraintBuilder<A, B, C, D> {
 
-    private QuadFunction<A, B, C, D, ConstraintJustification> justificationMapping;
+    private PentaFunction<A, B, C, D, Score<?>, ConstraintJustification> justificationMapping;
     private QuadFunction<A, B, C, D, Collection<?>> indictedObjectsMapping;
 
     public QuadConstraintBuilderImpl(QuadConstraintConstructor<A, B, C, D> constraintConstructor, ScoreImpactType impactType,
@@ -23,18 +24,18 @@ public final class QuadConstraintBuilderImpl<A, B, C, D>
     }
 
     @Override
-    protected QuadFunction<A, B, C, D, ConstraintJustification> getJustificationMapping() {
+    protected PentaFunction<A, B, C, D, Score<?>, ConstraintJustification> getJustificationMapping() {
         return justificationMapping;
     }
 
     @Override
     public <ConstraintJustification_ extends ConstraintJustification> QuadConstraintBuilder<A, B, C, D> justifyWith(
-            QuadFunction<A, B, C, D, ConstraintJustification_> justificationMapping) {
+            PentaFunction<A, B, C, D, Score<?>, ConstraintJustification_> justificationMapping) {
         if (this.justificationMapping != null) {
             throw new IllegalStateException("Justification mapping already set (" + justificationMapping + ").");
         }
         this.justificationMapping =
-                (QuadFunction<A, B, C, D, ConstraintJustification>) Objects.requireNonNull(justificationMapping);
+                (PentaFunction<A, B, C, D, Score<?>, ConstraintJustification>) Objects.requireNonNull(justificationMapping);
         return this;
     }
 

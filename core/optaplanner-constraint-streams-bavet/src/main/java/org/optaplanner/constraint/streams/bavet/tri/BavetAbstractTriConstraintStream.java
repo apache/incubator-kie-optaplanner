@@ -25,6 +25,7 @@ import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.common.quad.QuadJoinerComber;
 import org.optaplanner.constraint.streams.common.tri.InnerTriConstraintStream;
 import org.optaplanner.constraint.streams.common.tri.TriConstraintBuilderImpl;
+import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
@@ -429,8 +430,8 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
     }
 
     @Override
-    protected final TriFunction<A, B, C, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return DefaultConstraintJustification::of;
+    protected final QuadFunction<A, B, C, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+        return (a, b, c, score) -> DefaultConstraintJustification.of(score, a, b, c);
     }
 
     @Override

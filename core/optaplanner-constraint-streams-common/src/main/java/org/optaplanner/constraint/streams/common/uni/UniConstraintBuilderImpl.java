@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.common.uni;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraintBuilder;
@@ -14,7 +15,7 @@ public final class UniConstraintBuilderImpl<A>
         extends AbstractConstraintBuilder<UniConstraintBuilder<A>>
         implements UniConstraintBuilder<A> {
 
-    private Function<A, ConstraintJustification> justificationMapping;
+    private BiFunction<A, Score<?>, ConstraintJustification> justificationMapping;
     private Function<A, Collection<?>> indictedObjectsMapping;
 
     public UniConstraintBuilderImpl(UniConstraintConstructor<A> constraintConstructor, ScoreImpactType impactType,
@@ -23,18 +24,18 @@ public final class UniConstraintBuilderImpl<A>
     }
 
     @Override
-    protected Function<A, ConstraintJustification> getJustificationMapping() {
+    protected BiFunction<A, Score<?>, ConstraintJustification> getJustificationMapping() {
         return justificationMapping;
     }
 
     @Override
     public <ConstraintJustification_ extends ConstraintJustification> UniConstraintBuilder<A> justifyWith(
-            Function<A, ConstraintJustification_> justificationMapping) {
+            BiFunction<A, Score<?>, ConstraintJustification_> justificationMapping) {
         if (this.justificationMapping != null) {
             throw new IllegalStateException("Justification mapping already set (" + justificationMapping + ").");
         }
         this.justificationMapping =
-                (Function<A, ConstraintJustification>) Objects.requireNonNull(justificationMapping);
+                (BiFunction<A, Score<?>, ConstraintJustification>) Objects.requireNonNull(justificationMapping);
         return this;
     }
 

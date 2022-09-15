@@ -20,6 +20,7 @@ import org.optaplanner.constraint.streams.drools.common.RuleBuilder;
 import org.optaplanner.constraint.streams.drools.tri.DroolsGroupingTriConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsGroupingUniConstraintStream;
 import org.optaplanner.constraint.streams.drools.uni.DroolsMappingUniConstraintStream;
+import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
@@ -297,8 +298,8 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    protected final QuadFunction<A, B, C, D, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return DefaultConstraintJustification::of;
+    protected final PentaFunction<A, B, C, D, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+        return (a, b, c, d, score) -> DefaultConstraintJustification.of(score, a, b, c, d);
     }
 
     @Override

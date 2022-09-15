@@ -29,6 +29,7 @@ import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.common.bi.BiConstraintBuilderImpl;
 import org.optaplanner.constraint.streams.common.bi.InnerBiConstraintStream;
 import org.optaplanner.constraint.streams.common.tri.TriJoinerComber;
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintBuilder;
@@ -418,8 +419,8 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
     }
 
     @Override
-    protected final BiFunction<A, B, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return DefaultConstraintJustification::of;
+    protected final TriFunction<A, B, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+        return (a, b, score) -> DefaultConstraintJustification.of(score, a, b);
     }
 
     @Override

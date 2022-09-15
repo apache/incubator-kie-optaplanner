@@ -80,7 +80,7 @@ public final class DefaultConstraintMatchTotal<Score_ extends Score<Score_>> imp
      * @return never null
      */
     public ConstraintMatch<Score_> addConstraintMatch(List<Object> justifications, Score_ score) {
-        return addConstraintMatch(DefaultConstraintJustification.of(justifications), justifications, score);
+        return addConstraintMatch(DefaultConstraintJustification.of(score, justifications), justifications, score);
     }
 
     /**

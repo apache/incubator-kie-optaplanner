@@ -1,10 +1,10 @@
 package org.optaplanner.core.api.score.stream;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.common.DomainAccessType;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
 import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
@@ -16,41 +16,41 @@ import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
 public final class DefaultConstraintJustification
         implements ConstraintJustification, Comparable<DefaultConstraintJustification> {
 
-    private static final DefaultConstraintJustification EMPTY = DefaultConstraintJustification.of(Collections.emptyList());
-
-    public static DefaultConstraintJustification empty() {
-        return EMPTY;
+    public static DefaultConstraintJustification of(Score<?> impact, Object fact) {
+        return new DefaultConstraintJustification(impact, List.of(fact));
     }
 
-    public static DefaultConstraintJustification of(Object fact) {
-        return new DefaultConstraintJustification(List.of(fact));
+    public static DefaultConstraintJustification of(Score<?> impact, Object factA, Object factB) {
+        return new DefaultConstraintJustification(impact, List.of(factA, factB));
     }
 
-    public static DefaultConstraintJustification of(Object factA, Object factB) {
-        return new DefaultConstraintJustification(List.of(factA, factB));
+    public static DefaultConstraintJustification of(Score<?> impact, Object factA, Object factB, Object factC) {
+        return new DefaultConstraintJustification(impact, List.of(factA, factB, factC));
     }
 
-    public static DefaultConstraintJustification of(Object factA, Object factB, Object factC) {
-        return new DefaultConstraintJustification(List.of(factA, factB, factC));
+    public static DefaultConstraintJustification of(Score<?> impact, Object factA, Object factB, Object factC, Object factD) {
+        return new DefaultConstraintJustification(impact, List.of(factA, factB, factC, factD));
     }
 
-    public static DefaultConstraintJustification of(Object factA, Object factB, Object factC, Object factD) {
-        return new DefaultConstraintJustification(List.of(factA, factB, factC, factD));
+    public static DefaultConstraintJustification of(Score<?> impact, Object... facts) {
+        return new DefaultConstraintJustification(impact, List.of(facts));
     }
 
-    public static DefaultConstraintJustification of(Object... facts) {
-        return new DefaultConstraintJustification(List.of(facts));
+    public static DefaultConstraintJustification of(Score<?> impact, List<Object> facts) {
+        return new DefaultConstraintJustification(impact, facts);
     }
 
-    public static DefaultConstraintJustification of(List<Object> facts) {
-        return new DefaultConstraintJustification(facts);
-    }
-
+    private final Score<?> impact;
     private final List<?> facts;
     private Comparator<Object> classAndIdPlanningComparator;
 
-    private DefaultConstraintJustification(List<Object> facts) {
+    private DefaultConstraintJustification(Score<?> impact, List<Object> facts) {
+        this.impact = impact;
         this.facts = facts;
+    }
+
+    public <Score_ extends Score<Score_>> Score_ getImpact() {
+        return (Score_) impact;
     }
 
     public List<?> getFacts() {
@@ -64,6 +64,16 @@ public final class DefaultConstraintJustification
 
     @Override
     public int compareTo(DefaultConstraintJustification other) {
+        String impactClassName = impact.getClass().getCanonicalName();
+        String otherImpactClassName = other.impact.getClass().getCanonicalName();
+        int scoreClassComparison = impactClassName.compareTo(otherImpactClassName);
+        if (scoreClassComparison != 0) { // Don't fail on two different score types.
+            return scoreClassComparison;
+        }
+        int scoreComparison = ((Score) impact).compareTo(other.impact);
+        if (scoreComparison != 0) {
+            return scoreComparison;
+        }
         List<?> justificationList = this.getFacts();
         List<?> otherJustificationList = other.getFacts();
         if (justificationList != otherJustificationList) {

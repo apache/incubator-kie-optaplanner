@@ -2045,7 +2045,7 @@ public abstract class AbstractUniConstraintStreamTest
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
                         .penalize(SimpleScore.ONE, e -> e.getIntegerProperty() * 2)
-                        .justifyWith(a -> DefaultConstraintJustification.of(a.getValue()))
+                        .justifyWith((a, score) -> DefaultConstraintJustification.of(score, a.getValue()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
@@ -2153,7 +2153,7 @@ public abstract class AbstractUniConstraintStreamTest
         InnerScoreDirector<TestdataLavishSolution, SimpleScore> scoreDirector = buildScoreDirector(
                 factory -> factory.forEach(TestdataLavishEntity.class)
                         .reward(SimpleScore.ONE, e -> e.getIntegerProperty() * 2)
-                        .justifyWith(a -> DefaultConstraintJustification.of(a.getValue()))
+                        .justifyWith((a, score) -> DefaultConstraintJustification.of(score, a.getValue()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
@@ -419,8 +420,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     }
 
     @Override
-    protected final Function<A, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return DefaultConstraintJustification::of;
+    protected final BiFunction<A, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+        return (a, score) -> DefaultConstraintJustification.of(score, a);
     }
 
     @Override

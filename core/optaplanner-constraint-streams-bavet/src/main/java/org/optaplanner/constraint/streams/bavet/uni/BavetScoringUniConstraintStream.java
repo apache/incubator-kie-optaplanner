@@ -5,6 +5,7 @@ import static org.optaplanner.constraint.streams.common.inliner.JustificationsSu
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
@@ -110,7 +111,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's an endpoint.");
         }
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraint, constraintWeight);
-        Function<A, ConstraintJustification> justificationMapping = constraint.getJustificationMapping();
+        BiFunction<A, Score<?>, ConstraintJustification> justificationMapping = constraint.getJustificationMapping();
         Function<A, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
         Function<A, UndoScoreImpacter> scoreImpacter;
         if (intMatchWeigher != null) {
@@ -118,25 +119,25 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
                 int matchWeight = intMatchWeigher.applyAsInt(a);
                 constraint.assertCorrectImpact(matchWeight);
                 return weightedScoreImpacter.impactScore(matchWeight,
-                        of(() -> justificationMapping.apply(a), () -> indictedObjectsMapping.apply(a)));
+                        of(score -> justificationMapping.apply(a, score), () -> indictedObjectsMapping.apply(a)));
             };
         } else if (longMatchWeigher != null) {
             scoreImpacter = a -> {
                 long matchWeight = longMatchWeigher.applyAsLong(a);
                 constraint.assertCorrectImpact(matchWeight);
                 return weightedScoreImpacter.impactScore(matchWeight,
-                        of(() -> justificationMapping.apply(a), () -> indictedObjectsMapping.apply(a)));
+                        of(score -> justificationMapping.apply(a, score), () -> indictedObjectsMapping.apply(a)));
             };
         } else if (bigDecimalMatchWeigher != null) {
             scoreImpacter = a -> {
                 BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a);
                 constraint.assertCorrectImpact(matchWeight);
                 return weightedScoreImpacter.impactScore(matchWeight,
-                        of(() -> justificationMapping.apply(a), () -> indictedObjectsMapping.apply(a)));
+                        of(score -> justificationMapping.apply(a, score), () -> indictedObjectsMapping.apply(a)));
             };
         } else if (noMatchWeigher) {
             scoreImpacter = a -> weightedScoreImpacter.impactScore(1,
-                    of(() -> justificationMapping.apply(a), () -> indictedObjectsMapping.apply(a)));
+                    of(score -> justificationMapping.apply(a, score), () -> indictedObjectsMapping.apply(a)));
         } else {
             throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }

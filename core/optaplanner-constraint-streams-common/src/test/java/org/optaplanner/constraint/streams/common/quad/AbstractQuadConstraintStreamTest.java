@@ -1450,9 +1450,8 @@ public abstract class AbstractQuadConstraintStreamTest
                         .penalize(SimpleScore.ONE,
                                 (a, b, c, d) -> a.getIntegerProperty() + b.getIntegerProperty() + c.getIntegerProperty()
                                         + d.getIntegerProperty())
-                        .justifyWith(
-                                (a, b, c, d) -> DefaultConstraintJustification.of(a.toString(), b.toString(), c.toString(),
-                                        d.toString()))
+                        .justifyWith((a, b, c, d, score) -> DefaultConstraintJustification.of(score, a.toString(), b.toString(),
+                                c.toString(), d.toString()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);
@@ -1590,9 +1589,8 @@ public abstract class AbstractQuadConstraintStreamTest
                         .reward(SimpleScore.ONE,
                                 (a, b, c, d) -> a.getIntegerProperty() + b.getIntegerProperty() + c.getIntegerProperty()
                                         + d.getIntegerProperty())
-                        .justifyWith(
-                                (a, b, c, d) -> DefaultConstraintJustification.of(a.toString(), b.toString(), c.toString(),
-                                        d.toString()))
+                        .justifyWith((a, b, c, d, score) -> DefaultConstraintJustification.of(score, a.toString(), b.toString(),
+                                c.toString(), d.toString()))
                         .asConstraint(TEST_CONSTRAINT_NAME));
 
         scoreDirector.setWorkingSolution(solution);

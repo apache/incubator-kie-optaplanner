@@ -124,7 +124,7 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
                 constraint.getConstraintId(),
                 key -> new DefaultConstraintMatchTotal<>(constraintPackage, constraintName, constraintWeight));
         ConstraintMatch<Score_> constraintMatch =
-                constraintMatchTotal.addConstraintMatch(justificationsSupplier.createConstraintJustification(),
+                constraintMatchTotal.addConstraintMatch(justificationsSupplier.createConstraintJustification(score),
                         justificationsSupplier.createIndictedObjects(), score);
         List<DefaultIndictment<Score_>> indictments = constraintMatch.getIndictedObjectList()
                 .stream()

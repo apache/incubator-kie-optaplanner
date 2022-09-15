@@ -23,6 +23,7 @@ import org.optaplanner.constraint.streams.common.ScoreImpactType;
 import org.optaplanner.constraint.streams.common.penta.PentaJoinerComber;
 import org.optaplanner.constraint.streams.common.quad.InnerQuadConstraintStream;
 import org.optaplanner.constraint.streams.common.quad.QuadConstraintBuilderImpl;
+import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
@@ -395,8 +396,8 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    protected final QuadFunction<A, B, C, D, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return DefaultConstraintJustification::of;
+    protected final PentaFunction<A, B, C, D, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+        return (a, b, c, d, score) -> DefaultConstraintJustification.of(score, a, b, c, d);
     }
 
     @Override

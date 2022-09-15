@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.testdata.domain;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -12,7 +13,6 @@ import org.optaplanner.core.api.score.calculator.ConstraintMatchAwareIncremental
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.core.impl.score.constraint.DefaultIndictment;
 
@@ -37,9 +37,7 @@ public class TestdataIncrementalScoreCalculator
                 if (Objects.equals(right.getValue(), value)) {
                     score -= 1;
                     ConstraintMatch<SimpleScore> constraintMatch =
-                            constraintMatchTotal.addConstraintMatch(DefaultConstraintJustification.of(left, right),
-                                    DefaultIndictment.getDefaultIndictmentMapping(left, right),
-                                    SimpleScore.ONE);
+                            constraintMatchTotal.addConstraintMatch(List.of(left, right), SimpleScore.ONE);
                     Stream.of(left, right)
                             .forEach(entity -> indictmentMap
                                     .computeIfAbsent(entity, key -> new DefaultIndictment<>(key, SimpleScore.ZERO))

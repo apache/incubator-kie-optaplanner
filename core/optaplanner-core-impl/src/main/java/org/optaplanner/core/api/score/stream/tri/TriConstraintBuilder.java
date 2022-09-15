@@ -2,7 +2,9 @@ package org.optaplanner.core.api.score.stream.tri;
 
 import java.util.Collection;
 
+import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.Indictment;
@@ -14,7 +16,7 @@ import org.optaplanner.core.api.score.stream.ConstraintJustification;
  * Used to build a {@link Constraint} out of a {@link TriConstraintStream}, applying optional configuration.
  * To build the constraint, use one of the terminal operations, such as {@link #asConstraint(String)}.
  * <p>
- * Unless {@link #justifyWith(TriFunction)} is called, the default justification mapping will be used.
+ * Unless {@link #justifyWith(QuadFunction)} is called, the default justification mapping will be used.
  * The function takes the input arguments and converts them into a {@link java.util.List}.
  * <p>
  * Unless {@link #indictWith(TriFunction)} is called, the default indicted objects' mapping will be used.
@@ -30,7 +32,7 @@ public interface TriConstraintBuilder<A, B, C> extends ConstraintBuilder<TriCons
      * @return this
      */
     <ConstraintJustification_ extends ConstraintJustification> TriConstraintBuilder<A, B, C> justifyWith(
-            TriFunction<A, B, C, ConstraintJustification_> justificationMapping);
+            QuadFunction<A, B, C, Score<?>, ConstraintJustification_> justificationMapping);
 
     /**
      * Sets a custom function to mark any object returned by it as responsible for causing the constraint to match.

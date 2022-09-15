@@ -24,8 +24,8 @@ class ConstraintMatchTest {
 
     private <Score_ extends Score<Score_>> ConstraintMatch<Score_> buildConstraintMatch(String constraintPackage,
             String constraintName, Score_ score, Object... indictments) {
-        return new ConstraintMatch<>(constraintPackage, constraintName,
-                DefaultConstraintJustification.of(indictments), Arrays.asList(indictments), score);
+        return new ConstraintMatch<>(constraintPackage, constraintName, DefaultConstraintJustification.of(score, indictments),
+                Arrays.asList(indictments), score);
     }
 
     @Test
