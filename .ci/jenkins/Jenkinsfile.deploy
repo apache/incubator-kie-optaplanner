@@ -567,7 +567,7 @@ String getOperatorImageName() {
 }
 
 String getOperatorImageTag() {
-    return params.OPERATOR_IMAGE_TAG ?: getProjectVersion() ?: 'latest'
+    return params.OPERATOR_IMAGE_TAG ?: getProjectVersion()
 }
 
 String getOperatorImageTemporaryTag() {

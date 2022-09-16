@@ -50,7 +50,6 @@ maven:
 cloud:
   image:
     registry_credentials: optaplanner-quay-token
-    registry_credentials_release: release_kogito
     registry: quay.io
     namespace: kiegroup
     latest_git_branch: main
