@@ -11,13 +11,15 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.solver.Solver;
 
 /**
- * Specifies that a bean property (or a field) is an element in the same {@link PlanningListVariable} with an index that is
- * lower by 1 than this element's index. May be {@code null} if this element's index is 0.
+ * Specifies that a bean property (or a field) references the previous element in the same {@link PlanningListVariable}.
+ * The previous element's index is 1 lower than this element's index.
+ * It is {@code null} if this element is the first element in the list variable.
  * <p>
  * It is specified on a getter of a java bean property (or a field) of a {@link PlanningEntity} class.
  * <p>
  * The source variable must be a {@link PlanningListVariable list variable}.
  */
+// TODO When a non-disjoint list variable is supported, specify that this annotation is only allowed on disjoint list variables.
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)
 public @interface PreviousElementShadowVariable {
