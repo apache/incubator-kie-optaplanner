@@ -5,26 +5,28 @@ import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 
 final class SubListChangedNotification<Solution_> extends AbstractNotification implements ListVariableNotification<Solution_> {
 
+    private final int fromIndex;
     private final int toIndex;
 
     SubListChangedNotification(Object entity, int fromIndex, int toIndex) {
-        super(entity, fromIndex);
+        super(entity);
+        this.fromIndex = fromIndex;
         this.toIndex = toIndex;
     }
 
     @Override
     public void triggerBefore(ListVariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.beforeSubListChanged(scoreDirector, entity, index, toIndex);
+        variableListener.beforeSubListChanged(scoreDirector, entity, fromIndex, toIndex);
     }
 
     @Override
     public void triggerAfter(ListVariableListener<Solution_, Object> variableListener, ScoreDirector<Solution_> scoreDirector) {
-        variableListener.afterSubListChanged(scoreDirector, entity, index, toIndex);
+        variableListener.afterSubListChanged(scoreDirector, entity, fromIndex, toIndex);
     }
 
     @Override
     public String toString() {
-        return "SubListChangedNotification(" + entity + "[" + index + ", " + toIndex + "])";
+        return "SubListChangedNotification(" + entity + "[" + fromIndex + ".." + toIndex + "])";
     }
 }

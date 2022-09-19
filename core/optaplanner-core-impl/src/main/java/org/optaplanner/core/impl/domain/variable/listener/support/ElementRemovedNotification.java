@@ -5,8 +5,11 @@ import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 
 final class ElementRemovedNotification<Solution_> extends AbstractNotification implements ListVariableNotification<Solution_> {
 
+    private final int index;
+
     ElementRemovedNotification(Object entity, int index) {
-        super(entity, index);
+        super(entity);
+        this.index = index;
     }
 
     @Override
