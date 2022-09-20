@@ -41,7 +41,6 @@ final class ComparisonIndexer<T, Key_ extends Comparable<Key_>> implements Index
         this.comparisonMap = new TreeMap<>(keyComparator);
     }
 
-
     @Override
     public TupleListEntry<T> put(IndexProperties indexProperties, T tuple) {
         Key_ indexKey = indexProperties.toKey(indexKeyPosition);

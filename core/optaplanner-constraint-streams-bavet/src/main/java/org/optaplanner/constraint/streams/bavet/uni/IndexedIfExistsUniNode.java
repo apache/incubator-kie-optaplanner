@@ -17,12 +17,12 @@ final class IndexedIfExistsUniNode<A, B> extends AbstractIndexedIfExistsNode<Uni
     public IndexedIfExistsUniNode(boolean shouldExist,
             Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
             int inputStoreIndexLeftProperties, int inputStoreIndexLeftCounterEntry,
-            int inputStoreIndexRightProperties,  int inputStoreIndexRightEntry,
+            int inputStoreIndexRightProperties, int inputStoreIndexRightEntry,
             TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle,
             Indexer<ExistsCounter<UniTuple<A>>> indexerA, Indexer<UniTuple<B>> indexerB) {
         this(shouldExist, mappingA, mappingB,
                 inputStoreIndexLeftProperties, inputStoreIndexLeftCounterEntry, -1,
-                inputStoreIndexRightProperties,  inputStoreIndexRightEntry, -1,
+                inputStoreIndexRightProperties, inputStoreIndexRightEntry, -1,
                 nextNodesTupleLifecycle, indexerA, indexerB,
                 null);
     }
@@ -30,13 +30,13 @@ final class IndexedIfExistsUniNode<A, B> extends AbstractIndexedIfExistsNode<Uni
     public IndexedIfExistsUniNode(boolean shouldExist,
             Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
             int inputStoreIndexLeftProperties, int inputStoreIndexLeftCounterEntry, int inputStoreIndexLeftTrackerList,
-            int inputStoreIndexRightProperties,  int inputStoreIndexRightEntry, int inputStoreIndexRightTrackerList,
+            int inputStoreIndexRightProperties, int inputStoreIndexRightEntry, int inputStoreIndexRightTrackerList,
             TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle,
             Indexer<ExistsCounter<UniTuple<A>>> indexerA, Indexer<UniTuple<B>> indexerB,
             BiPredicate<A, B> filtering) {
         super(shouldExist, mappingB,
                 inputStoreIndexLeftProperties, inputStoreIndexLeftCounterEntry, inputStoreIndexLeftTrackerList,
-                inputStoreIndexRightProperties,  inputStoreIndexRightEntry, inputStoreIndexRightTrackerList,
+                inputStoreIndexRightProperties, inputStoreIndexRightEntry, inputStoreIndexRightTrackerList,
                 nextNodesTupleLifecycle, indexerA, indexerB,
                 filtering != null);
         this.mappingA = mappingA;
