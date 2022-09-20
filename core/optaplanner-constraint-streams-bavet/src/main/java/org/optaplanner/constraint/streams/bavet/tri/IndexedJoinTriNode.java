@@ -22,8 +22,8 @@ final class IndexedJoinTriNode<A, B, C>
             TupleLifecycle<TriTuple<A, B, C>> nextNodesTupleLifecycle,
             int outputStoreSize,
             int outputStoreIndexOutEntryAB, int outputStoreIndexOutEntryC,
-            Indexer<BiTuple<A, B>, Void> indexerAB,
-            Indexer<UniTuple<C>, Void> indexerC) {
+            Indexer<BiTuple<A, B>> indexerAB,
+            Indexer<UniTuple<C>> indexerC) {
         super(mappingC,
                 inputStoreIndexAB, inputStoreIndexEntryAB, inputStoreIndexOutTupleListAB,
                 inputStoreIndexC, inputStoreIndexEntryC, inputStoreIndexOutTupleListC,

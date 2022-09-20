@@ -1,13 +1,12 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.function.Function;
 
+import org.optaplanner.constraint.streams.bavet.common.collection.TupleList;
+import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.core.impl.util.FieldBasedScalingSet;
 
 /**
  * There is a strong likelihood that any change to this class, which is not related to indexing,
@@ -21,44 +20,59 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
         implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
 
     private final Function<Right_, IndexProperties> mappingRight;
-    private final int inputStoreIndexLeft;
-    private final int inputStoreIndexRight;
-    private final Indexer<LeftTuple_, ExistsCounter<LeftTuple_>> indexerLeft;
-    private final Indexer<UniTuple<Right_>, Set<ExistsCounter<LeftTuple_>>> indexerRight;
+    private final int inputStoreIndexLeftProperties;
+    private final int inputStoreIndexLeftCounterEntry;
+    private final int inputStoreIndexRightProperties;
+    private final int inputStoreIndexRightEntry;
+    private final Indexer<ExistsCounter<LeftTuple_>> indexerLeft;
+    private final Indexer<UniTuple<Right_>> indexerRight;
 
     protected AbstractIndexedIfExistsNode(boolean shouldExist,
             Function<Right_, IndexProperties> mappingRight,
-            int inputStoreIndexLeft, int inputStoreIndexRight,
-            TupleLifecycle<LeftTuple_> nextNodeTupleLifecycle,
-            Indexer<LeftTuple_, ExistsCounter<LeftTuple_>> indexerLeft,
-            Indexer<UniTuple<Right_>, Set<ExistsCounter<LeftTuple_>>> indexerRight,
+            int inputStoreIndexLeftProperties, int inputStoreIndexLeftCounterEntry, int inputStoreIndexLeftTrackerList,
+            int inputStoreIndexRightProperties,  int inputStoreIndexRightEntry, int inputStoreIndexRightTrackerList,
+            TupleLifecycle<LeftTuple_> nextNodesTupleLifecycle,
+            Indexer<ExistsCounter<LeftTuple_>> indexerLeft,
+            Indexer<UniTuple<Right_>> indexerRight,
             boolean isFiltering) {
-        super(shouldExist, nextNodeTupleLifecycle, isFiltering);
+        super(shouldExist, inputStoreIndexLeftTrackerList, inputStoreIndexRightTrackerList,
+                nextNodesTupleLifecycle, isFiltering);
         this.mappingRight = mappingRight;
-        this.inputStoreIndexLeft = inputStoreIndexLeft;
-        this.inputStoreIndexRight = inputStoreIndexRight;
+        this.inputStoreIndexLeftProperties = inputStoreIndexLeftProperties;
+        this.inputStoreIndexLeftCounterEntry = inputStoreIndexLeftCounterEntry;
+        this.inputStoreIndexRightProperties = inputStoreIndexRightProperties;
+        this.inputStoreIndexRightEntry = inputStoreIndexRightEntry;
         this.indexerLeft = indexerLeft;
         this.indexerRight = indexerRight;
     }
 
     @Override
     public final void insertLeft(LeftTuple_ leftTuple) {
-        if (leftTuple.getStore(inputStoreIndexLeft) != null) {
+        if (leftTuple.getStore(inputStoreIndexLeftProperties) != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + leftTuple
                     + ") was already added in the tupleStore.");
         }
         IndexProperties indexProperties = createIndexProperties(leftTuple);
-        leftTuple.setStore(inputStoreIndexLeft, indexProperties);
+        leftTuple.setStore(inputStoreIndexLeftProperties, indexProperties);
 
         ExistsCounter<LeftTuple_> counter = new ExistsCounter<>(leftTuple, shouldExist);
-        indexerLeft.put(indexProperties, leftTuple, counter);
+        TupleListEntry<ExistsCounter<LeftTuple_>> counterEntry = indexerLeft.put(indexProperties, counter);
+        leftTuple.setStore(inputStoreIndexLeftCounterEntry, counterEntry);
 
-        indexerRight.visit(indexProperties, (rightTuple, counterSetRight) -> {
-            if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
-                counter.countRight++;
-                counterSetRight.add(counter);
-            }
-        });
+        if (!isFiltering) {
+            counter.countRight = indexerRight.size(indexProperties);
+        } else {
+            TupleList<FilteringTracker> leftTrackerList = new TupleList<>();
+            indexerRight.visit(indexProperties, rightEntry -> {
+                UniTuple<Right_> rightTuple = rightEntry.getElement();
+                if (testFiltering(leftTuple, rightTuple)) {
+                    counter.countRight++;
+                    TupleList<FilteringTracker> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
+                    new FilteringTracker(counter, rightTuple, leftTrackerList, rightTrackerList);
+                }
+            });
+            leftTuple.setStore(inputStoreIndexLeftTrackerList, leftTrackerList);
+        }
         if (counter.isAlive()) {
             counter.state = BavetTupleState.CREATING;
             dirtyCounterQueue.add(counter);
@@ -67,83 +81,83 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
 
     @Override
     public final void updateLeft(LeftTuple_ leftTuple) {
-        IndexProperties oldIndexProperties = leftTuple.getStore(inputStoreIndexLeft);
+        IndexProperties oldIndexProperties = leftTuple.getStore(inputStoreIndexLeftProperties);
         if (oldIndexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             insertLeft(leftTuple);
             return;
         }
         IndexProperties newIndexProperties = createIndexProperties(leftTuple);
+        TupleListEntry<ExistsCounter<LeftTuple_>> counterEntry = leftTuple.getStore(inputStoreIndexLeftCounterEntry);
+        ExistsCounter<LeftTuple_> counter = counterEntry.getElement();
 
         if (oldIndexProperties.equals(newIndexProperties)) {
             // No need for re-indexing because the index properties didn't change
-            ExistsCounter<LeftTuple_> counter = indexerLeft.get(oldIndexProperties, leftTuple);
             // The indexers contain counters in the DEAD state, to track the rightCount.
             if (!isFiltering) {
                 processCounterUpdate(counter);
             } else {
                 // Call filtering for the leftTuple and rightTuple combinations again
+                TupleList<FilteringTracker> leftTrackerList = leftTuple.getStore(inputStoreIndexLeftTrackerList);
+                leftTrackerList.forEach(FilteringTracker::remove);
                 counter.countRight = 0;
-                indexerRight.visit(oldIndexProperties, (rightTuple, counterSetRight) -> {
+                indexerRight.visit(oldIndexProperties, rightEntry -> {
+                    UniTuple<Right_> rightTuple = rightEntry.getElement();
                     if (testFiltering(leftTuple, rightTuple)) {
                         counter.countRight++;
-                    } else {
-                        counterSetRight.remove(counter);
+                        TupleList<FilteringTracker> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
+                        new FilteringTracker(counter, rightTuple, leftTrackerList, rightTrackerList);
                     }
                 });
-                if (counter.isAlive()) {
-                    // Insert or update
-                    insertOrUpdateCounter(counter);
-                } else {
-                    // Retract or remain dead
-                    retractOrRemainDeadCounter(counter);
-                }
             }
         } else {
-            ExistsCounter<LeftTuple_> counter = deindexLeft(leftTuple, oldIndexProperties);
-
-            counter.countRight = 0;
-            leftTuple.setStore(inputStoreIndexLeft, newIndexProperties);
-            indexerLeft.put(newIndexProperties, leftTuple, counter);
-            indexerRight.visit(newIndexProperties, (rightTuple, counterSetRight) -> {
-                if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
-                    counter.countRight++;
-                    counterSetRight.add(counter);
-                }
-            });
-
-            if (counter.isAlive()) {
-                insertOrUpdateCounter(counter);
+            indexerLeft.remove(oldIndexProperties, counterEntry);
+            if (isFiltering) {
+                TupleList<FilteringTracker> leftTrackerList = leftTuple.getStore(inputStoreIndexLeftTrackerList);
+                leftTrackerList.forEach(FilteringTracker::remove);
+            }
+            counterEntry = indexerLeft.put(newIndexProperties, counter);
+            leftTuple.setStore(inputStoreIndexLeftCounterEntry, counterEntry);
+            if (!isFiltering) {
+                counter.countRight = indexerRight.size(newIndexProperties);
             } else {
-                retractOrRemainDeadCounter(counter);
+                TupleList<FilteringTracker> leftTrackerList = new TupleList<>();
+                indexerRight.visit(newIndexProperties, rightEntry -> {
+                    UniTuple<Right_> rightTuple = rightEntry.getElement();
+                    if (testFiltering(leftTuple, rightTuple)) {
+                        counter.countRight++;
+                        TupleList<FilteringTracker> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
+                        new FilteringTracker(counter, rightTuple, leftTrackerList, rightTrackerList);
+                    }
+                });
+                leftTuple.setStore(inputStoreIndexLeftTrackerList, leftTrackerList);
             }
         }
-    }
-
-    private ExistsCounter<LeftTuple_> deindexLeft(LeftTuple_ leftTuple, IndexProperties oldIndexProperties) {
-        ExistsCounter<LeftTuple_> counter = indexerLeft.remove(oldIndexProperties, leftTuple);
-        indexerRight.visit(oldIndexProperties, (rightTuple, counterSetRight) -> {
-            boolean changed = counterSetRight.remove(counter);
-            // If filtering is active, not all counterSets contain the counter and we don't track which ones do
-            if (!changed && !isFiltering) {
-                throw new IllegalStateException("Impossible state: the tuple (" + leftTuple
-                        + ") with indexProperties (" + oldIndexProperties
-                        + ") has a counter on the left side that doesn't exist on the right side.");
-            }
-        });
-        return counter;
+        if (counter.isAlive()) {
+            // Insert or update
+            insertOrUpdateCounter(counter);
+        } else {
+            // Retract or remain dead
+            retractOrRemainDeadCounter(counter);
+        }
     }
 
     @Override
     public final void retractLeft(LeftTuple_ leftTuple) {
-        IndexProperties indexProperties = leftTuple.getStore(inputStoreIndexLeft);
+        IndexProperties indexProperties = leftTuple.getStore(inputStoreIndexLeftProperties);
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        leftTuple.setStore(inputStoreIndexLeft, null);
+        leftTuple.setStore(inputStoreIndexLeftProperties, null);
+        TupleListEntry<ExistsCounter<LeftTuple_>> counterEntry = leftTuple.getStore(inputStoreIndexLeftCounterEntry);
+        ExistsCounter<LeftTuple_> counter = counterEntry.getElement();
 
-        ExistsCounter<LeftTuple_> counter = deindexLeft(leftTuple, indexProperties);
+        indexerLeft.remove(indexProperties, counterEntry);
+        if (isFiltering) {
+            TupleList<FilteringTracker> leftTrackerList = leftTuple.getStore(inputStoreIndexLeftTrackerList);
+            leftTrackerList.forEach(FilteringTracker::remove);
+        }
         if (counter.isAlive()) {
             retractCounter(counter);
         }
@@ -151,27 +165,34 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
 
     @Override
     public final void insertRight(UniTuple<Right_> rightTuple) {
-        if (rightTuple.getStore(inputStoreIndexRight) != null) {
+        if (rightTuple.getStore(inputStoreIndexRightProperties) != null) {
             throw new IllegalStateException("Impossible state: the input for the tuple (" + rightTuple
                     + ") was already added in the tupleStore.");
         }
         IndexProperties indexProperties = mappingRight.apply(rightTuple.getFactA());
-        rightTuple.setStore(inputStoreIndexRight, indexProperties);
+        rightTuple.setStore(inputStoreIndexRightProperties, indexProperties);
 
-        Set<ExistsCounter<LeftTuple_>> counterSetRight = new FieldBasedScalingSet<>(LinkedHashSet::new);
-        indexRight(rightTuple, indexProperties, counterSetRight);
-    }
-
-    private void indexRight(UniTuple<Right_> rightTuple, IndexProperties indexProperties,
-            Set<ExistsCounter<LeftTuple_>> counterSetRight) {
-        indexerRight.put(indexProperties, rightTuple, counterSetRight);
-        indexerLeft.visit(indexProperties,
-                (leftTuple, counter) -> processInsert(leftTuple, rightTuple, counter, counterSetRight));
+        TupleListEntry<UniTuple<Right_>> rightEntry = indexerRight.put(indexProperties, rightTuple);
+        rightTuple.setStore(inputStoreIndexRightEntry, rightEntry);
+        if (!isFiltering) {
+            indexerLeft.visit(indexProperties, counterEntry -> incrementCounter(counterEntry.getElement()));
+        } else {
+            TupleList<FilteringTracker> rightTrackerList = new TupleList<>();
+            indexerLeft.visit(indexProperties, counterEntry -> {
+                ExistsCounter<LeftTuple_> counter = counterEntry.getElement();
+                if (testFiltering(counter.leftTuple, rightTuple)) {
+                    incrementCounter(counter);
+                    TupleList<FilteringTracker> leftTrackerList = counter.leftTuple.getStore(inputStoreIndexLeftTrackerList);
+                    new FilteringTracker(counter, rightTuple, leftTrackerList, rightTrackerList);
+                }
+            });
+            rightTuple.setStore(inputStoreIndexRightTrackerList, rightTrackerList);
+        }
     }
 
     @Override
     public final void updateRight(UniTuple<Right_> rightTuple) {
-        IndexProperties oldIndexProperties = rightTuple.getStore(inputStoreIndexRight);
+        IndexProperties oldIndexProperties = rightTuple.getStore(inputStoreIndexRightProperties);
         if (oldIndexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             insertRight(rightTuple);
@@ -179,34 +200,76 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
         }
         IndexProperties newIndexProperties = mappingRight.apply(rightTuple.getFactA());
 
+
         if (oldIndexProperties.equals(newIndexProperties)) {
             // No need for re-indexing because the index properties didn't change
             if (isFiltering) {
-                // Call filtering for the leftTuple and rightTuple combinations again
-                Set<ExistsCounter<LeftTuple_>> counterSetRight = indexerRight.get(oldIndexProperties, rightTuple);
-                processAndClearCounters(counterSetRight);
-                indexerLeft.visit(newIndexProperties,
-                        (leftTuple, counter) -> processUpdate(leftTuple, rightTuple, counter, counterSetRight));
+                TupleList<FilteringTracker> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
+                rightTrackerList.forEach(filteringTacker -> {
+                    decrementCounter(filteringTacker.counter);
+                    filteringTacker.remove();
+                });
+                indexerLeft.visit(oldIndexProperties, counterEntry -> {
+                    ExistsCounter<LeftTuple_> counter = counterEntry.getElement();
+                    if (testFiltering(counter.leftTuple, rightTuple)) {
+                        incrementCounter(counter);
+                        TupleList<FilteringTracker> leftTrackerList = counter.leftTuple.getStore(inputStoreIndexLeftTrackerList);
+                        new FilteringTracker(counter, rightTuple, leftTrackerList, rightTrackerList);
+                    }
+                });
             }
         } else {
-            Set<ExistsCounter<LeftTuple_>> counterSetRight = indexerRight.remove(oldIndexProperties, rightTuple);
-            processAndClearCounters(counterSetRight);
-
-            rightTuple.setStore(inputStoreIndexRight, newIndexProperties);
-            indexRight(rightTuple, newIndexProperties, counterSetRight);
+            TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.getStore(inputStoreIndexRightEntry);
+            indexerRight.remove(oldIndexProperties, rightEntry);
+            if (!isFiltering) {
+                indexerLeft.visit(oldIndexProperties, counterEntry -> decrementCounter(counterEntry.getElement()));
+            } else {
+                TupleList<FilteringTracker> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
+                rightTrackerList.forEach(filteringTacker -> {
+                    decrementCounter(filteringTacker.counter);
+                    filteringTacker.remove();
+                });
+            }
+            rightTuple.setStore(inputStoreIndexRightProperties, newIndexProperties);
+            rightEntry = indexerRight.put(newIndexProperties, rightTuple);
+            rightTuple.setStore(inputStoreIndexRightEntry, rightEntry);
+            if (!isFiltering) {
+                indexerLeft.visit(newIndexProperties, counterEntry -> incrementCounter(counterEntry.getElement()));
+            } else {
+                TupleList<FilteringTracker> rightTrackerList = new TupleList<>();
+                indexerLeft.visit(newIndexProperties, counterEntry -> {
+                    ExistsCounter<LeftTuple_> counter = counterEntry.getElement();
+                    if (testFiltering(counter.leftTuple, rightTuple)) {
+                        incrementCounter(counter);
+                        TupleList<FilteringTracker> leftTrackerList = counter.leftTuple.getStore(inputStoreIndexLeftTrackerList);
+                        new FilteringTracker(counter, rightTuple, leftTrackerList, rightTrackerList);
+                    }
+                });
+                rightTuple.setStore(inputStoreIndexRightTrackerList, rightTrackerList);
+            }
         }
     }
 
     @Override
     public final void retractRight(UniTuple<Right_> rightTuple) {
-        IndexProperties indexProperties = rightTuple.getStore(inputStoreIndexRight);
+        IndexProperties indexProperties = rightTuple.getStore(inputStoreIndexRightProperties);
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        rightTuple.setStore(inputStoreIndexRight, null);
-        Set<ExistsCounter<LeftTuple_>> counterSetRight = indexerRight.remove(indexProperties, rightTuple);
-        processCounters(counterSetRight);
+        rightTuple.setStore(inputStoreIndexRightProperties, null);
+        TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.getStore(inputStoreIndexRightEntry);
+        indexerRight.remove(indexProperties, rightEntry);
+        rightTuple.setStore(inputStoreIndexRightEntry, null);
+        if (!isFiltering) {
+            indexerLeft.visit(indexProperties, counterEntry -> decrementCounter(counterEntry.getElement()));
+        } else {
+            TupleList<FilteringTracker> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
+            rightTrackerList.forEach(filteringTacker -> {
+                decrementCounter(filteringTacker.counter);
+                filteringTacker.remove();
+            });
+        }
     }
 
     protected abstract IndexProperties createIndexProperties(LeftTuple_ leftTuple);

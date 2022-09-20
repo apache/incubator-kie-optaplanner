@@ -16,7 +16,7 @@ class TupleListTest {
         assertThat(tupleList.last()).isNull();
 
         TupleListEntry<UniTuple<String>> entryA = tupleList.add(new UniTupleImpl<>("A", 0));
-        assertThat(entryA.getTuple().getFactA()).isEqualTo("A");
+        assertThat(entryA.getElement().getFactA()).isEqualTo("A");
         assertThat(tupleList.size()).isEqualTo(1);
         assertThat(tupleList.first()).isEqualTo(entryA);
         assertThat(entryA.previous).isNull();
@@ -24,7 +24,7 @@ class TupleListTest {
         assertThat(tupleList.last()).isEqualTo(entryA);
 
         TupleListEntry<UniTuple<String>> entryB = tupleList.add(new UniTupleImpl<>("B", 0));
-        assertThat(entryB.getTuple().getFactA()).isEqualTo("B");
+        assertThat(entryB.getElement().getFactA()).isEqualTo("B");
         assertThat(tupleList.size()).isEqualTo(2);
         assertThat(tupleList.first()).isEqualTo(entryA);
         assertThat(entryA.previous).isNull();

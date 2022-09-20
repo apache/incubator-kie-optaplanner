@@ -1,47 +1,49 @@
 package org.optaplanner.constraint.streams.bavet.common.collection;
 
-import org.optaplanner.constraint.streams.bavet.common.Tuple;
-
 /**
  * An entry of {@link TupleList}
  *
- * @param <Tuple_> the tuple type
+ * @param <T> The element type. Often a tuple.
  */
-public final class TupleListEntry<Tuple_ extends Tuple> {
+public final class TupleListEntry<T> {
 
-    private final TupleList<Tuple_> tupleList;
-    private final Tuple_ tuple;
-    TupleListEntry<Tuple_> previous;
-    TupleListEntry<Tuple_> next;
+    private TupleList<T> list;
+    private final T element;
+    TupleListEntry<T> previous;
+    TupleListEntry<T> next;
 
-    TupleListEntry(TupleList<Tuple_> tupleList, Tuple_ tuple, TupleListEntry<Tuple_> previous) {
-        this.tupleList = tupleList;
-        this.tuple = tuple;
+    TupleListEntry(TupleList<T> list, T element, TupleListEntry<T> previous) {
+        this.list = list;
+        this.element = element;
         this.previous = previous;
         this.next = null;
     }
 
-    public TupleListEntry<Tuple_> next() {
+    public TupleListEntry<T> next() {
         return next;
     }
 
-    public TupleListEntry<Tuple_> removeAndNext() {
-        TupleListEntry<Tuple_> next = this.next;
+    public TupleListEntry<T> removeAndNext() {
+        TupleListEntry<T> next = this.next;
         remove(); // Sets this.next = null
         return next;
     }
 
     public void remove() {
-        tupleList.remove(this);
+        if (list == null) {
+            throw new IllegalStateException("The element (" + element + ") was already removed.");
+        }
+        list.remove(this);
+        list = null;
     }
 
-    public Tuple_ getTuple() {
-        return tuple;
+    public T getElement() {
+        return element;
     }
 
     @Override
     public String toString() {
-        return tuple.toString();
+        return element.toString();
     }
 
 }

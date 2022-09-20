@@ -22,8 +22,8 @@ final class IndexedJoinQuadNode<A, B, C, D>
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle,
             int outputStoreSize,
             int outputStoreIndexOutEntryABC, int outputStoreIndexOutEntryD,
-            Indexer<TriTuple<A, B, C>, Void> indexerABC,
-            Indexer<UniTuple<D>, Void> indexerD) {
+            Indexer<TriTuple<A, B, C>> indexerABC,
+            Indexer<UniTuple<D>> indexerD) {
         super(mappingD,
                 inputStoreIndexABC, inputStoreIndexEntryABC, inputStoreIndexOutTupleListABC,
                 inputStoreIndexD, inputStoreIndexEntryD, inputStoreIndexOutTupleListD,

@@ -19,8 +19,8 @@ final class IndexedJoinBiNode<A, B> extends AbstractIndexedJoinNode<UniTuple<A>,
             TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle,
             int outputStoreSize,
             int outputStoreIndexOutEntryA, int outputStoreIndexOutEntryB,
-            Indexer<UniTuple<A>, Void> indexerA,
-            Indexer<UniTuple<B>, Void> indexerB) {
+            Indexer<UniTuple<A>> indexerA,
+            Indexer<UniTuple<B>> indexerB) {
         super(mappingB,
                 inputStoreIndexA, inputStoreIndexEntryA, inputStoreIndexOutTupleListA,
                 inputStoreIndexB, inputStoreIndexEntryB, inputStoreIndexOutTupleListB,

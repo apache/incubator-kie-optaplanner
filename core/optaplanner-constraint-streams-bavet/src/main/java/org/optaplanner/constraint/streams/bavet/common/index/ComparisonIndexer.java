@@ -5,29 +5,26 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.TreeMap;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
-final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Comparable<Key_>>
-        implements Indexer<Tuple_, Value_> {
+final class ComparisonIndexer<T, Key_ extends Comparable<Key_>> implements Indexer<T> {
 
     private final int indexKeyPosition;
-    private final Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier;
+    private final Supplier<Indexer<T>> downstreamIndexerSupplier;
     private final Comparator<Key_> keyComparator;
     private final boolean hasOrEquals;
-    private final NavigableMap<Key_, Indexer<Tuple_, Value_>> comparisonMap;
+    private final NavigableMap<Key_, Indexer<T>> comparisonMap;
 
-    public ComparisonIndexer(JoinerType comparisonJoinerType, Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
+    public ComparisonIndexer(JoinerType comparisonJoinerType, Supplier<Indexer<T>> downstreamIndexerSupplier) {
         this(comparisonJoinerType, 0, downstreamIndexerSupplier);
     }
 
     public ComparisonIndexer(JoinerType comparisonJoinerType, int indexKeyPosition,
-            Supplier<Indexer<Tuple_, Value_>> downstreamIndexerSupplier) {
+            Supplier<Indexer<T>> downstreamIndexerSupplier) {
         this.indexKeyPosition = indexKeyPosition;
         this.downstreamIndexerSupplier = Objects.requireNonNull(downstreamIndexerSupplier);
         /*
@@ -44,19 +41,88 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
         this.comparisonMap = new TreeMap<>(keyComparator);
     }
 
+
     @Override
-    public void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor) {
+    public TupleListEntry<T> put(IndexProperties indexProperties, T tuple) {
+        Key_ indexKey = indexProperties.toKey(indexKeyPosition);
+        // Avoids computeIfAbsent in order to not create lambdas on the hot path.
+        Indexer<T> downstreamIndexer = comparisonMap.get(indexKey);
+        if (downstreamIndexer == null) {
+            downstreamIndexer = downstreamIndexerSupplier.get();
+            comparisonMap.put(indexKey, downstreamIndexer);
+        }
+        return downstreamIndexer.put(indexProperties, tuple);
+    }
+
+    @Override
+    public void remove(IndexProperties indexProperties, TupleListEntry<T> entry) {
+        Key_ indexKey = indexProperties.toKey(indexKeyPosition);
+        Indexer<T> downstreamIndexer = getDownstreamIndexer(indexProperties, indexKey, entry);
+        downstreamIndexer.remove(indexProperties, entry);
+        if (downstreamIndexer.isEmpty()) {
+            comparisonMap.remove(indexKey);
+        }
+    }
+
+    private Indexer<T> getDownstreamIndexer(IndexProperties indexProperties, Key_ indexerKey,
+            TupleListEntry<T> entry) {
+        Indexer<T> downstreamIndexer = comparisonMap.get(indexerKey);
+        if (downstreamIndexer == null) {
+            throw new IllegalStateException("Impossible state: the tuple (" + entry.getElement()
+                    + ") with indexProperties (" + indexProperties
+                    + ") doesn't exist in the indexer " + this + ".");
+        }
+        return downstreamIndexer;
+    }
+
+    // TODO clean up DRY
+    @Override
+    public int size(IndexProperties indexProperties) {
+        int mapSize = comparisonMap.size();
+        if (mapSize == 0) {
+            return 0;
+        }
+        Key_ indexKey = indexProperties.toKey(indexKeyPosition);
+        if (mapSize == 1) { // Avoid creation of the entry set and iterator.
+            Map.Entry<Key_, Indexer<T>> entry = comparisonMap.firstEntry();
+            int comparison = keyComparator.compare(entry.getKey(), indexKey);
+            if (comparison >= 0) { // Possibility of reaching the boundary condition.
+                if (comparison > 0 || !hasOrEquals) {
+                    // Boundary condition reached when we're out of bounds entirely, or when GTE/LTE is not allowed.
+                    return 0;
+                }
+            }
+            return entry.getValue().size(indexProperties);
+        } else {
+            int size = 0;
+            for (Map.Entry<Key_, Indexer<T>> entry : comparisonMap.entrySet()) {
+                int comparison = keyComparator.compare(entry.getKey(), indexKey);
+                if (comparison >= 0) { // Possibility of reaching the boundary condition.
+                    if (comparison > 0 || !hasOrEquals) {
+                        // Boundary condition reached when we're out of bounds entirely, or when GTE/LTE is not allowed.
+                        break;
+                    }
+                }
+                // Boundary condition not yet reached; include the indexer in the range.
+                size += entry.getValue().size(indexProperties);
+            }
+            return size;
+        }
+    }
+
+    @Override
+    public void visit(IndexProperties indexProperties, Consumer<TupleListEntry<T>> entryVisitor) {
         int size = comparisonMap.size();
         if (size == 0) {
             return;
         }
         Key_ indexKey = indexProperties.toKey(indexKeyPosition);
         if (size == 1) { // Avoid creation of the entry set and iterator.
-            Map.Entry<Key_, Indexer<Tuple_, Value_>> entry = comparisonMap.firstEntry();
-            visitEntry(indexProperties, tupleValueVisitor, indexKey, entry);
+            Map.Entry<Key_, Indexer<T>> entry = comparisonMap.firstEntry();
+            visitEntry(indexProperties, entryVisitor, indexKey, entry);
         } else {
-            for (Map.Entry<Key_, Indexer<Tuple_, Value_>> entry : comparisonMap.entrySet()) {
-                boolean boundaryReached = visitEntry(indexProperties, tupleValueVisitor, indexKey, entry);
+            for (Map.Entry<Key_, Indexer<T>> entry : comparisonMap.entrySet()) {
+                boolean boundaryReached = visitEntry(indexProperties, entryVisitor, indexKey, entry);
                 if (boundaryReached) {
                     return;
                 }
@@ -64,8 +130,8 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
         }
     }
 
-    private boolean visitEntry(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueVisitor,
-            Key_ indexKey, Map.Entry<Key_, Indexer<Tuple_, Value_>> entry) {
+    private boolean visitEntry(IndexProperties indexProperties, Consumer<TupleListEntry<T>> entryVisitor,
+            Key_ indexKey, Map.Entry<Key_, Indexer<T>> entry) {
         // Comparator matches the order of iteration of the map, so the boundary is always found from the bottom up.
         int comparison = keyComparator.compare(entry.getKey(), indexKey);
         if (comparison >= 0) { // Possibility of reaching the boundary condition.
@@ -75,125 +141,12 @@ final class ComparisonIndexer<Tuple_ extends Tuple, Value_, Key_ extends Compara
             }
         }
         // Boundary condition not yet reached; include the indexer in the range.
-        entry.getValue().visit(indexProperties, tupleValueVisitor);
+        entry.getValue().visit(indexProperties, entryVisitor);
         return false;
-    }
-
-    @Override
-    public Value_ get(IndexProperties indexProperties, Tuple_ tuple) {
-        Key_ indexKey = indexProperties.toKey(indexKeyPosition);
-        Indexer<Tuple_, Value_> downstreamIndexer = getDownstreamIndexer(indexProperties, indexKey, tuple);
-        return downstreamIndexer.get(indexProperties, tuple);
-    }
-
-    @Override
-    public void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value) {
-        Key_ indexKey = indexProperties.toKey(indexKeyPosition);
-        // Avoids computeIfAbsent in order to not create lambdas on the hot path.
-        Indexer<Tuple_, Value_> downstreamIndexer = comparisonMap.get(indexKey);
-        if (downstreamIndexer == null) {
-            downstreamIndexer = downstreamIndexerSupplier.get();
-            comparisonMap.put(indexKey, downstreamIndexer);
-        }
-        downstreamIndexer.put(indexProperties, tuple, value);
-    }
-
-    @Override
-    public Value_ remove(IndexProperties indexProperties, Tuple_ tuple) {
-        Key_ indexKey = indexProperties.toKey(indexKeyPosition);
-        Indexer<Tuple_, Value_> downstreamIndexer = getDownstreamIndexer(indexProperties, indexKey, tuple);
-        Value_ value = downstreamIndexer.remove(indexProperties, tuple);
-        if (downstreamIndexer.isEmpty()) {
-            comparisonMap.remove(indexKey);
-        }
-        return value;
-    }
-
-    private Indexer<Tuple_, Value_> getDownstreamIndexer(IndexProperties indexProperties, Key_ indexerKey, Tuple_ tuple) {
-        Indexer<Tuple_, Value_> downstreamIndexer = comparisonMap.get(indexerKey);
-        if (downstreamIndexer == null) {
-            throw new IllegalStateException("Impossible state: the tuple (" + tuple
-                    + ") with indexProperties (" + indexProperties
-                    + ") doesn't exist in the indexer " + this + ".");
-        }
-        return downstreamIndexer;
     }
 
     @Override
     public boolean isEmpty() {
-        return comparisonMap.isEmpty();
-    }
-
-    @Override
-    public TupleListEntry<Tuple_> putGGG(IndexProperties indexProperties, Tuple_ tuple) {
-        Key_ indexKey = indexProperties.toKey(indexKeyPosition);
-        // Avoids computeIfAbsent in order to not create lambdas on the hot path.
-        Indexer<Tuple_, Value_> downstreamIndexer = comparisonMap.get(indexKey);
-        if (downstreamIndexer == null) {
-            downstreamIndexer = downstreamIndexerSupplier.get();
-            comparisonMap.put(indexKey, downstreamIndexer);
-        }
-        return downstreamIndexer.putGGG(indexProperties, tuple);
-    }
-
-    @Override
-    public void removeGGG(IndexProperties indexProperties, TupleListEntry<Tuple_> entry) {
-        Key_ indexKey = indexProperties.toKey(indexKeyPosition);
-        Indexer<Tuple_, Value_> downstreamIndexer = getDownstreamIndexer(indexProperties, indexKey, entry);
-        downstreamIndexer.removeGGG(indexProperties, entry);
-        if (downstreamIndexer.isEmptyGGG()) {
-            comparisonMap.remove(indexKey);
-        }
-    }
-
-    private Indexer<Tuple_, Value_> getDownstreamIndexer(IndexProperties indexProperties, Key_ indexerKey,
-            TupleListEntry<Tuple_> entry) {
-        Indexer<Tuple_, Value_> downstreamIndexer = comparisonMap.get(indexerKey);
-        if (downstreamIndexer == null) {
-            throw new IllegalStateException("Impossible state: the tuple (" + entry.getTuple()
-                    + ") with indexProperties (" + indexProperties
-                    + ") doesn't exist in the indexer " + this + ".");
-        }
-        return downstreamIndexer;
-    }
-
-    @Override
-    public void visitGGG(IndexProperties indexProperties, Consumer<TupleListEntry<Tuple_>> entryVisitor) {
-        int size = comparisonMap.size();
-        if (size == 0) {
-            return;
-        }
-        Key_ indexKey = indexProperties.toKey(indexKeyPosition);
-        if (size == 1) { // Avoid creation of the entry set and iterator.
-            Map.Entry<Key_, Indexer<Tuple_, Value_>> entry = comparisonMap.firstEntry();
-            visitEntryGGG(indexProperties, entryVisitor, indexKey, entry);
-        } else {
-            for (Map.Entry<Key_, Indexer<Tuple_, Value_>> entry : comparisonMap.entrySet()) {
-                boolean boundaryReached = visitEntryGGG(indexProperties, entryVisitor, indexKey, entry);
-                if (boundaryReached) {
-                    return;
-                }
-            }
-        }
-    }
-
-    private boolean visitEntryGGG(IndexProperties indexProperties, Consumer<TupleListEntry<Tuple_>> entryVisitor,
-            Key_ indexKey, Map.Entry<Key_, Indexer<Tuple_, Value_>> entry) {
-        // Comparator matches the order of iteration of the map, so the boundary is always found from the bottom up.
-        int comparison = keyComparator.compare(entry.getKey(), indexKey);
-        if (comparison >= 0) { // Possibility of reaching the boundary condition.
-            if (comparison > 0 || !hasOrEquals) {
-                // Boundary condition reached when we're out of bounds entirely, or when GTE/LTE is not allowed.
-                return true;
-            }
-        }
-        // Boundary condition not yet reached; include the indexer in the range.
-        entry.getValue().visitGGG(indexProperties, entryVisitor);
-        return false;
-    }
-
-    @Override
-    public boolean isEmptyGGG() {
         return comparisonMap.isEmpty();
     }
 

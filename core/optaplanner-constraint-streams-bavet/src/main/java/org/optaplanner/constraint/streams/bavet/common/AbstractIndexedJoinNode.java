@@ -29,15 +29,15 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
     /**
      * Calls for example {@link AbstractScorer#insert(Tuple)} and/or ...
      */
-    private final Indexer<LeftTuple_, Void> indexerLeft;
-    private final Indexer<UniTuple<Right_>, Void> indexerRight;
+    private final Indexer<LeftTuple_> indexerLeft;
+    private final Indexer<UniTuple<Right_>> indexerRight;
 
     protected AbstractIndexedJoinNode(Function<Right_, IndexProperties> mappingRight,
             int inputStoreIndexLeftProperties, int inputStoreIndexLeftEntry, int inputStoreIndexLeftOutTupleList,
             int inputStoreIndexRightProperties, int inputStoreIndexRightEntry, int inputStoreIndexRightOutTupleList,
             TupleLifecycle<OutTuple_> nextNodesTupleLifecycle,
             int outputStoreIndexLeftOutEntry, int outputStoreIndexRightOutEntry,
-            Indexer<LeftTuple_, Void> indexerLeft, Indexer<UniTuple<Right_>, Void> indexerRight) {
+            Indexer<LeftTuple_> indexerLeft, Indexer<UniTuple<Right_>> indexerRight) {
         super(inputStoreIndexLeftOutTupleList, inputStoreIndexRightOutTupleList,
                 nextNodesTupleLifecycle, outputStoreIndexLeftOutEntry, outputStoreIndexRightOutEntry);
         this.mappingRight = mappingRight;
@@ -83,7 +83,7 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         } else {
             TupleListEntry<LeftTuple_> leftEntry = leftTuple.getStore(inputStoreIndexLeftEntry);
             TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
-            indexerLeft.removeGGG(oldIndexProperties, leftEntry);
+            indexerLeft.remove(oldIndexProperties, leftEntry);
             outTupleListLeft.forEach(this::retractOutTuple);
             // outTupleListLeft is now empty
             // No need for leftTuple.setStore(inputStoreIndexLeftOutTupleList, outTupleListLeft);
@@ -93,9 +93,9 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
 
     private final void indexAndPropagateLeft(LeftTuple_ leftTuple, IndexProperties indexProperties) {
         leftTuple.setStore(inputStoreIndexLeftProperties, indexProperties);
-        TupleListEntry<LeftTuple_> leftEntry = indexerLeft.putGGG(indexProperties, leftTuple);
+        TupleListEntry<LeftTuple_> leftEntry = indexerLeft.put(indexProperties, leftTuple);
         leftTuple.setStore(inputStoreIndexLeftEntry, leftEntry);
-        indexerRight.visitGGG(indexProperties, (rightEntry) -> insertOutTuple(leftTuple, rightEntry.getTuple()));
+        indexerRight.visit(indexProperties, (rightEntry) -> insertOutTuple(leftTuple, rightEntry.getElement()));
     }
 
     @Override
@@ -107,7 +107,7 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         }
         TupleListEntry<LeftTuple_> leftEntry = leftTuple.getStore(inputStoreIndexLeftEntry);
         TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
-        indexerLeft.removeGGG(indexProperties, leftEntry);
+        indexerLeft.remove(indexProperties, leftEntry);
         outTupleListLeft.forEach(this::retractOutTuple);
         leftTuple.setStore(inputStoreIndexLeftProperties, null);
         leftTuple.setStore(inputStoreIndexLeftEntry, null);
@@ -148,7 +148,7 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         } else {
             TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.getStore(inputStoreIndexRightEntry);
             TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
-            indexerRight.removeGGG(oldIndexProperties, rightEntry);
+            indexerRight.remove(oldIndexProperties, rightEntry);
             outTupleListRight.forEach(this::retractOutTuple);
             // outTupleListRight is now empty
             // No need for rightTuple.setStore(inputStoreIndexRightOutTupleList, outTupleListRight);
@@ -158,9 +158,9 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
 
     private final void indexAndPropagateRight(UniTuple<Right_> rightTuple, IndexProperties indexProperties) {
         rightTuple.setStore(inputStoreIndexRightProperties, indexProperties);
-        TupleListEntry<UniTuple<Right_>> rightEntry = indexerRight.putGGG(indexProperties, rightTuple);
+        TupleListEntry<UniTuple<Right_>> rightEntry = indexerRight.put(indexProperties, rightTuple);
         rightTuple.setStore(inputStoreIndexRightEntry, rightEntry);
-        indexerLeft.visitGGG(indexProperties, (leftEntry) -> insertOutTuple(leftEntry.getTuple(), rightTuple));
+        indexerLeft.visit(indexProperties, (leftEntry) -> insertOutTuple(leftEntry.getElement(), rightTuple));
     }
 
     @Override
@@ -172,7 +172,7 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         }
         TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.getStore(inputStoreIndexRightEntry);
         TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
-        indexerRight.removeGGG(indexProperties, rightEntry);
+        indexerRight.remove(indexProperties, rightEntry);
         outTupleListRight.forEach(this::retractOutTuple);
         rightTuple.setStore(inputStoreIndexRightProperties, null);
         rightTuple.setStore(inputStoreIndexRightEntry, null);

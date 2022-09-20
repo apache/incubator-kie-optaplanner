@@ -4,8 +4,9 @@ import static org.optaplanner.constraint.streams.bavet.common.BavetTupleState.DE
 
 import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.Set;
 
+import org.optaplanner.constraint.streams.bavet.common.collection.TupleList;
+import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
 /**
@@ -22,66 +23,50 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
 
     protected final boolean shouldExist;
+
+    protected final int inputStoreIndexLeftTrackerList; // -1 if !isFiltering
+    protected final int inputStoreIndexRightTrackerList; // -1 if !isFiltering
+
     /**
      * Calls for example {@link AbstractScorer#insert(Tuple)}, and/or ...
      */
     private final TupleLifecycle<LeftTuple_> nextNodesTupleLifecycle;
-
+    protected final boolean isFiltering;
     // No outputStoreSize because this node is not a tuple source, even though it has a dirtyCounterQueue.
     protected final Queue<ExistsCounter<LeftTuple_>> dirtyCounterQueue;
-    protected final boolean isFiltering;
 
-    protected AbstractIfExistsNode(boolean shouldExist, TupleLifecycle<LeftTuple_> nextNodeTupleLifecycle,
+    protected AbstractIfExistsNode(boolean shouldExist,
+            int inputStoreIndexLeftTrackerList, int inputStoreIndexRightTrackerList,
+            TupleLifecycle<LeftTuple_> nextNodesTupleLifecycle,
             boolean isFiltering) {
         this.shouldExist = shouldExist;
-        this.nextNodesTupleLifecycle = nextNodeTupleLifecycle;
-        this.dirtyCounterQueue = new ArrayDeque<>(1000);
+        this.inputStoreIndexLeftTrackerList = inputStoreIndexLeftTrackerList;
+        this.inputStoreIndexRightTrackerList = inputStoreIndexRightTrackerList;
+        this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
         this.isFiltering = isFiltering;
+        this.dirtyCounterQueue = new ArrayDeque<>(1000);
     }
 
     protected abstract boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
 
-    protected final void processInsert(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple, ExistsCounter<LeftTuple_> counter,
-            Set<ExistsCounter<LeftTuple_>> counterSetRight) {
-        if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
-            if (counter.countRight++ == 0) {
-                if (shouldExist) {
-                    insertCounter(counter);
-                } else {
-                    retractCounter(counter);
-                }
+    protected void incrementCounter(ExistsCounter<LeftTuple_> counter) {
+        if (counter.countRight == 0) {
+            if (shouldExist) {
+                insertCounter(counter);
+            } else {
+                retractCounter(counter);
             }
-            counterSetRight.add(counter);
         }
+        counter.countRight++;
     }
 
-    protected final void processUpdate(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple, ExistsCounter<LeftTuple_> counter,
-            Set<ExistsCounter<LeftTuple_>> counterSetRight) {
-        if (testFiltering(leftTuple, rightTuple)) {
-            if (counter.countRight++ == 0) {
-                if (shouldExist) {
-                    insertOrUpdateCounter(counter);
-                } else {
-                    retractOrRemainDeadCounter(counter);
-                }
-            }
-            counterSetRight.add(counter);
-        }
-    }
-
-    protected final void processAndClearCounters(Set<ExistsCounter<LeftTuple_>> counterSetRight) {
-        processCounters(counterSetRight);
-        counterSetRight.clear();
-    }
-
-    protected final void processCounters(Set<ExistsCounter<LeftTuple_>> counterSetRight) {
-        for (ExistsCounter<LeftTuple_> counter : counterSetRight) {
-            if (--counter.countRight == 0) {
-                if (shouldExist) {
-                    retractCounter(counter);
-                } else {
-                    insertCounter(counter);
-                }
+    protected void decrementCounter(ExistsCounter<LeftTuple_> counter) {
+        counter.countRight--;
+        if (counter.countRight == 0) {
+            if (shouldExist) {
+                retractCounter(counter);
+            } else {
+                insertCounter(counter);
             }
         }
     }
@@ -106,7 +91,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         }
     }
 
-    private void insertCounter(ExistsCounter<LeftTuple_> counter) {
+    protected void insertCounter(ExistsCounter<LeftTuple_> counter) {
         switch (counter.state) {
             case DYING:
                 counter.state = BavetTupleState.UPDATING;
@@ -224,6 +209,27 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             }
         }
         dirtyCounterQueue.clear();
+    }
+
+    protected class FilteringTracker {
+        protected final ExistsCounter<LeftTuple_> counter;
+        protected final UniTuple<Right_> rightTuple;
+        protected final TupleListEntry<FilteringTracker> leftTrackerEntry;
+        protected final TupleListEntry<FilteringTracker> rightTrackerEntry;
+
+        protected FilteringTracker(ExistsCounter<LeftTuple_> counter, UniTuple<Right_> rightTuple,
+                TupleList<FilteringTracker> leftTrackerList, TupleList<FilteringTracker> rightTrackerList) {
+            this.counter = counter;
+            this.rightTuple = rightTuple;
+            leftTrackerEntry = leftTrackerList.add(this);
+            rightTrackerEntry = rightTrackerList.add(this);
+        }
+
+        public void remove() {
+            leftTrackerEntry.remove();
+            rightTrackerEntry.remove();
+        }
+
     }
 
 }

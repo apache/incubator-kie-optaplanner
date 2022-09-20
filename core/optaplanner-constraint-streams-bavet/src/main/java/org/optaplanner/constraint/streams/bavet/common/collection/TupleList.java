@@ -4,24 +4,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.Tuple;
-
 /**
  * Different from {@link LinkedList} because nodes/indexes are allowed
  * to directly reference {@link TupleListEntry} instances
  * to avoid the lookup by index cost.
  * Also doesn't implement the {@link List} interface.
  *
- * @param <Tuple_> the tuple type
+ * @param <T> The element type. Often a tuple.
  */
-public final class TupleList<Tuple_ extends Tuple> {
+public final class TupleList<T> {
 
     private int size = 0;
-    private TupleListEntry<Tuple_> first = null;
-    private TupleListEntry<Tuple_> last = null;
+    private TupleListEntry<T> first = null;
+    private TupleListEntry<T> last = null;
 
-    public TupleListEntry<Tuple_> add(Tuple_ tuple) {
-        TupleListEntry<Tuple_> entry = new TupleListEntry<>(this, tuple, last);
+    public TupleListEntry<T> add(T tuple) {
+        TupleListEntry<T> entry = new TupleListEntry<>(this, tuple, last);
         if (first == null) {
             first = entry;
         } else {
@@ -32,7 +30,7 @@ public final class TupleList<Tuple_ extends Tuple> {
         return entry;
     }
 
-    public void remove(TupleListEntry<Tuple_> entry) {
+    public void remove(TupleListEntry<T> entry) {
         if (first == entry) {
             first = entry.next;
         } else {
@@ -48,11 +46,11 @@ public final class TupleList<Tuple_ extends Tuple> {
         size--;
     }
 
-    public TupleListEntry<Tuple_> first() {
+    public TupleListEntry<T> first() {
         return first;
     }
 
-    public TupleListEntry<Tuple_> last() {
+    public TupleListEntry<T> last() {
         return last;
     }
 
@@ -60,12 +58,12 @@ public final class TupleList<Tuple_ extends Tuple> {
         return size;
     }
 
-    public void forEach(Consumer<Tuple_> tupleConsumer) {
-        TupleListEntry<Tuple_> entry = first;
+    public void forEach(Consumer<T> tupleConsumer) {
+        TupleListEntry<T> entry = first;
         while (entry != null) {
             // Extract next before processing it, in case the entry is removed and entry.next becomes null
-            TupleListEntry<Tuple_> next = entry.next;
-            tupleConsumer.accept(entry.getTuple());
+            TupleListEntry<T> next = entry.next;
+            tupleConsumer.accept(entry.getElement());
             entry = next;
         }
     }

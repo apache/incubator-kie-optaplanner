@@ -27,4 +27,5 @@ public final class ExistsCounter<Tuple_ extends Tuple> {
     public String toString() {
         return "Counter(" + leftTuple + ")";
     }
+
 }

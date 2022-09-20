@@ -1,12 +1,8 @@
 package org.optaplanner.constraint.streams.bavet.common.index;
 
-import java.util.Map;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.AbstractIndexedJoinNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
-import org.optaplanner.constraint.streams.bavet.common.Tuple;
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
 
 /**
@@ -15,65 +11,25 @@ import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry
  * to all instances of {@code X} that match those properties,
  * depending on the the indexer type (equal, lower than, ...).
  * For example for {@code {Lesson(id=1, room=A), Lesson(id=2, room=B), Lesson(id=3, room=A)}},
- * calling {@code get(room=A)} would return a map with a keySet of lesson 1 and 3.
- * <p>
- * It returns a {@code Map<X, V>} instead of {@code Set<X>} for performance,
- * to avoid doing the same hash lookup twice in the client.
- * For example {@link AbstractIndexedJoinNode} uses the value to store a set of child tuples justified by the X instance.
+ * calling {@code visit(room=A)} would visit lesson 1 and 3.
  * <p>
  * The fact X is wrapped in a Tuple, because the {@link BavetTupleState} is needed by clients of
- * {@link #visit(IndexProperties, BiConsumer)}.
+ * {@link #visit(IndexProperties, Consumer)}.
  *
- * @param <Tuple_> For example for {@code from(A).join(B)}, the tuple is {@code UniTuple<A>} xor {@code UniTuple<B>}.
+ * @param <T> The element type. Often a tuple.
+ *        For example for {@code from(A).join(B)}, the tuple is {@code UniTuple<A>} xor {@code UniTuple<B>}.
  *        For example for {@code Bi<A, B>.join(C)}, the tuple is {@code BiTuple<A, B>} xor {@code UniTuple<C>}.
- * @param <Value_> For example for {@code from(A).join(B)}, the value is a collection of {@code BiTuple<A, B>}.
- *        For example for {@code Bi<A, B>.join(C)}, the value is a collection of {@code TriTuple<A, B, C>}.
  */
-public interface Indexer<Tuple_ extends Tuple, Value_> {
+public interface Indexer<T> {
 
-    /**
-     * Differs from {@link Map#put(Object, Object)} because it fails if the key already exists.
-     * 
-     * @param indexProperties never null
-     * @param tuple never null
-     * @param value never null
-     * @throws IllegalStateException if the indexProperties-tuple key already exists
-     */
-    void put(IndexProperties indexProperties, Tuple_ tuple, Value_ value);
+    TupleListEntry<T> put(IndexProperties indexProperties, T tuple);
 
-    /**
-     * Differs from {@link Map#remove(Object)} because it fails if the key does not exist.
-     * 
-     * @param indexProperties never null
-     * @param tuple never null
-     * @return never null
-     * @throws IllegalStateException if the indexProperties-tuple key didn't exist
-     */
-    Value_ remove(IndexProperties indexProperties, Tuple_ tuple);
+    void remove(IndexProperties indexProperties, TupleListEntry<T> entry);
 
-    /**
-     * Differs from {@link Map#get(Object)} because it fails if the key does not exist.
-     *
-     * @param indexProperties never null
-     * @param tuple never null
-     * @return never null
-     * @throws IllegalStateException if the indexProperties-tuple key didn't exist
-     */
-    Value_ get(IndexProperties indexProperties, Tuple_ tuple);
+    int size(IndexProperties indexProperties);
 
-    /**
-     * @param indexProperties never null
-     * @param tupleValueMapEntryVisitor never null
-     */
-    void visit(IndexProperties indexProperties, BiConsumer<Tuple_, Value_> tupleValueMapEntryVisitor);
+    void visit(IndexProperties indexProperties, Consumer<TupleListEntry<T>> entryVisitor);
 
     boolean isEmpty();
 
-    TupleListEntry<Tuple_> putGGG(IndexProperties indexProperties, Tuple_ tuple);
-
-    void removeGGG(IndexProperties indexProperties, TupleListEntry<Tuple_> entry);
-
-    void visitGGG(IndexProperties indexProperties, Consumer<TupleListEntry<Tuple_>> entryVisitor);
-
-    boolean isEmptyGGG();
 }
