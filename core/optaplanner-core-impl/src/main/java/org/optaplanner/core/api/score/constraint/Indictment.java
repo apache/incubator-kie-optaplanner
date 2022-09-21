@@ -2,6 +2,7 @@ package org.optaplanner.core.api.score.constraint;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -61,6 +62,23 @@ public interface Indictment<Score_ extends Score<Score_>> {
      * @return never null, guaranteed to contain unique instances
      */
     List<ConstraintJustification> getJustificationList();
+
+    /**
+     * Retrieve {@link ConstraintJustification} instances associated with {@link ConstraintMatch}es in
+     * {@link #getConstraintMatchSet()}, which are of (or extend) a given constraint justification implementation.
+     * This is equivalent to retrieving {@link #getConstraintMatchSet()}
+     * and collecting all matching {@link ConstraintMatch#getJustification()} objects into a list.
+     *
+     * @return never null, guaranteed to contain unique instances
+     */
+    default <ConstraintJustification_ extends ConstraintJustification> List<ConstraintJustification_>
+            getJustificationList(Class<ConstraintJustification_> justificationClass) {
+        return getJustificationList()
+                .stream()
+                .filter(justification -> justificationClass.isAssignableFrom(justification.getClass()))
+                .map(j -> (ConstraintJustification_) j)
+                .collect(Collectors.toList());
+    }
 
     /**
      * Sum of the {@link #getConstraintMatchSet()}'s {@link ConstraintMatch#getScore()}.
