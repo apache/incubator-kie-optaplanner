@@ -39,5 +39,4 @@ final class Group0Mapping2CollectorUniNode<OldA, A, B, ResultContainerA_, Result
         outTuple.factB = result.getValue();
     }
 
-
 }

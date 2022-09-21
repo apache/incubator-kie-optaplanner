@@ -41,5 +41,4 @@ final class Group0Mapping3CollectorTriNode<OldA, OldB, OldC, A, B, C, ResultCont
         outTuple.factC = result.getC();
     }
 
-
 }

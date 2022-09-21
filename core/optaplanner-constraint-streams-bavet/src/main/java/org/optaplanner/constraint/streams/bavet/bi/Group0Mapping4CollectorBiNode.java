@@ -46,5 +46,4 @@ final class Group0Mapping4CollectorBiNode<OldA, OldB, A, B, C, D, ResultContaine
         outTuple.factD = result.getD();
     }
 
-
 }
