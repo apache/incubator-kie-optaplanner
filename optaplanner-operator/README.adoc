@@ -35,8 +35,6 @@ Login as a user with the `cluster-admin` role.
 . Apply the CRD by running `oc apply -f crd-solver.yml`.
 . Apply the prepared deployment template by running `oc apply -f optaplanner-operator.yml`.
 
-TIP: If you encounter the `Caused by: javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: PKIX path building failed` exception due to self-signed certificate during the build, add the `-Dquarkus.kubernetes-client.trust-certs=true` property.
-
 == Try the OptaPlanner Operator
 
 === Create a solver custom resource
