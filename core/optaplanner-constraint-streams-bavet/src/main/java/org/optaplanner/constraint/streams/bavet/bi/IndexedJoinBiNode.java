@@ -51,9 +51,4 @@ final class IndexedJoinBiNode<A, B> extends AbstractIndexedJoinNode<UniTuple<A>,
         outTuple.factB = rightTuple.getFactA();
     }
 
-    @Override
-    public String toString() {
-        return "JoinBiNode";
-    }
-
 }

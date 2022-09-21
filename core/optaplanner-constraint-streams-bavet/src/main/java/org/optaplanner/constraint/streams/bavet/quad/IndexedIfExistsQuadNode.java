@@ -56,9 +56,4 @@ final class IndexedIfExistsQuadNode<A, B, C, D, E> extends AbstractIndexedIfExis
                 rightTuple.getFactA());
     }
 
-    @Override
-    public String toString() {
-        return "IfExistsQuadWithUniNode";
-    }
-
 }

@@ -35,9 +35,4 @@ final class UnindexedIfExistsUniNode<A, B> extends AbstractUnindexedIfExistsNode
         return filtering.test(leftTuple.getFactA(), rightTuple.getFactA());
     }
 
-    @Override
-    public String toString() {
-        return "IfExistsUniWithUniNode";
-    }
-
 }

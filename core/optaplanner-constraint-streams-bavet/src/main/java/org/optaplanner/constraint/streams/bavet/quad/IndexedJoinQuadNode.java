@@ -57,9 +57,4 @@ final class IndexedJoinQuadNode<A, B, C, D>
                 outputStoreSize);
     }
 
-    @Override
-    public String toString() {
-        return "JoinQuadNode";
-    }
-
 }

@@ -99,7 +99,7 @@ public final class ForEachUniNode<A> extends AbstractNode {
 
     @Override
     public String toString() {
-        return "ForEachUniNode(" + forEachClass.getSimpleName() + ")";
+        return super.toString() + "(" + forEachClass.getSimpleName() + ")";
     }
 
     public Class<A> getForEachClass() {

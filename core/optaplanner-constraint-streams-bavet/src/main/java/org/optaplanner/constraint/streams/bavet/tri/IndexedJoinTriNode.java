@@ -55,9 +55,4 @@ final class IndexedJoinTriNode<A, B, C>
         outTuple.factC = rightTuple.getFactA();
     }
 
-    @Override
-    public String toString() {
-        return "JoinTriNode";
-    }
-
 }

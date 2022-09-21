@@ -36,9 +36,4 @@ final class UnindexedJoinBiNode<A, B>
         outTuple.factB = rightTuple.getFactA();
     }
 
-    @Override
-    public String toString() {
-        return "JoinBiNode";
-    }
-
 }

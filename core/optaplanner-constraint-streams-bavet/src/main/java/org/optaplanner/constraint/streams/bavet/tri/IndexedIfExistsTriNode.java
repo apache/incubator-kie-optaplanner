@@ -55,9 +55,4 @@ final class IndexedIfExistsTriNode<A, B, C, D> extends AbstractIndexedIfExistsNo
         return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), rightTuple.getFactA());
     }
 
-    @Override
-    public String toString() {
-        return "IfExistsTriWithUniNode";
-    }
-
 }

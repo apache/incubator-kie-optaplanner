@@ -55,9 +55,4 @@ final class IndexedIfExistsBiNode<A, B, C> extends AbstractIndexedIfExistsNode<B
         return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), rightTuple.getFactA());
     }
 
-    @Override
-    public String toString() {
-        return "IfExistsBiWithUniNode";
-    }
-
 }
