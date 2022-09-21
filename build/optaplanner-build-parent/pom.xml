@@ -102,12 +102,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- OptaPlanner Operator does not belong to the optaplanner-bom -->
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-operator</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <!-- Normal dependencies versions-->
       <dependency>
         <groupId>ch.qos.logback</groupId>
