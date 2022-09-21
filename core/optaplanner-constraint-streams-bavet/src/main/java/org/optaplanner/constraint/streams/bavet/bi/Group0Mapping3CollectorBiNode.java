@@ -42,9 +42,5 @@ final class Group0Mapping3CollectorBiNode<OldA, OldB, A, B, C, ResultContainerA_
         outTuple.factC = result.getC();
     }
 
-    @Override
-    public String toString() {
-        return "GroupBiNode 0+3";
-    }
 
 }
