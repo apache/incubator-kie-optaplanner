@@ -134,17 +134,17 @@ public class ListSwapMove<Solution_> extends AbstractMove<Solution_> {
         if (leftEntity == rightEntity) {
             int fromIndex = Math.min(leftIndex, rightIndex);
             int toIndex = Math.max(leftIndex, rightIndex) + 1;
-            innerScoreDirector.beforeSubListChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
             variableDescriptor.setElement(leftEntity, leftIndex, rightElement);
             variableDescriptor.setElement(rightEntity, rightIndex, leftElement);
-            innerScoreDirector.afterSubListChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
         } else {
-            innerScoreDirector.beforeSubListChanged(variableDescriptor, leftEntity, leftIndex, leftIndex + 1);
-            innerScoreDirector.beforeSubListChanged(variableDescriptor, rightEntity, rightIndex, rightIndex + 1);
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor, leftEntity, leftIndex, leftIndex + 1);
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor, rightEntity, rightIndex, rightIndex + 1);
             variableDescriptor.setElement(leftEntity, leftIndex, rightElement);
             variableDescriptor.setElement(rightEntity, rightIndex, leftElement);
-            innerScoreDirector.afterSubListChanged(variableDescriptor, leftEntity, leftIndex, leftIndex + 1);
-            innerScoreDirector.afterSubListChanged(variableDescriptor, rightEntity, rightIndex, rightIndex + 1);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor, leftEntity, leftIndex, leftIndex + 1);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor, rightEntity, rightIndex, rightIndex + 1);
         }
     }
 

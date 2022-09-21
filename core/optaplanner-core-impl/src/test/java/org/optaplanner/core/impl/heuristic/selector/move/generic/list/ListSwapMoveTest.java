@@ -50,10 +50,10 @@ class ListSwapMoveTest {
         assertThat(e1.getValueList()).containsExactly(v3, v2);
         assertThat(e2.getValueList()).containsExactly(v1);
 
-        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 0, 1);
-        verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 0, 1);
-        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e2, 0, 1);
-        verify(scoreDirector).afterSubListChanged(variableDescriptor, e2, 0, 1);
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e1, 0, 1);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e1, 0, 1);
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e2, 0, 1);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e2, 0, 1);
         verify(scoreDirector).triggerVariableListeners();
         verifyNoMoreInteractions(scoreDirector);
 

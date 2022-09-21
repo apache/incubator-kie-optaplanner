@@ -183,11 +183,11 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
         }
     }
 
-    public void beforeSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
+    public void beforeListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
             int toIndex) {
         Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
         if (!notifiables.isEmpty()) {
-            ListVariableNotification<Solution_> notification = Notification.subListChanged(entity, fromIndex, toIndex);
+            ListVariableNotification<Solution_> notification = Notification.listVariableChanged(entity, fromIndex, toIndex);
             for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.notifyBefore(notification);
             }
@@ -195,11 +195,11 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
         }
     }
 
-    public void afterSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
+    public void afterListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
             int toIndex) {
         Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
         if (!notifiables.isEmpty()) {
-            ListVariableNotification<Solution_> notification = Notification.subListChanged(entity, fromIndex, toIndex);
+            ListVariableNotification<Solution_> notification = Notification.listVariableChanged(entity, fromIndex, toIndex);
             for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.notifyAfter(notification);
             }

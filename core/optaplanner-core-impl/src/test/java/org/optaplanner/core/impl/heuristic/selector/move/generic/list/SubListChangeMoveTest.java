@@ -57,10 +57,10 @@ class SubListChangeMoveTest {
         assertThat(e1.getValueList()).containsExactly(v1, v4);
         assertThat(e2.getValueList()).containsExactly(v2, v3, v5);
 
-        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 1, 3);
-        verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 1, 1);
-        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e2, 0, 0);
-        verify(scoreDirector).afterSubListChanged(variableDescriptor, e2, 0, 2);
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e1, 1, 3);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e1, 1, 1);
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e2, 0, 0);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e2, 0, 2);
         verify(scoreDirector).triggerVariableListeners();
         verifyNoMoreInteractions(scoreDirector);
 
@@ -82,10 +82,10 @@ class SubListChangeMoveTest {
         assertThat(e1.getValueList()).containsExactly(v4);
         assertThat(e2.getValueList()).containsExactly(v5, v3, v2, v1);
 
-        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 0, 3);
-        verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 0, 0);
-        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e2, 1, 1);
-        verify(scoreDirector).afterSubListChanged(variableDescriptor, e2, 1, 4);
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e1, 0, 3);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e1, 0, 0);
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e2, 1, 1);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e2, 1, 4);
         verify(scoreDirector).triggerVariableListeners();
         verifyNoMoreInteractions(scoreDirector);
 
@@ -106,13 +106,13 @@ class SubListChangeMoveTest {
 
         assertThat(e1.getValueList()).containsExactly(v4, v5, v1, v2, v3, v6);
 
-        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 0, 5);
-        verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 0, 5);
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e1, 0, 5);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e1, 0, 5);
         // TODO or this more fine-grained? (Do we allow multiple notifications per entity? (Yes))
-        // verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 3, 5);
-        // verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 5, 5);
-        // verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 0, 0);
-        // verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 0, 2);
+        // verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e1, 3, 5);
+        // verify(scoreDirector).afterListVariableChanged(variableDescriptor, e1, 5, 5);
+        // verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e1, 0, 0);
+        // verify(scoreDirector).afterListVariableChanged(variableDescriptor, e1, 0, 2);
         verify(scoreDirector).triggerVariableListeners();
         verifyNoMoreInteractions(scoreDirector);
 

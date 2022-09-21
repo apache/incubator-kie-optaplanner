@@ -284,13 +284,13 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
     // List variable
     // ************************************************************************
 
-    void beforeElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+    void beforeListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
 
-    void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+    void afterListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
 
-    void beforeElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+    void beforeListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
 
-    void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+    void afterListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
 
     /**
      * Notify the score director before a subList of a list variable changes. The subList is a continuous sequence of
@@ -312,7 +312,8 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
      * @param fromIndex low endpoint (inclusive) of the subList
      * @param toIndex high endpoint (exclusive) of the subList
      */
-    void beforeSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex, int toIndex);
+    void beforeListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
+            int toIndex);
 
     /**
      * Notify the score director after a subList of a list variable has changed. The subList is a continuous sequence of
@@ -334,6 +335,7 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
      * @param fromIndex low endpoint (inclusive) of the subList
      * @param toIndex high endpoint (exclusive) of the subList
      */
-    void afterSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex, int toIndex);
+    void afterListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
+            int toIndex);
 
 }

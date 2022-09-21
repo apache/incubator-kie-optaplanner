@@ -54,12 +54,12 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_> implement
     }
 
     @Override
-    public void beforeElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+    public void beforeListVariableElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         // Do nothing
     }
 
     @Override
-    public void afterElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+    public void afterListVariableElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         Object element = sourceVariableDescriptor.getElement(entity, index);
         Object oldInverseEntity = inverseEntityMap.put(element, entity);
         if (oldInverseEntity != null) {
@@ -71,7 +71,7 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_> implement
     }
 
     @Override
-    public void beforeElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+    public void beforeListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         Object element = sourceVariableDescriptor.getElement(entity, index);
         Object oldInverseEntity = inverseEntityMap.remove(element);
         if (oldInverseEntity == null) {
@@ -83,17 +83,17 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_> implement
     }
 
     @Override
-    public void afterElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+    public void afterListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         // Do nothing
     }
 
     @Override
-    public void beforeSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
+    public void beforeListVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
         // Do nothing
     }
 
     @Override
-    public void afterSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
+    public void afterListVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
         for (int i = fromIndex; i < toIndex; i++) {
             inverseEntityMap.put(listVariable.get(i), entity);

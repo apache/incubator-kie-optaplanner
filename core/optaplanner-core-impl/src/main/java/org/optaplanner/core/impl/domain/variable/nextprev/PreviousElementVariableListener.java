@@ -55,12 +55,12 @@ public class PreviousElementVariableListener<Solution_> implements ListVariableL
     }
 
     @Override
-    public void beforeElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+    public void beforeListVariableElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         // Do nothing
     }
 
     @Override
-    public void afterElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+    public void afterListVariableElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
         Object element = listVariable.get(index);
@@ -87,7 +87,7 @@ public class PreviousElementVariableListener<Solution_> implements ListVariableL
     }
 
     @Override
-    public void beforeElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+    public void beforeListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
         Object element = listVariable.get(index);
@@ -99,7 +99,7 @@ public class PreviousElementVariableListener<Solution_> implements ListVariableL
     }
 
     @Override
-    public void afterElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
+    public void afterListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
         if (index < listVariable.size()) {
@@ -114,12 +114,12 @@ public class PreviousElementVariableListener<Solution_> implements ListVariableL
     }
 
     @Override
-    public void beforeSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
+    public void beforeListVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
         // Do nothing
     }
 
     @Override
-    public void afterSubListChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
+    public void afterListVariableChanged(ScoreDirector<Solution_> scoreDirector, Object entity, int fromIndex, int toIndex) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
         Object previous = fromIndex > 0 ? listVariable.get(fromIndex - 1) : null;

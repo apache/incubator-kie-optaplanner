@@ -43,12 +43,12 @@ class ExternalizedSingletonListInverseVariableSupplyTest {
         assertThat(supply.getInverseSingleton(v3)).isSameAs(e2);
 
         // Move v1 from e1[0] to e2[1].
-        supply.beforeSubListChanged(scoreDirector, e1, 0, 1);
+        supply.beforeListVariableChanged(scoreDirector, e1, 0, 1);
         e1.getValueList().remove(v1);
-        supply.afterSubListChanged(scoreDirector, e1, 0, 0);
-        supply.beforeSubListChanged(scoreDirector, e2, 1, 1);
+        supply.afterListVariableChanged(scoreDirector, e1, 0, 0);
+        supply.beforeListVariableChanged(scoreDirector, e2, 1, 1);
         e2.getValueList().add(v1);
-        supply.afterSubListChanged(scoreDirector, e2, 1, 2);
+        supply.afterListVariableChanged(scoreDirector, e2, 1, 2);
 
         assertThat(supply.getInverseSingleton(v1)).isSameAs(e2);
 
@@ -61,16 +61,16 @@ class ExternalizedSingletonListInverseVariableSupplyTest {
         assertThat(supply.getInverseSingleton(v3)).isNull();
 
         // Unassign v2 from e1.
-        supply.beforeElementRemoved(scoreDirector, e1, 0);
+        supply.beforeListVariableElementRemoved(scoreDirector, e1, 0);
         e1.getValueList().remove(v2);
-        supply.afterElementRemoved(scoreDirector, e1, 0);
+        supply.afterListVariableElementRemoved(scoreDirector, e1, 0);
 
         assertThat(supply.getInverseSingleton(v2)).isNull();
 
         // Assign v1 to e1.
-        supply.beforeElementAdded(scoreDirector, e1, 0);
+        supply.beforeListVariableElementAdded(scoreDirector, e1, 0);
         e1.getValueList().add(v1);
-        supply.afterElementAdded(scoreDirector, e1, 0);
+        supply.afterListVariableElementAdded(scoreDirector, e1, 0);
 
         assertThat(supply.getInverseSingleton(v1)).isEqualTo(e1);
 
@@ -87,12 +87,12 @@ class ExternalizedSingletonListInverseVariableSupplyTest {
         assertThat(supply.getInverseSingleton(v3)).isEqualTo(e2);
 
         // Move subList e2[0..2] to e1[1].
-        supply.beforeSubListChanged(scoreDirector, e2, 0, 0);
-        supply.beforeSubListChanged(scoreDirector, e1, 1, 3);
+        supply.beforeListVariableChanged(scoreDirector, e2, 0, 0);
+        supply.beforeListVariableChanged(scoreDirector, e1, 1, 3);
         e1.getValueList().addAll(e2.getValueList());
         e2.getValueList().clear();
-        supply.afterSubListChanged(scoreDirector, e2, 0, 0);
-        supply.afterSubListChanged(scoreDirector, e1, 1, 3);
+        supply.afterListVariableChanged(scoreDirector, e2, 0, 0);
+        supply.afterListVariableChanged(scoreDirector, e1, 1, 3);
 
         assertThat(supply.getInverseSingleton(v1)).isEqualTo(e1);
         assertThat(supply.getInverseSingleton(v2)).isEqualTo(e1);

@@ -144,20 +144,21 @@ public class ListChangeMove<Solution_> extends AbstractMove<Solution_> {
         if (sourceEntity == destinationEntity) {
             int fromIndex = Math.min(sourceIndex, destinationIndex);
             int toIndex = Math.max(sourceIndex, destinationIndex) + 1;
-            innerScoreDirector.beforeSubListChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
             Object element = variableDescriptor.removeElement(sourceEntity, sourceIndex);
             variableDescriptor.addElement(destinationEntity, destinationIndex, element);
-            innerScoreDirector.afterSubListChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
             planningValue = element;
         } else {
-            innerScoreDirector.beforeSubListChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex + 1);
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex + 1);
             Object element = variableDescriptor.removeElement(sourceEntity, sourceIndex);
-            innerScoreDirector.afterSubListChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex);
 
-            innerScoreDirector.beforeSubListChanged(variableDescriptor, destinationEntity, destinationIndex, destinationIndex);
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor,
+                    destinationEntity, destinationIndex, destinationIndex);
             variableDescriptor.addElement(destinationEntity, destinationIndex, element);
-            innerScoreDirector.afterSubListChanged(variableDescriptor, destinationEntity, destinationIndex,
-                    destinationIndex + 1);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor,
+                    destinationEntity, destinationIndex, destinationIndex + 1);
             planningValue = element;
         }
     }

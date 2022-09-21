@@ -63,10 +63,10 @@ class ListChangeMoveTest {
         assertThat(e1.getValueList()).containsExactly(v1);
         assertThat(e2.getValueList()).containsExactly(v3, v2);
 
-        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e1, 1, 2);
-        verify(scoreDirector).afterSubListChanged(variableDescriptor, e1, 1, 1);
-        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e2, 1, 1);
-        verify(scoreDirector).afterSubListChanged(variableDescriptor, e2, 1, 2);
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e1, 1, 2);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e1, 1, 1);
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e2, 1, 1);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e2, 1, 2);
         verify(scoreDirector).triggerVariableListeners();
         verifyNoMoreInteractions(scoreDirector);
 
@@ -117,8 +117,8 @@ class ListChangeMoveTest {
         // ...and the modified value list matches the expectation.
         assertThat(e.getValueList()).map(TestdataObject::toString).isEqualTo(expectedValueList);
 
-        verify(scoreDirector).beforeSubListChanged(variableDescriptor, e, fromIndex, toIndex);
-        verify(scoreDirector).afterSubListChanged(variableDescriptor, e, fromIndex, toIndex);
+        verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e, fromIndex, toIndex);
+        verify(scoreDirector).afterListVariableChanged(variableDescriptor, e, fromIndex, toIndex);
         verify(scoreDirector).triggerVariableListeners();
         verifyNoMoreInteractions(scoreDirector);
 

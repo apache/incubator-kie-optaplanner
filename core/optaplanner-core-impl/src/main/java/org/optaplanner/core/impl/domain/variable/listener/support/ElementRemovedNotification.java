@@ -15,13 +15,13 @@ final class ElementRemovedNotification<Solution_> extends AbstractNotification i
     @Override
     public void triggerBefore(ListVariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.beforeElementRemoved(scoreDirector, entity, index);
+        variableListener.beforeListVariableElementRemoved(scoreDirector, entity, index);
     }
 
     @Override
     public void triggerAfter(ListVariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.afterElementRemoved(scoreDirector, entity, index);
+        variableListener.afterListVariableElementRemoved(scoreDirector, entity, index);
     }
 
     @Override

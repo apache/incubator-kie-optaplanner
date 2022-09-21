@@ -105,18 +105,21 @@ public class SubListChangeMove<Solution_> extends AbstractMove<Solution_> {
         if (sourceEntity == destinationEntity) {
             int fromIndex = Math.min(sourceIndex, destinationIndex);
             int toIndex = Math.max(sourceIndex, destinationIndex) + length;
-            innerScoreDirector.beforeSubListChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
             subList.clear();
             variableDescriptor.getListVariable(destinationEntity).addAll(destinationIndex, subListCopy);
-            innerScoreDirector.afterSubListChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor, sourceEntity, fromIndex, toIndex);
         } else {
-            innerScoreDirector.beforeSubListChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex + length);
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor,
+                    sourceEntity, sourceIndex, sourceIndex + length);
             subList.clear();
-            innerScoreDirector.afterSubListChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex);
-            innerScoreDirector.beforeSubListChanged(variableDescriptor, destinationEntity, destinationIndex, destinationIndex);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor,
+                    sourceEntity, sourceIndex, sourceIndex);
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor,
+                    destinationEntity, destinationIndex, destinationIndex);
             variableDescriptor.getListVariable(destinationEntity).addAll(destinationIndex, subListCopy);
-            innerScoreDirector.afterSubListChanged(variableDescriptor, destinationEntity, destinationIndex,
-                    destinationIndex + length);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor,
+                    destinationEntity, destinationIndex, destinationIndex + length);
         }
     }
 

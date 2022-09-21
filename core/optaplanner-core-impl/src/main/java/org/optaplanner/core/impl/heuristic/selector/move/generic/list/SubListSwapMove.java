@@ -122,29 +122,25 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
                     ? leftFromIndex + leftSubListLength
                     : rightFromIndex + rightSubListLength;
             int leftSubListDestinationIndex = rightFromIndex + rightSubListLength - leftSubListLength;
-            innerScoreDirector.beforeSubListChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
             rightSubListView.clear();
             subList(leftSubList).clear();
             leftList.addAll(leftFromIndex, rightSubListCopy);
             rightList.addAll(leftSubListDestinationIndex, leftSubListCopy);
-            innerScoreDirector.afterSubListChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
         } else {
-            innerScoreDirector.beforeSubListChanged(variableDescriptor, leftEntity,
-                    leftFromIndex,
-                    leftFromIndex + leftSubListLength);
-            innerScoreDirector.beforeSubListChanged(variableDescriptor, rightEntity,
-                    rightFromIndex,
-                    rightFromIndex + rightSubListLength);
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor,
+                    leftEntity, leftFromIndex, leftFromIndex + leftSubListLength);
+            innerScoreDirector.beforeListVariableChanged(variableDescriptor,
+                    rightEntity, rightFromIndex, rightFromIndex + rightSubListLength);
             rightSubListView.clear();
             leftSubListView.clear();
             leftList.addAll(leftFromIndex, rightSubListCopy);
             rightList.addAll(rightFromIndex, leftSubListCopy);
-            innerScoreDirector.afterSubListChanged(variableDescriptor, leftEntity,
-                    leftFromIndex,
-                    leftFromIndex + rightSubListLength);
-            innerScoreDirector.afterSubListChanged(variableDescriptor, rightEntity,
-                    rightFromIndex,
-                    rightFromIndex + leftSubListLength);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor,
+                    leftEntity, leftFromIndex, leftFromIndex + rightSubListLength);
+            innerScoreDirector.afterListVariableChanged(variableDescriptor,
+                    rightEntity, rightFromIndex, rightFromIndex + leftSubListLength);
         }
     }
 

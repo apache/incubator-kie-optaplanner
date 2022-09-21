@@ -37,27 +37,27 @@ class IndexVariableListenerTest {
         assertThat(v2.getIndex()).isEqualTo(1);
         assertThat(v3.getIndex()).isEqualTo(2);
 
-        indexVariableListener.beforeElementAdded(scoreDirector, entity, 2);
+        indexVariableListener.beforeListVariableElementAdded(scoreDirector, entity, 2);
         entity.getValueList().add(2, v4);
-        indexVariableListener.afterElementAdded(scoreDirector, entity, 2);
+        indexVariableListener.afterListVariableElementAdded(scoreDirector, entity, 2);
 
         assertThat(v1.getIndex()).isEqualTo(0);
         assertThat(v2.getIndex()).isEqualTo(1);
         assertThat(v4.getIndex()).isEqualTo(2);
         assertThat(v3.getIndex()).isEqualTo(3);
 
-        indexVariableListener.beforeElementRemoved(scoreDirector, entity, 0);
+        indexVariableListener.beforeListVariableElementRemoved(scoreDirector, entity, 0);
         entity.getValueList().remove(v1);
-        indexVariableListener.afterElementRemoved(scoreDirector, entity, 0);
+        indexVariableListener.afterListVariableElementRemoved(scoreDirector, entity, 0);
 
         assertThat(v2.getIndex()).isEqualTo(0);
         assertThat(v4.getIndex()).isEqualTo(1);
         assertThat(v3.getIndex()).isEqualTo(2);
 
-        indexVariableListener.beforeSubListChanged(scoreDirector, entity, 1, 3);
+        indexVariableListener.beforeListVariableChanged(scoreDirector, entity, 1, 3);
         entity.getValueList().remove(v4);
         entity.getValueList().add(2, v4);
-        indexVariableListener.afterSubListChanged(scoreDirector, entity, 1, 3);
+        indexVariableListener.afterListVariableChanged(scoreDirector, entity, 1, 3);
 
         assertThat(v2.getIndex()).isEqualTo(0);
         assertThat(v3.getIndex()).isEqualTo(1);

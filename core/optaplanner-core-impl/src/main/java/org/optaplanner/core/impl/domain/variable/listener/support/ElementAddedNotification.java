@@ -15,13 +15,13 @@ final class ElementAddedNotification<Solution_> extends AbstractNotification imp
     @Override
     public void triggerBefore(ListVariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.beforeElementAdded(scoreDirector, entity, index);
+        variableListener.beforeListVariableElementAdded(scoreDirector, entity, index);
     }
 
     @Override
     public void triggerAfter(ListVariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.afterElementAdded(scoreDirector, entity, index);
+        variableListener.afterListVariableElementAdded(scoreDirector, entity, index);
     }
 
     @Override

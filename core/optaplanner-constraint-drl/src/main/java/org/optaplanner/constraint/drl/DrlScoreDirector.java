@@ -160,22 +160,23 @@ public class DrlScoreDirector<Solution_, Score_ extends Score<Score_>>
     }
 
     @Override
-    public void afterElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+    public void afterListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
         update(entity, variableDescriptor.getVariableName());
-        super.afterElementAdded(variableDescriptor, entity, index);
+        super.afterListVariableElementAdded(variableDescriptor, entity, index);
     }
 
     @Override
-    public void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index) {
+    public void afterListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity,
+            int index) {
         update(entity, variableDescriptor.getVariableName());
-        super.afterElementRemoved(variableDescriptor, entity, index);
+        super.afterListVariableElementRemoved(variableDescriptor, entity, index);
     }
 
     @Override
-    public void afterSubListChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
+    public void afterListVariableChanged(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int fromIndex,
             int toIndex) {
         update(entity, variableDescriptor.getVariableName());
-        super.afterSubListChanged(variableDescriptor, entity, fromIndex, toIndex);
+        super.afterListVariableChanged(variableDescriptor, entity, fromIndex, toIndex);
     }
 
     private void update(Object entity, String variableName) {
