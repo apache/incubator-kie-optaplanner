@@ -9,6 +9,7 @@
       <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
       <entityClass>org.optaplanner.examples.vehiclerouting.domain.Vehicle</entityClass>
       <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
+      <entityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</entityClass>
 
       <scoreDirectorFactory>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>

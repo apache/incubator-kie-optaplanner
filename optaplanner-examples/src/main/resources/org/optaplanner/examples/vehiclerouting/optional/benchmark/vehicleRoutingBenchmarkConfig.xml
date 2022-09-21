@@ -10,6 +10,7 @@
       <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
       <entityClass>org.optaplanner.examples.vehiclerouting.domain.Vehicle</entityClass>
       <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
+      <entityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</entityClass>
 
       <scoreDirectorFactory>
         <constraintProviderClass>org.optaplanner.examples.vehiclerouting.score.VehicleRoutingConstraintProvider</constraintProviderClass>
@@ -187,6 +188,7 @@
     </solver>
   </solverBenchmark>
 
+  <!-- FIXME Nearby selection for a list variable not yet supported: https://issues.redhat.com/browse/PLANNER-2814-->
   <!--<solverBenchmark>-->
   <!--  <name>Tabu Search Nearby</name>-->
   <!--  <solver>-->
