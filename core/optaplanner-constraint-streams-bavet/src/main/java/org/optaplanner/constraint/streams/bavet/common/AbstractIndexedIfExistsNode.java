@@ -116,6 +116,7 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
                 TupleList<FilteringTracker> leftTrackerList = leftTuple.getStore(inputStoreIndexLeftTrackerList);
                 leftTrackerList.forEach(FilteringTracker::remove);
             }
+            counter.countRight = 0;
             leftTuple.setStore(inputStoreIndexLeftProperties, newIndexProperties);
             counterEntry = indexerLeft.put(newIndexProperties, counter);
             leftTuple.setStore(inputStoreIndexLeftCounterEntry, counterEntry);
