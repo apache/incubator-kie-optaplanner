@@ -5,18 +5,15 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
-import org.optaplanner.core.api.score.stream.ConstraintJustification;
 
 public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score_>>
         implements ScoreExplanation<Solution_, Score_> {
@@ -125,18 +122,6 @@ public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score
     @Override
     public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         return constraintMatchTotalMap;
-    }
-
-    @Override
-    public List<ConstraintMatchTotal<Score_>>
-            getConstraintMatchTotals(Class<? extends ConstraintJustification> constraintJustificationClass) {
-        return getConstraintMatchTotalMap()
-                .values()
-                .stream()
-                .filter(c -> c.getConstraintMatchSet()
-                        .stream()
-                        .anyMatch(m -> constraintJustificationClass.isAssignableFrom(m.getJustification().getClass())))
-                .collect(Collectors.toList());
     }
 
     @Override

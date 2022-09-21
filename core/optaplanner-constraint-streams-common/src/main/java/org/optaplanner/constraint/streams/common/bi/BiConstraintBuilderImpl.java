@@ -16,7 +16,7 @@ public final class BiConstraintBuilderImpl<A, B>
         implements BiConstraintBuilder<A, B> {
 
     private TriFunction<A, B, Score<?>, ConstraintJustification> justificationMapping;
-    private BiFunction<A, B, Collection<?>> indictedObjectsMapping;
+    private BiFunction<A, B, Collection<Object>> indictedObjectsMapping;
 
     public BiConstraintBuilderImpl(BiConstraintConstructor<A, B> constraintConstructor, ScoreImpactType impactType,
             Score<?> constraintWeight) {
@@ -40,12 +40,12 @@ public final class BiConstraintBuilderImpl<A, B>
     }
 
     @Override
-    protected BiFunction<A, B, Collection<?>> getIndictedObjectsMapping() {
+    protected BiFunction<A, B, Collection<Object>> getIndictedObjectsMapping() {
         return indictedObjectsMapping;
     }
 
     @Override
-    public BiConstraintBuilder<A, B> indictWith(BiFunction<A, B, Collection<?>> indictedObjectsMapping) {
+    public BiConstraintBuilder<A, B> indictWith(BiFunction<A, B, Collection<Object>> indictedObjectsMapping) {
         if (this.indictedObjectsMapping != null) {
             throw new IllegalStateException("Indicted objects' mapping already set (" + indictedObjectsMapping + ").");
         }

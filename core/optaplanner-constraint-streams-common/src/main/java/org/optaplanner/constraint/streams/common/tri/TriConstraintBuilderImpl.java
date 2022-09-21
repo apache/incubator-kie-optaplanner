@@ -16,7 +16,7 @@ public final class TriConstraintBuilderImpl<A, B, C>
         implements TriConstraintBuilder<A, B, C> {
 
     private QuadFunction<A, B, C, Score<?>, ConstraintJustification> justificationMapping;
-    private TriFunction<A, B, C, Collection<?>> indictedObjectsMapping;
+    private TriFunction<A, B, C, Collection<Object>> indictedObjectsMapping;
 
     public TriConstraintBuilderImpl(TriConstraintConstructor<A, B, C> constraintConstructor, ScoreImpactType impactType,
             Score<?> constraintWeight) {
@@ -40,12 +40,12 @@ public final class TriConstraintBuilderImpl<A, B, C>
     }
 
     @Override
-    protected TriFunction<A, B, C, Collection<?>> getIndictedObjectsMapping() {
+    protected TriFunction<A, B, C, Collection<Object>> getIndictedObjectsMapping() {
         return indictedObjectsMapping;
     }
 
     @Override
-    public TriConstraintBuilder<A, B, C> indictWith(TriFunction<A, B, C, Collection<?>> indictedObjectsMapping) {
+    public TriConstraintBuilder<A, B, C> indictWith(TriFunction<A, B, C, Collection<Object>> indictedObjectsMapping) {
         if (this.indictedObjectsMapping != null) {
             throw new IllegalStateException("Indicted objects' mapping already set (" + indictedObjectsMapping + ").");
         }

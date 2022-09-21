@@ -110,7 +110,7 @@ public final class BavetScoringQuadConstraintStream<Solution_, A, B, C, D>
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraint, constraintWeight);
         PentaFunction<A, B, C, D, Score<?>, ConstraintJustification> justificationMapping =
                 constraint.getJustificationMapping();
-        QuadFunction<A, B, C, D, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+        QuadFunction<A, B, C, D, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
         QuadFunction<A, B, C, D, UndoScoreImpacter> scoreImpacter;
         if (intMatchWeigher != null) {
             scoreImpacter = (a, b, c, d) -> {

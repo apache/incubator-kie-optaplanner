@@ -2,6 +2,7 @@ package org.optaplanner.core.api.score;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -91,8 +92,16 @@ public interface ScoreExplanation<Solution_, Score_ extends Score<Score_>> {
      * @return never null, all constraint matches associated with the given justification class
      * @see #getIndictmentMap()
      */
-    List<ConstraintMatchTotal<Score_>>
-            getConstraintMatchTotals(Class<? extends ConstraintJustification> constraintJustificationClass);
+    default List<ConstraintMatchTotal<Score_>>
+            getConstraintMatchTotals(Class<? extends ConstraintJustification> constraintJustificationClass) {
+        return getConstraintMatchTotalMap()
+                .values()
+                .stream()
+                .filter(c -> c.getConstraintMatchSet()
+                        .stream()
+                        .anyMatch(m -> constraintJustificationClass.isAssignableFrom(m.getJustification().getClass())))
+                .collect(Collectors.toList());
+    }
 
     /**
      * Explains the impact of each planning entity or problem fact on the {@link Score}.

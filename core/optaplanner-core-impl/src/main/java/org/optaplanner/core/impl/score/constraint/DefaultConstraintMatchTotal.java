@@ -92,7 +92,7 @@ public final class DefaultConstraintMatchTotal<Score_ extends Score<Score_>> imp
      * @param score never null
      * @return never null
      */
-    public ConstraintMatch<Score_> addConstraintMatch(ConstraintJustification justification, Collection<?> indictedObjects,
+    public ConstraintMatch<Score_> addConstraintMatch(ConstraintJustification justification, Collection<Object> indictedObjects,
             Score_ score) {
         this.score = this.score == null ? score : this.score.add(score);
         ConstraintMatch<Score_> constraintMatch = new ConstraintMatch<>(constraintPackage, constraintName,

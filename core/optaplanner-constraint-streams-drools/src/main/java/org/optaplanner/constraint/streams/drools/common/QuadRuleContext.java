@@ -38,7 +38,8 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
                 (constraint, scoreImpacterGlobal) -> {
                     PentaFunction<A, B, C, D, Score<?>, ConstraintJustification> justificationMapping =
                             constraint.getJustificationMapping();
-                    QuadFunction<A, B, C, D, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+                    QuadFunction<A, B, C, D, Collection<Object>> indictedObjectsMapping =
+                            constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC, variableD)
                             .execute((drools, scoreImpacter, a, b, c, d) -> {
                                 JustificationsSupplier justificationsSupplier =
@@ -56,7 +57,8 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
                 (constraint, scoreImpacterGlobal) -> {
                     PentaFunction<A, B, C, D, Score<?>, ConstraintJustification> justificationMapping =
                             constraint.getJustificationMapping();
-                    QuadFunction<A, B, C, D, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+                    QuadFunction<A, B, C, D, Collection<Object>> indictedObjectsMapping =
+                            constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC, variableD)
                             .execute((drools, scoreImpacter, a, b, c, d) -> {
                                 JustificationsSupplier justificationsSupplier =
@@ -74,7 +76,8 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
                 (constraint, scoreImpacterGlobal) -> {
                     PentaFunction<A, B, C, D, Score<?>, ConstraintJustification> justificationMapping =
                             constraint.getJustificationMapping();
-                    QuadFunction<A, B, C, D, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+                    QuadFunction<A, B, C, D, Collection<Object>> indictedObjectsMapping =
+                            constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC, variableD)
                             .execute((drools, scoreImpacter, a, b, c, d) -> {
                                 JustificationsSupplier justificationsSupplier =

@@ -16,7 +16,7 @@ public final class UniConstraintBuilderImpl<A>
         implements UniConstraintBuilder<A> {
 
     private BiFunction<A, Score<?>, ConstraintJustification> justificationMapping;
-    private Function<A, Collection<?>> indictedObjectsMapping;
+    private Function<A, Collection<Object>> indictedObjectsMapping;
 
     public UniConstraintBuilderImpl(UniConstraintConstructor<A> constraintConstructor, ScoreImpactType impactType,
             Score<?> constraintWeight) {
@@ -40,12 +40,12 @@ public final class UniConstraintBuilderImpl<A>
     }
 
     @Override
-    protected Function<A, Collection<?>> getIndictedObjectsMapping() {
+    protected Function<A, Collection<Object>> getIndictedObjectsMapping() {
         return indictedObjectsMapping;
     }
 
     @Override
-    public UniConstraintBuilder<A> indictWith(Function<A, Collection<?>> indictedObjectsMapping) {
+    public UniConstraintBuilder<A> indictWith(Function<A, Collection<Object>> indictedObjectsMapping) {
         if (this.indictedObjectsMapping != null) {
             throw new IllegalStateException("Indicted objects' mapping already set (" + indictedObjectsMapping + ").");
         }

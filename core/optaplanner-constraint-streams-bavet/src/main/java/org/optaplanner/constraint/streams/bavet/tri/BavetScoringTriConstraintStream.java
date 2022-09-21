@@ -109,7 +109,7 @@ public final class BavetScoringTriConstraintStream<Solution_, A, B, C>
         AbstractScoreInliner<Score_> scoreInliner = buildHelper.getScoreInliner();
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraint, constraintWeight);
         QuadFunction<A, B, C, Score<?>, ConstraintJustification> justificationMapping = constraint.getJustificationMapping();
-        TriFunction<A, B, C, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+        TriFunction<A, B, C, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
         TriFunction<A, B, C, UndoScoreImpacter> scoreImpacter;
         if (intMatchWeigher != null) {
             scoreImpacter = (a, b, c) -> {

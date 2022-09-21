@@ -109,7 +109,7 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
         AbstractScoreInliner<Score_> scoreInliner = buildHelper.getScoreInliner();
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraint, constraintWeight);
         TriFunction<A, B, Score<?>, ConstraintJustification> justificationMapping = constraint.getJustificationMapping();
-        BiFunction<A, B, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+        BiFunction<A, B, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
         BiFunction<A, B, UndoScoreImpacter> scoreImpacter;
         if (intMatchWeigher != null) {
             scoreImpacter = (a, b) -> {

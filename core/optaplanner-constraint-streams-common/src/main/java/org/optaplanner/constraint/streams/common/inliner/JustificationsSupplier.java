@@ -23,15 +23,15 @@ public final class JustificationsSupplier {
     }
 
     public static JustificationsSupplier of(Function<Score<?>, ConstraintJustification> constraintJustificationSupplier,
-            Supplier<Collection<?>> indictedObjectsSupplier) {
+            Supplier<Collection<Object>> indictedObjectsSupplier) {
         return new JustificationsSupplier(constraintJustificationSupplier, indictedObjectsSupplier);
     }
 
     private final Function<Score<?>, ConstraintJustification> constraintJustificationSupplier;
-    private final Supplier<Collection<?>> indictedObjectsSupplier;
+    private final Supplier<Collection<Object>> indictedObjectsSupplier;
 
     private JustificationsSupplier(Function<Score<?>, ConstraintJustification> constraintJustificationSupplier,
-            Supplier<Collection<?>> indictedObjectsSupplier) {
+            Supplier<Collection<Object>> indictedObjectsSupplier) {
         this.constraintJustificationSupplier = Objects.requireNonNull(constraintJustificationSupplier);
         this.indictedObjectsSupplier = Objects.requireNonNull(indictedObjectsSupplier);
     }
@@ -40,7 +40,7 @@ public final class JustificationsSupplier {
         return constraintJustificationSupplier.apply(impact);
     }
 
-    public Collection<?> createIndictedObjects() {
+    public Collection<Object> createIndictedObjects() {
         return indictedObjectsSupplier.get();
     }
 

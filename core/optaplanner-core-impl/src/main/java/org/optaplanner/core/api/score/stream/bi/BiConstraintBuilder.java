@@ -43,6 +43,6 @@ public interface BiConstraintBuilder<A, B> extends ConstraintBuilder<BiConstrain
      * @param indictedObjectsMapping never null
      * @return this
      */
-    BiConstraintBuilder<A, B> indictWith(BiFunction<A, B, Collection<?>> indictedObjectsMapping);
+    BiConstraintBuilder<A, B> indictWith(BiFunction<A, B, Collection<Object>> indictedObjectsMapping);
 
 }

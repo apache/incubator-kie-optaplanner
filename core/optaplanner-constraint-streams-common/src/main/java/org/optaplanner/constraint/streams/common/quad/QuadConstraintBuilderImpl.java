@@ -16,7 +16,7 @@ public final class QuadConstraintBuilderImpl<A, B, C, D>
         implements QuadConstraintBuilder<A, B, C, D> {
 
     private PentaFunction<A, B, C, D, Score<?>, ConstraintJustification> justificationMapping;
-    private QuadFunction<A, B, C, D, Collection<?>> indictedObjectsMapping;
+    private QuadFunction<A, B, C, D, Collection<Object>> indictedObjectsMapping;
 
     public QuadConstraintBuilderImpl(QuadConstraintConstructor<A, B, C, D> constraintConstructor, ScoreImpactType impactType,
             Score<?> constraintWeight) {
@@ -40,12 +40,12 @@ public final class QuadConstraintBuilderImpl<A, B, C, D>
     }
 
     @Override
-    protected QuadFunction<A, B, C, D, Collection<?>> getIndictedObjectsMapping() {
+    protected QuadFunction<A, B, C, D, Collection<Object>> getIndictedObjectsMapping() {
         return indictedObjectsMapping;
     }
 
     @Override
-    public QuadConstraintBuilder<A, B, C, D> indictWith(QuadFunction<A, B, C, D, Collection<?>> indictedObjectsMapping) {
+    public QuadConstraintBuilder<A, B, C, D> indictWith(QuadFunction<A, B, C, D, Collection<Object>> indictedObjectsMapping) {
         if (this.indictedObjectsMapping != null) {
             throw new IllegalStateException("Indicted objects' mapping already set (" + indictedObjectsMapping + ").");
         }

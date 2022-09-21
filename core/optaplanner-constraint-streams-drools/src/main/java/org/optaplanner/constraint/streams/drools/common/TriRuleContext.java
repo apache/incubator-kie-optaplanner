@@ -36,7 +36,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
                 (constraint, scoreImpacterGlobal) -> {
                     QuadFunction<A, B, C, Score<?>, ConstraintJustification> justificationMapping =
                             constraint.getJustificationMapping();
-                    TriFunction<A, B, C, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+                    TriFunction<A, B, C, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                             .execute((drools, scoreImpacter, a, b, c) -> {
                                 JustificationsSupplier justificationsSupplier =
@@ -54,7 +54,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
                 (constraint, scoreImpacterGlobal) -> {
                     QuadFunction<A, B, C, Score<?>, ConstraintJustification> justificationMapping =
                             constraint.getJustificationMapping();
-                    TriFunction<A, B, C, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+                    TriFunction<A, B, C, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                             .execute((drools, scoreImpacter, a, b, c) -> {
                                 JustificationsSupplier justificationsSupplier =
@@ -72,7 +72,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
                 (constraint, scoreImpacterGlobal) -> {
                     QuadFunction<A, B, C, Score<?>, ConstraintJustification> justificationMapping =
                             constraint.getJustificationMapping();
-                    TriFunction<A, B, C, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+                    TriFunction<A, B, C, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                             .execute((drools, scoreImpacter, a, b, c) -> {
                                 JustificationsSupplier justificationsSupplier =

@@ -31,7 +31,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
                 (constraint, scoreImpacterGlobal) -> {
                     BiFunction<A, Score<?>, ConstraintJustification> justificationMapping =
                             constraint.getJustificationMapping();
-                    Function<A, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+                    Function<A, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variable)
                             .execute((drools, scoreImpacter, a) -> {
                                 JustificationsSupplier justificationsSupplier =
@@ -49,7 +49,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
                 (constraint, scoreImpacterGlobal) -> {
                     BiFunction<A, Score<?>, ConstraintJustification> justificationMapping =
                             constraint.getJustificationMapping();
-                    Function<A, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+                    Function<A, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variable)
                             .execute((drools, scoreImpacter, a) -> {
                                 JustificationsSupplier justificationsSupplier =
@@ -67,7 +67,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
                 (constraint, scoreImpacterGlobal) -> {
                     BiFunction<A, Score<?>, ConstraintJustification> justificationMapping =
                             constraint.getJustificationMapping();
-                    Function<A, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+                    Function<A, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variable)
                             .execute((drools, scoreImpacter, a) -> {
                                 JustificationsSupplier justificationsSupplier =

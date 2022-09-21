@@ -44,6 +44,6 @@ public interface UniConstraintBuilder<A> extends ConstraintBuilder<UniConstraint
      * @param indictedObjectsMapping never null
      * @return this
      */
-    UniConstraintBuilder<A> indictWith(Function<A, Collection<?>> indictedObjectsMapping);
+    UniConstraintBuilder<A> indictWith(Function<A, Collection<Object>> indictedObjectsMapping);
 
 }

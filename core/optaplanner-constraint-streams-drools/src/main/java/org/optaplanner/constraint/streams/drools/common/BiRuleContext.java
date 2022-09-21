@@ -33,7 +33,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
                 (constraint, scoreImpacterGlobal) -> {
                     TriFunction<A, B, Score<?>, ConstraintJustification> justificationMapping =
                             constraint.getJustificationMapping();
-                    BiFunction<A, B, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+                    BiFunction<A, B, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
                                 JustificationsSupplier justificationsSupplier =
@@ -51,7 +51,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
                 (constraint, scoreImpacterGlobal) -> {
                     TriFunction<A, B, Score<?>, ConstraintJustification> justificationMapping =
                             constraint.getJustificationMapping();
-                    BiFunction<A, B, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+                    BiFunction<A, B, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
                                 JustificationsSupplier justificationsSupplier =
@@ -69,7 +69,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
                 (constraint, scoreImpacterGlobal) -> {
                     TriFunction<A, B, Score<?>, ConstraintJustification> justificationMapping =
                             constraint.getJustificationMapping();
-                    BiFunction<A, B, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+                    BiFunction<A, B, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
                                 JustificationsSupplier justificationsSupplier =

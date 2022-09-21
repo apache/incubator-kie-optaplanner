@@ -42,6 +42,6 @@ public interface TriConstraintBuilder<A, B, C> extends ConstraintBuilder<TriCons
      * @param indictedObjectsMapping never null
      * @return this
      */
-    TriConstraintBuilder<A, B, C> indictWith(TriFunction<A, B, C, Collection<?>> indictedObjectsMapping);
+    TriConstraintBuilder<A, B, C> indictWith(TriFunction<A, B, C, Collection<Object>> indictedObjectsMapping);
 
 }

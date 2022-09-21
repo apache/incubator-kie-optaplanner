@@ -42,6 +42,6 @@ public interface QuadConstraintBuilder<A, B, C, D> extends ConstraintBuilder<Qua
      * @param indictedObjectsMapping never null
      * @return this
      */
-    QuadConstraintBuilder<A, B, C, D> indictWith(QuadFunction<A, B, C, D, Collection<?>> indictedObjectsMapping);
+    QuadConstraintBuilder<A, B, C, D> indictWith(QuadFunction<A, B, C, D, Collection<Object>> indictedObjectsMapping);
 
 }

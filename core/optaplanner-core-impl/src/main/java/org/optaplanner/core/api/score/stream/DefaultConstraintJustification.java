@@ -41,7 +41,7 @@ public final class DefaultConstraintJustification
     }
 
     private final Score<?> impact;
-    private final List<?> facts;
+    private final List<Object> facts;
     private Comparator<Object> classAndIdPlanningComparator;
 
     private DefaultConstraintJustification(Score<?> impact, List<Object> facts) {
@@ -53,7 +53,7 @@ public final class DefaultConstraintJustification
         return (Score_) impact;
     }
 
-    public List<?> getFacts() {
+    public List<Object> getFacts() {
         return facts;
     }
 

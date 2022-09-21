@@ -49,7 +49,7 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
      * @param score never null
      */
     public ConstraintMatch(String constraintPackage, String constraintName, ConstraintJustification justification,
-            Collection<?> indictedObjects, Score_ score) {
+            Collection<Object> indictedObjects, Score_ score) {
         this.constraintPackage = requireNonNull(constraintPackage);
         this.constraintName = requireNonNull(constraintName);
         this.constraintId = ConstraintMatchTotal.composeConstraintId(constraintPackage, constraintName);
@@ -88,7 +88,7 @@ public final class ConstraintMatch<Score_ extends Score<Score_>> implements Comp
     @Deprecated(forRemoval = true)
     public List<Object> getJustificationList() {
         if (justification instanceof DefaultConstraintJustification) { // No custom function provided.
-            return (List<Object>) ((DefaultConstraintJustification) justification).getFacts();
+            return ((DefaultConstraintJustification) justification).getFacts();
         } else {
             throw new IllegalStateException("Cannot retrieve list of facts from a custom constraint justification ("
                     + justification + ").\n" +

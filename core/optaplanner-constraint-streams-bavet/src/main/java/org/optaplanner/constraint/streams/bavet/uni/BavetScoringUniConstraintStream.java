@@ -112,7 +112,7 @@ public final class BavetScoringUniConstraintStream<Solution_, A>
         }
         WeightedScoreImpacter weightedScoreImpacter = scoreInliner.buildWeightedScoreImpacter(constraint, constraintWeight);
         BiFunction<A, Score<?>, ConstraintJustification> justificationMapping = constraint.getJustificationMapping();
-        Function<A, Collection<?>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
+        Function<A, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
         Function<A, UndoScoreImpacter> scoreImpacter;
         if (intMatchWeigher != null) {
             scoreImpacter = a -> {
