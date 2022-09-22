@@ -227,14 +227,12 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     protected class FilteringTracker {
         protected final ExistsCounter<LeftTuple_> counter;
-        protected final UniTuple<Right_> rightTuple;
         protected final TupleListEntry<FilteringTracker> leftTrackerEntry;
         protected final TupleListEntry<FilteringTracker> rightTrackerEntry;
 
-        protected FilteringTracker(ExistsCounter<LeftTuple_> counter, UniTuple<Right_> rightTuple,
+        protected FilteringTracker(ExistsCounter<LeftTuple_> counter,
                 TupleList<FilteringTracker> leftTrackerList, TupleList<FilteringTracker> rightTrackerList) {
             this.counter = counter;
-            this.rightTuple = rightTuple;
             leftTrackerEntry = leftTrackerList.add(this);
             rightTrackerEntry = rightTrackerList.add(this);
         }

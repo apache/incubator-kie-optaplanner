@@ -52,7 +52,7 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
                 if (testFiltering(leftTuple, rightTuple)) {
                     counter.countRight++;
                     TupleList<FilteringTracker> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
-                    new FilteringTracker(counter, rightTuple, leftTrackerList, rightTrackerList);
+                    new FilteringTracker(counter, leftTrackerList, rightTrackerList);
                 }
             });
             leftTuple.setStore(inputStoreIndexLeftTrackerList, leftTrackerList);
@@ -81,7 +81,7 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
                 if (testFiltering(leftTuple, rightTuple)) {
                     counter.countRight++;
                     TupleList<FilteringTracker> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
-                    new FilteringTracker(counter, rightTuple, leftTrackerList, rightTrackerList);
+                    new FilteringTracker(counter, leftTrackerList, rightTrackerList);
                 }
             });
             updateCounterLeft(counter);
@@ -120,7 +120,7 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
                 if (testFiltering(counter.leftTuple, rightTuple)) {
                     incrementCounterRight(counter);
                     TupleList<FilteringTracker> leftTrackerList = counter.leftTuple.getStore(inputStoreIndexLeftTrackerList);
-                    new FilteringTracker(counter, rightTuple, leftTrackerList, rightTrackerList);
+                    new FilteringTracker(counter, leftTrackerList, rightTrackerList);
                 }
             });
             rightTuple.setStore(inputStoreIndexRightTrackerList, rightTrackerList);
@@ -145,7 +145,7 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
                 if (testFiltering(counter.leftTuple, rightTuple)) {
                     incrementCounterRight(counter);
                     TupleList<FilteringTracker> leftTrackerList = counter.leftTuple.getStore(inputStoreIndexLeftTrackerList);
-                    new FilteringTracker(counter, rightTuple, leftTrackerList, rightTrackerList);
+                    new FilteringTracker(counter, leftTrackerList, rightTrackerList);
                 }
             });
         }
