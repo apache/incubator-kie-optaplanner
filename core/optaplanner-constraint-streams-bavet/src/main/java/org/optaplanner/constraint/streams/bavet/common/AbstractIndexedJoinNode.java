@@ -95,7 +95,7 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         leftTuple.setStore(inputStoreIndexLeftProperties, indexProperties);
         TupleListEntry<LeftTuple_> leftEntry = indexerLeft.put(indexProperties, leftTuple);
         leftTuple.setStore(inputStoreIndexLeftEntry, leftEntry);
-        indexerRight.visit(indexProperties, (rightEntry) -> insertOutTuple(leftTuple, rightEntry.getElement()));
+        indexerRight.forEach(indexProperties, (rightTuple) -> insertOutTuple(leftTuple, rightTuple));
     }
 
     @Override
@@ -160,7 +160,7 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         rightTuple.setStore(inputStoreIndexRightProperties, indexProperties);
         TupleListEntry<UniTuple<Right_>> rightEntry = indexerRight.put(indexProperties, rightTuple);
         rightTuple.setStore(inputStoreIndexRightEntry, rightEntry);
-        indexerLeft.visit(indexProperties, (leftEntry) -> insertOutTuple(leftEntry.getElement(), rightTuple));
+        indexerLeft.forEach(indexProperties, (leftTuple) -> insertOutTuple(leftTuple, rightTuple));
     }
 
     @Override

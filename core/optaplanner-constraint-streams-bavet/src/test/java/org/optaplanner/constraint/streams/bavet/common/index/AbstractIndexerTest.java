@@ -31,7 +31,7 @@ abstract class AbstractIndexerTest {
                 break;
         }
         List<T> result = new ArrayList<>();
-        indexer.visit(properties, entry -> result.add(entry.getElement()));
+        indexer.forEach(properties, result::add);
         return result;
     }
 

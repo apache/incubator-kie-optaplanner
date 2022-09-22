@@ -14,7 +14,7 @@ import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry
  * calling {@code visit(room=A)} would visit lesson 1 and 3.
  * <p>
  * The fact X is wrapped in a Tuple, because the {@link BavetTupleState} is needed by clients of
- * {@link #visit(IndexProperties, Consumer)}.
+ * {@link #forEach(IndexProperties, Consumer)}.
  *
  * @param <T> The element type. Often a tuple.
  *        For example for {@code from(A).join(B)}, the tuple is {@code UniTuple<A>} xor {@code UniTuple<B>}.
@@ -28,7 +28,7 @@ public interface Indexer<T> {
 
     int size(IndexProperties indexProperties);
 
-    void visit(IndexProperties indexProperties, Consumer<TupleListEntry<T>> entryVisitor);
+    void forEach(IndexProperties indexProperties, Consumer<T> tupleConsumer);
 
     boolean isEmpty();
 

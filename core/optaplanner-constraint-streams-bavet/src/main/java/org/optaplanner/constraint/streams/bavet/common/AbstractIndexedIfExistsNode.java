@@ -63,8 +63,7 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
             counter.countRight = indexerRight.size(indexProperties);
         } else {
             TupleList<FilteringTracker> leftTrackerList = new TupleList<>();
-            indexerRight.visit(indexProperties, rightEntry -> {
-                UniTuple<Right_> rightTuple = rightEntry.getElement();
+            indexerRight.forEach(indexProperties, rightTuple -> {
                 if (testFiltering(leftTuple, rightTuple)) {
                     counter.countRight++;
                     TupleList<FilteringTracker> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
@@ -101,8 +100,7 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
                 TupleList<FilteringTracker> leftTrackerList = leftTuple.getStore(inputStoreIndexLeftTrackerList);
                 leftTrackerList.forEach(FilteringTracker::remove);
                 counter.countRight = 0;
-                indexerRight.visit(oldIndexProperties, rightEntry -> {
-                    UniTuple<Right_> rightTuple = rightEntry.getElement();
+                indexerRight.forEach(oldIndexProperties, rightTuple -> {
                     if (testFiltering(leftTuple, rightTuple)) {
                         counter.countRight++;
                         TupleList<FilteringTracker> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
@@ -124,8 +122,7 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
                 counter.countRight = indexerRight.size(newIndexProperties);
             } else {
                 TupleList<FilteringTracker> leftTrackerList = new TupleList<>();
-                indexerRight.visit(newIndexProperties, rightEntry -> {
-                    UniTuple<Right_> rightTuple = rightEntry.getElement();
+                indexerRight.forEach(newIndexProperties, rightTuple -> {
                     if (testFiltering(leftTuple, rightTuple)) {
                         counter.countRight++;
                         TupleList<FilteringTracker> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
@@ -177,11 +174,10 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
         TupleListEntry<UniTuple<Right_>> rightEntry = indexerRight.put(indexProperties, rightTuple);
         rightTuple.setStore(inputStoreIndexRightEntry, rightEntry);
         if (!isFiltering) {
-            indexerLeft.visit(indexProperties, counterEntry -> incrementCounter(counterEntry.getElement()));
+            indexerLeft.forEach(indexProperties, this::incrementCounter);
         } else {
             TupleList<FilteringTracker> rightTrackerList = new TupleList<>();
-            indexerLeft.visit(indexProperties, counterEntry -> {
-                ExistsCounter<LeftTuple_> counter = counterEntry.getElement();
+            indexerLeft.forEach(indexProperties, counter -> {
                 if (testFiltering(counter.leftTuple, rightTuple)) {
                     incrementCounter(counter);
                     TupleList<FilteringTracker> leftTrackerList = counter.leftTuple.getStore(inputStoreIndexLeftTrackerList);
@@ -210,8 +206,7 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
                     decrementCounter(filteringTacker.counter);
                     filteringTacker.remove();
                 });
-                indexerLeft.visit(oldIndexProperties, counterEntry -> {
-                    ExistsCounter<LeftTuple_> counter = counterEntry.getElement();
+                indexerLeft.forEach(oldIndexProperties, counter -> {
                     if (testFiltering(counter.leftTuple, rightTuple)) {
                         incrementCounter(counter);
                         TupleList<FilteringTracker> leftTrackerList =
@@ -224,7 +219,7 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
             TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.getStore(inputStoreIndexRightEntry);
             indexerRight.remove(oldIndexProperties, rightEntry);
             if (!isFiltering) {
-                indexerLeft.visit(oldIndexProperties, counterEntry -> decrementCounter(counterEntry.getElement()));
+                indexerLeft.forEach(oldIndexProperties, this::decrementCounter);
             } else {
                 TupleList<FilteringTracker> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
                 rightTrackerList.forEach(filteringTacker -> {
@@ -236,11 +231,10 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
             rightEntry = indexerRight.put(newIndexProperties, rightTuple);
             rightTuple.setStore(inputStoreIndexRightEntry, rightEntry);
             if (!isFiltering) {
-                indexerLeft.visit(newIndexProperties, counterEntry -> incrementCounter(counterEntry.getElement()));
+                indexerLeft.forEach(newIndexProperties, this::incrementCounter);
             } else {
                 TupleList<FilteringTracker> rightTrackerList = new TupleList<>();
-                indexerLeft.visit(newIndexProperties, counterEntry -> {
-                    ExistsCounter<LeftTuple_> counter = counterEntry.getElement();
+                indexerLeft.forEach(newIndexProperties, counter -> {
                     if (testFiltering(counter.leftTuple, rightTuple)) {
                         incrementCounter(counter);
                         TupleList<FilteringTracker> leftTrackerList =
@@ -265,7 +259,7 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
         indexerRight.remove(indexProperties, rightEntry);
         rightTuple.setStore(inputStoreIndexRightEntry, null);
         if (!isFiltering) {
-            indexerLeft.visit(indexProperties, counterEntry -> decrementCounter(counterEntry.getElement()));
+            indexerLeft.forEach(indexProperties, this::decrementCounter);
         } else {
             TupleList<FilteringTracker> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
             rightTrackerList.forEach(filteringTacker -> {

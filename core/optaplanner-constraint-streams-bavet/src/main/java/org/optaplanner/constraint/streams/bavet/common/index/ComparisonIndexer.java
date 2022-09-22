@@ -110,7 +110,7 @@ final class ComparisonIndexer<T, Key_ extends Comparable<Key_>> implements Index
     }
 
     @Override
-    public void visit(IndexProperties indexProperties, Consumer<TupleListEntry<T>> entryVisitor) {
+    public void forEach(IndexProperties indexProperties, Consumer<T> tupleConsumer) {
         int size = comparisonMap.size();
         if (size == 0) {
             return;
@@ -118,10 +118,10 @@ final class ComparisonIndexer<T, Key_ extends Comparable<Key_>> implements Index
         Key_ indexKey = indexProperties.toKey(indexKeyPosition);
         if (size == 1) { // Avoid creation of the entry set and iterator.
             Map.Entry<Key_, Indexer<T>> entry = comparisonMap.firstEntry();
-            visitEntry(indexProperties, entryVisitor, indexKey, entry);
+            visitEntry(indexProperties, tupleConsumer, indexKey, entry);
         } else {
             for (Map.Entry<Key_, Indexer<T>> entry : comparisonMap.entrySet()) {
-                boolean boundaryReached = visitEntry(indexProperties, entryVisitor, indexKey, entry);
+                boolean boundaryReached = visitEntry(indexProperties, tupleConsumer, indexKey, entry);
                 if (boundaryReached) {
                     return;
                 }
@@ -129,7 +129,7 @@ final class ComparisonIndexer<T, Key_ extends Comparable<Key_>> implements Index
         }
     }
 
-    private boolean visitEntry(IndexProperties indexProperties, Consumer<TupleListEntry<T>> entryVisitor,
+    private boolean visitEntry(IndexProperties indexProperties, Consumer<T> tupleConsumer,
             Key_ indexKey, Map.Entry<Key_, Indexer<T>> entry) {
         // Comparator matches the order of iteration of the map, so the boundary is always found from the bottom up.
         int comparison = keyComparator.compare(entry.getKey(), indexKey);
@@ -140,7 +140,7 @@ final class ComparisonIndexer<T, Key_ extends Comparable<Key_>> implements Index
             }
         }
         // Boundary condition not yet reached; include the indexer in the range.
-        entry.getValue().visit(indexProperties, entryVisitor);
+        entry.getValue().forEach(indexProperties, tupleConsumer);
         return false;
     }
 

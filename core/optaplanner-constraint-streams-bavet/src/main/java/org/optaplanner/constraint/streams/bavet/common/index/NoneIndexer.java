@@ -25,10 +25,8 @@ final class NoneIndexer<T, Value_> implements Indexer<T> {
     }
 
     @Override
-    public void visit(IndexProperties indexProperties, Consumer<TupleListEntry<T>> entryVisitor) {
-        for (TupleListEntry<T> entry = tupleList.first(); entry != null; entry = entry.next()) {
-            entryVisitor.accept(entry);
-        }
+    public void forEach(IndexProperties indexProperties, Consumer<T> tupleConsumer) {
+        tupleList.forEach(tupleConsumer);
     }
 
     @Override

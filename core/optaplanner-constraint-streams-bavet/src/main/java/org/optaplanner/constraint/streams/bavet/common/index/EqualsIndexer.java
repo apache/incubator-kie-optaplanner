@@ -70,13 +70,13 @@ final class EqualsIndexer<T, Key_> implements Indexer<T> {
     }
 
     @Override
-    public void visit(IndexProperties indexProperties, Consumer<TupleListEntry<T>> entryVisitor) {
+    public void forEach(IndexProperties indexProperties, Consumer<T> tupleConsumer) {
         Key_ indexKey = indexProperties.toKey(indexKeyFrom, indexKeyTo);
         Indexer<T> downstreamIndexer = downstreamIndexerMap.get(indexKey);
         if (downstreamIndexer == null || downstreamIndexer.isEmpty()) {
             return;
         }
-        downstreamIndexer.visit(indexProperties, entryVisitor);
+        downstreamIndexer.forEach(indexProperties, tupleConsumer);
     }
 
     @Override
