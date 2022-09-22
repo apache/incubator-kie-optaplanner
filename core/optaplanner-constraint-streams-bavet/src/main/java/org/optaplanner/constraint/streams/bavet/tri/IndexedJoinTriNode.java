@@ -45,13 +45,13 @@ final class IndexedJoinTriNode<A, B, C>
     }
 
     @Override
-    protected void updateOutTupleLeft(TriTupleImpl<A, B, C> outTuple, BiTuple<A, B> leftTuple) {
+    protected void setOutTupleLeftFacts(TriTupleImpl<A, B, C> outTuple, BiTuple<A, B> leftTuple) {
         outTuple.factA = leftTuple.getFactA();
         outTuple.factB = leftTuple.getFactB();
     }
 
     @Override
-    protected void updateOutTupleRight(TriTupleImpl<A, B, C> outTuple, UniTuple<C> rightTuple) {
+    protected void setOutTupleRightFact(TriTupleImpl<A, B, C> outTuple, UniTuple<C> rightTuple) {
         outTuple.factC = rightTuple.getFactA();
     }
 

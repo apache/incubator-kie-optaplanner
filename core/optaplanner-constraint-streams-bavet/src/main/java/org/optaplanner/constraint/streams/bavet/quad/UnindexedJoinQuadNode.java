@@ -23,14 +23,14 @@ final class UnindexedJoinQuadNode<A, B, C, D>
     }
 
     @Override
-    protected void updateOutTupleLeft(QuadTupleImpl<A, B, C, D> outTuple, TriTuple<A, B, C> leftTuple) {
+    protected void setOutTupleLeftFacts(QuadTupleImpl<A, B, C, D> outTuple, TriTuple<A, B, C> leftTuple) {
         outTuple.factA = leftTuple.getFactA();
         outTuple.factB = leftTuple.getFactB();
         outTuple.factC = leftTuple.getFactC();
     }
 
     @Override
-    protected void updateOutTupleRight(QuadTupleImpl<A, B, C, D> outTuple, UniTuple<D> rightTuple) {
+    protected void setOutTupleRightFact(QuadTupleImpl<A, B, C, D> outTuple, UniTuple<D> rightTuple) {
         outTuple.factD = rightTuple.getFactA();
     }
 

@@ -51,6 +51,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     protected void initCounterLeft(ExistsCounter<LeftTuple_> counter) {
         if (shouldExist ? counter.countRight > 0 : counter.countRight == 0) {
+            // Counters start out dead
             counter.state = BavetTupleState.CREATING;
             dirtyCounterQueue.add(counter);
         }

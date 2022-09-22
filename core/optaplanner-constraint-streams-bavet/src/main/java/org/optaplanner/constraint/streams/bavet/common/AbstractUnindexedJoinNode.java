@@ -56,8 +56,8 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         // Propagate the update for downstream filters, matchWeighers, ...
         TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
         outTupleListLeft.forEach(outTuple -> {
-            updateOutTupleLeft(outTuple, leftTuple);
-            updateTuple(outTuple);
+            setOutTupleLeftFacts(outTuple, leftTuple);
+            doUpdateOutTuple(outTuple);
         });
     }
 
@@ -99,8 +99,8 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         // Propagate the update for downstream filters, matchWeighers, ...
         TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
         outTupleListRight.forEach(outTuple -> {
-            updateOutTupleRight(outTuple, rightTuple);
-            updateTuple(outTuple);
+            setOutTupleRightFact(outTuple, rightTuple);
+            doUpdateOutTuple(outTuple);
         });
     }
 
