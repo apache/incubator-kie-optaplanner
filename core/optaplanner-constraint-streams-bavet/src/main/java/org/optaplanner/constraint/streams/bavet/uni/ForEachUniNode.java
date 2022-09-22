@@ -42,13 +42,21 @@ public final class ForEachUniNode<A> extends AbstractNode {
         if (tuple == null) {
             throw new IllegalStateException("The fact (" + a + ") was never inserted, so it cannot update.");
         }
-        if (tuple.state.isDirty()) {
-            if (tuple.state == BavetTupleState.DYING || tuple.state == BavetTupleState.ABORTING) {
-                throw new IllegalStateException("The fact (" + a + ") was retracted, so it cannot update.");
-            }
-        } else {
-            tuple.state = BavetTupleState.UPDATING;
-            dirtyTupleQueue.add(tuple);
+        switch (tuple.state) {
+            case CREATING:
+                break;
+            case UPDATING:
+                break;
+            case OK:
+                tuple.state = BavetTupleState.UPDATING;
+                dirtyTupleQueue.add(tuple);
+                break;
+            case DYING:
+            case ABORTING:
+            case DEAD:
+            default:
+                throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
+                        this + ") is in an unexpected state (" + tuple.state + ").");
         }
     }
 
@@ -57,14 +65,23 @@ public final class ForEachUniNode<A> extends AbstractNode {
         if (tuple == null) {
             throw new IllegalStateException("The fact (" + a + ") was never inserted, so it cannot retract.");
         }
-        if (tuple.state.isDirty()) {
-            if (tuple.state == BavetTupleState.DYING || tuple.state == BavetTupleState.ABORTING) {
-                throw new IllegalStateException("The fact (" + a + ") was already retracted, so it cannot retract.");
-            }
-            tuple.state = BavetTupleState.ABORTING;
-        } else {
-            tuple.state = BavetTupleState.DYING;
-            dirtyTupleQueue.add(tuple);
+        switch (tuple.state) {
+            case CREATING:
+                tuple.state = BavetTupleState.ABORTING;
+                break;
+            case UPDATING:
+                tuple.state = BavetTupleState.DYING;
+                break;
+            case OK:
+                tuple.state = BavetTupleState.DYING;
+                dirtyTupleQueue.add(tuple);
+                break;
+            case DYING:
+            case ABORTING:
+            case DEAD:
+            default:
+                throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
+                        this + ") is in an unexpected state (" + tuple.state + ").");
         }
     }
 
