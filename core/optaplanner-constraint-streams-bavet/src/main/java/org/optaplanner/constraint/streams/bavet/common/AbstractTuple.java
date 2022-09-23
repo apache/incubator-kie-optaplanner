@@ -1,5 +1,7 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
+import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
+
 public abstract class AbstractTuple implements Tuple {
 
     /*
@@ -9,8 +11,9 @@ public abstract class AbstractTuple implements Tuple {
      */
     private final boolean storeIsArray;
 
-    private Object store;
     public BavetTupleState state = BavetTupleState.CREATING;
+    public TupleListEntry<? extends Tuple> dirtyListEntry; // TODO make properly generic?
+    private Object store;
 
     protected AbstractTuple(int storeSize) {
         this.store = (storeSize < 2) ? null : new Object[storeSize];
@@ -25,6 +28,15 @@ public abstract class AbstractTuple implements Tuple {
     @Override
     public final void setState(BavetTupleState state) {
         this.state = state;
+    }
+
+    @Override
+    public TupleListEntry<? extends Tuple> getDirtyListEntry() {
+        return dirtyListEntry;
+    }
+    @Override
+    public void setDirtyListEntry(TupleListEntry<? extends Tuple> dirtyListEntry) {
+        this.dirtyListEntry = dirtyListEntry;
     }
 
     @Override

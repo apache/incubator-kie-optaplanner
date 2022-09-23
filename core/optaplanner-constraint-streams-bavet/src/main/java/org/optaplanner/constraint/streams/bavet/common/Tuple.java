@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.bavet.common;
 
 import java.util.function.Function;
 
+import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 /**
@@ -17,6 +18,10 @@ public interface Tuple {
     BavetTupleState getState();
 
     void setState(BavetTupleState state);
+
+    TupleListEntry<? extends Tuple> getDirtyListEntry();
+
+    void setDirtyListEntry(TupleListEntry<? extends Tuple> dirtyListEntry);
 
     <Value_> Value_ getStore(int index);
 

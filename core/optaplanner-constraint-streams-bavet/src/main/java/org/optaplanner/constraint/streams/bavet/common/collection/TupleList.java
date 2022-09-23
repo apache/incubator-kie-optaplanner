@@ -68,6 +68,17 @@ public final class TupleList<T> {
         }
     }
 
+    public void forEachAndClear(Consumer<T> tupleConsumer) {
+        TupleListEntry<T> entry = first;
+        while (entry != null) {
+            // Extract next before processing it, in case the entry is removed and entry.next becomes null
+            TupleListEntry<T> next = entry.next;
+            tupleConsumer.accept(entry.getElement());
+            entry.remove();
+            entry = next;
+        }
+    }
+
     @Override
     public String toString() {
         return "size = " + size;

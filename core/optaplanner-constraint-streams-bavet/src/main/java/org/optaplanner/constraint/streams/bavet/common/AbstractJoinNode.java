@@ -1,8 +1,5 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
-
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleList;
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
@@ -30,7 +27,10 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
 
     private final int outputStoreIndexLeftOutEntry;
     private final int outputStoreIndexRightOutEntry;
-    protected final Queue<OutTuple_> dirtyTupleQueue;
+
+    private final TupleList<MutableOutTuple_> dirtyCreatingList = new TupleList<>();
+    private final TupleList<MutableOutTuple_> dirtyUpdatingList = new TupleList<>();
+    private final TupleList<MutableOutTuple_> dirtyDyingList = new TupleList<>();
 
     protected AbstractJoinNode(int inputStoreIndexLeftOutTupleList, int inputStoreIndexRightOutTupleList,
             TupleLifecycle<OutTuple_> nextNodesTupleLifecycle,
@@ -40,7 +40,6 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
         this.outputStoreIndexLeftOutEntry = outputStoreIndexLeftOutEntry;
         this.outputStoreIndexRightOutEntry = outputStoreIndexRightOutEntry;
-        dirtyTupleQueue = new ArrayDeque<>(1000);
     }
 
     protected abstract MutableOutTuple_ createOutTuple(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
@@ -57,18 +56,17 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
         TupleListEntry<MutableOutTuple_> outEntryRight = outTupleListRight.add(outTuple);
         outTuple.setStore(outputStoreIndexRightOutEntry, outEntryRight);
-        dirtyTupleQueue.add(outTuple);
+        outTuple.setDirtyListEntry(dirtyCreatingList.add(outTuple));
     }
 
-    protected final void doUpdateOutTuple(OutTuple_ outTuple) {
+    protected final void doUpdateOutTuple(MutableOutTuple_ outTuple) {
         switch (outTuple.getState()) {
             case CREATING:
             case UPDATING:
-                // Don't add the tuple to the dirtyTupleQueue twice
                 break;
             case OK:
                 outTuple.setState(BavetTupleState.UPDATING);
-                dirtyTupleQueue.add(outTuple);
+                outTuple.setDirtyListEntry(dirtyUpdatingList.add(outTuple));
                 break;
             // Impossible because they shouldn't linger in the indexes
             case DYING:
@@ -90,21 +88,21 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         doRetractOutTuple(outTuple);
     }
 
-    private final void doRetractOutTuple(OutTuple_ outTuple) {
+    private final void doRetractOutTuple(MutableOutTuple_ outTuple) {
         switch (outTuple.getState()) {
             case CREATING:
-                // Don't add the tuple to the dirtyTupleQueue twice
                 // Kill it before it propagates
+                outTuple.getDirtyListEntry().remove();
                 outTuple.setState(BavetTupleState.ABORTING);
+                break;
+            case UPDATING:
+                outTuple.getDirtyListEntry().remove();
+                outTuple.setState(BavetTupleState.DYING);
+                outTuple.setDirtyListEntry(dirtyDyingList.add(outTuple));
                 break;
             case OK:
                 outTuple.setState(BavetTupleState.DYING);
-                dirtyTupleQueue.add(outTuple);
-                break;
-            case UPDATING:
-                // Don't add the tuple to the dirtyTupleQueue twice
-                // Kill the original propagation
-                outTuple.setState(BavetTupleState.DYING);
+                outTuple.setDirtyListEntry(dirtyDyingList.add(outTuple));
                 break;
             // Impossible because they shouldn't linger in the indexes
             case DYING:
@@ -118,31 +116,18 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
 
     @Override
     public final void calculateScore() {
-        for (OutTuple_ tuple : dirtyTupleQueue) {
-            switch (tuple.getState()) {
-                case CREATING:
-                    nextNodesTupleLifecycle.insert(tuple);
-                    tuple.setState(BavetTupleState.OK);
-                    break;
-                case UPDATING:
-                    nextNodesTupleLifecycle.update(tuple);
-                    tuple.setState(BavetTupleState.OK);
-                    break;
-                case DYING:
-                    nextNodesTupleLifecycle.retract(tuple);
-                    tuple.setState(BavetTupleState.DEAD);
-                    break;
-                case ABORTING:
-                    tuple.setState(BavetTupleState.DEAD);
-                    break;
-                case OK:
-                case DEAD:
-                default:
-                    throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
-                            this + ") is in an unexpected state (" + tuple.getState() + ").");
-            }
-        }
-        dirtyTupleQueue.clear();
+        dirtyCreatingList.forEachAndClear(tuple -> {
+            nextNodesTupleLifecycle.insert(tuple);
+            tuple.setState(BavetTupleState.OK);
+        });
+        dirtyUpdatingList.forEachAndClear(tuple -> {
+            nextNodesTupleLifecycle.update(tuple);
+            tuple.setState(BavetTupleState.OK);
+        });
+        dirtyDyingList.forEachAndClear(tuple -> {
+            nextNodesTupleLifecycle.retract(tuple);
+            tuple.setState(BavetTupleState.OK);
+        });
     }
 
 }

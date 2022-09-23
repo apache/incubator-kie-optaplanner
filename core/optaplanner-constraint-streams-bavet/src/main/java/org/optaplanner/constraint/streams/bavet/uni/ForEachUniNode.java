@@ -1,13 +1,12 @@
 package org.optaplanner.constraint.streams.bavet.uni;
 
-import java.util.ArrayDeque;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Queue;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
+import org.optaplanner.constraint.streams.bavet.common.collection.TupleList;
 
 public final class ForEachUniNode<A> extends AbstractNode {
 
@@ -19,13 +18,15 @@ public final class ForEachUniNode<A> extends AbstractNode {
     private final int outputStoreSize;
 
     private final Map<A, UniTupleImpl<A>> tupleMap = new IdentityHashMap<>(1000);
-    private final Queue<UniTupleImpl<A>> dirtyTupleQueue;
+
+    private final TupleList<UniTupleImpl<A>> dirtyCreatingList = new TupleList<>();
+    private final TupleList<UniTupleImpl<A>> dirtyUpdatingList = new TupleList<>();
+    private final TupleList<UniTupleImpl<A>> dirtyDyingList = new TupleList<>();
 
     public ForEachUniNode(Class<A> forEachClass, TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
         this.forEachClass = forEachClass;
         this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
         this.outputStoreSize = outputStoreSize;
-        dirtyTupleQueue = new ArrayDeque<>(1000);
     }
 
     public void insert(A a) {
@@ -34,7 +35,7 @@ public final class ForEachUniNode<A> extends AbstractNode {
         if (old != null) {
             throw new IllegalStateException("The fact (" + a + ") was already inserted, so it cannot insert again.");
         }
-        dirtyTupleQueue.add(tuple);
+        tuple.dirtyListEntry = dirtyCreatingList.add(tuple);
     }
 
     public void update(A a) {
@@ -44,12 +45,11 @@ public final class ForEachUniNode<A> extends AbstractNode {
         }
         switch (tuple.state) {
             case CREATING:
-                break;
             case UPDATING:
                 break;
             case OK:
                 tuple.state = BavetTupleState.UPDATING;
-                dirtyTupleQueue.add(tuple);
+                tuple.dirtyListEntry = dirtyUpdatingList.add(tuple);
                 break;
             case DYING:
             case ABORTING:
@@ -67,14 +67,18 @@ public final class ForEachUniNode<A> extends AbstractNode {
         }
         switch (tuple.state) {
             case CREATING:
+                // Kill it before it propagates
+                tuple.dirtyListEntry.remove();
                 tuple.state = BavetTupleState.ABORTING;
                 break;
             case UPDATING:
+                tuple.dirtyListEntry.remove();
                 tuple.state = BavetTupleState.DYING;
+                tuple.dirtyListEntry = dirtyDyingList.add(tuple);
                 break;
             case OK:
                 tuple.state = BavetTupleState.DYING;
-                dirtyTupleQueue.add(tuple);
+                tuple.dirtyListEntry = dirtyDyingList.add(tuple);
                 break;
             case DYING:
             case ABORTING:
@@ -87,31 +91,18 @@ public final class ForEachUniNode<A> extends AbstractNode {
 
     @Override
     public void calculateScore() {
-        for (UniTupleImpl<A> tuple : dirtyTupleQueue) {
-            switch (tuple.state) {
-                case CREATING:
-                    nextNodesTupleLifecycle.insert(tuple);
-                    tuple.state = BavetTupleState.OK;
-                    break;
-                case UPDATING:
-                    nextNodesTupleLifecycle.update(tuple);
-                    tuple.state = BavetTupleState.OK;
-                    break;
-                case DYING:
-                    nextNodesTupleLifecycle.retract(tuple);
-                    tuple.state = BavetTupleState.DEAD;
-                    break;
-                case ABORTING:
-                    tuple.state = BavetTupleState.DEAD;
-                    break;
-                case OK:
-                case DEAD:
-                default:
-                    throw new IllegalStateException("Impossible state: The tuple (" + tuple + ") in node (" +
-                            this + ") is in an unexpected state (" + tuple.state + ").");
-            }
-        }
-        dirtyTupleQueue.clear();
+        dirtyCreatingList.forEachAndClear(tuple -> {
+            nextNodesTupleLifecycle.insert(tuple);
+            tuple.state = BavetTupleState.OK;
+        });
+        dirtyUpdatingList.forEachAndClear(tuple -> {
+            nextNodesTupleLifecycle.update(tuple);
+            tuple.state = BavetTupleState.OK;
+        });
+        dirtyDyingList.forEachAndClear(tuple -> {
+            nextNodesTupleLifecycle.retract(tuple);
+            tuple.state = BavetTupleState.DEAD;
+        });
     }
 
     @Override
