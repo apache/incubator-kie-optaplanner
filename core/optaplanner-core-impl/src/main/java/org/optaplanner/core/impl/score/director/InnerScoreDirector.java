@@ -284,13 +284,13 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
     // List variable
     // ************************************************************************
 
-    void beforeListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+    void beforeListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object element);
 
-    void afterListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+    void afterListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object element);
 
-    void beforeListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+    void beforeListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object element);
 
-    void afterListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object entity, int index);
+    void afterListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object element);
 
     /**
      * Notify the score director before a subList of a list variable changes. The subList is a continuous sequence of

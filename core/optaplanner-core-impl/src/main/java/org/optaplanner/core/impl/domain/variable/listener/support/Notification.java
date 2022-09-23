@@ -48,17 +48,10 @@ public interface Notification<Solution_, T extends AbstractVariableListener<Solu
     }
 
     /**
-     * An element was added to {@code entity}'s list variable at {@code index}.
-     */
-    static <Solution_> ListVariableNotification<Solution_> elementAdded(Object entity, int index) {
-        return new ElementAddedNotification<>(entity, index);
-    }
-
-    /**
      * An element was removed from {@code entity}'s list variable at {@code index}.
      */
-    static <Solution_> ListVariableNotification<Solution_> elementRemoved(Object entity, int index) {
-        return new ElementRemovedNotification<>(entity, index);
+    static <Solution_> ListVariableNotification<Solution_> elementRemoved(Object element) {
+        return new ElementRemovedNotification<>(element);
     }
 
     static <Solution_> ListVariableNotification<Solution_> listVariableChanged(Object entity, int fromIndex, int toIndex) {

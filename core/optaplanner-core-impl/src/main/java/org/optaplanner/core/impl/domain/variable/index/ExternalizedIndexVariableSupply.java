@@ -55,31 +55,14 @@ public class ExternalizedIndexVariableSupply<Solution_> implements
     }
 
     @Override
-    public void beforeListVariableElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        // Do nothing
-    }
-
-    @Override
-    public void afterListVariableElementAdded(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        updateIndexes(entity, index);
-    }
-
-    @Override
-    public void beforeListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        Object element = sourceVariableDescriptor.getElement(entity, index);
+    public void afterListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object element) {
         Integer oldIndex = indexMap.remove(element);
         if (oldIndex == null) {
             throw new IllegalStateException("The supply (" + this + ") is corrupted,"
                     + " because the element (" + element
-                    + ") at index (" + index
                     + ") has an oldIndex (" + oldIndex
                     + ") which is null.");
         }
-    }
-
-    @Override
-    public void afterListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object entity, int index) {
-        updateIndexes(entity, index);
     }
 
     @Override
