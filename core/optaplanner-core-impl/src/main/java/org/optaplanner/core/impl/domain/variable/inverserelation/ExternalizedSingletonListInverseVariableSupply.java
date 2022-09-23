@@ -54,7 +54,7 @@ public class ExternalizedSingletonListInverseVariableSupply<Solution_> implement
     }
 
     @Override
-    public void afterListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object element) {
+    public void afterListVariableElementUnassigned(ScoreDirector<Solution_> scoreDirector, Object element) {
         Object oldInverseEntity = inverseEntityMap.remove(element);
         if (oldInverseEntity == null) {
             throw new IllegalStateException("The supply (" + this + ") is corrupted,"

@@ -63,7 +63,7 @@ class ExternalizedSingletonListInverseVariableSupplyTest {
         // Unassign v2 from e1.
         supply.beforeListVariableChanged(scoreDirector, e1, 0, 1);
         e1.getValueList().remove(v2);
-        supply.afterListVariableElementRemoved(scoreDirector, v2);
+        supply.afterListVariableElementUnassigned(scoreDirector, v2);
         supply.afterListVariableChanged(scoreDirector, e1, 0, 0);
 
         assertThat(supply.getInverseSingleton(v2)).isNull();

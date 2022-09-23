@@ -61,7 +61,7 @@ class SingletonListInverseVariableListenerTest {
         // Unassign v2 from e1.
         inverseVariableListener.beforeListVariableChanged(scoreDirector, e1, 0, 1);
         e1.getValueList().remove(0);
-        inverseVariableListener.afterListVariableElementRemoved(scoreDirector, v2);
+        inverseVariableListener.afterListVariableElementUnassigned(scoreDirector, v2);
         inverseVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 0);
 
         assertInverseEntity(v2, null);

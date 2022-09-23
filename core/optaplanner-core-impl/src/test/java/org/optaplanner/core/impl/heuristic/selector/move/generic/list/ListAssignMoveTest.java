@@ -35,8 +35,8 @@ class ListAssignMoveTest {
         assertThat(e1.getValueList()).containsExactly(v1);
 
         verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e1, 0, 0);
-        verify(scoreDirector).beforeListVariableElementAdded(variableDescriptor, v1);
-        verify(scoreDirector).afterListVariableElementAdded(variableDescriptor, v1);
+        verify(scoreDirector).beforeListVariableElementAssigned(variableDescriptor, v1);
+        verify(scoreDirector).afterListVariableElementAssigned(variableDescriptor, v1);
         verify(scoreDirector).afterListVariableChanged(variableDescriptor, e1, 0, 1);
         verify(scoreDirector).triggerVariableListeners();
         verifyNoMoreInteractions(scoreDirector);

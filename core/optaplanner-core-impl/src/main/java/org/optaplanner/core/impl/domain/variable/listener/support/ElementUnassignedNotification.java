@@ -3,11 +3,11 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 
-final class ElementRemovedNotification<Solution_> implements ListVariableNotification<Solution_> {
+final class ElementUnassignedNotification<Solution_> implements ListVariableNotification<Solution_> {
 
     private final Object element;
 
-    ElementRemovedNotification(Object element) {
+    ElementUnassignedNotification(Object element) {
         this.element = element;
     }
 
@@ -20,11 +20,11 @@ final class ElementRemovedNotification<Solution_> implements ListVariableNotific
     @Override
     public void triggerAfter(ListVariableListener<Solution_, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
-        variableListener.afterListVariableElementRemoved(scoreDirector, element);
+        variableListener.afterListVariableElementUnassigned(scoreDirector, element);
     }
 
     @Override
     public String toString() {
-        return "ElementRemoved(" + element + ")";
+        return "ElementUnassigned(" + element + ")";
     }
 }

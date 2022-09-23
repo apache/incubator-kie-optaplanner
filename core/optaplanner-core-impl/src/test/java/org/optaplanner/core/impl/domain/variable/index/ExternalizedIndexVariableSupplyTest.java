@@ -55,7 +55,7 @@ class ExternalizedIndexVariableSupplyTest {
         // Unassign v1 from e1.
         supply.beforeListVariableChanged(scoreDirector, e1, 0, 1);
         e1.getValueList().remove(v1);
-        supply.afterListVariableElementRemoved(scoreDirector, v1);
+        supply.afterListVariableElementUnassigned(scoreDirector, v1);
         supply.afterListVariableChanged(scoreDirector, e1, 0, 0);
 
         assertThat(supply.getIndex(v1)).isNull();

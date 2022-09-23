@@ -51,7 +51,7 @@ class IndexVariableListenerTest {
         // Unassign v1.
         indexVariableListener.beforeListVariableChanged(scoreDirector, entity, 0, 1);
         entity.getValueList().remove(v1);
-        indexVariableListener.afterListVariableElementRemoved(scoreDirector, v1);
+        indexVariableListener.afterListVariableElementUnassigned(scoreDirector, v1);
         indexVariableListener.afterListVariableChanged(scoreDirector, entity, 0, 0);
 
         assertIndex(v1, null);

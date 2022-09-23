@@ -33,8 +33,8 @@ class ListUnassignMoveTest {
         assertThat(e1.getValueList()).containsExactly(v1, v2);
 
         verify(scoreDirector).beforeListVariableChanged(variableDescriptor, e1, 2, 3);
-        verify(scoreDirector).beforeListVariableElementRemoved(variableDescriptor, v3);
-        verify(scoreDirector).afterListVariableElementRemoved(variableDescriptor, v3);
+        verify(scoreDirector).beforeListVariableElementUnassigned(variableDescriptor, v3);
+        verify(scoreDirector).afterListVariableElementUnassigned(variableDescriptor, v3);
         verify(scoreDirector).afterListVariableChanged(variableDescriptor, e1, 2, 2);
         verify(scoreDirector).triggerVariableListeners();
         verifyNoMoreInteractions(scoreDirector);

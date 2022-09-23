@@ -55,7 +55,7 @@ public class NextElementVariableListener<Solution_> implements ListVariableListe
     }
 
     @Override
-    public void afterListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object element) {
+    public void afterListVariableElementUnassigned(ScoreDirector<Solution_> scoreDirector, Object element) {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         if (shadowVariableDescriptor.getValue(element) != null) {
             innerScoreDirector.beforeVariableChanged(shadowVariableDescriptor, element);

@@ -55,9 +55,9 @@ public class ListAssignMove<Solution_> extends AbstractMove<Solution_> {
         InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
         // Add planningValue to destinationEntity's list variable (at destinationIndex).
         innerScoreDirector.beforeListVariableChanged(variableDescriptor, destinationEntity, destinationIndex, destinationIndex);
-        innerScoreDirector.beforeListVariableElementAdded(variableDescriptor, planningValue);
+        innerScoreDirector.beforeListVariableElementAssigned(variableDescriptor, planningValue);
         variableDescriptor.addElement(destinationEntity, destinationIndex, planningValue);
-        innerScoreDirector.afterListVariableElementAdded(variableDescriptor, planningValue);
+        innerScoreDirector.afterListVariableElementAssigned(variableDescriptor, planningValue);
         innerScoreDirector.afterListVariableChanged(variableDescriptor, destinationEntity, destinationIndex,
                 destinationIndex + 1);
     }

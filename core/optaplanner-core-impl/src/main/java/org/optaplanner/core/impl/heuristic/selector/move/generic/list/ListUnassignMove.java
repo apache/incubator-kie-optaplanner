@@ -48,9 +48,9 @@ public class ListUnassignMove<Solution_> extends AbstractMove<Solution_> {
         Object element = listVariable.get(sourceIndex);
         // Remove an element from sourceEntity's list variable (at sourceIndex).
         innerScoreDirector.beforeListVariableChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex + 1);
-        innerScoreDirector.beforeListVariableElementRemoved(variableDescriptor, element);
+        innerScoreDirector.beforeListVariableElementUnassigned(variableDescriptor, element);
         listVariable.remove(sourceIndex);
-        innerScoreDirector.afterListVariableElementRemoved(variableDescriptor, element);
+        innerScoreDirector.afterListVariableElementUnassigned(variableDescriptor, element);
         innerScoreDirector.afterListVariableChanged(variableDescriptor, sourceEntity, sourceIndex, sourceIndex);
     }
 

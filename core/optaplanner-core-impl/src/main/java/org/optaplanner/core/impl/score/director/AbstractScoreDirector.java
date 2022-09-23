@@ -384,24 +384,24 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     }
 
     @Override
-    public void beforeListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
+    public void beforeListVariableElementAssigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
         // Do nothing
     }
 
     @Override
-    public void afterListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
+    public void afterListVariableElementAssigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
         workingInitScore++;
     }
 
     @Override
-    public void beforeListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
+    public void beforeListVariableElementUnassigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
         // Do nothing
     }
 
     @Override
-    public void afterListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
+    public void afterListVariableElementUnassigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
         workingInitScore--;
-        variableListenerSupport.afterElementRemoved(variableDescriptor, element);
+        variableListenerSupport.afterElementUnassigned(variableDescriptor, element);
     }
 
     @Override

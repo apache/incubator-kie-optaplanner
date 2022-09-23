@@ -55,7 +55,7 @@ public class ExternalizedIndexVariableSupply<Solution_> implements
     }
 
     @Override
-    public void afterListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object element) {
+    public void afterListVariableElementUnassigned(ScoreDirector<Solution_> scoreDirector, Object element) {
         Integer oldIndex = indexMap.remove(element);
         if (oldIndex == null) {
             throw new IllegalStateException("The supply (" + this + ") is corrupted,"

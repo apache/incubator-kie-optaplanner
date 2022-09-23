@@ -5,7 +5,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 
 public interface ListVariableListener<Solution_, Entity_> extends AbstractVariableListener<Solution_, Entity_> {
 
-    void afterListVariableElementRemoved(ScoreDirector<Solution_> scoreDirector, Object element);
+    void afterListVariableElementUnassigned(ScoreDirector<Solution_> scoreDirector, Object element);
 
     void beforeListVariableChanged(ScoreDirector<Solution_> scoreDirector, Entity_ entity, int fromIndex, int toIndex);
 

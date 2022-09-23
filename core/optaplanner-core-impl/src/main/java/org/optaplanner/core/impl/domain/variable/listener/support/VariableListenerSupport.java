@@ -139,10 +139,10 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
         }
     }
 
-    public void afterElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
+    public void afterElementUnassigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
         Collection<ListVariableListenerNotifiable<Solution_>> notifiables = notifiableRegistry.get(variableDescriptor);
         if (!notifiables.isEmpty()) {
-            ListVariableNotification<Solution_> notification = Notification.elementRemoved(element);
+            ListVariableNotification<Solution_> notification = Notification.elementUnassigned(element);
             for (ListVariableListenerNotifiable<Solution_> notifiable : notifiables) {
                 notifiable.notifyAfter(notification);
             }
