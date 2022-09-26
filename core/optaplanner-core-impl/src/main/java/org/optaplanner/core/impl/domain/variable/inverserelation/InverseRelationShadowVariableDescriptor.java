@@ -15,6 +15,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
+import org.optaplanner.core.impl.domain.variable.custom.ListenerSources;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
@@ -130,15 +131,15 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     }
 
     @Override
-    public Class<? extends AbstractVariableListener> getVariableListenerClass() {
+    public Collection<Class<? extends AbstractVariableListener>> getVariableListenerClasses() {
         if (singleton) {
             if (chained) {
-                return SingletonInverseVariableListener.class;
+                return Collections.singleton(SingletonInverseVariableListener.class);
             } else {
-                return SingletonListInverseVariableListener.class;
+                return Collections.singleton(SingletonListInverseVariableListener.class);
             }
         } else {
-            return CollectionInverseVariableListener.class;
+            return Collections.singleton(CollectionInverseVariableListener.class);
         }
     }
 
@@ -161,7 +162,11 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     }
 
     @Override
-    public AbstractVariableListener<Solution_, Object> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public Iterable<ListenerSources<Solution_>> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+        return new ListenerSources<>(buildVariableListener(), sourceVariableDescriptor).toCollection();
+    }
+
+    private AbstractVariableListener<Solution_, Object> buildVariableListener() {
         if (singleton) {
             if (chained) {
                 return new SingletonInverseVariableListener<>(this, sourceVariableDescriptor);

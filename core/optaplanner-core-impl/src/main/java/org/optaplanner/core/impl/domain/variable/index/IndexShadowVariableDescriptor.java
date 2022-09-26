@@ -1,14 +1,17 @@
 package org.optaplanner.core.impl.domain.variable.index;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.domain.variable.IndexShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
+import org.optaplanner.core.impl.domain.variable.custom.ListenerSources;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -91,8 +94,8 @@ public class IndexShadowVariableDescriptor<Solution_> extends ShadowVariableDesc
     }
 
     @Override
-    public Class<IndexVariableListener> getVariableListenerClass() {
-        return IndexVariableListener.class;
+    public Collection<Class<? extends AbstractVariableListener>> getVariableListenerClasses() {
+        return Collections.singleton(IndexVariableListener.class);
     }
 
     @Override
@@ -101,8 +104,9 @@ public class IndexShadowVariableDescriptor<Solution_> extends ShadowVariableDesc
     }
 
     @Override
-    public IndexVariableListener<Solution_> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
-        return new IndexVariableListener<>(this, sourceVariableDescriptor);
+    public Iterable<ListenerSources<Solution_>> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+        return new ListenerSources<>(new IndexVariableListener<>(this, sourceVariableDescriptor), sourceVariableDescriptor)
+                .toCollection();
     }
 
     @Override

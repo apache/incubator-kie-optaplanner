@@ -14,6 +14,7 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
  * <p>
  * It is specified on a getter of a java bean property (or a field) of a {@link PlanningEntity} class.
  */
+@Deprecated(forRemoval = true)
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)
 public @interface CustomShadowVariable {

@@ -1,14 +1,16 @@
 package org.optaplanner.core.impl.domain.variable.anchor;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
-import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
+import org.optaplanner.core.impl.domain.variable.custom.ListenerSources;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -68,8 +70,8 @@ public class AnchorShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     }
 
     @Override
-    public Class<? extends VariableListener> getVariableListenerClass() {
-        return AnchorVariableListener.class;
+    public Collection<Class<? extends AbstractVariableListener>> getVariableListenerClasses() {
+        return Collections.singleton(AnchorVariableListener.class);
     }
 
     // ************************************************************************
@@ -82,10 +84,11 @@ public class AnchorShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     }
 
     @Override
-    public AnchorVariableListener<Solution_> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public Iterable<ListenerSources<Solution_>> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
                 .demand(new SingletonInverseVariableDemand<>(sourceVariableDescriptor));
-        return new AnchorVariableListener<>(this, sourceVariableDescriptor, inverseVariableSupply);
+        return new ListenerSources<>(new AnchorVariableListener<>(this, sourceVariableDescriptor, inverseVariableSupply),
+                sourceVariableDescriptor).toCollection();
     }
 
 }

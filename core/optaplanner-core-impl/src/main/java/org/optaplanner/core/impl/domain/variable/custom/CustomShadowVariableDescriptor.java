@@ -2,10 +2,12 @@ package org.optaplanner.core.impl.domain.variable.custom;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.api.domain.variable.VariableListener;
@@ -15,6 +17,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
@@ -188,11 +191,11 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     }
 
     @Override
-    public Class<? extends VariableListener> getVariableListenerClass() {
+    public Collection<Class<? extends AbstractVariableListener>> getVariableListenerClasses() {
         if (isRef()) {
-            return refVariableDescriptor.getVariableListenerClass();
+            return refVariableDescriptor.getVariableListenerClasses();
         }
-        return variableListenerClass;
+        return Collections.singleton(variableListenerClass);
     }
 
     // ************************************************************************
@@ -200,8 +203,8 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     // ************************************************************************
 
     @Override
-    public CustomShadowVariableDemand<Solution_> getProvidedDemand() {
-        return new CustomShadowVariableDemand<>(this);
+    public Demand<?> getProvidedDemand() {
+        throw new UnsupportedOperationException("Custom shadow variable listener will never be demanded.");
     }
 
     @Override
@@ -210,13 +213,15 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     }
 
     @Override
-    public VariableListener<Solution_, Object> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public Iterable<ListenerSources<Solution_>> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
         if (refVariableDescriptor != null) {
             throw new IllegalStateException("The shadowVariableDescriptor (" + this
                     + ") references another shadowVariableDescriptor (" + refVariableDescriptor
                     + ") so it cannot build a " + VariableListener.class.getSimpleName() + ".");
         }
-        return ConfigUtils.newInstance(this::toString, "variableListenerClass", variableListenerClass);
+        VariableListener<Solution_, Object> variableListener =
+                ConfigUtils.newInstance(this::toString, "variableListenerClass", variableListenerClass);
+        return new ListenerSources<>(variableListener, sourceVariableDescriptorList).toCollection();
     }
 
 }

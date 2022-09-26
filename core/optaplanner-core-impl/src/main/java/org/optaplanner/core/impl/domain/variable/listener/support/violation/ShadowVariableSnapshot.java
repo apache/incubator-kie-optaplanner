@@ -2,6 +2,7 @@ package org.optaplanner.core.impl.domain.variable.listener.support.violation;
 
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.VariableListener;
@@ -31,8 +32,9 @@ final class ShadowVariableSnapshot {
                     + ")'s corrupted value (" + originalValue + ") changed to uncorrupted value (" + newValue
                     + ") after all " + VariableListener.class.getSimpleName()
                     + "s were triggered without changes to the genuine variables.\n"
-                    + "      Maybe the " + VariableListener.class.getSimpleName() + " class ("
-                    + shadowVariableDescriptor.getVariableListenerClass().getSimpleName()
+                    + "      Maybe one of the " + VariableListener.class.getSimpleName() + " classes ("
+                    + shadowVariableDescriptor.getVariableListenerClasses().stream().map(Class::getSimpleName)
+                            .collect(Collectors.toList())
                     + ") for that shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
                     + ") forgot to update it when one of its sources changed.\n"
                     + "      Maybe some of the genuine/shadow variables it depends on are missing in the @"

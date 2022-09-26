@@ -1,8 +1,13 @@
 package org.optaplanner.core.impl.domain.variable.nextprev;
 
+import java.util.Collection;
+import java.util.Collections;
+
+import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.domain.variable.PreviousElementShadowVariable;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.variable.custom.ListenerSources;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public class PreviousElementShadowVariableDescriptor<Solution_>
@@ -25,12 +30,13 @@ public class PreviousElementShadowVariableDescriptor<Solution_>
     }
 
     @Override
-    public Class<PreviousElementVariableListener> getVariableListenerClass() {
-        return PreviousElementVariableListener.class;
+    public Collection<Class<? extends AbstractVariableListener>> getVariableListenerClasses() {
+        return Collections.singleton(PreviousElementVariableListener.class);
     }
 
     @Override
-    public PreviousElementVariableListener<Solution_> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
-        return new PreviousElementVariableListener<>(this, sourceVariableDescriptor);
+    public Iterable<ListenerSources<Solution_>> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+        return new ListenerSources<>(new PreviousElementVariableListener<>(this, sourceVariableDescriptor),
+                sourceVariableDescriptor).toCollection();
     }
 }
