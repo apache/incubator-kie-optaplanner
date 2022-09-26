@@ -34,6 +34,7 @@ public abstract class AbstractTuple implements Tuple {
     public TupleListEntry<? extends Tuple> getDirtyListEntry() {
         return dirtyListEntry;
     }
+
     @Override
     public void setDirtyListEntry(TupleListEntry<? extends Tuple> dirtyListEntry) {
         this.dirtyListEntry = dirtyListEntry;
