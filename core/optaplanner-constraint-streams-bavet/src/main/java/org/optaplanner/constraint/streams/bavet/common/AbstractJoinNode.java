@@ -116,16 +116,17 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
 
     @Override
     public final void calculateScore() {
-        dirtyCreatingList.forEachAndClear(tuple -> {
-            nextNodesTupleLifecycle.insert(tuple);
+        // Retract first, then update, then create for performance
+        dirtyDyingList.forEachAndClear(tuple -> {
+            nextNodesTupleLifecycle.retract(tuple);
             tuple.setState(BavetTupleState.OK);
         });
         dirtyUpdatingList.forEachAndClear(tuple -> {
             nextNodesTupleLifecycle.update(tuple);
             tuple.setState(BavetTupleState.OK);
         });
-        dirtyDyingList.forEachAndClear(tuple -> {
-            nextNodesTupleLifecycle.retract(tuple);
+        dirtyCreatingList.forEachAndClear(tuple -> {
+            nextNodesTupleLifecycle.insert(tuple);
             tuple.setState(BavetTupleState.OK);
         });
     }

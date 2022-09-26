@@ -91,17 +91,18 @@ public final class ForEachUniNode<A> extends AbstractNode {
 
     @Override
     public void calculateScore() {
-        dirtyCreatingList.forEachAndClear(tuple -> {
-            nextNodesTupleLifecycle.insert(tuple);
-            tuple.state = BavetTupleState.OK;
+        // Retract first, then update, then create for performance
+        dirtyDyingList.forEachAndClear(tuple -> {
+            nextNodesTupleLifecycle.retract(tuple);
+            tuple.state = BavetTupleState.DEAD;
         });
         dirtyUpdatingList.forEachAndClear(tuple -> {
             nextNodesTupleLifecycle.update(tuple);
             tuple.state = BavetTupleState.OK;
         });
-        dirtyDyingList.forEachAndClear(tuple -> {
-            nextNodesTupleLifecycle.retract(tuple);
-            tuple.state = BavetTupleState.DEAD;
+        dirtyCreatingList.forEachAndClear(tuple -> {
+            nextNodesTupleLifecycle.insert(tuple);
+            tuple.state = BavetTupleState.OK;
         });
     }
 
