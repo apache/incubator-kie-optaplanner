@@ -1,9 +1,8 @@
 package org.optaplanner.examples.coachshuttlegathering.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.coachshuttlegathering.domain.solver.DepotAngleBusStopDifficultyWeightFactory;
 import org.optaplanner.examples.coachshuttlegathering.domain.solver.ShuttlePassengerCountTotalUpdatingVariableListener;
@@ -39,9 +38,12 @@ public class Shuttle extends Bus {
     }
 
     @Override
-    @CustomShadowVariable(variableListenerClass = ShuttlePassengerCountTotalUpdatingVariableListener.class,
-            sources = { @PlanningVariableReference(entityClass = BusStop.class, variableName = "bus"),
-                    @PlanningVariableReference(entityClass = Shuttle.class, variableName = "destination") })
+    // TODO maybe BusListener
+    @ShadowVariable(variableListenerClass = ShuttlePassengerCountTotalUpdatingVariableListener.class,
+            sourceEntityClass = BusStop.class, sourceVariableName = "bus")
+    // TODO maybe DestinationListener
+    @ShadowVariable(variableListenerClass = ShuttlePassengerCountTotalUpdatingVariableListener.class,
+            sourceEntityClass = Shuttle.class, sourceVariableName = "destination")
     public Integer getPassengerQuantityTotal() {
         return super.getPassengerQuantityTotal();
     }
