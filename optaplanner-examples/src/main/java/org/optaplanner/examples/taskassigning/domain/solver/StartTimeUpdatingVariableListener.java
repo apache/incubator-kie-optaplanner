@@ -3,50 +3,71 @@ package org.optaplanner.examples.taskassigning.domain.solver;
 import java.util.List;
 import java.util.Objects;
 
-import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 
-public class StartTimeUpdatingVariableListener implements VariableListener<TaskAssigningSolution, Task> {
+public class StartTimeUpdatingVariableListener implements ListVariableListener<TaskAssigningSolution, Employee> {
 
     @Override
-    public void beforeEntityAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
+    public void beforeEntityAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void afterEntityAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void beforeEntityRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void afterEntityRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void beforeListVariableElementAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee,
+            int index) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
-        updateStartTime(scoreDirector, task);
+    public void afterListVariableElementAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee,
+            int index) {
+        updateStartTime(scoreDirector, employee, index);
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
+    public void beforeListVariableElementRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee,
+            int index) {
         // Do nothing
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
-        updateStartTime(scoreDirector, task);
+    public void afterListVariableElementRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee,
+            int index) {
+        updateStartTime(scoreDirector, employee, index);
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
+    public void beforeListVariableChanged(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee, int startIndex,
+            int endIndex) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
-        // Do nothing
+    public void afterListVariableChanged(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee, int startIndex,
+            int endIndex) {
+        updateStartTime(scoreDirector, employee, startIndex);
     }
 
-    protected void updateStartTime(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
-        Employee employee = task.getEmployee();
-        if (employee == null) {
-            return;
-        }
-        Integer index = task.getIndex();
+    protected void updateStartTime(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee, int index) {
         List<Task> tasks = employee.getTasks();
         Integer previousEndTime = index == 0 ? Integer.valueOf(0) : tasks.get(index - 1).getEndTime();
 
@@ -68,5 +89,4 @@ public class StartTimeUpdatingVariableListener implements VariableListener<TaskA
         }
         return Math.max(task.getReadyTime(), previousEndTime);
     }
-
 }
