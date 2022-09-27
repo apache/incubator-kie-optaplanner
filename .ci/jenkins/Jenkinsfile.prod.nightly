@@ -1,0 +1,193 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && kie-mem24g && !master'
+    }
+    tools {
+        maven 'kie-maven-3.8.6'
+        jdk 'kie-jdk11'
+    }
+    parameters {
+        string(description: 'The deployment URL', name: 'KIE_GROUP_DEPLOYMENT_REPO_URL')
+        booleanParam(description: 'Skip Tests? True as default', name: 'SKIP_TESTS', defaultValue: true)
+        string(description: 'The UMB message version', name: 'UMB_VERSION', defaultValue: 'main')
+        string(description: 'The product version', name: 'PRODUCT_VERSION')
+        string(description: 'The drools product version', name: 'DROOLS_PRODUCT_VERSION')
+        string(description: 'The config repository branch', name: 'CONFIG_BRANCH', defaultValue: 'main')
+    }
+    options {
+        buildDiscarder logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '10')
+    }
+    environment {
+        DATE_TIME_SUFFIX_FORMAT = 'yyyyMMddHH'
+    }
+    stages {
+        stage('Initialize') {
+            steps {
+                sh 'printenv'
+            }
+        }
+        stage('Clone build configuration repo') {
+            steps {
+                script {
+                    def currentBranch = env.CONFIG_BRANCH ?: env.DEFAULT_CONFIG_BRANCH ?: env.BRANCH_NAME ?: env.GIT_BRANCH
+                    println "Checking out ${env.BUILD_CONFIGURATION_REPO_URL}:${currentBranch} into build_config folder"
+                    sh "git clone -b ${currentBranch} --single-branch ${env.BUILD_CONFIGURATION_REPO_URL} build_config"
+                }
+            }
+        }
+        stage('Build Nightly projects') {
+            steps {
+                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE')
+                {
+                    script {
+                        def pipelineHelper = new PipelineHelper(this)
+                        pipelineHelper.retry(
+                        {
+                            def SETTINGS_XML_ID = '5d9884a1-178a-4d67-a3ac-9735d2df2cef'
+                            def projectCollection = ['drools', 'optaplanner', 'optaplanner-quickstarts', 'optaweb-vehicle-routing']
+                            def projectVariableMap = ['kiegroup_optaplanner': 'optaplannerVersion', 'kiegroup_drools': 'droolsProductVersion']
+                            def additionalVariables = [
+                                'droolsProductVersion': env.DROOLS_PRODUCT_VERSION, 
+                                'drools-scmRevision': getDroolsBranch(), 
+                            ]
+                            configFileProvider([configFile(fileId: '49737697-ebd6-4396-9c22-11f7714808eb', variable: 'PRODUCTION_PROJECT_LIST')]) {
+                                pmebuild.buildProjects(projectCollection, "${SETTINGS_XML_ID}", "$WORKSPACE/build_config/rhbop/nightly", "${env.PME_CLI_PATH}", projectVariableMap, additionalVariables, [:])
+                            }
+                        }, 2, 480*60)
+                    }
+                }
+            }
+        }
+        stage('Upload artifacts to repository') {
+            steps {
+                script {
+                    echo "[INFO] Start uploading ${env.WORKSPACE}/deployDirectory"
+                    dir("${env.WORKSPACE}/deployDirectory") {
+                        withCredentials([usernameColonPassword(credentialsId: "${env.NIGHTLY_DEPLOYMENT_CREDENTIAL}", variable: 'deploymentCredentials')]) {
+                            sh "zip -qr kiegroup ."
+                            sh "curl --fail --upload-file kiegroup.zip -u $deploymentCredentials -v ${KIE_GROUP_DEPLOYMENT_REPO_URL}"
+                        }
+                    }
+                }
+            }
+        }
+        stage('Upload sources') {
+            steps {
+                script {
+                    if(env.ALREADY_BUILT_PROJECTS?.trim()) {
+                        echo "[INFO] Start uploading sources zip file"
+                        def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
+
+                        sh "zip -r sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip $WORKSPACE/kiegroup_* -x '*.git*'"
+                        def folder="${env.RCM_GUEST_FOLDER}/rhbop/RHBOP-${PRODUCT_VERSION}.nightly"
+                        sshagent(credentials: ['rcm-publish-server']) {
+                            sh "ssh 'rhba@${env.RCM_HOST}' 'mkdir -p ${folder}'"
+                            sh "scp -o StrictHostKeyChecking=no sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip rhba@${env.RCM_HOST}:${folder}"
+                        }
+                    } else {
+                        println "[WARNING] No sources to upload. None project has been built."
+                    }
+                }
+            }
+        }
+        stage ('Send UMB Message to QE.') {
+            steps {
+                script {
+                    if(env.ALREADY_BUILT_PROJECTS?.trim()) {
+                        echo '[INFO] Sending RHBOP UMB message to QE.'
+                        def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
+
+                        def sourcesFileUrl = "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${PRODUCT_VERSION}.nightly/sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
+                        def topic = "VirtualTopic.qe.ci.ba.rhbop.${env.UMB_VERSION}.nightly.trigger"
+                        def eventType = "rhbop-${env.UMB_VERSION}-nightly-qe-trigger"
+                        def messageBody = getMessageBody(
+                            sourcesFileUrl, 
+                            env.ALREADY_BUILT_PROJECTS,
+                            ['rhbop': PME_BUILD_VARIABLES['optaplannerVersion'], 'drools': PME_BUILD_VARIABLES['droolsProductVersion']], 
+                            gitHashesToCollection(env.GIT_INFORMATION_HASHES)
+                        )
+                        echo "[INFO] Message Body: ${messageBody}"
+                        echo "[INFO] Topic: ${topic}"
+                        echo "[INFO] Event Type: ${eventType}"
+                        build job: env.SEND_UMB_MESSAGE_JOB_PATH, parameters: [
+                                [$class: 'StringParameterValue', name: 'MESSAGE_BODY', value: messageBody],
+                                [$class: 'StringParameterValue', name: 'TOPIC', value: topic],
+                                [$class: 'StringParameterValue', name: 'EVENT_TYPE', value: eventType]
+                        ]
+                        echo '[SUCCESS] Message was successfully sent.'
+                    } else {
+                        println "[WARNING] No artifacts to upload. None project has been built."
+                    }
+                }
+            }
+        }
+    }
+    post {
+        failure {
+            emailext body: 'RHBOP ${PRODUCT_VERSION}:nightly-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+                    'Please look here: ${BUILD_URL} \n' +
+                    ' \n' +
+                    '${BUILD_LOG, maxLines=750}', subject: 'RHBOP ${PRODUCT_VERSION}:nightly-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'
+        }
+        unstable {
+            emailext body: 'RHBOP ${PRODUCT_VERSION}:nightly-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+                    'Please look here: ${BUILD_URL} \n' +
+                    ' \n' +
+                    'Failed tests: ${BUILD_URL}/testReport \n' +
+                    ' \n' +
+                    '${BUILD_LOG, maxLines=750}', subject: 'RHBOP ${PRODUCT_VERSION}:nightly-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'
+        }
+        fixed {
+            emailext body: 'RHBOP ${PRODUCT_VERSION}:nightly-build #${BUILD_NUMBER} was: ' + "${currentBuild.currentResult}" +  '\n' +
+                    'Please look here: ${BUILD_URL}', subject: 'RHBOP ${PRODUCT_VERSION}:nightly-build #${BUILD_NUMBER}: ' + "${currentBuild.currentResult}", to: 'kie-jenkins-builds@redhat.com'
+        }
+        always {
+            archiveArtifacts artifacts: '**/*.maven.log', fingerprint: false, defaultExcludes: true, caseSensitive: true, allowEmptyArchive: true
+
+            echo 'Generating JUnit report...'
+            junit allowEmptyResults: true, healthScaleFactor: 1.0, testResults: '**/target/*-reports/TEST-*.xml'
+
+            echo 'Archiving logs...'
+            archiveArtifacts excludes: '**/target/checkstyle.log', artifacts: '**/*.maven.log,**/target/*.log', fingerprint: false, defaultExcludes: true, caseSensitive: true, allowEmptyArchive: true
+        }
+        cleanup {
+            cleanWs()
+        }
+    }
+}
+
+def getMessageBody(String sourcesFileUrl, String alreadyBuiltProjects, Map<String, String> versions, Map<String, String> scmHashes) {
+    // TODO: add nexus urls to specific optaplanner artifacts
+    def alreadyBuiltProjectsArray = (alreadyBuiltProjects ?: '').split(";")
+    return """
+{
+    "sources_file_url": "${sourcesFileUrl}",
+    "version": ${new groovy.json.JsonBuilder(versions).toString()},
+    "scm_hash": ${new groovy.json.JsonBuilder(scmHashes).toString()},
+    "built_projects": ${new groovy.json.JsonBuilder(alreadyBuiltProjectsArray).toString()}
+}"""    
+}
+
+def gitHashesToCollection(String gitInformationHashes) {
+    return gitInformationHashes.replaceAll(/([\w\d\-\_\.]*\/)([\w\d\-\_\.]*)/,'$2').split(';').findAll { it.split('=').size() }.collectEntries{ [it.split('=')[0], it.split('=')[1]] }
+}
+
+String getDroolsBranch() {
+    return env.CHANGE_BRANCH ?: env.BRANCH_NAME
+}
+
+String calculateKieRepoBranch(String branch) {
+    /* The Drools/OptaPlanner major version is shifted by 7 from the Kogito major version:
+    Kogito 1.x.y -> Drools 8.x.y. 
+    Kogito 1.x.y -> OptaPlanner 8.x.y. */
+    int majorVersionShift = 7
+    String [] branchSplit = branch.split("\\.")
+    if (branchSplit.length == 3) {
+        Integer optaplannerMajorVersion = Integer.parseInt(branchSplit[0]) + majorVersionShift
+        return "${optaplannerMajorVersion}.${branchSplit[1]}.${branchSplit[2]}"
+    } else {
+       return branch
+    }
+}
