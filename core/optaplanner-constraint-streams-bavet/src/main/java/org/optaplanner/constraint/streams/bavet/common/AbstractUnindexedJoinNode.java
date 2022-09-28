@@ -54,17 +54,17 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
             insertLeft(leftTuple);
             return;
         }
-        if (isFiltering) { // TODO do it smarter
-            retractLeft(leftTuple);
-            insertLeft(leftTuple);
-            return;
-        }
-        // Propagate the update for downstream filters, matchWeighers, ...
         TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
-        outTupleListLeft.forEach(outTuple -> {
-            setOutTupleLeftFacts(outTuple, leftTuple);
-            doUpdateOutTuple(outTuple);
-        });
+        if (!isFiltering) {
+            // Propagate the update for downstream filters, matchWeighers, ...
+            outTupleListLeft.forEach(outTuple -> {
+                setOutTupleLeftFacts(outTuple, leftTuple);
+                doUpdateOutTuple(outTuple);
+            });
+        } else {
+            outTupleListLeft.forEach(this::retractOutTuple);
+            rightTupleList.forEach(rightTuple -> insertOutTuple(leftTuple, rightTuple));
+        }
     }
 
     @Override
@@ -102,17 +102,17 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
             insertRight(rightTuple);
             return;
         }
-        if (isFiltering) { // TODO do it smarter
-            retractRight(rightTuple);
-            insertRight(rightTuple);
-            return;
-        }
-        // Propagate the update for downstream filters, matchWeighers, ...
         TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
-        outTupleListRight.forEach(outTuple -> {
-            setOutTupleRightFact(outTuple, rightTuple);
-            doUpdateOutTuple(outTuple);
-        });
+        if (!isFiltering) {
+            // Propagate the update for downstream filters, matchWeighers, ...
+            outTupleListRight.forEach(outTuple -> {
+                setOutTupleRightFact(outTuple, rightTuple);
+                doUpdateOutTuple(outTuple);
+            });
+        } else {
+            outTupleListRight.forEach(this::retractOutTuple);
+            leftTupleList.forEach(leftTuple -> insertOutTuple(leftTuple, rightTuple));
+        }
     }
 
     @Override

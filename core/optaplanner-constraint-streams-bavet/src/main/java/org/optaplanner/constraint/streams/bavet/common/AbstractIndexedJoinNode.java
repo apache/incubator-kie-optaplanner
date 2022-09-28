@@ -70,21 +70,20 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
             insertLeft(leftTuple);
             return;
         }
-        if (isFiltering) { // TODO do it smarter
-            retractLeft(leftTuple);
-            insertLeft(leftTuple);
-            return;
-        }
         IndexProperties newIndexProperties = createIndexPropertiesLeft(leftTuple);
-
         if (oldIndexProperties.equals(newIndexProperties)) {
             // No need for re-indexing because the index properties didn't change
-            // Still needed to propagate the update for downstream filters, matchWeighers, ...
             TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
-            outTupleListLeft.forEach(outTuple -> {
-                setOutTupleLeftFacts(outTuple, leftTuple);
-                doUpdateOutTuple(outTuple);
-            });
+            if (!isFiltering) {
+                // Propagate the update for downstream filters, matchWeighers, ...
+                outTupleListLeft.forEach(outTuple -> {
+                    setOutTupleLeftFacts(outTuple, leftTuple);
+                    doUpdateOutTuple(outTuple);
+                });
+            } else {
+                outTupleListLeft.forEach(this::retractOutTuple);
+                indexerRight.forEach(oldIndexProperties, (rightTuple) -> insertOutTuple(leftTuple, rightTuple));
+            }
         } else {
             TupleListEntry<LeftTuple_> leftEntry = leftTuple.getStore(inputStoreIndexLeftEntry);
             TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
@@ -140,21 +139,20 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
             insertRight(rightTuple);
             return;
         }
-        if (isFiltering) { // TODO do it smarter
-            retractRight(rightTuple);
-            insertRight(rightTuple);
-            return;
-        }
         IndexProperties newIndexProperties = mappingRight.apply(rightTuple.getFactA());
-
         if (oldIndexProperties.equals(newIndexProperties)) {
             // No need for re-indexing because the index properties didn't change
-            // Still needed to propagate the update for downstream filters, matchWeighers, ...
             TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
-            outTupleListRight.forEach(outTuple -> {
-                setOutTupleRightFact(outTuple, rightTuple);
-                doUpdateOutTuple(outTuple);
-            });
+            if (!isFiltering) {
+                // Propagate the update for downstream filters, matchWeighers, ...
+                outTupleListRight.forEach(outTuple -> {
+                    setOutTupleRightFact(outTuple, rightTuple);
+                    doUpdateOutTuple(outTuple);
+                });
+            } else {
+                outTupleListRight.forEach(this::retractOutTuple);
+                indexerLeft.forEach(oldIndexProperties, (leftTuple) -> insertOutTuple(leftTuple, rightTuple));
+            }
         } else {
             TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.getStore(inputStoreIndexRightEntry);
             TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);

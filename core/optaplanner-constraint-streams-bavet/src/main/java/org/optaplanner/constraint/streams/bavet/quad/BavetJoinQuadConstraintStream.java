@@ -84,7 +84,7 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
                                 buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
                                 buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
                                 buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                        downstream, filtering, outputStoreSize + 2,
+                                downstream, filtering, outputStoreSize + 2,
                                 outputStoreSize, outputStoreSize + 1);
         buildHelper.addNode(node, leftParent, rightParent);
     }
