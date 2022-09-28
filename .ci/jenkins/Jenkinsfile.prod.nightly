@@ -49,8 +49,8 @@ pipeline {
                             def projectCollection = ['drools', 'optaplanner', 'optaplanner-quickstarts', 'optaweb-vehicle-routing']
                             def projectVariableMap = ['kiegroup_optaplanner': 'optaplannerVersion', 'kiegroup_drools': 'droolsProductVersion']
                             def additionalVariables = [
-                                'droolsProductVersion': env.DROOLS_PRODUCT_VERSION, 
-                                'drools-scmRevision': getDroolsBranch(), 
+                                'droolsProductVersion': env.DROOLS_PRODUCT_VERSION
+                                //'drools-scmRevision': getDroolsBranch(), 
                             ]
                             configFileProvider([configFile(fileId: '49737697-ebd6-4396-9c22-11f7714808eb', variable: 'PRODUCTION_PROJECT_LIST')]) {
                                 pmebuild.buildProjects(projectCollection, "${SETTINGS_XML_ID}", "$WORKSPACE/build_config/rhbop/nightly", "${env.PME_CLI_PATH}", projectVariableMap, additionalVariables, [:])
@@ -73,18 +73,40 @@ pipeline {
                 }
             }
         }
-        stage('Upload sources') {
+        stage('Upload optaplanner sources') {
             steps {
                 script {
                     if(env.ALREADY_BUILT_PROJECTS?.trim()) {
-                        echo "[INFO] Start uploading sources zip file"
-                        def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
+                        echo "[INFO] Start uploading sources zip files.."
 
-                        sh "zip -r sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip $WORKSPACE/kiegroup_* -x '*.git*'"
+                        def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
                         def folder="${env.RCM_GUEST_FOLDER}/rhbop/RHBOP-${PRODUCT_VERSION}.nightly"
+
+                        // optaplanner
+                        echo "[INFO] Start uploading optaplanner sources zip file.."
+                        def optaplannerSourcesFile = "rhbop-${PRODUCT_VERSION}-optaplanner-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
+                        sh "zip -r $optaplannerSourcesFile $WORKSPACE/kiegroup_optaplanner -x '*.git*'"
                         sshagent(credentials: ['rcm-publish-server']) {
                             sh "ssh 'rhba@${env.RCM_HOST}' 'mkdir -p ${folder}'"
-                            sh "scp -o StrictHostKeyChecking=no sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip rhba@${env.RCM_HOST}:${folder}"
+                            sh "scp -o StrictHostKeyChecking=no $optaplannerSourcesFile rhba@${env.RCM_HOST}:${folder}"
+                        }
+
+                        // optaplanner-quickstarts
+                        echo "[INFO] Start uploading optaplanner-quickstarts sources zip file.."
+                        def optaplannerQuickstartsSourcesFile = "rhbop-${PRODUCT_VERSION}-optaplanner-quickstarts-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
+                        sh "zip -r $optaplannerQuickstartsSourcesFile $WORKSPACE/kiegroup_optaplanner-quickstarts -x '*.git*'"
+                        sshagent(credentials: ['rcm-publish-server']) {
+                            sh "ssh 'rhba@${env.RCM_HOST}' 'mkdir -p ${folder}'"
+                            sh "scp -o StrictHostKeyChecking=no $optaplannerQuickstartsSourcesFile rhba@${env.RCM_HOST}:${folder}"
+                        }
+
+                        // optaweb-vehicle-routing
+                        echo "[INFO] Start uploading optaweb-vehicle-routing sources zip file.."
+                        def optawebSourcesFile = "rhbop-${PRODUCT_VERSION}-optaweb-vehicle-routing-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
+                        sh "zip -r $optawebSourcesFile $WORKSPACE/kiegroup_optaweb-vehicle-routing -x '*.git*'"
+                        sshagent(credentials: ['rcm-publish-server']) {
+                            sh "ssh 'rhba@${env.RCM_HOST}' 'mkdir -p ${folder}'"
+                            sh "scp -o StrictHostKeyChecking=no $optawebSourcesFile rhba@${env.RCM_HOST}:${folder}"
                         }
                     } else {
                         println "[WARNING] No sources to upload. None project has been built."
@@ -99,11 +121,17 @@ pipeline {
                         echo '[INFO] Sending RHBOP UMB message to QE.'
                         def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
 
-                        def sourcesFileUrl = "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${PRODUCT_VERSION}.nightly/sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
+                        def optaplannerArchiveUrl = "https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/groups/rhbop-main-nightly/org/optaplanner/"
+                        def optaplannerSourcesFileUrl = "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}-optaplanner-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
+                        def optaplannerQuickstartsSourcesFileUrl = "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}-optaplanner-quickstarts-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
+                        def optawebSourcesFileUrl = "${env.STAGING_SERVER_URL}/rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}-optaweb-vehicle-routing-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
                         def topic = "VirtualTopic.qe.ci.ba.rhbop.${env.UMB_VERSION}.nightly.trigger"
                         def eventType = "rhbop-${env.UMB_VERSION}-nightly-qe-trigger"
                         def messageBody = getMessageBody(
-                            sourcesFileUrl, 
+                            optaplannerArchiveUrl,
+                            optaplannerSourcesFileUrl,
+                            optaplannerQuickstartsSourcesFileUrl,
+                            optawebSourcesFileUrl,
                             env.ALREADY_BUILT_PROJECTS,
                             ['rhbop': PME_BUILD_VARIABLES['optaplannerVersion'], 'drools': PME_BUILD_VARIABLES['droolsProductVersion']], 
                             gitHashesToCollection(env.GIT_INFORMATION_HASHES)
@@ -158,15 +186,21 @@ pipeline {
     }
 }
 
-def getMessageBody(String sourcesFileUrl, String alreadyBuiltProjects, Map<String, String> versions, Map<String, String> scmHashes) {
-    // TODO: add nexus urls to specific optaplanner artifacts
+def getMessageBody(String optaplannerArchiveUrl, String optaplannerSourcesUrl, String optaplannerQuickstartsSourcesUrl, String optawebSourcesFileUrl, String alreadyBuiltProjects, Map<String, String> versions, Map<String, String> scmHashes) {
     def alreadyBuiltProjectsArray = (alreadyBuiltProjects ?: '').split(";")
     return """
 {
-    "sources_file_url": "${sourcesFileUrl}",
     "version": ${new groovy.json.JsonBuilder(versions).toString()},
     "scm_hash": ${new groovy.json.JsonBuilder(scmHashes).toString()},
-    "built_projects": ${new groovy.json.JsonBuilder(alreadyBuiltProjectsArray).toString()}
+    "built_projects": ${new groovy.json.JsonBuilder(alreadyBuiltProjectsArray).toString()},
+    "archives": {
+        "optaplanner": "${optaplannerArchiveUrl}"
+    },
+    "sources: {
+        "optaplanner": "${optaplannerSourcesUrl}",
+        "optaplanner-quickstarts": "${optaplannerQuickstartsSourcesUrl}",
+        "optaweb-vehicle-routing": "${optawebSourcesFileUrl}"
+    }
 }"""    
 }
 
@@ -176,18 +210,4 @@ def gitHashesToCollection(String gitInformationHashes) {
 
 String getDroolsBranch() {
     return env.CHANGE_BRANCH ?: env.BRANCH_NAME
-}
-
-String calculateKieRepoBranch(String branch) {
-    /* The Drools/OptaPlanner major version is shifted by 7 from the Kogito major version:
-    Kogito 1.x.y -> Drools 8.x.y. 
-    Kogito 1.x.y -> OptaPlanner 8.x.y. */
-    int majorVersionShift = 7
-    String [] branchSplit = branch.split("\\.")
-    if (branchSplit.length == 3) {
-        Integer optaplannerMajorVersion = Integer.parseInt(branchSplit[0]) + majorVersionShift
-        return "${optaplannerMajorVersion}.${branchSplit[1]}.${branchSplit[2]}"
-    } else {
-       return branch
-    }
 }
