@@ -69,16 +69,14 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
 
     @Override
     public final void retractLeft(LeftTuple_ leftTuple) {
-        TupleListEntry<LeftTuple_> leftEntry = leftTuple.getStore(inputStoreIndexLeftEntry);
+        TupleListEntry<LeftTuple_> leftEntry = leftTuple.removeStore(inputStoreIndexLeftEntry);
         if (leftEntry == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
+        TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.removeStore(inputStoreIndexLeftOutTupleList);
         leftEntry.remove();
         outTupleListLeft.forEach(this::retractOutTuple);
-        leftTuple.setStore(inputStoreIndexLeftEntry, null);
-        leftTuple.setStore(inputStoreIndexLeftOutTupleList, null);
     }
 
     @Override
@@ -117,16 +115,14 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
 
     @Override
     public final void retractRight(UniTuple<Right_> rightTuple) {
-        TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.getStore(inputStoreIndexRightEntry);
+        TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.removeStore(inputStoreIndexRightEntry);
         if (rightEntry == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
+        TupleList<MutableOutTuple_> outTupleListRight = rightTuple.removeStore(inputStoreIndexRightOutTupleList);
         rightEntry.remove();
         outTupleListRight.forEach(this::retractOutTuple);
-        rightTuple.setStore(inputStoreIndexRightEntry, null);
-        rightTuple.setStore(inputStoreIndexRightOutTupleList, null);
     }
 
 }

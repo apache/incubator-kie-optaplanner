@@ -22,4 +22,7 @@ public interface Tuple {
 
     void setStore(int index, Object value);
 
+    <Value_> Value_ removeStore(int index);
+
+
 }

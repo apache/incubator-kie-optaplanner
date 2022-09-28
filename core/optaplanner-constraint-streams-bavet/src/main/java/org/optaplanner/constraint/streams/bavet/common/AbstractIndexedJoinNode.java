@@ -104,18 +104,15 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
 
     @Override
     public final void retractLeft(LeftTuple_ leftTuple) {
-        IndexProperties indexProperties = leftTuple.getStore(inputStoreIndexLeftProperties);
+        IndexProperties indexProperties = leftTuple.removeStore(inputStoreIndexLeftProperties);
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        TupleListEntry<LeftTuple_> leftEntry = leftTuple.getStore(inputStoreIndexLeftEntry);
-        TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
+        TupleListEntry<LeftTuple_> leftEntry = leftTuple.removeStore(inputStoreIndexLeftEntry);
+        TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.removeStore(inputStoreIndexLeftOutTupleList);
         indexerLeft.remove(indexProperties, leftEntry);
         outTupleListLeft.forEach(this::retractOutTuple);
-        leftTuple.setStore(inputStoreIndexLeftProperties, null);
-        leftTuple.setStore(inputStoreIndexLeftEntry, null);
-        leftTuple.setStore(inputStoreIndexLeftOutTupleList, null);
     }
 
     @Override
@@ -173,18 +170,15 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
 
     @Override
     public final void retractRight(UniTuple<Right_> rightTuple) {
-        IndexProperties indexProperties = rightTuple.getStore(inputStoreIndexRightProperties);
+        IndexProperties indexProperties = rightTuple.removeStore(inputStoreIndexRightProperties);
         if (indexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.getStore(inputStoreIndexRightEntry);
-        TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
+        TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.removeStore(inputStoreIndexRightEntry);
+        TupleList<MutableOutTuple_> outTupleListRight = rightTuple.removeStore(inputStoreIndexRightOutTupleList);
         indexerRight.remove(indexProperties, rightEntry);
         outTupleListRight.forEach(this::retractOutTuple);
-        rightTuple.setStore(inputStoreIndexRightProperties, null);
-        rightTuple.setStore(inputStoreIndexRightEntry, null);
-        rightTuple.setStore(inputStoreIndexRightOutTupleList, null);
     }
 
     protected abstract IndexProperties createIndexPropertiesLeft(LeftTuple_ leftTuple);

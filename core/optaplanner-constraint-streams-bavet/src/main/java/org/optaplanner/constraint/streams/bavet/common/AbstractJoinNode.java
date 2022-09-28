@@ -87,12 +87,10 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
     }
 
     protected final void retractOutTuple(MutableOutTuple_ outTuple) {
-        TupleListEntry<MutableOutTuple_> outEntryLeft = outTuple.getStore(outputStoreIndexLeftOutEntry);
+        TupleListEntry<MutableOutTuple_> outEntryLeft = outTuple.removeStore(outputStoreIndexLeftOutEntry);
         outEntryLeft.remove();
-        outTuple.setStore(outputStoreIndexLeftOutEntry, null);
-        TupleListEntry<MutableOutTuple_> outEntryRight = outTuple.getStore(outputStoreIndexRightOutEntry);
+        TupleListEntry<MutableOutTuple_> outEntryRight = outTuple.removeStore(outputStoreIndexRightOutEntry);
         outEntryRight.remove();
-        outTuple.setStore(outputStoreIndexRightOutEntry, null);
         doRetractOutTuple(outTuple);
     }
 
