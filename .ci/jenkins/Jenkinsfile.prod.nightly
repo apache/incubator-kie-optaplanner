@@ -196,7 +196,7 @@ def getMessageBody(String optaplannerArchiveUrl, String optaplannerSourcesUrl, S
     "archives": {
         "optaplanner": "${optaplannerArchiveUrl}"
     },
-    "sources: {
+    "sources": {
         "optaplanner": "${optaplannerSourcesUrl}",
         "optaplanner-quickstarts": "${optaplannerQuickstartsSourcesUrl}",
         "optaweb-vehicle-routing": "${optawebSourcesFileUrl}"
