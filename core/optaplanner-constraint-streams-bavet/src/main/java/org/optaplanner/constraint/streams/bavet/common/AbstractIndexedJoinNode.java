@@ -35,11 +35,11 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
     protected AbstractIndexedJoinNode(Function<Right_, IndexProperties> mappingRight,
             int inputStoreIndexLeftProperties, int inputStoreIndexLeftEntry, int inputStoreIndexLeftOutTupleList,
             int inputStoreIndexRightProperties, int inputStoreIndexRightEntry, int inputStoreIndexRightOutTupleList,
-            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle,
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle, boolean isFiltering,
             int outputStoreIndexLeftOutEntry, int outputStoreIndexRightOutEntry,
             Indexer<LeftTuple_> indexerLeft, Indexer<UniTuple<Right_>> indexerRight) {
         super(inputStoreIndexLeftOutTupleList, inputStoreIndexRightOutTupleList,
-                nextNodesTupleLifecycle, outputStoreIndexLeftOutEntry, outputStoreIndexRightOutEntry);
+                nextNodesTupleLifecycle, isFiltering, outputStoreIndexLeftOutEntry, outputStoreIndexRightOutEntry);
         this.mappingRight = mappingRight;
         this.inputStoreIndexLeftProperties = inputStoreIndexLeftProperties;
         this.inputStoreIndexLeftEntry = inputStoreIndexLeftEntry;
@@ -67,6 +67,11 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         IndexProperties oldIndexProperties = leftTuple.getStore(inputStoreIndexLeftProperties);
         if (oldIndexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+            insertLeft(leftTuple);
+            return;
+        }
+        if (isFiltering) { // TODO do it smarter
+            retractLeft(leftTuple);
             insertLeft(leftTuple);
             return;
         }
@@ -132,6 +137,11 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         IndexProperties oldIndexProperties = rightTuple.getStore(inputStoreIndexRightProperties);
         if (oldIndexProperties == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+            insertRight(rightTuple);
+            return;
+        }
+        if (isFiltering) { // TODO do it smarter
+            retractRight(rightTuple);
             insertRight(rightTuple);
             return;
         }

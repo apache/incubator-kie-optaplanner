@@ -24,10 +24,11 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
     protected AbstractUnindexedJoinNode(
             int inputStoreIndexLeftEntry, int inputStoreIndexLeftOutTupleList,
             int inputStoreIndexRightEntry, int inputStoreIndexRightOutTupleList,
-            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle,
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle, boolean isFiltering,
             int outputStoreIndexLeftOutEntry, int outputStoreIndexRightOutEntry) {
         super(inputStoreIndexLeftOutTupleList, inputStoreIndexRightOutTupleList,
-                nextNodesTupleLifecycle, outputStoreIndexLeftOutEntry, outputStoreIndexRightOutEntry);
+                nextNodesTupleLifecycle, isFiltering,
+                outputStoreIndexLeftOutEntry, outputStoreIndexRightOutEntry);
         this.inputStoreIndexLeftEntry = inputStoreIndexLeftEntry;
         this.inputStoreIndexRightEntry = inputStoreIndexRightEntry;
     }
@@ -50,6 +51,11 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         TupleListEntry<LeftTuple_> leftEntry = leftTuple.getStore(inputStoreIndexLeftEntry);
         if (leftEntry == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+            insertLeft(leftTuple);
+            return;
+        }
+        if (isFiltering) { // TODO do it smarter
+            retractLeft(leftTuple);
             insertLeft(leftTuple);
             return;
         }
@@ -93,6 +99,11 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.getStore(inputStoreIndexRightEntry);
         if (rightEntry == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
+            insertRight(rightTuple);
+            return;
+        }
+        if (isFiltering) { // TODO do it smarter
+            retractRight(rightTuple);
             insertRight(rightTuple);
             return;
         }

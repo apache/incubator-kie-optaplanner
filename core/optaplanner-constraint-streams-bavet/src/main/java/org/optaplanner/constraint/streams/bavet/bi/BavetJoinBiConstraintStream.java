@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.bavet.bi;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiPredicate;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.AbstractJoinNode;
@@ -23,15 +24,17 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
     private final BavetJoinBridgeUniConstraintStream<Solution_, A> leftParent;
     private final BavetJoinBridgeUniConstraintStream<Solution_, B> rightParent;
     private final DefaultBiJoiner<A, B> joiner;
+    private final BiPredicate<A, B> filtering;
 
     public BavetJoinBiConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetJoinBridgeUniConstraintStream<Solution_, A> leftParent,
             BavetJoinBridgeUniConstraintStream<Solution_, B> rightParent,
-            DefaultBiJoiner<A, B> joiner) {
+            DefaultBiJoiner<A, B> joiner, BiPredicate<A, B> filtering) {
         super(constraintFactory, leftParent.getRetrievalSemantics());
         this.leftParent = leftParent;
         this.rightParent = rightParent;
         this.joiner = joiner;
+        this.filtering = filtering;
     }
 
     @Override
@@ -69,7 +72,7 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
                         buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
                         buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
                         buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                        downstream, outputStoreSize + 2,
+                        downstream, filtering, outputStoreSize + 2,
                         outputStoreSize, outputStoreSize + 1,
                         indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false))
                 : new UnindexedJoinBiNode<>(
@@ -77,7 +80,7 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
                         buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
                         buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
                         buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                        downstream, outputStoreSize + 2,
+                        downstream, filtering, outputStoreSize + 2,
                         outputStoreSize, outputStoreSize + 1);
         buildHelper.addNode(node, leftParent, rightParent);
     }
