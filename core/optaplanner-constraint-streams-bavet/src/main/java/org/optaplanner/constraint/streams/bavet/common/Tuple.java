@@ -24,5 +24,4 @@ public interface Tuple {
 
     <Value_> Value_ removeStore(int index);
 
-
 }
