@@ -80,32 +80,10 @@ pipeline {
                         def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
                         def folder="${env.RCM_GUEST_FOLDER}/rhbop/RHBOP-${PRODUCT_VERSION}.nightly"
 
-                        // optaplanner
-                        echo "[INFO] Start uploading optaplanner sources zip file.."
-                        def optaplannerSourcesFile = "rhbop-${PRODUCT_VERSION}-optaplanner-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
-                        sh "zip -r $optaplannerSourcesFile $WORKSPACE/kiegroup_optaplanner -x '*.git*'"
-                        sshagent(credentials: ['rcm-publish-server']) {
-                            sh "ssh 'rhba@${env.RCM_HOST}' 'mkdir -p ${folder}'"
-                            sh "scp -o StrictHostKeyChecking=no $optaplannerSourcesFile rhba@${env.RCM_HOST}:${folder}"
-                        }
+                        uploadSources("optaplanner", folder, PME_BUILD_VARIABLES)
+                        uploadSources("optaplanner-quickstarts", folder, PME_BUILD_VARIABLES)
+                        uploadSources("optaweb-vehicle-routing", folder, PME_BUILD_VARIABLES)
 
-                        // optaplanner-quickstarts
-                        echo "[INFO] Start uploading optaplanner-quickstarts sources zip file.."
-                        def optaplannerQuickstartsSourcesFile = "rhbop-${PRODUCT_VERSION}-optaplanner-quickstarts-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
-                        sh "zip -r $optaplannerQuickstartsSourcesFile $WORKSPACE/kiegroup_optaplanner-quickstarts -x '*.git*'"
-                        sshagent(credentials: ['rcm-publish-server']) {
-                            sh "ssh 'rhba@${env.RCM_HOST}' 'mkdir -p ${folder}'"
-                            sh "scp -o StrictHostKeyChecking=no $optaplannerQuickstartsSourcesFile rhba@${env.RCM_HOST}:${folder}"
-                        }
-
-                        // optaweb-vehicle-routing
-                        echo "[INFO] Start uploading optaweb-vehicle-routing sources zip file.."
-                        def optawebSourcesFile = "rhbop-${PRODUCT_VERSION}-optaweb-vehicle-routing-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
-                        sh "zip -r $optawebSourcesFile $WORKSPACE/kiegroup_optaweb-vehicle-routing -x '*.git*'"
-                        sshagent(credentials: ['rcm-publish-server']) {
-                            sh "ssh 'rhba@${env.RCM_HOST}' 'mkdir -p ${folder}'"
-                            sh "scp -o StrictHostKeyChecking=no $optawebSourcesFile rhba@${env.RCM_HOST}:${folder}"
-                        }
                     } else {
                         println "[WARNING] No sources to upload. None project has been built."
                     }
@@ -135,6 +113,7 @@ pipeline {
                             ['rhbop': PME_BUILD_VARIABLES['optaplannerVersion'], 'drools': PME_BUILD_VARIABLES['droolsProductVersion']], 
                             gitHashesToCollection(env.GIT_INFORMATION_HASHES)
                         )
+
                         echo "[INFO] Message Body: ${messageBody}"
                         echo "[INFO] Topic: ${topic}"
                         echo "[INFO] Event Type: ${eventType}"
@@ -199,6 +178,16 @@ def getMessageBody(String optaplannerArchiveUrl, String optaplannerSourcesUrl, S
         "optaweb-vehicle-routing": "${optawebSourcesFileUrl}"
     }
 }"""    
+}
+
+def uploadSources(String project, String folder, Map pmeVariables) {
+    echo "[INFO] Start uploading $project sources zip file.."
+    def sourcesFilename = "rhbop-${PRODUCT_VERSION}-$project-sources-${pmeVariables['datetimeSuffix']}.zip"
+    sh "zip -r $sourcesFilename $WORKSPACE/kiegroup_$project -x '*.git*'"
+    sshagent(credentials: ['rcm-publish-server']) {
+        sh "ssh 'rhba@${env.RCM_HOST}' 'mkdir -p ${folder}'"
+        sh "scp -o StrictHostKeyChecking=no $sourcesFilename rhba@${env.RCM_HOST}:${folder}"
+    }
 }
 
 def gitHashesToCollection(String gitInformationHashes) {
