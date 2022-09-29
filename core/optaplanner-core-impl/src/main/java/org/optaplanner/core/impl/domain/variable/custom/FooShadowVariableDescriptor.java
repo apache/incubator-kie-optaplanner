@@ -10,10 +10,12 @@ import java.util.stream.Collectors;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.domain.variable.ShadowVariable;
+import org.optaplanner.core.api.domain.variable.VariableListener;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
+import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
@@ -71,17 +73,39 @@ public class FooShadowVariableDescriptor<Solution_> extends ShadowVariableDescri
                     + sourceEntityDescriptor.getEntityClass() + ").\n"
                     + sourceEntityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
         }
-        // TODO list source var => list var listener
-        // TODO basic source var => basic var listener
+        Class<? extends AbstractVariableListener> variableListenerClass = shadowVariable.variableListenerClass();
+        if (sourceVariableDescriptor.isGenuineListVariable()
+                && !ListVariableListener.class.isAssignableFrom(variableListenerClass)) {
+            throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                    + ") has a @" + ShadowVariable.class.getSimpleName()
+                    + " annotated property (" + variableMemberAccessor.getName()
+                    + ") with sourceVariable (" + sourceVariableDescriptor.getSimpleEntityAndVariableName()
+                    + ") which is a list variable but the variableListenerClass (" + variableListenerClass
+                    + ") is not a " + ListVariableListener.class.getSimpleName() + ".\n"
+                    + "Maybe make the variableListenerClass (" + variableListenerClass.getSimpleName()
+                    + ") implement " + ListVariableListener.class.getSimpleName() + ".");
+        }
+        if (!sourceVariableDescriptor.isGenuineListVariable()
+                && !VariableListener.class.isAssignableFrom(variableListenerClass)) {
+            throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                    + ") has a @" + ShadowVariable.class.getSimpleName()
+                    + " annotated property (" + variableMemberAccessor.getName()
+                    + ") with sourceVariable (" + sourceVariableDescriptor.getSimpleEntityAndVariableName()
+                    + ") which is a basic variable but the variableListenerClass (" + variableListenerClass
+                    + ") is not a " + VariableListener.class.getSimpleName() + ".\n"
+                    + "Maybe make the variableListenerClass (" + variableListenerClass.getSimpleName()
+                    + ") implement " + VariableListener.class.getSimpleName() + ".");
+        }
         sourceVariableDescriptor.registerSinkVariableDescriptor(this);
         listenerClassToSourceDescriptorListMap
-                .computeIfAbsent(shadowVariable.variableListenerClass(), variableListenerClass -> new ArrayList<>())
+                .computeIfAbsent(variableListenerClass, k -> new ArrayList<>())
                 .add(sourceVariableDescriptor);
     }
 
     @Override
     public List<VariableDescriptor<Solution_>> getSourceVariableDescriptorList() {
-        return listenerClassToSourceDescriptorListMap.values().stream().flatMap(Collection::stream)
+        return listenerClassToSourceDescriptorListMap.values().stream()
+                .flatMap(Collection::stream)
                 .distinct()
                 .collect(Collectors.toList());
     }
