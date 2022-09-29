@@ -10,21 +10,19 @@ import java.lang.annotation.Target;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 
 /**
- * Specifies that a bean property (or a field) is a custom shadow of 1 or more {@link PlanningVariable}s or
- * {@link PlanningListVariable}s.
+ * Specifies that a bean property (or a field) is a custom shadow variable that is updated by another shadow variable's
+ * variable listener.
  * <p>
  * It is specified on a getter of a java bean property (or a field) of a {@link PlanningEntity} class.
- * <p>
- * TODO expand the Javadoc.
  */
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)
 public @interface PiggybackShadowVariable {
 
     /**
-     * The {@link PlanningEntity} class of the planning variable.
+     * The {@link PlanningEntity} class of the shadow variable with a variable listener.
      * <p>
-     * Specified if the planning variable is on a different {@link Class} than the class that uses this referencing annotation.
+     * Specified if the referenced shadow variable is on a different {@link Class} than the class that uses this annotation.
      *
      * @return {@link NullEntityClass} when it is null (workaround for annotation limitation).
      *         Defaults to the same {@link Class} as the one that uses this annotation.
@@ -32,7 +30,7 @@ public @interface PiggybackShadowVariable {
     Class<?> entityClass() default NullEntityClass.class;
 
     /**
-     * The source variable name.
+     * The shadow variable name.
      *
      * @return never null, a genuine or shadow variable name
      */

@@ -13,6 +13,8 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
  * Specifies that a bean property (or a field) is a custom shadow of 1 or more {@link PlanningVariable}'s.
  * <p>
  * It is specified on a getter of a java bean property (or a field) of a {@link PlanningEntity} class.
+ *
+ * @deprecated This annotation is deprecated in favor of {@link ShadowVariable} and {@link PiggybackShadowVariable}.
  */
 @Deprecated(forRemoval = true)
 @Target({ METHOD, FIELD })

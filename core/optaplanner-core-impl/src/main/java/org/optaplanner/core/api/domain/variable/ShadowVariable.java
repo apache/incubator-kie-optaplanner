@@ -13,12 +13,10 @@ import org.optaplanner.core.api.domain.variable.ShadowVariable.List;
 import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 
 /**
- * Specifies that a bean property (or a field) is a custom shadow of 1 or more {@link PlanningVariable}s or
- * {@link PlanningListVariable}s.
+ * Specifies that a bean property (or a field) is a custom shadow of 1 or more source variables. The source variable may be
+ * a genuine {@link PlanningVariable}, {@link PlanningListVariable}, or another shadow variable.
  * <p>
  * It is specified on a getter of a java bean property (or a field) of a {@link PlanningEntity} class.
- * <p>
- * TODO expand the Javadoc.
  */
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)
@@ -38,11 +36,11 @@ public @interface ShadowVariable {
     Class<? extends AbstractVariableListener> variableListenerClass();
 
     /**
-     * The {@link PlanningEntity} class of the planning variable.
+     * The {@link PlanningEntity} class of the source variable.
      * <p>
-     * Specified if the planning variable is on a different {@link Class} than the class that uses this referencing annotation.
+     * Specified if the source variable is on a different {@link Class} than the class that uses this referencing annotation.
      *
-     * @return {@link NullEntityClass} when it is null (workaround for annotation limitation).
+     * @return {@link NullEntityClass} when the attribute is omitted (workaround for annotation limitation).
      *         Defaults to the same {@link Class} as the one that uses this annotation.
      */
     Class<?> sourceEntityClass() default NullEntityClass.class;
