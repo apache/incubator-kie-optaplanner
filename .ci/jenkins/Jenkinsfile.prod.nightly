@@ -121,7 +121,7 @@ pipeline {
                         echo '[INFO] Sending RHBOP UMB message to QE.'
                         def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
 
-                        def optaplannerArchiveUrl = "https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/groups/rhbop-main-nightly/org/optaplanner/"
+                        def optaplannerArchiveUrl = "https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/groups/rhbop-main-nightly/"
                         def optaplannerSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}-optaplanner-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
                         def optaplannerQuickstartsSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}-optaplanner-quickstarts-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
                         def optawebSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}-optaweb-vehicle-routing-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
@@ -193,9 +193,7 @@ def getMessageBody(String optaplannerArchiveUrl, String optaplannerSourcesUrl, S
     "version": ${new groovy.json.JsonBuilder(versions).toString()},
     "scm_hash": ${new groovy.json.JsonBuilder(scmHashes).toString()},
     "built_projects": ${new groovy.json.JsonBuilder(alreadyBuiltProjectsArray).toString()},
-    "archives": {
-        "optaplanner": "${optaplannerArchiveUrl}"
-    },
+    "archives": "${optaplannerArchiveUrl}",
     "sources": {
         "optaplanner": "${optaplannerSourcesUrl}",
         "optaplanner-quickstarts": "${optaplannerQuickstartsSourcesUrl}",
