@@ -80,9 +80,9 @@ pipeline {
                         def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
                         def folder="${env.RCM_GUEST_FOLDER}/rhbop/RHBOP-${PRODUCT_VERSION}.nightly"
 
-                        uploadSources("optaplanner", folder, PME_BUILD_VARIABLES)
-                        uploadSources("optaplanner-quickstarts", folder, PME_BUILD_VARIABLES)
-                        uploadSources("optaweb-vehicle-routing", folder, PME_BUILD_VARIABLES)
+                        uploadSources("optaplanner", folder, PME_BUILD_VARIABLES['datetimeSuffix'])
+                        uploadSources("optaplanner-quickstarts", folder, PME_BUILD_VARIABLES['datetimeSuffix'])
+                        uploadSources("optaweb-vehicle-routing", folder, PME_BUILD_VARIABLES['datetimeSuffix'])
 
                     } else {
                         println "[WARNING] No sources to upload. None project has been built."
@@ -180,9 +180,9 @@ def getMessageBody(String optaplannerArchiveUrl, String optaplannerSourcesUrl, S
 }"""    
 }
 
-def uploadSources(String project, String folder, Map pmeVariables) {
+def uploadSources(String project, String folder, String suffix) {
     echo "[INFO] Start uploading $project sources zip file.."
-    def sourcesFilename = "rhbop-${PRODUCT_VERSION}-$project-sources-${pmeVariables['datetimeSuffix']}.zip"
+    def sourcesFilename = "rhbop-${PRODUCT_VERSION}-$project-sources-${suffix}.zip"
     sh "zip -r $sourcesFilename $WORKSPACE/kiegroup_$project -x '*.git*'"
     sshagent(credentials: ['rcm-publish-server']) {
         sh "ssh 'rhba@${env.RCM_HOST}' 'mkdir -p ${folder}'"
