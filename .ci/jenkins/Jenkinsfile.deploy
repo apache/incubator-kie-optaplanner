@@ -12,7 +12,7 @@ vehicleRoutingRepository = 'optaweb-vehicle-routing'
 
 pipeline {
     agent {
-        label 'kie-rhel7 && kie-mem16g && !master'
+        label 'kie-rhel7 && kie-mem16g && !built-in'
     }
 
     tools {

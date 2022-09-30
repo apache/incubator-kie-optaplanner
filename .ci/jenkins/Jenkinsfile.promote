@@ -12,7 +12,7 @@ String quickstartsRepository = 'optaplanner-quickstarts'
 
 pipeline {
     agent {
-        label 'kie-rhel7 && !master'
+        label 'kie-rhel7 && !built-in'
     }
 
     tools {
