@@ -8,7 +8,7 @@ import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
 
 @FunctionalInterface
-public interface TriConstraintConstructor<A, B, C>
-        extends ConstraintConstructor<QuadFunction<A, B, C, Score<?>, Object>, TriFunction<A, B, C, Collection<?>>> {
+public interface TriConstraintConstructor<A, B, C, Score_ extends Score<Score_>>
+        extends ConstraintConstructor<Score_, QuadFunction<A, B, C, Score_, Object>, TriFunction<A, B, C, Collection<?>>> {
 
 }

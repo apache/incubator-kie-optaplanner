@@ -22,7 +22,7 @@ import org.optaplanner.core.api.score.stream.ConstraintJustification;
  * Unless {@link #indictWith(QuadFunction)} is called, the default indicted objects' mapping will be used.
  * The function takes the input arguments and converts them into a {@link java.util.List}.
  */
-public interface QuadConstraintBuilder<A, B, C, D> extends ConstraintBuilder<QuadConstraintBuilder<A, B, C, D>> {
+public interface QuadConstraintBuilder<A, B, C, D, Score_ extends Score<Score_>> extends ConstraintBuilder {
 
     /**
      * Sets a custom function to apply on a constraint match to justify it.
@@ -31,8 +31,8 @@ public interface QuadConstraintBuilder<A, B, C, D> extends ConstraintBuilder<Qua
      * @param justificationMapping never null
      * @return this
      */
-    <ConstraintJustification_ extends ConstraintJustification> QuadConstraintBuilder<A, B, C, D> justifyWith(
-            PentaFunction<A, B, C, D, Score<?>, ConstraintJustification_> justificationMapping);
+    <ConstraintJustification_ extends ConstraintJustification> QuadConstraintBuilder<A, B, C, D, Score_> justifyWith(
+            PentaFunction<A, B, C, D, Score_, ConstraintJustification_> justificationMapping);
 
     /**
      * Sets a custom function to mark any object returned by it as responsible for causing the constraint to match.
@@ -42,6 +42,6 @@ public interface QuadConstraintBuilder<A, B, C, D> extends ConstraintBuilder<Qua
      * @param indictedObjectsMapping never null
      * @return this
      */
-    QuadConstraintBuilder<A, B, C, D> indictWith(QuadFunction<A, B, C, D, Collection<Object>> indictedObjectsMapping);
+    QuadConstraintBuilder<A, B, C, D, Score_> indictWith(QuadFunction<A, B, C, D, Collection<Object>> indictedObjectsMapping);
 
 }

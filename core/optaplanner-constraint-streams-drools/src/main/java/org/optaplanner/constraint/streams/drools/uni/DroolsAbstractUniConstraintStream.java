@@ -285,14 +285,14 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     // ************************************************************************
 
     @Override
-    public UniConstraintBuilder<A> innerImpact(Score<?> constraintWeight, ToIntFunction<A> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> UniConstraintBuilder<A, Score_> innerImpact(Score_ constraintWeight,
+            ToIntFunction<A> matchWeigher, ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
-    private UniConstraintBuilderImpl<A> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
-            ScoreImpactType impactType) {
+    private <Score_ extends Score<Score_>> UniConstraintBuilderImpl<A, Score_> newTerminator(RuleBuilder<Solution_> ruleBuilder,
+            Score_ constraintWeight, ScoreImpactType impactType) {
         return new UniConstraintBuilderImpl<>(
                 (constraintPackage, constraintName, constraintWeight_, impactType_, justificationMapping,
                         indictedObjectsMapping) -> buildConstraint(constraintPackage, constraintName, constraintWeight_,
@@ -301,15 +301,15 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
     }
 
     @Override
-    public UniConstraintBuilder<A> innerImpact(Score<?> constraintWeight, ToLongFunction<A> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> UniConstraintBuilder<A, Score_> innerImpact(Score_ constraintWeight,
+            ToLongFunction<A> matchWeigher, ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
     @Override
-    public UniConstraintBuilder<A> innerImpact(Score<?> constraintWeight, Function<A, BigDecimal> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> UniConstraintBuilder<A, Score_> innerImpact(Score_ constraintWeight,
+            Function<A, BigDecimal> matchWeigher, ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }

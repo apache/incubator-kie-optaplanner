@@ -23,7 +23,7 @@ import org.optaplanner.core.api.score.stream.ConstraintJustification;
  * Unless {@link #indictWith(BiFunction)} is called, the default indicted objects' mapping will be used.
  * The function takes the input arguments and converts them into a {@link java.util.List}.
  */
-public interface BiConstraintBuilder<A, B> extends ConstraintBuilder<BiConstraintBuilder<A, B>> {
+public interface BiConstraintBuilder<A, B, Score_ extends Score<Score_>> extends ConstraintBuilder {
 
     /**
      * Sets a custom function to apply on a constraint match to justify it.
@@ -32,8 +32,8 @@ public interface BiConstraintBuilder<A, B> extends ConstraintBuilder<BiConstrain
      * @param justificationMapping never null
      * @return this
      */
-    <ConstraintJustification_ extends ConstraintJustification> BiConstraintBuilder<A, B> justifyWith(
-            TriFunction<A, B, Score<?>, ConstraintJustification_> justificationMapping);
+    <ConstraintJustification_ extends ConstraintJustification> BiConstraintBuilder<A, B, Score_> justifyWith(
+            TriFunction<A, B, Score_, ConstraintJustification_> justificationMapping);
 
     /**
      * Sets a custom function to mark any object returned by it as responsible for causing the constraint to match.
@@ -43,6 +43,6 @@ public interface BiConstraintBuilder<A, B> extends ConstraintBuilder<BiConstrain
      * @param indictedObjectsMapping never null
      * @return this
      */
-    BiConstraintBuilder<A, B> indictWith(BiFunction<A, B, Collection<Object>> indictedObjectsMapping);
+    BiConstraintBuilder<A, B, Score_> indictWith(BiFunction<A, B, Collection<Object>> indictedObjectsMapping);
 
 }

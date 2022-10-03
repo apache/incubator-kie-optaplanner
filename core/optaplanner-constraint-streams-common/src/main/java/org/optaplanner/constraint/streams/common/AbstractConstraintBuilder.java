@@ -6,14 +6,13 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintBuilder;
 
-public abstract class AbstractConstraintBuilder<ConstraintBuilder_ extends ConstraintBuilder<ConstraintBuilder_>>
-        implements ConstraintBuilder<ConstraintBuilder_> {
+public abstract class AbstractConstraintBuilder<Score_ extends Score<Score_>> implements ConstraintBuilder {
     private final ConstraintConstructor constraintConstructor;
     private final ScoreImpactType impactType;
-    private final Score<?> constraintWeight;
+    private final Score_ constraintWeight;
 
     protected AbstractConstraintBuilder(ConstraintConstructor constraintConstructor, ScoreImpactType impactType,
-            Score<?> constraintWeight) {
+            Score_ constraintWeight) {
         this.constraintConstructor = Objects.requireNonNull(constraintConstructor);
         this.impactType = Objects.requireNonNull(impactType);
         this.constraintWeight = constraintWeight;

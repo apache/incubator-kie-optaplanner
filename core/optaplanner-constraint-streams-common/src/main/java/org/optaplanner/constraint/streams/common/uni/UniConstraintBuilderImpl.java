@@ -11,31 +11,31 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintJustification;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintBuilder;
 
-public final class UniConstraintBuilderImpl<A>
-        extends AbstractConstraintBuilder<UniConstraintBuilder<A>>
-        implements UniConstraintBuilder<A> {
+public final class UniConstraintBuilderImpl<A, Score_ extends Score<Score_>>
+        extends AbstractConstraintBuilder<Score_>
+        implements UniConstraintBuilder<A, Score_> {
 
-    private BiFunction<A, Score<?>, ConstraintJustification> justificationMapping;
+    private BiFunction<A, Score_, ConstraintJustification> justificationMapping;
     private Function<A, Collection<Object>> indictedObjectsMapping;
 
-    public UniConstraintBuilderImpl(UniConstraintConstructor<A> constraintConstructor, ScoreImpactType impactType,
-            Score<?> constraintWeight) {
+    public UniConstraintBuilderImpl(UniConstraintConstructor<A, Score_> constraintConstructor, ScoreImpactType impactType,
+            Score_ constraintWeight) {
         super(constraintConstructor, impactType, constraintWeight);
     }
 
     @Override
-    protected BiFunction<A, Score<?>, ConstraintJustification> getJustificationMapping() {
+    protected BiFunction<A, Score_, ConstraintJustification> getJustificationMapping() {
         return justificationMapping;
     }
 
     @Override
-    public <ConstraintJustification_ extends ConstraintJustification> UniConstraintBuilder<A> justifyWith(
-            BiFunction<A, Score<?>, ConstraintJustification_> justificationMapping) {
+    public <ConstraintJustification_ extends ConstraintJustification> UniConstraintBuilder<A, Score_> justifyWith(
+            BiFunction<A, Score_, ConstraintJustification_> justificationMapping) {
         if (this.justificationMapping != null) {
             throw new IllegalStateException("Justification mapping already set (" + justificationMapping + ").");
         }
         this.justificationMapping =
-                (BiFunction<A, Score<?>, ConstraintJustification>) Objects.requireNonNull(justificationMapping);
+                (BiFunction<A, Score_, ConstraintJustification>) Objects.requireNonNull(justificationMapping);
         return this;
     }
 
@@ -45,7 +45,7 @@ public final class UniConstraintBuilderImpl<A>
     }
 
     @Override
-    public UniConstraintBuilder<A> indictWith(Function<A, Collection<Object>> indictedObjectsMapping) {
+    public UniConstraintBuilder<A, Score_> indictWith(Function<A, Collection<Object>> indictedObjectsMapping) {
         if (this.indictedObjectsMapping != null) {
             throw new IllegalStateException("Indicted objects' mapping already set (" + indictedObjectsMapping + ").");
         }

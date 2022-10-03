@@ -282,33 +282,33 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public TriConstraintBuilder<A, B, C> innerImpact(Score<?> constraintWeight, ToIntTriFunction<A, B, C> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> TriConstraintBuilder<A, B, C, Score_> innerImpact(Score_ constraintWeight,
+            ToIntTriFunction<A, B, C> matchWeigher, ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
-    @Override
-    public TriConstraintBuilder<A, B, C> innerImpact(Score<?> constraintWeight, ToLongTriFunction<A, B, C> matchWeigher,
-            ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
-    }
-
-    @Override
-    public TriConstraintBuilder<A, B, C> innerImpact(Score<?> constraintWeight, TriFunction<A, B, C, BigDecimal> matchWeigher,
-            ScoreImpactType scoreImpactType) {
-        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
-        return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
-    }
-
-    private TriConstraintBuilderImpl<A, B, C> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
-            ScoreImpactType impactType) {
+    private <Score_ extends Score<Score_>> TriConstraintBuilderImpl<A, B, C, Score_> newTerminator(
+            RuleBuilder<Solution_> ruleBuilder, Score_ constraintWeight, ScoreImpactType impactType) {
         return new TriConstraintBuilderImpl<>(
                 (constraintPackage, constraintName, constraintWeight_, impactType_, justificationMapping,
                         indictedObjectsMapping) -> buildConstraint(constraintPackage, constraintName, constraintWeight_,
                                 impactType_, justificationMapping, indictedObjectsMapping, ruleBuilder),
                 impactType, constraintWeight);
+    }
+
+    @Override
+    public <Score_ extends Score<Score_>> TriConstraintBuilder<A, B, C, Score_> innerImpact(Score_ constraintWeight,
+            ToLongTriFunction<A, B, C> matchWeigher, ScoreImpactType scoreImpactType) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
+    }
+
+    @Override
+    public <Score_ extends Score<Score_>> TriConstraintBuilder<A, B, C, Score_> innerImpact(Score_ constraintWeight,
+            TriFunction<A, B, C, BigDecimal> matchWeigher, ScoreImpactType scoreImpactType) {
+        RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
+        return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
     @Override

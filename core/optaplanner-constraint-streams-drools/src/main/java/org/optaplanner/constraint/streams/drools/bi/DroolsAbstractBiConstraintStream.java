@@ -278,14 +278,14 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     }
 
     @Override
-    public BiConstraintBuilder<A, B> innerImpact(Score<?> constraintWeight, ToIntBiFunction<A, B> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> BiConstraintBuilder<A, B, Score_> innerImpact(Score_ constraintWeight,
+            ToIntBiFunction<A, B> matchWeigher, ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
-    private BiConstraintBuilderImpl<A, B> newTerminator(RuleBuilder<Solution_> ruleBuilder, Score<?> constraintWeight,
-            ScoreImpactType impactType) {
+    private <Score_ extends Score<Score_>> BiConstraintBuilderImpl<A, B, Score_> newTerminator(
+            RuleBuilder<Solution_> ruleBuilder, Score_ constraintWeight, ScoreImpactType impactType) {
         return new BiConstraintBuilderImpl<>(
                 (constraintPackage, constraintName, constraintWeight_, impactType_, justificationMapping,
                         indictedObjectsMapping) -> buildConstraint(constraintPackage, constraintName, constraintWeight_,
@@ -294,15 +294,15 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
     }
 
     @Override
-    public BiConstraintBuilder<A, B> innerImpact(Score<?> constraintWeight, ToLongBiFunction<A, B> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> BiConstraintBuilder<A, B, Score_> innerImpact(Score_ constraintWeight,
+            ToLongBiFunction<A, B> matchWeigher, ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }
 
     @Override
-    public BiConstraintBuilder<A, B> innerImpact(Score<?> constraintWeight, BiFunction<A, B, BigDecimal> matchWeigher,
-            ScoreImpactType scoreImpactType) {
+    public <Score_ extends Score<Score_>> BiConstraintBuilder<A, B, Score_> innerImpact(Score_ constraintWeight,
+            BiFunction<A, B, BigDecimal> matchWeigher, ScoreImpactType scoreImpactType) {
         RuleBuilder<Solution_> ruleBuilder = getLeftHandSide().andTerminate(matchWeigher);
         return newTerminator(ruleBuilder, constraintWeight, scoreImpactType);
     }

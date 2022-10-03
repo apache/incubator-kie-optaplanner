@@ -8,7 +8,8 @@ import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.Score;
 
 @FunctionalInterface
-public interface QuadConstraintConstructor<A, B, C, D>
-        extends ConstraintConstructor<PentaFunction<A, B, C, D, Score<?>, Object>, QuadFunction<A, B, C, D, Collection<?>>> {
+public interface QuadConstraintConstructor<A, B, C, D, Score_ extends Score<Score_>>
+        extends
+        ConstraintConstructor<Score_, PentaFunction<A, B, C, D, Score_, Object>, QuadFunction<A, B, C, D, Collection<?>>> {
 
 }

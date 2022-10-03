@@ -22,7 +22,7 @@ import org.optaplanner.core.api.score.stream.ConstraintJustification;
  * Unless {@link #indictWith(TriFunction)} is called, the default indicted objects' mapping will be used.
  * The function takes the input arguments and converts them into a {@link java.util.List}.
  */
-public interface TriConstraintBuilder<A, B, C> extends ConstraintBuilder<TriConstraintBuilder<A, B, C>> {
+public interface TriConstraintBuilder<A, B, C, Score_ extends Score<Score_>> extends ConstraintBuilder {
 
     /**
      * Sets a custom function to apply on a constraint match to justify it.
@@ -31,8 +31,8 @@ public interface TriConstraintBuilder<A, B, C> extends ConstraintBuilder<TriCons
      * @param justificationMapping never null
      * @return this
      */
-    <ConstraintJustification_ extends ConstraintJustification> TriConstraintBuilder<A, B, C> justifyWith(
-            QuadFunction<A, B, C, Score<?>, ConstraintJustification_> justificationMapping);
+    <ConstraintJustification_ extends ConstraintJustification> TriConstraintBuilder<A, B, C, Score_> justifyWith(
+            QuadFunction<A, B, C, Score_, ConstraintJustification_> justificationMapping);
 
     /**
      * Sets a custom function to mark any object returned by it as responsible for causing the constraint to match.
@@ -42,6 +42,6 @@ public interface TriConstraintBuilder<A, B, C> extends ConstraintBuilder<TriCons
      * @param indictedObjectsMapping never null
      * @return this
      */
-    TriConstraintBuilder<A, B, C> indictWith(TriFunction<A, B, C, Collection<Object>> indictedObjectsMapping);
+    TriConstraintBuilder<A, B, C, Score_> indictWith(TriFunction<A, B, C, Collection<Object>> indictedObjectsMapping);
 
 }
