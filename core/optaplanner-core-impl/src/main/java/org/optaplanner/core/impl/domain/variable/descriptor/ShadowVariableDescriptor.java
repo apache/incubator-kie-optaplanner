@@ -8,7 +8,7 @@ import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
-import org.optaplanner.core.impl.domain.variable.custom.ListenerSources;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListenerWithSources;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
@@ -68,7 +68,8 @@ public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescri
      * @param scoreDirector never null
      * @return never null
      */
-    public abstract Iterable<ListenerSources<Solution_>> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector);
+    public abstract Iterable<VariableListenerWithSources<Solution_>>
+            buildVariableListeners(InnerScoreDirector<Solution_, ?> scoreDirector);
 
     // ************************************************************************
     // Extraction methods

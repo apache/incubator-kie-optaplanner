@@ -9,11 +9,11 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.variable.custom.ListenerSources;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListenerWithSources;
 import org.optaplanner.core.impl.domain.variable.listener.support.violation.ShadowVariablesAssert;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
@@ -58,15 +58,16 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
     }
 
     private void processShadowVariableDescriptor(ShadowVariableDescriptor<Solution_> shadowVariableDescriptor) {
-        for (ListenerSources<Solution_> link : shadowVariableDescriptor.buildVariableListener(scoreDirector)) {
-            AbstractVariableListener<Solution_, Object> variableListener = link.getVariableListener();
+        for (VariableListenerWithSources<Solution_> listenerWithSources : shadowVariableDescriptor
+                .buildVariableListeners(scoreDirector)) {
+            AbstractVariableListener<Solution_, Object> variableListener = listenerWithSources.getVariableListener();
             if (variableListener instanceof Supply) {
                 // Non-sourced variable listeners (ie. ones provided by the user) can never be a supply.
                 supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), (Supply) variableListener);
             }
             int globalOrder = shadowVariableDescriptor.getGlobalShadowOrder();
             notifiableRegistry.registerNotifiable(
-                    link.getSourceVariableDescriptors(),
+                    listenerWithSources.getSourceVariableDescriptors(),
                     AbstractNotifiable.buildNotifiable(scoreDirector, variableListener, globalOrder));
             nextGlobalOrder = globalOrder + 1;
         }

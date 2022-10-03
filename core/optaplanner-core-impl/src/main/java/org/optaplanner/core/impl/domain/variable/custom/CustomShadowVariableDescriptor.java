@@ -17,6 +17,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListenerWithSources;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
@@ -213,7 +214,8 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     }
 
     @Override
-    public Iterable<ListenerSources<Solution_>> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public Iterable<VariableListenerWithSources<Solution_>>
+            buildVariableListeners(InnerScoreDirector<Solution_, ?> scoreDirector) {
         if (refVariableDescriptor != null) {
             throw new IllegalStateException("The shadowVariableDescriptor (" + this
                     + ") references another shadowVariableDescriptor (" + refVariableDescriptor
@@ -221,7 +223,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
         }
         VariableListener<Solution_, Object> variableListener =
                 ConfigUtils.newInstance(this::toString, "variableListenerClass", variableListenerClass);
-        return new ListenerSources<>(variableListener, sourceVariableDescriptorList).toCollection();
+        return new VariableListenerWithSources<>(variableListener, sourceVariableDescriptorList).toCollection();
     }
 
 }
