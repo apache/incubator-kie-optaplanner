@@ -87,17 +87,17 @@ pipeline {
                         def quickstartsSourceDir = "org.optaplanner-optaplanner-quickstarts-${PRODUCT_VERSION}.Final-redhat"
                         sh "mv ${env.WORKSPACE}/kiegroup_optaplanner-quickstarts ${env.WORKSPACE}/$quickstartsSourceDir"
 
-                        def optawebSourceDir = "org.optaweb.vehiclerouting-optaweb-vehicle-routing-${PRODUCT_VERSION}.Final-redhat"
+                        def optawebSourceDir = "org.optaweb.optaweb-vehicle-routing-${PRODUCT_VERSION}.Final-redhat"
                         sh "mv ${env.WORKSPACE}/kiegroup_optaweb-vehicle-routing ${env.WORKSPACE}/$optawebSourceDir"
 
                         // zip source directories
                         dir("${env.WORKSPACE}/") {
                             def optaplannerSourcesFilename = computeSourcesFilename("optaplanner", PME_BUILD_VARIABLES['datetimeSuffix'])
-                            sh "zip -r $optaplannerSourcesFilename $optaplannerSourceDir -x '$optaplannerSourceDir/.git/*' -x '$optaplannerSourceDir/optaplanner-operator/*'  -x '$optaplannerSourceDir/optaplanner-examples/*' -x '$optaplannerSourceDir/target/*'"
+                            sh "zip -r $optaplannerSourcesFilename $optaplannerSourceDir -x '$optaplannerSourceDir/.git/*' -x '$optaplannerSourceDir/optaplanner-operator/*' -x '$optaplannerSourceDir/target/*'"
                             uploadSources(optaplannerSourcesFilename, folder)
 
                             def quickstartsSourcesFilename = computeSourcesFilename("optaplanner-quickstarts", PME_BUILD_VARIABLES['datetimeSuffix'])
-                            sh "zip -r $quickstartsSourcesFilename $quickstartsSourceDir $optawebSourceDir -x '$quickstartsSourceDir/.git/*' -x '$optawebSourceDir/.git/*' -x '$quickstartsSourceDir/target/*' -x '$optawebSourceDir/target/*'"
+                            sh "zip -r $quickstartsSourcesFilename $quickstartsSourceDir $optawebSourceDir -x '$quickstartsSourceDir/.git/*' -x '$optawebSourceDir/.git/*' -x '$quickstartsSourceDir/target/*' -x '$optawebSourceDir/target/*' -x '$quickstartsSourceDir/technology/java-activemq-quarkus/*' -x '$quickstartsSourceDir/technology/kotlin-quarkus/*' -x '$quickstartsSourceDir/technology/python/*' -x '$quickstartsSourceDir/technology/kubernetes/*' -x '$quickstartsSourceDir/use-cases/call-center/*' -x '$quickstartsSourceDir/use-cases/facility-location/*' -x '$quickstartsSourceDir/use-cases/order-picking/*' -x '$quickstartsSourceDir/use-cases/maintenance-scheduling/*' -x '$quickstartsSourceDir/use-cases/vehicle-routing/*' "
                             uploadSources(quickstartsSourcesFilename, folder)
                         }
 
