@@ -154,4 +154,34 @@ public interface ConstraintStreamFunctionalTest {
 
     void impactNegativeBigDecimal();
 
+    void penalizeUnweightedCustomJustifications();
+
+    void penalizeCustomJustifications();
+
+    void penalizeLongCustomJustifications();
+
+    void penalizeBigDecimalCustomJustifications();
+
+    void rewardUnweightedCustomJustifications();
+
+    void rewardCustomJustifications();
+
+    void rewardLongCustomJustifications();
+
+    void rewardBigDecimalCustomJustifications();
+
+    void impactPositiveUnweightedCustomJustifications();
+
+    void impactPositiveCustomJustifications();
+
+    void impactPositiveLongCustomJustifications();
+
+    void impactPositiveBigDecimalCustomJustifications();
+
+    void impactNegativeCustomJustifications();
+
+    void impactNegativeLongCustomJustifications();
+
+    void impactNegativeBigDecimalCustomJustifications();
+
 }

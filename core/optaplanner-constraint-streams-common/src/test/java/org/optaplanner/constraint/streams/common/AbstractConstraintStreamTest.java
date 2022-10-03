@@ -169,4 +169,25 @@ public abstract class AbstractConstraintStreamTest {
         return Arrays.stream(facts).collect(Collectors.toSet());
     }
 
+    protected static final class TestConstraintJustification<Score_ extends Score<Score_>>
+            implements ConstraintJustification {
+
+        private final Score_ score;
+        private final Object[] facts;
+
+        public TestConstraintJustification(Score_ score, Object... facts) {
+            this.score = Objects.requireNonNull(score);
+            this.facts = Objects.requireNonNull(facts);
+        }
+
+        public Score_ getScore() {
+            return score;
+        }
+
+        public Object[] getFacts() {
+            return facts;
+        }
+
+    }
+
 }
