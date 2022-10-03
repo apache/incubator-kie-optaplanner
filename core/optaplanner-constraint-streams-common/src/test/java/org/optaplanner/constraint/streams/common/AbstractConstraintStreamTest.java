@@ -35,7 +35,7 @@ public abstract class AbstractConstraintStreamTest {
 
     protected static final String TEST_CONSTRAINT_NAME = "testConstraintName";
 
-    private final ConstraintStreamImplSupport implSupport;
+    protected final ConstraintStreamImplSupport implSupport;
 
     protected final void assumeBavet() {
         implSupport.assumeBavet();
