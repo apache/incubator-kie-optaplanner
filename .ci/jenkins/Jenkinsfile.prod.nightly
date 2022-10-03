@@ -97,7 +97,7 @@ pipeline {
                             uploadSources(optaplannerSourcesFilename, folder)
 
                             def quickstartsSourcesFilename = computeSourcesFilename("optaplanner-quickstarts", PME_BUILD_VARIABLES['datetimeSuffix'])
-                            sh "zip -r $quickstartsSourcesFilename $quickstartsSourceDir $optawebSourceDir -x '$quickstartsSourceDir/.git/*' -x '$optawebSourceDir/.git/*' -x '$quickstartsSourceDir/target/*' -x '$optawebSourceDir/target/*' -x '$quickstartsSourceDir/technology/java-activemq-quarkus/*' -x '$quickstartsSourceDir/technology/kotlin-quarkus/*' -x '$quickstartsSourceDir/technology/python/*' -x '$quickstartsSourceDir/technology/kubernetes/*' -x '$quickstartsSourceDir/use-cases/call-center/*' -x '$quickstartsSourceDir/use-cases/facility-location/*' -x '$quickstartsSourceDir/use-cases/order-picking/*' -x '$quickstartsSourceDir/use-cases/maintenance-scheduling/*' -x '$quickstartsSourceDir/use-cases/vehicle-routing/*' "
+                            sh "zip -r $quickstartsSourcesFilename $quickstartsSourceDir $optawebSourceDir -x '$quickstartsSourceDir/.git/*' -x '$optawebSourceDir/.git/*' -x '$quickstartsSourceDir/target/*' -x '$optawebSourceDir/target/*' -x '$quickstartsSourceDir/technology/python/*' -x '$quickstartsSourceDir/technology/kubernetes/*'"
                             uploadSources(quickstartsSourcesFilename, folder)
                         }
 
