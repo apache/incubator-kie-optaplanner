@@ -124,24 +124,34 @@ public interface ConstraintStreamFunctionalTest {
     // Penalize/reward
     // ************************************************************************
 
-    void penalize_Int();
+    void penalizeUnweighted();
 
-    void penalize_Long();
+    void penalize();
 
-    void penalize_BigDecimal();
+    void penalizeLong();
 
-    void penalize_negative();
+    void penalizeBigDecimal();
 
-    void penalize_customJustification();
+    void rewardUnweighted();
 
-    void reward_Int();
+    void reward();
 
-    void reward_Long();
+    void rewardLong();
 
-    void reward_BigDecimal();
+    void rewardBigDecimal();
 
-    void reward_negative();
+    void impactPositiveUnweighted();
 
-    void reward_customJustification();
+    void impactPositive();
+
+    void impactPositiveLong();
+
+    void impactPositiveBigDecimal();
+
+    void impactNegative();
+
+    void impactNegativeLong();
+
+    void impactNegativeBigDecimal();
 
 }
