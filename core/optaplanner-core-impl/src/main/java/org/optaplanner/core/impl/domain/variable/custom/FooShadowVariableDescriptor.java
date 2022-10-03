@@ -20,7 +20,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescri
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListenerWithSources;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -126,8 +126,7 @@ public class FooShadowVariableDescriptor<Solution_> extends ShadowVariableDescri
     }
 
     @Override
-    public Iterable<VariableListenerWithSources<Solution_>>
-            buildVariableListeners(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public Iterable<VariableListenerWithSources<Solution_>> buildVariableListeners(SupplyManager supplyManager) {
         return listenerClassToSourceDescriptorListMap.entrySet().stream().map(classListEntry -> {
             AbstractVariableListener<Solution_, Object> variableListener =
                     ConfigUtils.newInstance(this::toString, "variableListenerClass", classListEntry.getKey());

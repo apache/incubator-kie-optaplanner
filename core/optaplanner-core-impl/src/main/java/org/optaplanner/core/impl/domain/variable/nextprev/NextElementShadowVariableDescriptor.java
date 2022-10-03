@@ -8,7 +8,7 @@ import org.optaplanner.core.api.domain.variable.NextElementShadowVariable;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListenerWithSources;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 
 public class NextElementShadowVariableDescriptor<Solution_> extends AbstractNextPrevElementShadowVariableDescriptor<Solution_> {
 
@@ -34,8 +34,7 @@ public class NextElementShadowVariableDescriptor<Solution_> extends AbstractNext
     }
 
     @Override
-    public Iterable<VariableListenerWithSources<Solution_>>
-            buildVariableListeners(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public Iterable<VariableListenerWithSources<Solution_>> buildVariableListeners(SupplyManager supplyManager) {
         return new VariableListenerWithSources<>(new NextElementVariableListener<>(this, sourceVariableDescriptor),
                 sourceVariableDescriptor).toCollection();
     }

@@ -59,7 +59,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
 
     private void processShadowVariableDescriptor(ShadowVariableDescriptor<Solution_> shadowVariableDescriptor) {
         for (VariableListenerWithSources<Solution_> listenerWithSources : shadowVariableDescriptor
-                .buildVariableListeners(scoreDirector)) {
+                .buildVariableListeners(this)) {
             AbstractVariableListener<Solution_, Object> variableListener = listenerWithSources.getVariableListener();
             if (variableListener instanceof Supply) {
                 // Non-sourced variable listeners (ie. ones provided by the user) can never be a supply.

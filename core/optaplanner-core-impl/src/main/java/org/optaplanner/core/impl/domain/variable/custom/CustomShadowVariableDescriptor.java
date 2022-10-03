@@ -19,7 +19,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescri
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListenerWithSources;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -214,8 +214,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     }
 
     @Override
-    public Iterable<VariableListenerWithSources<Solution_>>
-            buildVariableListeners(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public Iterable<VariableListenerWithSources<Solution_>> buildVariableListeners(SupplyManager supplyManager) {
         if (refVariableDescriptor != null) {
             throw new IllegalStateException("The shadowVariableDescriptor (" + this
                     + ") references another shadowVariableDescriptor (" + refVariableDescriptor

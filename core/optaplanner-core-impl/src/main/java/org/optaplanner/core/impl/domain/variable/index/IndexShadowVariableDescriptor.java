@@ -15,7 +15,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescript
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListenerWithSources;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 
 public class IndexShadowVariableDescriptor<Solution_> extends ShadowVariableDescriptor<Solution_> {
 
@@ -104,8 +104,7 @@ public class IndexShadowVariableDescriptor<Solution_> extends ShadowVariableDesc
     }
 
     @Override
-    public Iterable<VariableListenerWithSources<Solution_>>
-            buildVariableListeners(InnerScoreDirector<Solution_, ?> scoreDirector) {
+    public Iterable<VariableListenerWithSources<Solution_>> buildVariableListeners(SupplyManager supplyManager) {
         return new VariableListenerWithSources<>(new IndexVariableListener<>(this, sourceVariableDescriptor),
                 sourceVariableDescriptor).toCollection();
     }
