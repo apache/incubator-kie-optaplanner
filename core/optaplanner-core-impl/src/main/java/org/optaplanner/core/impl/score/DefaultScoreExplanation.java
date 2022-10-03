@@ -5,15 +5,18 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
 
 public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score_>>
         implements ScoreExplanation<Solution_, Score_> {
@@ -24,6 +27,7 @@ public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score
     private final Solution_ solution;
     private final Score_ score;
     private final Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap;
+    private final List<ConstraintJustification> constraintJustificationList;
     private final Map<Object, Indictment<Score_>> indictmentMap;
     private final AtomicReference<String> summary = new AtomicReference<>(); // Will be calculated lazily.
 
@@ -106,6 +110,11 @@ public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score
         this.solution = solution;
         this.score = requireNonNull(score);
         this.constraintMatchTotalMap = requireNonNull(constraintMatchTotalMap);
+        this.constraintJustificationList = constraintMatchTotalMap.values()
+                .stream()
+                .flatMap(constraintMatchTotal -> constraintMatchTotal.getConstraintMatchSet().stream())
+                .map(constraintMatch -> (ConstraintJustification) constraintMatch.getJustification())
+                .collect(Collectors.toList());
         this.indictmentMap = requireNonNull(indictmentMap);
     }
 
@@ -122,6 +131,11 @@ public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score
     @Override
     public Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap() {
         return constraintMatchTotalMap;
+    }
+
+    @Override
+    public List<ConstraintJustification> getJustificationList() {
+        return constraintJustificationList;
     }
 
     @Override

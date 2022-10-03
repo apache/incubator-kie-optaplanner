@@ -67,6 +67,32 @@ public interface ScoreExplanation<Solution_, Score_ extends Score<Score_>> {
     Map<String, ConstraintMatchTotal<Score_>> getConstraintMatchTotalMap();
 
     /**
+     * Explains the {@link Score} of {@link #getScore()} for all constraints.
+     * The return value of this method is determined by several factors:
+     *
+     * <ul>
+     * <li>
+     * With Constraint Streams, the user has an option to provide a custom justification mapping,
+     * implementing {@link ConstraintJustification}.
+     * If provided, every constraint match of such constraint will be associated with this custom justification class.
+     * Every constraint not associated with a custom justification class
+     * will be associated with {@link DefaultConstraintJustification}.
+     * </li>
+     * <li>
+     * With {@link ConstraintMatchAwareIncrementalScoreCalculator},
+     * every {@link ConstraintMatch} will be associated with the justification class that the user created it with.
+     * </li>
+     * <li>
+     * With score DRL, every {@link ConstraintMatch} will be associated with {@link DefaultConstraintJustification}.
+     * </li>
+     * </ul>
+     *
+     * @return never null, all constraint matches
+     * @see #getIndictmentMap()
+     */
+    List<ConstraintJustification> getJustificationList();
+
+    /**
      * Explains the {@link Score} of {@link #getScore()} for all constraints
      * justified with a given {@link ConstraintJustification} type.
      * The return value of this method is determined by several factors:
@@ -92,14 +118,13 @@ public interface ScoreExplanation<Solution_, Score_ extends Score<Score_>> {
      * @return never null, all constraint matches associated with the given justification class
      * @see #getIndictmentMap()
      */
-    default List<ConstraintMatchTotal<Score_>>
-            getConstraintMatchTotals(Class<? extends ConstraintJustification> constraintJustificationClass) {
-        return getConstraintMatchTotalMap()
-                .values()
+    default <ConstraintJustification_ extends ConstraintJustification> List<ConstraintJustification_>
+            getJustificationList(Class<? extends ConstraintJustification_> constraintJustificationClass) {
+        return getJustificationList()
                 .stream()
-                .filter(c -> c.getConstraintMatchSet()
-                        .stream()
-                        .anyMatch(m -> constraintJustificationClass.isAssignableFrom(m.getJustification().getClass())))
+                .filter(constraintJustification -> constraintJustificationClass
+                        .isAssignableFrom(constraintJustification.getClass()))
+                .map(constraintJustification -> (ConstraintJustification_) constraintJustification)
                 .collect(Collectors.toList());
     }
 
