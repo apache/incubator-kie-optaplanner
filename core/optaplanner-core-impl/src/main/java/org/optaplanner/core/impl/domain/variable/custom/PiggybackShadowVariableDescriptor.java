@@ -93,7 +93,7 @@ public class PiggybackShadowVariableDescriptor<Solution_> extends ShadowVariable
 
     @Override
     public Demand<?> getProvidedDemand() {
-        throw new UnsupportedOperationException("Custom shadow variable listener will never be demanded.");
+        throw new UnsupportedOperationException("Custom shadow variable cannot be demanded.");
     }
 
     @Override

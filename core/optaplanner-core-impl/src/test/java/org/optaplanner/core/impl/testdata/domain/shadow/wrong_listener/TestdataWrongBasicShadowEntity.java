@@ -35,58 +35,48 @@ public class TestdataWrongBasicShadowEntity {
 
         @Override
         public void beforeEntityAdded(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity entity) {
-
         }
 
         @Override
         public void afterEntityAdded(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity entity) {
-
         }
 
         @Override
         public void beforeEntityRemoved(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity entity) {
-
         }
 
         @Override
         public void afterEntityRemoved(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity entity) {
-
         }
 
         @Override
         public void beforeListVariableElementAdded(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity entity,
                 int index) {
-
         }
 
         @Override
         public void afterListVariableElementAdded(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity entity,
                 int index) {
-
         }
 
         @Override
         public void beforeListVariableElementRemoved(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity entity,
                 int index) {
-
         }
 
         @Override
         public void afterListVariableElementRemoved(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity entity,
                 int index) {
-
         }
 
         @Override
         public void beforeListVariableChanged(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity entity,
                 int fromIndex, int toIndex) {
-
         }
 
         @Override
         public void afterListVariableChanged(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity entity,
                 int fromIndex, int toIndex) {
-
         }
     }
 }

@@ -43,11 +43,11 @@ public class FooShadowVariableDescriptor<Solution_> extends ShadowVariableDescri
     @Override
     public void linkVariableDescriptors(DescriptorPolicy descriptorPolicy) {
         for (ShadowVariable shadowVariable : variableMemberAccessor.getDeclaredAnnotationsByType(ShadowVariable.class)) {
-            linkSource(shadowVariable);
+            linkSourceVariableDescriptorToListenerClass(shadowVariable);
         }
     }
 
-    private void linkSource(ShadowVariable shadowVariable) {
+    private void linkSourceVariableDescriptorToListenerClass(ShadowVariable shadowVariable) {
         EntityDescriptor<Solution_> sourceEntityDescriptor;
         Class<?> sourceEntityClass = shadowVariable.sourceEntityClass();
         if (sourceEntityClass.equals(ShadowVariable.NullEntityClass.class)) {
@@ -122,7 +122,7 @@ public class FooShadowVariableDescriptor<Solution_> extends ShadowVariableDescri
 
     @Override
     public Demand<?> getProvidedDemand() {
-        throw new UnsupportedOperationException("Custom shadow variable listener will never be demanded.");
+        throw new UnsupportedOperationException("Custom shadow variable cannot be demanded.");
     }
 
     @Override

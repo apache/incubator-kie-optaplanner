@@ -37,32 +37,26 @@ public class TestdataWrongListShadowEntity {
 
         @Override
         public void beforeEntityAdded(ScoreDirector<TestdataListSolution> scoreDirector, TestdataListEntity entity) {
-
         }
 
         @Override
         public void afterEntityAdded(ScoreDirector<TestdataListSolution> scoreDirector, TestdataListEntity entity) {
-
         }
 
         @Override
         public void beforeEntityRemoved(ScoreDirector<TestdataListSolution> scoreDirector, TestdataListEntity entity) {
-
         }
 
         @Override
         public void afterEntityRemoved(ScoreDirector<TestdataListSolution> scoreDirector, TestdataListEntity entity) {
-
         }
 
         @Override
         public void beforeVariableChanged(ScoreDirector<TestdataListSolution> scoreDirector, TestdataListEntity entity) {
-
         }
 
         @Override
         public void afterVariableChanged(ScoreDirector<TestdataListSolution> scoreDirector, TestdataListEntity entity) {
-
         }
     }
 }

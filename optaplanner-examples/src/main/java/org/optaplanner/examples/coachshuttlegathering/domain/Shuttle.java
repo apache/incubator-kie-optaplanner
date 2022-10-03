@@ -38,10 +38,8 @@ public class Shuttle extends Bus {
     }
 
     @Override
-    // TODO maybe BusListener
     @ShadowVariable(variableListenerClass = ShuttlePassengerCountTotalUpdatingVariableListener.class,
             sourceEntityClass = BusStop.class, sourceVariableName = "bus")
-    // TODO maybe DestinationListener
     @ShadowVariable(variableListenerClass = ShuttlePassengerCountTotalUpdatingVariableListener.class,
             sourceEntityClass = Shuttle.class, sourceVariableName = "destination")
     public Integer getPassengerQuantityTotal() {
