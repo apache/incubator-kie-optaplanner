@@ -81,7 +81,7 @@ pipeline {
                         def folder="${env.RCM_GUEST_FOLDER}/rhbop/RHBOP-${PRODUCT_VERSION}.nightly"
 
                         // zip source directories
-                        dir("${env.WORKSPACE}/deployDirectory/org/kie/rhbop/rhbop") {
+                        dir("${env.WORKSPACE}/deployDirectory/org/kie/rhbop/rhbop/${PRODUCT_VERSION}.redhat-${PME_BUILD_VARIABLES['datetimeSuffix']}") {
                             def optaplannerSourcesFilename = computeSourcesFilename("optaplanner", PME_BUILD_VARIABLES['datetimeSuffix'])
                             uploadSources(optaplannerSourcesFilename, folder)
 
@@ -103,9 +103,8 @@ pipeline {
                         def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
 
                         def optaplannerArchiveUrl = "https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/groups/rhbop-${getCurrentBranch()}-nightly/"
-                        def optaplannerSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}-optaplanner-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
-                        def optaplannerQuickstartsSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}-optaplanner-quickstarts-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
-                        def optawebSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}-optaweb-vehicle-routing-sources-${PME_BUILD_VARIABLES['datetimeSuffix']}.zip"
+                        def optaplannerSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}.redhat-${PME_BUILD_VARIABLES['datetimeSuffix']}-optaplanner-sources.zip"
+                        def optaplannerQuickstartsSourcesFileUrl = "${env.STAGING_SERVER_URL}rhbop/RHBOP-${PRODUCT_VERSION}.nightly/rhbop-${PRODUCT_VERSION}.redhat-${PME_BUILD_VARIABLES['datetimeSuffix']}-optaplanner-quickstarts-sources.zip"
 
                         def topic = "VirtualTopic.qe.ci.ba.rhbop.${env.UMB_VERSION}.nightly.trigger"
                         def eventType = "rhbop-${env.UMB_VERSION}-nightly-qe-trigger"
@@ -113,7 +112,6 @@ pipeline {
                             optaplannerArchiveUrl,
                             optaplannerSourcesFileUrl,
                             optaplannerQuickstartsSourcesFileUrl,
-                            optawebSourcesFileUrl,
                             env.ALREADY_BUILT_PROJECTS,
                             ['rhbop': PME_BUILD_VARIABLES['optaplannerVersion'], 'drools': PME_BUILD_VARIABLES['droolsProductVersion']], 
                             gitHashesToCollection(env.GIT_INFORMATION_HASHES)
@@ -169,7 +167,7 @@ pipeline {
     }
 }
 
-def getMessageBody(String optaplannerArchiveUrl, String optaplannerSourcesUrl, String optaplannerQuickstartsSourcesUrl, String optawebSourcesFileUrl, String alreadyBuiltProjects, Map<String, String> versions, Map<String, String> scmHashes) {
+def getMessageBody(String optaplannerArchiveUrl, String optaplannerSourcesUrl, String optaplannerQuickstartsSourcesUrl, String alreadyBuiltProjects, Map<String, String> versions, Map<String, String> scmHashes) {
     def alreadyBuiltProjectsArray = (alreadyBuiltProjects ?: '').split(";")
     return """
 {
