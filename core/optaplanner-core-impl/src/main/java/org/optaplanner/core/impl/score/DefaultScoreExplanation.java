@@ -1,7 +1,6 @@
 package org.optaplanner.core.impl.score;
 
 import static java.util.Comparator.comparing;
-import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -17,6 +16,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.stream.ConstraintJustification;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score_>>
         implements ScoreExplanation<Solution_, Score_> {
@@ -104,18 +104,16 @@ public final class DefaultScoreExplanation<Solution_, Score_ extends Score<Score
         return scoreExplanation.toString();
     }
 
-    public DefaultScoreExplanation(Solution_ solution, Score_ score,
-            Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotalMap,
-            Map<Object, Indictment<Score_>> indictmentMap) {
-        this.solution = solution;
-        this.score = requireNonNull(score);
-        this.constraintMatchTotalMap = requireNonNull(constraintMatchTotalMap);
+    DefaultScoreExplanation(InnerScoreDirector<Solution_, Score_> scoreDirector) {
+        this.solution = scoreDirector.getWorkingSolution();
+        this.score = scoreDirector.calculateScore();
+        this.constraintMatchTotalMap = scoreDirector.getConstraintMatchTotalMap();
         this.constraintJustificationList = constraintMatchTotalMap.values()
                 .stream()
                 .flatMap(constraintMatchTotal -> constraintMatchTotal.getConstraintMatchSet().stream())
                 .map(constraintMatch -> (ConstraintJustification) constraintMatch.getJustification())
                 .collect(Collectors.toList());
-        this.indictmentMap = requireNonNull(indictmentMap);
+        this.indictmentMap = scoreDirector.getIndictmentMap();
     }
 
     @Override
