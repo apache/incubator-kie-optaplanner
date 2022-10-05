@@ -4,7 +4,6 @@ import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STAND
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -309,12 +308,12 @@ public abstract class DroolsAbstractBiConstraintStream<Solution_, A, B>
 
     @Override
     protected final TriFunction<A, B, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return (a, b, score) -> DefaultConstraintJustification.of(score, a, b);
+        return InnerBiConstraintStream.getDefaultJustificationMapping();
     }
 
     @Override
-    protected BiFunction<A, B, Collection<?>> getDefaultIndictedObjectsMapping() {
-        return List::of;
+    protected final BiFunction<A, B, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return InnerBiConstraintStream.getDefaultIndictedObjectsMapping();
     }
 
     public abstract BiLeftHandSide<A, B> getLeftHandSide();

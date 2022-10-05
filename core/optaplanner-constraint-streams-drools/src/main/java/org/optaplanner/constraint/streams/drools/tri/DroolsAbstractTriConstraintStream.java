@@ -4,7 +4,6 @@ import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STAND
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -313,12 +312,12 @@ public abstract class DroolsAbstractTriConstraintStream<Solution_, A, B, C>
 
     @Override
     protected final QuadFunction<A, B, C, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return (a, b, c, score) -> DefaultConstraintJustification.of(score, a, b, c);
+        return InnerTriConstraintStream.getDefaultJustificationMapping();
     }
 
     @Override
-    protected TriFunction<A, B, C, Collection<?>> getDefaultIndictedObjectsMapping() {
-        return List::of;
+    protected final TriFunction<A, B, C, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return InnerTriConstraintStream.getDefaultIndictedObjectsMapping();
     }
 
     public abstract TriLeftHandSide<A, B, C> getLeftHandSide();

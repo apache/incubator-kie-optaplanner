@@ -1,6 +1,9 @@
 package org.optaplanner.constraint.streams.common.uni;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
@@ -11,12 +14,21 @@ import org.optaplanner.constraint.streams.common.bi.BiJoinerComber;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintBuilder;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 
 public interface InnerUniConstraintStream<A> extends UniConstraintStream<A> {
+
+    static <A> BiFunction<A, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+        return (a, score) -> DefaultConstraintJustification.of(score, a);
+    }
+
+    static <A> Function<A, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return List::of;
+    }
 
     RetrievalSemantics getRetrievalSemantics();
 

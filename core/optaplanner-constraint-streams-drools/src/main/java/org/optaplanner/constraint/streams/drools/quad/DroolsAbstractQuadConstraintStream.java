@@ -4,7 +4,6 @@ import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STAND
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -299,12 +298,12 @@ public abstract class DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     protected final PentaFunction<A, B, C, D, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return (a, b, c, d, score) -> DefaultConstraintJustification.of(score, a, b, c, d);
+        return InnerQuadConstraintStream.getDefaultJustificationMapping();
     }
 
     @Override
-    protected QuadFunction<A, B, C, D, Collection<?>> getDefaultIndictedObjectsMapping() {
-        return List::of;
+    protected final QuadFunction<A, B, C, D, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return InnerQuadConstraintStream.getDefaultIndictedObjectsMapping();
     }
 
     public abstract QuadLeftHandSide<A, B, C, D> getLeftHandSide();

@@ -1,17 +1,29 @@
 package org.optaplanner.constraint.streams.common.quad;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
+import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintBuilder;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 
 public interface InnerQuadConstraintStream<A, B, C, D> extends QuadConstraintStream<A, B, C, D> {
+
+    static <A, B, C, D> PentaFunction<A, B, C, D, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+        return (a, b, c, d, score) -> DefaultConstraintJustification.of(score, a, b, c, d);
+    }
+
+    static <A, B, C, D> QuadFunction<A, B, C, D, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return List::of;
+    }
 
     /**
      * This method will return true if the constraint stream is guaranteed to only produce distinct tuples.

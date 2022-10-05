@@ -4,7 +4,6 @@ import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STAND
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -316,12 +315,12 @@ public abstract class DroolsAbstractUniConstraintStream<Solution_, A> extends Dr
 
     @Override
     protected final BiFunction<A, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return (a, score) -> DefaultConstraintJustification.of(score, a);
+        return InnerUniConstraintStream.getDefaultJustificationMapping();
     }
 
     @Override
-    protected Function<A, Collection<?>> getDefaultIndictedObjectsMapping() {
-        return List::of;
+    protected final Function<A, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return InnerUniConstraintStream.getDefaultIndictedObjectsMapping();
     }
 
     public abstract UniLeftHandSide<A> getLeftHandSide();

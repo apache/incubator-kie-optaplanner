@@ -1,20 +1,32 @@
 package org.optaplanner.constraint.streams.common.tri;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
+import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintStream;
 import org.optaplanner.core.api.score.stream.quad.QuadJoiner;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintBuilder;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 
 public interface InnerTriConstraintStream<A, B, C> extends TriConstraintStream<A, B, C> {
+
+    static <A, B, C> QuadFunction<A, B, C, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+        return (a, b, c, score) -> DefaultConstraintJustification.of(score, a, b, c);
+    }
+
+    static <A, B, C> TriFunction<A, B, C, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return List::of;
+    }
 
     RetrievalSemantics getRetrievalSemantics();
 

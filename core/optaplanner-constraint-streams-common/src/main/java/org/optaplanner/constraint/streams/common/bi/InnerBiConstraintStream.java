@@ -3,20 +3,32 @@ package org.optaplanner.constraint.streams.common.bi;
 import static org.optaplanner.constraint.streams.common.RetrievalSemantics.STANDARD;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 
 import org.optaplanner.constraint.streams.common.RetrievalSemantics;
 import org.optaplanner.constraint.streams.common.ScoreImpactType;
+import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintBuilder;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintStream;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 
 public interface InnerBiConstraintStream<A, B> extends BiConstraintStream<A, B> {
+
+    static <A, B> TriFunction<A, B, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
+        return (a, b, score) -> DefaultConstraintJustification.of(score, a, b);
+    }
+
+    static <A, B> BiFunction<A, B, Collection<?>> getDefaultIndictedObjectsMapping() {
+        return List::of;
+    }
 
     RetrievalSemantics getRetrievalSemantics();
 

@@ -397,12 +397,12 @@ public abstract class BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
 
     @Override
     protected final PentaFunction<A, B, C, D, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return (a, b, c, d, score) -> DefaultConstraintJustification.of(score, a, b, c, d);
+        return InnerQuadConstraintStream.getDefaultJustificationMapping();
     }
 
     @Override
     protected final QuadFunction<A, B, C, D, Collection<?>> getDefaultIndictedObjectsMapping() {
-        return List::of;
+        return InnerQuadConstraintStream.getDefaultIndictedObjectsMapping();
     }
 
 }
