@@ -74,7 +74,7 @@ public interface ScoreExplanation<Solution_, Score_ extends Score<Score_>> {
      * <li>
      * With Constraint Streams, the user has an option to provide a custom justification mapping,
      * implementing {@link ConstraintJustification}.
-     * If provided, every constraint match of such constraint will be associated with this custom justification class.
+     * If provided, every {@link ConstraintMatch} of such constraint will be associated with this custom justification class.
      * Every constraint not associated with a custom justification class
      * will be associated with {@link DefaultConstraintJustification}.
      * </li>
