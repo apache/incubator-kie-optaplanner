@@ -18,6 +18,9 @@ If you want to learn more about the operator, follow the https://github.com/kieg
 
 The `@CustomShadowVariable` has been deprecated.
 
+Read more about link:https://www.optaplanner.org/docs/optaplanner/latest/shadow-variable/shadow-variable.html#customVariableListener[custom shadow variables] in the documentation.
+
+
 [[releaseNotes-8.27.0.Final]]
 === OptaPlanner 8.27.0.Final
 
