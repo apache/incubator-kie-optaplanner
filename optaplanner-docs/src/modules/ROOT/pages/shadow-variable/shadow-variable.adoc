@@ -250,7 +250,6 @@ If your custom variable listener needs multiple source variables to compute the 
     }
 ----
 
-
 === Piggyback shadow variable
 
 If one `VariableListener` changes two or more shadow variables (because having two separate ``VariableListener``s would be inefficient), then annotate only the first shadow variable with `@ShadowVariable` and specify the `variableListenerClass` there.
@@ -275,6 +274,8 @@ Use `@PiggybackShadowVariable` on each shadow variable updated by that variable 
         return capacity;
     }
 ----
+
+=== Shadow variable cloning
 
 A shadow variable's value (just like a genuine variable's value)
 isn't xref:planner-configuration/planner-configuration.adoc#cloningASolution[planning cloned] by the default solution cloner,
