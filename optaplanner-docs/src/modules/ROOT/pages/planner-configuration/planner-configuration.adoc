@@ -722,6 +722,10 @@ A `ValueRangeProvider` on the planning entity consumes more memory than `ValueRa
 ====
 A `ValueRangeProvider` on the planning entity is not currently compatible with a <<chainedPlanningVariable,chained>> variable.
 ====
+[WARNING]
+====
+A `ValueRangeProvider` on the planning entity is not compatible with a <<planningListVariable,list variable>>.
+====
 
 
 [[valueRangeFactory]]
@@ -897,6 +901,20 @@ Planning list variable can be used if the domain meets the following criteria:
 
 . Each planning value is assigned to exactly one planning entity.
 No planning value may appear in multiple entities.
+
+[WARNING]
+====
+Planning list variable is a new feature and does not yet support the following advanced features:
+
+- overconstrained planning,
+- pinning,
+- value strength comparison,
+- nearby selection,
+- construction heuristic phase configuration,
+- exhaustive search,
+- partitioned search,
+- coexistence with another list or basic planning variable.
+====
 
 
 [[chainedPlanningVariable]]
