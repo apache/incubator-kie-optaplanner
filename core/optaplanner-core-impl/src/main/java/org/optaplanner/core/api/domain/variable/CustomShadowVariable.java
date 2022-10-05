@@ -57,7 +57,8 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
  * <p>
  * It is specified on a getter of a java bean property (or a field) of a {@link PlanningEntity} class.
  *
- * @deprecated This annotation is deprecated in favor of {@link ShadowVariable} and {@link PiggybackShadowVariable}.
+ * @deprecated Deprecated in favor of {@link ShadowVariable} (normal shadow variable with {@link #variableListenerClass()})
+ *             and {@link PiggybackShadowVariable} (if {@link #variableListenerRef()} is used).
  */
 @Deprecated(forRemoval = true)
 @Target({ METHOD, FIELD })
