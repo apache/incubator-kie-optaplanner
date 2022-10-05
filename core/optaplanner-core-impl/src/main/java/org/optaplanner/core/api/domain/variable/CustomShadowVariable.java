@@ -10,6 +10,49 @@ import java.lang.annotation.Target;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 
 /**
+ * This annotation is deprecated. Below are the instructions on how to replace your {@code @CustomShadowVariable(...)}
+ * with either {@link ShadowVariable @ShadowVariable} or {@link PiggybackShadowVariable @PiggybackShadowVariable}.
+ * <p>
+ * If your {@code @CustomShadowVariable} uses the {@code variableListenerClass} attribute, then replace the annotation with one
+ * {@code @ShadowVariable} annotation for each source {@code @PlanningVariableReference}.
+ * <p>
+ * For example,
+ *
+ * <pre>
+ * &#64;CustomShadowVariable(
+ *     variableListenerClass = PredecessorsDoneDateUpdatingVariableListener.class,
+ *     sources = {
+ *         &#64;PlanningVariableReference(variableName = "executionMode"),
+ *         &#64;PlanningVariableReference(variableName = "delay") })
+ * </pre>
+ *
+ * becomes:
+ *
+ * <pre>
+ * &#64;ShadowVariable(
+ *     variableListenerClass = PredecessorsDoneDateUpdatingVariableListener.class,
+ *     sourceVariableName = "executionMode")
+ * &#64;ShadowVariable(
+ *     variableListenerClass = PredecessorsDoneDateUpdatingVariableListener.class,
+ *     sourceVariableName = "delay")
+ * </pre>
+ * <p>
+ * If your {@code @CustomShadowVariable} uses the {@code variableListenerRef} attribute, then replace it with the
+ * {@code @PiggybackShadowVariable} annotation.
+ * <p>
+ * For example,
+ *
+ * <pre>
+ * &#64;CustomShadowVariable(
+ *     variableListenerRef = @PlanningVariableReference(variableName = "date"))
+ * </pre>
+ *
+ * becomes:
+ *
+ * <pre>
+ * &#64;PiggybackShadowVariable(variableName = "date")
+ * </pre>
+ *
  * Specifies that a bean property (or a field) is a custom shadow variable of 1 or more {@link PlanningVariable}s.
  * <p>
  * It is specified on a getter of a java bean property (or a field) of a {@link PlanningEntity} class.
