@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 
 /**
- * Specifies that a bean property (or a field) is a custom shadow of 1 or more {@link PlanningVariable}'s.
+ * Specifies that a bean property (or a field) is a custom shadow variable of 1 or more {@link PlanningVariable}s.
  * <p>
  * It is specified on a getter of a java bean property (or a field) of a {@link PlanningEntity} class.
  *
@@ -23,7 +23,7 @@ public @interface CustomShadowVariable {
 
     /**
      * A {@link VariableListener} gets notified after a source planning variable has changed.
-     * That listener changes the shadow variable (often recursively on multiple planning entities) accordingly,
+     * That listener changes the shadow variable (often recursively on multiple planning entities) accordingly.
      * Those shadow variables should make the score calculation more natural to write.
      * <p>
      * For example: VRP with time windows uses a {@link VariableListener} to update the arrival times

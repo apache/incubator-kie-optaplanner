@@ -13,8 +13,8 @@ import org.optaplanner.core.api.domain.variable.ShadowVariable.List;
 import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 
 /**
- * Specifies that a bean property (or a field) is a custom shadow of 1 or more source variables. The source variable may be
- * a genuine {@link PlanningVariable}, {@link PlanningListVariable}, or another shadow variable.
+ * Specifies that a bean property (or a field) is a custom shadow variable of 1 or more source variables.
+ * The source variable may be a genuine {@link PlanningVariable}, {@link PlanningListVariable}, or another shadow variable.
  * <p>
  * It is specified on a getter of a java bean property (or a field) of a {@link PlanningEntity} class.
  */
@@ -25,7 +25,7 @@ public @interface ShadowVariable {
 
     /**
      * A {@link VariableListener} or {@link ListVariableListener} gets notified after a source planning variable has changed.
-     * That listener changes the shadow variable (often recursively on multiple planning entities) accordingly,
+     * That listener changes the shadow variable (often recursively on multiple planning entities) accordingly.
      * Those shadow variables should make the score calculation more natural to write.
      * <p>
      * For example: VRP with time windows uses a {@link VariableListener} to update the arrival times
