@@ -37,13 +37,13 @@ public class RockShow extends AbstractPersistable implements RockStandstill {
     @ShadowVariable(variableListenerClass = RockShowVariableListener.class, sourceVariableName = "bus")
     private LocalDate date;
 
-    @PiggybackShadowVariable(variableName = "date")
+    @PiggybackShadowVariable(shadowVariableName = "date")
     private RockTimeOfDay timeOfDay; // There can be 2 shows on the same date (early and late)
 
-    @PiggybackShadowVariable(variableName = "date")
+    @PiggybackShadowVariable(shadowVariableName = "date")
     private RockStandstill hosWeekStart; // HOS stands for Hours of Service regulation
 
-    @PiggybackShadowVariable(variableName = "date")
+    @PiggybackShadowVariable(shadowVariableName = "date")
     private Long hosWeekDrivingSecondsTotal; // HOS stands for Hours of Service regulation
 
     public RockShow() {

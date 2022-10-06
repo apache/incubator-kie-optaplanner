@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
  */
 public class PiggybackShadowVariableDescriptor<Solution_> extends ShadowVariableDescriptor<Solution_> {
 
-    protected CustomShadowVariableDescriptor<Solution_> refVariableDescriptor;
+    protected CustomShadowVariableDescriptor<Solution_> shadowVariableDescriptor;
 
     public PiggybackShadowVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor,
             MemberAccessor variableMemberAccessor) {
@@ -41,50 +41,51 @@ public class PiggybackShadowVariableDescriptor<Solution_> extends ShadowVariable
 
     private void linkShadowSources(DescriptorPolicy descriptorPolicy) {
         PiggybackShadowVariable piggybackShadowVariable = variableMemberAccessor.getAnnotation(PiggybackShadowVariable.class);
-        EntityDescriptor<Solution_> refEntityDescriptor;
-        Class<?> refEntityClass = piggybackShadowVariable.entityClass();
-        if (refEntityClass.equals(PiggybackShadowVariable.NullEntityClass.class)) {
-            refEntityDescriptor = entityDescriptor;
+        EntityDescriptor<Solution_> shadowEntityDescriptor;
+        Class<?> shadowEntityClass = piggybackShadowVariable.shadowEntityClass();
+        if (shadowEntityClass.equals(PiggybackShadowVariable.NullEntityClass.class)) {
+            shadowEntityDescriptor = entityDescriptor;
         } else {
-            refEntityDescriptor = entityDescriptor.getSolutionDescriptor().findEntityDescriptor(refEntityClass);
-            if (refEntityDescriptor == null) {
+            shadowEntityDescriptor = entityDescriptor.getSolutionDescriptor().findEntityDescriptor(shadowEntityClass);
+            if (shadowEntityDescriptor == null) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a @" + PiggybackShadowVariable.class.getSimpleName()
                         + " annotated property (" + variableMemberAccessor.getName()
-                        + ") with a refEntityClass (" + refEntityClass
+                        + ") with a shadowEntityClass (" + shadowEntityClass
                         + ") which is not a valid planning entity.");
             }
         }
-        String refVariableName = piggybackShadowVariable.variableName();
-        VariableDescriptor<Solution_> uncastRefVariableDescriptor = refEntityDescriptor.getVariableDescriptor(refVariableName);
-        if (uncastRefVariableDescriptor == null) {
+        String shadowVariableName = piggybackShadowVariable.shadowVariableName();
+        VariableDescriptor<Solution_> uncastShadowVariableDescriptor =
+                shadowEntityDescriptor.getVariableDescriptor(shadowVariableName);
+        if (uncastShadowVariableDescriptor == null) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a @" + PiggybackShadowVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()
-                    + ") with refVariableName (" + refVariableName
+                    + ") with shadowVariableName (" + shadowVariableName
                     + ") which is not a valid planning variable on entityClass ("
-                    + refEntityDescriptor.getEntityClass() + ").\n"
-                    + refEntityDescriptor.buildInvalidVariableNameExceptionMessage(refVariableName));
+                    + shadowEntityDescriptor.getEntityClass() + ").\n"
+                    + shadowEntityDescriptor.buildInvalidVariableNameExceptionMessage(shadowVariableName));
         }
-        if (!(uncastRefVariableDescriptor instanceof CustomShadowVariableDescriptor)) {
+        if (!(uncastShadowVariableDescriptor instanceof CustomShadowVariableDescriptor)) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a @" + PiggybackShadowVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()
-                    + ") with refVariable (" + uncastRefVariableDescriptor.getSimpleEntityAndVariableName()
+                    + ") with refVariable (" + uncastShadowVariableDescriptor.getSimpleEntityAndVariableName()
                     + ") that lacks a @" + ShadowVariable.class.getSimpleName() + " annotation.");
         }
-        refVariableDescriptor = (CustomShadowVariableDescriptor<Solution_>) uncastRefVariableDescriptor;
-        refVariableDescriptor.registerSinkVariableDescriptor(this);
+        shadowVariableDescriptor = (CustomShadowVariableDescriptor<Solution_>) uncastShadowVariableDescriptor;
+        shadowVariableDescriptor.registerSinkVariableDescriptor(this);
     }
 
     @Override
     public List<VariableDescriptor<Solution_>> getSourceVariableDescriptorList() {
-        return Collections.singletonList(refVariableDescriptor);
+        return Collections.singletonList(shadowVariableDescriptor);
     }
 
     @Override
     public Collection<Class<? extends AbstractVariableListener>> getVariableListenerClasses() {
-        return refVariableDescriptor.getVariableListenerClasses();
+        return shadowVariableDescriptor.getVariableListenerClasses();
     }
 
     // ************************************************************************

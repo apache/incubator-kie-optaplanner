@@ -269,7 +269,7 @@ Use `@PiggybackShadowVariable` on each shadow variable updated by that variable 
         return transportTime;
     }
 
-    @PiggybackShadowVariable(variableName = "transportTime")
+    @PiggybackShadowVariable(shadowVariableName = "transportTime")
     public Integer getCapacity() {
         return capacity;
     }

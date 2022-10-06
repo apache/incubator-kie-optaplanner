@@ -64,7 +64,7 @@ public class TestdataManyToManyShadowedEntity extends TestdataObject {
         this.composedCode = composedCode;
     }
 
-    @PiggybackShadowVariable(variableName = "composedCode")
+    @PiggybackShadowVariable(shadowVariableName = "composedCode")
     public String getReverseComposedCode() {
         return reverseComposedCode;
     }

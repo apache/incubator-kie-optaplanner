@@ -27,7 +27,7 @@ public class TestdataShadowVariableOrderEntity extends TestdataObject {
     /**
      * G -> F
      */
-    @PiggybackShadowVariable(variableName = "x4F")
+    @PiggybackShadowVariable(shadowVariableName = "x4F")
     private String x0G;
 
     /**

@@ -27,16 +27,16 @@ public @interface PiggybackShadowVariable {
      * @return {@link NullEntityClass} when it is null (workaround for annotation limitation).
      *         Defaults to the same {@link Class} as the one that uses this annotation.
      */
-    Class<?> entityClass() default NullEntityClass.class;
+    Class<?> shadowEntityClass() default NullEntityClass.class;
 
     /**
      * The shadow variable name.
      *
      * @return never null, a genuine or shadow variable name
      */
-    String variableName();
+    String shadowVariableName();
 
-    /** Workaround for annotation limitation in {@link #entityClass()}. */
+    /** Workaround for annotation limitation in {@link #shadowEntityClass()}. */
     interface NullEntityClass {
     }
 }

@@ -35,7 +35,7 @@ public class TestDataKitchenSinkEntity {
             sourceEntityClass = TestDataKitchenSinkEntity.class, sourceVariableName = "stringVariable")
     private String shadow2;
 
-    @PiggybackShadowVariable(variableName = "shadow2")
+    @PiggybackShadowVariable(shadowVariableName = "shadow2")
     private String piggybackShadow;
 
     @PlanningVariable(valueRangeProviderRefs = { "names" })

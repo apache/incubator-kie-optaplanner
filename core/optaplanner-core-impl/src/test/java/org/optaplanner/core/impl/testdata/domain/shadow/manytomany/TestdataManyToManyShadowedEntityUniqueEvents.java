@@ -55,7 +55,7 @@ public class TestdataManyToManyShadowedEntityUniqueEvents extends TestdataManyTo
     }
 
     @Override
-    @PiggybackShadowVariable(variableName = "composedCode")
+    @PiggybackShadowVariable(shadowVariableName = "composedCode")
     public String getReverseComposedCode() {
         return super.getReverseComposedCode();
     }

@@ -59,7 +59,7 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
         this.barber = barber;
     }
 
-    @PiggybackShadowVariable(variableName = "barber")
+    @PiggybackShadowVariable(shadowVariableName = "barber")
     public boolean isCutsOwnHair() {
         return cutsOwnHair;
     }

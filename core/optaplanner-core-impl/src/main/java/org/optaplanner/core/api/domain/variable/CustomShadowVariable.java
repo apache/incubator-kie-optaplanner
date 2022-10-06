@@ -50,7 +50,7 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
  * becomes:
  *
  * <pre>
- * &#64;PiggybackShadowVariable(variableName = "date")
+ * &#64;PiggybackShadowVariable(shadowVariableName = "date")
  * </pre>
  *
  * Specifies that a bean property (or a field) is a custom shadow variable of 1 or more {@link PlanningVariable}s.
