@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
  */
 public class PiggybackShadowVariableDescriptor<Solution_> extends ShadowVariableDescriptor<Solution_> {
 
-    protected FooShadowVariableDescriptor<Solution_> refVariableDescriptor;
+    protected CustomShadowVariableDescriptor<Solution_> refVariableDescriptor;
 
     public PiggybackShadowVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor,
             MemberAccessor variableMemberAccessor) {
@@ -66,14 +66,14 @@ public class PiggybackShadowVariableDescriptor<Solution_> extends ShadowVariable
                     + refEntityDescriptor.getEntityClass() + ").\n"
                     + refEntityDescriptor.buildInvalidVariableNameExceptionMessage(refVariableName));
         }
-        if (!(uncastRefVariableDescriptor instanceof FooShadowVariableDescriptor)) {
+        if (!(uncastRefVariableDescriptor instanceof CustomShadowVariableDescriptor)) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a @" + PiggybackShadowVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()
                     + ") with refVariable (" + uncastRefVariableDescriptor.getSimpleEntityAndVariableName()
                     + ") that lacks a @" + ShadowVariable.class.getSimpleName() + " annotation.");
         }
-        refVariableDescriptor = (FooShadowVariableDescriptor<Solution_>) uncastRefVariableDescriptor;
+        refVariableDescriptor = (CustomShadowVariableDescriptor<Solution_>) uncastRefVariableDescriptor;
         refVariableDescriptor.registerSinkVariableDescriptor(this);
     }
 

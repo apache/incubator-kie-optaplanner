@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.custom.CustomShadowVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.custom.FooShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.custom.LegacyCustomShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.custom.PiggybackShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.BasicVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -295,7 +295,7 @@ public class EntityDescriptor<Solution_> {
             declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
         } else if (variableAnnotationClass.equals(ShadowVariable.class)
                 || variableAnnotationClass.equals(ShadowVariable.List.class)) {
-            ShadowVariableDescriptor<Solution_> variableDescriptor = new FooShadowVariableDescriptor<>(
+            ShadowVariableDescriptor<Solution_> variableDescriptor = new CustomShadowVariableDescriptor<>(
                     this, memberAccessor);
             declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
         } else if (variableAnnotationClass.equals(PiggybackShadowVariable.class)) {
@@ -303,7 +303,7 @@ public class EntityDescriptor<Solution_> {
                     this, memberAccessor);
             declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
         } else if (variableAnnotationClass.equals(CustomShadowVariable.class)) {
-            ShadowVariableDescriptor<Solution_> variableDescriptor = new CustomShadowVariableDescriptor<>(
+            ShadowVariableDescriptor<Solution_> variableDescriptor = new LegacyCustomShadowVariableDescriptor<>(
                     this, memberAccessor);
             declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
         } else {
