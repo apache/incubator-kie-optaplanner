@@ -4,7 +4,7 @@ environment:
       enabled: true
     branch:
       enabled: true
-      version: '2.12'
+      version: '2.13'
     lts:
       enabled: true
       version: '2.7'
@@ -13,18 +13,22 @@ environment:
   mandrel:
     enabled: true
     builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.2-java11
+  mandrel_lts:
+    enabled: true
+    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:21.3-java11
+    quarkus_version: 2.7
   runtimes_bdd:
     enabled: true
 productized_branch: true
 disable:
   triggers: false
 repositories:
-  - name: optaplanner
-    branch: main
-  - name: optaweb-vehicle-routing
-    branch: main
-  - name: optaplanner-quickstarts
-    branch: development
+- name: optaplanner
+  branch: main
+- name: optaweb-vehicle-routing
+  branch: main
+- name: optaplanner-quickstarts
+  branch: development
 git:
   author:
     name: kiegroup
@@ -58,4 +62,3 @@ jenkins:
   default_tools:
     jdk: kie-jdk11
     maven: kie-maven-3.8.6
-

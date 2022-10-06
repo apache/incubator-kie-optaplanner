@@ -18,7 +18,7 @@ releaseProperties = [:]
 
 pipeline {
     agent {
-        label 'kie-rhel7 && !master'
+        label 'kie-rhel7 && !built-in'
     }
 
     // parameters {
@@ -130,8 +130,10 @@ pipeline {
             }
         }
         unsuccessful {
-            if (currentBuild.currentResult != 'UNSTABLE') {
-                sendPipelineErrorNotification()
+            script {
+                if (currentBuild.currentResult != 'UNSTABLE') {
+                    sendPipelineErrorNotification()
+                }
             }
         }
     }

@@ -22,6 +22,8 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.stream.ConstraintJustification;
+import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
@@ -384,29 +386,24 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     }
 
     @Override
-    public void beforeListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object entity, int index) {
-        variableListenerSupport.beforeElementAdded(variableDescriptor, entity, index);
+    public void beforeListVariableElementAssigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
+        // Do nothing
     }
 
     @Override
-    public void afterListVariableElementAdded(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object entity, int index) {
+    public void afterListVariableElementAssigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
         workingInitScore++;
-        variableListenerSupport.afterElementAdded(variableDescriptor, entity, index);
     }
 
     @Override
-    public void beforeListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object entity, int index) {
-        variableListenerSupport.beforeElementRemoved(variableDescriptor, entity, index);
+    public void beforeListVariableElementUnassigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
+        // Do nothing
     }
 
     @Override
-    public void afterListVariableElementRemoved(ListVariableDescriptor<Solution_> variableDescriptor,
-            Object entity, int index) {
+    public void afterListVariableElementUnassigned(ListVariableDescriptor<Solution_> variableDescriptor, Object element) {
         workingInitScore--;
-        variableListenerSupport.afterElementRemoved(variableDescriptor, entity, index);
+        variableListenerSupport.afterElementUnassigned(variableDescriptor, element);
     }
 
     @Override
@@ -752,12 +749,18 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         for (ConstraintMatchTotal<Score_> constraintMatchTotal : constraintMatchTotals) {
             String constraintId = constraintMatchTotal.getConstraintId();
             for (ConstraintMatch<Score_> constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
-                Stream.Builder<Object> keyStream = Stream.builder().add(constraintId);
-                // The order of justificationLists for constraints that include accumulates isn't stable, so we make it.
-                constraintMatch.getJustificationList()
-                        .stream()
-                        .sorted(solutionDescriptor.getClassAndPlanningIdComparator())
-                        .forEach(keyStream);
+                Stream.Builder<Object> keyStream = Stream.builder()
+                        .add(constraintId);
+                ConstraintJustification justification = constraintMatch.getJustification();
+                if (justification instanceof DefaultConstraintJustification) {
+                    // The order of justificationLists for constraints that include accumulates isn't stable, so we make it.
+                    ((DefaultConstraintJustification) justification).getFacts()
+                            .stream()
+                            .sorted(solutionDescriptor.getClassAndPlanningIdComparator())
+                            .forEach(keyStream);
+                } else {
+                    keyStream.add(justification);
+                }
                 // And now we store the reference to the constraint match.
                 // Constraint Streams with indistinct tuples may produce two different match instances for the same key.
                 Object key = keyStream.add(constraintMatch.getScore())
