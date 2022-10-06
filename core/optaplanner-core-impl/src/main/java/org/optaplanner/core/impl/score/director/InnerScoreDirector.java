@@ -372,10 +372,10 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
      * <li>{@code fromIndex} must be greater than or equal to 0; {@code toIndex} must be less than or equal to the list variable
      * size.</li>
      * <li>{@code toIndex} must be greater than or equal to {@code fromIndex}.</li>
-     * <li>The range must contain all elements that are going to be changed.</li>
-     * <li>The range is allowed to contain elements that are not going to be changed.</li>
+     * <li>The range must contain all elements that have changed.</li>
+     * <li>The range is allowed to contain elements that have not changed.</li>
      * <li>The range may be empty ({@code fromIndex} equals {@code toIndex}) if none of the existing list variable elements
-     * are going to be changed.</li>
+     * have changed.</li>
      * </ol>
      * <p>
      * {@link #afterListVariableElementUnassigned} must be called for each element that was unassigned (removed from a list

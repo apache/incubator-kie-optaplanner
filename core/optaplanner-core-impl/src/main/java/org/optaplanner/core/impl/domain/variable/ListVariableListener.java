@@ -16,7 +16,7 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
  * It can change its shadow variable(s) on multiple entity instances
  * (for example: an arrivalTime change affects all trailing entities too).
  * <p>
- * It is recommended that implementations be kept stateless.
+ * It is recommended to keep implementations stateless.
  * If state must be implemented, implementations may need to override the default methods
  * ({@link #resetWorkingSolution(ScoreDirector)}, {@link #close()}).
  *
@@ -39,6 +39,8 @@ public interface ListVariableListener<Solution_, Entity_> extends AbstractVariab
     /**
      * Tells the listener that some elements within the range starting at {@code fromIndex} (inclusive) and ending at
      * {@code toIndex} (exclusive) will change.
+     * Be aware that the {@link #afterListVariableChanged} call after the change is done often has a different
+     * {@code fromIndex} and {@code toIndex} because the number of elements in the list variable can change.
      * <p>
      * The list variable change includes:
      * <ul>
@@ -79,10 +81,10 @@ public interface ListVariableListener<Solution_, Entity_> extends AbstractVariab
      * <li>{@code fromIndex} is greater than or equal to 0; {@code toIndex} is less than or equal to the list variable
      * size.</li>
      * <li>{@code toIndex} is greater than or equal to {@code fromIndex}.</li>
-     * <li>The range contains all elements that are going to be changed.</li>
-     * <li>The range may contain elements that are not going to be changed.</li>
+     * <li>The range contains all elements that have changed.</li>
+     * <li>The range may contain elements that have not changed.</li>
      * <li>The range may be empty ({@code fromIndex} equals {@code toIndex}) if none of the existing list variable elements
-     * are going to be changed.</li>
+     * have changed.</li>
      * </ol>
      *
      * @param scoreDirector score director

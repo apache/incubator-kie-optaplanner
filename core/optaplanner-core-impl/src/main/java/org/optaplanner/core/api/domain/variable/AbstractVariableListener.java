@@ -10,7 +10,8 @@ import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 /**
  * Common ancestor for specialized planning variable listeners.
  * <p>
- * <strong>Do not implement this interface!</strong>
+ * <strong>Do not implement this interface directly.</strong>
+ * Implement either {@link VariableListener} or {@link ListVariableListener}.
  *
  * @see VariableListener
  * @see ListVariableListener
