@@ -13,22 +13,22 @@ public class StartTimeUpdatingVariableListener implements ListVariableListener<T
 
     @Override
     public void beforeEntityAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("This example does not support adding employees.");
     }
 
     @Override
     public void afterEntityAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("This example does not support adding employees.");
     }
 
     @Override
     public void beforeEntityRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("This example does not support removing employees.");
     }
 
     @Override
     public void afterEntityRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("This example does not support removing employees.");
     }
 
     @Override
