@@ -9,7 +9,7 @@ import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 
-public class StartTimeUpdatingVariableListener implements ListVariableListener<TaskAssigningSolution, Employee> {
+public class StartTimeUpdatingVariableListener implements ListVariableListener<TaskAssigningSolution, Employee, Task> {
 
     @Override
     public void beforeEntityAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee) {
@@ -32,27 +32,10 @@ public class StartTimeUpdatingVariableListener implements ListVariableListener<T
     }
 
     @Override
-    public void beforeListVariableElementAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee,
-            int index) {
-        // Do nothing
-    }
-
-    @Override
-    public void afterListVariableElementAdded(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee,
-            int index) {
-        updateStartTime(scoreDirector, employee, index);
-    }
-
-    @Override
-    public void beforeListVariableElementRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee,
-            int index) {
-        // Do nothing
-    }
-
-    @Override
-    public void afterListVariableElementRemoved(ScoreDirector<TaskAssigningSolution> scoreDirector, Employee employee,
-            int index) {
-        updateStartTime(scoreDirector, employee, index);
+    public void afterListVariableElementUnassigned(ScoreDirector<TaskAssigningSolution> scoreDirector, Task task) {
+        scoreDirector.beforeVariableChanged(task, "startTime");
+        task.setStartTime(null);
+        scoreDirector.afterVariableChanged(task, "startTime");
     }
 
     @Override

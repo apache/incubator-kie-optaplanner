@@ -31,7 +31,7 @@ public class TestdataWrongBasicShadowEntity {
         this.shadow = shadow;
     }
 
-    public static class MyListVariableListener implements ListVariableListener<TestdataSolution, TestdataEntity> {
+    public static class MyListVariableListener implements ListVariableListener<TestdataSolution, TestdataEntity, Object> {
 
         @Override
         public void beforeEntityAdded(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity entity) {
@@ -50,23 +50,7 @@ public class TestdataWrongBasicShadowEntity {
         }
 
         @Override
-        public void beforeListVariableElementAdded(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity entity,
-                int index) {
-        }
-
-        @Override
-        public void afterListVariableElementAdded(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity entity,
-                int index) {
-        }
-
-        @Override
-        public void beforeListVariableElementRemoved(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity entity,
-                int index) {
-        }
-
-        @Override
-        public void afterListVariableElementRemoved(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity entity,
-                int index) {
+        public void afterListVariableElementUnassigned(ScoreDirector<TestdataSolution> scoreDirector, Object o) {
         }
 
         @Override
