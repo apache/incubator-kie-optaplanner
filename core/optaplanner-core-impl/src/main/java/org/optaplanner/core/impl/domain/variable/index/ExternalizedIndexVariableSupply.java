@@ -16,7 +16,7 @@ import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListene
  */
 public class ExternalizedIndexVariableSupply<Solution_> implements
         SourcedVariableListener<Solution_>,
-        ListVariableListener<Solution_, Object>,
+        ListVariableListener<Solution_, Object, Object>,
         IndexVariableSupply {
 
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;

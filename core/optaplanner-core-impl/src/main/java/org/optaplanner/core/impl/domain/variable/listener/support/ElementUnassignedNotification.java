@@ -12,13 +12,13 @@ final class ElementUnassignedNotification<Solution_> implements ListVariableNoti
     }
 
     @Override
-    public void triggerBefore(ListVariableListener<Solution_, Object> variableListener,
+    public void triggerBefore(ListVariableListener<Solution_, Object, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
         throw new UnsupportedOperationException("ListVariableListeners do not listen for this event.");
     }
 
     @Override
-    public void triggerAfter(ListVariableListener<Solution_, Object> variableListener,
+    public void triggerAfter(ListVariableListener<Solution_, Object, Object> variableListener,
             ScoreDirector<Solution_> scoreDirector) {
         variableListener.afterListVariableElementUnassigned(scoreDirector, element);
     }

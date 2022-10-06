@@ -15,7 +15,7 @@ import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListene
  */
 public class ExternalizedSingletonListInverseVariableSupply<Solution_> implements
         SourcedVariableListener<Solution_>,
-        ListVariableListener<Solution_, Object>,
+        ListVariableListener<Solution_, Object, Object>,
         SingletonInverseVariableSupply {
 
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;

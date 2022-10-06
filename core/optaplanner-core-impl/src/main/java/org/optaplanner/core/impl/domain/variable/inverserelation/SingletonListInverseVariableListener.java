@@ -8,7 +8,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescript
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public class SingletonListInverseVariableListener<Solution_>
-        implements ListVariableListener<Solution_, Object>, SingletonInverseVariableSupply {
+        implements ListVariableListener<Solution_, Object, Object>, SingletonInverseVariableSupply {
 
     protected final InverseRelationShadowVariableDescriptor<Solution_> shadowVariableDescriptor;
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;

@@ -8,7 +8,7 @@ import org.optaplanner.core.impl.domain.variable.ListVariableListener;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class IndexVariableListener<Solution_> implements ListVariableListener<Solution_, Object>, IndexVariableSupply {
+public class IndexVariableListener<Solution_> implements ListVariableListener<Solution_, Object, Object>, IndexVariableSupply {
 
     protected final IndexShadowVariableDescriptor<Solution_> shadowVariableDescriptor;
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;

@@ -22,8 +22,9 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <Entity_> @{@link PlanningEntity} on which the source variable is declared
+ * @param <Element_>> the type of elements of the source list variable
  */
-public interface ListVariableListener<Solution_, Entity_> extends AbstractVariableListener<Solution_, Entity_> {
+public interface ListVariableListener<Solution_, Entity_, Element_> extends AbstractVariableListener<Solution_, Entity_> {
 
     /**
      * The listener must unset all shadow variables it is responsible for when an element is unassigned from the source list
@@ -34,7 +35,7 @@ public interface ListVariableListener<Solution_, Entity_> extends AbstractVariab
      * @param scoreDirector score director
      * @param element the unassigned element
      */
-    void afterListVariableElementUnassigned(ScoreDirector<Solution_> scoreDirector, Object element);
+    void afterListVariableElementUnassigned(ScoreDirector<Solution_> scoreDirector, Element_ element);
 
     /**
      * Tells the listener that some elements within the range starting at {@code fromIndex} (inclusive) and ending at
