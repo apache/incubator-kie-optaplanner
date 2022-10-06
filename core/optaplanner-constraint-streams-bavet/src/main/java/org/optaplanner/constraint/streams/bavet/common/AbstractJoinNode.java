@@ -29,8 +29,8 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
 
     protected final boolean isFiltering;
 
-    private final int outputStoreIndexLeftOutEntry;
-    private final int outputStoreIndexRightOutEntry;
+    protected final int outputStoreIndexLeftOutEntry;
+    protected final int outputStoreIndexRightOutEntry;
     protected final Queue<OutTuple_> dirtyTupleQueue;
 
     protected AbstractJoinNode(int inputStoreIndexLeftOutTupleList, int inputStoreIndexRightOutTupleList,
@@ -54,19 +54,27 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
     protected abstract boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
 
     protected final void insertOutTuple(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple) {
-        if (!isFiltering || testFiltering(leftTuple, rightTuple)) {
-            MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
-            TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
-            TupleListEntry<MutableOutTuple_> outEntryLeft = outTupleListLeft.add(outTuple);
-            outTuple.setStore(outputStoreIndexLeftOutEntry, outEntryLeft);
-            TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
-            TupleListEntry<MutableOutTuple_> outEntryRight = outTupleListRight.add(outTuple);
-            outTuple.setStore(outputStoreIndexRightOutEntry, outEntryRight);
-            dirtyTupleQueue.add(outTuple);
-        }
+        MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
+        TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
+        TupleListEntry<MutableOutTuple_> outEntryLeft = outTupleListLeft.add(outTuple);
+        outTuple.setStore(outputStoreIndexLeftOutEntry, outEntryLeft);
+        TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
+        TupleListEntry<MutableOutTuple_> outEntryRight = outTupleListRight.add(outTuple);
+        outTuple.setStore(outputStoreIndexRightOutEntry, outEntryRight);
+        dirtyTupleQueue.add(outTuple);
     }
 
-    protected final void doUpdateOutTuple(OutTuple_ outTuple) {
+    protected void updateOutTupleLeft(MutableOutTuple_ outTuple, LeftTuple_ leftTuple) {
+        setOutTupleLeftFacts(outTuple, leftTuple);
+        doUpdateOutTuple(outTuple);
+    }
+
+    protected void updateOutTupleRight(MutableOutTuple_ outTuple, UniTuple<Right_> rightTuple) {
+        setOutTupleRightFact(outTuple, rightTuple);
+        doUpdateOutTuple(outTuple);
+    }
+
+    private final void doUpdateOutTuple(OutTuple_ outTuple) {
         switch (outTuple.getState()) {
             case CREATING:
             case UPDATING:
@@ -91,10 +99,6 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         outEntryLeft.remove();
         TupleListEntry<MutableOutTuple_> outEntryRight = outTuple.removeStore(outputStoreIndexRightOutEntry);
         outEntryRight.remove();
-        doRetractOutTuple(outTuple);
-    }
-
-    private final void doRetractOutTuple(OutTuple_ outTuple) {
         switch (outTuple.getState()) {
             case CREATING:
                 // Don't add the tuple to the dirtyTupleQueue twice
