@@ -24,57 +24,41 @@ public class VehicleRoutingIncrementalScoreCalculator
     @Override
     public void resetWorkingSolution(VehicleRoutingSolution solution) {
         timeWindowed = solution instanceof TimeWindowedVehicleRoutingSolution;
+        hardScore = 0L;
+        softScore = 0L;
         List<Vehicle> vehicleList = solution.getVehicleList();
         vehicleDemandMap = new HashMap<>(vehicleList.size());
         for (Vehicle vehicle : vehicleList) {
-            vehicleDemandMap.put(vehicle, 0);
-        }
-        hardScore = 0L;
-        softScore = 0L;
-        for (Customer customer : solution.getCustomerList()) {
-            insertPreviousCustomer(customer);
-            insertVehicle(customer);
-            // Do not do insertNextCustomer(customer) to avoid counting distanceFromLastCustomerToDepot twice
-            if (timeWindowed) {
-                insertArrivalTime((TimeWindowedCustomer) customer);
+            int demand = 0;
+            List<Customer> customers = vehicle.getCustomers();
+            for (int index = 0; index < customers.size(); index++) {
+                Customer customer = customers.get(index);
+                demand += customer.getDemand();
+                softScore -= getDistanceFromPreviousStandstill(vehicle, customer, index);
+                if (timeWindowed) {
+                    insertArrivalTime((TimeWindowedCustomer) customer);
+                }
             }
-        }
-    }
-
-    @Override
-    public void beforeEntityAdded(Object entity) {
-        // Do nothing
-    }
-
-    @Override
-    public void afterEntityAdded(Object entity) {
-        if (true) {
-            throw new UnsupportedOperationException();
-        }
-        if (entity instanceof Vehicle) {
-            return;
-        }
-        insertPreviousCustomer((Customer) entity);
-        insertVehicle((Customer) entity);
-        // Do not do insertNextCustomer(customer) to avoid counting distanceFromLastCustomerToDepot twice
-        if (timeWindowed) {
-            insertArrivalTime((TimeWindowedCustomer) entity);
+            if (customers.size() > 0) {
+                softScore -= getDistanceToDepot(vehicle, customers.size() - 1);
+            }
+            vehicleDemandMap.put(vehicle, demand);
+            hardScore += Math.min(vehicle.getCapacity() - demand, 0);
         }
     }
 
     @Override
     public void beforeVariableChanged(Object entity, String variableName) {
+        if (variableName.equals("arrivalTime")) {
+            retractArrivalTime((TimeWindowedCustomer) entity);
+        }
     }
 
     @Override
     public void afterVariableChanged(Object entity, String variableName) {
-    }
-
-    private long getDistanceToDepot(Vehicle vehicle, Customer customer, int index) {
-        if (index == vehicle.getCustomers().size() - 1) {
-            return customer.getLocation().getDistanceTo(vehicle.getLocation());
+        if (variableName.equals("arrivalTime")) {
+            insertArrivalTime((TimeWindowedCustomer) entity);
         }
-        return 0;
     }
 
     @Override
@@ -125,6 +109,13 @@ public class VehicleRoutingIncrementalScoreCalculator
         return getDistanceToDepot(vehicle, vehicle.getCustomers().get(index), index);
     }
 
+    private long getDistanceToDepot(Vehicle vehicle, Customer customer, int index) {
+        if (index == vehicle.getCustomers().size() - 1) {
+            return customer.getLocation().getDistanceTo(vehicle.getLocation());
+        }
+        return 0;
+    }
+
     private long getDistanceFromPreviousStandstill(Vehicle vehicle, int index) {
         return getDistanceFromPreviousStandstill(vehicle, vehicle.getCustomers().get(index), index);
     }
@@ -134,80 +125,6 @@ public class VehicleRoutingIncrementalScoreCalculator
             return vehicle.getLocation().getDistanceTo(customer.getLocation());
         }
         return vehicle.getCustomers().get(index - 1).getLocation().getDistanceTo(customer.getLocation());
-    }
-
-    @Override
-    public void beforeEntityRemoved(Object entity) {
-        if (entity instanceof Vehicle) {
-            return;
-        }
-        retractPreviousCustomer((Customer) entity);
-        retractVehicle((Customer) entity);
-        // Do not do retractNextCustomer(customer) to avoid counting distanceFromLastCustomerToDepot twice
-        if (timeWindowed) {
-            retractArrivalTime((TimeWindowedCustomer) entity);
-        }
-    }
-
-    @Override
-    public void afterEntityRemoved(Object entity) {
-        // Do nothing
-    }
-
-    private void insertPreviousCustomer(Customer customer) {
-        if (customer.getVehicle() != null) {
-            // Score constraint distanceFromPreviousCustomer
-            if (customer.getPreviousCustomer() != null) {
-                softScore -= customer.getDistanceFromPreviousStandstill();
-            }
-        }
-    }
-
-    private void retractPreviousCustomer(Customer customer) {
-        if (customer.getVehicle() != null) {
-            // Score constraint distanceFromPreviousCustomer
-            if (customer.getPreviousCustomer() != null) {
-                softScore += customer.getDistanceFromPreviousStandstill();
-            }
-        }
-    }
-
-    private void insertVehicle(Customer customer) {
-        Vehicle vehicle = customer.getVehicle();
-        if (vehicle != null) {
-            // Score constraint vehicleCapacity
-            int capacity = vehicle.getCapacity();
-            int oldDemand = vehicleDemandMap.get(vehicle);
-            int newDemand = oldDemand + customer.getDemand();
-            hardScore += Math.min(capacity - newDemand, 0) - Math.min(capacity - oldDemand, 0);
-            vehicleDemandMap.put(vehicle, newDemand);
-            if (customer.getPreviousCustomer() == null) {
-                softScore -= customer.getDistanceFromPreviousStandstill();
-            }
-            if (customer.getNextCustomer() == null) {
-                // Score constraint distanceFromLastCustomerToDepot
-                softScore -= customer.getDistanceToDepot();
-            }
-        }
-    }
-
-    private void retractVehicle(Customer customer) {
-        Vehicle vehicle = customer.getVehicle();
-        if (vehicle != null) {
-            // Score constraint vehicleCapacity
-            int capacity = vehicle.getCapacity();
-            int oldDemand = vehicleDemandMap.get(vehicle);
-            int newDemand = oldDemand - customer.getDemand();
-            hardScore += Math.min(capacity - newDemand, 0) - Math.min(capacity - oldDemand, 0);
-            vehicleDemandMap.put(vehicle, newDemand);
-            if (customer.getPreviousCustomer() == null) {
-                softScore += customer.getDistanceFromPreviousStandstill();
-            }
-            if (customer.getNextCustomer() == null) {
-                // Score constraint distanceFromLastCustomerToDepot
-                softScore += customer.getDistanceToDepot();
-            }
-        }
     }
 
     private void insertArrivalTime(TimeWindowedCustomer customer) {
@@ -236,6 +153,30 @@ public class VehicleRoutingIncrementalScoreCalculator
     @Override
     public HardSoftLongScore calculateScore() {
         return HardSoftLongScore.of(hardScore, softScore);
+    }
+
+    // ************************************************************************
+    // Unused methods
+    // ************************************************************************
+
+    @Override
+    public void beforeEntityAdded(Object entity) {
+        throw new UnsupportedOperationException("The VRP example does not support adding vehicles.");
+    }
+
+    @Override
+    public void afterEntityAdded(Object entity) {
+        throw new UnsupportedOperationException("The VRP example does not support adding vehicles.");
+    }
+
+    @Override
+    public void beforeEntityRemoved(Object entity) {
+        throw new UnsupportedOperationException("The VRP example does not support removing vehicles.");
+    }
+
+    @Override
+    public void afterEntityRemoved(Object entity) {
+        throw new UnsupportedOperationException("The VRP example does not support removing vehicles.");
     }
 
 }
