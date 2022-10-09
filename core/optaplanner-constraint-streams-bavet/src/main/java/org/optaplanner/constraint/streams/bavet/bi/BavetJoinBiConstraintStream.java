@@ -97,20 +97,21 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        BavetJoinBiConstraintStream<?, ?, ?> that = (BavetJoinBiConstraintStream<?, ?, ?>) o;
+        BavetJoinBiConstraintStream<?, ?, ?> other = (BavetJoinBiConstraintStream<?, ?, ?>) o;
         /*
          * Bridge streams do not implement equality because their equals() would have to point back to this stream,
          * resulting in StackOverflowError.
          * Therefore we need to check bridge parents to see where this join node comes from.
          */
-        return Objects.equals(leftParent.getParent(), that.leftParent.getParent())
-                && Objects.equals(rightParent.getParent(), that.rightParent.getParent())
-                && Objects.equals(joiner, that.joiner);
+        return Objects.equals(leftParent.getParent(), other.leftParent.getParent())
+                && Objects.equals(rightParent.getParent(), other.rightParent.getParent())
+                && Objects.equals(joiner, other.joiner)
+                && Objects.equals(filtering, other.filtering);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(leftParent.getParent(), rightParent.getParent(), joiner);
+        return Objects.hash(leftParent.getParent(), rightParent.getParent(), joiner, filtering);
     }
 
     @Override

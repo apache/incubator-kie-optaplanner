@@ -109,12 +109,13 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
          */
         return Objects.equals(leftParent.getParent(), other.leftParent.getParent())
                 && Objects.equals(rightParent.getParent(), other.rightParent.getParent())
-                && Objects.equals(joiner, other.joiner);
+                && Objects.equals(joiner, other.joiner)
+                && Objects.equals(filtering, other.filtering);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(leftParent.getParent(), rightParent.getParent(), joiner);
+        return Objects.hash(leftParent.getParent(), rightParent.getParent(), joiner, filtering);
     }
 
     @Override
