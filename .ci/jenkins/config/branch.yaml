@@ -1,7 +1,7 @@
 environment:
   quarkus:
     main:
-      enabled: true
+      enabled: false
     branch:
       enabled: true
       version: '2.13'
@@ -24,11 +24,12 @@ disable:
   triggers: false
 repositories:
 - name: optaplanner
-  branch: main
+  branch: 8.29.x
+  is_branch_config_repo: true
 - name: optaweb-vehicle-routing
-  branch: main
+  branch: 8.29.x
 - name: optaplanner-quickstarts
-  branch: development
+  branch: 8.29.x
 git:
   author:
     name: kiegroup
