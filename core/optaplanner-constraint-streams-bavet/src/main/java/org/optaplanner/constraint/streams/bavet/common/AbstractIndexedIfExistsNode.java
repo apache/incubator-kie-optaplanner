@@ -99,6 +99,9 @@ public abstract class AbstractIndexedIfExistsNode<LeftTuple_ extends Tuple, Righ
             IndexProperties newIndexProperties) {
         indexerLeft.remove(oldIndexProperties, counterEntry);
         counter.countRight = 0;
+        leftTuple.setStore(inputStoreIndexLeftProperties, newIndexProperties);
+        counterEntry = indexerLeft.put(newIndexProperties, counter);
+        leftTuple.setStore(inputStoreIndexLeftCounterEntry, counterEntry);
         counter.countRight = indexerRight.size(newIndexProperties);
         updateCounterLeft(counter);
     }
