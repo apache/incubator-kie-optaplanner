@@ -80,7 +80,9 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
             TupleListEntry<LeftTuple_> leftEntry = leftTuple.getStore(inputStoreIndexLeftEntry);
             TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
             indexerLeft.remove(oldIndexProperties, leftEntry);
-            outTupleListLeft.forEach(this::retractOutTuple);
+            for (MutableOutTuple_ outTuple : outTupleListLeft) {
+                retractOutTuple(outTuple);
+            }
             // outTupleListLeft is now empty
             // No need for leftTuple.setStore(inputStoreIndexLeftOutTupleList, outTupleListLeft);
             indexAndPropagateLeft(leftTuple, newIndexProperties);
@@ -89,7 +91,9 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
 
     protected void updateOutTupleLeftMaybeFiltering(TupleList<MutableOutTuple_> outTupleListLeft, LeftTuple_ leftTuple) {
         // Propagate the update for downstream filters, matchWeighers, ...
-        outTupleListLeft.forEach(outTuple -> updateOutTupleLeft(outTuple, leftTuple));
+        for (MutableOutTuple_ outTuple : outTupleListLeft) {
+            updateOutTupleLeft(outTuple, leftTuple);
+        }
     }
 
     private void indexAndPropagateLeft(LeftTuple_ leftTuple, IndexProperties indexProperties) {
@@ -113,7 +117,9 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         TupleListEntry<LeftTuple_> leftEntry = leftTuple.removeStore(inputStoreIndexLeftEntry);
         TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.removeStore(inputStoreIndexLeftOutTupleList);
         indexerLeft.remove(indexProperties, leftEntry);
-        outTupleListLeft.forEach(this::retractOutTuple);
+        for (MutableOutTuple_ outTuple : outTupleListLeft) {
+            retractOutTuple(outTuple);
+        }
     }
 
     @Override
@@ -147,7 +153,9 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
             TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.getStore(inputStoreIndexRightEntry);
             TupleList<MutableOutTuple_> outTupleListRight = rightTuple.getStore(inputStoreIndexRightOutTupleList);
             indexerRight.remove(oldIndexProperties, rightEntry);
-            outTupleListRight.forEach(this::retractOutTuple);
+            for (MutableOutTuple_ outTuple : outTupleListRight) {
+                retractOutTuple(outTuple);
+            }
             // outTupleListRight is now empty
             // No need for rightTuple.setStore(inputStoreIndexRightOutTupleList, outTupleListRight);
             indexAndPropagateRight(rightTuple, newIndexProperties);
@@ -157,7 +165,9 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
     protected void updateOutTupleRightMaybeFiltering(TupleList<MutableOutTuple_> outTupleListRight,
             UniTuple<Right_> rightTuple) {
         // Propagate the update for downstream filters, matchWeighers, ...
-        outTupleListRight.forEach(outTuple -> updateOutTupleRight(outTuple, rightTuple));
+        for (MutableOutTuple_ outTuple : outTupleListRight) {
+            updateOutTupleRight(outTuple, rightTuple);
+        }
     }
 
     private void indexAndPropagateRight(UniTuple<Right_> rightTuple, IndexProperties indexProperties) {
@@ -177,7 +187,9 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.removeStore(inputStoreIndexRightEntry);
         TupleList<MutableOutTuple_> outTupleListRight = rightTuple.removeStore(inputStoreIndexRightOutTupleList);
         indexerRight.remove(indexProperties, rightEntry);
-        outTupleListRight.forEach(this::retractOutTuple);
+        for (MutableOutTuple_ outTuple : outTupleListRight) {
+            retractOutTuple(outTuple);
+        }
     }
 
     protected abstract IndexProperties createIndexPropertiesLeft(LeftTuple_ leftTuple);

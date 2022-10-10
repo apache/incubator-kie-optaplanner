@@ -38,7 +38,9 @@ public abstract class AbstractFilteredUnindexedJoinNode<LeftTuple_ extends Tuple
     protected void updateOutTupleLeftMaybeFiltering(TupleList<MutableOutTuple_> outTupleListLeft, LeftTuple_ leftTuple) {
         Map<TupleList<MutableOutTuple_>, MutableOutTuple_> rightToOutMap =
                 buildOutMap(outTupleListLeft, outputStoreIndexRightOutEntry);
-        rightTupleList.forEach(rightTuple -> doUpdateOutTupleLeft(rightToOutMap, leftTuple, rightTuple, filtering));
+        for (UniTuple<Right_> rightTuple : rightTupleList) {
+            doUpdateOutTupleLeft(rightToOutMap, leftTuple, rightTuple, filtering);
+        }
     }
 
     @Override
@@ -46,7 +48,9 @@ public abstract class AbstractFilteredUnindexedJoinNode<LeftTuple_ extends Tuple
             UniTuple<Right_> rightTuple) {
         Map<TupleList<MutableOutTuple_>, MutableOutTuple_> leftToOutMap =
                 buildOutMap(outTupleListRight, outputStoreIndexLeftOutEntry);
-        leftTupleList.forEach(leftTuple -> doUpdateOutTupleRight(leftToOutMap, leftTuple, rightTuple, filtering));
+        for (LeftTuple_ leftTuple : leftTupleList) {
+            doUpdateOutTupleRight(leftToOutMap, leftTuple, rightTuple, filtering);
+        }
     }
 
     protected abstract boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);

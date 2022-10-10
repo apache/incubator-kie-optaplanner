@@ -42,7 +42,9 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         leftTuple.setStore(inputStoreIndexLeftEntry, leftEntry);
         TupleList<MutableOutTuple_> outTupleListLeft = new TupleList<>();
         leftTuple.setStore(inputStoreIndexLeftOutTupleList, outTupleListLeft);
-        rightTupleList.forEach(rightTuple -> insertOutTupleMaybeFiltering(leftTuple, rightTuple));
+        for (UniTuple<Right_> rightTuple : rightTupleList) {
+            insertOutTupleMaybeFiltering(leftTuple, rightTuple);
+        }
     }
 
     protected void insertOutTupleMaybeFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple) {
@@ -64,7 +66,9 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
 
     protected void updateOutTupleLeftMaybeFiltering(TupleList<MutableOutTuple_> outTupleListLeft, LeftTuple_ leftTuple) {
         // Propagate the update for downstream filters, matchWeighers, ...
-        outTupleListLeft.forEach(outTuple -> updateOutTupleLeft(outTuple, leftTuple));
+        for (MutableOutTuple_ outTuple : outTupleListLeft) {
+            updateOutTupleLeft(outTuple, leftTuple);
+        }
     }
 
     @Override
@@ -76,7 +80,9 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         }
         TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.removeStore(inputStoreIndexLeftOutTupleList);
         leftEntry.remove();
-        outTupleListLeft.forEach(this::retractOutTuple);
+        for (MutableOutTuple_ outTuple : outTupleListLeft) {
+            retractOutTuple(outTuple);
+        }
     }
 
     @Override
@@ -89,7 +95,9 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         rightTuple.setStore(inputStoreIndexRightEntry, rightEntry);
         TupleList<MutableOutTuple_> outTupleListRight = new TupleList<>();
         rightTuple.setStore(inputStoreIndexRightOutTupleList, outTupleListRight);
-        leftTupleList.forEach(leftTuple -> insertOutTupleMaybeFiltering(leftTuple, rightTuple));
+        for (LeftTuple_ leftTuple : leftTupleList) {
+            insertOutTupleMaybeFiltering(leftTuple, rightTuple);
+        }
     }
 
     @Override
@@ -108,7 +116,9 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
     protected void updateOutTupleRightMaybeFiltering(TupleList<MutableOutTuple_> outTupleListRight,
             UniTuple<Right_> rightTuple) {
         // Propagate the update for downstream filters, matchWeighers, ...
-        outTupleListRight.forEach(outTuple -> updateOutTupleRight(outTuple, rightTuple));
+        for (MutableOutTuple_ outTuple : outTupleListRight) {
+            updateOutTupleRight(outTuple, rightTuple);
+        }
     }
 
     @Override
@@ -120,7 +130,9 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         }
         TupleList<MutableOutTuple_> outTupleListRight = rightTuple.removeStore(inputStoreIndexRightOutTupleList);
         rightEntry.remove();
-        outTupleListRight.forEach(this::retractOutTuple);
+        for (MutableOutTuple_ outTuple : outTupleListRight) {
+            retractOutTuple(outTuple);
+        }
     }
 
 }

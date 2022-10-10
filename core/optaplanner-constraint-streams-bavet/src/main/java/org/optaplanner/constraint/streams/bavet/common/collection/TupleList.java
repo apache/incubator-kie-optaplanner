@@ -1,8 +1,9 @@
 package org.optaplanner.constraint.streams.bavet.common.collection;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.NoSuchElementException;
 
 /**
  * Different from {@link LinkedList} because nodes/indexes are allowed
@@ -10,9 +11,12 @@ import java.util.function.Consumer;
  * to avoid the lookup by index cost.
  * Also doesn't implement the {@link List} interface.
  *
+ * <p>
+ * This class is not thread-safe.
+ *
  * @param <T> The element type. Often a tuple.
  */
-public final class TupleList<T> {
+public final class TupleList<T> implements Iterable<T> {
 
     private int size = 0;
     private TupleListEntry<T> first = null;
@@ -58,19 +62,43 @@ public final class TupleList<T> {
         return size;
     }
 
-    public void forEach(Consumer<T> tupleConsumer) {
-        TupleListEntry<T> entry = first;
-        while (entry != null) {
-            // Extract next before processing it, in case the entry is removed and entry.next becomes null
-            TupleListEntry<T> next = entry.next;
-            tupleConsumer.accept(entry.getElement());
-            entry = next;
-        }
+    @Override
+    public Iterator<T> iterator() {
+        return new TupleListIterator();
     }
 
     @Override
     public String toString() {
         return "size = " + size;
+    }
+
+    private final class TupleListIterator implements Iterator<T> {
+
+        private TupleListEntry<T> entry = first;
+        private boolean reachedEnd = false;
+
+        @Override
+        public boolean hasNext() {
+            if (size == 0 || reachedEnd) {
+                return false;
+            }
+            return entry != null;
+        }
+
+        @Override
+        public T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            T element = entry.getElement();
+            if (entry == last) {
+                entry = null;
+                reachedEnd = true;
+            } else {
+                entry = entry.next;
+            }
+            return element;
+        }
     }
 
 }

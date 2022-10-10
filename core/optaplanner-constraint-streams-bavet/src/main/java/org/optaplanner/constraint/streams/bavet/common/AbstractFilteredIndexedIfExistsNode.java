@@ -57,7 +57,9 @@ public abstract class AbstractFilteredIndexedIfExistsNode<LeftTuple_ extends Tup
             IndexProperties oldIndexProperties) {
         // Call filtering for the leftTuple and rightTuple combinations again
         TupleList<ExistsFilteringTracker<LeftTuple_>> leftTrackerList = leftTuple.getStore(inputStoreIndexLeftTrackerList);
-        leftTrackerList.forEach(ExistsFilteringTracker::remove);
+        for (ExistsFilteringTracker<LeftTuple_> tracker : leftTrackerList) {
+            tracker.remove();
+        }
         counter.countRight = 0;
         track(counter, leftTuple, oldIndexProperties, leftTrackerList);
         updateCounterLeft(counter);
@@ -69,7 +71,9 @@ public abstract class AbstractFilteredIndexedIfExistsNode<LeftTuple_ extends Tup
             IndexProperties oldIndexProperties, IndexProperties newIndexProperties) {
         indexerLeft.remove(oldIndexProperties, counterEntry);
         TupleList<ExistsFilteringTracker<LeftTuple_>> leftTrackerList = leftTuple.getStore(inputStoreIndexLeftTrackerList);
-        leftTrackerList.forEach(ExistsFilteringTracker::remove);
+        for (ExistsFilteringTracker<LeftTuple_> tracker : leftTrackerList) {
+            tracker.remove();
+        }
         counter.countRight = 0;
         leftTuple.setStore(inputStoreIndexLeftProperties, newIndexProperties);
         counterEntry = indexerLeft.put(newIndexProperties, counter);
@@ -81,7 +85,9 @@ public abstract class AbstractFilteredIndexedIfExistsNode<LeftTuple_ extends Tup
     @Override
     protected void retractLeftMaybeFiltering(LeftTuple_ leftTuple) {
         TupleList<ExistsFilteringTracker<LeftTuple_>> leftTrackerList = leftTuple.getStore(inputStoreIndexLeftTrackerList);
-        leftTrackerList.forEach(ExistsFilteringTracker::remove);
+        for (ExistsFilteringTracker<LeftTuple_> tracker : leftTrackerList) {
+            tracker.remove();
+        }
     }
 
     @Override
@@ -110,10 +116,10 @@ public abstract class AbstractFilteredIndexedIfExistsNode<LeftTuple_ extends Tup
     @Override
     protected void updateRightWithoutReindex(UniTuple<Right_> rightTuple, IndexProperties oldIndexProperties) {
         TupleList<ExistsFilteringTracker<LeftTuple_>> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
-        rightTrackerList.forEach(filteringTacker -> {
-            decrementCounterRight(filteringTacker.counter);
-            filteringTacker.remove();
-        });
+        for (ExistsFilteringTracker<LeftTuple_> tracker : rightTrackerList) {
+            decrementCounterRight(tracker.counter);
+            tracker.remove();
+        }
         track(rightTuple, oldIndexProperties, rightTrackerList);
     }
 
@@ -123,10 +129,10 @@ public abstract class AbstractFilteredIndexedIfExistsNode<LeftTuple_ extends Tup
         TupleListEntry<UniTuple<Right_>> rightEntry = rightTuple.getStore(inputStoreIndexRightEntry);
         indexerRight.remove(oldIndexProperties, rightEntry);
         TupleList<ExistsFilteringTracker<LeftTuple_>> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
-        rightTrackerList.forEach(filteringTacker -> {
-            decrementCounterRight(filteringTacker.counter);
-            filteringTacker.remove();
-        });
+        for (ExistsFilteringTracker<LeftTuple_> tracker : rightTrackerList) {
+            decrementCounterRight(tracker.counter);
+            tracker.remove();
+        }
         rightTuple.setStore(inputStoreIndexRightProperties, newIndexProperties);
         rightEntry = indexerRight.put(newIndexProperties, rightTuple);
         rightTuple.setStore(inputStoreIndexRightEntry, rightEntry);
@@ -136,10 +142,10 @@ public abstract class AbstractFilteredIndexedIfExistsNode<LeftTuple_ extends Tup
     @Override
     protected void retractRightMaybeFiltering(UniTuple<Right_> rightTuple, IndexProperties indexProperties) {
         TupleList<ExistsFilteringTracker<LeftTuple_>> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
-        rightTrackerList.forEach(filteringTacker -> {
-            decrementCounterRight(filteringTacker.counter);
-            filteringTacker.remove();
-        });
+        for (ExistsFilteringTracker<LeftTuple_> tracker : rightTrackerList) {
+            decrementCounterRight(tracker.counter);
+            tracker.remove();
+        }
     }
 
     protected abstract boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);

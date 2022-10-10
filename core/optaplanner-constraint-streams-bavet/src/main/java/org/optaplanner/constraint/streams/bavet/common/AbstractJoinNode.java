@@ -159,10 +159,10 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
             int outputStoreIndexOutEntry) {
         // Hack: the outTuple has no left/right input tuple reference, use the left/right outList reference instead
         Map<TupleList<MutableOutTuple_>, MutableOutTuple_> outMap = new IdentityHashMap<>(outTupleList.size());
-        outTupleList.forEach(outTuple -> {
+        for (MutableOutTuple_ outTuple : outTupleList) {
             TupleListEntry<MutableOutTuple_> outEntry = outTuple.getStore(outputStoreIndexOutEntry);
             outMap.put(outEntry.getList(), outTuple);
-        });
+        }
         return outMap;
     }
 

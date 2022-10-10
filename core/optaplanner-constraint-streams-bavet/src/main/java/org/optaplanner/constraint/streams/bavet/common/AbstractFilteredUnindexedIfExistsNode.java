@@ -23,15 +23,20 @@ public abstract class AbstractFilteredUnindexedIfExistsNode<LeftTuple_ extends T
     @Override
     protected void insertLeftMaybeFiltering(ExistsCounter<LeftTuple_> counter, LeftTuple_ leftTuple) {
         TupleList<ExistsFilteringTracker<LeftTuple_>> leftTrackerList = new TupleList<>();
-        rightTupleList.forEach(rightTuple -> {
+        track(counter, leftTuple, leftTrackerList);
+        leftTuple.setStore(inputStoreIndexLeftTrackerList, leftTrackerList);
+    }
+
+    private void track(ExistsCounter<LeftTuple_> counter, LeftTuple_ leftTuple,
+            TupleList<ExistsFilteringTracker<LeftTuple_>> leftTrackerList) {
+        for (UniTuple<Right_> rightTuple : rightTupleList) {
             if (testFiltering(leftTuple, rightTuple)) {
                 counter.countRight++;
                 TupleList<ExistsFilteringTracker<LeftTuple_>> rightTrackerList =
                         rightTuple.getStore(inputStoreIndexRightTrackerList);
                 new ExistsFilteringTracker<>(counter, leftTrackerList, rightTrackerList);
             }
-        });
-        leftTuple.setStore(inputStoreIndexLeftTrackerList, leftTrackerList);
+        }
     }
 
     @Override
@@ -40,14 +45,7 @@ public abstract class AbstractFilteredUnindexedIfExistsNode<LeftTuple_ extends T
         TupleList<ExistsFilteringTracker<LeftTuple_>> leftTrackerList = leftTuple.getStore(inputStoreIndexLeftTrackerList);
         leftTrackerList.forEach(ExistsFilteringTracker::remove);
         counter.countRight = 0;
-        rightTupleList.forEach(rightTuple -> {
-            if (testFiltering(leftTuple, rightTuple)) {
-                counter.countRight++;
-                TupleList<ExistsFilteringTracker<LeftTuple_>> rightTrackerList =
-                        rightTuple.getStore(inputStoreIndexRightTrackerList);
-                new ExistsFilteringTracker<>(counter, leftTrackerList, rightTrackerList);
-            }
-        });
+        track(counter, leftTuple, leftTrackerList);
         updateCounterLeft(counter);
     }
 
@@ -65,33 +63,33 @@ public abstract class AbstractFilteredUnindexedIfExistsNode<LeftTuple_ extends T
     }
 
     private void track(UniTuple<Right_> rightTuple, TupleList<ExistsFilteringTracker<LeftTuple_>> rightTrackerList) {
-        leftCounterList.forEach(counter -> {
+        for (ExistsCounter<LeftTuple_> counter : leftCounterList) {
             if (testFiltering(counter.leftTuple, rightTuple)) {
                 incrementCounterRight(counter);
                 TupleList<ExistsFilteringTracker<LeftTuple_>> leftTrackerList =
                         counter.leftTuple.getStore(inputStoreIndexLeftTrackerList);
                 new ExistsFilteringTracker<>(counter, leftTrackerList, rightTrackerList);
             }
-        });
+        }
     }
 
     @Override
     protected void updateRightMaybeFiltering(UniTuple<Right_> rightTuple) {
         TupleList<ExistsFilteringTracker<LeftTuple_>> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
-        rightTrackerList.forEach(filteringTacker -> {
-            decrementCounterRight(filteringTacker.counter);
-            filteringTacker.remove();
-        });
+        for (ExistsFilteringTracker<LeftTuple_> tracker : rightTrackerList) {
+            decrementCounterRight(tracker.counter);
+            tracker.remove();
+        }
         track(rightTuple, rightTrackerList);
     }
 
     @Override
     protected void retractRightMaybeFiltering(UniTuple<Right_> rightTuple) {
         TupleList<ExistsFilteringTracker<LeftTuple_>> rightTrackerList = rightTuple.getStore(inputStoreIndexRightTrackerList);
-        rightTrackerList.forEach(filteringTacker -> {
-            decrementCounterRight(filteringTacker.counter);
-            filteringTacker.remove();
-        });
+        for (ExistsFilteringTracker<LeftTuple_> tracker : rightTrackerList) {
+            decrementCounterRight(tracker.counter);
+            tracker.remove();
+        }
     }
 
     protected abstract boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);

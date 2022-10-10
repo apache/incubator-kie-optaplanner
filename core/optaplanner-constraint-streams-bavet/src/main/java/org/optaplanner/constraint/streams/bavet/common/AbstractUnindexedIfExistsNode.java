@@ -97,7 +97,9 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
     }
 
     protected void insertRightMaybeFiltering(UniTuple<Right_> rightTuple) {
-        leftCounterList.forEach(this::incrementCounterRight);
+        for (ExistsCounter<LeftTuple_> leftTuple_existsCounter : leftCounterList) {
+            incrementCounterRight(leftTuple_existsCounter);
+        }
     }
 
     @Override
@@ -127,7 +129,9 @@ public abstract class AbstractUnindexedIfExistsNode<LeftTuple_ extends Tuple, Ri
     }
 
     protected void retractRightMaybeFiltering(UniTuple<Right_> rightTuple) {
-        leftCounterList.forEach(this::decrementCounterRight);
+        for (ExistsCounter<LeftTuple_> leftTuple_existsCounter : leftCounterList) {
+            decrementCounterRight(leftTuple_existsCounter);
+        }
     }
 
 }
