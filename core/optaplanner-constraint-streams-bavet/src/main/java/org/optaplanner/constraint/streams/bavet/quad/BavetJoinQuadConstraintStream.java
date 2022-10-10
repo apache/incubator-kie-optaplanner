@@ -67,26 +67,59 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
         TupleLifecycle<QuadTuple<A, B, C, D>> downstream = buildHelper.getAggregatedTupleLifecycle(childStreamList);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
         AbstractJoinNode<TriTuple<A, B, C>, D, QuadTuple<A, B, C, D>, QuadTupleImpl<A, B, C, D>> node =
-                indexerFactory.hasJoiners()
-                        ? new IndexedJoinQuadNode<>(
-                                JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
-                                buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
-                                buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
-                                buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
-                                buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                                buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                                buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                                downstream, filtering, outputStoreSize + 2,
-                                outputStoreSize, outputStoreSize + 1,
-                                indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false))
-                        : new UnindexedJoinQuadNode<>(
-                                buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
-                                buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
-                                buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                                buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                                downstream, filtering, outputStoreSize + 2,
-                                outputStoreSize, outputStoreSize + 1);
+                indexerFactory.hasJoiners() ? buildIndexedNode(buildHelper, outputStoreSize, downstream, indexerFactory)
+                        : buildUnindexedNode(buildHelper, outputStoreSize, downstream);
         buildHelper.addNode(node, leftParent, rightParent);
+    }
+
+    private <Score_ extends Score<Score_>>
+            AbstractJoinNode<TriTuple<A, B, C>, D, QuadTuple<A, B, C, D>, QuadTupleImpl<A, B, C, D>>
+            buildIndexedNode(NodeBuildHelper<Score_> buildHelper, int outputStoreSize,
+                    TupleLifecycle<QuadTuple<A, B, C, D>> downstream, IndexerFactory indexerFactory) {
+        if (filtering == null) {
+            return new IndexedJoinQuadNode<>(
+                    JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    downstream, outputStoreSize + 2, outputStoreSize, outputStoreSize + 1,
+                    indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false));
+        } else {
+            return new FilteredIndexedJoinQuadNode<>(
+                    JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    downstream, filtering, outputStoreSize + 2, outputStoreSize, outputStoreSize + 1,
+                    indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false));
+        }
+    }
+
+    private <Score_ extends Score<Score_>>
+            AbstractJoinNode<TriTuple<A, B, C>, D, QuadTuple<A, B, C, D>, QuadTupleImpl<A, B, C, D>>
+            buildUnindexedNode(NodeBuildHelper<Score_> buildHelper, int outputStoreSize,
+                    TupleLifecycle<QuadTuple<A, B, C, D>> downstream) {
+        if (filtering == null) {
+            return new UnindexedJoinQuadNode<>(
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    downstream, outputStoreSize + 2, outputStoreSize, outputStoreSize + 1);
+        } else {
+            return new FilteredUnindexedJoinQuadNode<>(
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    downstream, filtering, outputStoreSize + 2, outputStoreSize, outputStoreSize + 1);
+        }
     }
 
     // ************************************************************************

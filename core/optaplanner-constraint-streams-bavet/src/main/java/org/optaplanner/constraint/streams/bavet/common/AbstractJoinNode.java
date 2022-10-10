@@ -26,20 +26,16 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
      * Calls for example {@link AbstractScorer#insert(Tuple)} and/or ...
      */
     private final TupleLifecycle<OutTuple_> nextNodesTupleLifecycle;
-
-    protected final boolean isFiltering;
-
     protected final int outputStoreIndexLeftOutEntry;
     protected final int outputStoreIndexRightOutEntry;
     protected final Queue<OutTuple_> dirtyTupleQueue;
 
     protected AbstractJoinNode(int inputStoreIndexLeftOutTupleList, int inputStoreIndexRightOutTupleList,
-            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle, boolean isFiltering,
-            int outputStoreIndexLeftOutEntry, int outputStoreIndexRightOutEntry) {
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle, int outputStoreIndexLeftOutEntry,
+            int outputStoreIndexRightOutEntry) {
         this.inputStoreIndexLeftOutTupleList = inputStoreIndexLeftOutTupleList;
         this.inputStoreIndexRightOutTupleList = inputStoreIndexRightOutTupleList;
         this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
-        this.isFiltering = isFiltering;
         this.outputStoreIndexLeftOutEntry = outputStoreIndexLeftOutEntry;
         this.outputStoreIndexRightOutEntry = outputStoreIndexRightOutEntry;
         dirtyTupleQueue = new ArrayDeque<>(1000);
@@ -50,8 +46,6 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
     protected abstract void setOutTupleLeftFacts(MutableOutTuple_ outTuple, LeftTuple_ leftTuple);
 
     protected abstract void setOutTupleRightFact(MutableOutTuple_ outTuple, UniTuple<Right_> rightTuple);
-
-    protected abstract boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
 
     protected final void insertOutTuple(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple) {
         MutableOutTuple_ outTuple = createOutTuple(leftTuple, rightTuple);
@@ -151,6 +145,12 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
             }
         }
         dirtyTupleQueue.clear();
+    }
+
+    protected boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple) {
+        // We are not filtering; return true.
+        // Override in filtering nodes.
+        return true;
     }
 
 }

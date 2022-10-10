@@ -426,12 +426,12 @@ public abstract class BavetAbstractTriConstraintStream<Solution_, A, B, C> exten
 
     @Override
     protected final QuadFunction<A, B, C, Score<?>, DefaultConstraintJustification> getDefaultJustificationMapping() {
-        return InnerTriConstraintStream.getDefaultJustificationMapping();
+        return InnerTriConstraintStream.newDefaultJustificationMapping();
     }
 
     @Override
     protected final TriFunction<A, B, C, Collection<?>> getDefaultIndictedObjectsMapping() {
-        return InnerTriConstraintStream.getDefaultIndictedObjectsMapping();
+        return InnerTriConstraintStream.newDefaultIndictedObjectsMapping();
     }
 
 }

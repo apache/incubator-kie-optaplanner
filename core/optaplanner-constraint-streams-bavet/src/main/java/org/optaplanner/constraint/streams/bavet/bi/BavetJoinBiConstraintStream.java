@@ -63,26 +63,58 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         TupleLifecycle<BiTuple<A, B>> downstream = buildHelper.getAggregatedTupleLifecycle(childStreamList);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        AbstractJoinNode<UniTuple<A>, B, BiTuple<A, B>, BiTupleImpl<A, B>> node = indexerFactory.hasJoiners()
-                ? new IndexedJoinBiNode<>(
-                        JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
-                        buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
-                        buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
-                        buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
-                        buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                        buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                        buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                        downstream, filtering, outputStoreSize + 2,
-                        outputStoreSize, outputStoreSize + 1,
-                        indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false))
-                : new UnindexedJoinBiNode<>(
-                        buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
-                        buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
-                        buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                        buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
-                        downstream, filtering, outputStoreSize + 2,
-                        outputStoreSize, outputStoreSize + 1);
+        AbstractJoinNode<UniTuple<A>, B, BiTuple<A, B>, BiTupleImpl<A, B>> node =
+                indexerFactory.hasJoiners() ? buildIndexedNode(buildHelper, outputStoreSize, downstream, indexerFactory)
+                        : buildUnindexedNode(buildHelper, outputStoreSize, downstream);
         buildHelper.addNode(node, leftParent, rightParent);
+    }
+
+    private <Score_ extends Score<Score_>> AbstractJoinNode<UniTuple<A>, B, BiTuple<A, B>, BiTupleImpl<A, B>> buildIndexedNode(
+            NodeBuildHelper<Score_> buildHelper, int outputStoreSize, TupleLifecycle<BiTuple<A, B>> downstream,
+            IndexerFactory indexerFactory) {
+        if (filtering == null) {
+            return new IndexedJoinBiNode<>(
+                    JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    downstream, outputStoreSize + 2, outputStoreSize, outputStoreSize + 1,
+                    indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false));
+        } else {
+            return new FilteredIndexedJoinBiNode<>(
+                    JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    downstream, filtering, outputStoreSize + 2, outputStoreSize, outputStoreSize + 1,
+                    indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false));
+        }
+    }
+
+    private <Score_ extends Score<Score_>> AbstractJoinNode<UniTuple<A>, B, BiTuple<A, B>, BiTupleImpl<A, B>>
+            buildUnindexedNode(NodeBuildHelper<Score_> buildHelper, int outputStoreSize,
+                    TupleLifecycle<BiTuple<A, B>> downstream) {
+        if (filtering == null) {
+            return new UnindexedJoinBiNode<>(
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    downstream, outputStoreSize + 2, outputStoreSize, outputStoreSize + 1);
+        } else {
+            return new FilteredUnindexedJoinBiNode<>(
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(leftParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    buildHelper.reserveTupleStoreIndex(rightParent.getTupleSource()),
+                    downstream, filtering, outputStoreSize + 2, outputStoreSize, outputStoreSize + 1);
+        }
     }
 
     // ************************************************************************

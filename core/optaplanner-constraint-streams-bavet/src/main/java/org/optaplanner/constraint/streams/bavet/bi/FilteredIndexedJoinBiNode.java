@@ -1,27 +1,31 @@
 package org.optaplanner.constraint.streams.bavet.bi;
 
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 
-import org.optaplanner.constraint.streams.bavet.common.AbstractIndexedJoinNode;
+import org.optaplanner.constraint.streams.bavet.common.AbstractFilteredIndexedJoinNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
-final class IndexedJoinBiNode<A, B> extends AbstractIndexedJoinNode<UniTuple<A>, B, BiTuple<A, B>, BiTupleImpl<A, B>> {
+final class FilteredIndexedJoinBiNode<A, B>
+        extends AbstractFilteredIndexedJoinNode<UniTuple<A>, B, BiTuple<A, B>, BiTupleImpl<A, B>> {
 
     private final Function<A, IndexProperties> mappingA;
+    private final BiPredicate<A, B> filtering;
     private final int outputStoreSize;
 
-    public IndexedJoinBiNode(Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB, int inputStoreIndexA,
-            int inputStoreIndexEntryA, int inputStoreIndexOutTupleListA, int inputStoreIndexB, int inputStoreIndexEntryB,
-            int inputStoreIndexOutTupleListB, TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize,
-            int outputStoreIndexOutEntryA, int outputStoreIndexOutEntryB, Indexer<UniTuple<A>> indexerA,
-            Indexer<UniTuple<B>> indexerB) {
+    public FilteredIndexedJoinBiNode(Function<A, IndexProperties> mappingA, Function<B, IndexProperties> mappingB,
+            int inputStoreIndexA, int inputStoreIndexEntryA, int inputStoreIndexOutTupleListA, int inputStoreIndexB,
+            int inputStoreIndexEntryB, int inputStoreIndexOutTupleListB, TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle,
+            BiPredicate<A, B> filtering, int outputStoreSize, int outputStoreIndexOutEntryA, int outputStoreIndexOutEntryB,
+            Indexer<UniTuple<A>> indexerA, Indexer<UniTuple<B>> indexerB) {
         super(mappingB, inputStoreIndexA, inputStoreIndexEntryA, inputStoreIndexOutTupleListA, inputStoreIndexB,
                 inputStoreIndexEntryB, inputStoreIndexOutTupleListB, nextNodesTupleLifecycle, outputStoreIndexOutEntryA,
                 outputStoreIndexOutEntryB, indexerA, indexerB);
         this.mappingA = mappingA;
+        this.filtering = filtering;
         this.outputStoreSize = outputStoreSize;
     }
 
@@ -43,6 +47,11 @@ final class IndexedJoinBiNode<A, B> extends AbstractIndexedJoinNode<UniTuple<A>,
     @Override
     protected void setOutTupleRightFact(BiTupleImpl<A, B> outTuple, UniTuple<B> rightTuple) {
         outTuple.factB = rightTuple.getFactA();
+    }
+
+    @Override
+    protected boolean testFiltering(UniTuple<A> leftTuple, UniTuple<B> rightTuple) {
+        return filtering.test(leftTuple.getFactA(), rightTuple.getFactA());
     }
 
 }
