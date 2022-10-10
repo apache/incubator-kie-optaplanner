@@ -217,10 +217,4 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         dirtyCounterQueue.clear();
     }
 
-    protected boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple) {
-        // We are not filtering; return true.
-        // Override in filtering nodes.
-        return true;
-    }
-
 }

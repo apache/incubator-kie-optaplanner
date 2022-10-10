@@ -147,10 +147,4 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         dirtyTupleQueue.clear();
     }
 
-    protected boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple) {
-        // We are not filtering; return true.
-        // Override in filtering nodes.
-        return true;
-    }
-
 }

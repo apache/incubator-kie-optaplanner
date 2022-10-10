@@ -66,7 +66,7 @@ public abstract class AbstractFilteredIndexedIfExistsNode<LeftTuple_ extends Tup
             TupleListEntry<ExistsCounter<LeftTuple_>> counterEntry, LeftTuple_ leftTuple,
             IndexProperties oldIndexProperties, IndexProperties newIndexProperties) {
         indexerLeft.remove(oldIndexProperties, counterEntry);
-        TupleList<ExistsFilteringTracker> leftTrackerList = leftTuple.getStore(inputStoreIndexLeftTrackerList);
+        TupleList<ExistsFilteringTracker<LeftTuple_>> leftTrackerList = leftTuple.getStore(inputStoreIndexLeftTrackerList);
         leftTrackerList.forEach(ExistsFilteringTracker::remove);
         counter.countRight = 0;
         leftTuple.setStore(inputStoreIndexLeftProperties, newIndexProperties);
@@ -155,5 +155,7 @@ public abstract class AbstractFilteredIndexedIfExistsNode<LeftTuple_ extends Tup
             filteringTacker.remove();
         });
     }
+
+    protected abstract boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
 
 }

@@ -96,11 +96,11 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         leftTuple.setStore(inputStoreIndexLeftProperties, indexProperties);
         TupleListEntry<LeftTuple_> leftEntry = indexerLeft.put(indexProperties, leftTuple);
         leftTuple.setStore(inputStoreIndexLeftEntry, leftEntry);
-        indexerRight.forEach(indexProperties, (rightTuple) -> {
-            if (testFiltering(leftTuple, rightTuple)) {
-                insertOutTuple(leftTuple, rightTuple);
-            }
-        });
+        indexerRight.forEach(indexProperties, rightTuple -> insertOutTupleMaybeFiltering(leftTuple, rightTuple));
+    }
+
+    protected void insertOutTupleMaybeFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple) {
+        insertOutTuple(leftTuple, rightTuple);
     }
 
     @Override
@@ -164,11 +164,7 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
         rightTuple.setStore(inputStoreIndexRightProperties, indexProperties);
         TupleListEntry<UniTuple<Right_>> rightEntry = indexerRight.put(indexProperties, rightTuple);
         rightTuple.setStore(inputStoreIndexRightEntry, rightEntry);
-        indexerLeft.forEach(indexProperties, (leftTuple) -> {
-            if (testFiltering(leftTuple, rightTuple)) {
-                insertOutTuple(leftTuple, rightTuple);
-            }
-        });
+        indexerLeft.forEach(indexProperties, leftTuple -> insertOutTupleMaybeFiltering(leftTuple, rightTuple));
     }
 
     @Override

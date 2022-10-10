@@ -33,6 +33,13 @@ public abstract class AbstractFilteredIndexedJoinNode<LeftTuple_ extends Tuple, 
     }
 
     @Override
+    protected void insertOutTupleMaybeFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple) {
+        if (testFiltering(leftTuple, rightTuple)) {
+            super.insertOutTupleMaybeFiltering(leftTuple, rightTuple);
+        }
+    }
+
+    @Override
     protected void updateOutTupleLeftMaybeFiltering(TupleList<MutableOutTuple_> outTupleListLeft, LeftTuple_ leftTuple) {
         IndexProperties oldIndexProperties = leftTuple.getStore(inputStoreIndexLeftProperties);
         // Hack: the outTuple has no left/right input tuple reference, use the left/right outList reference instead
@@ -86,5 +93,7 @@ public abstract class AbstractFilteredIndexedJoinNode<LeftTuple_ extends Tuple, 
             }
         });
     }
+
+    protected abstract boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
 
 }

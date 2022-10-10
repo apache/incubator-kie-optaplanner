@@ -97,4 +97,6 @@ public abstract class AbstractFilteredUnindexedIfExistsNode<LeftTuple_ extends T
         });
     }
 
+    protected abstract boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
+
 }
