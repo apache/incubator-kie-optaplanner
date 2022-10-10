@@ -43,9 +43,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     protected void initCounterLeft(ExistsCounter<LeftTuple_> counter) {
         if (shouldExist ? counter.countRight > 0 : counter.countRight == 0) {
-            // Counters start out dead
-            counter.state = BavetTupleState.CREATING;
-            dirtyCounterQueue.add(counter);
+            counter.insert(dirtyCounterQueue);
         }
     }
 
@@ -124,16 +122,16 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
 
     protected void killCounterLeft(ExistsCounter<LeftTuple_> counter) {
         if (shouldExist ? counter.countRight > 0 : counter.countRight == 0) {
-            doRetractCounter(counter);
+            counter.retract(dirtyCounterQueue);
         }
     }
 
     protected void incrementCounterRight(ExistsCounter<LeftTuple_> counter) {
         if (counter.countRight == 0) {
             if (shouldExist) {
-                doInsertCounter(counter);
+                counter.insert(dirtyCounterQueue);
             } else {
-                doRetractCounter(counter);
+                counter.retract(dirtyCounterQueue);
             }
         } // Else do not even propagate an update
         counter.countRight++;
@@ -143,49 +141,11 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         counter.countRight--;
         if (counter.countRight == 0) {
             if (shouldExist) {
-                doRetractCounter(counter);
+                counter.retract(dirtyCounterQueue);
             } else {
-                doInsertCounter(counter);
+                counter.insert(dirtyCounterQueue);
             }
         } // Else do not even propagate an update
-    }
-
-    private void doInsertCounter(ExistsCounter<LeftTuple_> counter) {
-        switch (counter.state) {
-            case DYING:
-                counter.state = BavetTupleState.UPDATING;
-                break;
-            case DEAD:
-                counter.state = BavetTupleState.CREATING;
-                dirtyCounterQueue.add(counter);
-                break;
-            case ABORTING:
-                counter.state = BavetTupleState.CREATING;
-                break;
-            default:
-                throw new IllegalStateException("Impossible state: the counter (" + counter
-                        + ") has an impossible insert state (" + counter.state + ").");
-        }
-    }
-
-    private final void doRetractCounter(ExistsCounter<LeftTuple_> counter) {
-        switch (counter.state) {
-            case CREATING:
-                // Kill it before it propagates
-                counter.state = BavetTupleState.ABORTING;
-                break;
-            case UPDATING:
-                // Kill the original propagation
-                counter.state = BavetTupleState.DYING;
-                break;
-            case OK:
-                counter.state = BavetTupleState.DYING;
-                dirtyCounterQueue.add(counter);
-                break;
-            default:
-                throw new IllegalStateException("Impossible state: The counter (" + counter
-                        + ") has an impossible retract state (" + counter.state + ").");
-        }
     }
 
     @Override

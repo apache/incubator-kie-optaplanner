@@ -60,6 +60,11 @@ public abstract class AbstractFilteredUnindexedIfExistsNode<LeftTuple_ extends T
     @Override
     protected void insertRightMaybeFiltering(UniTuple<Right_> rightTuple) {
         TupleList<ExistsFilteringTracker<LeftTuple_>> rightTrackerList = new TupleList<>();
+        track(rightTuple, rightTrackerList);
+        rightTuple.setStore(inputStoreIndexRightTrackerList, rightTrackerList);
+    }
+
+    private void track(UniTuple<Right_> rightTuple, TupleList<ExistsFilteringTracker<LeftTuple_>> rightTrackerList) {
         leftCounterList.forEach(counter -> {
             if (testFiltering(counter.leftTuple, rightTuple)) {
                 incrementCounterRight(counter);
@@ -68,7 +73,6 @@ public abstract class AbstractFilteredUnindexedIfExistsNode<LeftTuple_ extends T
                 new ExistsFilteringTracker<>(counter, leftTrackerList, rightTrackerList);
             }
         });
-        rightTuple.setStore(inputStoreIndexRightTrackerList, rightTrackerList);
     }
 
     @Override
@@ -78,14 +82,7 @@ public abstract class AbstractFilteredUnindexedIfExistsNode<LeftTuple_ extends T
             decrementCounterRight(filteringTacker.counter);
             filteringTacker.remove();
         });
-        leftCounterList.forEach(counter -> {
-            if (testFiltering(counter.leftTuple, rightTuple)) {
-                incrementCounterRight(counter);
-                TupleList<ExistsFilteringTracker<LeftTuple_>> leftTrackerList =
-                        counter.leftTuple.getStore(inputStoreIndexLeftTrackerList);
-                new ExistsFilteringTracker<>(counter, leftTrackerList, rightTrackerList);
-            }
-        });
+        track(rightTuple, rightTrackerList);
     }
 
     @Override
