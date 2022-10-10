@@ -1,7 +1,10 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
 import java.util.ArrayDeque;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Queue;
+import java.util.function.BiPredicate;
 
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleList;
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
@@ -68,7 +71,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
         doUpdateOutTuple(outTuple);
     }
 
-    private final void doUpdateOutTuple(OutTuple_ outTuple) {
+    private void doUpdateOutTuple(OutTuple_ outTuple) {
         switch (outTuple.getState()) {
             case CREATING:
             case UPDATING:
@@ -85,6 +88,40 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
             default:
                 throw new IllegalStateException("Impossible state: The tuple (" + outTuple.getState() + ") in node (" +
                         this + ") is in an unexpected state (" + outTuple.getState() + ").");
+        }
+    }
+
+    protected void doUpdateOutTupleLeft(Map<TupleList<MutableOutTuple_>, MutableOutTuple_> outMap, LeftTuple_ leftTuple,
+            UniTuple<Right_> rightTuple, BiPredicate<LeftTuple_, UniTuple<Right_>> filtering) {
+        TupleList<MutableOutTuple_> rightOutList = rightTuple.getStore(inputStoreIndexRightOutTupleList);
+        MutableOutTuple_ outTuple = outMap.get(rightOutList);
+        if (filtering.test(leftTuple, rightTuple)) {
+            if (outTuple == null) {
+                insertOutTuple(leftTuple, rightTuple);
+            } else {
+                updateOutTupleLeft(outTuple, leftTuple);
+            }
+        } else {
+            if (outTuple != null) {
+                retractOutTuple(outTuple);
+            }
+        }
+    }
+
+    protected void doUpdateOutTupleRight(Map<TupleList<MutableOutTuple_>, MutableOutTuple_> outMap, LeftTuple_ leftTuple,
+            UniTuple<Right_> rightTuple, BiPredicate<LeftTuple_, UniTuple<Right_>> filtering) {
+        TupleList<MutableOutTuple_> leftOutList = leftTuple.getStore(inputStoreIndexLeftOutTupleList);
+        MutableOutTuple_ outTuple = outMap.get(leftOutList);
+        if (filtering.test(leftTuple, rightTuple)) {
+            if (outTuple == null) {
+                insertOutTuple(leftTuple, rightTuple);
+            } else {
+                updateOutTupleRight(outTuple, rightTuple);
+            }
+        } else {
+            if (outTuple != null) {
+                retractOutTuple(outTuple);
+            }
         }
     }
 
@@ -116,6 +153,17 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
                 throw new IllegalStateException("Impossible state: The tuple (" + outTuple.getState() + ") in node (" +
                         this + ") is in an unexpected state (" + outTuple.getState() + ").");
         }
+    }
+
+    protected Map<TupleList<MutableOutTuple_>, MutableOutTuple_> buildOutMap(TupleList<MutableOutTuple_> outTupleList,
+            int outputStoreIndexOutEntry) {
+        // Hack: the outTuple has no left/right input tuple reference, use the left/right outList reference instead
+        Map<TupleList<MutableOutTuple_>, MutableOutTuple_> outMap = new IdentityHashMap<>(outTupleList.size());
+        outTupleList.forEach(outTuple -> {
+            TupleListEntry<MutableOutTuple_> outEntry = outTuple.getStore(outputStoreIndexOutEntry);
+            outMap.put(outEntry.getList(), outTuple);
+        });
+        return outMap;
     }
 
     @Override
