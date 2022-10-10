@@ -69,7 +69,7 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
                         buildHelper.reserveTupleStoreIndex(parentBridgeB.getTupleSource()),
                         buildHelper.reserveTupleStoreIndex(parentBridgeB.getTupleSource()),
                         downstream, indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false))
-                        : new IndexedIfExistsUniNode<>(shouldExist,
+                        : new FilteredIndexedIfExistsUniNode<>(shouldExist,
                                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                                 buildHelper.reserveTupleStoreIndex(parentA.getTupleSource()),
                                 buildHelper.reserveTupleStoreIndex(parentA.getTupleSource()),
@@ -82,7 +82,7 @@ public final class BavetIfExistsUniConstraintStream<Solution_, A, B> extends Bav
                 : (filtering == null ? new UnindexedIfExistsUniNode<>(shouldExist,
                         buildHelper.reserveTupleStoreIndex(parentA.getTupleSource()),
                         buildHelper.reserveTupleStoreIndex(parentBridgeB.getTupleSource()), downstream)
-                        : new UnindexedIfExistsUniNode<>(shouldExist,
+                        : new FilteredUnindexedIfExistsUniNode<>(shouldExist,
                                 buildHelper.reserveTupleStoreIndex(parentA.getTupleSource()),
                                 buildHelper.reserveTupleStoreIndex(parentA.getTupleSource()),
                                 buildHelper.reserveTupleStoreIndex(parentBridgeB.getTupleSource()),

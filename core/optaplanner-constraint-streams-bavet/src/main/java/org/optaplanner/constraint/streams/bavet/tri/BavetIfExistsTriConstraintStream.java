@@ -71,7 +71,7 @@ final class BavetIfExistsTriConstraintStream<Solution_, A, B, C, D>
                         buildHelper.reserveTupleStoreIndex(parentBridgeD.getTupleSource()),
                         buildHelper.reserveTupleStoreIndex(parentBridgeD.getTupleSource()),
                         downstream, indexerFactory.buildIndexer(true), indexerFactory.buildIndexer(false))
-                        : new IndexedIfExistsTriNode<>(shouldExist,
+                        : new FilteredIndexedIfExistsTriNode<>(shouldExist,
                                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),
                                 buildHelper.reserveTupleStoreIndex(parentABC.getTupleSource()),
                                 buildHelper.reserveTupleStoreIndex(parentABC.getTupleSource()),
@@ -84,7 +84,7 @@ final class BavetIfExistsTriConstraintStream<Solution_, A, B, C, D>
                 : (filtering == null ? new UnindexedIfExistsTriNode<>(shouldExist,
                         buildHelper.reserveTupleStoreIndex(parentABC.getTupleSource()),
                         buildHelper.reserveTupleStoreIndex(parentBridgeD.getTupleSource()), downstream)
-                        : new UnindexedIfExistsTriNode<>(shouldExist,
+                        : new FilteredUnindexedIfExistsTriNode<>(shouldExist,
                                 buildHelper.reserveTupleStoreIndex(parentABC.getTupleSource()),
                                 buildHelper.reserveTupleStoreIndex(parentABC.getTupleSource()),
                                 buildHelper.reserveTupleStoreIndex(parentBridgeD.getTupleSource()),

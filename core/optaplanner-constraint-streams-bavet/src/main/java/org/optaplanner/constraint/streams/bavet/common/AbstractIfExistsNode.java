@@ -5,8 +5,6 @@ import static org.optaplanner.constraint.streams.bavet.common.BavetTupleState.DE
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import org.optaplanner.constraint.streams.bavet.common.collection.TupleList;
-import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
 import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
 
 /**
@@ -31,23 +29,17 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
      * Calls for example {@link AbstractScorer#insert(Tuple)}, and/or ...
      */
     private final TupleLifecycle<LeftTuple_> nextNodesTupleLifecycle;
-    protected final boolean isFiltering;
     // No outputStoreSize because this node is not a tuple source, even though it has a dirtyCounterQueue.
     protected final Queue<ExistsCounter<LeftTuple_>> dirtyCounterQueue;
 
-    protected AbstractIfExistsNode(boolean shouldExist,
-            int inputStoreIndexLeftTrackerList, int inputStoreIndexRightTrackerList,
-            TupleLifecycle<LeftTuple_> nextNodesTupleLifecycle,
-            boolean isFiltering) {
+    protected AbstractIfExistsNode(boolean shouldExist, int inputStoreIndexLeftTrackerList, int inputStoreIndexRightTrackerList,
+            TupleLifecycle<LeftTuple_> nextNodesTupleLifecycle) {
         this.shouldExist = shouldExist;
         this.inputStoreIndexLeftTrackerList = inputStoreIndexLeftTrackerList;
         this.inputStoreIndexRightTrackerList = inputStoreIndexRightTrackerList;
         this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
-        this.isFiltering = isFiltering;
         this.dirtyCounterQueue = new ArrayDeque<>(1000);
     }
-
-    protected abstract boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple);
 
     protected void initCounterLeft(ExistsCounter<LeftTuple_> counter) {
         if (shouldExist ? counter.countRight > 0 : counter.countRight == 0) {
@@ -225,23 +217,10 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         dirtyCounterQueue.clear();
     }
 
-    protected class FilteringTracker {
-        protected final ExistsCounter<LeftTuple_> counter;
-        protected final TupleListEntry<FilteringTracker> leftTrackerEntry;
-        protected final TupleListEntry<FilteringTracker> rightTrackerEntry;
-
-        protected FilteringTracker(ExistsCounter<LeftTuple_> counter,
-                TupleList<FilteringTracker> leftTrackerList, TupleList<FilteringTracker> rightTrackerList) {
-            this.counter = counter;
-            leftTrackerEntry = leftTrackerList.add(this);
-            rightTrackerEntry = rightTrackerList.add(this);
-        }
-
-        public void remove() {
-            leftTrackerEntry.remove();
-            rightTrackerEntry.remove();
-        }
-
+    protected boolean testFiltering(LeftTuple_ leftTuple, UniTuple<Right_> rightTuple) {
+        // We are not filtering; return true.
+        // Override in filtering nodes.
+        return true;
     }
 
 }

@@ -23,12 +23,6 @@ public final class TupleListEntry<T> {
         return next;
     }
 
-    public TupleListEntry<T> removeAndNext() {
-        TupleListEntry<T> next = this.next;
-        remove(); // Sets this.next = null
-        return next;
-    }
-
     public void remove() {
         if (list == null) {
             throw new IllegalStateException("The element (" + element + ") was already removed.");
