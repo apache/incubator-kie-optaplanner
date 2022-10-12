@@ -1,24 +1,71 @@
-environment:
-  quarkus:
-    main:
-      enabled: true
-    branch:
-      enabled: true
-      version: '2.14'
-    lts:
-      enabled: true
-      version: '2.13'
+environments:
   native:
     enabled: true
+    env_vars:
+      NATIVE: 'true'
+      ADDITIONAL_TIMEOUT: 720
+    ids:
+    - native
+  
   mandrel:
     enabled: true
-    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.2-java11
-  mandrel_lts:
+    env_vars:
+      NATIVE: 'true'
+      NATIVE_BUILDER_IMAGE: quay.io/quarkus/ubi-quarkus-mandrel:22.2-java11
+      ADDITIONAL_TIMEOUT: 720
+    ids:
+    - native
+    - prod
+  
+  quarkus-main:
     enabled: true
-    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.2-java11
-    quarkus_version: 2.13
-  runtimes_bdd:
+    env_vars:
+      QUARKUS_BRANCH: main
+    ids:
+    - quarkus
+  
+  quarkus-branch:
     enabled: true
+    env_vars:
+      QUARKUS_BRANCH: '2.14'
+    ids:
+    - quarkus
+
+  # LTS part
+  quarkus-lts:
+    enabled: true
+    env_vars:
+      QUARKUS_BRANCH: '2.13'
+      BUILD_MVN_OPTS: '-Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral'
+    ids:
+    - quarkus
+    - lts
+
+  mandrel-lts:
+    enabled: true
+    env_vars:
+      NATIVE: 'true'
+      NATIVE_BUILDER_IMAGE: quay.io/quarkus/ubi-quarkus-mandrel:22.2-java11
+      ADDITIONAL_TIMEOUT: 720
+      QUARKUS_BRANCH: '2.13'
+      BUILD_MVN_OPTS: '-Dproductized -Ddata-index-ephemeral.image=quay.io/kiegroup/kogito-data-index-ephemeral'
+    ids:
+    - native
+    - prod
+    - lts
+
+  # Others
+  ecosystem:
+    enabled: true
+    ids:
+    - ecosystem
+  
+  sonarcloud:
+    enabled: true
+    ids:
+    - sonarcloud
+    - coverage
+
 productized_branch: true
 disable:
   triggers: false
