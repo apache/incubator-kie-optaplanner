@@ -1082,7 +1082,7 @@ Constraint streams come in two flavors:
 
 * *CS Drools* (default): fast implementation that uses Drools underneath.
 
-* *Bavet*: a faster, more recent in-house implementation. 
+* *Bavet*: even faster, more recent in-house implementation. 
 To try it out set the `constraintStreamImplType` to `BAVET` in your solver config:
 +
 [source,xml,options="nowrap"]
