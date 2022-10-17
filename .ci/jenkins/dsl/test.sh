@@ -25,6 +25,7 @@ git_author="$(echo ${git_url} | awk -F"${git_server_url}" '{print $2}' | awk -F.
 export DSL_DEFAULT_MAIN_CONFIG_FILE_REPO="${git_author}"/optaplanner
 export DSL_DEFAULT_FALLBACK_MAIN_CONFIG_FILE_REPO=kiegroup/optaplanner
 export DSL_DEFAULT_MAIN_CONFIG_FILE_PATH=.ci/jenkins/config/main.yaml
+export DSL_DEFAULT_BRANCH_CONFIG_FILE_REPO="${git_author}"/optaplanner
 
 file=$(mktemp)
 # For more usage of the script, use ./test.sh -h
