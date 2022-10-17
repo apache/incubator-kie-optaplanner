@@ -5,7 +5,7 @@ GIT_SERVER='github.com'
 
 git_url=$(git remote -v | grep origin | awk -F' ' '{print $2}' | head -n 1)
 if [ -z "${git_url}" ]; then
-  echo "Script must be executed in a Git repository for this script to run currently"
+  echo "Script must be executed in a Git repository for this script to run correctly"
   exit 1
 fi
 echo "git_url = ${git_url}"
