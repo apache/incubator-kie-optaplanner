@@ -202,23 +202,20 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
     }
 
     public <NewA> UniLeftHandSide<NewA> andGroupBy(BiConstraintCollector<A, B, ?, NewA> collector) {
-        Variable<NewA> accumulateOutput = variableFactory.createVariable("collected");
-        ViewItem<?> innerAccumulatePattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB);
-        ViewItem<?> outerAccumulatePattern = buildAccumulate(innerAccumulatePattern,
-                createAccumulateFunction(collector, accumulateOutput));
-        return new UniLeftHandSide<>(accumulateOutput, singletonList(outerAccumulatePattern), variableFactory);
+        Variable<NewA> accumulateOutput = variableFactory.createVariable("output");
+        ViewItem<?> groupByPattern = buildGroupBy(createAccumulateFunction(collector, accumulateOutput));
+        return new UniLeftHandSide<>(accumulateOutput, singletonList(groupByPattern), variableFactory);
     }
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(BiConstraintCollector<A, B, ?, NewA> collectorA,
             BiConstraintCollector<A, B, ?, NewB> collectorB) {
         Variable<NewA> accumulateOutputA = variableFactory.createVariable("collectedA");
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("collectedB");
-        ViewItem<?> innerAccumulatePattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB);
-        ViewItem<?> outerAccumulatePattern = buildAccumulate(innerAccumulatePattern,
+        ViewItem<?> groupByPattern = buildGroupBy(
                 createAccumulateFunction(collectorA, accumulateOutputA),
                 createAccumulateFunction(collectorB, accumulateOutputB));
         return new BiLeftHandSide<>(accumulateOutputA,
-                new DirectPatternVariable<>(accumulateOutputB, outerAccumulatePattern), variableFactory);
+                new DirectPatternVariable<>(accumulateOutputB, groupByPattern), variableFactory);
     }
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(
@@ -227,13 +224,12 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         Variable<NewA> accumulateOutputA = variableFactory.createVariable("collectedA");
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("collectedB");
         Variable<NewC> accumulateOutputC = variableFactory.createVariable("collectedC");
-        ViewItem<?> innerAccumulatePattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB);
-        ViewItem<?> outerAccumulatePattern = buildAccumulate(innerAccumulatePattern,
+        ViewItem<?> groupByPattern = buildGroupBy(
                 createAccumulateFunction(collectorA, accumulateOutputA),
                 createAccumulateFunction(collectorB, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateOutputC));
         return new TriLeftHandSide<>(accumulateOutputA, accumulateOutputB,
-                new DirectPatternVariable<>(accumulateOutputC, outerAccumulatePattern),
+                new DirectPatternVariable<>(accumulateOutputC, groupByPattern),
                 variableFactory);
     }
 
@@ -244,14 +240,13 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         Variable<NewB> accumulateOutputB = variableFactory.createVariable("collectedB");
         Variable<NewC> accumulateOutputC = variableFactory.createVariable("collectedC");
         Variable<NewD> accumulateOutputD = variableFactory.createVariable("collectedD");
-        ViewItem<?> innerAccumulatePattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB);
-        ViewItem<?> outerAccumulatePattern = buildAccumulate(innerAccumulatePattern,
+        ViewItem<?> groupByPattern = buildGroupBy(
                 createAccumulateFunction(collectorA, accumulateOutputA),
                 createAccumulateFunction(collectorB, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateOutputC),
                 createAccumulateFunction(collectorD, accumulateOutputD));
         return new QuadLeftHandSide<>(accumulateOutputA, accumulateOutputB, accumulateOutputC,
-                new DirectPatternVariable<>(accumulateOutputD, outerAccumulatePattern), variableFactory);
+                new DirectPatternVariable<>(accumulateOutputD, groupByPattern), variableFactory);
     }
 
     /**
@@ -472,10 +467,6 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return new BiLeftHandSide<>(patternVariableA.getPrimaryVariable(), newPatternVariableB, variableFactory);
     }
 
-    public <Solution_> RuleBuilder<Solution_> andTerminate() {
-        return ruleContext.newRuleBuilder();
-    }
-
     public <Solution_> RuleBuilder<Solution_> andTerminate(ToIntBiFunction<A, B> matchWeigher) {
         return ruleContext.newRuleBuilder(matchWeigher);
     }
@@ -486,6 +477,16 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
 
     public <Solution_> RuleBuilder<Solution_> andTerminate(BiFunction<A, B, BigDecimal> matchWeigher) {
         return ruleContext.newRuleBuilder(matchWeigher);
+    }
+
+    private ViewItem<?> buildGroupBy(AccumulateFunction... accFunctions) {
+        /*
+         * Normally groupBy without group key is just a plain accumulate.
+         * However, Drools does not like nesting accumulates, and CS does allow for nesting groupBy on multiple levels.
+         * Therefore we implement this case with groupBy as well.
+         */
+        Variable<String> groupKey = variableFactory.createVariable("singleton_groupKey");
+        return buildGroupBy(groupKey, (a, b) -> SINGLETON_GROUP_KEY, accFunctions);
     }
 
     private <GroupKey_> ViewItem<?> buildGroupBy(Variable<GroupKey_> groupKey,

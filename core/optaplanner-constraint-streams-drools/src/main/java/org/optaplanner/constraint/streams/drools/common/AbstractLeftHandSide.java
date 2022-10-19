@@ -3,21 +3,19 @@ package org.optaplanner.constraint.streams.drools.common;
 import static org.drools.model.DSL.and;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.drools.model.DSL;
 import org.drools.model.Index;
 import org.drools.model.Variable;
-import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.constraint.streams.drools.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
 abstract class AbstractLeftHandSide {
 
+    protected static final String SINGLETON_GROUP_KEY = "SingletonGroupKey";
     protected final DroolsVariableFactory variableFactory;
 
     protected AbstractLeftHandSide(DroolsVariableFactory variableFactory) {
@@ -184,20 +182,6 @@ abstract class AbstractLeftHandSide {
                         .bind(boundVarB, tuple -> tuple.b)
                         .bind(boundVarC, tuple -> tuple.c);
         return new DirectPatternVariable<>(accumulateOutput, tuplePatternVar.build());
-    }
-
-    protected static ViewItem<?> buildAccumulate(ViewItem<?> innerAccumulatePattern,
-            AccumulateFunction... accFunctions) {
-        if (accFunctions.length == 0) {
-            throw new IllegalStateException("Impossible state: no accumulate functions provided.");
-        } else if (accFunctions.length == 1) {
-            return DSL.accumulate(innerAccumulatePattern, accFunctions[0]);
-        } else {
-            return DSL.accumulate(innerAccumulatePattern, accFunctions[0],
-                    Arrays.stream(accFunctions)
-                            .skip(1)
-                            .toArray(AccumulateFunction[]::new));
-        }
     }
 
 }
