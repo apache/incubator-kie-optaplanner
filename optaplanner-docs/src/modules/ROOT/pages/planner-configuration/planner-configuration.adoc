@@ -357,7 +357,7 @@ public class Lecture {
 
 The solver configuration needs to declare each planning entity class:
 
-[source,java,options="nowrap"]
+[source,xml,options="nowrap"]
 ----
 <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
