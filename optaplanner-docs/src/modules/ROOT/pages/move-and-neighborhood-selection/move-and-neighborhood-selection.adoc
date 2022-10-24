@@ -919,7 +919,7 @@ Here's how it works: At the start of the phase (or step depending on the ``cache
 
 image::move-and-neighborhood-selection/cachedShuffledSelection.png[align="center"]
 
-Notice that **each ``**Move**`` will only be selected once**, even though they are selected in random order.
+Notice that **each ``Move`` will only be selected once**, even though they are selected in random order.
 
 Use cacheType PHASE if none of the (possibly nested) Selectors require ``STEP``.
 Otherwise, do something like this:

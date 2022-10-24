@@ -11,7 +11,7 @@
 Solving a planning problem with OptaPlanner consists of the following steps:
 
 . *Model your planning problem* as a class annotated with the ``@PlanningSolution`` annotation, for example the ``NQueens`` class.
-. **Configure a ``**Solver**``**, for example a First Fit and Tabu Search solver for any `NQueens` instance.
+. *Configure a ``Solver``*, for example a First Fit and Tabu Search solver for any `NQueens` instance.
 . *Load a problem data set* from your data layer, for example a Four Queens instance. That is the planning problem.
 . *Solve it* with `Solver.solve(problem)` which returns the best solution found.
 
