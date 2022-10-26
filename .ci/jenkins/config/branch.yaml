@@ -3,18 +3,18 @@ environment:
     main:
       enabled: false
     branch:
-      enabled: true
+      enabled: false
       version: '2.7'
     lts:
       enabled: true
       version: '2.7'
   native:
-    enabled: true
+    enabled: false
   mandrel:
     enabled: true
-    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.2-java11
+    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:21.3-java11
   mandrel_lts:
-    enabled: true
+    enabled: false
     builder_image: quay.io/quarkus/ubi-quarkus-mandrel:21.3-java11
     quarkus_version: 2.7
   runtimes_bdd:
