@@ -1,19 +1,19 @@
 package org.optaplanner.examples.cloudbalancing.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
+
+import org.optaplanner.examples.common.domain.AbstractPersistableJaxb;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("CloudComputer")
-public class CloudComputer extends AbstractPersistable implements Labeled {
+public class CloudComputer extends AbstractPersistableJaxb implements Labeled {
 
     private int cpuPower; // in gigahertz
     private int memory; // in gigabyte RAM
     private int networkBandwidth; // in gigabyte per hour
     private int cost; // in euro per month
 
-    public CloudComputer() {
+    CloudComputer() { // For JAXB.
     }
 
     public CloudComputer(long id, int cpuPower, int memory, int networkBandwidth, int cost) {
@@ -54,6 +54,20 @@ public class CloudComputer extends AbstractPersistable implements Labeled {
 
     public void setCost(int cost) {
         this.cost = cost;
+    }
+
+    // ************************************************************************
+    // JAXB-related methods; JAXB doesn't like these on AbstractPersistable.
+    // ************************************************************************
+
+    @XmlID
+    @XmlAttribute(required = true, name = "id")
+    final String getXmlId() { // Works around the fact that XML ID has to be a String.
+        return Long.toString(id);
+    }
+
+    final void setXmlId(String id) {
+        this.id = Long.parseLong(id);
     }
 
     // ************************************************************************

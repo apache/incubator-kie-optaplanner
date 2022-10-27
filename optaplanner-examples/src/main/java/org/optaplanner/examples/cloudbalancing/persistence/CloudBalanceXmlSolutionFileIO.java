@@ -1,9 +1,9 @@
 package org.optaplanner.examples.cloudbalancing.persistence;
 
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
-import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
+import org.optaplanner.persistence.jaxb.impl.domain.solution.JaxbSolutionFileIO;
 
-public class CloudBalanceXmlSolutionFileIO extends XStreamSolutionFileIO<CloudBalance> {
+public class CloudBalanceXmlSolutionFileIO extends JaxbSolutionFileIO<CloudBalance> {
 
     public CloudBalanceXmlSolutionFileIO() {
         super(CloudBalance.class);
