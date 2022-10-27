@@ -1,0 +1,45 @@
+name: 'Build Chain'
+description: 'Executes build-chain tool'
+inputs:
+  github-token:
+    description: "the github token"
+    required: true
+  definition-file:
+    description: 'The `definition-file` input for the build-chain'
+    required: false
+    default: 'https://raw.githubusercontent.com/${GROUP:kiegroup}/optaplanner/${BRANCH:main}/.ci/pull-request-config-rhbop.yaml'
+  flow-type:
+    description: "the flow to execute, it can be 'pull-request', 'full-downstream', 'single' or 'branch'"
+    default: "pull-request"
+    required: false
+  starting-project:
+    description: "the project to start flow from. By default is the project triggering the job"
+    required: false
+  logger-level:
+    description: "the log level. 'info' (default) | 'trace' | 'debug'"
+    default: "info"
+    required: false
+  annotations-prefix:
+    description: "The prefix for the annotations title"
+    default: ''
+    required: false
+  additional-flags:
+    description: "The chance to define additional flags for the execution, as it is done on the CLI side. Just semicolon (;) separated, like '--skipParallelCheckout;--skipExecution;-cct (mvn .*)||$1 -s settings.xml'"
+    required: false
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: Build Chain Tool Execution
+      id: build-chain
+      uses: kiegroup/github-action-build-chain@v2.6.25
+      with:
+        definition-file: ${{ inputs.definition-file }}
+        flow-type: ${{ inputs.flow-type }}
+        starting-project: ${{ inputs.starting-project }}
+        logger-level: ${{ inputs.logger-level }}
+        annotations-prefix: ${{ inputs.annotations-prefix }}
+        additional-flags: ${{ inputs.additional-flags }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
