@@ -3,10 +3,10 @@ environment:
     main:
       enabled: false
     branch:
-      enabled: false
+      enabled: true
       version: '2.7'
     lts:
-      enabled: true
+      enabled: false
       version: '2.7'
   native:
     enabled: false
