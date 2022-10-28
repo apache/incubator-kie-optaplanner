@@ -80,6 +80,8 @@ jobs:
           starting-project: kiegroup/optaplanner
           flow-type: ${{ env.FLOW_TYPE }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
+        env:
+          BUILD_MVN_OPTS: '-Dproductized'
       - name: Surefire Report
         uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
         if: ${{ always() }}
