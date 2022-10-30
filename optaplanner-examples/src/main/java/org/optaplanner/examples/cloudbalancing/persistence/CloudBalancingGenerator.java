@@ -108,7 +108,7 @@ public class CloudBalancingGenerator extends LoggingMain {
     protected Random random;
 
     public CloudBalancingGenerator() {
-        solutionFileIO = new CloudBalanceXmlSolutionFileIO();
+        solutionFileIO = new CloudBalanceSolutionFileIO();
         outputDir = new File(CommonApp.determineDataDir(CloudBalancingApp.DATA_DIR_NAME), "unsolved");
         checkConfiguration();
     }
@@ -130,7 +130,7 @@ public class CloudBalancingGenerator extends LoggingMain {
 
     private void writeCloudBalance(int computerListSize, int processListSize) {
         String fileName = determineFileName(computerListSize, processListSize);
-        File outputFile = new File(outputDir, fileName + ".xml");
+        File outputFile = new File(outputDir, fileName + "." + solutionFileIO.getOutputFileExtension());
         CloudBalance cloudBalance = createCloudBalance(fileName, computerListSize, processListSize);
         solutionFileIO.write(cloudBalance, outputFile);
         logger.info("Saved: {}", outputFile);

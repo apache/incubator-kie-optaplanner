@@ -1,16 +1,21 @@
 package org.optaplanner.examples.cloudbalancing.domain;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.cloudbalancing.domain.solver.CloudComputerStrengthComparator;
 import org.optaplanner.examples.cloudbalancing.domain.solver.CloudProcessDifficultyComparator;
 import org.optaplanner.examples.common.domain.AbstractPersistableJaxb;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(difficultyComparatorClass = CloudProcessDifficultyComparator.class)
-public class CloudProcess extends AbstractPersistableJaxb {
+public class CloudProcess
+        extends AbstractPersistableJaxb
+        implements Labeled {
 
     private int requiredCpuPower; // in gigahertz
     private int requiredMemory; // in gigabyte RAM
@@ -21,7 +26,7 @@ public class CloudProcess extends AbstractPersistableJaxb {
     @XmlElement(name = "cloudComputer")
     private CloudComputer computer;
 
-    CloudProcess() { // For JAXB
+    CloudProcess() { // For Jackson.
     }
 
     public CloudProcess(long id, int requiredCpuPower, int requiredMemory, int requiredNetworkBandwidth) {
@@ -69,10 +74,12 @@ public class CloudProcess extends AbstractPersistableJaxb {
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public int getRequiredMultiplicand() {
         return requiredCpuPower * requiredMemory * requiredNetworkBandwidth;
     }
 
+    @Override
     public String getLabel() {
         return "Process " + id;
     }

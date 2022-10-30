@@ -144,7 +144,7 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-jaxb</artifactId>
+      <artifactId>optaplanner-persistence-jackson</artifactId>
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
