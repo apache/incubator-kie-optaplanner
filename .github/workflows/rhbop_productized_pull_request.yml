@@ -46,7 +46,6 @@ jobs:
         uses: kiegroup/optaplanner/.ci/actions/build-chain@main
         with:
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
-          starting-project: kiegroup/optaplanner
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Surefire Report
         uses: kiegroup/kogito-pipelines/.ci/actions/surefire-report@main
