@@ -49,6 +49,9 @@
         <configuration>
           <ignoredUsedUndeclaredDependencies>
             <dependency>org.optaplanner:optaplanner-core-impl:jar</dependency>
+            <!-- optaplanner-persistence-jackson brings dependencies we do not want to enumerate. -->
+            <dependency>com.fasterxml.jackson.core:*</dependency>
+            <dependency>jakarta.xml.bind:*</dependency>
           </ignoredUsedUndeclaredDependencies>
           <ignoredUnusedDeclaredDependencies>
             <dependency>org.optaplanner:optaplanner-core:jar</dependency>
@@ -240,5 +243,4 @@
       <artifactId>poi-ooxml</artifactId>
     </dependency>
   </dependencies>
-
 </project>
