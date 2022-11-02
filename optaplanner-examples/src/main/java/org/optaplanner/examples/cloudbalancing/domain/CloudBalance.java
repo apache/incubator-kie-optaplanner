@@ -9,11 +9,6 @@ import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
-import org.optaplanner.persistence.jackson.api.score.buildin.hardsoft.HardSoftScoreJacksonDeserializer;
-import org.optaplanner.persistence.jackson.api.score.buildin.hardsoft.HardSoftScoreJacksonSerializer;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 @PlanningSolution
 public class CloudBalance extends AbstractPersistableJackson {
@@ -53,8 +48,6 @@ public class CloudBalance extends AbstractPersistableJackson {
     }
 
     @PlanningScore
-    @JsonDeserialize(using = HardSoftScoreJacksonDeserializer.class)
-    @JsonSerialize(using = HardSoftScoreJacksonSerializer.class)
     public HardSoftScore getScore() {
         return score;
     }

@@ -1,8 +1,5 @@
 package org.optaplanner.examples.cloudbalancing.domain;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
-
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.cloudbalancing.domain.solver.CloudComputerStrengthComparator;
@@ -22,8 +19,6 @@ public class CloudProcess
     private int requiredNetworkBandwidth; // in gigabyte per hour
 
     // Planning variables: changes during planning, between score calculations.
-    @XmlIDREF
-    @XmlElement(name = "cloudComputer")
     private CloudComputer computer;
 
     CloudProcess() { // For Jackson.

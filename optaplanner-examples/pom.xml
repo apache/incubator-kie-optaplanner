@@ -51,7 +51,6 @@
             <dependency>org.optaplanner:optaplanner-core-impl:jar</dependency>
             <!-- optaplanner-persistence-jackson brings dependencies we do not want to enumerate. -->
             <dependency>com.fasterxml.jackson.core:*</dependency>
-            <dependency>jakarta.xml.bind:*</dependency>
           </ignoredUsedUndeclaredDependencies>
           <ignoredUnusedDeclaredDependencies>
             <dependency>org.optaplanner:optaplanner-core:jar</dependency>
@@ -199,6 +198,11 @@
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
+    </dependency>
+    <!-- JSON -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
     </dependency>
     <!-- Testing -->
     <dependency>
