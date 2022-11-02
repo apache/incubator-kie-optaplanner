@@ -2,14 +2,14 @@ package org.optaplanner.examples.common.domain;
 
 import org.optaplanner.core.api.domain.lookup.PlanningId;
 
-public abstract class AbstractPersistableJaxb {
+public abstract class AbstractPersistableJackson {
 
     protected Long id;
 
-    protected AbstractPersistableJaxb() { // For Jackson.
+    protected AbstractPersistableJackson() { // For Jackson.
     }
 
-    protected AbstractPersistableJaxb(long id) {
+    protected AbstractPersistableJackson(long id) {
         this.id = id;
     }
 
