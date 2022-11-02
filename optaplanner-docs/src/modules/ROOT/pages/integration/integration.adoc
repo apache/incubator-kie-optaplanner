@@ -183,6 +183,13 @@ public class Room {
 Neglecting to do this can lead to persisting duplicate solutions, JPA exceptions or other side effects.
 
 
+[[integrationWithJaxb]]
+=== XML or JSON: JAXB
+
+Enrich domain POJOs (solution, entities and problem facts) with JAXB annotations to serialize them to/from XML or JSON.
+
+Add a dependency to the `optaplanner-persistence-jaxb` jar to take advantage of these extra integration features:
+
 [[jaxbMarshallingAScore]]
 ==== JAXB: marshalling a `Score`
 
