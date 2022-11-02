@@ -49,8 +49,6 @@
         <configuration>
           <ignoredUsedUndeclaredDependencies>
             <dependency>org.optaplanner:optaplanner-core-impl:jar</dependency>
-            <!-- optaplanner-persistence-jackson brings dependencies we do not want to enumerate. -->
-            <dependency>com.fasterxml.jackson.core:*</dependency>
           </ignoredUsedUndeclaredDependencies>
           <ignoredUnusedDeclaredDependencies>
             <dependency>org.optaplanner:optaplanner-core:jar</dependency>
