@@ -2,15 +2,21 @@ package org.optaplanner.examples.vehiclerouting.domain.location;
 
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
+import org.optaplanner.examples.vehiclerouting.domain.location.segmented.HubSegmentLocation;
+import org.optaplanner.examples.vehiclerouting.domain.location.segmented.RoadSegmentLocation;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamInclude;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@XStreamAlias("VrpLocation")
-@XStreamInclude({
-        AirLocation.class,
-        RoadLocation.class
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = AirLocation.class, name = "air"),
+        @JsonSubTypes.Type(value = HubSegmentLocation.class, name = "hubSegment"),
+        @JsonSubTypes.Type(value = RoadLocation.class, name = "road"),
+        @JsonSubTypes.Type(value = RoadSegmentLocation.class, name = "roadSegment")
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class Location extends AbstractPersistable {
 
     protected String name = null;
