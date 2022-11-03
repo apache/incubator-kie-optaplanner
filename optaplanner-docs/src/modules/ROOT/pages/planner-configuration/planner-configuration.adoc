@@ -542,7 +542,7 @@ Using a nullable planning variable implies that your score calculation is respon
 
 [WARNING]
 ====
-Currently <<chainedPlanningVariable, chained>> planning variables are not compatible with `nullable`.
+Currently <<chainedPlanningVariable,chained>> planning variables are not compatible with `nullable`.
 ====
 
 xref:repeated-planning/repeated-planning.adoc#repeatedPlanning[Repeated planning] (especially xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning]) does not mix well with a nullable planning variable.
@@ -870,7 +870,7 @@ For example, none of the `row` variables of any `Queen` may be used to determine
 ==== Planning list variable (VRP, Task assigning, ...)
 
 Use the planning list variable to model problems where the goal is to distribute a number of workload elements among limited resources in a specific order.
-This includes, for example, vehicle routing, traveling salesman, task assigning, and similar problems, that have previously been modeled using the <<chainedPlanningVariable, chained planning variable>>.
+This includes, for example, vehicle routing, traveling salesman, task assigning, and similar problems, that have previously been modeled using the <<chainedPlanningVariable,chained planning variable>>.
 
 The planning list variable is a successor to the chained planning variable and provides a more intuitive way to express the problem domain with Java classes.
 
@@ -1108,7 +1108,7 @@ It is ignored on parent classes or subclasses without that annotation.
 
 In rare cases, a planning entity might be a singleton: use `@PlanningEntityProperty` on its getter (or field) instead.
 
-Both annotations can also be <<autoDiscoverSolutionProperties, auto discovered>> if enabled.
+Both annotations can also be <<autoDiscoverSolutionProperties,auto discovered>> if enabled.
 
 
 [[scoreOfASolution]]
@@ -1162,7 +1162,7 @@ public class CloudBalance {
 
 Some use cases use xref:score-calculation/score-calculation.adoc#scoreType[other score types].
 
-This annotation can also be <<autoDiscoverSolutionProperties, auto discovered>> if enabled.
+This annotation can also be <<autoDiscoverSolutionProperties,auto discovered>> if enabled.
 
 
 [[problemFacts]]
@@ -1216,7 +1216,7 @@ It is ignored on parent classes or subclasses without that annotation.
 
 In rare cases, a problem fact might be a singleton: use `@ProblemFactProperty` on its method (or field) instead.
 
-Both annotations can also be <<autoDiscoverSolutionProperties, auto discovered>> if enabled.
+Both annotations can also be <<autoDiscoverSolutionProperties,auto discovered>> if enabled.
 
 
 [[cachedProblemFact]]
@@ -1502,7 +1502,7 @@ It is built with a ``SolverFactory``, there is no need to implement it yourself.
 A `Solver` should only be accessed from a single thread, except for the methods that are specifically documented in javadoc as being thread-safe.
 The `solve()` method hogs the current thread.
 This can cause HTTP timeouts for REST services and it requires extra code to solve multiple datasets in parallel.
-To avoid such issues, use a <<solverManager, `SolverManager`>> instead.
+To avoid such issues, use a <<solverManager,`SolverManager`>> instead.
 
 
 [[solvingAProblem]]

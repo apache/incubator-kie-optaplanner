@@ -126,7 +126,7 @@ Therefore, it is called a `UniConstraintStream`:
     }
 ----
 
-Some constraint stream <<constraintStreamsBuildingBlocks, building blocks>> can increase stream cardinality, such as
+Some constraint stream <<constraintStreamsBuildingBlocks,building blocks>> can increase stream cardinality, such as
 <<constraintStreamsJoin,join>> or <<constraintStreamsGroupingAndCollectors,groupBy>>:
 
 [source,java,options="nowrap"]
@@ -797,7 +797,7 @@ Here, only the computers without processes running are penalized.
 Also note the use of the `Joiner` class to limit the constraint matches.
 For a description of available joiners, see <<constraintStreamsJoin,joining>>.
 Conditional propagation operates much like joining, with the exception of not increasing the
-<<constraintStreamsCardinality, stream cardinality>>.
+<<constraintStreamsCardinality,stream cardinality>>.
 Matches from these building blocks are not available further down the stream.
 
 [NOTE]
