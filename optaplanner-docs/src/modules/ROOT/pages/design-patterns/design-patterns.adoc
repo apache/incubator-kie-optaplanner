@@ -22,7 +22,7 @@ Follow the guidelines listed in this section to create a well thought-out model 
 .. Create sample instances for each class. For example, in the employee rostering `Employee` class, create `Ann`, `Bert`, and `Carl`.
 
 . *Determine which relationships (or fields) change during planning and color them orange.* One side of these relationships will become a planning variable later on. For example, in employee rostering, the `Shift` to `Employee` relationship changes during planning, so it is orange. However, other relationships, such as from `Employee` to `Skill`, are immutable during planning
-because Optaplanner cannot assign an extra skill to an employee.
+because OptaPlanner cannot assign an extra skill to an employee.
 
 . *If there are multiple relationships (or fields), check for xref:shadow-variable/shadow-variable.adoc#shadowVariable[shadow variables]*.
 A shadow variable changes during planning, but its value can be calculated based on one or more genuine planning variables, without dispute. Color shadow relationships (or fields) purple.
@@ -41,7 +41,7 @@ with a one-to-many and a many-to-one relationship to a new intermediate class.*
 +
 [NOTE]
 ====
-Optaplanner does not currently support a `@PlanningVariable` annotation on a collection.
+OptaPlanner does not currently support a `@PlanningVariable` annotation on a collection.
 ====
 
 +
@@ -59,7 +59,7 @@ image::design-patterns/employeeShiftRosteringModelingGuideA.png[align="center"]
 ** There is no need to add a hard constraint to assure that two planning entities are different. They are already different due to their problem properties.
 ** In some cases, multiple planning entity instances have the same set of problem properties. In such cases, it can be useful to create an extra problem property to distinguish them. For example, in employee rostering, the `ShiftAssignment` class has the problem property `Shift` as well as the problem property `indexInShift` which is an `int` class.
 
-. *Choose the model in which the number of planning entities is fixed during planning*. For example, in the employee rostering, it is impossible to know in advance how many shifts each employee will have before Optaplanner solves the model and the results can differ for each solution found.
+. *Choose the model in which the number of planning entities is fixed during planning*. For example, in the employee rostering, it is impossible to know in advance how many shifts each employee will have before OptaPlanner solves the model and the results can differ for each solution found.
 On the other hand, the number of employees per shift is known in advance,
 so it is better to make the `Shift` relationship a problem property
 and the `Employee` relationship a planning variable as shown in the following examples.
