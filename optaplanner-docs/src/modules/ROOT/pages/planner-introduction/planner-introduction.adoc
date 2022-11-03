@@ -1,5 +1,5 @@
 [[plannerIntroduction]]
-= OptaPlanner Introduction
+= OptaPlanner introduction
 // Redirect to this page from .../docs/optaplanner/latest.
 :page-aliases: ../index.adoc
 :doctype: book

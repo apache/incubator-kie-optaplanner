@@ -1836,7 +1836,7 @@ of the measuring.
 longest-running currently active solver.
 * `optaplanner.solver.solve.duration.seconds-duration-sum`: the sum of each active solver's solve duration. For example, if there are two active solvers, one running for three minutes and the other for one minute, the total solve time is four minutes.
 
-==== Additional Metrics
+==== Additional metrics
 
 For more detailed monitoring, OptaPlanner can be configured to monitor additional metrics at a performance cost.
 

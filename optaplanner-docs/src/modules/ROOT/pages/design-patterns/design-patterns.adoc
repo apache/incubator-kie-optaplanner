@@ -11,7 +11,7 @@
 OptaPlanner design patterns are generic reusable solutions to common challenges in the model or architecture of projects that perform constraint solving. The design patterns in this section list and solve common design challenges.
 
 [[domainModelingGuide]]
-== Domain Modeling Guidelines
+== Domain modeling guidelines
 
 Follow the guidelines listed in this section to create a well thought-out model that can contribute significantly to the success of your planning.
 
