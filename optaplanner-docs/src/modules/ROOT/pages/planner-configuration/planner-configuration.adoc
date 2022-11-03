@@ -473,7 +473,7 @@ public class Queen {
 
     private Row row;
 
-    @PlanningVariable(valueRangeProviderRefs = {"rowRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "rowRange" })
     public Row getRow() {
         return row;
     }
@@ -502,7 +502,7 @@ It is ignored on parent classes or subclasses without that annotation.
 public class Queen {
     ...
 
-    @PlanningVariable(valueRangeProviderRefs = {"rowRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "rowRange" })
     private Row row;
 
 }
@@ -637,7 +637,7 @@ Any value from that `Collection` is a possible planning value for this planning 
 
 [source,java,options="nowrap"]
 ----
-    @PlanningVariable(valueRangeProviderRefs = {"rowRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "rowRange" })
     public Row getRow() {
         return row;
     }
@@ -685,7 +685,7 @@ For example, if a teacher can *never* teach in a room that does not belong to hi
 
 [source,java,options="nowrap"]
 ----
-    @PlanningVariable(valueRangeProviderRefs = {"departmentRoomRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "departmentRoomRange" })
     public Room getRoom() {
         return room;
     }
@@ -778,7 +778,7 @@ Value range providers can be combined, for example:
 
 [source,java,options="nowrap"]
 ----
-    @PlanningVariable(valueRangeProviderRefs = {"companyCarRange", "personalCarRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "companyCarRange", "personalCarRange" })
     public Car getCar() {
         return car;
     }
@@ -1000,7 +1000,7 @@ public class Visit ... implements Standstill {
     public City getCity() {...}
 
     @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED,
-        valueRangeProviderRefs = {"domicileRange", "visitRange"})
+        valueRangeProviderRefs = { "domicileRange", "visitRange" })
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }
@@ -1756,7 +1756,7 @@ To separate their logging into distinct files, surround the `solve()` call with 
 
 [source,java,options="nowrap"]
 ----
-        MDC.put("tenant.name",tenantName);
+        MDC.put("tenant.name", tenantName);
         MySolution bestSolution = solver.solve(problem);
         MDC.remove("tenant.name");
 ----

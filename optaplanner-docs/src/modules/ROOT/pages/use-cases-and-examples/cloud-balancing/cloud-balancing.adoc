@@ -148,7 +148,7 @@ public class CloudProcess ... {
 
     ... // getters
 
-    @PlanningVariable(valueRangeProviderRefs = {"computerRange"})
+    @PlanningVariable(valueRangeProviderRefs = { "computerRange" })
     public CloudComputer getComputer() {
         return computer;
     }
