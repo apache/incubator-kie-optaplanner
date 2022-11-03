@@ -53,7 +53,7 @@ image::design-patterns/employeeShiftRosteringModelingGuideA.png[align="center"]
 . *Annotate a many-to-one relationship with a `@PlanningEntity` annotation.* Usually the _many_ side of the relationship is the planning entity class that contains the planning variable. If the relationship is bi-directional, both sides are a planning entity class but usually the _many_ side has the planning variable and the _one_ side has the shadow variable. For example, in employee rostering, the `ShiftAssignment` class has an `@PlanningEntity` annotation.
 
 . *Make sure that the planning entity class has at least one problem property*. A planning entity class cannot consist of only planning variables or an ID and only planning variables.
-.. Remove any surplus `@PlanningVariable` annotations so that they become  problem properties. Doing this significantly decreases xref:optimization-algorithms/optimization-algorithms.adoc#searchSpaceSize[the search space size] and significantly increases solving efficiency. For example, in employee rostering, the `ShiftAssignment` class should not annotate both the `Shift` and `Employee` relationship with `@PlanningVariable`.
+.. Remove any surplus `@PlanningVariable` annotations so that they become problem properties. Doing this significantly decreases xref:optimization-algorithms/optimization-algorithms.adoc#searchSpaceSize[the search space size] and significantly increases solving efficiency. For example, in employee rostering, the `ShiftAssignment` class should not annotate both the `Shift` and `Employee` relationship with `@PlanningVariable`.
 .. Make sure that when all planning variables have a value of `null`, the planning entity instance is describable to the business people. Planning variables have a value of `null` when the planning solution is uninitialized.
 ** A surrogate ID does not suffice as the required minimum of one problem property.
 ** There is no need to add a hard constraint to assure that two planning entities are different. They are already different due to their problem properties.
@@ -134,7 +134,7 @@ image::design-patterns/assigningTimeToPlanningEntities2.png[align="center"]
 
 
 [[timeslotPattern]]
-=== Timeslot pattern:  assign to a fixed-length timeslot
+=== Timeslot pattern: assign to a fixed-length timeslot
 
 If all planning entities have *the same duration* (or can be inflated to the same duration), the Timeslot pattern is useful.
 The planning entities are assigned to a timeslot rather than time.

@@ -95,7 +95,7 @@ because it is about making choices and trade-offs against other constraints.
 Different stakeholders have different priorities.
 *Don't waste time with constraint weight discussions at the start of an implementation,
 instead add a <<constraintConfiguration, constraint configuration>>
-and  allow users to change them through a UI.*
+and allow users to change them through a UI.*
 A non-accurate weight is less damaging than mediocre algorithms:
 
 image::score-calculation/scoreTradeoffInPerspective.png[align="center"]
