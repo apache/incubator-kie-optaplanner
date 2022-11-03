@@ -252,7 +252,7 @@ Each constraint stream is then terminated by calling `asConstraint()` method, wh
 - Constraint package is the Java package that contains the constraint.
 The default value is the package that contains the `ConstraintProvider` implementation or the value from
 xref:score-calculation/score-calculation.adoc#constraintConfiguration[constraint configuration], if implemented.
-- Constraint name is the human readable descriptive name for the constraint, which
+- Constraint name is the human-readable descriptive name for the constraint, which
 (together with the constraint package) must be unique within the entire `ConstraintProvider` implementation.
 - Constraint weight is a constant score value indicating how much every breach of the constraint affects the score.
 Valid examples include `SimpleScore.ONE`, `HardSoftScore.ONE_HARD` and `HardMediumSoftScore.of(1, 2, 3)`.

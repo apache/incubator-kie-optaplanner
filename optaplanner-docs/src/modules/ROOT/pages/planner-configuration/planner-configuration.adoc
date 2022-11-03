@@ -1788,10 +1788,10 @@ OptaPlanner exposes metrics through https://micrometer.io/[Micrometer] which you
 
 .Prerequisites
 * You have a plain Java OptaPlanner project.
-* You have configured a Mircometer registry. For information about configuring Micrometer registries, see the https://micrometer.io[Micrometer] web site.
+* You have configured a Micrometer registry. For information about configuring Micrometer registries, see the https://micrometer.io[Micrometer] web site.
 
 .Procedure
-. Add configuration information for the Mircometer registry for your desired monitoring system to the global registry.
+. Add configuration information for the Micrometer registry for your desired monitoring system to the global registry.
 . Add the following line below the configuration information, where `<REGISTRY>` is the name of the registry that you configured:
 +
 [source,java,nowrap]

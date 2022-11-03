@@ -98,7 +98,7 @@ There are also several designs for assigning a planning entity to a starting tim
 * If the starting time is fixed beforehand, it is not a planning variable (in that solver).
 ** For example, in the xref:use-cases-and-examples/bed-allocation/bed-allocation.adoc#bedAllocation[hospital bed planning] example,
 the arrival day of each patient is fixed beforehand.
-** This is common in xref:repeated-planning/repeated-planning.adoc#multiStagePlanning[multi stage planning],
+** This is common in xref:repeated-planning/repeated-planning.adoc#multiStagePlanning[multi-stage planning],
 when the starting time has been decided already in an earlier planning stage.
 
 * If the starting time is not fixed, it is a planning variable (genuine or shadow).
@@ -201,7 +201,7 @@ Between planning entities, there are three ways to create gaps:
 ==== Chained through time: automatic collapse
 
 In some use case there is an overhead time for certain tasks,
-which can be shared by multiple tasks, of those are consecutively scheduled.
+which can be shared by multiple tasks, if those are consecutively scheduled.
 Basically, the solver receives a _discount_ if it combines those tasks.
 
 For example when delivering pizza to two different customers,
