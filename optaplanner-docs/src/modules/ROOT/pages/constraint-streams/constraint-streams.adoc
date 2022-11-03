@@ -47,7 +47,7 @@ This is an example of the same code, using the Constraint Streams API:
 ----
 
 This constraint stream iterates over all instances of class `Shift` in the xref:planner-configuration/planner-configuration.adoc#problemFacts[problem facts] and
-xref:planner-configuration/planner-configuration.adoc#planningEntity[planning entities] in the <<planningProblemAndPlanningSolution,planning problem>>.
+xref:planner-configuration/planner-configuration.adoc#planningEntity[planning entities] in the xref:planner-configuration/planner-configuration.adoc#planningProblemAndPlanningSolution[planning problem].
 It finds every `Shift` which is assigned to employee `Ann` and for every such instance (also called a match), it adds a
 soft penalty of `1` to the overall xref:score-calculation/score-calculation.adoc#calculateTheScore[score].
 The following figure illustrates this process on a problem with 4 different shifts:
@@ -242,7 +242,7 @@ and therefore this legacy method could still return entities with `null` variabl
 [[constraintStreamsPenaltiesRewards]]
 === Penalties and rewards
 
-The purpose of constraint streams is to build up a xref:score-calculation/score-calculation.adoc#whatIsAScore[score] for a <<planningProblemAndPlanningSolution,solution>>.
+The purpose of constraint streams is to build up a xref:score-calculation/score-calculation.adoc#whatIsAScore[score] for a xref:planner-configuration/planner-configuration.adoc#planningProblemAndPlanningSolution[solution].
 To do this, every constraint stream must contain a call to either a `penalize()` or a `reward()`
 building block.
 The `penalize()` building block makes the score worse and the `reward()` building block improves the score.
