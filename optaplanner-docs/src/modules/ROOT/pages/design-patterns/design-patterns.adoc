@@ -68,11 +68,12 @@ In the following diagram, each row is a different example and shows the relation
 
 image::design-patterns/entityVariableAndValueExamples.png[align="center"]
 
-NOTE: Course scheduling is different because it uses two xref:planner-configuration/planner-configuration.adoc#planningVariable[planning variables].
-
-NOTE: Vehicle routing is different because it uses a xref:planner-configuration/planner-configuration.adoc#planningListVariable[planning list variable].
-
-NOTE: Traveling salesmen is different because it uses a xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained planning variable].
+[NOTE]
+====
+Course scheduling is different because it uses two xref:planner-configuration/planner-configuration.adoc#planningVariable[planning variables].
+Vehicle routing is different because it uses a xref:planner-configuration/planner-configuration.adoc#planningListVariable[planning list variable].
+Traveling salesman is different because it uses a xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained planning variable].
+====
 
 [[assigningTimeToPlanningEntities]]
 == Assigning time to planning entities
@@ -177,12 +178,12 @@ which means starting a task when the previous is finished (or with a determinist
 For example, in xref:use-cases-and-examples/use-cases-and-examples.adoc#vehicleRouting[vehicle routing] with time windows, a vehicle drives from customer to customer (thus it handles one customer at a time).
 
 The focus in this pattern is on deciding the order of a set of elements instead of assigning them to a specific date and time.
-However, the time coordinate of each element can be deduced from its order in the sequence.
+However, the time coordinate of each element can be deduced from its position in the sequence.
 If the elements’ position on time axis affects the score, use a xref:shadow-variable/shadow-variable.adoc#shadowVariable[shadow variable] to calculate the time.
 
 This pattern is implemented using either the xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained planning variable] or the xref:planner-configuration/planner-configuration.adoc#planningListVariable[planning list variable].
 The two modeling approaches are equivalent because they both allow OptaPlanner to order elements in sequences of variable lengths.
-The planning list variable is easier to use than the chained planning variable, but it does not support all the advanced planning techniques.
+The planning list variable is easier to use than the chained planning variable, but it does not yet support all the advanced planning techniques.
 
 [[chainedThroughTimePatternChainedVariable]]
 ==== Chained through time pattern using chained planning variable
