@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,8 +69,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
 
         @Override
         public MachineReassignment readSolution() throws IOException {
-            machineReassignment = new MachineReassignment();
-            machineReassignment.setId(0L);
+            machineReassignment = new MachineReassignment(0L);
             readResourceList();
             readMachineList();
             readServiceList();
@@ -100,8 +100,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
             for (int i = 0; i < resourceListSize; i++) {
                 String line = readStringValue();
                 String[] lineTokens = splitBySpace(line, 2);
-                MrResource resource = new MrResource();
-                resource.setId(resourceId);
+                MrResource resource = new MrResource(resourceId);
                 resource.setIndex(i);
                 resource.setTransientlyConsumed(parseBooleanFromNumber(lineTokens[0]));
                 resource.setLoadCostWeight(Integer.parseInt(lineTokens[1]));
@@ -123,8 +122,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
             long machineCapacityId = 0L;
             // 2 phases because service dependencies are not in low to high order
             for (int i = 0; i < machineListSize; i++) {
-                MrMachine machine = new MrMachine();
-                machine.setId(machineId);
+                MrMachine machine = new MrMachine(machineId);
                 machineList.add(machine);
                 machineId++;
             }
@@ -136,8 +134,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
                 long neighborhoodId = Long.parseLong(lineTokens[0]);
                 MrNeighborhood neighborhood = idToNeighborhoodMap.get(neighborhoodId);
                 if (neighborhood == null) {
-                    neighborhood = new MrNeighborhood();
-                    neighborhood.setId(neighborhoodId);
+                    neighborhood = new MrNeighborhood(neighborhoodId);
                     neighborhoodList.add(neighborhood);
                     idToNeighborhoodMap.put(neighborhoodId, neighborhood);
                 }
@@ -145,16 +142,14 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
                 long locationId = Long.parseLong(lineTokens[1]);
                 MrLocation location = idToLocationMap.get(locationId);
                 if (location == null) {
-                    location = new MrLocation();
-                    location.setId(locationId);
+                    location = new MrLocation(locationId);
                     locationList.add(location);
                     idToLocationMap.put(locationId, location);
                 }
                 machine.setLocation(location);
                 List<MrMachineCapacity> machineCapacityListOfMachine = new ArrayList<>(resourceListSize);
                 for (int j = 0; j < resourceListSize; j++) {
-                    MrMachineCapacity machineCapacity = new MrMachineCapacity();
-                    machineCapacity.setId(machineCapacityId);
+                    MrMachineCapacity machineCapacity = new MrMachineCapacity(machineCapacityId);
                     machineCapacity.setMachine(machine);
                     machineCapacity.setResource(resourceList.get(j));
                     machineCapacity.setMaximumCapacity(Long.parseLong(lineTokens[2 + j]));
@@ -184,8 +179,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
             long serviceId = 0L;
             // 2 phases because service dependencies are not in low to high order
             for (int i = 0; i < serviceListSize; i++) {
-                MrService service = new MrService();
-                service.setId(serviceId);
+                MrService service = new MrService(serviceId);
                 service.setFromDependencyServiceList(new ArrayList<>(5));
                 serviceList.add(service);
                 serviceId++;
@@ -229,8 +223,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
             for (int i = 0; i < processListSize; i++) {
                 String line = readStringValue();
                 String[] lineTokens = splitBySpace(line, 2 + resourceListSize);
-                MrProcess process = new MrProcess();
-                process.setId(processId);
+                MrProcess process = new MrProcess(processId);
                 int serviceIndex = Integer.parseInt(lineTokens[0]);
                 if (serviceIndex >= serviceList.size()) {
                     throw new IllegalArgumentException("Process with id (" + processId
@@ -240,8 +233,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
                 process.setService(service);
                 List<MrProcessRequirement> processRequirementList = new ArrayList<>(resourceListSize);
                 for (int j = 0; j < resourceListSize; j++) {
-                    MrProcessRequirement processRequirement = new MrProcessRequirement();
-                    processRequirement.setId(processRequirementId);
+                    MrProcessRequirement processRequirement = new MrProcessRequirement(processRequirementId);
                     processRequirement.setProcess(process);
                     processRequirement.setResource(resourceList.get(j));
                     processRequirement.setUsage(Integer.parseInt(lineTokens[1 + j]));
@@ -263,8 +255,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
             for (int i = 0; i < balancePenaltyListSize; i++) {
                 String line = readStringValue();
                 String[] lineTokens = splitBySpace(line, 3);
-                MrBalancePenalty balancePenalty = new MrBalancePenalty();
-                balancePenalty.setId(balancePenaltyId);
+                MrBalancePenalty balancePenalty = new MrBalancePenalty(balancePenaltyId);
                 int originResourceIndex = Integer.parseInt(lineTokens[0]);
                 if (originResourceIndex >= resourceListSize) {
                     throw new IllegalArgumentException("BalancePenalty with id (" + balancePenaltyId
@@ -287,8 +278,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
         }
 
         private void readGlobalPenaltyInfo() throws IOException {
-            MrGlobalPenaltyInfo globalPenaltyInfo = new MrGlobalPenaltyInfo();
-            globalPenaltyInfo.setId(0L);
+            MrGlobalPenaltyInfo globalPenaltyInfo = new MrGlobalPenaltyInfo(0L);
             String line = readStringValue();
             String[] lineTokens = splitBySpace(line, 3);
             globalPenaltyInfo.setProcessMoveCostWeight(Integer.parseInt(lineTokens[0]));
@@ -303,8 +293,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
             List<MrProcessAssignment> processAssignmentList = new ArrayList<>(processListSize);
             long processAssignmentId = 0L;
             for (int i = 0; i < processListSize; i++) {
-                MrProcessAssignment processAssignment = new MrProcessAssignment();
-                processAssignment.setId(processAssignmentId);
+                MrProcessAssignment processAssignment = new MrProcessAssignment(processAssignmentId);
                 processAssignment.setProcess(processList.get(i));
                 int machineIndex = Integer.parseInt(lineTokens[i]);
                 if (machineIndex >= machineList.size()) {
@@ -329,7 +318,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
             File assignmentInputFile = new File(inputFile.getParent(),
                     inputFileName.replaceFirst(inputFilePrefix, "assignment_").replaceAll("\\.txt$", ".sol"));
             try (BufferedReader assignmentBufferedReader = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(assignmentInputFile), "UTF-8"))) {
+                    new FileInputStream(assignmentInputFile), StandardCharsets.UTF_8))) {
                 return assignmentBufferedReader.readLine();
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Exception in assignmentInputFile ("

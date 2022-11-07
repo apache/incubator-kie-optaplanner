@@ -1,18 +1,21 @@
 package org.optaplanner.examples.machinereassignment.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("MrBalancePenalty")
-public class MrBalancePenalty extends AbstractPersistable {
+public class MrBalancePenalty extends AbstractPersistableJackson {
 
     private MrResource originResource;
     private MrResource targetResource;
     private int multiplicand;
     private int weight;
 
-    public MrBalancePenalty() {
+    @SuppressWarnings("unused")
+    MrBalancePenalty() {
+        // required by Jackson
+    }
+
+    public MrBalancePenalty(long id) {
+        super(id);
     }
 
     public MrBalancePenalty(MrResource originResource, MrResource targetResource, int multiplicand, int weight) {

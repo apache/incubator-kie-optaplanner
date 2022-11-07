@@ -4,20 +4,25 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.machinereassignment.domain.solver.MrProcessAssignmentDifficultyComparator;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(difficultyComparatorClass = MrProcessAssignmentDifficultyComparator.class)
-@XStreamAlias("MrProcessAssignment")
-public class MrProcessAssignment extends AbstractPersistable {
+public class MrProcessAssignment extends AbstractPersistableJackson {
 
     private MrProcess process;
     private MrMachine originalMachine;
     private MrMachine machine;
 
-    public MrProcessAssignment() {
+    @SuppressWarnings("unused")
+    MrProcessAssignment() {
+        // required by Jackson
+    }
+
+    public MrProcessAssignment(long id) {
+        super(id);
     }
 
     public MrProcessAssignment(MrProcess process) {
@@ -71,10 +76,12 @@ public class MrProcessAssignment extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public MrService getService() {
         return process.getService();
     }
 
+    @JsonIgnore
     public boolean isMoved() {
         if (machine == null) {
             return false;
@@ -82,26 +89,32 @@ public class MrProcessAssignment extends AbstractPersistable {
         return !Objects.equals(originalMachine, machine);
     }
 
+    @JsonIgnore
     public int getProcessMoveCost() {
         return process.getMoveCost();
     }
 
+    @JsonIgnore
     public int getMachineMoveCost() {
         return (machine == null || originalMachine == null) ? 0 : originalMachine.getMoveCostTo(machine);
     }
 
+    @JsonIgnore
     public MrNeighborhood getNeighborhood() {
         return machine == null ? null : machine.getNeighborhood();
     }
 
+    @JsonIgnore
     public MrLocation getLocation() {
         return machine == null ? null : machine.getLocation();
     }
 
+    @JsonIgnore
     public long getUsage(MrResource resource) {
         return process.getUsage(resource);
     }
 
+    @JsonIgnore
     public String getLabel() {
         return "Process " + getId();
     }

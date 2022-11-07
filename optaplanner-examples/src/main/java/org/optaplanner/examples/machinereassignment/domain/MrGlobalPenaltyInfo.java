@@ -1,15 +1,21 @@
 package org.optaplanner.examples.machinereassignment.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("MrGlobalPenaltyInfo")
-public class MrGlobalPenaltyInfo extends AbstractPersistable {
+public class MrGlobalPenaltyInfo extends AbstractPersistableJackson {
 
     private int processMoveCostWeight;
     private int serviceMoveCostWeight;
     private int machineMoveCostWeight;
+
+    @SuppressWarnings("unused")
+    MrGlobalPenaltyInfo() {
+        // required by Jackson
+    }
+
+    public MrGlobalPenaltyInfo(long id) {
+        super(id);
+    }
 
     public int getProcessMoveCostWeight() {
         return processMoveCostWeight;

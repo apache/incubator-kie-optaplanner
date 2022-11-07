@@ -1,11 +1,13 @@
 package org.optaplanner.examples.machinereassignment.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@XStreamAlias("MrMachineCapacity")
-public class MrMachineCapacity extends AbstractPersistable {
+@JsonIdentityInfo(scope = MrMachineCapacity.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class MrMachineCapacity extends AbstractPersistableJackson {
 
     private MrMachine machine;
     private MrResource resource;
@@ -13,7 +15,13 @@ public class MrMachineCapacity extends AbstractPersistable {
     private long maximumCapacity;
     private long safetyCapacity;
 
-    public MrMachineCapacity() {
+    @SuppressWarnings("unused")
+    MrMachineCapacity() {
+        // required by Jackson
+    }
+
+    public MrMachineCapacity(long id) {
+        super(id);
     }
 
     public MrMachineCapacity(MrMachine machine, MrResource resource, long maximumCapacity, long safetyCapacity) {
@@ -63,6 +71,7 @@ public class MrMachineCapacity extends AbstractPersistable {
         this.safetyCapacity = safetyCapacity;
     }
 
+    @JsonIgnore
     public boolean isTransientlyConsumed() {
         return resource.isTransientlyConsumed();
     }

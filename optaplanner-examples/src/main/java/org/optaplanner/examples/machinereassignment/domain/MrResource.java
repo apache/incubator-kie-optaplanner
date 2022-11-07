@@ -1,17 +1,24 @@
 package org.optaplanner.examples.machinereassignment.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@XStreamAlias("MrResource")
-public class MrResource extends AbstractPersistable {
+@JsonIdentityInfo(scope = MrResource.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class MrResource extends AbstractPersistableJackson {
 
     private int index;
     private boolean transientlyConsumed;
     private int loadCostWeight;
 
-    public MrResource() {
+    @SuppressWarnings("unused")
+    MrResource() {
+        // required by Jackson
+    }
+
+    public MrResource(long id) {
+        super(id);
     }
 
     public MrResource(int index, boolean transientlyConsumed, int loadCostWeight) {
