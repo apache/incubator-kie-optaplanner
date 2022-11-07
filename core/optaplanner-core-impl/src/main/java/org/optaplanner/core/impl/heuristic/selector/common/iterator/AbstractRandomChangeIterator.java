@@ -1,7 +1,9 @@
 package org.optaplanner.core.impl.heuristic.selector.common.iterator;
 
 import java.util.Iterator;
+import java.util.Objects;
 
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
@@ -37,24 +39,31 @@ public abstract class AbstractRandomChangeIterator<Solution_, Move_ extends Move
         }
         Object entity = entityIterator.next();
 
+        VariableDescriptor<Solution_> variableDescriptor = valueSelector.getVariableDescriptor();
         Iterator<Object> valueIterator = valueSelector.iterator(entity);
         int entityIteratorCreationCount = 0;
-        // This loop is mostly only relevant when the entityIterator or valueIterator is non-random or shuffled
-        while (!valueIterator.hasNext()) {
-            // Try the next entity
-            if (!entityIterator.hasNext()) {
-                entityIterator = entitySelector.iterator();
-                entityIteratorCreationCount++;
-                if (entityIteratorCreationCount >= 2) {
-                    // All entity-value combinations have been tried (some even more than once)
-                    return noUpcomingSelection();
+        while (true) {
+            // This loop is mostly only relevant when the entityIterator or valueIterator is non-random or shuffled
+            while (!valueIterator.hasNext()) {
+                // Try the next entity
+                if (!entityIterator.hasNext()) {
+                    entityIterator = entitySelector.iterator();
+                    entityIteratorCreationCount++;
+                    if (entityIteratorCreationCount >= 2) {
+                        // All entity-value combinations have been tried (some even more than once)
+                        return noUpcomingSelection();
+                    }
                 }
+                entity = entityIterator.next();
+                valueIterator = valueSelector.iterator(entity);
             }
-            entity = entityIterator.next();
-            valueIterator = valueSelector.iterator(entity);
+            Object toValue = valueIterator.next();
+            Object currentValue = variableDescriptor.getValue(entity);
+            if (Objects.equals(toValue, currentValue)) { // Don't generate change move that doesn't do anything.
+                continue;
+            }
+            return newChangeSelection(entity, toValue);
         }
-        Object toValue = valueIterator.next();
-        return newChangeSelection(entity, toValue);
     }
 
     protected abstract Move_ newChangeSelection(Object entity, Object toValue);

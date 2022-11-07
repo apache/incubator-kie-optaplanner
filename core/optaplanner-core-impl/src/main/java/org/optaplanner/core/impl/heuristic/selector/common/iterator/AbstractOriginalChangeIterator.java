@@ -2,7 +2,9 @@ package org.optaplanner.core.impl.heuristic.selector.common.iterator;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
 
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
@@ -27,15 +29,22 @@ public abstract class AbstractOriginalChangeIterator<Solution_, Move_ extends Mo
 
     @Override
     protected Move_ createUpcomingSelection() {
-        while (!valueIterator.hasNext()) {
-            if (!entityIterator.hasNext()) {
-                return noUpcomingSelection();
+        VariableDescriptor<Solution_> variableDescriptor = valueSelector.getVariableDescriptor();
+        while (true) {
+            while (!valueIterator.hasNext()) {
+                if (!entityIterator.hasNext()) {
+                    return noUpcomingSelection();
+                }
+                upcomingEntity = entityIterator.next();
+                valueIterator = valueSelector.iterator(upcomingEntity);
             }
-            upcomingEntity = entityIterator.next();
-            valueIterator = valueSelector.iterator(upcomingEntity);
+            Object toValue = valueIterator.next();
+            Object currentValue = variableDescriptor.getValue(upcomingEntity);
+            if (Objects.equals(toValue, currentValue)) { // Don't generate change move that doesn't do anything.
+                continue;
+            }
+            return newChangeSelection(upcomingEntity, toValue);
         }
-        Object toValue = valueIterator.next();
-        return newChangeSelection(upcomingEntity, toValue);
     }
 
     protected abstract Move_ newChangeSelection(Object entity, Object toValue);
