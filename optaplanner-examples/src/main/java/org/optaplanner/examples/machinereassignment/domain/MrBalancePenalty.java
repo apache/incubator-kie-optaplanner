@@ -10,12 +10,7 @@ public class MrBalancePenalty extends AbstractPersistableJackson {
     private int weight;
 
     @SuppressWarnings("unused")
-    MrBalancePenalty() {
-        // required by Jackson
-    }
-
-    public MrBalancePenalty(long id) {
-        super(id);
+    MrBalancePenalty() { // For Jackson.
     }
 
     public MrBalancePenalty(MrResource originResource, MrResource targetResource, int multiplicand, int weight) {
@@ -37,24 +32,12 @@ public class MrBalancePenalty extends AbstractPersistableJackson {
         return originResource;
     }
 
-    public void setOriginResource(MrResource originResource) {
-        this.originResource = originResource;
-    }
-
     public MrResource getTargetResource() {
         return targetResource;
     }
 
-    public void setTargetResource(MrResource targetResource) {
-        this.targetResource = targetResource;
-    }
-
     public int getMultiplicand() {
         return multiplicand;
-    }
-
-    public void setMultiplicand(int multiplicand) {
-        this.multiplicand = multiplicand;
     }
 
     public int getWeight() {

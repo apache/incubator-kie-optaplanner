@@ -9,8 +9,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class MrLocation extends AbstractPersistableJackson {
 
     @SuppressWarnings("unused")
-    MrLocation() {
-        // required by Jackson
+    MrLocation() { // For Jackson.
     }
 
     public MrLocation(long id) {

@@ -29,8 +29,7 @@ public class MrMachine extends AbstractPersistableJackson implements Labeled {
     private Map<MrMachine, Integer> machineMoveCostMap; // key is toMachine
 
     @SuppressWarnings("unused")
-    MrMachine() {
-        // required by Jackson
+    MrMachine() { // For Jackson.
     }
 
     public MrMachine(long id) {

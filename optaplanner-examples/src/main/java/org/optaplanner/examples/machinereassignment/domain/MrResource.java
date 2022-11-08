@@ -13,8 +13,7 @@ public class MrResource extends AbstractPersistableJackson {
     private int loadCostWeight;
 
     @SuppressWarnings("unused")
-    MrResource() {
-        // required by Jackson
+    MrResource() { // For Jackson.
     }
 
     public MrResource(long id) {
@@ -38,24 +37,12 @@ public class MrResource extends AbstractPersistableJackson {
         return index;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
     public boolean isTransientlyConsumed() {
         return transientlyConsumed;
     }
 
-    public void setTransientlyConsumed(boolean transientlyConsumed) {
-        this.transientlyConsumed = transientlyConsumed;
-    }
-
     public int getLoadCostWeight() {
         return loadCostWeight;
-    }
-
-    public void setLoadCostWeight(int loadCostWeight) {
-        this.loadCostWeight = loadCostWeight;
     }
 
 }

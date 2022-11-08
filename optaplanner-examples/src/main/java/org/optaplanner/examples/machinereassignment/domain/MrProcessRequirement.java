@@ -10,12 +10,7 @@ public class MrProcessRequirement extends AbstractPersistableJackson {
     private long usage;
 
     @SuppressWarnings("unused")
-    MrProcessRequirement() {
-        // required by Jackson
-    }
-
-    public MrProcessRequirement(long id) {
-        super(id);
+    MrProcessRequirement() { // For Jackson.
     }
 
     public MrProcessRequirement(MrProcess process, MrResource resource, long usage) {
@@ -35,24 +30,12 @@ public class MrProcessRequirement extends AbstractPersistableJackson {
         return process;
     }
 
-    public void setProcess(MrProcess process) {
-        this.process = process;
-    }
-
     public MrResource getResource() {
         return resource;
     }
 
-    public void setResource(MrResource resource) {
-        this.resource = resource;
-    }
-
     public long getUsage() {
         return usage;
-    }
-
-    public void setUsage(long usage) {
-        this.usage = usage;
     }
 
 }

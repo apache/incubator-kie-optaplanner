@@ -17,38 +17,29 @@ public class MrProcess extends AbstractPersistableJackson {
     // Order is equal to resourceList so resource.getIndex() can be used
     private List<MrProcessRequirement> processRequirementList;
 
-    @SuppressWarnings("unused")
-    MrProcess() {
-        // required by Jackson
+    public MrProcess() { // For Jackson.
     }
 
-    public MrProcess(long id) {
-        this.id = id;
+    public MrProcess(int moveCost) {
+        this.moveCost = moveCost;
     }
 
     public MrProcess(MrService service) {
         this.service = service;
     }
 
-    public MrProcess(long id, MrService service) {
+    public MrProcess(long id, MrService service, int moveCost) {
         super(id);
         this.service = service;
+        this.moveCost = moveCost;
     }
 
     public MrService getService() {
         return service;
     }
 
-    public void setService(MrService service) {
-        this.service = service;
-    }
-
     public int getMoveCost() {
         return moveCost;
-    }
-
-    public void setMoveCost(int moveCost) {
-        this.moveCost = moveCost;
     }
 
     public List<MrProcessRequirement> getProcessRequirementList() {

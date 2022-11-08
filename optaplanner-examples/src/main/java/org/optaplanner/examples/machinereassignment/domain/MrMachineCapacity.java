@@ -16,12 +16,7 @@ public class MrMachineCapacity extends AbstractPersistableJackson {
     private long safetyCapacity;
 
     @SuppressWarnings("unused")
-    MrMachineCapacity() {
-        // required by Jackson
-    }
-
-    public MrMachineCapacity(long id) {
-        super(id);
+    MrMachineCapacity() { // For Jackson.
     }
 
     public MrMachineCapacity(MrMachine machine, MrResource resource, long maximumCapacity, long safetyCapacity) {
@@ -43,32 +38,16 @@ public class MrMachineCapacity extends AbstractPersistableJackson {
         return machine;
     }
 
-    public void setMachine(MrMachine machine) {
-        this.machine = machine;
-    }
-
     public MrResource getResource() {
         return resource;
-    }
-
-    public void setResource(MrResource resource) {
-        this.resource = resource;
     }
 
     public long getMaximumCapacity() {
         return maximumCapacity;
     }
 
-    public void setMaximumCapacity(long maximumCapacity) {
-        this.maximumCapacity = maximumCapacity;
-    }
-
     public long getSafetyCapacity() {
         return safetyCapacity;
-    }
-
-    public void setSafetyCapacity(long safetyCapacity) {
-        this.safetyCapacity = safetyCapacity;
     }
 
     @JsonIgnore

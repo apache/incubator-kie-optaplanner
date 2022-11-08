@@ -16,8 +16,7 @@ public class MrService extends AbstractPersistableJackson {
     private int locationSpread;
 
     @SuppressWarnings("unused")
-    MrService() {
-        // required by Jackson
+    MrService() { // For Jackson.
     }
 
     public MrService(long id) {

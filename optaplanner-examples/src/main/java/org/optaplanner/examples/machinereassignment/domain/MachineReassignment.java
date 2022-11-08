@@ -30,8 +30,7 @@ public class MachineReassignment extends AbstractPersistableJackson {
 
     private List<MrProcessAssignment> processAssignmentList;
 
-    MachineReassignment() {
-        // required by Jackson
+    MachineReassignment() { // For Jackson.
     }
 
     public MachineReassignment(long id) {

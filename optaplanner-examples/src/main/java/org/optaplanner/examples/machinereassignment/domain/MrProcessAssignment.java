@@ -12,32 +12,25 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @PlanningEntity(difficultyComparatorClass = MrProcessAssignmentDifficultyComparator.class)
 public class MrProcessAssignment extends AbstractPersistableJackson {
 
+    public static MrProcessAssignment withOriginalMachine(long id, MrProcess process, MrMachine originalMachine) {
+        return new MrProcessAssignment(id, process, originalMachine, null);
+    }
+
+    public static MrProcessAssignment withTargetMachine(long id, MrProcess process, MrMachine targetMachine) {
+        return new MrProcessAssignment(id, process, null, targetMachine);
+    }
+
     private MrProcess process;
     private MrMachine originalMachine;
     private MrMachine machine;
 
     @SuppressWarnings("unused")
-    MrProcessAssignment() {
-        // required by Jackson
-    }
-
-    public MrProcessAssignment(long id) {
-        super(id);
-    }
-
-    public MrProcessAssignment(MrProcess process) {
-        this.process = process;
+    MrProcessAssignment() { // For Jackson.
     }
 
     public MrProcessAssignment(long id, MrProcess process) {
         super(id);
         this.process = process;
-    }
-
-    public MrProcessAssignment(long id, MrProcess process, MrMachine machine) {
-        super(id);
-        this.process = process;
-        this.machine = machine;
     }
 
     public MrProcessAssignment(long id, MrProcess process, MrMachine originalMachine, MrMachine machine) {
@@ -49,10 +42,6 @@ public class MrProcessAssignment extends AbstractPersistableJackson {
 
     public MrProcess getProcess() {
         return process;
-    }
-
-    public void setProcess(MrProcess process) {
-        this.process = process;
     }
 
     public MrMachine getOriginalMachine() {

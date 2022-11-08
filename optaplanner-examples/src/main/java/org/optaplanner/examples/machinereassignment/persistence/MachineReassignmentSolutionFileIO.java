@@ -19,6 +19,10 @@ public class MachineReassignmentSolutionFileIO extends JacksonSolutionFileIO<Mac
     @Override
     public MachineReassignment read(File inputSolutionFile) {
         MachineReassignment machineReassignment = super.read(inputSolutionFile);
+        /*
+         * Replace the duplicate MrMachine instances in the machineMoveCostMap by references to instances from
+         * the machineList.
+         */
         Map<Long, MrMachine> machinesById = machineReassignment.getMachineList().stream()
                 .collect(Collectors.toMap(MrMachine::getId, Function.identity()));
         for (MrMachine machine : machineReassignment.getMachineList()) {

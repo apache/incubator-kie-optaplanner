@@ -39,7 +39,7 @@ class MachineReassignmentConstraintProviderTest
     void maximumCapacity(ConstraintVerifier<MachineReassignmentConstraintProvider, MachineReassignment> constraintVerifier) {
         MrResource resource1 = new MrResource(0, false, 1);
         MrMachine machine = new MrMachine(1L);
-        MrProcess process = new MrProcess(1L);
+        MrProcess process = new MrProcess();
         MrProcessRequirement processRequirement = new MrProcessRequirement(process, resource1, 30L);
         process.setProcessRequirementList(Arrays.asList(processRequirement));
 
@@ -63,7 +63,7 @@ class MachineReassignmentConstraintProviderTest
         MrMachineCapacity machineCapacityTransientlyConsumed = new MrMachineCapacity(machine1,
                 transientlyConsumerResource, 35L, 30L);
 
-        MrProcess process = new MrProcess(1L);
+        MrProcess process = new MrProcess();
         MrProcessRequirement processRequirement1 = new MrProcessRequirement(process, normalResource, 30L);
         MrProcessRequirement processRequirement2 = new MrProcessRequirement(process, transientlyConsumerResource, 50L);
         process.setProcessRequirementList(Arrays.asList(processRequirement1, processRequirement2));
@@ -91,10 +91,10 @@ class MachineReassignmentConstraintProviderTest
         MrProcess process4 = new MrProcess(service);
         MrProcess process5 = new MrProcess(service);
 
-        MrProcessAssignment process1AssignmentToMachine1 = new MrProcessAssignment(1L, process1, machine1);
-        MrProcessAssignment process2AssignmentToMachine1 = new MrProcessAssignment(2L, process2, machine1);
-        MrProcessAssignment process3AssignmentToMachine1 = new MrProcessAssignment(3L, process3, machine1);
-        MrProcessAssignment process4AssignmentToMachine2 = new MrProcessAssignment(4L, process4, machine2);
+        MrProcessAssignment process1AssignmentToMachine1 = MrProcessAssignment.withTargetMachine(1L, process1, machine1);
+        MrProcessAssignment process2AssignmentToMachine1 = MrProcessAssignment.withTargetMachine(2L, process2, machine1);
+        MrProcessAssignment process3AssignmentToMachine1 = MrProcessAssignment.withTargetMachine(3L, process3, machine1);
+        MrProcessAssignment process4AssignmentToMachine2 = MrProcessAssignment.withTargetMachine(4L, process4, machine2);
         MrProcessAssignment process5AssignmentToNoMachine = new MrProcessAssignment(5L, process5);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::serviceConflict)
@@ -123,9 +123,9 @@ class MachineReassignmentConstraintProviderTest
         MrProcess process3 = new MrProcess(service);
 
         // the service is spread across 3 machines in 2 different locations
-        MrProcessAssignment process1AssignmentToMachine1 = new MrProcessAssignment(1L, process1, machine1);
-        MrProcessAssignment process2AssignmentToMachine2 = new MrProcessAssignment(2L, process2, machine2);
-        MrProcessAssignment process3AssignmentToMachine3 = new MrProcessAssignment(3L, process3, machine3);
+        MrProcessAssignment process1AssignmentToMachine1 = MrProcessAssignment.withTargetMachine(1L, process1, machine1);
+        MrProcessAssignment process2AssignmentToMachine2 = MrProcessAssignment.withTargetMachine(2L, process2, machine2);
+        MrProcessAssignment process3AssignmentToMachine3 = MrProcessAssignment.withTargetMachine(3L, process3, machine3);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::serviceLocationSpread)
                 .given(service, location1, location2, machine1, machine2, machine3, process1, process2, process3,
@@ -156,9 +156,9 @@ class MachineReassignmentConstraintProviderTest
         MrProcess process2 = new MrProcess(service2);
         MrProcess process3 = new MrProcess(service3);
 
-        MrProcessAssignment process1AssignmentToMachine1 = new MrProcessAssignment(1L, process1, machine1);
-        MrProcessAssignment process2AssignmentToMachine2 = new MrProcessAssignment(2L, process2, machine2);
-        MrProcessAssignment process3AssignmentToMachine3 = new MrProcessAssignment(3L, process3, machine3);
+        MrProcessAssignment process1AssignmentToMachine1 = MrProcessAssignment.withTargetMachine(1L, process1, machine1);
+        MrProcessAssignment process2AssignmentToMachine2 = MrProcessAssignment.withTargetMachine(2L, process2, machine2);
+        MrProcessAssignment process3AssignmentToMachine3 = MrProcessAssignment.withTargetMachine(3L, process3, machine3);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::serviceDependency)
                 .given(neighborhood1, neighborhood2, machine1, machine2, machine3, service1, service2, service3,
@@ -176,7 +176,7 @@ class MachineReassignmentConstraintProviderTest
         MrMachineCapacity machineCapacity1 = new MrMachineCapacity(machine, resource1, 20L, 10L);
         MrMachineCapacity machineCapacity2 = new MrMachineCapacity(machine, resource2, 20L, 10L);
 
-        MrProcess process = new MrProcess(1L);
+        MrProcess process = new MrProcess();
         MrProcessRequirement processRequirement1 = new MrProcessRequirement(process, resource1, 15L);
         MrProcessRequirement processRequirement2 = new MrProcessRequirement(process, resource2, 15L);
         process.setProcessRequirementList(Arrays.asList(processRequirement1, processRequirement2));
@@ -198,14 +198,9 @@ class MachineReassignmentConstraintProviderTest
         MrMachine machine1 = new MrMachine(1L);
         MrMachine machine2 = new MrMachine(1L);
 
-        MrProcess process = new MrProcess(1L);
-        process.setMoveCost(2);
+        MrProcess process = new MrProcess(2);
         MrProcessAssignment processAssignment = new MrProcessAssignment(0L, process, machine1, machine2);
-
-        MrProcessAssignment processAssignment2 = new MrProcessAssignment(1L);
-        processAssignment2.setProcess(process);
-        processAssignment2.setOriginalMachine(machine1);
-
+        MrProcessAssignment processAssignment2 = MrProcessAssignment.withOriginalMachine(1L, process, machine1);
         MrProcessAssignment processAssignment3 = new MrProcessAssignment(1L, process, machine1, machine1);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::processMoveCost)
@@ -225,9 +220,9 @@ class MachineReassignmentConstraintProviderTest
         MrService service1 = new MrService(1L);
         MrService service2 = new MrService(2L);
         // service2 has only one process moving, while service1 has two processes moving => wins
-        MrProcess process1 = new MrProcess(0L, service1);
-        MrProcess process2 = new MrProcess(1L, service1);
-        MrProcess process3 = new MrProcess(2L, service2);
+        MrProcess process1 = new MrProcess(service1);
+        MrProcess process2 = new MrProcess(service1);
+        MrProcess process3 = new MrProcess(service2);
 
         MrProcessAssignment processAssignment1 = new MrProcessAssignment(0L, process1, machine1, machine2);
         MrProcessAssignment processAssignment2 = new MrProcessAssignment(1L, process2, machine1, machine2);
@@ -255,9 +250,9 @@ class MachineReassignmentConstraintProviderTest
         costMapFromMachine2.put(machine1, 0);
         machine2.setMachineMoveCostMap(costMapFromMachine2);
 
-        MrProcess process1 = new MrProcess(0L);
-        MrProcess process2 = new MrProcess(1L);
-        MrProcess process3 = new MrProcess(2L);
+        MrProcess process1 = new MrProcess();
+        MrProcess process2 = new MrProcess();
+        MrProcess process3 = new MrProcess();
 
         MrProcessAssignment processAssignment1 = new MrProcessAssignment(0L, process1, machine1, machine2);
         MrProcessAssignment processAssignment2 = new MrProcessAssignment(1L, process2, machine1, machine2);
@@ -293,21 +288,21 @@ class MachineReassignmentConstraintProviderTest
         MrMachineCapacity machine2Capacity3 = new MrMachineCapacity(machine2, disk, 7000L, 1L);
         machine2.setMachineCapacityList(Arrays.asList(machine2Capacity1, machine2Capacity2, machine2Capacity3));
 
-        MrProcess process1 = new MrProcess(0L);
+        MrProcess process1 = new MrProcess();
         MrProcessRequirement process1Requirement1 = new MrProcessRequirement(process1, cpu, 10L);
         MrProcessRequirement process1Requirement2 = new MrProcessRequirement(process1, mem, 200L);
         MrProcessRequirement process1Requirement3 = new MrProcessRequirement(process1, disk, 3000L);
         process1.setProcessRequirementList(Arrays.asList(process1Requirement1, process1Requirement2, process1Requirement3));
 
-        MrProcessAssignment processAssignment1 = new MrProcessAssignment(1L, process1, machine1);
+        MrProcessAssignment processAssignment1 = MrProcessAssignment.withTargetMachine(1L, process1, machine1);
 
-        MrProcess process2 = new MrProcess(1L);
+        MrProcess process2 = new MrProcess();
         MrProcessRequirement process2Requirement1 = new MrProcessRequirement(process2, cpu, 8L); // 20 - 18 = 2
         MrProcessRequirement process2Requirement2 = new MrProcessRequirement(process2, mem, 95L); // 300 - 295 = 5. Needs 6, lacks 1
         MrProcessRequirement process2Requirement3 = new MrProcessRequirement(process2, disk, 997L); // 4000 - 3997 = 3. Needs 10, lacks 7
         process2.setProcessRequirementList(Arrays.asList(process2Requirement1, process2Requirement2, process2Requirement3));
 
-        MrProcessAssignment processAssignment2 = new MrProcessAssignment(2L, process2, machine1);
+        MrProcessAssignment processAssignment2 = MrProcessAssignment.withTargetMachine(2L, process2, machine1);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::balanceCost)
                 .given(cpu, mem, disk, cpuMemBalance, cpuDiskBalance, machine1, machine2,
@@ -332,13 +327,13 @@ class MachineReassignmentConstraintProviderTest
         MrMachineCapacity machineCapacityDisk = new MrMachineCapacity(2L, machine, disk, 200L, 100L);
         machine.setMachineCapacityList(Arrays.asList(machineCapacityCpu, machineCapacityMem, machineCapacityDisk));
 
-        MrProcess process = new MrProcess(0L);
+        MrProcess process = new MrProcess();
         MrProcessRequirement processRequirementCpu = new MrProcessRequirement(0L, process, cpu, 1L);
         MrProcessRequirement processRequirementMem = new MrProcessRequirement(1L, process, mem, 4L);
         MrProcessRequirement processRequirementDisk = new MrProcessRequirement(2L, process, disk, 100L);
         process.setProcessRequirementList(Arrays.asList(processRequirementCpu, processRequirementMem, processRequirementDisk));
 
-        MrProcessAssignment processAssignment = new MrProcessAssignment(1L, process, machine);
+        MrProcessAssignment processAssignment = MrProcessAssignment.withTargetMachine(1L, process, machine);
 
         constraintVerifier.verifyThat(MachineReassignmentConstraintProvider::balanceCost)
                 .given(cpu, mem, disk, balancePenaltyCpuMem, machine, machineCapacityCpu, machineCapacityMem,

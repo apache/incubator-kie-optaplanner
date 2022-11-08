@@ -9,12 +9,18 @@ public class MrGlobalPenaltyInfo extends AbstractPersistableJackson {
     private int machineMoveCostWeight;
 
     @SuppressWarnings("unused")
-    MrGlobalPenaltyInfo() {
-        // required by Jackson
+    MrGlobalPenaltyInfo() { // For Jackson.
     }
 
     public MrGlobalPenaltyInfo(long id) {
         super(id);
+    }
+
+    public MrGlobalPenaltyInfo(long id, int processMoveCostWeight, int serviceMoveCostWeight, int machineMoveCostWeight) {
+        super(id);
+        this.processMoveCostWeight = processMoveCostWeight;
+        this.serviceMoveCostWeight = serviceMoveCostWeight;
+        this.machineMoveCostWeight = machineMoveCostWeight;
     }
 
     public int getProcessMoveCostWeight() {

@@ -9,8 +9,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 public class MrNeighborhood extends AbstractPersistableJackson {
 
     @SuppressWarnings("unused")
-    MrNeighborhood() {
-        // required by Jackson
+    MrNeighborhood() { // For Jackson.
     }
 
     public MrNeighborhood(long id) {
