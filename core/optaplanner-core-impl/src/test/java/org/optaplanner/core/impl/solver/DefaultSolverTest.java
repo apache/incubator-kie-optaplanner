@@ -35,8 +35,13 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
+import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
+import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchType;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
@@ -820,13 +825,30 @@ class DefaultSolverTest {
         assertThat(solution.getScore().isSolutionInitialized()).isTrue();
     }
 
+    /**
+     * Verifies <a href="https://issues.redhat.com/browse/PLANNER-2798">PLANNER-2798</a>.
+     */
     @Test
     void solveWithMultipleChainedPlanningEntities() {
         SolverConfig solverConfig = new SolverConfig()
                 .withSolutionClass(TestdataChainedMultiEntitySolution.class)
                 .withEntityClasses(TestdataChainedBrownEntity.class, TestdataChainedGreenEntity.class)
                 .withEasyScoreCalculatorClass(DummySimpleScoreEasyScoreCalculator.class)
-                .withTerminationConfig(new TerminationConfig().withBestScoreLimit("0"));
+                .withTerminationConfig(new TerminationConfig().withBestScoreLimit("0"))
+                .withPhases(
+                        // Each planning entity class needs a separate CH phase.
+                        new ConstructionHeuristicPhaseConfig().withEntityPlacerConfig(new QueuedEntityPlacerConfig()
+                                .withEntitySelectorConfig(new EntitySelectorConfig(TestdataChainedBrownEntity.class))),
+                        new ConstructionHeuristicPhaseConfig().withEntityPlacerConfig(new QueuedEntityPlacerConfig()
+                                .withEntitySelectorConfig(new EntitySelectorConfig(TestdataChainedGreenEntity.class))),
+                        new LocalSearchPhaseConfig().withMoveSelectorConfig(new UnionMoveSelectorConfig().withMoveSelectors(
+                                new ChangeMoveSelectorConfig(),
+                                new SwapMoveSelectorConfig(),
+                                // Include TailChainSwapMoveSelector, which uses ExternalizedAnchorVariableSupply.
+                                new TailChainSwapMoveSelectorConfig().withEntitySelectorConfig(
+                                        new EntitySelectorConfig(TestdataChainedBrownEntity.class)),
+                                new TailChainSwapMoveSelectorConfig().withEntitySelectorConfig(
+                                        new EntitySelectorConfig(TestdataChainedGreenEntity.class)))));
         SolverFactory<TestdataChainedMultiEntitySolution> solverFactory = SolverFactory.create(solverConfig);
         Solver<TestdataChainedMultiEntitySolution> solver = solverFactory.buildSolver();
 
