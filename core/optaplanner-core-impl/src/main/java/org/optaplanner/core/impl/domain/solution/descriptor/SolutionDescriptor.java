@@ -927,10 +927,8 @@ public class SolutionDescriptor<Solution_> {
         }
     }
 
-    public void visitEntitiesByEntityClass(Solution_ solution, Class<?> entityClass, Consumer<Object> visitor,
-            Consumer<Collection<Object>> collectionVisitor) {
+    public void visitEntitiesByEntityClass(Solution_ solution, Class<?> entityClass, Consumer<Object> visitor) {
         for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
-            // TODO test this condition
             if (entityClass.isAssignableFrom(entityMemberAccessor.getType())) {
                 Object entity = extractMemberObject(entityMemberAccessor, solution);
                 if (entity != null) {
@@ -946,36 +944,12 @@ public class SolutionDescriptor<Solution_> {
                     entityCollectionMemberAccessor.getGenericType(),
                     null,
                     entityCollectionMemberAccessor.getName());
-            // TODO test this condition
             if (entityClass.isAssignableFrom(typeParameter)) {
                 Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution,
                         false);
-                collectionVisitor.accept(entityCollection);
+                entityCollection.forEach(visitor);
             }
         }
-    }
-
-    public List<Object> getEntityListByEntityClass(Solution_ solution, Class<?> entityClass) {
-        List<Object> entityList = new ArrayList<>();
-        for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
-            if (entityMemberAccessor.getType().isAssignableFrom(entityClass)) {
-                Object entity = extractMemberObject(entityMemberAccessor, solution);
-                if (entity != null && entityClass.isInstance(entity)) {
-                    entityList.add(entity);
-                }
-            }
-        }
-        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
-            // TODO if (entityCollectionPropertyAccessor.getPropertyType().getElementType().isAssignableFrom(entityClass)) {
-            Collection<Object> entityCollection = extractMemberCollectionOrArray(entityCollectionMemberAccessor, solution,
-                    false);
-            for (Object entity : entityCollection) {
-                if (entityClass.isInstance(entity)) {
-                    entityList.add(entity);
-                }
-            }
-        }
-        return entityList;
     }
 
     /**
