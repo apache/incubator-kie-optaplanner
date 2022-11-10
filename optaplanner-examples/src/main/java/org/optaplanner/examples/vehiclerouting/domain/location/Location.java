@@ -1,5 +1,6 @@
 package org.optaplanner.examples.vehiclerouting.domain.location;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.location.segmented.HubSegmentLocation;
@@ -23,7 +24,11 @@ public abstract class Location extends AbstractPersistable {
     protected double latitude;
     protected double longitude;
 
-    public Location() {
+    public Location() { // For Jackson.
+    }
+
+    public Location(long id) {
+        super(id);
     }
 
     public Location(long id, double latitude, double longitude) {
@@ -67,8 +72,10 @@ public abstract class Location extends AbstractPersistable {
      * @param location never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
+    @JsonIgnore
     public abstract long getDistanceTo(Location location);
 
+    @JsonIgnore
     public double getAirDistanceDoubleTo(Location location) {
         // Implementation specified by TSPLIB http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/
         // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
@@ -84,6 +91,7 @@ public abstract class Location extends AbstractPersistable {
      * @param location never null
      * @return in Cartesian coordinates
      */
+    @JsonIgnore
     public double getAngle(Location location) {
         // Euclidean distance (Pythagorean theorem) - not correct when the surface is a sphere
         double latitudeDifference = location.latitude - latitude;
