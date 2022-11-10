@@ -125,21 +125,30 @@ class MutationCounterTest {
 
         int entityListSize = 3;
         int subEntityListSize = 7;
+        int rawEntityListSize = 17;
 
-        TestdataExtendedEntitySolution a = TestdataExtendedEntitySolution.generateSolution(entityListSize, subEntityListSize);
+        TestdataExtendedEntitySolution a =
+                TestdataExtendedEntitySolution.generateSolution(entityListSize, subEntityListSize, rawEntityListSize);
         a.setValueList(valueList);
         a.getEntity().setValue(val1);
         a.getSubEntity().setValue(val1);
         a.getEntityList().forEach(e -> e.setValue(val1));
         a.getSubEntityList().forEach(e -> e.setValue(val1));
+        for (Object o : a.getRawEntityList()) {
+            ((TestdataEntity) o).setValue(val1);
+        }
 
-        TestdataExtendedEntitySolution b = TestdataExtendedEntitySolution.generateSolution(entityListSize, subEntityListSize);
+        TestdataExtendedEntitySolution b =
+                TestdataExtendedEntitySolution.generateSolution(entityListSize, subEntityListSize, rawEntityListSize);
         b.setValueList(valueList);
         b.getEntity().setValue(val2);
         b.getSubEntity().setValue(val2);
         b.getEntityList().forEach(e -> e.setValue(val2));
         b.getSubEntityList().forEach(e -> e.setValue(val2));
+        for (Object o : b.getRawEntityList()) {
+            ((TestdataEntity) o).setValue(val2);
+        }
 
-        assertThat(mutationCounter.countMutations(a, b)).isEqualTo(entityListSize + subEntityListSize + 2);
+        assertThat(mutationCounter.countMutations(a, b)).isEqualTo(entityListSize + subEntityListSize + rawEntityListSize + 2);
     }
 }

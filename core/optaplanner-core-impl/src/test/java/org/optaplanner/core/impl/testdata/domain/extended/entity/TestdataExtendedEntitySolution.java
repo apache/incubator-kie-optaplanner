@@ -32,7 +32,8 @@ public class TestdataExtendedEntitySolution extends TestdataSolution {
      * @param subEntityListSize number of subEntities in subEntityList
      * @return solution
      */
-    public static TestdataExtendedEntitySolution generateSolution(int entityListSize, int subEntityListSize) {
+    public static TestdataExtendedEntitySolution generateSolution(
+            int entityListSize, int subEntityListSize, int rawEntityListSize) {
         TestdataExtendedEntitySolution solution = new TestdataExtendedEntitySolution("solution");
 
         solution.setEntity(new TestdataEntity("entity-singleton"));
@@ -47,12 +48,18 @@ public class TestdataExtendedEntitySolution extends TestdataSolution {
                 .mapToObj(i -> "subEntity" + i)
                 .map(TestdataUnannotatedExtendedEntity::new)
                 .collect(Collectors.toList()));
+
+        solution.setRawEntityList(IntStream.range(0, rawEntityListSize)
+                .mapToObj(i -> "subEntity" + i + "-R")
+                .map(TestdataUnannotatedExtendedEntity::new)
+                .collect(Collectors.toList()));
         return solution;
     }
 
     private TestdataEntity entity;
     private TestdataUnannotatedExtendedEntity subEntity;
     private List<TestdataUnannotatedExtendedEntity> subEntityList;
+    private List rawEntityList;
 
     public TestdataExtendedEntitySolution() {
     }
@@ -86,5 +93,14 @@ public class TestdataExtendedEntitySolution extends TestdataSolution {
 
     public void setSubEntityList(List<TestdataUnannotatedExtendedEntity> subEntityList) {
         this.subEntityList = subEntityList;
+    }
+
+    @PlanningEntityCollectionProperty
+    public List getRawEntityList() {
+        return rawEntityList;
+    }
+
+    public void setRawEntityList(List rawEntityList) {
+        this.rawEntityList = rawEntityList;
     }
 }
