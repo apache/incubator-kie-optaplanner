@@ -158,10 +158,9 @@ class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
         HardSoftBigDecimalScore manualZero = HardSoftBigDecimalScore.of(BigDecimal.ZERO, BigDecimal.ZERO);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
-            softly.assertThatObject(manualZero.isZero()).isEqualTo(true);
+            softly.assertThat(manualZero.isZero()).isTrue();
             HardSoftBigDecimalScore manualOne = HardSoftBigDecimalScore.of(BigDecimal.ZERO, BigDecimal.ONE);
-            softly.assertThat(manualOne.isZero())
-                    .isEqualTo(false);
+            softly.assertThat(manualOne.isZero()).isFalse();
         });
     }
 

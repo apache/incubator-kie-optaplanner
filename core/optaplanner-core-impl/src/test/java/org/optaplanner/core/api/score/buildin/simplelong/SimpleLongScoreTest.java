@@ -98,10 +98,9 @@ class SimpleLongScoreTest extends AbstractScoreTest {
         SimpleLongScore manualZero = SimpleLongScore.of(0);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
-            softly.assertThatObject(manualZero.isZero()).isEqualTo(true);
+            softly.assertThat(manualZero.isZero()).isTrue();
             SimpleLongScore manualOne = SimpleLongScore.of(1);
-            softly.assertThat(manualOne.isZero())
-                    .isEqualTo(false);
+            softly.assertThat(manualOne.isZero()).isFalse();
         });
     }
 

@@ -220,10 +220,9 @@ class BendableBigDecimalScoreTest extends AbstractScoreTest {
         BendableBigDecimalScore manualZero = BendableBigDecimalScore.zero(0, 1);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
-            softly.assertThatObject(manualZero.isZero()).isEqualTo(true);
+            softly.assertThat(manualZero.isZero()).isTrue();
             BendableBigDecimalScore manualOne = BendableBigDecimalScore.ofSoft(0, 1, 0, BigDecimal.ONE);
-            softly.assertThat(manualOne.isZero())
-                    .isEqualTo(false);
+            softly.assertThat(manualOne.isZero()).isFalse();
         });
     }
 

@@ -128,10 +128,9 @@ class HardSoftLongScoreTest extends AbstractScoreTest {
         HardSoftLongScore manualZero = HardSoftLongScore.of(0, 0);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
-            softly.assertThatObject(manualZero.isZero()).isEqualTo(true);
+            softly.assertThat(manualZero.isZero()).isTrue();
             HardSoftLongScore manualOne = HardSoftLongScore.of(0, 1);
-            softly.assertThat(manualOne.isZero())
-                    .isEqualTo(false);
+            softly.assertThat(manualOne.isZero()).isFalse();
         });
     }
 

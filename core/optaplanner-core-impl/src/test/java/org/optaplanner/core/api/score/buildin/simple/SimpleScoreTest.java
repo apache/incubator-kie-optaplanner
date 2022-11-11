@@ -98,10 +98,9 @@ class SimpleScoreTest extends AbstractScoreTest {
         SimpleScore manualZero = SimpleScore.of(0);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(manualZero.zero()).isEqualTo(manualZero);
-            softly.assertThatObject(manualZero.isZero()).isEqualTo(true);
+            softly.assertThat(manualZero.isZero()).isTrue();
             SimpleScore manualOne = SimpleScore.of(1);
-            softly.assertThat(manualOne.isZero())
-                    .isEqualTo(false);
+            softly.assertThat(manualOne.isZero()).isFalse();
         });
     }
 
