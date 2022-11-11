@@ -191,13 +191,13 @@ class CompositeMoveTest {
         NoChangeMove<TestdataSolution> second = new NoChangeMove<>();
         Move<TestdataSolution> move = CompositeMove.buildMove(Arrays.asList(first, second));
         Move<TestdataSolution> other = CompositeMove.buildMove(first, second);
-        assertThat(move.equals(other)).isTrue();
+        assertThat(move).isEqualTo(other);
 
         move = CompositeMove.buildMove(first, second);
         other = CompositeMove.buildMove(second, first);
-        assertThat(move.equals(other)).isFalse();
-        assertThat(move.equals(new DummyMove())).isFalse();
-        assertThat(move.equals(move)).isTrue();
+        assertThat(move).isNotEqualTo(other);
+        assertThat(move).isNotEqualTo(new DummyMove());
+        assertThat(move).isEqualTo(move);
     }
 
     @Test

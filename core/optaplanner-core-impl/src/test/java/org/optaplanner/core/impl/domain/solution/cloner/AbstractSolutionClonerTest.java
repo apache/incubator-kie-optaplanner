@@ -565,11 +565,10 @@ public abstract class AbstractSolutionClonerTest {
 
         Set<TestdataSetBasedEntity> cloneEntitySet = clone.getEntitySet();
         assertThat(cloneEntitySet).isNotSameAs(originalEntitySet);
-        boolean b1 = cloneEntitySet instanceof SortedSet;
-        assertThat(b1).isTrue();
-        assertThat(((SortedSet) cloneEntitySet).comparator()).isSameAs(entityComparator);
+        assertThat(cloneEntitySet).isInstanceOf(SortedSet.class);
+        assertThat(((SortedSet<?>) cloneEntitySet).comparator()).isSameAs(entityComparator);
         assertCode("solution", clone);
-        assertThat(cloneEntitySet.size()).isEqualTo(4);
+        assertThat(cloneEntitySet).hasSize(4);
         Iterator<TestdataSetBasedEntity> it = cloneEntitySet.iterator();
         // Reverse order because they got sorted
         TestdataSetBasedEntity cloneD = it.next();
