@@ -30,9 +30,9 @@ class SimpleBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     void testToString() {
-        assertThat(SimpleBigDecimalScore.of(new BigDecimal("0.0")).toString()).isEqualTo("0.0");
-        assertThat(SimpleBigDecimalScore.of(new BigDecimal("-147.2")).toString()).isEqualTo("-147.2");
-        assertThat(SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-147.2")).toString()).isEqualTo("-7init/-147.2");
+        assertThat(SimpleBigDecimalScore.of(new BigDecimal("0.0"))).hasToString("0.0");
+        assertThat(SimpleBigDecimalScore.of(new BigDecimal("-147.2"))).hasToString("-147.2");
+        assertThat(SimpleBigDecimalScore.ofUninitialized(-7, new BigDecimal("-147.2"))).hasToString("-7init/-147.2");
     }
 
     @Test

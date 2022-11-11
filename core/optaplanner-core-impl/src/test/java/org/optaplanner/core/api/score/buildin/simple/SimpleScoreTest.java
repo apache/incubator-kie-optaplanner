@@ -27,9 +27,9 @@ class SimpleScoreTest extends AbstractScoreTest {
 
     @Test
     void testToString() {
-        assertThat(SimpleScore.of(0).toString()).isEqualTo("0");
-        assertThat(SimpleScore.of(-147).toString()).isEqualTo("-147");
-        assertThat(SimpleScore.ofUninitialized(-7, -147).toString()).isEqualTo("-7init/-147");
+        assertThat(SimpleScore.of(0)).hasToString("0");
+        assertThat(SimpleScore.of(-147)).hasToString("-147");
+        assertThat(SimpleScore.ofUninitialized(-7, -147)).hasToString("-7init/-147");
     }
 
     @Test

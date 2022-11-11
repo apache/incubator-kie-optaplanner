@@ -27,9 +27,9 @@ class SimpleLongScoreTest extends AbstractScoreTest {
 
     @Test
     void testToString() {
-        assertThat(SimpleLongScore.of(0).toString()).isEqualTo("0");
-        assertThat(SimpleLongScore.of(-147L).toString()).isEqualTo("-147");
-        assertThat(SimpleLongScore.ofUninitialized(-7, -147L).toString()).isEqualTo("-7init/-147");
+        assertThat(SimpleLongScore.of(0)).hasToString("0");
+        assertThat(SimpleLongScore.of(-147L)).hasToString("-147");
+        assertThat(SimpleLongScore.ofUninitialized(-7, -147L)).hasToString("-7init/-147");
     }
 
     @Test

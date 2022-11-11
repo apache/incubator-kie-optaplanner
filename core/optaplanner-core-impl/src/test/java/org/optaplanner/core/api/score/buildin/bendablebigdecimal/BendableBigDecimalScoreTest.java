@@ -90,18 +90,18 @@ class BendableBigDecimalScoreTest extends AbstractScoreTest {
     @Test
     void testToString() {
         assertThat(scoreDefinitionHSS.createScore(
-                BigDecimal.valueOf(0), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toString())
-                        .isEqualTo("[0]hard/[-258/-369]soft");
+                BigDecimal.valueOf(0), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)))
+                        .hasToString("[0]hard/[-258/-369]soft");
         assertThat(scoreDefinitionHSS.createScore(
-                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toString())
-                        .isEqualTo("[-147]hard/[-258/-369]soft");
+                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)))
+                        .hasToString("[-147]hard/[-258/-369]soft");
         assertThat(new BendableBigDecimalScoreDefinition(2, 1).createScore(
-                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toString())
-                        .isEqualTo("[-147/-258]hard/[-369]soft");
+                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)))
+                        .hasToString("[-147/-258]hard/[-369]soft");
         assertThat(scoreDefinitionHSS.createScoreUninitialized(-7,
-                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toString())
-                        .isEqualTo("-7init/[-147]hard/[-258/-369]soft");
-        assertThat(new BendableBigDecimalScoreDefinition(0, 0).createScore().toString()).isEqualTo("[]hard/[]soft");
+                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)))
+                        .hasToString("-7init/[-147]hard/[-258/-369]soft");
+        assertThat(new BendableBigDecimalScoreDefinition(0, 0).createScore()).hasToString("[]hard/[]soft");
     }
 
     @Test
