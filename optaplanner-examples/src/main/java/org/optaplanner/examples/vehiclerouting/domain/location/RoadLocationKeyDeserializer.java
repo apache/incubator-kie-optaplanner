@@ -1,8 +1,9 @@
 package org.optaplanner.examples.vehiclerouting.domain.location;
 
+import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingSolutionFileIO;
+
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.KeyDeserializer;
-import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingSolutionFileIO;
 
 /**
  * @see VehicleRoutingSolutionFileIO

@@ -1,11 +1,11 @@
 package org.optaplanner.examples.vehiclerouting.domain.location;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.domain.location.segmented.HubSegmentLocation;
 import org.optaplanner.examples.vehiclerouting.domain.location.segmented.RoadSegmentLocation;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
