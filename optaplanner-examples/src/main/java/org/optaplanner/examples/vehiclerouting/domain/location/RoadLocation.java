@@ -2,6 +2,8 @@ package org.optaplanner.examples.vehiclerouting.domain.location;
 
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -10,6 +12,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * The cost itself might be the distance in km, the travel time, the fuel usage or a weighted function of any of those.
  * Used with {@link DistanceType#ROAD_DISTANCE}.
  */
+@JsonIdentityInfo(scope = RoadLocation.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class RoadLocation extends Location {
 
     // Prefer Map over array or List because customers might be added and removed in real-time planning.

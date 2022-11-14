@@ -12,5 +12,6 @@ final class RoadLocationKeySerializer extends JsonSerializer<RoadLocation> {
     public void serialize(RoadLocation roadLocation, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)
             throws IOException {
         jsonGenerator.writeFieldId(roadLocation.getId());
+        jsonGenerator.writeTypeId(roadLocation);
     }
 }

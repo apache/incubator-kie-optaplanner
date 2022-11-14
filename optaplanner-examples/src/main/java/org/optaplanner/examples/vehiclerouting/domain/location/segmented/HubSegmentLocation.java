@@ -29,8 +29,8 @@ public class HubSegmentLocation extends Location {
         super(id, latitude, longitude);
     }
 
-    @JsonSerialize(keyUsing = HubSegmentLocationKeySerializer.class)
-    @JsonDeserialize(keyUsing = HubSegmentLocationKeyDeserializer.class)
+    @JsonSerialize(keyUsing = RoadSegmentLocationKeySerializer.class)
+    @JsonDeserialize(keyUsing = RoadSegmentLocationKeyDeserializer.class)
     public Map<RoadSegmentLocation, Double> getNearbyTravelDistanceMap() {
         return nearbyTravelDistanceMap;
     }
@@ -39,8 +39,8 @@ public class HubSegmentLocation extends Location {
         this.nearbyTravelDistanceMap = nearbyTravelDistanceMap;
     }
 
-    @JsonSerialize(keyUsing = RoadSegmentLocationKeySerializer.class)
-    @JsonDeserialize(keyUsing = RoadSegmentLocationKeyDeserializer.class)
+    @JsonSerialize(keyUsing = HubSegmentLocationKeySerializer.class)
+    @JsonDeserialize(keyUsing = HubSegmentLocationKeyDeserializer.class)
     public Map<HubSegmentLocation, Double> getHubTravelDistanceMap() {
         return hubTravelDistanceMap;
     }
