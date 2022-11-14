@@ -20,6 +20,7 @@ import org.optaplanner.examples.vehiclerouting.domain.location.segmented.RoadSeg
 class VehicleRoutingSolutionFileIOTest {
 
     private static final String SEGMENTED_VRP_RESOURCE = "vehiclerouting-segmented.json";
+
     @Test
     void deserializeSegmentedLocations() throws IOException {
         VehicleRoutingSolution deserializedVehicleRoutingSolution = readSolution(SEGMENTED_VRP_RESOURCE);
