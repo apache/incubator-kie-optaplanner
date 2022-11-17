@@ -12,8 +12,8 @@ import org.optaplanner.core.impl.domain.common.accessor.ReflectionBeanPropertyMe
 import org.optaplanner.core.impl.domain.common.accessor.ReflectionFieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.ReflectionMethodMemberAccessor;
 
-import com.oracle.svm.core.annotate.Substitute;
-import com.oracle.svm.core.annotate.TargetClass;
+import com.oracle.svm.core.Substitute;
+import com.oracle.svm.core.TargetClass;
 
 @TargetClass(className = "org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory")
 public final class Substitute_MemberAccessorFactory {
