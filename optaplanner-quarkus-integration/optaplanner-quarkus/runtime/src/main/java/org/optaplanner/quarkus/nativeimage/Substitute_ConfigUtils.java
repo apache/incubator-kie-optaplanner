@@ -6,8 +6,8 @@ import javax.enterprise.inject.spi.CDI;
 
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 
-import com.oracle.svm.core.Substitute;
-import com.oracle.svm.core.TargetClass;
+import com.oracle.svm.core.annotate.Substitute;
+import com.oracle.svm.core.annotate.TargetClass;
 
 @TargetClass(className = "org.optaplanner.core.config.util.ConfigUtils")
 public final class Substitute_ConfigUtils {

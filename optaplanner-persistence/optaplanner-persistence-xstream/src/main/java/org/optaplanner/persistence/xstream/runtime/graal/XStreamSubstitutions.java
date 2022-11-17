@@ -1,7 +1,7 @@
 package org.optaplanner.persistence.xstream.runtime.graal;
 
-import com.oracle.svm.core.Substitute;
-import com.oracle.svm.core.TargetClass;
+import com.oracle.svm.core.annotate.Substitute;
+import com.oracle.svm.core.annotate.TargetClass;
 
 @TargetClass(className = "com.thoughtworks.xstream.converters.reflection.SerializableConverter")
 final class Target_SerializableConverter {
