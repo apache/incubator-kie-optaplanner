@@ -12,10 +12,10 @@ environment:
     enabled: true
   mandrel:
     enabled: true
-    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.3-java11
+    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.3-java17
   mandrel_lts:
     enabled: true
-    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.3-java11
+    builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.3-java17
     quarkus_version: 2.13
   runtimes_bdd:
     enabled: true
