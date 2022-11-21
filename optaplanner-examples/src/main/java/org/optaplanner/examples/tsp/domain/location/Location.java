@@ -2,7 +2,9 @@ package org.optaplanner.examples.tsp.domain.location;
 
 import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.tsp.domain.TspSolution;
+import org.optaplanner.persistence.jackson.impl.domain.solution.JacksonUniqueIdGenerator;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -14,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = RoadLocation.class, name = "road"),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class, property = "@id")
 public abstract class Location extends AbstractPersistableJackson {
 
     protected String name = null;

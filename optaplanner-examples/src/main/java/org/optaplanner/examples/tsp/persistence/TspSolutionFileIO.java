@@ -1,8 +1,6 @@
 package org.optaplanner.examples.tsp.persistence;
 
 import java.io.File;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -44,24 +42,6 @@ public class TspSolutionFileIO extends JacksonSolutionFileIO<TspSolution> {
                     locationsById, RoadLocation::getId);
             roadLocation.setTravelDistanceMap(newTravelDistanceMap);
         }
-
-        // Domiciles and visits have locations as well.
-        tspSolution.getDomicile()
-                .setLocation(locationsById.get(tspSolution.getDomicile().getId()));
-        tspSolution.getVisitList()
-                .forEach(visit -> visit.setLocation(locationsById.get(visit.getLocation().getId())));
-    }
-
-    private <Key, Value, Index> Map<Key, Value> deduplicateMap(Map<Key, Value> originalMap, Map<Index, Key> index,
-            Function<Key, Index> idFunction) {
-        if (originalMap == null || originalMap.isEmpty()) {
-            return originalMap;
-        }
-
-        var newMap = new LinkedHashMap<Key, Value>(originalMap.size());
-        originalMap.forEach(
-                (key, value) -> newMap.put(index.get(idFunction.apply(key)), value));
-        return newMap;
     }
 
 }
