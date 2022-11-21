@@ -1,0 +1,529 @@
+{
+  "id" : 0,
+  "name" : "europe40",
+  "distanceType" : "AIR_DISTANCE",
+  "distanceUnitOfMeasurement" : "distance",
+  "locationList" : [ {
+    "@type" : "air",
+    "@id" : "0",
+    "id" : 1,
+    "name" : "Brussels",
+    "latitude" : 50797.14,
+    "longitude" : 4361.572
+  }, {
+    "@type" : "air",
+    "@id" : "1",
+    "id" : 2,
+    "name" : "Dublin",
+    "latitude" : 53309.435,
+    "longitude" : -6284.18
+  }, {
+    "@type" : "air",
+    "@id" : "2",
+    "id" : 3,
+    "name" : "London",
+    "latitude" : 51465.872,
+    "longitude" : -131.836
+  }, {
+    "@type" : "air",
+    "@id" : "3",
+    "id" : 4,
+    "name" : "Paris",
+    "latitude" : 48797.698,
+    "longitude" : 2351.074
+  }, {
+    "@type" : "air",
+    "@id" : "4",
+    "id" : 5,
+    "name" : "Reykjavik",
+    "latitude" : 64133.219,
+    "longitude" : -21886.139
+  }, {
+    "@type" : "air",
+    "@id" : "5",
+    "id" : 6,
+    "name" : "Luxembourg",
+    "latitude" : 49537.568,
+    "longitude" : 6130.371
+  }, {
+    "@type" : "air",
+    "@id" : "6",
+    "id" : 7,
+    "name" : "Amsterdam",
+    "latitude" : 52320.12,
+    "longitude" : 4888.916
+  }, {
+    "@type" : "air",
+    "@id" : "7",
+    "id" : 8,
+    "name" : "Berlin",
+    "latitude" : 52480.996,
+    "longitude" : 13414.307
+  }, {
+    "@type" : "air",
+    "@id" : "8",
+    "id" : 9,
+    "name" : "Copenhagen",
+    "latitude" : 55620.139,
+    "longitude" : 12579.346
+  }, {
+    "@type" : "air",
+    "@id" : "9",
+    "id" : 10,
+    "name" : "Oslo",
+    "latitude" : 59876.442,
+    "longitude" : 10766.602
+  }, {
+    "@type" : "air",
+    "@id" : "a",
+    "id" : 11,
+    "name" : "Stockholm",
+    "latitude" : 59292.446,
+    "longitude" : 18061.523
+  }, {
+    "@type" : "air",
+    "@id" : "b",
+    "id" : 12,
+    "name" : "Helsinki",
+    "latitude" : 60134.576,
+    "longitude" : 24949.951
+  }, {
+    "@type" : "air",
+    "@id" : "c",
+    "id" : 13,
+    "name" : "Tallinn",
+    "latitude" : 59363.808,
+    "longitude" : 24763.184
+  }, {
+    "@type" : "air",
+    "@id" : "d",
+    "id" : 14,
+    "name" : "Riga",
+    "latitude" : 56845.768,
+    "longitude" : 24082.031
+  }, {
+    "@type" : "air",
+    "@id" : "e",
+    "id" : 15,
+    "name" : "Vilnius",
+    "latitude" : 54581.401,
+    "longitude" : 25268.555
+  }, {
+    "@type" : "air",
+    "@id" : "f",
+    "id" : 16,
+    "name" : "Minsk",
+    "latitude" : 53810.166,
+    "longitude" : 27553.711
+  }, {
+    "@type" : "air",
+    "@id" : "10",
+    "id" : 17,
+    "name" : "Warsaw",
+    "latitude" : 52129.891,
+    "longitude" : 21005.859
+  }, {
+    "@type" : "air",
+    "@id" : "11",
+    "id" : 18,
+    "name" : "Moscow",
+    "latitude" : 55661.888,
+    "longitude" : 37617.188
+  }, {
+    "@type" : "air",
+    "@id" : "12",
+    "id" : 19,
+    "name" : "Kiev",
+    "latitude" : 50355.742,
+    "longitude" : 30541.992
+  }, {
+    "@type" : "air",
+    "@id" : "13",
+    "id" : 20,
+    "name" : "Chisinau",
+    "latitude" : 46916.253,
+    "longitude" : 28828.125
+  }, {
+    "@type" : "air",
+    "@id" : "14",
+    "id" : 21,
+    "name" : "Bucharest",
+    "latitude" : 44319.656,
+    "longitude" : 26059.57
+  }, {
+    "@type" : "air",
+    "@id" : "15",
+    "id" : 22,
+    "name" : "Sofia",
+    "latitude" : 42581.13,
+    "longitude" : 23312.988
+  }, {
+    "@type" : "air",
+    "@id" : "16",
+    "id" : 23,
+    "name" : "Ankara",
+    "latitude" : 39943.436,
+    "longitude" : 32857.132
+  }, {
+    "@type" : "air",
+    "@id" : "17",
+    "id" : 24,
+    "name" : "Athens",
+    "latitude" : 37852.881,
+    "longitude" : 23730.469
+  }, {
+    "@type" : "air",
+    "@id" : "18",
+    "id" : 25,
+    "name" : "Nicosia",
+    "latitude" : 35099.537,
+    "longitude" : 33365.479
+  }, {
+    "@type" : "air",
+    "@id" : "19",
+    "id" : 26,
+    "name" : "Tirana",
+    "latitude" : 41283.861,
+    "longitude" : 19808.35
+  }, {
+    "@type" : "air",
+    "@id" : "1a",
+    "id" : 27,
+    "name" : "Skopje",
+    "latitude" : 41949.141,
+    "longitude" : 21456.299
+  }, {
+    "@type" : "air",
+    "@id" : "1b",
+    "id" : 28,
+    "name" : "Podgorica",
+    "latitude" : 42380.73,
+    "longitude" : 19281.006
+  }, {
+    "@type" : "air",
+    "@id" : "1c",
+    "id" : 29,
+    "name" : "Belgrade",
+    "latitude" : 44752.455,
+    "longitude" : 20456.543
+  }, {
+    "@type" : "air",
+    "@id" : "1d",
+    "id" : 30,
+    "name" : "Sarajevo",
+    "latitude" : 43784.843,
+    "longitude" : 18347.168
+  }, {
+    "@type" : "air",
+    "@id" : "1e",
+    "id" : 31,
+    "name" : "Zagreb",
+    "latitude" : 45757.815,
+    "longitude" : 15974.121
+  }, {
+    "@type" : "air",
+    "@id" : "1f",
+    "id" : 32,
+    "name" : "Ljubljana",
+    "latitude" : 45994.926,
+    "longitude" : 14490.967
+  }, {
+    "@type" : "air",
+    "@id" : "20",
+    "id" : 33,
+    "name" : "Rome",
+    "latitude" : 41842.83,
+    "longitude" : 12491.455
+  }, {
+    "@type" : "air",
+    "@id" : "21",
+    "id" : 34,
+    "name" : "Madrid",
+    "latitude" : 40369.427,
+    "longitude" : -3691.406
+  }, {
+    "@type" : "air",
+    "@id" : "22",
+    "id" : 35,
+    "name" : "Lisbon",
+    "latitude" : 38648.91,
+    "longitude" : -9140.625
+  }, {
+    "@type" : "air",
+    "@id" : "23",
+    "id" : 36,
+    "name" : "Bern",
+    "latitude" : 46895.737,
+    "longitude" : 7437.744
+  }, {
+    "@type" : "air",
+    "@id" : "24",
+    "id" : 37,
+    "name" : "Vienna",
+    "latitude" : 48142.143,
+    "longitude" : 16380.615
+  }, {
+    "@type" : "air",
+    "@id" : "25",
+    "id" : 38,
+    "name" : "Prague",
+    "latitude" : 50066.778,
+    "longitude" : 14419.556
+  }, {
+    "@type" : "air",
+    "@id" : "26",
+    "id" : 39,
+    "name" : "Bratislava",
+    "latitude" : 48098.138,
+    "longitude" : 17105.713
+  }, {
+    "@type" : "air",
+    "@id" : "27",
+    "id" : 40,
+    "name" : "Budapest",
+    "latitude" : 47440.969,
+    "longitude" : 19039.307
+  } ],
+  "domicile" : {
+    "@type" : "domicile",
+    "@id" : "28",
+    "id" : 1,
+    "location" : "0"
+  },
+  "visitList" : [ {
+    "@type" : "visit",
+    "@id" : "29",
+    "id" : 2,
+    "location" : "1",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "2a",
+    "id" : 3,
+    "location" : "2",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "2b",
+    "id" : 4,
+    "location" : "3",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "2c",
+    "id" : 5,
+    "location" : "4",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "2d",
+    "id" : 6,
+    "location" : "5",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "2e",
+    "id" : 7,
+    "location" : "6",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "2f",
+    "id" : 8,
+    "location" : "7",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "30",
+    "id" : 9,
+    "location" : "8",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "31",
+    "id" : 10,
+    "location" : "9",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "32",
+    "id" : 11,
+    "location" : "a",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "33",
+    "id" : 12,
+    "location" : "b",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "34",
+    "id" : 13,
+    "location" : "c",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "35",
+    "id" : 14,
+    "location" : "d",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "36",
+    "id" : 15,
+    "location" : "e",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "37",
+    "id" : 16,
+    "location" : "f",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "38",
+    "id" : 17,
+    "location" : "10",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "39",
+    "id" : 18,
+    "location" : "11",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "3a",
+    "id" : 19,
+    "location" : "12",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "3b",
+    "id" : 20,
+    "location" : "13",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "3c",
+    "id" : 21,
+    "location" : "14",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "3d",
+    "id" : 22,
+    "location" : "15",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "3e",
+    "id" : 23,
+    "location" : "16",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "3f",
+    "id" : 24,
+    "location" : "17",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "40",
+    "id" : 25,
+    "location" : "18",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "41",
+    "id" : 26,
+    "location" : "19",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "42",
+    "id" : 27,
+    "location" : "1a",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "43",
+    "id" : 28,
+    "location" : "1b",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "44",
+    "id" : 29,
+    "location" : "1c",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "45",
+    "id" : 30,
+    "location" : "1d",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "46",
+    "id" : 31,
+    "location" : "1e",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "47",
+    "id" : 32,
+    "location" : "1f",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "48",
+    "id" : 33,
+    "location" : "20",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "49",
+    "id" : 34,
+    "location" : "21",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "4a",
+    "id" : 35,
+    "location" : "22",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "4b",
+    "id" : 36,
+    "location" : "23",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "4c",
+    "id" : 37,
+    "location" : "24",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "4d",
+    "id" : 38,
+    "location" : "25",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "4e",
+    "id" : 39,
+    "location" : "26",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "4f",
+    "id" : 40,
+    "location" : "27",
+    "previousStandstill" : null
+  } ],
+  "score" : null
+}

@@ -1,0 +1,503 @@
+{
+  "id" : 0,
+  "name" : "dj38",
+  "distanceType" : "AIR_DISTANCE",
+  "distanceUnitOfMeasurement" : "distance",
+  "locationList" : [ {
+    "@type" : "air",
+    "@id" : "50",
+    "id" : 1,
+    "name" : null,
+    "latitude" : 11003.6111,
+    "longitude" : 42102.5
+  }, {
+    "@type" : "air",
+    "@id" : "51",
+    "id" : 2,
+    "name" : null,
+    "latitude" : 11108.6111,
+    "longitude" : 42373.8889
+  }, {
+    "@type" : "air",
+    "@id" : "52",
+    "id" : 3,
+    "name" : null,
+    "latitude" : 11133.3333,
+    "longitude" : 42885.8333
+  }, {
+    "@type" : "air",
+    "@id" : "53",
+    "id" : 4,
+    "name" : null,
+    "latitude" : 11155.8333,
+    "longitude" : 42712.5
+  }, {
+    "@type" : "air",
+    "@id" : "54",
+    "id" : 5,
+    "name" : null,
+    "latitude" : 11183.3333,
+    "longitude" : 42933.3333
+  }, {
+    "@type" : "air",
+    "@id" : "55",
+    "id" : 6,
+    "name" : null,
+    "latitude" : 11297.5,
+    "longitude" : 42853.3333
+  }, {
+    "@type" : "air",
+    "@id" : "56",
+    "id" : 7,
+    "name" : null,
+    "latitude" : 11310.2778,
+    "longitude" : 42929.4444
+  }, {
+    "@type" : "air",
+    "@id" : "57",
+    "id" : 8,
+    "name" : null,
+    "latitude" : 11416.6667,
+    "longitude" : 42983.3333
+  }, {
+    "@type" : "air",
+    "@id" : "58",
+    "id" : 9,
+    "name" : null,
+    "latitude" : 11423.8889,
+    "longitude" : 43000.2778
+  }, {
+    "@type" : "air",
+    "@id" : "59",
+    "id" : 10,
+    "name" : null,
+    "latitude" : 11438.3333,
+    "longitude" : 42057.2222
+  }, {
+    "@type" : "air",
+    "@id" : "5a",
+    "id" : 11,
+    "name" : null,
+    "latitude" : 11461.1111,
+    "longitude" : 43252.7778
+  }, {
+    "@type" : "air",
+    "@id" : "5b",
+    "id" : 12,
+    "name" : null,
+    "latitude" : 11485.5556,
+    "longitude" : 43187.2222
+  }, {
+    "@type" : "air",
+    "@id" : "5c",
+    "id" : 13,
+    "name" : null,
+    "latitude" : 11503.0556,
+    "longitude" : 42855.2778
+  }, {
+    "@type" : "air",
+    "@id" : "5d",
+    "id" : 14,
+    "name" : null,
+    "latitude" : 11511.3889,
+    "longitude" : 42106.3889
+  }, {
+    "@type" : "air",
+    "@id" : "5e",
+    "id" : 15,
+    "name" : null,
+    "latitude" : 11522.2222,
+    "longitude" : 42841.9444
+  }, {
+    "@type" : "air",
+    "@id" : "5f",
+    "id" : 16,
+    "name" : null,
+    "latitude" : 11569.4444,
+    "longitude" : 43136.6667
+  }, {
+    "@type" : "air",
+    "@id" : "60",
+    "id" : 17,
+    "name" : null,
+    "latitude" : 11583.3333,
+    "longitude" : 43150.0
+  }, {
+    "@type" : "air",
+    "@id" : "61",
+    "id" : 18,
+    "name" : null,
+    "latitude" : 11595.0,
+    "longitude" : 43148.0556
+  }, {
+    "@type" : "air",
+    "@id" : "62",
+    "id" : 19,
+    "name" : null,
+    "latitude" : 11600.0,
+    "longitude" : 43150.0
+  }, {
+    "@type" : "air",
+    "@id" : "63",
+    "id" : 20,
+    "name" : null,
+    "latitude" : 11690.5556,
+    "longitude" : 42686.6667
+  }, {
+    "@type" : "air",
+    "@id" : "64",
+    "id" : 21,
+    "name" : null,
+    "latitude" : 11715.8333,
+    "longitude" : 41836.1111
+  }, {
+    "@type" : "air",
+    "@id" : "65",
+    "id" : 22,
+    "name" : null,
+    "latitude" : 11751.1111,
+    "longitude" : 42814.4444
+  }, {
+    "@type" : "air",
+    "@id" : "66",
+    "id" : 23,
+    "name" : null,
+    "latitude" : 11770.2778,
+    "longitude" : 42651.9444
+  }, {
+    "@type" : "air",
+    "@id" : "67",
+    "id" : 24,
+    "name" : null,
+    "latitude" : 11785.2778,
+    "longitude" : 42884.4444
+  }, {
+    "@type" : "air",
+    "@id" : "68",
+    "id" : 25,
+    "name" : null,
+    "latitude" : 11822.7778,
+    "longitude" : 42673.6111
+  }, {
+    "@type" : "air",
+    "@id" : "69",
+    "id" : 26,
+    "name" : null,
+    "latitude" : 11846.9444,
+    "longitude" : 42660.5556
+  }, {
+    "@type" : "air",
+    "@id" : "6a",
+    "id" : 27,
+    "name" : null,
+    "latitude" : 11963.0556,
+    "longitude" : 43290.5556
+  }, {
+    "@type" : "air",
+    "@id" : "6b",
+    "id" : 28,
+    "name" : null,
+    "latitude" : 11973.0556,
+    "longitude" : 43026.1111
+  }, {
+    "@type" : "air",
+    "@id" : "6c",
+    "id" : 29,
+    "name" : null,
+    "latitude" : 12058.3333,
+    "longitude" : 42195.5556
+  }, {
+    "@type" : "air",
+    "@id" : "6d",
+    "id" : 30,
+    "name" : null,
+    "latitude" : 12149.4444,
+    "longitude" : 42477.5
+  }, {
+    "@type" : "air",
+    "@id" : "6e",
+    "id" : 31,
+    "name" : null,
+    "latitude" : 12286.9444,
+    "longitude" : 43355.5556
+  }, {
+    "@type" : "air",
+    "@id" : "6f",
+    "id" : 32,
+    "name" : null,
+    "latitude" : 12300.0,
+    "longitude" : 42433.3333
+  }, {
+    "@type" : "air",
+    "@id" : "70",
+    "id" : 33,
+    "name" : null,
+    "latitude" : 12355.8333,
+    "longitude" : 43156.3889
+  }, {
+    "@type" : "air",
+    "@id" : "71",
+    "id" : 34,
+    "name" : null,
+    "latitude" : 12363.3333,
+    "longitude" : 43189.1667
+  }, {
+    "@type" : "air",
+    "@id" : "72",
+    "id" : 35,
+    "name" : null,
+    "latitude" : 12372.7778,
+    "longitude" : 42711.3889
+  }, {
+    "@type" : "air",
+    "@id" : "73",
+    "id" : 36,
+    "name" : null,
+    "latitude" : 12386.6667,
+    "longitude" : 43334.7222
+  }, {
+    "@type" : "air",
+    "@id" : "74",
+    "id" : 37,
+    "name" : null,
+    "latitude" : 12421.6667,
+    "longitude" : 42895.5556
+  }, {
+    "@type" : "air",
+    "@id" : "75",
+    "id" : 38,
+    "name" : null,
+    "latitude" : 12645.0,
+    "longitude" : 42973.3333
+  } ],
+  "domicile" : {
+    "@type" : "domicile",
+    "@id" : "76",
+    "id" : 1,
+    "location" : "50"
+  },
+  "visitList" : [ {
+    "@type" : "visit",
+    "@id" : "77",
+    "id" : 2,
+    "location" : "51",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "78",
+    "id" : 3,
+    "location" : "52",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "79",
+    "id" : 4,
+    "location" : "53",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "7a",
+    "id" : 5,
+    "location" : "54",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "7b",
+    "id" : 6,
+    "location" : "55",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "7c",
+    "id" : 7,
+    "location" : "56",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "7d",
+    "id" : 8,
+    "location" : "57",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "7e",
+    "id" : 9,
+    "location" : "58",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "7f",
+    "id" : 10,
+    "location" : "59",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "80",
+    "id" : 11,
+    "location" : "5a",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "81",
+    "id" : 12,
+    "location" : "5b",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "82",
+    "id" : 13,
+    "location" : "5c",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "83",
+    "id" : 14,
+    "location" : "5d",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "84",
+    "id" : 15,
+    "location" : "5e",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "85",
+    "id" : 16,
+    "location" : "5f",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "86",
+    "id" : 17,
+    "location" : "60",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "87",
+    "id" : 18,
+    "location" : "61",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "88",
+    "id" : 19,
+    "location" : "62",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "89",
+    "id" : 20,
+    "location" : "63",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "8a",
+    "id" : 21,
+    "location" : "64",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "8b",
+    "id" : 22,
+    "location" : "65",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "8c",
+    "id" : 23,
+    "location" : "66",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "8d",
+    "id" : 24,
+    "location" : "67",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "8e",
+    "id" : 25,
+    "location" : "68",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "8f",
+    "id" : 26,
+    "location" : "69",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "90",
+    "id" : 27,
+    "location" : "6a",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "91",
+    "id" : 28,
+    "location" : "6b",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "92",
+    "id" : 29,
+    "location" : "6c",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "93",
+    "id" : 30,
+    "location" : "6d",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "94",
+    "id" : 31,
+    "location" : "6e",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "95",
+    "id" : 32,
+    "location" : "6f",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "96",
+    "id" : 33,
+    "location" : "70",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "97",
+    "id" : 34,
+    "location" : "71",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "98",
+    "id" : 35,
+    "location" : "72",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "99",
+    "id" : 36,
+    "location" : "73",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "9a",
+    "id" : 37,
+    "location" : "74",
+    "previousStandstill" : null
+  }, {
+    "@type" : "visit",
+    "@id" : "9b",
+    "id" : 38,
+    "location" : "75",
+    "previousStandstill" : null
+  } ],
+  "score" : null
+}
