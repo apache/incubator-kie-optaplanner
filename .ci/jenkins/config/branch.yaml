@@ -1,48 +1,49 @@
 environment:
   quarkus:
     main:
-      enabled: true
+      enabled: false
     branch:
       enabled: true
       version: '2.14'
     lts:
-      enabled: true
+      enabled: false
       version: '2.13'
   native:
     enabled: true
   mandrel:
-    enabled: true
+    enabled: false
     builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.2-java11
   mandrel_lts:
-    enabled: true
+    enabled: false
     builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.2-java11
     quarkus_version: 2.13
   runtimes_bdd:
     enabled: true
-productized_branch: true
+productized_branch: false
 disable:
   triggers: false
 repositories:
 - name: optaplanner
-  branch: main
+  branch: 8.31.x
+  is_branch_config_repo: true
 - name: optaweb-vehicle-routing
-  branch: main
+  branch: 8.31.x
 - name: optaplanner-quickstarts
-  branch: development
+  branch: 8.31.x
 - name: optaplanner-website
-  branch: main
+  branch: 8.31.x
 git:
   author:
     name: kiegroup
     credentials_id: kie-ci
     token_credentials_id: kie-ci3-token
-  bot_author: # This is meant to disappear in the near future
+  bot_author:
     name: bsig-gh-bot
     credentials_id: bsig-gh-bot
-  fork_author: # Used on repository where a fork is needed
+  fork_author:
     name: kie-ci
     credentials_id: kie-ci
-  quarkus: # Used by quarkus platform jobs
+  quarkus:
     author:
       name: quarkusio
       credentials_id: kie-ci
