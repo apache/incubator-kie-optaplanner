@@ -56,7 +56,7 @@
     <dependency>
       <groupId>org.graalvm.sdk</groupId>
       <artifactId>graal-sdk</artifactId>
-      <scope>provided<scope>
+      <scope>provided</scope>
     </dependency>
     <!-- Testing -->
     <dependency>
