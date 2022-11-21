@@ -1,7 +1,6 @@
 package org.optaplanner.examples.tsp.domain.location;
 
 import org.optaplanner.examples.tsp.persistence.TspSolutionFileIO;
-import org.optaplanner.examples.vehiclerouting.domain.location.RoadLocation;
 
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.KeyDeserializer;
