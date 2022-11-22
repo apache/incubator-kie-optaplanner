@@ -79,5 +79,5 @@ public class VehicleRoutingSolutionFileIO extends AbstractExampleSolutionFileIO<
             roadSegmentLocation.setHubTravelDistanceMap(newHubTravelDistanceMap);
             roadSegmentLocation.setNearbyTravelDistanceMap(newNearbyTravelDistanceMap);
         }
-}
+    }
 }

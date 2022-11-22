@@ -8,13 +8,30 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators.PropertyGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators.UUIDGenerator;
 
 /**
- * Exists so that recursive data models (such as TSP chaining) can be serialized/deserialized using object references,
- * while at the same time being able to serialize/deserialize map keys using those same references.
- * (See Vehicle Routing example.)
+ * Exists so that complex data models (such as TSP chaining) can be serialized/deserialized.
+ * These complexities include:
+ *
+ * <ul>
+ * <li>Serializing maps where keys are themselves serialized objects that need to be referenced later.</li>
+ * <li>Serializing polymorphic types.</li>
+ * <li>Serializing self-referential and/or recursive types.</li>
+ * </ul>
+ *
+ * Jackson can easily handle any of these problems individually,
+ * but struggles when they are all combined.
  * <p>
- * For use cases without advanced referencing needs,
+ * This class and other classes in this package aim to solve those issues
+ * by introducing a new ID field on all serialized objects,
+ * typically called "@id".
+ * This field is used exclusively for referencing objects in the serialized JSON,
+ * it never enters the Java data model.
+ * Therefore it is not related to {@link AbstractPersistableJackson#getId()},
+ * which is the actual object ID used in the Java examples.
+ * See Vehicle Routing example to learn how to use this pattern.
+ * <p>
+ * For use cases without these advanced needs,
  * the less complex way of using {@link JsonIdentityInfo} with {@link PropertyGenerator} is preferred.
- * (See Cloud Balancing example.)
+ * See Cloud Balancing example to learn how to use this pattern.
  * <p>
  * The implementation is similar in principle to {@link UUIDGenerator}, but without the long and undescriptive UUIDs.
  * Works only for children of {@link AbstractPersistableJackson}.
