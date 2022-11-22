@@ -50,7 +50,7 @@ public final class JacksonUniqueIdGenerator extends ObjectIdGenerator<String> {
     }
 
     @Override
-    public synchronized String generateId(Object forPojo) {
+    public String generateId(Object forPojo) {
         return forPojo.getClass().getSimpleName() + "#" + ((AbstractPersistableJackson) forPojo).getId();
     }
 }

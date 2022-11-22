@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.KeyDeserializer;
  */
 final class RoadLocationKeyDeserializer extends KeyDeserializer {
 
-
     @Override
     public Object deserializeKey(String value, DeserializationContext deserializationContext) {
         String[] parts = value.split("#");
