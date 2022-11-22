@@ -13,7 +13,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class, property = "@id")
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
 public class MrMachine extends AbstractPersistableJackson implements Labeled {
 
     private MrNeighborhood neighborhood;

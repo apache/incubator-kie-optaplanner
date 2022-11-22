@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = TimeWindowedCustomer.class, name = "timeWindowed"),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class, property = "@id")
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
 public class Customer extends AbstractPersistableJackson {
 
     protected Location location;

@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = Visit.class, name = "visit"),
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class, property = "@id")
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
 public interface Standstill {
 
     /**

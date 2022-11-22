@@ -7,7 +7,7 @@ import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenera
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
-@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class, property = "@id")
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
 public class MrService extends AbstractPersistableJackson {
 
     private List<MrService> toDependencyServiceList;
