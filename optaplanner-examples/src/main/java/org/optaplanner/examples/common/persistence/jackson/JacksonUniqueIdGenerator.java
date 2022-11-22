@@ -36,6 +36,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators.UUIDGenerator;
  * The implementation is similar in principle to {@link UUIDGenerator}, but without the long and undescriptive UUIDs.
  * Works only for children of {@link AbstractPersistableJackson}.
  * No two such classes must have the same {@link Class#getSimpleName()}.
+ *
+ * @see KeySerializer
+ * @see AbstractKeyDeserializer
+ * @see AbstractExampleSolutionFileIO
  */
 public final class JacksonUniqueIdGenerator extends ObjectIdGenerator<String> {
 
