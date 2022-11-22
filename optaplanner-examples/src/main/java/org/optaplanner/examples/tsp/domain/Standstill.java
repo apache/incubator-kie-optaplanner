@@ -1,7 +1,7 @@
 package org.optaplanner.examples.tsp.domain;
 
+import org.optaplanner.examples.common.persistence.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.tsp.domain.location.Location;
-import org.optaplanner.persistence.jackson.impl.domain.solution.JacksonUniqueIdGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;

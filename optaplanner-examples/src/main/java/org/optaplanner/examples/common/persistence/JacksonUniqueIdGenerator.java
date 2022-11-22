@@ -1,17 +1,21 @@
-package org.optaplanner.persistence.jackson.impl.domain.solution;
+package org.optaplanner.examples.common.persistence;
 
-import java.math.BigInteger;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
 import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.UUIDGenerator;
 
 /**
- * Similar in principle to {@link com.fasterxml.jackson.annotation.ObjectIdGenerators.UUIDGenerator},
- * but without the overly long UUIDs.
+ * Exists so that we can serialize/deserialize recursive data models (such as TSP chaining) using object references,
+ * while at the same time being able to serialize/deserialize map keys using those same references.
+ * <p>
+ * Similar in principle to {@link UUIDGenerator}, but without the overly long and undescriptive UUIDs.
+ * Works only for children of {@link AbstractPersistableJackson}.
+ * No two such classes must have the same {@link Class#getSimpleName()}.
  */
-public final class JacksonUniqueIdGenerator extends com.fasterxml.jackson.annotation.ObjectIdGenerator<String> {
+public final class JacksonUniqueIdGenerator extends ObjectIdGenerator<String> {
 
     private final Class<?> scope;
-    private BigInteger nextValue = BigInteger.ZERO;
 
     public JacksonUniqueIdGenerator() {
         this.scope = Object.class;
@@ -47,8 +51,6 @@ public final class JacksonUniqueIdGenerator extends com.fasterxml.jackson.annota
 
     @Override
     public synchronized String generateId(Object forPojo) {
-        BigInteger result = nextValue;
-        nextValue = nextValue.add(BigInteger.ONE);
-        return result.toString(16); // Shorten possibly large numbers to hexadecimal representation.
+        return forPojo.getClass().getSimpleName() + "#" + ((AbstractPersistableJackson) forPojo).getId();
     }
 }
