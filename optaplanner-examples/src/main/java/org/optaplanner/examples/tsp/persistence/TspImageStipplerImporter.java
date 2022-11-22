@@ -39,7 +39,7 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter<TspSol
 
         @Override
         public TspSolution readSolution() throws IOException {
-            tspSolution = new TspSolution(0);
+            tspSolution = new TspSolution(0L);
             tspSolution.setName(SolutionBusiness.getBaseFileName(inputFile));
             floydSteinbergDithering();
             createVisitList();
