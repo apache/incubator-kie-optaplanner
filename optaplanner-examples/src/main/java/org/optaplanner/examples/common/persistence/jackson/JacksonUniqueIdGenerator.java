@@ -1,15 +1,22 @@
-package org.optaplanner.examples.common.persistence;
+package org.optaplanner.examples.common.persistence.jackson;
 
 import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.PropertyGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators.UUIDGenerator;
 
 /**
- * Exists so that we can serialize/deserialize recursive data models (such as TSP chaining) using object references,
+ * Exists so that recursive data models (such as TSP chaining) can be serialized/deserialized using object references,
  * while at the same time being able to serialize/deserialize map keys using those same references.
+ * (See Vehicle Routing example.)
  * <p>
- * Similar in principle to {@link UUIDGenerator}, but without the overly long and undescriptive UUIDs.
+ * For use cases without advanced referencing needs,
+ * the less complex way of using {@link JsonIdentityInfo} with {@link PropertyGenerator} is preferred.
+ * (See Cloud Balancing example.)
+ * <p>
+ * The implementation is similar in principle to {@link UUIDGenerator}, but without the long and undescriptive UUIDs.
  * Works only for children of {@link AbstractPersistableJackson}.
  * No two such classes must have the same {@link Class#getSimpleName()}.
  */
