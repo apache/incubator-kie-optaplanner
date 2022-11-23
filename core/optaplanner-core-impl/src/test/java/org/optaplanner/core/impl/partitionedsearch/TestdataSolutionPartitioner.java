@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -11,7 +12,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 public class TestdataSolutionPartitioner implements SolutionPartitioner<TestdataSolution> {
 
     /**
-     * {@link PartitionedSearchPhaseConfig#solutionPartitionerCustomProperties Custom property}.
+     * {@link PartitionedSearchPhaseConfig#getSolutionPartitionerCustomProperties()} Custom property}.
      */
     private int partSize = 1;
 
