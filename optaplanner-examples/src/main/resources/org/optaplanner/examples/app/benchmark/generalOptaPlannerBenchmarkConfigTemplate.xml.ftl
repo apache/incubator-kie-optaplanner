@@ -247,7 +247,7 @@
     <name>TravelingTournament Tabu Search ${randomType}</name>
     <problemBenchmarks>
       <solutionFileIOClass>org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.xml</inputSolutionFile>
+      <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.json</inputSolutionFile>
     </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
