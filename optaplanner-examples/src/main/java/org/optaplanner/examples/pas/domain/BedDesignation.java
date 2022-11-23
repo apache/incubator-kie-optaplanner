@@ -2,15 +2,14 @@ package org.optaplanner.examples.pas.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.pas.domain.solver.BedDesignationDifficultyWeightFactory;
 import org.optaplanner.examples.pas.domain.solver.BedStrengthComparator;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity(difficultyWeightFactoryClass = BedDesignationDifficultyWeightFactory.class)
-@XStreamAlias("BedDesignation")
-public class BedDesignation extends AbstractPersistable {
+public class BedDesignation extends AbstractPersistableJackson {
 
     private AdmissionPart admissionPart;
     private Bed bed;
@@ -78,6 +77,7 @@ public class BedDesignation extends AbstractPersistable {
         return admissionPart.getNightCount();
     }
 
+    @JsonIgnore
     public Room getRoom() {
         if (bed == null) {
             return null;
@@ -85,6 +85,7 @@ public class BedDesignation extends AbstractPersistable {
         return bed.getRoom();
     }
 
+    @JsonIgnore
     public int getRoomCapacity() {
         if (bed == null) {
             return Integer.MIN_VALUE;
@@ -92,6 +93,7 @@ public class BedDesignation extends AbstractPersistable {
         return bed.getRoom().getCapacity();
     }
 
+    @JsonIgnore
     public Department getDepartment() {
         if (bed == null) {
             return null;
@@ -99,6 +101,7 @@ public class BedDesignation extends AbstractPersistable {
         return bed.getRoom().getDepartment();
     }
 
+    @JsonIgnore
     public GenderLimitation getRoomGenderLimitation() {
         if (bed == null) {
             return null;

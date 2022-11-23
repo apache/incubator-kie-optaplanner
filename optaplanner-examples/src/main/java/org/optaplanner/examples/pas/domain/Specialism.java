@@ -1,13 +1,22 @@
 package org.optaplanner.examples.pas.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
-@XStreamAlias("Specialism")
-public class Specialism extends AbstractPersistable {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public class Specialism extends AbstractPersistableJackson {
 
     private String name;
+
+    public Specialism() { // For Jackson.
+    }
+
+    public Specialism(long id, String name) {
+        super(id);
+        this.name = name;
+    }
 
     public String getName() {
         return name;

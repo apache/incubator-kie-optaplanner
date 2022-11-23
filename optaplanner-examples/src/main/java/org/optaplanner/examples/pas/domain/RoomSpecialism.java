@@ -1,16 +1,26 @@
 package org.optaplanner.examples.pas.domain;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
-@XStreamAlias("RoomSpecialism")
-public class RoomSpecialism extends AbstractPersistable {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public class RoomSpecialism extends AbstractPersistableJackson {
 
     private Room room;
     private Specialism specialism;
-
     private int priority; // AKA choice
+
+    public RoomSpecialism() { // For Jackson.
+    }
+
+    public RoomSpecialism(long id, Room room, Specialism specialism, int priority) {
+        super(id);
+        this.room = room;
+        this.specialism = specialism;
+        this.priority = priority;
+    }
 
     public Room getRoom() {
         return room;

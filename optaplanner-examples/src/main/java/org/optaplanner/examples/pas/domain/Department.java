@@ -2,18 +2,28 @@ package org.optaplanner.examples.pas.domain;
 
 import java.util.List;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
+import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 
-@XStreamAlias("Department")
-public class Department extends AbstractPersistable {
+@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+public class Department extends AbstractPersistableJackson implements Labeled {
 
     private String name;
     private Integer minimumAge = null;
     private Integer maximumAge = null;
 
     private List<Room> roomList;
+
+    public Department() { // For Jackson.
+    }
+
+    public Department(long id, String name) {
+        super(id);
+        this.name = name;
+    }
 
     public String getName() {
         return name;
@@ -62,6 +72,7 @@ public class Department extends AbstractPersistable {
         return count;
     }
 
+    @Override
     public String getLabel() {
         String label = name;
         if (minimumAge != null) {
