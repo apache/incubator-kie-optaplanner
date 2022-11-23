@@ -14,7 +14,6 @@ public class Day extends AbstractPersistableJackson implements Labeled {
     private Day nextDay;
 
     public Day() { // For Jackson.
-
     }
 
     public Day(int id) {
