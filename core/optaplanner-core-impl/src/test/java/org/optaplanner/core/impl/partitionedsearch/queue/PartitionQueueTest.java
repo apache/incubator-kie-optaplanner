@@ -103,7 +103,7 @@ class PartitionQueueTest {
         assertThat(it.hasNext()).isFalse();
     }
 
-    @Test()
+    @Test
     void addExceptionWithNonEmptyQueue() throws ExecutionException, InterruptedException {
         PartitionQueue<TestdataSolution> partitionQueue = new PartitionQueue<>(3);
         Iterator<PartitionChangeMove<TestdataSolution>> it = partitionQueue.iterator();
