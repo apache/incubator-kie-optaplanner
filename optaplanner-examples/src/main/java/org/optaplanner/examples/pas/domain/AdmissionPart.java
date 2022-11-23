@@ -1,12 +1,12 @@
 package org.optaplanner.examples.pas.domain;
 
 import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
-import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+@JsonIdentityInfo(scope = AdmissionPart.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class AdmissionPart extends AbstractPersistableJackson {
 
     private Patient patient;
@@ -14,10 +14,11 @@ public class AdmissionPart extends AbstractPersistableJackson {
     private Night lastNight;
     private Specialism specialism;
 
-    public AdmissionPart() {
+    public AdmissionPart() { // For Jackson.
     }
 
-    public AdmissionPart(Patient patient, Night firstNight, Night lastNight, Specialism specialism) {
+    public AdmissionPart(long id, Patient patient, Night firstNight, Night lastNight, Specialism specialism) {
+        super(id);
         this.patient = patient;
         this.firstNight = firstNight;
         this.lastNight = lastNight;

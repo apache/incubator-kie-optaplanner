@@ -6,20 +6,27 @@ import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.pas.domain.solver.BedDesignationDifficultyWeightFactory;
 import org.optaplanner.examples.pas.domain.solver.BedStrengthComparator;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @PlanningEntity(difficultyWeightFactoryClass = BedDesignationDifficultyWeightFactory.class)
+@JsonIdentityInfo(scope = BedDesignation.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class BedDesignation extends AbstractPersistableJackson {
 
     private AdmissionPart admissionPart;
     private Bed bed;
 
-    public BedDesignation() {
+    public BedDesignation() { // For Jackson.
+    }
+
+    public BedDesignation(long id, AdmissionPart admissionPart) {
+        super(id);
+        this.admissionPart = admissionPart;
     }
 
     public BedDesignation(long id, AdmissionPart admissionPart, Bed bed) {
-        super(id);
-        this.admissionPart = admissionPart;
+        this(id, admissionPart);
         this.bed = bed;
     }
 
@@ -45,34 +52,42 @@ public class BedDesignation extends AbstractPersistableJackson {
     // Complex methods
     // ************************************************************************
 
+    @JsonIgnore
     public Patient getPatient() {
         return admissionPart.getPatient();
     }
 
+    @JsonIgnore
     public Gender getPatientGender() {
         return admissionPart.getPatient().getGender();
     }
 
+    @JsonIgnore
     public int getPatientAge() {
         return admissionPart.getPatient().getAge();
     }
 
+    @JsonIgnore
     public Integer getPatientPreferredMaximumRoomCapacity() {
         return admissionPart.getPatient().getPreferredMaximumRoomCapacity();
     }
 
+    @JsonIgnore
     public Specialism getAdmissionPartSpecialism() {
         return admissionPart.getSpecialism();
     }
 
+    @JsonIgnore
     public int getFirstNightIndex() {
         return admissionPart.getFirstNight().getIndex();
     }
 
+    @JsonIgnore
     public int getLastNightIndex() {
         return admissionPart.getLastNight().getIndex();
     }
 
+    @JsonIgnore
     public int getAdmissionPartNightCount() {
         return admissionPart.getNightCount();
     }

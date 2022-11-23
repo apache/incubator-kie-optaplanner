@@ -332,15 +332,10 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 }
 
                 String[] patientTokens = splitBySpace(lineTokens[0], 4);
-                Patient patient = new Patient();
-                patient.setId(Long.parseLong(patientTokens[0]));
-                patient.setName(patientTokens[1]);
-                patient.setAge(Integer.parseInt(patientTokens[2]));
-                patient.setGender(Gender.valueOfCode(patientTokens[3]));
                 int preferredMaximumRoomCapacity = Integer.parseInt(lineTokens[3]);
-                patient.setPreferredMaximumRoomCapacity(preferredMaximumRoomCapacity == 0
-                        ? null
-                        : preferredMaximumRoomCapacity);
+                Patient patient = new Patient(Long.parseLong(patientTokens[0]), patientTokens[1],
+                        Gender.valueOfCode(patientTokens[3]), Integer.parseInt(patientTokens[2]),
+                        preferredMaximumRoomCapacity == 0 ? null : preferredMaximumRoomCapacity);
                 patientList.add(patient);
 
                 String[] admissionPartTokens = splitBySpace(lineTokens[2]);
@@ -358,15 +353,11 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                         nextFirstNightIndex += admissionPartNightListSize;
                         continue;
                     }
-                    AdmissionPart admissionPart = new AdmissionPart();
-                    admissionPart.setId(admissionPartId);
-                    admissionPart.setPatient(patient);
                     Specialism specialism = (specialismId == 0) ? null : idToSpecialismMap.get(specialismId);
                     if (specialism == null) {
                         throw new IllegalArgumentException("Read line (" + line
                                 + ") has a non existing specialismId (" + specialismId + ").");
                     }
-                    admissionPart.setSpecialism(specialism);
                     int admissionPartFirstNightIndex = nextFirstNightIndex;
                     Night admissionPartFirstNight = indexToNightMap.get(admissionPartFirstNightIndex);
                     if (admissionPartFirstNight == null) {
@@ -374,7 +365,6 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                                 "The admissionPartFirstNight was not found for admissionPartFirstNightIndex("
                                         + admissionPartFirstNightIndex + ").");
                     }
-                    admissionPart.setFirstNight(admissionPartFirstNight);
                     int admissionPartLastNightIndex = nextFirstNightIndex + admissionPartNightListSize - 1;
                     // the official score function ignores any broken constraints after the planning horizon
                     if (admissionPartLastNightIndex >= nightListSize) {
@@ -386,7 +376,8 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                                 "The admissionPartLastNight was not found for admissionPartLastNightIndex("
                                         + admissionPartLastNightIndex + ").");
                     }
-                    admissionPart.setLastNight(admissionPartLastNight);
+                    AdmissionPart admissionPart = new AdmissionPart(admissionPartId, patient, admissionPartFirstNight,
+                            admissionPartLastNight, specialism);
                     admissionPartList.add(admissionPart);
                     admissionPartId++;
                     nextFirstNightIndex += admissionPartNightListSize;
@@ -409,10 +400,8 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 for (int j = 0; j < requiredPatientEquipmentTokens.length; j++) {
                     int hasEquipment = Integer.parseInt(requiredPatientEquipmentTokens[j]);
                     if (hasEquipment == 1) {
-                        RequiredPatientEquipment requiredPatientEquipment = new RequiredPatientEquipment();
-                        requiredPatientEquipment.setId(requiredPatientEquipmentId);
-                        requiredPatientEquipment.setPatient(patient);
-                        requiredPatientEquipment.setEquipment(indexToEquipmentMap.get(j));
+                        RequiredPatientEquipment requiredPatientEquipment =
+                                new RequiredPatientEquipment(requiredPatientEquipmentId, patient, indexToEquipmentMap.get(j));
                         requiredPatientEquipmentOfPatientList.add(requiredPatientEquipment);
                         requiredPatientEquipmentList.add(requiredPatientEquipment);
                         requiredPatientEquipmentId++;
@@ -436,12 +425,10 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                     if (hasEquipment == 1) {
                         boolean alreadyRequired = (Integer.parseInt(requiredPatientEquipmentTokens[j]) == 1);
                         // Official spec: if equipment is required
-                        // then a duplicate preffered constraint should be ignored
+                        // then a duplicate preferred constraint should be ignored
                         if (!alreadyRequired) {
-                            PreferredPatientEquipment preferredPatientEquipment = new PreferredPatientEquipment();
-                            preferredPatientEquipment.setId(preferredPatientEquipmentId);
-                            preferredPatientEquipment.setPatient(patient);
-                            preferredPatientEquipment.setEquipment(indexToEquipmentMap.get(j));
+                            PreferredPatientEquipment preferredPatientEquipment = new PreferredPatientEquipment(
+                                    preferredPatientEquipmentId, patient, indexToEquipmentMap.get(j));
                             preferredPatientEquipmentOfPatientList.add(preferredPatientEquipment);
                             preferredPatientEquipmentList.add(preferredPatientEquipment);
                             preferredPatientEquipmentId++;
@@ -464,12 +451,10 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             List<BedDesignation> bedDesignationList = new ArrayList<>(admissionPartList.size());
             long id = 0L;
             for (AdmissionPart admissionPart : admissionPartList) {
-                BedDesignation bedDesignation = new BedDesignation();
-                bedDesignation.setId(id);
-                id++;
-                bedDesignation.setAdmissionPart(admissionPart);
                 // Notice that we leave the PlanningVariable properties on null
+                BedDesignation bedDesignation = new BedDesignation(id, admissionPart);
                 bedDesignationList.add(bedDesignation);
+                id++;
             }
             patientAdmissionSchedule.setBedDesignationList(bedDesignationList);
         }

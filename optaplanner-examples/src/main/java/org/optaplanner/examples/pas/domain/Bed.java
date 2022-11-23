@@ -1,13 +1,13 @@
 package org.optaplanner.examples.pas.domain;
 
 import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
-import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+@JsonIdentityInfo(scope = Bed.class, generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Bed extends AbstractPersistableJackson implements Labeled {
 
     private Room room;

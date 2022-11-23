@@ -1,15 +1,25 @@
 package org.optaplanner.examples.pas.domain;
 
 import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
-import org.optaplanner.examples.common.persistence.jackson.JacksonUniqueIdGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-@JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
+@JsonIdentityInfo(scope = PreferredPatientEquipment.class, generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class PreferredPatientEquipment extends AbstractPersistableJackson {
 
     private Patient patient;
     private Equipment equipment;
+
+    public PreferredPatientEquipment() { // For Jackson.
+    }
+
+    public PreferredPatientEquipment(long id, Patient patient, Equipment equipment) {
+        super(id);
+        this.patient = patient;
+        this.equipment = equipment;
+    }
 
     public Patient getPatient() {
         return patient;
