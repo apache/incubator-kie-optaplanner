@@ -24,7 +24,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         java-version: [ 11 ]
-        maven-version: [ '3.8.1' ]
+        maven-version: [ '3.8.6' ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} - Java ${{ matrix.java-version }} - Maven
@@ -43,7 +43,10 @@ jobs:
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
       - name: Build Chain
         uses: kiegroup/kogito-pipelines/.ci/actions/build-chain@1.13.x
+        env:
+          BUILD_MVN_OPTS: '-Dproductized'
         with:
+          definition-file: https://raw.githubusercontent.com/kiegroup/kogito-pipelines/1.13.x/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           flow-type: full-downstream
