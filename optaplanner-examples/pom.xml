@@ -52,6 +52,7 @@
           </ignoredUsedUndeclaredDependencies>
           <ignoredUnusedDeclaredDependencies>
             <dependency>org.optaplanner:optaplanner-core:jar</dependency>
+            <dependency>com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar</dependency>
           </ignoredUnusedDeclaredDependencies>
         </configuration>
       </plugin>
@@ -209,6 +210,10 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
     </dependency>
     <!-- Testing -->
     <dependency>
