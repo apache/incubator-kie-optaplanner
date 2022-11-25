@@ -3,7 +3,7 @@ package org.optaplanner.examples.examination.domain.solver;
 import java.util.Comparator;
 import java.util.Objects;
 
-import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.common.domain.AbstractPersistableJackson;
 import org.optaplanner.examples.examination.domain.Topic;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -12,7 +12,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * Calculated during initialization, not modified during score calculation.
  */
 @XStreamAlias("TopicConflict")
-public class TopicConflict extends AbstractPersistable implements Comparable<TopicConflict> {
+public class TopicConflict extends AbstractPersistableJackson implements Comparable<TopicConflict> {
 
     private static final Comparator<Topic> TOPIC_COMPARATOR = Comparator.comparingLong(Topic::getId);
     private static final Comparator<TopicConflict> COMPARATOR = Comparator

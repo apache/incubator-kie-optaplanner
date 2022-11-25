@@ -33,8 +33,7 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<Tra
 
         @Override
         public TravelingTournament readSolution() throws IOException {
-            TravelingTournament travelingTournament = new TravelingTournament();
-            travelingTournament.setId(0L);
+            TravelingTournament travelingTournament = new TravelingTournament(0L);
             int n = readN();
             readTeamList(travelingTournament, n);
             createDayList(travelingTournament, n);
