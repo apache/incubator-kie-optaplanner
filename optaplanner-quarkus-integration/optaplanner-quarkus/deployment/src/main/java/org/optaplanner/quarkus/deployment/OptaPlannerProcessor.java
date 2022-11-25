@@ -498,7 +498,7 @@ class OptaPlannerProcessor {
         }
 
         if (solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList() != null) {
-            boolean isKogitoExtensionPresent = capabilities.isPresent("org.kie.kogito.rules");
+            boolean isKogitoExtensionPresent = capabilities.isPresent("kogito-rules");
             if (!isKogitoExtensionPresent) {
                 throw new IllegalStateException(
                         "Using scoreDRL in Quarkus, but the dependency org.kie.kogito:kogito-quarkus-rules is not on the classpath.\n"

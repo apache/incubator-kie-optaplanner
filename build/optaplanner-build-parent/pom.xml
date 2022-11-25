@@ -25,7 +25,7 @@
     <!-- Normal dependency versions -->
     <version.ch.qos.logback>1.2.10</version.ch.qos.logback>
     <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
-    <version.io.quarkus>2.13.4.Final</version.io.quarkus>
+    <version.io.quarkus>2.7.4.Final</version.io.quarkus>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
     <version.org.apache.commons.text>1.9</version.org.apache.commons.text>
     <version.org.apache.poi>4.1.2</version.org.apache.poi>
@@ -34,8 +34,6 @@
     <version.org.jfree.jfreechart>1.5.3</version.org.jfree.jfreechart>
     <version.org.springframework>5.3.18</version.org.springframework>
     <version.org.springframework.boot>2.6.6</version.org.springframework.boot>
-    <version.org.assertj>3.22.0</version.org.assertj>
-    <version.com.github.javaparser>3.23.1</version.com.github.javaparser> <!-- Keep align with Drools 7 -->
 
     <!-- ************************************************************************ -->
     <!-- Plugins -->
@@ -196,16 +194,6 @@
         <groupId>org.jfree</groupId>
         <artifactId>jfreechart</artifactId>
         <version>${version.org.jfree.jfreechart}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.github.javaparser</groupId>
-        <artifactId>javaparser-core</artifactId>
-        <version>${version.com.github.javaparser}</version>
-        </dependency>
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>${version.org.assertj}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
