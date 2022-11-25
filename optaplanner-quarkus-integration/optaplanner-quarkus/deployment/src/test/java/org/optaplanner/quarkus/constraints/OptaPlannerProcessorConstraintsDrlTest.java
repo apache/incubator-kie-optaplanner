@@ -50,7 +50,7 @@ class OptaPlannerProcessorConstraintsDrlTest {
             .overrideConfigKey(OptaPlannerBuildTimeConfig.CONSTRAINTS_DRL_PROPERTY, CONSTRAINTS_DRL)
             .addBuildChainCustomizer(buildChainBuilder -> buildChainBuilder.addBuildStep(context -> {
                 context.produce(CapabilityBuildItem.class,
-                        new CapabilityBuildItem("org.kie.kogito.rules"));
+                        new CapabilityBuildItem("kogito-rules"));
             }).produces(CapabilityBuildItem.class).build());
 
     @Inject
