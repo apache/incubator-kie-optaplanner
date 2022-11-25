@@ -188,11 +188,6 @@
       <artifactId>log4j-to-slf4j</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <!-- XML -->
-    <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
-    </dependency>
     <!-- JSON -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

@@ -3,7 +3,7 @@ package org.optaplanner.examples.travelingtournament.persistence;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -60,7 +60,7 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<Tra
             List<Team> teamList = new ArrayList<>();
             for (int i = 0; i < n; i++) {
                 Team team = new Team(i, bufferedReader.readLine());
-                team.setDistanceToTeamMap(new HashMap<>());
+                team.setDistanceToTeamMap(new LinkedHashMap<>());
                 teamList.add(team);
             }
             travelingTournament.setTeamList(teamList);
