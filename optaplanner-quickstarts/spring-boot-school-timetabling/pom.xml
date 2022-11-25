@@ -15,7 +15,7 @@
     <version.org.webjars.webjars-locator>0.37</version.org.webjars.webjars-locator>
     <version.org.webjars.bootstrap>4.3.1</version.org.webjars.bootstrap>
     <version.org.webjars.font-awesome>5.11.2</version.org.webjars.font-awesome>
-    <version.org.webjars.momentjs>2.24.0</version.org.webjars.momentjs>
+    <version.org.webjars.momentjs>2.29.4</version.org.webjars.momentjs>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <compiler-plugin.version>3.8.1</compiler-plugin.version>
