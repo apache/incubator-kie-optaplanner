@@ -14,7 +14,7 @@
     <version.org.springframework.boot>2.5.12</version.org.springframework.boot>
     <version.org.webjars.webjars-locator>0.37</version.org.webjars.webjars-locator>
     <version.org.webjars.bootstrap>4.3.1</version.org.webjars.bootstrap>
-    <version.org.webjars.font-awesome>5.11.2</version.org.webjars.font-awesome>
+    <version.org.webjars.font-awesome>6.2.0</version.org.webjars.font-awesome>
     <version.org.webjars.momentjs>2.24.0</version.org.webjars.momentjs>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
