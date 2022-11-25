@@ -467,7 +467,7 @@
             Do not upgrade unless prepared to deal with JPMS issues.
             If upgrading, ensure build still passes with the full profile (-Dfull).
           -->
-          <version>3.0.1</version>
+          <version>3.4.1</version>
           <configuration>
             <author>false</author>
             <failOnError>true</failOnError>
