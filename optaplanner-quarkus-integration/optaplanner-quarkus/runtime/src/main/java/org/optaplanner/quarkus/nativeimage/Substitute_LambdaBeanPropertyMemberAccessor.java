@@ -25,23 +25,23 @@ public final class Substitute_LambdaBeanPropertyMemberAccessor {
     Method setterMethod;
 
     @Substitute
-    private Function createGetterFunction(MethodHandles.Lookup lookup) {
-        return new GetterFunctionDelegator(getterMethod);
+    private Function<Object, Object> createGetterFunction(MethodHandles.Lookup lookup) {
+        return new GetterDelegationFunction(getterMethod);
     }
 
     @Substitute
-    private BiConsumer createSetterFunction(MethodHandles.Lookup lookup) {
+    private BiConsumer<Object, Object> createSetterFunction(MethodHandles.Lookup lookup) {
         if (setterMethod == null) {
             return null;
         }
 
-        return new SetterFunctionDelegator(setterMethod);
+        return new SetterDelegationBiConsumer(setterMethod);
     }
 
-    private static final class GetterFunctionDelegator implements Function {
+    private static final class GetterDelegationFunction implements Function<Object, Object> {
         private final Method method;
 
-        public GetterFunctionDelegator(Method method) {
+        public GetterDelegationFunction(Method method) {
             this.method = method;
         }
 
@@ -55,10 +55,10 @@ public final class Substitute_LambdaBeanPropertyMemberAccessor {
         }
     }
 
-    private static final class SetterFunctionDelegator implements BiConsumer {
+    private static final class SetterDelegationBiConsumer implements BiConsumer<Object, Object> {
         private final Method method;
 
-        public SetterFunctionDelegator(Method method) {
+        public SetterDelegationBiConsumer(Method method) {
             this.method = method;
         }
 
