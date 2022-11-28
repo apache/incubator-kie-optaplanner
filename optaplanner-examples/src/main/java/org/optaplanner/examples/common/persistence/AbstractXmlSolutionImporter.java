@@ -6,10 +6,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.input.sax.XMLReaders;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 
@@ -30,7 +31,7 @@ public abstract class AbstractXmlSolutionImporter<Solution_> extends AbstractSol
     @Override
     public Solution_ readSolution(File inputFile) {
         try (InputStream in = new BufferedInputStream(new FileInputStream(inputFile))) {
-            SAXBuilder builder = new SAXBuilder(false);
+            SAXBuilder builder = new SAXBuilder(XMLReaders.NONVALIDATING);
             builder.setExpandEntities(false); // CVE-2021-33813
             Document document = builder.build(in);
             XmlInputBuilder<Solution_> xmlInputBuilder = createXmlInputBuilder();
