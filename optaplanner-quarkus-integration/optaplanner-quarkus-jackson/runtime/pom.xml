@@ -25,6 +25,7 @@
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-jackson</artifactId>
+      <scope>runtime</scope>
       <exclusions>
         <!-- Excluded due to incompatibility with the native image compilation. -->
         <exclusion>
