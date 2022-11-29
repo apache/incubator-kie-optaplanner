@@ -1,6 +1,6 @@
 package org.optaplanner.constraint.streams.bavet.bi;
 
-import static org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier.of;
+import static org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier.ofBi;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -116,25 +116,25 @@ public final class BavetScoringBiConstraintStream<Solution_, A, B>
                 int matchWeight = intMatchWeigher.applyAsInt(a, b);
                 constraint.assertCorrectImpact(matchWeight);
                 return weightedScoreImpacter.impactScore(matchWeight,
-                        of(score -> justificationMapping.apply(a, b, score), () -> indictedObjectsMapping.apply(a, b)));
+                        ofBi(constraint, justificationMapping, indictedObjectsMapping, a, b));
             };
         } else if (longMatchWeigher != null) {
             scoreImpacter = (a, b) -> {
                 long matchWeight = longMatchWeigher.applyAsLong(a, b);
                 constraint.assertCorrectImpact(matchWeight);
                 return weightedScoreImpacter.impactScore(matchWeight,
-                        of(score -> justificationMapping.apply(a, b, score), () -> indictedObjectsMapping.apply(a, b)));
+                        ofBi(constraint, justificationMapping, indictedObjectsMapping, a, b));
             };
         } else if (bigDecimalMatchWeigher != null) {
             scoreImpacter = (a, b) -> {
                 BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a, b);
                 constraint.assertCorrectImpact(matchWeight);
                 return weightedScoreImpacter.impactScore(matchWeight,
-                        of(score -> justificationMapping.apply(a, b, score), () -> indictedObjectsMapping.apply(a, b)));
+                        ofBi(constraint, justificationMapping, indictedObjectsMapping, a, b));
             };
         } else if (noMatchWeigher) {
             scoreImpacter = (a, b) -> weightedScoreImpacter.impactScore(1,
-                    of(score -> justificationMapping.apply(a, b, score), () -> indictedObjectsMapping.apply(a, b)));
+                    ofBi(constraint, justificationMapping, indictedObjectsMapping, a, b));
         } else {
             throw new IllegalStateException("Impossible state: neither of the supported match weighers provided.");
         }

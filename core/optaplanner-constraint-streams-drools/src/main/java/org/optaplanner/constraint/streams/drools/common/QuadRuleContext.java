@@ -1,6 +1,6 @@
 package org.optaplanner.constraint.streams.drools.common;
 
-import static org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier.of;
+import static org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier.ofQuad;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -43,8 +43,7 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC, variableD)
                             .execute((drools, scoreImpacter, a, b, c, d) -> {
                                 JustificationsSupplier justificationsSupplier =
-                                        of(score -> justificationMapping.apply(a, b, c, d, score),
-                                                () -> indictedObjectsMapping.apply(a, b, c, d));
+                                        ofQuad(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d);
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsInt(a, b, c, d),
                                         justificationsSupplier);
                             });
@@ -62,8 +61,7 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC, variableD)
                             .execute((drools, scoreImpacter, a, b, c, d) -> {
                                 JustificationsSupplier justificationsSupplier =
-                                        of(score -> justificationMapping.apply(a, b, c, d, score),
-                                                () -> indictedObjectsMapping.apply(a, b, c, d));
+                                        ofQuad(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d);
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsLong(a, b, c, d),
                                         justificationsSupplier);
                             });
@@ -81,8 +79,7 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC, variableD)
                             .execute((drools, scoreImpacter, a, b, c, d) -> {
                                 JustificationsSupplier justificationsSupplier =
-                                        of(score -> justificationMapping.apply(a, b, c, d, score),
-                                                () -> indictedObjectsMapping.apply(a, b, c, d));
+                                        ofQuad(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d);
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.apply(a, b, c, d),
                                         justificationsSupplier);
                             });

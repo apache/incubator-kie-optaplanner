@@ -1,6 +1,6 @@
 package org.optaplanner.constraint.streams.drools.common;
 
-import static org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier.of;
+import static org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier.ofUni;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -35,8 +35,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
                     return DSL.on(scoreImpacterGlobal, variable)
                             .execute((drools, scoreImpacter, a) -> {
                                 JustificationsSupplier justificationsSupplier =
-                                        of(score -> justificationMapping.apply(a, score),
-                                                () -> indictedObjectsMapping.apply(a));
+                                        ofUni(constraint, justificationMapping, indictedObjectsMapping, a);
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsInt(a),
                                         justificationsSupplier);
                             });
@@ -53,8 +52,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
                     return DSL.on(scoreImpacterGlobal, variable)
                             .execute((drools, scoreImpacter, a) -> {
                                 JustificationsSupplier justificationsSupplier =
-                                        of(score -> justificationMapping.apply(a, score),
-                                                () -> indictedObjectsMapping.apply(a));
+                                        ofUni(constraint, justificationMapping, indictedObjectsMapping, a);
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsLong(a),
                                         justificationsSupplier);
                             });
@@ -71,8 +69,7 @@ final class UniRuleContext<A> extends AbstractRuleContext {
                     return DSL.on(scoreImpacterGlobal, variable)
                             .execute((drools, scoreImpacter, a) -> {
                                 JustificationsSupplier justificationsSupplier =
-                                        of(score -> justificationMapping.apply(a, score),
-                                                () -> indictedObjectsMapping.apply(a));
+                                        ofUni(constraint, justificationMapping, indictedObjectsMapping, a);
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.apply(a),
                                         justificationsSupplier);
                             });
