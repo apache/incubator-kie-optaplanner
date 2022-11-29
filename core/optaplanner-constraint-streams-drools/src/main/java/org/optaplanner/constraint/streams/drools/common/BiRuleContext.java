@@ -1,6 +1,6 @@
 package org.optaplanner.constraint.streams.drools.common;
 
-import static org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier.ofBi;
+import static org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier.of;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -37,7 +37,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
                                 JustificationsSupplier justificationsSupplier =
-                                        ofBi(constraint, justificationMapping, indictedObjectsMapping, a, b);
+                                        of(constraint, justificationMapping, indictedObjectsMapping, a, b);
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsInt(a, b),
                                         justificationsSupplier);
                             });
@@ -54,7 +54,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
                                 JustificationsSupplier justificationsSupplier =
-                                        ofBi(constraint, justificationMapping, indictedObjectsMapping, a, b);
+                                        of(constraint, justificationMapping, indictedObjectsMapping, a, b);
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsLong(a, b),
                                         justificationsSupplier);
                             });
@@ -71,7 +71,7 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
                                 JustificationsSupplier justificationsSupplier =
-                                        ofBi(constraint, justificationMapping, indictedObjectsMapping, a, b);
+                                        of(constraint, justificationMapping, indictedObjectsMapping, a, b);
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.apply(a, b),
                                         justificationsSupplier);
                             });

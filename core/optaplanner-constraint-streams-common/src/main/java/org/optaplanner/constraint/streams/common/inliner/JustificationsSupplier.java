@@ -29,7 +29,7 @@ public final class JustificationsSupplier {
         return new JustificationsSupplier(DefaultConstraintJustification::of, Collections::emptyList);
     }
 
-    public static <A> JustificationsSupplier ofUni(Constraint constraint,
+    public static <A> JustificationsSupplier of(Constraint constraint,
             BiFunction<A, Score<?>, ConstraintJustification> justificationMapping,
             Function<A, Collection<Object>> indictedObjectsMapping,
             A a) {
@@ -66,7 +66,7 @@ public final class JustificationsSupplier {
                 + ") threw an exception collecting indicted objects from a tuple (" + factsToString(facts) + ").", cause);
     }
 
-    public static <A, B> JustificationsSupplier ofBi(Constraint constraint,
+    public static <A, B> JustificationsSupplier of(Constraint constraint,
             TriFunction<A, B, Score<?>, ConstraintJustification> justificationMapping,
             BiFunction<A, B, Collection<Object>> indictedObjectsMapping,
             A a, B b) {
@@ -87,7 +87,7 @@ public final class JustificationsSupplier {
         return new JustificationsSupplier(explainingJustificationMapping, explainingIndictedObjectsSupplier);
     }
 
-    public static <A, B, C> JustificationsSupplier ofTri(Constraint constraint,
+    public static <A, B, C> JustificationsSupplier of(Constraint constraint,
             QuadFunction<A, B, C, Score<?>, ConstraintJustification> justificationMapping,
             TriFunction<A, B, C, Collection<Object>> indictedObjectsMapping,
             A a, B b, C c) {
@@ -108,7 +108,7 @@ public final class JustificationsSupplier {
         return new JustificationsSupplier(explainingJustificationMapping, explainingIndictedObjectsSupplier);
     }
 
-    public static <A, B, C, D> JustificationsSupplier ofQuad(Constraint constraint,
+    public static <A, B, C, D> JustificationsSupplier of(Constraint constraint,
             PentaFunction<A, B, C, D, Score<?>, ConstraintJustification> justificationMapping,
             QuadFunction<A, B, C, D, Collection<Object>> indictedObjectsMapping,
             A a, B b, C c, D d) {

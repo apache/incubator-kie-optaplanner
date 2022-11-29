@@ -1,6 +1,6 @@
 package org.optaplanner.constraint.streams.drools.common;
 
-import static org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier.ofTri;
+import static org.optaplanner.constraint.streams.common.inliner.JustificationsSupplier.of;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -40,7 +40,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                             .execute((drools, scoreImpacter, a, b, c) -> {
                                 JustificationsSupplier justificationsSupplier =
-                                        ofTri(constraint, justificationMapping, indictedObjectsMapping, a, b, c);
+                                        of(constraint, justificationMapping, indictedObjectsMapping, a, b, c);
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsInt(a, b, c),
                                         justificationsSupplier);
                             });
@@ -57,7 +57,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                             .execute((drools, scoreImpacter, a, b, c) -> {
                                 JustificationsSupplier justificationsSupplier =
-                                        ofTri(constraint, justificationMapping, indictedObjectsMapping, a, b, c);
+                                        of(constraint, justificationMapping, indictedObjectsMapping, a, b, c);
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsLong(a, b, c),
                                         justificationsSupplier);
                             });
@@ -74,7 +74,7 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                             .execute((drools, scoreImpacter, a, b, c) -> {
                                 JustificationsSupplier justificationsSupplier =
-                                        ofTri(constraint, justificationMapping, indictedObjectsMapping, a, b, c);
+                                        of(constraint, justificationMapping, indictedObjectsMapping, a, b, c);
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.apply(a, b, c),
                                         justificationsSupplier);
                             });
