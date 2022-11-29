@@ -18,7 +18,7 @@
     <version.org.webjars.momentjs>2.24.0</version.org.webjars.momentjs>
 
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <compiler-plugin.version>3.8.1</compiler-plugin.version>
+    <compiler-plugin.version>3.8.1-jboss-2</compiler-plugin.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <surefire-plugin.version>2.22.2</surefire-plugin.version>
