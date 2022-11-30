@@ -29,7 +29,10 @@ final class HardMediumSoftLongScoreInliner extends AbstractScoreInliner<HardMedi
                         long hardImpact = ctx.getConstraintWeight().getHardScore() * matchWeight;
                         this.hardScore += hardImpact;
                         UndoScoreImpacter undoScoreImpact = () -> this.hardScore -= hardImpact;
-                        return impactAndMaybeConstraintMatch(undoScoreImpact, ctx, HardMediumSoftLongScore.ofHard(hardImpact),
+                        if (!ctx.isConstraintMatchEnabled()) {
+                            return undoScoreImpact;
+                        }
+                        return impactWithConstraintMatch(ctx, undoScoreImpact, HardMediumSoftLongScore.ofHard(hardImpact),
                                 justificationsSupplier);
                     });
         } else if (hardConstraintWeight == 0L && softConstraintWeight == 0L) {
@@ -39,8 +42,11 @@ final class HardMediumSoftLongScoreInliner extends AbstractScoreInliner<HardMedi
                         long mediumImpact = ctx.getConstraintWeight().getMediumScore() * matchWeight;
                         this.mediumScore += mediumImpact;
                         UndoScoreImpacter undoScoreImpact = () -> this.mediumScore -= mediumImpact;
-                        return impactAndMaybeConstraintMatch(undoScoreImpact, ctx,
-                                HardMediumSoftLongScore.ofMedium(mediumImpact), justificationsSupplier);
+                        if (!ctx.isConstraintMatchEnabled()) {
+                            return undoScoreImpact;
+                        }
+                        return impactWithConstraintMatch(ctx, undoScoreImpact, HardMediumSoftLongScore.ofMedium(mediumImpact),
+                                justificationsSupplier);
                     });
         } else if (hardConstraintWeight == 0L && mediumConstraintWeight == 0L) {
             return WeightedScoreImpacter.of(context,
@@ -49,7 +55,10 @@ final class HardMediumSoftLongScoreInliner extends AbstractScoreInliner<HardMedi
                         long softImpact = ctx.getConstraintWeight().getSoftScore() * matchWeight;
                         this.softScore += softImpact;
                         UndoScoreImpacter undoScoreImpact = () -> this.softScore -= softImpact;
-                        return impactAndMaybeConstraintMatch(undoScoreImpact, ctx, HardMediumSoftLongScore.ofSoft(softImpact),
+                        if (!ctx.isConstraintMatchEnabled()) {
+                            return undoScoreImpact;
+                        }
+                        return impactWithConstraintMatch(ctx, undoScoreImpact, HardMediumSoftLongScore.ofSoft(softImpact),
                                 justificationsSupplier);
                     });
         } else {
@@ -67,7 +76,10 @@ final class HardMediumSoftLongScoreInliner extends AbstractScoreInliner<HardMedi
                             this.mediumScore -= mediumImpact;
                             this.softScore -= softImpact;
                         };
-                        return impactAndMaybeConstraintMatch(undoScoreImpact, ctx,
+                        if (!ctx.isConstraintMatchEnabled()) {
+                            return undoScoreImpact;
+                        }
+                        return impactWithConstraintMatch(ctx, undoScoreImpact,
                                 HardMediumSoftLongScore.of(hardImpact, mediumImpact, softImpact), justificationsSupplier);
                     });
         }

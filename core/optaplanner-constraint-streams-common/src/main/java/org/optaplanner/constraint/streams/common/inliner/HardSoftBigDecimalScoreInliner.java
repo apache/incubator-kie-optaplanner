@@ -27,7 +27,10 @@ final class HardSoftBigDecimalScoreInliner extends AbstractScoreInliner<HardSoft
                         BigDecimal hardImpact = ctx.getConstraintWeight().getHardScore().multiply(matchWeight);
                         this.hardScore = this.hardScore.add(hardImpact);
                         UndoScoreImpacter undoScoreImpact = () -> this.hardScore = this.hardScore.subtract(hardImpact);
-                        return impactAndMaybeConstraintMatch(undoScoreImpact, ctx, HardSoftBigDecimalScore.ofHard(hardImpact),
+                        if (!ctx.isConstraintMatchEnabled()) {
+                            return undoScoreImpact;
+                        }
+                        return impactWithConstraintMatch(ctx, undoScoreImpact, HardSoftBigDecimalScore.ofHard(hardImpact),
                                 justificationsSupplier);
                     });
         } else if (constraintWeight.getHardScore().equals(BigDecimal.ZERO)) {
@@ -37,7 +40,10 @@ final class HardSoftBigDecimalScoreInliner extends AbstractScoreInliner<HardSoft
                         BigDecimal softImpact = ctx.getConstraintWeight().getSoftScore().multiply(matchWeight);
                         this.softScore = this.softScore.add(softImpact);
                         UndoScoreImpacter undoScoreImpact = () -> this.softScore = this.softScore.subtract(softImpact);
-                        return impactAndMaybeConstraintMatch(undoScoreImpact, ctx, HardSoftBigDecimalScore.ofSoft(softImpact),
+                        if (!ctx.isConstraintMatchEnabled()) {
+                            return undoScoreImpact;
+                        }
+                        return impactWithConstraintMatch(ctx, undoScoreImpact, HardSoftBigDecimalScore.ofSoft(softImpact),
                                 justificationsSupplier);
                     });
         } else {
@@ -52,7 +58,10 @@ final class HardSoftBigDecimalScoreInliner extends AbstractScoreInliner<HardSoft
                             this.hardScore = this.hardScore.subtract(hardImpact);
                             this.softScore = this.softScore.subtract(softImpact);
                         };
-                        return impactAndMaybeConstraintMatch(undoScoreImpact, ctx,
+                        if (!ctx.isConstraintMatchEnabled()) {
+                            return undoScoreImpact;
+                        }
+                        return impactWithConstraintMatch(ctx, undoScoreImpact,
                                 HardSoftBigDecimalScore.of(hardImpact, softImpact), justificationsSupplier);
                     });
         }

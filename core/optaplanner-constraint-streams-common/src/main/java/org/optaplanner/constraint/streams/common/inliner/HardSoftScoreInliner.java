@@ -25,7 +25,10 @@ final class HardSoftScoreInliner extends AbstractScoreInliner<HardSoftScore> {
                         int hardImpact = ctx.getConstraintWeight().getHardScore() * matchWeight;
                         this.hardScore += hardImpact;
                         UndoScoreImpacter undoScoreImpact = () -> this.hardScore -= hardImpact;
-                        return impactAndMaybeConstraintMatch(undoScoreImpact, ctx, HardSoftScore.ofHard(hardImpact),
+                        if (!ctx.isConstraintMatchEnabled()) {
+                            return undoScoreImpact;
+                        }
+                        return impactWithConstraintMatch(ctx, undoScoreImpact, HardSoftScore.ofHard(hardImpact),
                                 justificationsSupplier);
                     });
         } else if (constraintWeight.getHardScore() == 0) {
@@ -35,7 +38,10 @@ final class HardSoftScoreInliner extends AbstractScoreInliner<HardSoftScore> {
                         int softImpact = ctx.getConstraintWeight().getSoftScore() * matchWeight;
                         this.softScore += softImpact;
                         UndoScoreImpacter undoScoreImpact = () -> this.softScore -= softImpact;
-                        return impactAndMaybeConstraintMatch(undoScoreImpact, ctx, HardSoftScore.ofSoft(softImpact),
+                        if (!ctx.isConstraintMatchEnabled()) {
+                            return undoScoreImpact;
+                        }
+                        return impactWithConstraintMatch(ctx, undoScoreImpact, HardSoftScore.ofSoft(softImpact),
                                 justificationsSupplier);
                     });
         } else {
@@ -50,7 +56,10 @@ final class HardSoftScoreInliner extends AbstractScoreInliner<HardSoftScore> {
                             this.hardScore -= hardImpact;
                             this.softScore -= softImpact;
                         };
-                        return impactAndMaybeConstraintMatch(undoScoreImpact, ctx, HardSoftScore.of(hardImpact, softImpact),
+                        if (!ctx.isConstraintMatchEnabled()) {
+                            return undoScoreImpact;
+                        }
+                        return impactWithConstraintMatch(ctx, undoScoreImpact, HardSoftScore.of(hardImpact, softImpact),
                                 justificationsSupplier);
                     });
         }

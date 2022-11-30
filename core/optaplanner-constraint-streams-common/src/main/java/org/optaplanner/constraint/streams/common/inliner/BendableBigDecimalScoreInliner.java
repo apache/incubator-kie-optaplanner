@@ -46,7 +46,10 @@ final class BendableBigDecimalScoreInliner extends AbstractScoreInliner<Bendable
                             this.hardScores[level] = this.hardScores[level].add(hardImpact);
                             UndoScoreImpacter undoScoreImpact =
                                     () -> this.hardScores[level] = this.hardScores[level].subtract(hardImpact);
-                            return impactAndMaybeConstraintMatch(undoScoreImpact, ctx,
+                            if (!ctx.isConstraintMatchEnabled()) {
+                                return undoScoreImpact;
+                            }
+                            return impactWithConstraintMatch(ctx, undoScoreImpact,
                                     BendableBigDecimalScore.ofHard(hardScores.length, softScores.length, level, hardImpact),
                                     justificationsSupplier);
                         });
@@ -59,7 +62,10 @@ final class BendableBigDecimalScoreInliner extends AbstractScoreInliner<Bendable
                             this.softScores[level] = this.softScores[level].add(softImpact);
                             UndoScoreImpacter undoScoreImpact =
                                     () -> this.softScores[level] = this.softScores[level].subtract(softImpact);
-                            return impactAndMaybeConstraintMatch(undoScoreImpact, ctx,
+                            if (!ctx.isConstraintMatchEnabled()) {
+                                return undoScoreImpact;
+                            }
+                            return impactWithConstraintMatch(ctx, undoScoreImpact,
                                     BendableBigDecimalScore.ofSoft(hardScores.length, softScores.length, level, softImpact),
                                     justificationsSupplier);
                         });
@@ -86,7 +92,10 @@ final class BendableBigDecimalScoreInliner extends AbstractScoreInliner<Bendable
                                 this.softScores[i] = this.softScores[i].subtract(softImpacts[i]);
                             }
                         };
-                        return impactAndMaybeConstraintMatch(undoScoreImpact, ctx,
+                        if (!ctx.isConstraintMatchEnabled()) {
+                            return undoScoreImpact;
+                        }
+                        return impactWithConstraintMatch(ctx, undoScoreImpact,
                                 BendableBigDecimalScore.of(hardImpacts, softImpacts), justificationsSupplier);
                     });
         }
