@@ -17,20 +17,21 @@ final class SimpleBigDecimalScoreInliner extends AbstractScoreInliner<SimpleBigD
     public WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint, SimpleBigDecimalScore constraintWeight) {
         validateConstraintWeight(constraint, constraintWeight);
         BigDecimal simpleConstraintWeight = constraintWeight.getScore();
-        return WeightedScoreImpacter.of((BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
-            BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
-            this.score = this.score.add(impact);
-            UndoScoreImpacter undoScoreImpact = () -> this.score = this.score.subtract(impact);
-            if (!constraintMatchEnabled) {
-                return undoScoreImpact;
-            }
-            Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                    SimpleBigDecimalScore.of(impact), justificationsSupplier);
-            return () -> {
-                undoScoreImpact.run();
-                undoConstraintMatch.run();
-            };
-        });
+        return WeightedScoreImpacter.of(constraintMatchEnabled,
+                (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
+                    BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
+                    this.score = this.score.add(impact);
+                    UndoScoreImpacter undoScoreImpact = () -> this.score = this.score.subtract(impact);
+                    if (!constraintMatchEnabled) {
+                        return undoScoreImpact;
+                    }
+                    Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                            SimpleBigDecimalScore.of(impact), justificationsSupplier);
+                    return () -> {
+                        undoScoreImpact.run();
+                        undoConstraintMatch.run();
+                    };
+                });
     }
 
     @Override

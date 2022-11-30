@@ -36,7 +36,7 @@ final class BendableBigDecimalScoreInliner extends AbstractScoreInliner<Bendable
             BigDecimal levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
             if (singleLevel < constraintWeight.getHardLevelsSize()) {
                 int level = singleLevel;
-                return WeightedScoreImpacter.of(
+                return WeightedScoreImpacter.of(constraintMatchEnabled,
                         (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
                             BigDecimal hardImpact = levelWeight.multiply(matchWeight);
                             this.hardScores[level] = this.hardScores[level].add(hardImpact);
@@ -55,7 +55,7 @@ final class BendableBigDecimalScoreInliner extends AbstractScoreInliner<Bendable
                         });
             } else {
                 int level = singleLevel - constraintWeight.getHardLevelsSize();
-                return WeightedScoreImpacter.of(
+                return WeightedScoreImpacter.of(constraintMatchEnabled,
                         (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
                             BigDecimal softImpact = levelWeight.multiply(matchWeight);
                             this.softScores[level] = this.softScores[level].add(softImpact);
@@ -74,7 +74,7 @@ final class BendableBigDecimalScoreInliner extends AbstractScoreInliner<Bendable
                         });
             }
         } else {
-            return WeightedScoreImpacter.of(
+            return WeightedScoreImpacter.of(constraintMatchEnabled,
                     (BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
                         BigDecimal[] hardImpacts = new BigDecimal[hardScores.length];
                         BigDecimal[] softImpacts = new BigDecimal[softScores.length];

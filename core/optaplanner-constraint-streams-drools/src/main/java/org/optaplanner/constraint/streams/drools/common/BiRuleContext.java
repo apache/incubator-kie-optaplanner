@@ -36,8 +36,9 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
                     BiFunction<A, B, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
-                                JustificationsSupplier justificationsSupplier =
-                                        of(constraint, justificationMapping, indictedObjectsMapping, a, b);
+                                JustificationsSupplier justificationsSupplier = scoreImpacter.isConstraintMatchEnabled()
+                                        ? of(constraint, justificationMapping, indictedObjectsMapping, a, b)
+                                        : null;
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsInt(a, b),
                                         justificationsSupplier);
                             });
@@ -53,8 +54,9 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
                     BiFunction<A, B, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
-                                JustificationsSupplier justificationsSupplier =
-                                        of(constraint, justificationMapping, indictedObjectsMapping, a, b);
+                                JustificationsSupplier justificationsSupplier = scoreImpacter.isConstraintMatchEnabled()
+                                        ? of(constraint, justificationMapping, indictedObjectsMapping, a, b)
+                                        : null;
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsLong(a, b),
                                         justificationsSupplier);
                             });
@@ -70,8 +72,9 @@ final class BiRuleContext<A, B> extends AbstractRuleContext {
                     BiFunction<A, B, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB)
                             .execute((drools, scoreImpacter, a, b) -> {
-                                JustificationsSupplier justificationsSupplier =
-                                        of(constraint, justificationMapping, indictedObjectsMapping, a, b);
+                                JustificationsSupplier justificationsSupplier = scoreImpacter.isConstraintMatchEnabled()
+                                        ? of(constraint, justificationMapping, indictedObjectsMapping, a, b)
+                                        : null;
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.apply(a, b),
                                         justificationsSupplier);
                             });

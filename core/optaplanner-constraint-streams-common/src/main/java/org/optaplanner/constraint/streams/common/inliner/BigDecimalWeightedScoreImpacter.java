@@ -6,9 +6,11 @@ import java.util.Objects;
 final class BigDecimalWeightedScoreImpacter implements WeightedScoreImpacter {
 
     private final BigDecimalImpactFunction impactFunction;
+    private final boolean constraintMatchEnabled;
 
-    public BigDecimalWeightedScoreImpacter(BigDecimalImpactFunction impactFunction) {
+    public BigDecimalWeightedScoreImpacter(BigDecimalImpactFunction impactFunction, boolean constraintMatchEnabled) {
         this.impactFunction = Objects.requireNonNull(impactFunction);
+        this.constraintMatchEnabled = constraintMatchEnabled;
     }
 
     @Override
@@ -24,6 +26,11 @@ final class BigDecimalWeightedScoreImpacter implements WeightedScoreImpacter {
     @Override
     public UndoScoreImpacter impactScore(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
         return impactFunction.impact(matchWeight, justificationsSupplier);
+    }
+
+    @Override
+    public boolean isConstraintMatchEnabled() {
+        return constraintMatchEnabled;
     }
 
 }

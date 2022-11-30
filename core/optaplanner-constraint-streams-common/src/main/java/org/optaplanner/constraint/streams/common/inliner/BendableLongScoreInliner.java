@@ -33,69 +33,72 @@ public final class BendableLongScoreInliner extends AbstractScoreInliner<Bendabl
             long levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
             if (singleLevel < constraintWeight.getHardLevelsSize()) {
                 int level = singleLevel;
-                return WeightedScoreImpacter.of((long matchWeight, JustificationsSupplier justificationsSupplier) -> {
-                    long hardImpact = levelWeight * matchWeight;
-                    this.hardScores[level] += hardImpact;
-                    UndoScoreImpacter undoScoreImpact = () -> this.hardScores[level] -= hardImpact;
-                    if (!constraintMatchEnabled) {
-                        return undoScoreImpact;
-                    }
-                    Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                            BendableLongScore.ofHard(hardScores.length, softScores.length, level, hardImpact),
-                            justificationsSupplier);
-                    return () -> {
-                        undoScoreImpact.run();
-                        undoConstraintMatch.run();
-                    };
-                });
+                return WeightedScoreImpacter.of(constraintMatchEnabled,
+                        (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
+                            long hardImpact = levelWeight * matchWeight;
+                            this.hardScores[level] += hardImpact;
+                            UndoScoreImpacter undoScoreImpact = () -> this.hardScores[level] -= hardImpact;
+                            if (!constraintMatchEnabled) {
+                                return undoScoreImpact;
+                            }
+                            Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                                    BendableLongScore.ofHard(hardScores.length, softScores.length, level, hardImpact),
+                                    justificationsSupplier);
+                            return () -> {
+                                undoScoreImpact.run();
+                                undoConstraintMatch.run();
+                            };
+                        });
             } else {
                 int level = singleLevel - constraintWeight.getHardLevelsSize();
-                return WeightedScoreImpacter.of((long matchWeight, JustificationsSupplier justificationsSupplier) -> {
-                    long softImpact = levelWeight * matchWeight;
-                    this.softScores[level] += softImpact;
-                    UndoScoreImpacter undoScoreImpact = () -> this.softScores[level] -= softImpact;
-                    if (!constraintMatchEnabled) {
-                        return undoScoreImpact;
-                    }
-                    Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                            BendableLongScore.ofSoft(hardScores.length, softScores.length, level, softImpact),
-                            justificationsSupplier);
-                    return () -> {
-                        undoScoreImpact.run();
-                        undoConstraintMatch.run();
-                    };
-                });
+                return WeightedScoreImpacter.of(constraintMatchEnabled,
+                        (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
+                            long softImpact = levelWeight * matchWeight;
+                            this.softScores[level] += softImpact;
+                            UndoScoreImpacter undoScoreImpact = () -> this.softScores[level] -= softImpact;
+                            if (!constraintMatchEnabled) {
+                                return undoScoreImpact;
+                            }
+                            Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                                    BendableLongScore.ofSoft(hardScores.length, softScores.length, level, softImpact),
+                                    justificationsSupplier);
+                            return () -> {
+                                undoScoreImpact.run();
+                                undoConstraintMatch.run();
+                            };
+                        });
             }
         } else {
-            return WeightedScoreImpacter.of((long matchWeight, JustificationsSupplier justificationsSupplier) -> {
-                long[] hardImpacts = new long[hardScores.length];
-                long[] softImpacts = new long[softScores.length];
-                for (int i = 0; i < hardImpacts.length; i++) {
-                    hardImpacts[i] = constraintWeight.getHardScore(i) * matchWeight;
-                    this.hardScores[i] += hardImpacts[i];
-                }
-                for (int i = 0; i < softImpacts.length; i++) {
-                    softImpacts[i] = constraintWeight.getSoftScore(i) * matchWeight;
-                    this.softScores[i] += softImpacts[i];
-                }
-                UndoScoreImpacter undoScoreImpact = () -> {
-                    for (int i = 0; i < hardImpacts.length; i++) {
-                        this.hardScores[i] -= hardImpacts[i];
-                    }
-                    for (int i = 0; i < softImpacts.length; i++) {
-                        this.softScores[i] -= softImpacts[i];
-                    }
-                };
-                if (!constraintMatchEnabled) {
-                    return undoScoreImpact;
-                }
-                Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                        BendableLongScore.of(hardImpacts, softImpacts), justificationsSupplier);
-                return () -> {
-                    undoScoreImpact.run();
-                    undoConstraintMatch.run();
-                };
-            });
+            return WeightedScoreImpacter.of(constraintMatchEnabled,
+                    (long matchWeight, JustificationsSupplier justificationsSupplier) -> {
+                        long[] hardImpacts = new long[hardScores.length];
+                        long[] softImpacts = new long[softScores.length];
+                        for (int i = 0; i < hardImpacts.length; i++) {
+                            hardImpacts[i] = constraintWeight.getHardScore(i) * matchWeight;
+                            this.hardScores[i] += hardImpacts[i];
+                        }
+                        for (int i = 0; i < softImpacts.length; i++) {
+                            softImpacts[i] = constraintWeight.getSoftScore(i) * matchWeight;
+                            this.softScores[i] += softImpacts[i];
+                        }
+                        UndoScoreImpacter undoScoreImpact = () -> {
+                            for (int i = 0; i < hardImpacts.length; i++) {
+                                this.hardScores[i] -= hardImpacts[i];
+                            }
+                            for (int i = 0; i < softImpacts.length; i++) {
+                                this.softScores[i] -= softImpacts[i];
+                            }
+                        };
+                        if (!constraintMatchEnabled) {
+                            return undoScoreImpact;
+                        }
+                        Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
+                                BendableLongScore.of(hardImpacts, softImpacts), justificationsSupplier);
+                        return () -> {
+                            undoScoreImpact.run();
+                            undoConstraintMatch.run();
+                        };
+                    });
         }
     }
 

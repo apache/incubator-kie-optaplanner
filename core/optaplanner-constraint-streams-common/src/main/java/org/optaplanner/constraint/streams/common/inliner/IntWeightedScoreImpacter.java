@@ -6,9 +6,11 @@ import java.util.Objects;
 final class IntWeightedScoreImpacter implements WeightedScoreImpacter {
 
     private final IntImpactFunction impactFunction;
+    private final boolean constraintMatchEnabled;
 
-    public IntWeightedScoreImpacter(IntImpactFunction impactFunction) {
+    public IntWeightedScoreImpacter(IntImpactFunction impactFunction, boolean constraintMatchEnabled) {
         this.impactFunction = Objects.requireNonNull(impactFunction);
+        this.constraintMatchEnabled = constraintMatchEnabled;
     }
 
     @Override
@@ -24,6 +26,11 @@ final class IntWeightedScoreImpacter implements WeightedScoreImpacter {
     @Override
     public UndoScoreImpacter impactScore(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
         throw new UnsupportedOperationException("Impossible state: passing BigDecimal into an int impacter.");
+    }
+
+    @Override
+    public boolean isConstraintMatchEnabled() {
+        return constraintMatchEnabled;
     }
 
 }

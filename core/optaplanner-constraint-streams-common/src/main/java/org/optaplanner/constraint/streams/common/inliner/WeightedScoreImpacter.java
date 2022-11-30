@@ -21,38 +21,43 @@ import java.math.BigDecimal;
  */
 public interface WeightedScoreImpacter {
 
-    static WeightedScoreImpacter of(IntImpactFunction impactFunction) {
-        return new IntWeightedScoreImpacter(impactFunction);
+    static WeightedScoreImpacter of(boolean constraintMatchEnabled, IntImpactFunction impactFunction) {
+        return new IntWeightedScoreImpacter(impactFunction, constraintMatchEnabled);
     }
 
-    static WeightedScoreImpacter of(LongImpactFunction impactFunction) {
-        return new LongWeightedScoreImpacter(impactFunction);
+    static WeightedScoreImpacter of(boolean constraintMatchEnabled, LongImpactFunction impactFunction) {
+        return new LongWeightedScoreImpacter(impactFunction, constraintMatchEnabled);
     }
 
-    static WeightedScoreImpacter of(BigDecimalImpactFunction impactFunction) {
-        return new BigDecimalWeightedScoreImpacter(impactFunction);
+    static WeightedScoreImpacter of(boolean constraintMatchEnabled, BigDecimalImpactFunction impactFunction) {
+        return new BigDecimalWeightedScoreImpacter(impactFunction, constraintMatchEnabled);
     }
 
     /**
      * @param matchWeight never null
-     * @param justificationsSupplier never null
+     * @param justificationsSupplier ignored unless {@link #isConstraintMatchEnabled()} true
      * @return never null
      */
     UndoScoreImpacter impactScore(int matchWeight, JustificationsSupplier justificationsSupplier);
 
     /**
      * @param matchWeight never null
-     * @param justificationsSupplier never null
+     * @param justificationsSupplier ignored unless {@link #isConstraintMatchEnabled()} true
      * @return never null
      */
     UndoScoreImpacter impactScore(long matchWeight, JustificationsSupplier justificationsSupplier);
 
     /**
      * @param matchWeight never null
-     * @param justificationsSupplier never null
+     * @param justificationsSupplier ignored unless {@link #isConstraintMatchEnabled()} true
      * @return never null
      */
     UndoScoreImpacter impactScore(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier);
+
+    /**
+     * @return true if impacts will use constraint matching
+     */
+    boolean isConstraintMatchEnabled();
 
     @FunctionalInterface
     interface IntImpactFunction {
