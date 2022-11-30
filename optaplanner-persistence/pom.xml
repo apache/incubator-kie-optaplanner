@@ -39,7 +39,12 @@
       <dependency>
         <groupId>org.eclipse.persistence</groupId>
         <artifactId>org.eclipse.persistence.moxy</artifactId>
-        <version>2.7.6</version>
+        <version>4.0.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.parsson</groupId>
+        <artifactId>parsson</artifactId>
+        <version>1.0.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

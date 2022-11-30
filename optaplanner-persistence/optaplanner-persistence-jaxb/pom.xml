@@ -69,6 +69,11 @@
       <artifactId>org.eclipse.persistence.moxy</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.eclipse.parsson</groupId>
+      <artifactId>parsson</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- Testing -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>

@@ -65,7 +65,7 @@ public abstract class AbstractScoreJaxbAdapterTest {
     protected <Score_ extends Score<Score_>, W extends TestScoreWrapper<Score_>> void assertSerializeAndDeserializeJson(
             Score_ expectedScore,
             W input) {
-        System.setProperty("javax.xml.bind.context.factory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
+        System.setProperty("jakarta.xml.bind.JAXBContextFactory", "org.eclipse.persistence.jaxb.JAXBContextFactory");
 
         String jsonString;
         W output;
@@ -87,7 +87,7 @@ public abstract class AbstractScoreJaxbAdapterTest {
             StringReader reader = new StringReader(jsonString);
             output = (W) unmarshaller.unmarshal(reader);
 
-            System.clearProperty("javax.xml.bind.context.factory");
+            System.clearProperty("jakarta.xml.bind.JAXBContextFactory");
         } catch (JAXBException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
