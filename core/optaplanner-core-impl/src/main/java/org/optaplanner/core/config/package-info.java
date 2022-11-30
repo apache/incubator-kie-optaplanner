@@ -9,6 +9,6 @@
         elementFormDefault = XmlNsForm.QUALIFIED)
 package org.optaplanner.core.config;
 
-import javax.xml.bind.annotation.XmlNsForm;
+import jakarta.xml.bind.annotation.XmlNsForm;
 
 import org.optaplanner.core.config.solver.SolverConfig;
