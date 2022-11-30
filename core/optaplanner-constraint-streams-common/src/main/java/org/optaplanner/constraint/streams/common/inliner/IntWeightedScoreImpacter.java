@@ -3,19 +3,21 @@ package org.optaplanner.constraint.streams.common.inliner;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-final class IntWeightedScoreImpacter implements WeightedScoreImpacter {
+import org.optaplanner.core.api.score.Score;
 
-    private final IntImpactFunction impactFunction;
-    private final boolean constraintMatchEnabled;
+final class IntWeightedScoreImpacter<Score_ extends Score<Score_>> implements WeightedScoreImpacter<Score_> {
 
-    public IntWeightedScoreImpacter(IntImpactFunction impactFunction, boolean constraintMatchEnabled) {
+    private final IntImpactFunction<Score_> impactFunction;
+    private final ScoreImpacterContext<Score_> context;
+
+    public IntWeightedScoreImpacter(IntImpactFunction<Score_> impactFunction, ScoreImpacterContext<Score_> context) {
         this.impactFunction = Objects.requireNonNull(impactFunction);
-        this.constraintMatchEnabled = constraintMatchEnabled;
+        this.context = context;
     }
 
     @Override
     public UndoScoreImpacter impactScore(int matchWeight, JustificationsSupplier justificationsSupplier) {
-        return impactFunction.impact(matchWeight, justificationsSupplier);
+        return impactFunction.impact(context, matchWeight, justificationsSupplier);
     }
 
     @Override
@@ -29,8 +31,8 @@ final class IntWeightedScoreImpacter implements WeightedScoreImpacter {
     }
 
     @Override
-    public boolean isConstraintMatchEnabled() {
-        return constraintMatchEnabled;
+    public ScoreImpacterContext<Score_> getContext() {
+        return context;
     }
 
 }

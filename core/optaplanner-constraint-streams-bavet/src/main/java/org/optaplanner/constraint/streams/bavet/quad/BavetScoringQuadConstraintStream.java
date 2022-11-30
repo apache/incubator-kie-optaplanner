@@ -112,34 +112,38 @@ public final class BavetScoringQuadConstraintStream<Solution_, A, B, C, D>
             scoreImpacter = (a, b, c, d) -> {
                 int matchWeight = intMatchWeigher.applyAsInt(a, b, c, d);
                 constraint.assertCorrectImpact(matchWeight);
-                JustificationsSupplier justificationsSupplier = weightedScoreImpacter.isConstraintMatchEnabled()
-                        ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d)
-                        : null;
+                JustificationsSupplier justificationsSupplier =
+                        weightedScoreImpacter.getContext().isConstraintMatchEnabled()
+                                ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d)
+                                : null;
                 return weightedScoreImpacter.impactScore(matchWeight, justificationsSupplier);
             };
         } else if (longMatchWeigher != null) {
             scoreImpacter = (a, b, c, d) -> {
                 long matchWeight = longMatchWeigher.applyAsLong(a, b, c, d);
                 constraint.assertCorrectImpact(matchWeight);
-                JustificationsSupplier justificationsSupplier = weightedScoreImpacter.isConstraintMatchEnabled()
-                        ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d)
-                        : null;
+                JustificationsSupplier justificationsSupplier =
+                        weightedScoreImpacter.getContext().isConstraintMatchEnabled()
+                                ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d)
+                                : null;
                 return weightedScoreImpacter.impactScore(matchWeight, justificationsSupplier);
             };
         } else if (bigDecimalMatchWeigher != null) {
             scoreImpacter = (a, b, c, d) -> {
                 BigDecimal matchWeight = bigDecimalMatchWeigher.apply(a, b, c, d);
                 constraint.assertCorrectImpact(matchWeight);
-                JustificationsSupplier justificationsSupplier = weightedScoreImpacter.isConstraintMatchEnabled()
-                        ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d)
-                        : null;
+                JustificationsSupplier justificationsSupplier =
+                        weightedScoreImpacter.getContext().isConstraintMatchEnabled()
+                                ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d)
+                                : null;
                 return weightedScoreImpacter.impactScore(matchWeight, justificationsSupplier);
             };
         } else if (noMatchWeigher) {
             scoreImpacter = (a, b, c, d) -> {
-                JustificationsSupplier justificationsSupplier = weightedScoreImpacter.isConstraintMatchEnabled()
-                        ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d)
-                        : null;
+                JustificationsSupplier justificationsSupplier =
+                        weightedScoreImpacter.getContext().isConstraintMatchEnabled()
+                                ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d)
+                                : null;
                 return weightedScoreImpacter.impactScore(1, justificationsSupplier);
             };
         } else {

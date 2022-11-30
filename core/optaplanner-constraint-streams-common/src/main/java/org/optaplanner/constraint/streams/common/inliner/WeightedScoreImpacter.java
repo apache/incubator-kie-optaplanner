@@ -2,6 +2,8 @@ package org.optaplanner.constraint.streams.common.inliner;
 
 import java.math.BigDecimal;
 
+import org.optaplanner.core.api.score.Score;
+
 /**
  * There are several valid ways how an impacter could be called from a constraint stream:
  *
@@ -19,64 +21,67 @@ import java.math.BigDecimal;
  * for the method types it doesn't support. The CS API guarantees no types are mixed. For example,
  * a {@link BigDecimal} parameter method won't be called on an instance built with an {@link IntImpactFunction}.
  */
-public interface WeightedScoreImpacter {
+public interface WeightedScoreImpacter<Score_ extends Score<Score_>> {
 
-    static WeightedScoreImpacter of(boolean constraintMatchEnabled, IntImpactFunction impactFunction) {
-        return new IntWeightedScoreImpacter(impactFunction, constraintMatchEnabled);
+    static <Score_ extends Score<Score_>> WeightedScoreImpacter<Score_> of(ScoreImpacterContext<Score_> context,
+            IntImpactFunction<Score_> impactFunction) {
+        return new IntWeightedScoreImpacter<>(impactFunction, context);
     }
 
-    static WeightedScoreImpacter of(boolean constraintMatchEnabled, LongImpactFunction impactFunction) {
-        return new LongWeightedScoreImpacter(impactFunction, constraintMatchEnabled);
+    static <Score_ extends Score<Score_>> WeightedScoreImpacter<Score_> of(ScoreImpacterContext<Score_> context,
+            LongImpactFunction<Score_> impactFunction) {
+        return new LongWeightedScoreImpacter<>(impactFunction, context);
     }
 
-    static WeightedScoreImpacter of(boolean constraintMatchEnabled, BigDecimalImpactFunction impactFunction) {
-        return new BigDecimalWeightedScoreImpacter(impactFunction, constraintMatchEnabled);
+    static <Score_ extends Score<Score_>> WeightedScoreImpacter<Score_> of(ScoreImpacterContext<Score_> context,
+            BigDecimalImpactFunction<Score_> impactFunction) {
+        return new BigDecimalWeightedScoreImpacter<>(impactFunction, context);
     }
 
     /**
      * @param matchWeight never null
-     * @param justificationsSupplier ignored unless {@link #isConstraintMatchEnabled()} true
+     * @param justificationsSupplier ignored unless constraint match enableds
      * @return never null
      */
     UndoScoreImpacter impactScore(int matchWeight, JustificationsSupplier justificationsSupplier);
 
     /**
      * @param matchWeight never null
-     * @param justificationsSupplier ignored unless {@link #isConstraintMatchEnabled()} true
+     * @param justificationsSupplier ignored unless constraint match enabled
      * @return never null
      */
     UndoScoreImpacter impactScore(long matchWeight, JustificationsSupplier justificationsSupplier);
 
     /**
      * @param matchWeight never null
-     * @param justificationsSupplier ignored unless {@link #isConstraintMatchEnabled()} true
+     * @param justificationsSupplier ignored unless constraint match enabled
      * @return never null
      */
     UndoScoreImpacter impactScore(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier);
 
-    /**
-     * @return true if impacts will use constraint matching
-     */
-    boolean isConstraintMatchEnabled();
+    ScoreImpacterContext<Score_> getContext();
 
     @FunctionalInterface
-    interface IntImpactFunction {
+    interface IntImpactFunction<Score_ extends Score<Score_>> {
 
-        UndoScoreImpacter impact(int matchWeight, JustificationsSupplier justificationsSupplier);
+        UndoScoreImpacter impact(ScoreImpacterContext<Score_> context, int matchWeight,
+                JustificationsSupplier justificationsSupplier);
 
     }
 
     @FunctionalInterface
-    interface LongImpactFunction {
+    interface LongImpactFunction<Score_ extends Score<Score_>> {
 
-        UndoScoreImpacter impact(long matchWeight, JustificationsSupplier justificationsSupplier);
+        UndoScoreImpacter impact(ScoreImpacterContext<Score_> context, long matchWeight,
+                JustificationsSupplier justificationsSupplier);
 
     }
 
     @FunctionalInterface
-    interface BigDecimalImpactFunction {
+    interface BigDecimalImpactFunction<Score_ extends Score<Score_>> {
 
-        UndoScoreImpacter impact(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier);
+        UndoScoreImpacter impact(ScoreImpacterContext<Score_> context, BigDecimal matchWeight,
+                JustificationsSupplier justificationsSupplier);
 
     }
 

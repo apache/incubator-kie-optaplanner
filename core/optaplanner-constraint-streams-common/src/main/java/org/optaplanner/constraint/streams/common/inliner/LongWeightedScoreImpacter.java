@@ -3,24 +3,26 @@ package org.optaplanner.constraint.streams.common.inliner;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-final class LongWeightedScoreImpacter implements WeightedScoreImpacter {
+import org.optaplanner.core.api.score.Score;
 
-    private final LongImpactFunction impactFunction;
-    private final boolean constraintMatchEnabled;
+final class LongWeightedScoreImpacter<Score_ extends Score<Score_>> implements WeightedScoreImpacter<Score_> {
 
-    public LongWeightedScoreImpacter(LongImpactFunction impactFunction, boolean constraintMatchEnabled) {
+    private final LongImpactFunction<Score_> impactFunction;
+    private final ScoreImpacterContext<Score_> context;
+
+    public LongWeightedScoreImpacter(LongImpactFunction<Score_> impactFunction, ScoreImpacterContext<Score_> context) {
         this.impactFunction = Objects.requireNonNull(impactFunction);
-        this.constraintMatchEnabled = constraintMatchEnabled;
+        this.context = context;
     }
 
     @Override
     public UndoScoreImpacter impactScore(int matchWeight, JustificationsSupplier justificationsSupplier) {
-        return impactFunction.impact(matchWeight, justificationsSupplier); // int can be cast to long
+        return impactFunction.impact(context, matchWeight, justificationsSupplier); // int can be cast to long
     }
 
     @Override
     public UndoScoreImpacter impactScore(long matchWeight, JustificationsSupplier justificationsSupplier) {
-        return impactFunction.impact(matchWeight, justificationsSupplier);
+        return impactFunction.impact(context, matchWeight, justificationsSupplier);
     }
 
     @Override
@@ -29,8 +31,8 @@ final class LongWeightedScoreImpacter implements WeightedScoreImpacter {
     }
 
     @Override
-    public boolean isConstraintMatchEnabled() {
-        return constraintMatchEnabled;
+    public ScoreImpacterContext<Score_> getContext() {
+        return context;
     }
 
 }

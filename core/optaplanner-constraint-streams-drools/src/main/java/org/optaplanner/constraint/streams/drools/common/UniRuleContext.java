@@ -34,9 +34,10 @@ final class UniRuleContext<A> extends AbstractRuleContext {
                     Function<A, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variable)
                             .execute((drools, scoreImpacter, a) -> {
-                                JustificationsSupplier justificationsSupplier = scoreImpacter.isConstraintMatchEnabled()
-                                        ? of(constraint, justificationMapping, indictedObjectsMapping, a)
-                                        : null;
+                                JustificationsSupplier justificationsSupplier =
+                                        scoreImpacter.getContext().isConstraintMatchEnabled()
+                                                ? of(constraint, justificationMapping, indictedObjectsMapping, a)
+                                                : null;
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsInt(a),
                                         justificationsSupplier);
                             });
@@ -52,9 +53,10 @@ final class UniRuleContext<A> extends AbstractRuleContext {
                     Function<A, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variable)
                             .execute((drools, scoreImpacter, a) -> {
-                                JustificationsSupplier justificationsSupplier = scoreImpacter.isConstraintMatchEnabled()
-                                        ? of(constraint, justificationMapping, indictedObjectsMapping, a)
-                                        : null;
+                                JustificationsSupplier justificationsSupplier =
+                                        scoreImpacter.getContext().isConstraintMatchEnabled()
+                                                ? of(constraint, justificationMapping, indictedObjectsMapping, a)
+                                                : null;
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsLong(a),
                                         justificationsSupplier);
                             });
@@ -70,9 +72,10 @@ final class UniRuleContext<A> extends AbstractRuleContext {
                     Function<A, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variable)
                             .execute((drools, scoreImpacter, a) -> {
-                                JustificationsSupplier justificationsSupplier = scoreImpacter.isConstraintMatchEnabled()
-                                        ? of(constraint, justificationMapping, indictedObjectsMapping, a)
-                                        : null;
+                                JustificationsSupplier justificationsSupplier =
+                                        scoreImpacter.getContext().isConstraintMatchEnabled()
+                                                ? of(constraint, justificationMapping, indictedObjectsMapping, a)
+                                                : null;
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.apply(a),
                                         justificationsSupplier);
                             });

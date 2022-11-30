@@ -39,9 +39,10 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
                     TriFunction<A, B, C, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                             .execute((drools, scoreImpacter, a, b, c) -> {
-                                JustificationsSupplier justificationsSupplier = scoreImpacter.isConstraintMatchEnabled()
-                                        ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c)
-                                        : null;
+                                JustificationsSupplier justificationsSupplier =
+                                        scoreImpacter.getContext().isConstraintMatchEnabled()
+                                                ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c)
+                                                : null;
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsInt(a, b, c),
                                         justificationsSupplier);
                             });
@@ -57,9 +58,10 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
                     TriFunction<A, B, C, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                             .execute((drools, scoreImpacter, a, b, c) -> {
-                                JustificationsSupplier justificationsSupplier = scoreImpacter.isConstraintMatchEnabled()
-                                        ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c)
-                                        : null;
+                                JustificationsSupplier justificationsSupplier =
+                                        scoreImpacter.getContext().isConstraintMatchEnabled()
+                                                ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c)
+                                                : null;
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsLong(a, b, c),
                                         justificationsSupplier);
                             });
@@ -75,9 +77,10 @@ final class TriRuleContext<A, B, C> extends AbstractRuleContext {
                     TriFunction<A, B, C, Collection<Object>> indictedObjectsMapping = constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC)
                             .execute((drools, scoreImpacter, a, b, c) -> {
-                                JustificationsSupplier justificationsSupplier = scoreImpacter.isConstraintMatchEnabled()
-                                        ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c)
-                                        : null;
+                                JustificationsSupplier justificationsSupplier =
+                                        scoreImpacter.getContext().isConstraintMatchEnabled()
+                                                ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c)
+                                                : null;
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.apply(a, b, c),
                                         justificationsSupplier);
                             });

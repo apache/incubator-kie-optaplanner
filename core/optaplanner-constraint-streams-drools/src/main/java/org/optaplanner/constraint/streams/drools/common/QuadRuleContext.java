@@ -42,9 +42,10 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
                             constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC, variableD)
                             .execute((drools, scoreImpacter, a, b, c, d) -> {
-                                JustificationsSupplier justificationsSupplier = scoreImpacter.isConstraintMatchEnabled()
-                                        ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d)
-                                        : null;
+                                JustificationsSupplier justificationsSupplier =
+                                        scoreImpacter.getContext().isConstraintMatchEnabled()
+                                                ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d)
+                                                : null;
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsInt(a, b, c, d),
                                         justificationsSupplier);
                             });
@@ -61,9 +62,10 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
                             constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC, variableD)
                             .execute((drools, scoreImpacter, a, b, c, d) -> {
-                                JustificationsSupplier justificationsSupplier = scoreImpacter.isConstraintMatchEnabled()
-                                        ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d)
-                                        : null;
+                                JustificationsSupplier justificationsSupplier =
+                                        scoreImpacter.getContext().isConstraintMatchEnabled()
+                                                ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d)
+                                                : null;
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.applyAsLong(a, b, c, d),
                                         justificationsSupplier);
                             });
@@ -80,9 +82,10 @@ final class QuadRuleContext<A, B, C, D> extends AbstractRuleContext {
                             constraint.getIndictedObjectsMapping();
                     return DSL.on(scoreImpacterGlobal, variableA, variableB, variableC, variableD)
                             .execute((drools, scoreImpacter, a, b, c, d) -> {
-                                JustificationsSupplier justificationsSupplier = scoreImpacter.isConstraintMatchEnabled()
-                                        ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d)
-                                        : null;
+                                JustificationsSupplier justificationsSupplier =
+                                        scoreImpacter.getContext().isConstraintMatchEnabled()
+                                                ? of(constraint, justificationMapping, indictedObjectsMapping, a, b, c, d)
+                                                : null;
                                 runConsequence(constraint, drools, scoreImpacter, matchWeigher.apply(a, b, c, d),
                                         justificationsSupplier);
                             });
