@@ -4,7 +4,7 @@
  * The XML Benchmark configuration is backwards compatible for all elements,
  * except for elements that require the use of non public API classes.
  */
-@javax.xml.bind.annotation.XmlSchema(
+@jakarta.xml.bind.annotation.XmlSchema(
         namespace = PlannerBenchmarkConfig.XML_NAMESPACE,
         elementFormDefault = XmlNsForm.QUALIFIED,
         xmlns = {

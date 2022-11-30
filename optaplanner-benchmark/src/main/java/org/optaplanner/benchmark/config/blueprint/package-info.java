@@ -1,5 +1,5 @@
 
-@javax.xml.bind.annotation.XmlSchema(
+@jakarta.xml.bind.annotation.XmlSchema(
         namespace = PlannerBenchmarkConfig.XML_NAMESPACE,
         elementFormDefault = XmlNsForm.QUALIFIED)
 package org.optaplanner.benchmark.config.blueprint;
