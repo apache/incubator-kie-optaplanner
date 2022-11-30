@@ -54,13 +54,13 @@ build:
           bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn -f optaplanner-quickstarts/pom.xml versions:compare-dependencies -DremotePom=io.quarkus:quarkus-bom:${{ env.QUARKUS_VERSION }} -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
           bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn -f optaplanner-quickstarts/pom.xml versions:set-property -Dproperty=version.io.quarkus -DnewVersion=${{ env.QUARKUS_VERSION }} -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
           bash -c "cd optaplanner-quickstarts && if which git; then git diff; fi"
-        upstrea,: |
+        upstream: |
           bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn versions:compare-dependencies -DremotePom=io.quarkus:quarkus-bom:${{ env.QUARKUS_VERSION }} -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
           bash -c "if [ ! -z \"${{ env.QUARKUS_VERSION }}\" ]; then mvn versions:set-property -Dproperty=version.io.quarkus -DnewVersion=${{ env.QUARKUS_VERSION }} -DgenerateBackupPoms=false ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_QUARKUS_UPDATE }} ${{ env.OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS_QUARKUS_UPDATE }}; fi"
           bash -c "if which git; then git diff; fi"
       current: |
         mvn -f optaplanner-quickstarts/pom.xml clean install ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_CURRENT }} ${{ env.OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS }}
       upstream: |
-        mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env..OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS_UPSTREAM }}
+        mvn clean install -Dquickly ${{ env.BUILD_MVN_OPTS }} ${{ env.BUILD_MVN_OPTS_UPSTREAM }} ${{ env.OPTAPLANNER_QUICKSTARTS_BUILD_MVN_OPTS_UPSTREAM }}
     clone:
       - optaplanner-quickstarts
