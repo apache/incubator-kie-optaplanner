@@ -49,11 +49,11 @@
       <groupId>jakarta.json.bind</groupId>
       <artifactId>jakarta.json.bind-api</artifactId>
     </dependency>
-    <dependency>
+<!--  TODO - find a replacement  <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>jakarta.json</artifactId>
       <scope>runtime</scope>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.eclipse</groupId>
       <artifactId>yasson</artifactId>

@@ -58,24 +58,9 @@
     <!-- Hibernate -->
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
+      <artifactId>hibernate-core-jakarta</artifactId>
+      <!-- TODO: Remove after Hibernate switches to io.smallrye:jandex -->
       <exclusions>
-        <!-- Duplicates classes of jakarta.activation:jakarta.activation-api -->
-        <exclusion>
-          <groupId>javax.activation</groupId>
-          <artifactId>javax.activation-api</artifactId>
-        </exclusion>
-        <!-- Duplicates classes of jakarta.xml.bind:jakarta.xml.bind-api -->
-        <exclusion>
-          <groupId>javax.xml.bind</groupId>
-          <artifactId>jaxb-api</artifactId>
-        </exclusion>
-        <!-- TODO: remove once the hibernate-core switches to jakarta.transaction:jakarta.transaction-api. -->
-        <exclusion>
-          <groupId>org.jboss.spec.javax.transaction</groupId>
-          <artifactId>jboss-transaction-api_1.2_spec</artifactId>
-        </exclusion>
-        <!-- TODO: Remove after dropping the support of Quarkus 2.13. -->
         <exclusion>
           <groupId>org.jboss</groupId>
           <artifactId>jandex</artifactId>
@@ -110,7 +95,7 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.narayana.jta</groupId>
-      <artifactId>narayana-jta</artifactId>
+      <artifactId>narayana-jta-jakarta</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

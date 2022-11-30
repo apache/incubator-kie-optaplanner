@@ -27,7 +27,7 @@
     <version.org.apache.logging.log4j>2.17.2</version.org.apache.logging.log4j>
     <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
     <version.io.quarkiverse.operatorsdk>4.0.3</version.io.quarkiverse.operatorsdk>
-    <version.io.quarkus>2.14.1.Final</version.io.quarkus>
+    <version.io.quarkus>3.0.0.Alpha1</version.io.quarkus>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
     <version.org.apache.commons.text>1.9</version.org.apache.commons.text>
     <version.org.apache.poi>5.2.2</version.org.apache.poi>
@@ -529,7 +529,7 @@
           <artifactId>impsort-maven-plugin</artifactId>
           <version>1.7.0</version>
           <configuration>
-            <groups>java.,javax.,org.,com.</groups>
+            <groups>java.,javax.,jakarta.,org.,com.</groups>
             <staticGroups>*</staticGroups>
             <!-- keep in sync with the formatter-maven-plugin -->
             <skip>${formatter.skip}</skip>
@@ -546,7 +546,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>jaxb2-maven-plugin</artifactId>
-          <version>2.5.0</version>
+          <version>3.1.0</version>
           <executions>
             <execution>
               <id>schemagen</id>
