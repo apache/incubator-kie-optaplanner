@@ -22,15 +22,9 @@ final class SimpleBigDecimalScoreInliner extends AbstractScoreInliner<SimpleBigD
                     BigDecimal impact = simpleConstraintWeight.multiply(matchWeight);
                     this.score = this.score.add(impact);
                     UndoScoreImpacter undoScoreImpact = () -> this.score = this.score.subtract(impact);
-                    if (!constraintMatchEnabled) {
-                        return undoScoreImpact;
-                    }
-                    Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                            SimpleBigDecimalScore.of(impact), justificationsSupplier);
-                    return () -> {
-                        undoScoreImpact.run();
-                        undoConstraintMatch.run();
-                    };
+                    return impactAndMaybeConstraintMatch(undoScoreImpact, constraint, constraintWeight,
+                            SimpleBigDecimalScore.of(impact),
+                            justificationsSupplier);
                 });
     }
 

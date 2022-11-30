@@ -20,15 +20,9 @@ final class SimpleScoreInliner extends AbstractScoreInliner<SimpleScore> {
                     int impact = simpleConstraintWeight * matchWeight;
                     this.score += impact;
                     UndoScoreImpacter undoScoreImpact = () -> this.score -= impact;
-                    if (!constraintMatchEnabled) {
-                        return undoScoreImpact;
-                    }
-                    Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight, SimpleScore.of(impact),
+                    return impactAndMaybeConstraintMatch(undoScoreImpact, constraint, constraintWeight,
+                            SimpleScore.of(impact),
                             justificationsSupplier);
-                    return () -> {
-                        undoScoreImpact.run();
-                        undoConstraintMatch.run();
-                    };
                 });
     }
 

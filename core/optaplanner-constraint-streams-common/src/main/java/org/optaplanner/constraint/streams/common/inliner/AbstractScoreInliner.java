@@ -116,6 +116,18 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
      */
     public abstract WeightedScoreImpacter buildWeightedScoreImpacter(Constraint constraint, Score_ constraintWeight);
 
+    protected UndoScoreImpacter impactAndMaybeConstraintMatch(UndoScoreImpacter undoScoreImpact, Constraint constraint,
+            Score_ constraintWeight, Score_ score, JustificationsSupplier justificationsSupplier) {
+        if (!constraintMatchEnabled) {
+            return undoScoreImpact;
+        }
+        Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight, score, justificationsSupplier);
+        return () -> {
+            undoScoreImpact.run();
+            undoConstraintMatch.run();
+        };
+    }
+
     protected final Runnable addConstraintMatch(Constraint constraint, Score_ constraintWeight, Score_ score,
             JustificationsSupplier justificationsSupplier) {
         String constraintPackage = constraint.getConstraintPackage();

@@ -23,15 +23,9 @@ final class HardSoftLongScoreInliner extends AbstractScoreInliner<HardSoftLongSc
                         long hardImpact = hardConstraintWeight * matchWeight;
                         this.hardScore += hardImpact;
                         UndoScoreImpacter undoScoreImpact = () -> this.hardScore -= hardImpact;
-                        if (!constraintMatchEnabled) {
-                            return undoScoreImpact;
-                        }
-                        Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                                HardSoftLongScore.ofHard(hardImpact), justificationsSupplier);
-                        return () -> {
-                            undoScoreImpact.run();
-                            undoConstraintMatch.run();
-                        };
+                        return impactAndMaybeConstraintMatch(undoScoreImpact, constraint, constraintWeight,
+                                HardSoftLongScore.ofHard(hardImpact),
+                                justificationsSupplier);
                     });
         } else if (hardConstraintWeight == 0L) {
             return WeightedScoreImpacter.of(constraintMatchEnabled,
@@ -39,15 +33,9 @@ final class HardSoftLongScoreInliner extends AbstractScoreInliner<HardSoftLongSc
                         long softImpact = softConstraintWeight * matchWeight;
                         this.softScore += softImpact;
                         UndoScoreImpacter undoScoreImpact = () -> this.softScore -= softImpact;
-                        if (!constraintMatchEnabled) {
-                            return undoScoreImpact;
-                        }
-                        Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                                HardSoftLongScore.ofSoft(softImpact), justificationsSupplier);
-                        return () -> {
-                            undoScoreImpact.run();
-                            undoConstraintMatch.run();
-                        };
+                        return impactAndMaybeConstraintMatch(undoScoreImpact, constraint, constraintWeight,
+                                HardSoftLongScore.ofSoft(softImpact),
+                                justificationsSupplier);
                     });
         } else {
             return WeightedScoreImpacter.of(constraintMatchEnabled,
@@ -60,15 +48,9 @@ final class HardSoftLongScoreInliner extends AbstractScoreInliner<HardSoftLongSc
                             this.hardScore -= hardImpact;
                             this.softScore -= softImpact;
                         };
-                        if (!constraintMatchEnabled) {
-                            return undoScoreImpact;
-                        }
-                        Runnable undoConstraintMatch = addConstraintMatch(constraint, constraintWeight,
-                                HardSoftLongScore.of(hardImpact, softImpact), justificationsSupplier);
-                        return () -> {
-                            undoScoreImpact.run();
-                            undoConstraintMatch.run();
-                        };
+                        return impactAndMaybeConstraintMatch(undoScoreImpact, constraint, constraintWeight,
+                                HardSoftLongScore.of(hardImpact, softImpact),
+                                justificationsSupplier);
                     });
         }
     }
