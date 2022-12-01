@@ -5,41 +5,80 @@ import org.optaplanner.core.api.score.stream.Constraint;
 
 final class BendableScoreContext extends ScoreContext<BendableScore> {
 
+    private final int hardScoreLevelCount;
+    private final int softScoreLevelCount;
+    private final int scoreLevel;
+    private final int scoreLevelWeight;
     private final IntBiConsumer softScoreLevelUpdater;
     private final IntBiConsumer hardScoreLevelUpdater;
 
-    public BendableScoreContext(Constraint constraint, BendableScore constraintWeight, boolean constraintMatchEnabled,
+    public BendableScoreContext(AbstractScoreInliner<BendableScore> parent, Constraint constraint,
+            BendableScore constraintWeight, int hardScoreLevelCount, int softScoreLevelCount, int scoreLevel,
+            int scoreLevelWeight,
             IntBiConsumer hardScoreLevelUpdater, IntBiConsumer softScoreLevelUpdater) {
-        super(constraint, constraintWeight, constraintMatchEnabled);
+        super(parent, constraint, constraintWeight);
+        this.hardScoreLevelCount = hardScoreLevelCount;
+        this.softScoreLevelCount = softScoreLevelCount;
+        this.scoreLevel = scoreLevel;
+        this.scoreLevelWeight = scoreLevelWeight;
         this.softScoreLevelUpdater = softScoreLevelUpdater;
         this.hardScoreLevelUpdater = hardScoreLevelUpdater;
     }
 
-    public UndoScoreImpacter changeSoftScoreBy(int level, int change) {
-        softScoreLevelUpdater.accept(level, change);
-        return () -> softScoreLevelUpdater.accept(level, -change);
+    public BendableScoreContext(AbstractScoreInliner<BendableScore> parent, Constraint constraint,
+            BendableScore constraintWeight, int hardScoreLevelCount, int softScoreLevelCount,
+            IntBiConsumer hardScoreLevelUpdater, IntBiConsumer softScoreLevelUpdater) {
+        this(parent, constraint, constraintWeight, hardScoreLevelCount, softScoreLevelCount, -1, -1, hardScoreLevelUpdater,
+                softScoreLevelUpdater);
     }
 
-    public UndoScoreImpacter changeHardScoreBy(int level, int change) {
-        hardScoreLevelUpdater.accept(level, change);
-        return () -> hardScoreLevelUpdater.accept(level, -change);
+    public UndoScoreImpacter changeSoftScoreBy(int matchWeight, JustificationsSupplier justificationsSupplier) {
+        int softImpact = scoreLevelWeight * matchWeight;
+        softScoreLevelUpdater.accept(scoreLevel, softImpact);
+        UndoScoreImpacter undoScoreImpact = () -> softScoreLevelUpdater.accept(scoreLevel, -softImpact);
+        if (!constraintMatchEnabled) {
+            return undoScoreImpact;
+        }
+        return impactWithConstraintMatch(undoScoreImpact,
+                BendableScore.ofSoft(hardScoreLevelCount, softScoreLevelCount, scoreLevel, softImpact), justificationsSupplier);
     }
 
-    public UndoScoreImpacter changeScoreBy(int[] hardChanges, int[] softChanges) {
-        for (int i = 0; i < hardChanges.length; i++) {
-            hardScoreLevelUpdater.accept(i, hardChanges[i]);
+    public UndoScoreImpacter changeHardScoreBy(int matchWeight, JustificationsSupplier justificationsSupplier) {
+        int hardImpact = scoreLevelWeight * matchWeight;
+        hardScoreLevelUpdater.accept(scoreLevel, hardImpact);
+        UndoScoreImpacter undoScoreImpact = () -> hardScoreLevelUpdater.accept(scoreLevel, -hardImpact);
+        if (!constraintMatchEnabled) {
+            return undoScoreImpact;
         }
-        for (int i = 0; i < softChanges.length; i++) {
-            softScoreLevelUpdater.accept(i, softChanges[i]);
+        return impactWithConstraintMatch(undoScoreImpact,
+                BendableScore.ofHard(hardScoreLevelCount, softScoreLevelCount, scoreLevel, hardImpact), justificationsSupplier);
+    }
+
+    public UndoScoreImpacter changeScoreBy(int matchWeight, JustificationsSupplier justificationsSupplier) {
+        int[] hardImpacts = new int[hardScoreLevelCount];
+        int[] softImpacts = new int[softScoreLevelCount];
+        for (int hardScoreLevel = 0; hardScoreLevel < hardScoreLevelCount; hardScoreLevel++) {
+            int hardImpact = constraintWeight.getHardScore(hardScoreLevel) * matchWeight;
+            hardImpacts[hardScoreLevel] = hardImpact;
+            hardScoreLevelUpdater.accept(hardScoreLevel, hardImpact);
         }
-        return () -> {
-            for (int i = 0; i < hardChanges.length; i++) {
-                hardScoreLevelUpdater.accept(i, -hardChanges[i]);
+        for (int softScoreLevel = 0; softScoreLevel < softScoreLevelCount; softScoreLevel++) {
+            int softImpact = constraintWeight.getSoftScore(softScoreLevel) * matchWeight;
+            softImpacts[softScoreLevel] = softImpact;
+            softScoreLevelUpdater.accept(softScoreLevel, softImpact);
+        }
+        UndoScoreImpacter undoScoreImpact = () -> {
+            for (int hardScoreLevel = 0; hardScoreLevel < hardScoreLevelCount; hardScoreLevel++) {
+                hardScoreLevelUpdater.accept(hardScoreLevel, -hardImpacts[hardScoreLevel]);
             }
-            for (int i = 0; i < softChanges.length; i++) {
-                softScoreLevelUpdater.accept(i, -softChanges[i]);
+            for (int softScoreLevel = 0; softScoreLevel < softScoreLevelCount; softScoreLevel++) {
+                softScoreLevelUpdater.accept(softScoreLevel, -softImpacts[softScoreLevel]);
             }
         };
+        if (!constraintMatchEnabled) {
+            return undoScoreImpact;
+        }
+        return impactWithConstraintMatch(undoScoreImpact, BendableScore.of(hardImpacts, softImpacts), justificationsSupplier);
     }
 
     public interface IntBiConsumer {

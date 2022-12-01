@@ -19,46 +19,15 @@ final class HardSoftBigDecimalScoreInliner extends AbstractScoreInliner<HardSoft
             Constraint constraint, HardSoftBigDecimalScore constraintWeight) {
         validateConstraintWeight(constraint, constraintWeight);
         HardSoftBigDecimalScoreContext context =
-                new HardSoftBigDecimalScoreContext(constraint, constraintWeight, constraintMatchEnabled,
+                new HardSoftBigDecimalScoreContext(this, constraint, constraintWeight,
                         impact -> this.hardScore = this.hardScore.add(impact),
                         impact -> this.softScore = this.softScore.add(impact));
         if (constraintWeight.getSoftScore().equals(BigDecimal.ZERO)) {
-            return WeightedScoreImpacter.of(context,
-                    (HardSoftBigDecimalScoreContext ctx, BigDecimal matchWeight,
-                            JustificationsSupplier justificationsSupplier) -> {
-                        BigDecimal hardImpact = ctx.getConstraintWeight().getHardScore().multiply(matchWeight);
-                        UndoScoreImpacter undoScoreImpact = ctx.changeHardScoreBy(hardImpact);
-                        if (!ctx.isConstraintMatchEnabled()) {
-                            return undoScoreImpact;
-                        }
-                        return impactWithConstraintMatch(ctx, undoScoreImpact, HardSoftBigDecimalScore.ofHard(hardImpact),
-                                justificationsSupplier);
-                    });
+            return WeightedScoreImpacter.of(context, HardSoftBigDecimalScoreContext::changeHardScoreBy);
         } else if (constraintWeight.getHardScore().equals(BigDecimal.ZERO)) {
-            return WeightedScoreImpacter.of(context,
-                    (HardSoftBigDecimalScoreContext ctx, BigDecimal matchWeight,
-                            JustificationsSupplier justificationsSupplier) -> {
-                        BigDecimal softImpact = ctx.getConstraintWeight().getSoftScore().multiply(matchWeight);
-                        UndoScoreImpacter undoScoreImpact = ctx.changeSoftScoreBy(softImpact);
-                        if (!ctx.isConstraintMatchEnabled()) {
-                            return undoScoreImpact;
-                        }
-                        return impactWithConstraintMatch(ctx, undoScoreImpact, HardSoftBigDecimalScore.ofSoft(softImpact),
-                                justificationsSupplier);
-                    });
+            return WeightedScoreImpacter.of(context, HardSoftBigDecimalScoreContext::changeSoftScoreBy);
         } else {
-            return WeightedScoreImpacter.of(context,
-                    (HardSoftBigDecimalScoreContext ctx, BigDecimal matchWeight,
-                            JustificationsSupplier justificationsSupplier) -> {
-                        BigDecimal hardImpact = ctx.getConstraintWeight().getHardScore().multiply(matchWeight);
-                        BigDecimal softImpact = ctx.getConstraintWeight().getSoftScore().multiply(matchWeight);
-                        UndoScoreImpacter undoScoreImpact = ctx.changeScoreBy(hardImpact, softImpact);
-                        if (!ctx.isConstraintMatchEnabled()) {
-                            return undoScoreImpact;
-                        }
-                        return impactWithConstraintMatch(ctx, undoScoreImpact,
-                                HardSoftBigDecimalScore.of(hardImpact, softImpact), justificationsSupplier);
-                    });
+            return WeightedScoreImpacter.of(context, HardSoftBigDecimalScoreContext::changeScoreBy);
         }
     }
 

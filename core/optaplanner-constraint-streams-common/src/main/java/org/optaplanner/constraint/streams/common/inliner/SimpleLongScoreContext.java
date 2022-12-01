@@ -9,15 +9,20 @@ final class SimpleLongScoreContext extends ScoreContext<SimpleLongScore> {
 
     private final LongConsumer scoreUpdater;
 
-    public SimpleLongScoreContext(Constraint constraint, SimpleLongScore constraintWeight, boolean constraintMatchEnabled,
-            LongConsumer scoreUpdater) {
-        super(constraint, constraintWeight, constraintMatchEnabled);
+    public SimpleLongScoreContext(AbstractScoreInliner<SimpleLongScore> parent, Constraint constraint,
+            SimpleLongScore constraintWeight, LongConsumer scoreUpdater) {
+        super(parent, constraint, constraintWeight);
         this.scoreUpdater = scoreUpdater;
     }
 
-    public UndoScoreImpacter changeScoreBy(long change) {
-        scoreUpdater.accept(change);
-        return () -> scoreUpdater.accept(-change);
+    public UndoScoreImpacter changeScoreBy(long matchWeight, JustificationsSupplier justificationsSupplier) {
+        long impact = constraintWeight.getScore() * matchWeight;
+        scoreUpdater.accept(impact);
+        UndoScoreImpacter undoScoreImpact = () -> scoreUpdater.accept(-impact);
+        if (!constraintMatchEnabled) {
+            return undoScoreImpact;
+        }
+        return impactWithConstraintMatch(undoScoreImpact, SimpleLongScore.of(impact), justificationsSupplier);
     }
 
 }

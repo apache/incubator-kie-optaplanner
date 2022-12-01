@@ -15,17 +15,11 @@ final class SimpleLongScoreInliner extends AbstractScoreInliner<SimpleLongScore>
     public WeightedScoreImpacter<SimpleLongScore, SimpleLongScoreContext> buildWeightedScoreImpacter(Constraint constraint,
             SimpleLongScore constraintWeight) {
         validateConstraintWeight(constraint, constraintWeight);
-        SimpleLongScoreContext context = new SimpleLongScoreContext(constraint, constraintWeight, constraintMatchEnabled,
+        SimpleLongScoreContext context = new SimpleLongScoreContext(this, constraint, constraintWeight,
                 impact -> this.score += impact);
         return WeightedScoreImpacter.of(context,
-                (SimpleLongScoreContext ctx, long matchWeight, JustificationsSupplier justificationsSupplier) -> {
-                    long impact = ctx.getConstraintWeight().getScore() * matchWeight;
-                    UndoScoreImpacter undoScoreImpact = ctx.changeScoreBy(impact);
-                    if (!ctx.isConstraintMatchEnabled()) {
-                        return undoScoreImpact;
-                    }
-                    return impactWithConstraintMatch(ctx, undoScoreImpact, SimpleLongScore.of(impact), justificationsSupplier);
-                });
+                (SimpleLongScoreContext ctx, long matchWeight, JustificationsSupplier justificationsSupplier) -> ctx
+                        .changeScoreBy(matchWeight, justificationsSupplier));
     }
 
     @Override

@@ -10,15 +10,20 @@ final class SimpleBigDecimalScoreContext extends ScoreContext<SimpleBigDecimalSc
 
     private final Consumer<BigDecimal> scoreUpdater;
 
-    public SimpleBigDecimalScoreContext(Constraint constraint, SimpleBigDecimalScore constraintWeight,
-            boolean constraintMatchEnabled, Consumer<BigDecimal> scoreUpdater) {
-        super(constraint, constraintWeight, constraintMatchEnabled);
+    public SimpleBigDecimalScoreContext(AbstractScoreInliner<SimpleBigDecimalScore> parent, Constraint constraint,
+            SimpleBigDecimalScore constraintWeight, Consumer<BigDecimal> scoreUpdater) {
+        super(parent, constraint, constraintWeight);
         this.scoreUpdater = scoreUpdater;
     }
 
-    public UndoScoreImpacter changeScoreBy(BigDecimal change) {
-        scoreUpdater.accept(change);
-        return () -> scoreUpdater.accept(change.negate());
+    public UndoScoreImpacter changeScoreBy(BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) {
+        BigDecimal impact = constraintWeight.getScore().multiply(matchWeight);
+        scoreUpdater.accept(impact);
+        UndoScoreImpacter undoScoreImpact = () -> scoreUpdater.accept(impact.negate());
+        if (!constraintMatchEnabled) {
+            return undoScoreImpact;
+        }
+        return impactWithConstraintMatch(undoScoreImpact, SimpleBigDecimalScore.of(impact), justificationsSupplier);
     }
 
 }

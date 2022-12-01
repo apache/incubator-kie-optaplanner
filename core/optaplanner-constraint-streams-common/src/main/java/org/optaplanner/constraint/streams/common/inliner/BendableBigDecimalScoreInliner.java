@@ -33,59 +33,28 @@ final class BendableBigDecimalScoreInliner extends AbstractScoreInliner<Bendable
                 singleLevel = i;
             }
         }
-        BendableBigDecimalScoreContext context = new BendableBigDecimalScoreContext(constraint, constraintWeight,
-                constraintMatchEnabled, (level, impact) -> this.hardScores[level] = this.hardScores[level].add(impact),
-                (level, impact) -> this.softScores[level] = this.softScores[level].add(impact));
         if (singleLevel != null) {
             BigDecimal levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
             if (singleLevel < constraintWeight.getHardLevelsSize()) {
-                int level = singleLevel;
-                return WeightedScoreImpacter.of(context,
-                        (BendableBigDecimalScoreContext ctx, BigDecimal matchWeight,
-                                JustificationsSupplier justificationsSupplier) -> {
-                            BigDecimal hardImpact = levelWeight.multiply(matchWeight);
-                            UndoScoreImpacter undoScoreImpact = ctx.changeHardScoreBy(level, hardImpact);
-                            if (!ctx.isConstraintMatchEnabled()) {
-                                return undoScoreImpact;
-                            }
-                            return impactWithConstraintMatch(ctx, undoScoreImpact,
-                                    BendableBigDecimalScore.ofHard(hardScores.length, softScores.length, level, hardImpact),
-                                    justificationsSupplier);
-                        });
+                BendableBigDecimalScoreContext context = new BendableBigDecimalScoreContext(this, constraint, constraintWeight,
+                        hardScores.length, softScores.length, singleLevel, levelWeight,
+                        (scoreLevel, impact) -> this.hardScores[scoreLevel] = this.hardScores[scoreLevel].add(impact),
+                        (scoreLevel, impact) -> this.softScores[scoreLevel] = this.softScores[scoreLevel].add(impact));
+                return WeightedScoreImpacter.of(context, BendableBigDecimalScoreContext::changeHardScoreBy);
             } else {
                 int level = singleLevel - constraintWeight.getHardLevelsSize();
-                return WeightedScoreImpacter.of(context,
-                        (BendableBigDecimalScoreContext ctx, BigDecimal matchWeight,
-                                JustificationsSupplier justificationsSupplier) -> {
-                            BigDecimal softImpact = levelWeight.multiply(matchWeight);
-                            UndoScoreImpacter undoScoreImpact = ctx.changeSoftScoreBy(level, softImpact);
-                            if (!ctx.isConstraintMatchEnabled()) {
-                                return undoScoreImpact;
-                            }
-                            return impactWithConstraintMatch(ctx, undoScoreImpact,
-                                    BendableBigDecimalScore.ofSoft(hardScores.length, softScores.length, level, softImpact),
-                                    justificationsSupplier);
-                        });
+                BendableBigDecimalScoreContext context = new BendableBigDecimalScoreContext(this, constraint, constraintWeight,
+                        hardScores.length, softScores.length, level, levelWeight,
+                        (scoreLevel, impact) -> this.hardScores[scoreLevel] = this.hardScores[scoreLevel].add(impact),
+                        (scoreLevel, impact) -> this.softScores[scoreLevel] = this.softScores[scoreLevel].add(impact));
+                return WeightedScoreImpacter.of(context, BendableBigDecimalScoreContext::changeSoftScoreBy);
             }
         } else {
-            return WeightedScoreImpacter.of(context,
-                    (BendableBigDecimalScoreContext ctx, BigDecimal matchWeight,
-                            JustificationsSupplier justificationsSupplier) -> {
-                        BigDecimal[] hardImpacts = new BigDecimal[hardScores.length];
-                        BigDecimal[] softImpacts = new BigDecimal[softScores.length];
-                        for (int i = 0; i < hardImpacts.length; i++) {
-                            hardImpacts[i] = ctx.getConstraintWeight().getHardScore(i).multiply(matchWeight);
-                        }
-                        for (int i = 0; i < softImpacts.length; i++) {
-                            softImpacts[i] = ctx.getConstraintWeight().getSoftScore(i).multiply(matchWeight);
-                        }
-                        UndoScoreImpacter undoScoreImpact = ctx.changeScoreBy(hardImpacts, softImpacts);
-                        if (!ctx.isConstraintMatchEnabled()) {
-                            return undoScoreImpact;
-                        }
-                        return impactWithConstraintMatch(ctx, undoScoreImpact,
-                                BendableBigDecimalScore.of(hardImpacts, softImpacts), justificationsSupplier);
-                    });
+            BendableBigDecimalScoreContext context = new BendableBigDecimalScoreContext(this, constraint, constraintWeight,
+                    hardScores.length, softScores.length,
+                    (scoreLevel, impact) -> this.hardScores[scoreLevel] = this.hardScores[scoreLevel].add(impact),
+                    (scoreLevel, impact) -> this.softScores[scoreLevel] = this.softScores[scoreLevel].add(impact));
+            return WeightedScoreImpacter.of(context, BendableBigDecimalScoreContext::changeScoreBy);
         }
     }
 
