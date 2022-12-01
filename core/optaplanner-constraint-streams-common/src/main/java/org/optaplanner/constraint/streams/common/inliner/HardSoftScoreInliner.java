@@ -13,18 +13,16 @@ final class HardSoftScoreInliner extends AbstractScoreInliner<HardSoftScore> {
     }
 
     @Override
-    public WeightedScoreImpacter<HardSoftScore> buildWeightedScoreImpacter(Constraint constraint,
+    public WeightedScoreImpacter<HardSoftScore, HardSoftScoreContext> buildWeightedScoreImpacter(Constraint constraint,
             HardSoftScore constraintWeight) {
         validateConstraintWeight(constraint, constraintWeight);
-        ScoreImpacterContext<HardSoftScore> context =
-                new ScoreImpacterContext<>(constraint, constraintWeight, constraintMatchEnabled);
+        HardSoftScoreContext context = new HardSoftScoreContext(constraint, constraintWeight, constraintMatchEnabled,
+                impact -> this.hardScore += impact, impact -> this.softScore += impact);
         if (constraintWeight.getSoftScore() == 0) {
             return WeightedScoreImpacter.of(context,
-                    (ScoreImpacterContext<HardSoftScore> ctx, int matchWeight,
-                            JustificationsSupplier justificationsSupplier) -> {
+                    (HardSoftScoreContext ctx, int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                         int hardImpact = ctx.getConstraintWeight().getHardScore() * matchWeight;
-                        this.hardScore += hardImpact;
-                        UndoScoreImpacter undoScoreImpact = () -> this.hardScore -= hardImpact;
+                        UndoScoreImpacter undoScoreImpact = ctx.changeHardScoreBy(hardImpact);
                         if (!ctx.isConstraintMatchEnabled()) {
                             return undoScoreImpact;
                         }
@@ -33,11 +31,9 @@ final class HardSoftScoreInliner extends AbstractScoreInliner<HardSoftScore> {
                     });
         } else if (constraintWeight.getHardScore() == 0) {
             return WeightedScoreImpacter.of(context,
-                    (ScoreImpacterContext<HardSoftScore> ctx, int matchWeight,
-                            JustificationsSupplier justificationsSupplier) -> {
+                    (HardSoftScoreContext ctx, int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                         int softImpact = ctx.getConstraintWeight().getSoftScore() * matchWeight;
-                        this.softScore += softImpact;
-                        UndoScoreImpacter undoScoreImpact = () -> this.softScore -= softImpact;
+                        UndoScoreImpacter undoScoreImpact = ctx.changeSoftScoreBy(softImpact);
                         if (!ctx.isConstraintMatchEnabled()) {
                             return undoScoreImpact;
                         }
@@ -46,16 +42,10 @@ final class HardSoftScoreInliner extends AbstractScoreInliner<HardSoftScore> {
                     });
         } else {
             return WeightedScoreImpacter.of(context,
-                    (ScoreImpacterContext<HardSoftScore> ctx, int matchWeight,
-                            JustificationsSupplier justificationsSupplier) -> {
+                    (HardSoftScoreContext ctx, int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                         int hardImpact = ctx.getConstraintWeight().getHardScore() * matchWeight;
                         int softImpact = ctx.getConstraintWeight().getSoftScore() * matchWeight;
-                        this.hardScore += hardImpact;
-                        this.softScore += softImpact;
-                        UndoScoreImpacter undoScoreImpact = () -> {
-                            this.hardScore -= hardImpact;
-                            this.softScore -= softImpact;
-                        };
+                        UndoScoreImpacter undoScoreImpact = ctx.changeScoreBy(hardImpact, softImpact);
                         if (!ctx.isConstraintMatchEnabled()) {
                             return undoScoreImpact;
                         }

@@ -5,13 +5,14 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.score.Score;
 
-final class BigDecimalWeightedScoreImpacter<Score_ extends Score<Score_>> implements WeightedScoreImpacter<Score_> {
+final class BigDecimalWeightedScoreImpacter<Score_ extends Score<Score_>, Context_ extends ScoreContext<Score_>>
+        implements WeightedScoreImpacter<Score_, Context_> {
 
-    private final BigDecimalImpactFunction<Score_> impactFunction;
-    private final ScoreImpacterContext<Score_> context;
+    private final BigDecimalImpactFunction<Score_, Context_> impactFunction;
+    private final Context_ context;
 
-    public BigDecimalWeightedScoreImpacter(BigDecimalImpactFunction<Score_> impactFunction,
-            ScoreImpacterContext<Score_> context) {
+    public BigDecimalWeightedScoreImpacter(BigDecimalImpactFunction<Score_, Context_> impactFunction,
+            Context_ context) {
         this.impactFunction = Objects.requireNonNull(impactFunction);
         this.context = context;
     }
@@ -32,7 +33,7 @@ final class BigDecimalWeightedScoreImpacter<Score_ extends Score<Score_>> implem
     }
 
     @Override
-    public ScoreImpacterContext<Score_> getContext() {
+    public Context_ getContext() {
         return context;
     }
 

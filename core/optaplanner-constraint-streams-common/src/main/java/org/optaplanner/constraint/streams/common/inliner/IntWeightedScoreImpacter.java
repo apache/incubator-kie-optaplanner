@@ -5,12 +5,13 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.score.Score;
 
-final class IntWeightedScoreImpacter<Score_ extends Score<Score_>> implements WeightedScoreImpacter<Score_> {
+final class IntWeightedScoreImpacter<Score_ extends Score<Score_>, Context_ extends ScoreContext<Score_>>
+        implements WeightedScoreImpacter<Score_, Context_> {
 
-    private final IntImpactFunction<Score_> impactFunction;
-    private final ScoreImpacterContext<Score_> context;
+    private final IntImpactFunction<Score_, Context_> impactFunction;
+    private final Context_ context;
 
-    public IntWeightedScoreImpacter(IntImpactFunction<Score_> impactFunction, ScoreImpacterContext<Score_> context) {
+    public IntWeightedScoreImpacter(IntImpactFunction<Score_, Context_> impactFunction, Context_ context) {
         this.impactFunction = Objects.requireNonNull(impactFunction);
         this.context = context;
     }
@@ -31,7 +32,7 @@ final class IntWeightedScoreImpacter<Score_ extends Score<Score_>> implements We
     }
 
     @Override
-    public ScoreImpacterContext<Score_> getContext() {
+    public Context_ getContext() {
         return context;
     }
 

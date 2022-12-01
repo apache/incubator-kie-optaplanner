@@ -12,15 +12,15 @@ final class SimpleScoreInliner extends AbstractScoreInliner<SimpleScore> {
     }
 
     @Override
-    public WeightedScoreImpacter<SimpleScore> buildWeightedScoreImpacter(Constraint constraint, SimpleScore constraintWeight) {
+    public WeightedScoreImpacter<SimpleScore, SimpleScoreContext> buildWeightedScoreImpacter(Constraint constraint,
+            SimpleScore constraintWeight) {
         validateConstraintWeight(constraint, constraintWeight);
-        ScoreImpacterContext<SimpleScore> context =
-                new ScoreImpacterContext<>(constraint, constraintWeight, constraintMatchEnabled);
+        SimpleScoreContext context = new SimpleScoreContext(constraint, constraintWeight,
+                constraintMatchEnabled, impact -> this.score += impact);
         return WeightedScoreImpacter.of(context,
-                (ScoreImpacterContext<SimpleScore> ctx, int matchWeight, JustificationsSupplier justificationsSupplier) -> {
+                (SimpleScoreContext ctx, int matchWeight, JustificationsSupplier justificationsSupplier) -> {
                     int impact = ctx.getConstraintWeight().getScore() * matchWeight;
-                    this.score += impact;
-                    UndoScoreImpacter undoScoreImpact = () -> this.score -= impact;
+                    UndoScoreImpacter undoScoreImpact = ctx.changeScoreBy(impact);
                     if (!ctx.isConstraintMatchEnabled()) {
                         return undoScoreImpact;
                     }

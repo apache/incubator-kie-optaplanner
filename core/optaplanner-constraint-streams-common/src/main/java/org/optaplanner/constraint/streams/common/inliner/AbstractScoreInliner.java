@@ -114,10 +114,10 @@ public abstract class AbstractScoreInliner<Score_ extends Score<Score_>> {
      * @param constraintWeight never null
      * @return never null
      */
-    public abstract WeightedScoreImpacter<Score_> buildWeightedScoreImpacter(Constraint constraint, Score_ constraintWeight);
+    public abstract WeightedScoreImpacter<Score_, ?> buildWeightedScoreImpacter(Constraint constraint, Score_ constraintWeight);
 
-    protected UndoScoreImpacter impactWithConstraintMatch(ScoreImpacterContext<Score_> context,
-            UndoScoreImpacter undoScoreImpact, Score_ score, JustificationsSupplier justificationsSupplier) {
+    protected UndoScoreImpacter impactWithConstraintMatch(ScoreContext<Score_> context, UndoScoreImpacter undoScoreImpact,
+            Score_ score, JustificationsSupplier justificationsSupplier) {
         Runnable undoConstraintMatch =
                 addConstraintMatch(context.getConstraint(), context.getConstraintWeight(), score, justificationsSupplier);
         return () -> {

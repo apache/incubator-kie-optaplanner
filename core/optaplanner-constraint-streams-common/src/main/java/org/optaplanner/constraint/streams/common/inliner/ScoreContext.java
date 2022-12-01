@@ -3,13 +3,13 @@ package org.optaplanner.constraint.streams.common.inliner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 
-public final class ScoreImpacterContext<Score_ extends Score<Score_>> {
+public abstract class ScoreContext<Score_ extends Score<Score_>> {
 
     private final Constraint constraint;
     private final Score_ constraintWeight;
     private final boolean constraintMatchEnabled;
 
-    ScoreImpacterContext(Constraint constraint, Score_ constraintWeight, boolean constraintMatchEnabled) {
+    protected ScoreContext(Constraint constraint, Score_ constraintWeight, boolean constraintMatchEnabled) {
         this.constraint = constraint;
         this.constraintWeight = constraintWeight;
         this.constraintMatchEnabled = constraintMatchEnabled;

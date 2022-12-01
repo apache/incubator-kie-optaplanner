@@ -15,18 +15,19 @@ final class HardSoftBigDecimalScoreInliner extends AbstractScoreInliner<HardSoft
     }
 
     @Override
-    public WeightedScoreImpacter<HardSoftBigDecimalScore> buildWeightedScoreImpacter(Constraint constraint,
-            HardSoftBigDecimalScore constraintWeight) {
+    public WeightedScoreImpacter<HardSoftBigDecimalScore, HardSoftBigDecimalScoreContext> buildWeightedScoreImpacter(
+            Constraint constraint, HardSoftBigDecimalScore constraintWeight) {
         validateConstraintWeight(constraint, constraintWeight);
-        ScoreImpacterContext<HardSoftBigDecimalScore> context =
-                new ScoreImpacterContext<>(constraint, constraintWeight, constraintMatchEnabled);
+        HardSoftBigDecimalScoreContext context =
+                new HardSoftBigDecimalScoreContext(constraint, constraintWeight, constraintMatchEnabled,
+                        impact -> this.hardScore = this.hardScore.add(impact),
+                        impact -> this.softScore = this.softScore.add(impact));
         if (constraintWeight.getSoftScore().equals(BigDecimal.ZERO)) {
             return WeightedScoreImpacter.of(context,
-                    (ScoreImpacterContext<HardSoftBigDecimalScore> ctx, BigDecimal matchWeight,
+                    (HardSoftBigDecimalScoreContext ctx, BigDecimal matchWeight,
                             JustificationsSupplier justificationsSupplier) -> {
                         BigDecimal hardImpact = ctx.getConstraintWeight().getHardScore().multiply(matchWeight);
-                        this.hardScore = this.hardScore.add(hardImpact);
-                        UndoScoreImpacter undoScoreImpact = () -> this.hardScore = this.hardScore.subtract(hardImpact);
+                        UndoScoreImpacter undoScoreImpact = ctx.changeHardScoreBy(hardImpact);
                         if (!ctx.isConstraintMatchEnabled()) {
                             return undoScoreImpact;
                         }
@@ -35,11 +36,10 @@ final class HardSoftBigDecimalScoreInliner extends AbstractScoreInliner<HardSoft
                     });
         } else if (constraintWeight.getHardScore().equals(BigDecimal.ZERO)) {
             return WeightedScoreImpacter.of(context,
-                    (ScoreImpacterContext<HardSoftBigDecimalScore> ctx, BigDecimal matchWeight,
+                    (HardSoftBigDecimalScoreContext ctx, BigDecimal matchWeight,
                             JustificationsSupplier justificationsSupplier) -> {
                         BigDecimal softImpact = ctx.getConstraintWeight().getSoftScore().multiply(matchWeight);
-                        this.softScore = this.softScore.add(softImpact);
-                        UndoScoreImpacter undoScoreImpact = () -> this.softScore = this.softScore.subtract(softImpact);
+                        UndoScoreImpacter undoScoreImpact = ctx.changeSoftScoreBy(softImpact);
                         if (!ctx.isConstraintMatchEnabled()) {
                             return undoScoreImpact;
                         }
@@ -48,16 +48,11 @@ final class HardSoftBigDecimalScoreInliner extends AbstractScoreInliner<HardSoft
                     });
         } else {
             return WeightedScoreImpacter.of(context,
-                    (ScoreImpacterContext<HardSoftBigDecimalScore> ctx, BigDecimal matchWeight,
+                    (HardSoftBigDecimalScoreContext ctx, BigDecimal matchWeight,
                             JustificationsSupplier justificationsSupplier) -> {
                         BigDecimal hardImpact = ctx.getConstraintWeight().getHardScore().multiply(matchWeight);
                         BigDecimal softImpact = ctx.getConstraintWeight().getSoftScore().multiply(matchWeight);
-                        this.hardScore = this.hardScore.add(hardImpact);
-                        this.softScore = this.softScore.add(softImpact);
-                        UndoScoreImpacter undoScoreImpact = () -> {
-                            this.hardScore = this.hardScore.subtract(hardImpact);
-                            this.softScore = this.softScore.subtract(softImpact);
-                        };
+                        UndoScoreImpacter undoScoreImpact = ctx.changeScoreBy(hardImpact, softImpact);
                         if (!ctx.isConstraintMatchEnabled()) {
                             return undoScoreImpact;
                         }

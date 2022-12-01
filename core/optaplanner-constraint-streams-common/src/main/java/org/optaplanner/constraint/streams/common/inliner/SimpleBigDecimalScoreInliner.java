@@ -14,17 +14,15 @@ final class SimpleBigDecimalScoreInliner extends AbstractScoreInliner<SimpleBigD
     }
 
     @Override
-    public WeightedScoreImpacter<SimpleBigDecimalScore> buildWeightedScoreImpacter(Constraint constraint,
-            SimpleBigDecimalScore constraintWeight) {
+    public WeightedScoreImpacter<SimpleBigDecimalScore, SimpleBigDecimalScoreContext> buildWeightedScoreImpacter(
+            Constraint constraint, SimpleBigDecimalScore constraintWeight) {
         validateConstraintWeight(constraint, constraintWeight);
-        ScoreImpacterContext<SimpleBigDecimalScore> context =
-                new ScoreImpacterContext<>(constraint, constraintWeight, constraintMatchEnabled);
+        SimpleBigDecimalScoreContext context = new SimpleBigDecimalScoreContext(constraint, constraintWeight,
+                constraintMatchEnabled, impact -> this.score = this.score.add(impact));
         return WeightedScoreImpacter.of(context,
-                (ScoreImpacterContext<SimpleBigDecimalScore> ctx, BigDecimal matchWeight,
-                        JustificationsSupplier justificationsSupplier) -> {
+                (SimpleBigDecimalScoreContext ctx, BigDecimal matchWeight, JustificationsSupplier justificationsSupplier) -> {
                     BigDecimal impact = ctx.getConstraintWeight().getScore().multiply(matchWeight);
-                    this.score = this.score.add(impact);
-                    UndoScoreImpacter undoScoreImpact = () -> this.score = this.score.subtract(impact);
+                    UndoScoreImpacter undoScoreImpact = ctx.changeScoreBy(impact);
                     if (!ctx.isConstraintMatchEnabled()) {
                         return undoScoreImpact;
                     }
