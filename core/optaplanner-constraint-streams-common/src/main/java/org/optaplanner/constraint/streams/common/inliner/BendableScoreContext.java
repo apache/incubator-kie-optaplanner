@@ -14,8 +14,7 @@ final class BendableScoreContext extends ScoreContext<BendableScore> {
 
     public BendableScoreContext(AbstractScoreInliner<BendableScore> parent, Constraint constraint,
             BendableScore constraintWeight, int hardScoreLevelCount, int softScoreLevelCount, int scoreLevel,
-            int scoreLevelWeight,
-            IntBiConsumer hardScoreLevelUpdater, IntBiConsumer softScoreLevelUpdater) {
+            int scoreLevelWeight, IntBiConsumer hardScoreLevelUpdater, IntBiConsumer softScoreLevelUpdater) {
         super(parent, constraint, constraintWeight);
         this.hardScoreLevelCount = hardScoreLevelCount;
         this.softScoreLevelCount = softScoreLevelCount;
