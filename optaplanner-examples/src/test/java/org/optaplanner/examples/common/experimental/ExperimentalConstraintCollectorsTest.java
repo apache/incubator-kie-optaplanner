@@ -9,7 +9,6 @@ import java.util.function.BiConsumer;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
-import org.optaplanner.examples.common.experimental.api.ConsecutiveIntervalInfo;
 import org.optaplanner.examples.common.experimental.impl.ConsecutiveIntervalInfoImpl;
 import org.optaplanner.examples.common.experimental.impl.ConsecutiveSetTree;
 import org.optaplanner.examples.common.experimental.impl.IntervalTree;
@@ -17,11 +16,9 @@ import org.optaplanner.examples.common.experimental.impl.IntervalTree;
 class ExperimentalConstraintCollectorsTest {
     @Test
     void consecutive() {
-        // Do a basic test w/o edge cases; edge cases are covered in
-        // ConsecutiveSetTreeTest
-        UniConstraintCollector<Integer, ConsecutiveSetTree<Integer, Integer, Integer>, ConsecutiveInfo<Integer, Integer>> collector =
-                ExperimentalConstraintCollectors.consecutive(Integer::intValue);
-        ConsecutiveSetTree<Integer, Integer, Integer> container = collector.supplier().get();
+        // Do a basic test w/o edge cases; edge cases are covered in ConsecutiveSetTreeTest
+        var collector = ExperimentalConstraintCollectors.consecutive(Integer::intValue);
+        var container = collector.supplier().get();
         // Add first value, sequence is [2]
         int firstValue = 2;
         Runnable firstRetractor = accumulate(collector, container, firstValue);
@@ -79,11 +76,10 @@ class ExperimentalConstraintCollectorsTest {
 
     @Test
     void consecutiveInterval() {
-        // Do a basic test w/o edge cases; edge cases are covered in
-        // ConsecutiveSetTreeTest
-        UniConstraintCollector<Interval, IntervalTree<Interval, Integer, Integer>, ConsecutiveIntervalInfo<Interval, Integer, Integer>> collector =
+        // Do a basic test w/o edge cases; edge cases are covered in ConsecutiveSetTreeTest
+        var collector =
                 ExperimentalConstraintCollectors.consecutiveIntervals(Interval::getStart, Interval::getEnd, (a, b) -> b - a);
-        IntervalTree<Interval, Integer, Integer> container = collector.supplier().get();
+        var container = collector.supplier().get();
         // Add first value, sequence is [(1,3)]
         Interval firstValue = new Interval(1, 3);
         Runnable firstRetractor = accumulate(collector, container, firstValue);
