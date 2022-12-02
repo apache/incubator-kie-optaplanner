@@ -28,8 +28,8 @@ import jakarta.transaction.TransactionManager;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.kie.test.util.db.PersistenceUtil;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.persistence.jpa.testutils.db.PersistenceUtil;
 
 public abstract class AbstractScoreJpaTest {
 
