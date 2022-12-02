@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import jakarta.enterprise.event.Observes;
-import jakarta.inject.Inject;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
