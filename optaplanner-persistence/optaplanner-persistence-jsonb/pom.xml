@@ -49,25 +49,10 @@
       <groupId>jakarta.json.bind</groupId>
       <artifactId>jakarta.json.bind-api</artifactId>
     </dependency>
-<!--  TODO - find a replacement  <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>jakarta.json</artifactId>
-      <scope>runtime</scope>
-    </dependency>-->
     <dependency>
       <groupId>org.eclipse</groupId>
       <artifactId>yasson</artifactId>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>jakarta.json</groupId>
-          <artifactId>jakarta.json-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.glassfish</groupId>
-          <artifactId>jakarta.json</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <!-- Testing -->
     <dependency>
