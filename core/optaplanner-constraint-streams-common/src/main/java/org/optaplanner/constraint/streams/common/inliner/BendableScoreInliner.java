@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.common.inliner;
 
 import java.util.Arrays;
 
+import org.optaplanner.constraint.streams.common.inliner.BendableScoreContext.IntBiConsumer;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 
@@ -30,28 +31,22 @@ final class BendableScoreInliner extends AbstractScoreInliner<BendableScore> {
                 singleLevel = i;
             }
         }
+        IntBiConsumer hardScoreUpdater = (scoreLevel, impact) -> this.hardScores[scoreLevel] += impact;
+        IntBiConsumer softScoreUpdater = (scoreLevel, impact) -> this.softScores[scoreLevel] += impact;
         if (singleLevel != null) {
-            int levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
-            if (singleLevel < constraintWeight.getHardLevelsSize()) {
-                int level = singleLevel;
-                BendableScoreContext context = new BendableScoreContext(this, constraint, constraintWeight, hardScores.length,
-                        softScores.length, level, levelWeight,
-                        (scoreLevel, impact) -> this.hardScores[scoreLevel] += impact,
-                        (scoreLevel, impact) -> this.softScores[scoreLevel] += impact);
+            boolean isHardScore = singleLevel < constraintWeight.getHardLevelsSize();
+            int level = isHardScore ? singleLevel : singleLevel - constraintWeight.getHardLevelsSize();
+            BendableScoreContext context = new BendableScoreContext(this, constraint, constraintWeight,
+                    hardScores.length, softScores.length, level, constraintWeight.getHardOrSoftScore(singleLevel),
+                    hardScoreUpdater, softScoreUpdater);
+            if (isHardScore) {
                 return WeightedScoreImpacter.of(context, BendableScoreContext::changeHardScoreBy);
             } else {
-                int level = singleLevel - constraintWeight.getHardLevelsSize();
-                BendableScoreContext context = new BendableScoreContext(this, constraint, constraintWeight, hardScores.length,
-                        softScores.length, level, levelWeight,
-                        (scoreLevel, impact) -> this.hardScores[scoreLevel] += impact,
-                        (scoreLevel, impact) -> this.softScores[scoreLevel] += impact);
                 return WeightedScoreImpacter.of(context, BendableScoreContext::changeSoftScoreBy);
             }
         } else {
-            BendableScoreContext context = new BendableScoreContext(this, constraint, constraintWeight, hardScores.length,
-                    softScores.length,
-                    (scoreLevel, impact) -> this.hardScores[scoreLevel] += impact,
-                    (scoreLevel, impact) -> this.softScores[scoreLevel] += impact);
+            BendableScoreContext context = new BendableScoreContext(this, constraint, constraintWeight,
+                    hardScores.length, softScores.length, hardScoreUpdater, softScoreUpdater);
             return WeightedScoreImpacter.of(context, BendableScoreContext::changeScoreBy);
         }
     }

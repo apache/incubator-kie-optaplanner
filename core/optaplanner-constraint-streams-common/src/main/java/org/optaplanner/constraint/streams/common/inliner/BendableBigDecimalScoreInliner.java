@@ -3,6 +3,7 @@ package org.optaplanner.constraint.streams.common.inliner;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+import org.optaplanner.constraint.streams.common.inliner.BendableBigDecimalScoreContext.IntBigDecimalConsumer;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 
@@ -33,27 +34,24 @@ final class BendableBigDecimalScoreInliner extends AbstractScoreInliner<Bendable
                 singleLevel = i;
             }
         }
+        IntBigDecimalConsumer hardScoreUpdater =
+                (scoreLevel, impact) -> this.hardScores[scoreLevel] = this.hardScores[scoreLevel].add(impact);
+        IntBigDecimalConsumer softScoreUpdater =
+                (scoreLevel, impact) -> this.softScores[scoreLevel] = this.softScores[scoreLevel].add(impact);
         if (singleLevel != null) {
-            BigDecimal levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
-            if (singleLevel < constraintWeight.getHardLevelsSize()) {
-                BendableBigDecimalScoreContext context = new BendableBigDecimalScoreContext(this, constraint, constraintWeight,
-                        hardScores.length, softScores.length, singleLevel, levelWeight,
-                        (scoreLevel, impact) -> this.hardScores[scoreLevel] = this.hardScores[scoreLevel].add(impact),
-                        (scoreLevel, impact) -> this.softScores[scoreLevel] = this.softScores[scoreLevel].add(impact));
+            boolean isHardScore = singleLevel < constraintWeight.getHardLevelsSize();
+            int level = isHardScore ? singleLevel : singleLevel - constraintWeight.getHardLevelsSize();
+            BendableBigDecimalScoreContext context = new BendableBigDecimalScoreContext(this, constraint, constraintWeight,
+                    hardScores.length, softScores.length, level, constraintWeight.getHardOrSoftScore(singleLevel),
+                    hardScoreUpdater, softScoreUpdater);
+            if (isHardScore) {
                 return WeightedScoreImpacter.of(context, BendableBigDecimalScoreContext::changeHardScoreBy);
             } else {
-                int level = singleLevel - constraintWeight.getHardLevelsSize();
-                BendableBigDecimalScoreContext context = new BendableBigDecimalScoreContext(this, constraint, constraintWeight,
-                        hardScores.length, softScores.length, level, levelWeight,
-                        (scoreLevel, impact) -> this.hardScores[scoreLevel] = this.hardScores[scoreLevel].add(impact),
-                        (scoreLevel, impact) -> this.softScores[scoreLevel] = this.softScores[scoreLevel].add(impact));
                 return WeightedScoreImpacter.of(context, BendableBigDecimalScoreContext::changeSoftScoreBy);
             }
         } else {
             BendableBigDecimalScoreContext context = new BendableBigDecimalScoreContext(this, constraint, constraintWeight,
-                    hardScores.length, softScores.length,
-                    (scoreLevel, impact) -> this.hardScores[scoreLevel] = this.hardScores[scoreLevel].add(impact),
-                    (scoreLevel, impact) -> this.softScores[scoreLevel] = this.softScores[scoreLevel].add(impact));
+                    hardScores.length, softScores.length, hardScoreUpdater, softScoreUpdater);
             return WeightedScoreImpacter.of(context, BendableBigDecimalScoreContext::changeScoreBy);
         }
     }

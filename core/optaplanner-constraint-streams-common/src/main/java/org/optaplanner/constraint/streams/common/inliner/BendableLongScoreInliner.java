@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.common.inliner;
 
 import java.util.Arrays;
 
+import org.optaplanner.constraint.streams.common.inliner.BendableLongScoreContext.IntLongConsumer;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 
@@ -30,34 +31,26 @@ public final class BendableLongScoreInliner extends AbstractScoreInliner<Bendabl
                 singleLevel = i;
             }
         }
+        IntLongConsumer hardScoreUpdater = (scoreLevel, impact) -> this.hardScores[scoreLevel] += impact;
+        IntLongConsumer softScoreUpdater = (scoreLevel, impact) -> this.softScores[scoreLevel] += impact;
         if (singleLevel != null) {
-            long levelWeight = constraintWeight.getHardOrSoftScore(singleLevel);
-            if (singleLevel < constraintWeight.getHardLevelsSize()) {
-                BendableLongScoreContext context = new BendableLongScoreContext(this, constraint, constraintWeight,
-                        hardScores.length, softScores.length, singleLevel, levelWeight,
-                        (scoreLevel, impact) -> this.hardScores[scoreLevel] += impact,
-                        (scoreLevel, impact) -> this.softScores[scoreLevel] += impact);
-                return WeightedScoreImpacter.of(context,
-                        (BendableLongScoreContext ctx, long matchWeight, JustificationsSupplier justificationsSupplier) -> ctx
-                                .changeHardScoreBy(matchWeight, justificationsSupplier));
+            boolean isHardScore = singleLevel < constraintWeight.getHardLevelsSize();
+            int level = isHardScore ? singleLevel : singleLevel - constraintWeight.getHardLevelsSize();
+            BendableLongScoreContext context = new BendableLongScoreContext(this, constraint, constraintWeight,
+                    hardScores.length, softScores.length, level, constraintWeight.getHardOrSoftScore(singleLevel),
+                    hardScoreUpdater, softScoreUpdater);
+            if (isHardScore) {
+                return WeightedScoreImpacter.of(context, (BendableLongScoreContext ctx, long impact,
+                        JustificationsSupplier justificationSupplier) -> ctx.changeHardScoreBy(impact, justificationSupplier));
             } else {
-                int level = singleLevel - constraintWeight.getHardLevelsSize();
-                BendableLongScoreContext context = new BendableLongScoreContext(this, constraint, constraintWeight,
-                        hardScores.length, softScores.length, level, levelWeight,
-                        (scoreLevel, impact) -> this.hardScores[scoreLevel] += impact,
-                        (scoreLevel, impact) -> this.softScores[scoreLevel] += impact);
-                return WeightedScoreImpacter.of(context,
-                        (BendableLongScoreContext ctx, long matchWeight, JustificationsSupplier justificationsSupplier) -> ctx
-                                .changeSoftScoreBy(matchWeight, justificationsSupplier));
+                return WeightedScoreImpacter.of(context, (BendableLongScoreContext ctx, long impact,
+                        JustificationsSupplier justificationSupplier) -> ctx.changeSoftScoreBy(impact, justificationSupplier));
             }
         } else {
             BendableLongScoreContext context = new BendableLongScoreContext(this, constraint, constraintWeight,
-                    hardScores.length, softScores.length,
-                    (scoreLevel, impact) -> this.hardScores[scoreLevel] += impact,
-                    (scoreLevel, impact) -> this.softScores[scoreLevel] += impact);
-            return WeightedScoreImpacter.of(context,
-                    (BendableLongScoreContext ctx, long matchWeight, JustificationsSupplier justificationsSupplier) -> ctx
-                            .changeScoreBy(matchWeight, justificationsSupplier));
+                    hardScores.length, softScores.length, hardScoreUpdater, softScoreUpdater);
+            return WeightedScoreImpacter.of(context, (BendableLongScoreContext ctx, long impact,
+                    JustificationsSupplier justificationSupplier) -> ctx.changeScoreBy(impact, justificationSupplier));
         }
     }
 
