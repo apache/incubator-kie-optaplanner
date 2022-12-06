@@ -21,7 +21,7 @@
 
   <properties>
     <java.module.name>org.optaplanner.migration</java.module.name>
-    <version.org.antlr>4.9.3</version.org.antlr>
+    <version.org.antlr>4.11.1</version.org.antlr>
   </properties>
 
   <dependencyManagement>
