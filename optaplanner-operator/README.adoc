@@ -44,3 +44,39 @@ The Solver custom resource describes the problem to be solved on Kubernetes and 
 There is an example you can use by running either `kubectl apply -f src/k8s/school-timetabling-solver.yml -n <namespace>` (Minikube) or `oc apply -f src/k8s/school-timetabling-solver.yml` (OpenShift).
 
 To check the created resource, run `kubectl get solver -n <namespace>` (Minikube) or `oc get solver` (OpenShift).
+
+== Integration tests
+
+This test aimed to check how operator behaves on cloud without mocking
+It downloads the latest version of quickstarts, runs demo.sh setup and launches tests.
+After all tests get executed it launches demo.sh delete
+
+=== Testing on minikube
+
+To run the operator-e2e tests on kubernetes start minikube
+
+`minikube start`
+
+==== Run tests on minikube by maven
+
+To run all operator-e2e with the environment setup run
+
+`mvn clean verify -f optaplanner-operator -Doperator-e2e`
+
+
+==== Running tests on minikube by runOnKubernetes.sh
+
+`./runOnKubernetes.sh` setups operators
+
+. activemq-artemis-operator
+. keda
+. optaplanner-operator
+
+and minikube images
+
+. optaplanner-operator
+. school-timetabling
+
+After environment is ready you can run test separately.
+Each test will create a different namespace
+that is watched by keda and activemq

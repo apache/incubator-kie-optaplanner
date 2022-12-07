@@ -1,0 +1,33 @@
+#Runs operator-e2e tests if optaplanner-operator have been changed
+name: Operator test
+
+on:
+  push:
+    paths:
+      - 'optaplanner-operator/**'
+  pull_request:
+    paths:
+      - 'optaplanner-operator/**'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  os-prep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: setup-minikube
+        uses: medyagh/setup-minikube@v0.0.11
+
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Java and Maven Setup
+        uses: kiegroup/kogito-pipelines/.ci/actions/maven@main
+        with:
+          java-version: 11
+          maven-version: 3.8.6
+      - name: Build with Maven
+        run: mvn clean -pl :optaplanner-operator-integration-test -am verify -Poperator-e2e
+
+

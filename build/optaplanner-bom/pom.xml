@@ -573,26 +573,43 @@
       <!-- OptaPlanner operator -->
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-operator</artifactId>
+        <artifactId>optaplanner-operator-impl</artifactId>
         <version>${version.org.optaplanner}</version>
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-operator</artifactId>
+        <artifactId>optaplanner-operator-impl</artifactId>
         <version>${version.org.optaplanner}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-operator</artifactId>
+        <artifactId>optaplanner-operator-impl</artifactId>
         <type>test-jar</type>
         <version>${version.org.optaplanner}</version>
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-operator</artifactId>
+        <artifactId>optaplanner-operator-impl</artifactId>
         <version>${version.org.optaplanner}</version>
         <classifier>javadoc</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-operator-integration-test</artifactId>
+        <version>${version.org.optaplanner}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-operator-integration-test</artifactId>
+        <version>${version.org.optaplanner}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-operator-integration-test</artifactId>
+        <type>test-jar</type>
+        <version>${version.org.optaplanner}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

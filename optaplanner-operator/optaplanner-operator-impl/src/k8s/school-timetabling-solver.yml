@@ -18,7 +18,8 @@ spec:
     spec:
       containers:
         - name: school-timetabling
-          image: quay.io/example/school-timetabling:latest
+          image: quay.io/optaplanner/school-timetabling:latest
+          imagePullPolicy: Never
   scaling:
     dynamic: true
     replicas: 3
