@@ -23,7 +23,7 @@
     <version.org.drools>8.31.0.Final</version.org.drools>
 
     <!-- Normal dependency versions -->
-    <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
+    <version.ch.qos.logback>1.4.5</version.ch.qos.logback>
     <version.org.apache.logging.log4j>2.19.0</version.org.apache.logging.log4j>
     <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
     <version.io.quarkiverse.operatorsdk>4.0.3</version.io.quarkiverse.operatorsdk>
