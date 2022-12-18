@@ -121,55 +121,12 @@
       <artifactId>jakarta.inject-api</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-h2</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
-  <profiles>
-    <profile>
-      <id>h2</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>io.quarkus</groupId>
-          <artifactId>quarkus-jdbc-h2</artifactId>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-      <properties>
-        <maven.jdbc.db.kind>h2</maven.jdbc.db.kind>
-        <maven.jdbc.username/>
-        <maven.jdbc.password/>
-        <!--
-          Even the presence of an empty 'quarkus.datasource.jdbc.url' property breaks dev services for PostgreSql.
-          This way, the property is generated in the application.properties only for the H2 database.
-        -->
-        <property.maven.jdbc.url>quarkus.datasource.jdbc.url=jdbc:h2:mem:test</property.maven.jdbc.url>
-      </properties>
-    </profile>
-
-    <profile>
-      <id>postgresql</id>
-      <dependencies>
-        <!-- Brings the dev services that starts a PostgreSql server using Testcontainers. -->
-        <dependency>
-          <groupId>io.quarkus</groupId>
-          <artifactId>quarkus-core-deployment</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>io.quarkus</groupId>
-          <artifactId>quarkus-jdbc-postgresql</artifactId>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-      <properties>
-        <maven.jdbc.kind>postgresql</maven.jdbc.kind>
-        <maven.jdbc.username>postgres</maven.jdbc.username>
-        <maven.jdbc.password>postgres</maven.jdbc.password>
-      </properties>
-    </profile>
-  </profiles>
 
   <build>
     <testResources>
