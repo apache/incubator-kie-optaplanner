@@ -2,7 +2,7 @@ package org.optaplanner.benchmark.config.blueprint;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlType;
+import jakarta.xml.bind.annotation.XmlType;
 
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 

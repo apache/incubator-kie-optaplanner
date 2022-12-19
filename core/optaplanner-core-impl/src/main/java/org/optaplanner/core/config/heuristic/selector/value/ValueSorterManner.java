@@ -1,6 +1,6 @@
 package org.optaplanner.core.config.heuristic.selector.value;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 
