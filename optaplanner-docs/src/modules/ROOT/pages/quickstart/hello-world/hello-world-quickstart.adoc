@@ -263,9 +263,9 @@ public class TimeTableApp {
                 .withSolutionClass(TimeTable.class)
                 .withEntityClasses(Lesson.class)
                 .withConstraintProviderClass(TimeTableConstraintProvider.class)
-                // The solver runs only for 10 seconds on this small dataset.
+                // The solver runs only for 5 seconds on this small dataset.
                 // It's recommended to run for at least 5 minutes ("5m") otherwise.
-                .withTerminationSpentLimit(Duration.ofSeconds(10)));
+                .withTerminationSpentLimit(Duration.ofSeconds(5)));
 
         // Load the problem
         TimeTable problem = generateDemoData();
