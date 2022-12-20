@@ -27,6 +27,1878 @@
     "revapi": {
       "_comment": "Changes between 8.13.0.Final and the current branch. These changes are desired and thus ignored.",
       "ignore": [
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.AbstractConfig<Config_ extends org.optaplanner.core.config.AbstractConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.AbstractConfig<Config_ extends org.optaplanner.core.config.AbstractConfig<Config_>>",
+          "annotation": "@jakarta.xml.bind.annotation.XmlAccessorType(.FIELD)",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.AbstractConfig<Config_ extends org.optaplanner.core.config.AbstractConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.AbstractConfig<Config_ extends org.optaplanner.core.config.AbstractConfig<Config_>>",
+          "annotation": "@javax.xml.bind.annotation.XmlAccessorType(.FIELD)",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.entityPlacerConfig",
+          "new": "field org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.entityPlacerConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElements({@jakarta.xml.bind.annotation.XmlElement(name = \"queuedEntityPlacer\", type = org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"queuedValuePlacer\", type = org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"pooledEntityPlacer\", type = org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig.class)})",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.entityPlacerConfig",
+          "new": "field org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.entityPlacerConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElements({@javax.xml.bind.annotation.XmlElement(name = \"queuedEntityPlacer\", type = org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"queuedValuePlacer\", type = org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"pooledEntityPlacer\", type = org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig.class)})",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.foragerConfig",
+          "new": "field org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.foragerConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"forager\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.foragerConfig",
+          "new": "field org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.foragerConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"forager\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.moveSelectorConfigList",
+          "new": "field org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.moveSelectorConfigList",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElements({@jakarta.xml.bind.annotation.XmlElement(name = \"cartesianProductMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"changeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"moveIteratorFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"moveListFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"pillarChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"pillarSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"subChainChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"subChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"swapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"tailChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"unionMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig.class)})",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.moveSelectorConfigList",
+          "new": "field org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.moveSelectorConfigList",
+          "annotation": "@javax.xml.bind.annotation.XmlElements({@javax.xml.bind.annotation.XmlElement(name = \"cartesianProductMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"changeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"moveIteratorFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"moveListFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"pillarChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"pillarSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"subChainChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"subChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"swapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"tailChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"unionMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig.class)})",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig",
+          "new": "class org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"constructionHeuristicType\", \"entitySorterManner\", \"valueSorterManner\", \"entityPlacerConfig\", \"moveSelectorConfigList\", \"foragerConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig",
+          "new": "class org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"constructionHeuristicType\", \"entitySorterManner\", \"valueSorterManner\", \"entityPlacerConfig\", \"moveSelectorConfigList\", \"foragerConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType",
+          "new": "enum org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType",
+          "new": "enum org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicForagerConfig",
+          "new": "class org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicForagerConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"pickEarlyType\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicForagerConfig",
+          "new": "class org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicForagerConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"pickEarlyType\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType",
+          "new": "enum org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType",
+          "new": "enum org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicPickEarlyType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig<Config_ extends org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig<Config_ extends org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig<Config_>>",
+          "annotation": "@jakarta.xml.bind.annotation.XmlSeeAlso({org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig.class, org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig.class, org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig.class})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig<Config_ extends org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig<Config_ extends org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig<Config_>>",
+          "annotation": "@javax.xml.bind.annotation.XmlSeeAlso({org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig.class, org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig.class, org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig.class})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig",
+          "new": "class org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"moveSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig",
+          "new": "class org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"moveSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig.entitySelectorConfig",
+          "new": "field org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig.entitySelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"entitySelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig.entitySelectorConfig",
+          "new": "field org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig.entitySelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"entitySelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig.moveSelectorConfigList",
+          "new": "field org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig.moveSelectorConfigList",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElements({@jakarta.xml.bind.annotation.XmlElement(name = \"cartesianProductMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"changeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"moveIteratorFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"moveListFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"pillarChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"pillarSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"subChainChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"subChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"swapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"tailChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"unionMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig.class)})",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig.moveSelectorConfigList",
+          "new": "field org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig.moveSelectorConfigList",
+          "annotation": "@javax.xml.bind.annotation.XmlElements({@javax.xml.bind.annotation.XmlElement(name = \"cartesianProductMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"changeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"moveIteratorFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"moveListFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"pillarChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"pillarSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"subChainChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"subChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"swapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"tailChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"unionMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig.class)})",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig",
+          "new": "class org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"entitySelectorConfig\", \"moveSelectorConfigList\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig",
+          "new": "class org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"entitySelectorConfig\", \"moveSelectorConfigList\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig.valueSelectorConfig",
+          "new": "field org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig.valueSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"valueSelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig.valueSelectorConfig",
+          "new": "field org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig.valueSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"valueSelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig",
+          "new": "class org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"entityClass\", \"valueSelectorConfig\", \"moveSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig",
+          "new": "class org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"entityClass\", \"valueSelectorConfig\", \"moveSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.entitySelectorConfig",
+          "new": "field org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.entitySelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"entitySelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.entitySelectorConfig",
+          "new": "field org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.entitySelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"entitySelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.moveSelectorConfig",
+          "new": "field org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.moveSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElements({@jakarta.xml.bind.annotation.XmlElement(name = \"cartesianProductMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"changeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"moveIteratorFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"moveListFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"pillarChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"pillarSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"subChainChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"subChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"swapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"tailChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"unionMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig.class)})",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.moveSelectorConfig",
+          "new": "field org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.moveSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElements({@javax.xml.bind.annotation.XmlElement(name = \"cartesianProductMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"changeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"moveIteratorFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"moveListFactory\", type = org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"pillarChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"pillarSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"subChainChangeMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"subChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"swapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"tailChainSwapMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"unionMoveSelector\", type = org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig.class)})",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig",
+          "new": "class org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"exhaustiveSearchType\", \"nodeExplorationType\", \"entitySorterManner\", \"valueSorterManner\", \"entitySelectorConfig\", \"moveSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig",
+          "new": "class org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"exhaustiveSearchType\", \"nodeExplorationType\", \"entitySorterManner\", \"valueSorterManner\", \"entitySelectorConfig\", \"moveSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType",
+          "new": "enum org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType",
+          "new": "enum org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.exhaustivesearch.NodeExplorationType",
+          "new": "enum org.optaplanner.core.config.exhaustivesearch.NodeExplorationType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.exhaustivesearch.NodeExplorationType",
+          "new": "enum org.optaplanner.core.config.exhaustivesearch.NodeExplorationType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType",
+          "new": "enum org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType",
+          "new": "enum org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.heuristic.selector.common.SelectionOrder",
+          "new": "enum org.optaplanner.core.config.heuristic.selector.common.SelectionOrder",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.heuristic.selector.common.SelectionOrder",
+          "new": "enum org.optaplanner.core.config.heuristic.selector.common.SelectionOrder",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder",
+          "new": "enum org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder",
+          "new": "enum org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig.originEntitySelectorConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig.originEntitySelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"originEntitySelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig.originEntitySelectorConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig.originEntitySelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"originEntitySelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"originEntitySelectorConfig\", \"nearbyDistanceMeterClass\", \"nearbySelectionDistributionType\", \"blockDistributionSizeMinimum\", \"blockDistributionSizeMaximum\", \"blockDistributionSizeRatio\", \"blockDistributionUniformDistributionProbability\", \"linearDistributionSizeMaximum\", \"parabolicDistributionSizeMaximum\", \"betaDistributionAlpha\", \"betaDistributionBeta\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"originEntitySelectorConfig\", \"nearbyDistanceMeterClass\", \"nearbySelectionDistributionType\", \"blockDistributionSizeMinimum\", \"blockDistributionSizeMaximum\", \"blockDistributionSizeRatio\", \"blockDistributionUniformDistributionProbability\", \"linearDistributionSizeMaximum\", \"parabolicDistributionSizeMaximum\", \"betaDistributionAlpha\", \"betaDistributionBeta\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionDistributionType",
+          "new": "enum org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionDistributionType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionDistributionType",
+          "new": "enum org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionDistributionType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig.id",
+          "new": "field org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig.id",
+          "annotation": "@jakarta.xml.bind.annotation.XmlAttribute",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig.id",
+          "new": "field org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig.id",
+          "annotation": "@javax.xml.bind.annotation.XmlAttribute",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig.mimicSelectorRef",
+          "new": "field org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig.mimicSelectorRef",
+          "annotation": "@jakarta.xml.bind.annotation.XmlAttribute",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig.mimicSelectorRef",
+          "new": "field org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig.mimicSelectorRef",
+          "annotation": "@javax.xml.bind.annotation.XmlAttribute",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig.nearbySelectionConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig.nearbySelectionConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"nearbySelection\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig.nearbySelectionConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig.nearbySelectionConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"nearbySelection\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"id\", \"mimicSelectorRef\", \"entityClass\", \"cacheType\", \"selectionOrder\", \"nearbySelectionConfig\", \"filterClass\", \"sorterManner\", \"sorterComparatorClass\", \"sorterWeightFactoryClass\", \"sorterOrder\", \"sorterClass\", \"probabilityWeightFactoryClass\", \"selectedCountLimit\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"id\", \"mimicSelectorRef\", \"entityClass\", \"cacheType\", \"selectionOrder\", \"nearbySelectionConfig\", \"filterClass\", \"sorterManner\", \"sorterComparatorClass\", \"sorterWeightFactoryClass\", \"sorterOrder\", \"sorterClass\", \"probabilityWeightFactoryClass\", \"selectedCountLimit\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner",
+          "new": "enum org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner",
+          "new": "enum org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig.entitySelectorConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig.entitySelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"entitySelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig.entitySelectorConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig.entitySelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"entitySelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"entitySelectorConfig\", \"minimumSubPillarSize\", \"maximumSubPillarSize\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"entitySelectorConfig\", \"minimumSubPillarSize\", \"maximumSubPillarSize\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy",
+          "new": "class org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"subPillarEnabled\", \"minimumSubPillarSize\", \"maximumSubPillarSize\", \"maximumSubPillarSize\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy",
+          "new": "class org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"subPillarEnabled\", \"minimumSubPillarSize\", \"maximumSubPillarSize\", \"maximumSubPillarSize\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
+          "annotation": "@jakarta.xml.bind.annotation.XmlSeeAlso({org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.class, org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig.class})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"cacheType\", \"selectionOrder\", \"filterClass\", \"sorterComparatorClass\", \"sorterWeightFactoryClass\", \"sorterOrder\", \"sorterClass\", \"probabilityWeightFactoryClass\", \"selectedCountLimit\", \"fixedProbabilityWeight\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
+          "annotation": "@javax.xml.bind.annotation.XmlSeeAlso({org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.class, org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig.class, org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig.class})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"cacheType\", \"selectionOrder\", \"filterClass\", \"sorterComparatorClass\", \"sorterWeightFactoryClass\", \"sorterOrder\", \"sorterClass\", \"probabilityWeightFactoryClass\", \"selectedCountLimit\", \"fixedProbabilityWeight\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"moveSelectorConfigList\", \"ignoreEmptyChildIterators\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"moveSelectorConfigList\", \"ignoreEmptyChildIterators\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"moveSelectorConfigList\", \"selectorProbabilityWeightFactoryClass\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"moveSelectorConfigList\", \"selectorProbabilityWeightFactoryClass\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.moveIteratorFactoryCustomProperties",
+          "new": "field org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.moveIteratorFactoryCustomProperties",
+          "annotation": "@jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.moveIteratorFactoryCustomProperties",
+          "new": "field org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig.moveIteratorFactoryCustomProperties",
+          "annotation": "@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"moveIteratorFactoryClass\", \"moveIteratorFactoryCustomProperties\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"moveIteratorFactoryClass\", \"moveIteratorFactoryCustomProperties\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.moveListFactoryCustomProperties",
+          "new": "field org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.moveListFactoryCustomProperties",
+          "annotation": "@jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.moveListFactoryCustomProperties",
+          "new": "field org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig.moveListFactoryCustomProperties",
+          "annotation": "@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"moveListFactoryClass\", \"moveListFactoryCustomProperties\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"moveListFactoryClass\", \"moveListFactoryCustomProperties\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>.pillarSelectorConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>.pillarSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"pillarSelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>.pillarSelectorConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>.pillarSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"pillarSelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"subPillarType\", \"subPillarSequenceComparatorClass\", \"pillarSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"subPillarType\", \"subPillarSequenceComparatorClass\", \"pillarSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"entitySelectorConfig\", \"valueSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"entitySelectorConfig\", \"valueSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>.pillarSelectorConfig @ org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>.pillarSelectorConfig @ org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"pillarSelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>.pillarSelectorConfig @ org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>.pillarSelectorConfig @ org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"pillarSelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"valueSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"valueSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>.pillarSelectorConfig @ org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>.pillarSelectorConfig @ org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"pillarSelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>.pillarSelectorConfig @ org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.generic.AbstractPillarMoveSelectorConfig<Config_>>.pillarSelectorConfig @ org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"pillarSelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"secondaryPillarSelectorConfig\", \"variableNameIncludeList\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"secondaryPillarSelectorConfig\", \"variableNameIncludeList\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.heuristic.selector.move.generic.SubPillarType",
+          "new": "enum org.optaplanner.core.config.heuristic.selector.move.generic.SubPillarType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.heuristic.selector.move.generic.SubPillarType",
+          "new": "enum org.optaplanner.core.config.heuristic.selector.move.generic.SubPillarType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"entitySelectorConfig\", \"secondaryEntitySelectorConfig\", \"variableNameIncludeList\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"entitySelectorConfig\", \"secondaryEntitySelectorConfig\", \"variableNameIncludeList\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.KOptMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.KOptMoveSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"entitySelectorConfig\", \"valueSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.KOptMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.KOptMoveSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"entitySelectorConfig\", \"valueSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"entityClass\", \"subChainSelectorConfig\", \"valueSelectorConfig\", \"selectReversingMoveToo\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"entityClass\", \"subChainSelectorConfig\", \"valueSelectorConfig\", \"selectReversingMoveToo\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"entityClass\", \"subChainSelectorConfig\", \"secondarySubChainSelectorConfig\", \"selectReversingMoveToo\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"entityClass\", \"subChainSelectorConfig\", \"secondarySubChainSelectorConfig\", \"selectReversingMoveToo\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"entitySelectorConfig\", \"valueSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"entitySelectorConfig\", \"valueSelectorConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"minimumSubListSize\", \"maximumSubListSize\", \"selectReversingMoveToo\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"minimumSubListSize\", \"maximumSubListSize\", \"selectReversingMoveToo\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"minimumSubListSize\", \"maximumSubListSize\", \"selectReversingMoveToo\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"minimumSubListSize\", \"maximumSubListSize\", \"selectReversingMoveToo\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.id",
+          "new": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.id",
+          "annotation": "@jakarta.xml.bind.annotation.XmlAttribute",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.id",
+          "new": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.id",
+          "annotation": "@javax.xml.bind.annotation.XmlAttribute",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.mimicSelectorRef",
+          "new": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.mimicSelectorRef",
+          "annotation": "@jakarta.xml.bind.annotation.XmlAttribute",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.mimicSelectorRef",
+          "new": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.mimicSelectorRef",
+          "annotation": "@javax.xml.bind.annotation.XmlAttribute",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.nearbySelectionConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.nearbySelectionConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"nearbySelection\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.nearbySelectionConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.nearbySelectionConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"nearbySelection\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.variableName",
+          "new": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.variableName",
+          "annotation": "@jakarta.xml.bind.annotation.XmlAttribute",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.variableName",
+          "new": "field org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig.variableName",
+          "annotation": "@javax.xml.bind.annotation.XmlAttribute",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"id\", \"mimicSelectorRef\", \"downcastEntityClass\", \"variableName\", \"cacheType\", \"selectionOrder\", \"nearbySelectionConfig\", \"filterClass\", \"sorterManner\", \"sorterComparatorClass\", \"sorterWeightFactoryClass\", \"sorterOrder\", \"sorterClass\", \"probabilityWeightFactoryClass\", \"selectedCountLimit\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"id\", \"mimicSelectorRef\", \"downcastEntityClass\", \"variableName\", \"cacheType\", \"selectionOrder\", \"nearbySelectionConfig\", \"filterClass\", \"sorterManner\", \"sorterComparatorClass\", \"sorterWeightFactoryClass\", \"sorterOrder\", \"sorterClass\", \"probabilityWeightFactoryClass\", \"selectedCountLimit\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner",
+          "new": "enum org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner",
+          "new": "enum org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig.valueSelectorConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig.valueSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"valueSelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig.valueSelectorConfig",
+          "new": "field org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig.valueSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"valueSelector\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"valueSelectorConfig\", \"minimumSubChainSize\", \"maximumSubChainSize\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"valueSelectorConfig\", \"minimumSubChainSize\", \"maximumSubChainSize\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig",
+          "new": "class org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"localSearchType\", \"moveSelectorConfig\", \"acceptorConfig\", \"foragerConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig",
+          "new": "class org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"localSearchType\", \"moveSelectorConfig\", \"acceptorConfig\", \"foragerConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.localsearch.LocalSearchType",
+          "new": "enum org.optaplanner.core.config.localsearch.LocalSearchType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.localsearch.LocalSearchType",
+          "new": "enum org.optaplanner.core.config.localsearch.LocalSearchType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType",
+          "new": "enum org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType",
+          "new": "enum org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.localsearch.decider.acceptor.LocalSearchAcceptorConfig",
+          "new": "class org.optaplanner.core.config.localsearch.decider.acceptor.LocalSearchAcceptorConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"acceptorTypeList\", \"entityTabuSize\", \"entityTabuRatio\", \"fadingEntityTabuSize\", \"fadingEntityTabuRatio\", \"valueTabuSize\", \"valueTabuRatio\", \"fadingValueTabuSize\", \"fadingValueTabuRatio\", \"moveTabuSize\", \"fadingMoveTabuSize\", \"undoMoveTabuSize\", \"fadingUndoMoveTabuSize\", \"simulatedAnnealingStartingTemperature\", \"lateAcceptanceSize\", \"greatDelugeWaterLevelIncrementScore\", \"greatDelugeWaterLevelIncrementRatio\", \"stepCountingHillClimbingSize\", \"stepCountingHillClimbingType\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.localsearch.decider.acceptor.LocalSearchAcceptorConfig",
+          "new": "class org.optaplanner.core.config.localsearch.decider.acceptor.LocalSearchAcceptorConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"acceptorTypeList\", \"entityTabuSize\", \"entityTabuRatio\", \"fadingEntityTabuSize\", \"fadingEntityTabuRatio\", \"valueTabuSize\", \"valueTabuRatio\", \"fadingValueTabuSize\", \"fadingValueTabuRatio\", \"moveTabuSize\", \"fadingMoveTabuSize\", \"undoMoveTabuSize\", \"fadingUndoMoveTabuSize\", \"simulatedAnnealingStartingTemperature\", \"lateAcceptanceSize\", \"greatDelugeWaterLevelIncrementScore\", \"greatDelugeWaterLevelIncrementRatio\", \"stepCountingHillClimbingSize\", \"stepCountingHillClimbingType\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.localsearch.decider.acceptor.stepcountinghillclimbing.StepCountingHillClimbingType",
+          "new": "enum org.optaplanner.core.config.localsearch.decider.acceptor.stepcountinghillclimbing.StepCountingHillClimbingType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.localsearch.decider.acceptor.stepcountinghillclimbing.StepCountingHillClimbingType",
+          "new": "enum org.optaplanner.core.config.localsearch.decider.acceptor.stepcountinghillclimbing.StepCountingHillClimbingType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.localsearch.decider.forager.FinalistPodiumType",
+          "new": "enum org.optaplanner.core.config.localsearch.decider.forager.FinalistPodiumType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.localsearch.decider.forager.FinalistPodiumType",
+          "new": "enum org.optaplanner.core.config.localsearch.decider.forager.FinalistPodiumType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig",
+          "new": "class org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"pickEarlyType\", \"acceptedCountLimit\", \"finalistPodiumType\", \"breakTieRandomly\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig",
+          "new": "class org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"pickEarlyType\", \"acceptedCountLimit\", \"finalistPodiumType\", \"breakTieRandomly\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType",
+          "new": "enum org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType",
+          "new": "enum org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.phaseConfigList",
+          "new": "field org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.phaseConfigList",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElements({@jakarta.xml.bind.annotation.XmlElement(name = \"constructionHeuristic\", type = org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"customPhase\", type = org.optaplanner.core.config.phase.custom.CustomPhaseConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"exhaustiveSearch\", type = org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"localSearch\", type = org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"noChangePhase\", type = org.optaplanner.core.config.phase.NoChangePhaseConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"partitionedSearch\", type = org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.class)})",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.phaseConfigList",
+          "new": "field org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.phaseConfigList",
+          "annotation": "@javax.xml.bind.annotation.XmlElements({@javax.xml.bind.annotation.XmlElement(name = \"constructionHeuristic\", type = org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"customPhase\", type = org.optaplanner.core.config.phase.custom.CustomPhaseConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"exhaustiveSearch\", type = org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"localSearch\", type = org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"noChangePhase\", type = org.optaplanner.core.config.phase.NoChangePhaseConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"partitionedSearch\", type = org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.class)})",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.solutionPartitionerCustomProperties",
+          "new": "field org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.solutionPartitionerCustomProperties",
+          "annotation": "@jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.solutionPartitionerCustomProperties",
+          "new": "field org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.solutionPartitionerCustomProperties",
+          "annotation": "@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig",
+          "new": "class org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"solutionPartitionerClass\", \"solutionPartitionerCustomProperties\", \"runnablePartThreadLimit\", \"phaseConfigList\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig",
+          "new": "class org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"solutionPartitionerClass\", \"solutionPartitionerCustomProperties\", \"runnablePartThreadLimit\", \"phaseConfigList\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.phase.PhaseConfig<Config_ extends org.optaplanner.core.config.phase.PhaseConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.phase.PhaseConfig<Config_ extends org.optaplanner.core.config.phase.PhaseConfig<Config_>>",
+          "annotation": "@jakarta.xml.bind.annotation.XmlSeeAlso({org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.class, org.optaplanner.core.config.phase.custom.CustomPhaseConfig.class, org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.class, org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig.class, org.optaplanner.core.config.phase.NoChangePhaseConfig.class, org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.class})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.phase.PhaseConfig<Config_ extends org.optaplanner.core.config.phase.PhaseConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.phase.PhaseConfig<Config_ extends org.optaplanner.core.config.phase.PhaseConfig<Config_>>",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"terminationConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.phase.PhaseConfig<Config_ extends org.optaplanner.core.config.phase.PhaseConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.phase.PhaseConfig<Config_ extends org.optaplanner.core.config.phase.PhaseConfig<Config_>>",
+          "annotation": "@javax.xml.bind.annotation.XmlSeeAlso({org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.class, org.optaplanner.core.config.phase.custom.CustomPhaseConfig.class, org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.class, org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig.class, org.optaplanner.core.config.phase.NoChangePhaseConfig.class, org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.class})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.phase.PhaseConfig<Config_ extends org.optaplanner.core.config.phase.PhaseConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.phase.PhaseConfig<Config_ extends org.optaplanner.core.config.phase.PhaseConfig<Config_>>",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"terminationConfig\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.phase.custom.CustomPhaseConfig.customPhaseCommandClassList",
+          "new": "field org.optaplanner.core.config.phase.custom.CustomPhaseConfig.customPhaseCommandClassList",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"customPhaseCommandClass\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.phase.custom.CustomPhaseConfig.customPhaseCommandClassList",
+          "new": "field org.optaplanner.core.config.phase.custom.CustomPhaseConfig.customPhaseCommandClassList",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"customPhaseCommandClass\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.phase.custom.CustomPhaseConfig.customPhaseCommandList",
+          "new": "field org.optaplanner.core.config.phase.custom.CustomPhaseConfig.customPhaseCommandList",
+          "annotation": "@jakarta.xml.bind.annotation.XmlTransient",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.phase.custom.CustomPhaseConfig.customPhaseCommandList",
+          "new": "field org.optaplanner.core.config.phase.custom.CustomPhaseConfig.customPhaseCommandList",
+          "annotation": "@javax.xml.bind.annotation.XmlTransient",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.phase.custom.CustomPhaseConfig.customProperties",
+          "new": "field org.optaplanner.core.config.phase.custom.CustomPhaseConfig.customProperties",
+          "annotation": "@jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.phase.custom.CustomPhaseConfig.customProperties",
+          "new": "field org.optaplanner.core.config.phase.custom.CustomPhaseConfig.customProperties",
+          "annotation": "@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.phase.custom.CustomPhaseConfig",
+          "new": "class org.optaplanner.core.config.phase.custom.CustomPhaseConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"customPhaseCommandClassList\", \"customProperties\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.phase.custom.CustomPhaseConfig",
+          "new": "class org.optaplanner.core.config.phase.custom.CustomPhaseConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"customPhaseCommandClassList\", \"customProperties\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.score.definition.ScoreDefinitionType",
+          "new": "enum org.optaplanner.core.config.score.definition.ScoreDefinitionType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.score.definition.ScoreDefinitionType",
+          "new": "enum org.optaplanner.core.config.score.definition.ScoreDefinitionType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.assertionScoreDirectorFactory",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.assertionScoreDirectorFactory",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"assertionScoreDirectorFactory\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.assertionScoreDirectorFactory",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.assertionScoreDirectorFactory",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"assertionScoreDirectorFactory\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.constraintProviderCustomProperties",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.constraintProviderCustomProperties",
+          "annotation": "@jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.constraintProviderCustomProperties",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.constraintProviderCustomProperties",
+          "annotation": "@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.easyScoreCalculatorCustomProperties",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.easyScoreCalculatorCustomProperties",
+          "annotation": "@jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.easyScoreCalculatorCustomProperties",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.easyScoreCalculatorCustomProperties",
+          "annotation": "@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.gizmoKieBaseSupplier",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.gizmoKieBaseSupplier",
+          "annotation": "@jakarta.xml.bind.annotation.XmlTransient",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.gizmoKieBaseSupplier",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.gizmoKieBaseSupplier",
+          "annotation": "@javax.xml.bind.annotation.XmlTransient",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.incrementalScoreCalculatorCustomProperties",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.incrementalScoreCalculatorCustomProperties",
+          "annotation": "@jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.incrementalScoreCalculatorCustomProperties",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.incrementalScoreCalculatorCustomProperties",
+          "annotation": "@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.kieBaseConfigurationProperties",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.kieBaseConfigurationProperties",
+          "annotation": "@jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.kieBaseConfigurationProperties",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.kieBaseConfigurationProperties",
+          "annotation": "@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter.class)",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.scoreDrlFileList",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.scoreDrlFileList",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"scoreDrlFile\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.scoreDrlFileList",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.scoreDrlFileList",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"scoreDrlFile\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.scoreDrlList",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.scoreDrlList",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"scoreDrl\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.scoreDrlList",
+          "new": "field org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig.scoreDrlList",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"scoreDrl\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig",
+          "new": "class org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"easyScoreCalculatorClass\", \"easyScoreCalculatorCustomProperties\", \"constraintProviderClass\", \"constraintProviderCustomProperties\", \"constraintStreamImplType\", \"incrementalScoreCalculatorClass\", \"incrementalScoreCalculatorCustomProperties\", \"scoreDrlList\", \"scoreDrlFileList\", \"droolsAlphaNetworkCompilationEnabled\", \"kieBaseConfigurationProperties\", \"initializingScoreTrend\", \"assertionScoreDirectorFactory\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig",
+          "new": "class org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"easyScoreCalculatorClass\", \"easyScoreCalculatorCustomProperties\", \"constraintProviderClass\", \"constraintProviderCustomProperties\", \"constraintStreamImplType\", \"incrementalScoreCalculatorClass\", \"incrementalScoreCalculatorCustomProperties\", \"scoreDrlList\", \"scoreDrlFileList\", \"droolsAlphaNetworkCompilationEnabled\", \"kieBaseConfigurationProperties\", \"initializingScoreTrend\", \"assertionScoreDirectorFactory\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel",
+          "new": "enum org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel",
+          "new": "enum org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.solver.EnvironmentMode",
+          "new": "enum org.optaplanner.core.config.solver.EnvironmentMode",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.solver.EnvironmentMode",
+          "new": "enum org.optaplanner.core.config.solver.EnvironmentMode",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.solver.SolverConfig.entityClassList",
+          "new": "field org.optaplanner.core.config.solver.SolverConfig.entityClassList",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"entityClass\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.solver.SolverConfig.entityClassList",
+          "new": "field org.optaplanner.core.config.solver.SolverConfig.entityClassList",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"entityClass\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.solver.SolverConfig.gizmoMemberAccessorMap",
+          "new": "field org.optaplanner.core.config.solver.SolverConfig.gizmoMemberAccessorMap",
+          "annotation": "@jakarta.xml.bind.annotation.XmlTransient",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.solver.SolverConfig.gizmoMemberAccessorMap",
+          "new": "field org.optaplanner.core.config.solver.SolverConfig.gizmoMemberAccessorMap",
+          "annotation": "@javax.xml.bind.annotation.XmlTransient",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.solver.SolverConfig.gizmoSolutionClonerMap",
+          "new": "field org.optaplanner.core.config.solver.SolverConfig.gizmoSolutionClonerMap",
+          "annotation": "@jakarta.xml.bind.annotation.XmlTransient",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.solver.SolverConfig.gizmoSolutionClonerMap",
+          "new": "field org.optaplanner.core.config.solver.SolverConfig.gizmoSolutionClonerMap",
+          "annotation": "@javax.xml.bind.annotation.XmlTransient",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.solver.SolverConfig.monitoringConfig",
+          "new": "field org.optaplanner.core.config.solver.SolverConfig.monitoringConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"monitoring\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.solver.SolverConfig.monitoringConfig",
+          "new": "field org.optaplanner.core.config.solver.SolverConfig.monitoringConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"monitoring\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.solver.SolverConfig.phaseConfigList",
+          "new": "field org.optaplanner.core.config.solver.SolverConfig.phaseConfigList",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElements({@jakarta.xml.bind.annotation.XmlElement(name = \"constructionHeuristic\", type = org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"customPhase\", type = org.optaplanner.core.config.phase.custom.CustomPhaseConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"exhaustiveSearch\", type = org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"localSearch\", type = org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"noChangePhase\", type = org.optaplanner.core.config.phase.NoChangePhaseConfig.class), @jakarta.xml.bind.annotation.XmlElement(name = \"partitionedSearch\", type = org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.class)})",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.solver.SolverConfig.phaseConfigList",
+          "new": "field org.optaplanner.core.config.solver.SolverConfig.phaseConfigList",
+          "annotation": "@javax.xml.bind.annotation.XmlElements({@javax.xml.bind.annotation.XmlElement(name = \"constructionHeuristic\", type = org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"customPhase\", type = org.optaplanner.core.config.phase.custom.CustomPhaseConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"exhaustiveSearch\", type = org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"localSearch\", type = org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"noChangePhase\", type = org.optaplanner.core.config.phase.NoChangePhaseConfig.class), @javax.xml.bind.annotation.XmlElement(name = \"partitionedSearch\", type = org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.class)})",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.solver.SolverConfig.scoreDirectorFactoryConfig",
+          "new": "field org.optaplanner.core.config.solver.SolverConfig.scoreDirectorFactoryConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"scoreDirectorFactory\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.solver.SolverConfig.scoreDirectorFactoryConfig",
+          "new": "field org.optaplanner.core.config.solver.SolverConfig.scoreDirectorFactoryConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"scoreDirectorFactory\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.solver.SolverConfig",
+          "new": "class org.optaplanner.core.config.solver.SolverConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlRootElement(name = \"solver\")",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.solver.SolverConfig",
+          "new": "class org.optaplanner.core.config.solver.SolverConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(name = \"solverConfig\", propOrder = {\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"monitoringConfig\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.solver.SolverConfig",
+          "new": "class org.optaplanner.core.config.solver.SolverConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlRootElement(name = \"solver\")",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.solver.SolverConfig",
+          "new": "class org.optaplanner.core.config.solver.SolverConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(name = \"solverConfig\", propOrder = {\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"monitoringConfig\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.solver.SolverManagerConfig",
+          "new": "class org.optaplanner.core.config.solver.SolverManagerConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"parallelSolverCount\", \"threadFactoryClass\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.solver.SolverManagerConfig",
+          "new": "class org.optaplanner.core.config.solver.SolverManagerConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"parallelSolverCount\", \"threadFactoryClass\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "field org.optaplanner.core.config.solver.monitoring.MonitoringConfig.solverMetricList",
+          "new": "field org.optaplanner.core.config.solver.monitoring.MonitoringConfig.solverMetricList",
+          "annotation": "@jakarta.xml.bind.annotation.XmlElement(name = \"metric\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "field org.optaplanner.core.config.solver.monitoring.MonitoringConfig.solverMetricList",
+          "new": "field org.optaplanner.core.config.solver.monitoring.MonitoringConfig.solverMetricList",
+          "annotation": "@javax.xml.bind.annotation.XmlElement(name = \"metric\")",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.solver.monitoring.MonitoringConfig",
+          "new": "class org.optaplanner.core.config.solver.monitoring.MonitoringConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"solverMetricList\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.solver.monitoring.MonitoringConfig",
+          "new": "class org.optaplanner.core.config.solver.monitoring.MonitoringConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"solverMetricList\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.solver.monitoring.SolverMetric",
+          "new": "enum org.optaplanner.core.config.solver.monitoring.SolverMetric",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.solver.monitoring.SolverMetric",
+          "new": "enum org.optaplanner.core.config.solver.monitoring.SolverMetric",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.solver.random.RandomType",
+          "new": "enum org.optaplanner.core.config.solver.random.RandomType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.solver.random.RandomType",
+          "new": "enum org.optaplanner.core.config.solver.random.RandomType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.core.config.solver.termination.TerminationCompositionStyle",
+          "new": "enum org.optaplanner.core.config.solver.termination.TerminationCompositionStyle",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.core.config.solver.termination.TerminationCompositionStyle",
+          "new": "enum org.optaplanner.core.config.solver.termination.TerminationCompositionStyle",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.core.config.solver.termination.TerminationConfig",
+          "new": "class org.optaplanner.core.config.solver.termination.TerminationConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"terminationClass\", \"terminationCompositionStyle\", \"spentLimit\", \"millisecondsSpentLimit\", \"secondsSpentLimit\", \"minutesSpentLimit\", \"hoursSpentLimit\", \"daysSpentLimit\", \"unimprovedSpentLimit\", \"unimprovedMillisecondsSpentLimit\", \"unimprovedSecondsSpentLimit\", \"unimprovedMinutesSpentLimit\", \"unimprovedHoursSpentLimit\", \"unimprovedDaysSpentLimit\", \"unimprovedScoreDifferenceThreshold\", \"bestScoreLimit\", \"bestScoreFeasible\", \"stepCountLimit\", \"unimprovedStepCountLimit\", \"scoreCalculationCountLimit\", \"terminationConfigList\"})",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.core.config.solver.termination.TerminationConfig",
+          "new": "class org.optaplanner.core.config.solver.termination.TerminationConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"terminationClass\", \"terminationCompositionStyle\", \"spentLimit\", \"millisecondsSpentLimit\", \"secondsSpentLimit\", \"minutesSpentLimit\", \"hoursSpentLimit\", \"daysSpentLimit\", \"unimprovedSpentLimit\", \"unimprovedMillisecondsSpentLimit\", \"unimprovedSecondsSpentLimit\", \"unimprovedMinutesSpentLimit\", \"unimprovedHoursSpentLimit\", \"unimprovedDaysSpentLimit\", \"unimprovedScoreDifferenceThreshold\", \"bestScoreLimit\", \"bestScoreFeasible\", \"stepCountLimit\", \"unimprovedStepCountLimit\", \"scoreCalculationCountLimit\", \"terminationConfigList\"})",
+          "justification": "Jakarta migration"
+        }
       ]
     }
   }

@@ -30,6 +30,203 @@
     "revapi": {
       "_comment": "Changes between 8.13.0.Final and the current branch. These changes are desired and thus ignored.",
       "ignore": [
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "new": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlAccessorType(.FIELD)",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "new": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlRootElement(name = \"plannerBenchmark\")",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "new": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"name\", \"benchmarkDirectory\", \"threadFactoryClass\", \"parallelBenchmarkCount\", \"warmUpMillisecondsSpentLimit\", \"warmUpSecondsSpentLimit\", \"warmUpMinutesSpentLimit\", \"warmUpHoursSpentLimit\", \"warmUpDaysSpentLimit\", \"benchmarkReportConfig\", \"inheritedSolverBenchmarkConfig\", \"solverBenchmarkBluePrintConfigList\", \"solverBenchmarkConfigList\"})",
+          "justification": "Jakarta migration"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "new": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlAccessorType(.FIELD)",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "new": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlRootElement(name = \"plannerBenchmark\")",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "new": "class org.optaplanner.benchmark.config.PlannerBenchmarkConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"name\", \"benchmarkDirectory\", \"threadFactoryClass\", \"parallelBenchmarkCount\", \"warmUpMillisecondsSpentLimit\", \"warmUpSecondsSpentLimit\", \"warmUpMinutesSpentLimit\", \"warmUpHoursSpentLimit\", \"warmUpDaysSpentLimit\", \"benchmarkReportConfig\", \"inheritedSolverBenchmarkConfig\", \"solverBenchmarkBluePrintConfigList\", \"solverBenchmarkConfigList\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
+          "new": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"solutionFileIOClass\", \"writeOutputSolutionEnabled\", \"inputSolutionFileList\", \"problemStatisticEnabled\", \"problemStatisticTypeList\", \"singleStatisticTypeList\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
+          "new": "class org.optaplanner.benchmark.config.ProblemBenchmarksConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"solutionFileIOClass\", \"writeOutputSolutionEnabled\", \"inputSolutionFileList\", \"problemStatisticEnabled\", \"problemStatisticTypeList\", \"singleStatisticTypeList\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig",
+          "new": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"name\", \"solverConfig\", \"problemBenchmarksConfig\", \"subSingleCount\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig",
+          "new": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"name\", \"solverConfig\", \"problemBenchmarksConfig\", \"subSingleCount\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
+          "new": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"solverBenchmarkBluePrintType\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
+          "new": "class org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"solverBenchmarkBluePrintType\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType",
+          "new": "enum org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType",
+          "new": "enum org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.benchmark.config.ranking.SolverRankingType",
+          "new": "enum org.optaplanner.benchmark.config.ranking.SolverRankingType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.benchmark.config.ranking.SolverRankingType",
+          "new": "enum org.optaplanner.benchmark.config.ranking.SolverRankingType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
+          "new": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
+          "annotation": "@jakarta.xml.bind.annotation.XmlType(propOrder = {\"locale\", \"solverRankingType\", \"solverRankingComparatorClass\", \"solverRankingWeightFactoryClass\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
+          "new": "class org.optaplanner.benchmark.config.report.BenchmarkReportConfig",
+          "annotation": "@javax.xml.bind.annotation.XmlType(propOrder = {\"locale\", \"solverRankingType\", \"solverRankingComparatorClass\", \"solverRankingWeightFactoryClass\"})",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.benchmark.config.statistic.ProblemStatisticType",
+          "new": "enum org.optaplanner.benchmark.config.statistic.ProblemStatisticType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.benchmark.config.statistic.ProblemStatisticType",
+          "new": "enum org.optaplanner.benchmark.config.statistic.ProblemStatisticType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "enum org.optaplanner.benchmark.config.statistic.SingleStatisticType",
+          "new": "enum org.optaplanner.benchmark.config.statistic.SingleStatisticType",
+          "annotation": "@jakarta.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "old": "enum org.optaplanner.benchmark.config.statistic.SingleStatisticType",
+          "new": "enum org.optaplanner.benchmark.config.statistic.SingleStatisticType",
+          "annotation": "@javax.xml.bind.annotation.XmlEnum",
+          "justification": "Jakarta migration"
+          
+        }
       ]
     }
   }
