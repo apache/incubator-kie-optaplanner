@@ -39,8 +39,14 @@ public final class CollectionUtils {
                 List<E> largeList = new ArrayList<>(originalList);
                 Collections.reverse(largeList);
                 return largeList;
-
         }
+    }
+
+    public static <T> List<T> concat(List<T> left, List<T> right) {
+        List<T> result = new ArrayList<>(left.size() + right.size());
+        result.addAll(left);
+        result.addAll(right);
+        return result;
     }
 
     private CollectionUtils() {

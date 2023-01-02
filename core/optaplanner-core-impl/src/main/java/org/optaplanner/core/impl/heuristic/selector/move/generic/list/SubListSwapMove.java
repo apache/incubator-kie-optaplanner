@@ -5,8 +5,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -28,8 +26,8 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
     private final int rightFromIndex;
     private final int leftToIndex;
 
-    private Collection<Object> leftPlanningValues;
-    private Collection<Object> rightPlanningValues;
+    private List<Object> leftPlanningValueList;
+    private List<Object> rightPlanningValueList;
 
     public SubListSwapMove(ListVariableDescriptor<Solution_> variableDescriptor,
             Object leftEntity, int leftFromIndex, int leftToIndex,
@@ -105,8 +103,8 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
         List<Object> rightList = variableDescriptor.getListVariable(rightEntity);
         List<Object> leftSubListView = subList(leftSubList);
         List<Object> rightSubListView = subList(rightSubList);
-        leftPlanningValues = CollectionUtils.copy(leftSubListView, reversing);
-        rightPlanningValues = CollectionUtils.copy(rightSubListView, reversing);
+        leftPlanningValueList = CollectionUtils.copy(leftSubListView, reversing);
+        rightPlanningValueList = CollectionUtils.copy(rightSubListView, reversing);
 
         if (leftEntity == rightEntity) {
             int fromIndex = Math.min(leftFromIndex, rightFromIndex);
@@ -117,8 +115,8 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
             innerScoreDirector.beforeListVariableChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
             rightSubListView.clear();
             subList(leftSubList).clear();
-            leftList.addAll(leftFromIndex, rightPlanningValues);
-            rightList.addAll(leftSubListDestinationIndex, leftPlanningValues);
+            leftList.addAll(leftFromIndex, rightPlanningValueList);
+            rightList.addAll(leftSubListDestinationIndex, leftPlanningValueList);
             innerScoreDirector.afterListVariableChanged(variableDescriptor, leftEntity, fromIndex, toIndex);
         } else {
             innerScoreDirector.beforeListVariableChanged(variableDescriptor,
@@ -127,8 +125,8 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
                     rightEntity, rightFromIndex, rightFromIndex + rightSubListLength);
             rightSubListView.clear();
             leftSubListView.clear();
-            leftList.addAll(leftFromIndex, rightPlanningValues);
-            rightList.addAll(rightFromIndex, leftPlanningValues);
+            leftList.addAll(leftFromIndex, rightPlanningValueList);
+            rightList.addAll(rightFromIndex, leftPlanningValueList);
             innerScoreDirector.afterListVariableChanged(variableDescriptor,
                     leftEntity, leftFromIndex, leftFromIndex + rightSubListLength);
             innerScoreDirector.afterListVariableChanged(variableDescriptor,
@@ -165,7 +163,7 @@ public class SubListSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public Collection<Object> getPlanningValues() {
-        return Stream.concat(leftPlanningValues.stream(), rightPlanningValues.stream()).collect(Collectors.toList());
+        return CollectionUtils.concat(leftPlanningValueList, rightPlanningValueList);
     }
 
     private List<Object> subList(SubList subList) {
