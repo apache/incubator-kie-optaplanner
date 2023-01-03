@@ -103,9 +103,7 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
         }
     }
 
-    protected void processStrength(
-            DescriptorPolicy descriptorPolicy,
-            Class<? extends Comparator> strengthComparatorClass,
+    protected void processStrength(Class<? extends Comparator> strengthComparatorClass,
             Class<? extends SelectionSorterWeightFactory> strengthWeightFactoryClass) {
         if (strengthComparatorClass == PlanningVariable.NullStrengthComparator.class) {
             strengthComparatorClass = null;
