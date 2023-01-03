@@ -25,7 +25,7 @@ public @interface ValueRangeProvider {
     /**
      * Used by {@link PlanningVariable#valueRangeProviderRefs()}
      * to map a {@link PlanningVariable} to a {@link ValueRangeProvider}.
-     * If not provided, an attempt to auto-detect the {@link PlanningVariable} will be made.
+     * If not provided, an attempt will be made to find a matching {@link PlanningVariable} without a ref.
      *
      * @return if provided, must be unique across a {@link SolverFactory}
      */

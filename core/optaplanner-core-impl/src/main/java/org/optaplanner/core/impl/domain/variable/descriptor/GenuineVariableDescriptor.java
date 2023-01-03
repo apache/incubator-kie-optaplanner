@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
@@ -57,15 +58,20 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
     protected abstract void processPropertyAnnotations(DescriptorPolicy descriptorPolicy);
 
     protected void processValueRangeRefs(DescriptorPolicy descriptorPolicy, String[] valueRangeProviderRefs) {
+        String[] resolvedValueRangeProviderRefs = valueRangeProviderRefs;
         if (valueRangeProviderRefs == null || valueRangeProviderRefs.length == 0) {
-            throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a @" + PlanningVariable.class.getSimpleName()
-                    + " annotated property (" + variableMemberAccessor.getName()
-                    + ") that has no valueRangeProviderRefs (" + Arrays.toString(valueRangeProviderRefs) + ").");
+            resolvedValueRangeProviderRefs = detectValueRangeRefs(descriptorPolicy);
+            if (resolvedValueRangeProviderRefs.length == 0) {
+                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                        + ") has a @" + PlanningVariable.class.getSimpleName()
+                        + " annotated property (" + variableMemberAccessor.getName()
+                        + ") that has no valueRangeProviderRefs (" + Arrays.toString(resolvedValueRangeProviderRefs)
+                        + ") and no matching anonymous value range providers were found.");
+            }
         }
-        List<ValueRangeDescriptor<Solution_>> valueRangeDescriptorList = new ArrayList<>(valueRangeProviderRefs.length);
-        boolean addNullInValueRange = isNullable() && valueRangeProviderRefs.length == 1;
-        for (String valueRangeProviderRef : valueRangeProviderRefs) {
+        List<ValueRangeDescriptor<Solution_>> valueRangeDescriptorList = new ArrayList<>(resolvedValueRangeProviderRefs.length);
+        boolean addNullInValueRange = isNullable() && resolvedValueRangeProviderRefs.length == 1;
+        for (String valueRangeProviderRef : resolvedValueRangeProviderRefs) {
             valueRangeDescriptorList
                     .add(buildValueRangeDescriptor(descriptorPolicy, valueRangeProviderRef, addNullInValueRange));
         }
@@ -74,6 +80,21 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
         } else {
             valueRangeDescriptor = new CompositeValueRangeDescriptor<>(this, isNullable(), valueRangeDescriptorList);
         }
+    }
+
+    private String[] detectValueRangeRefs(DescriptorPolicy descriptorPolicy) {
+        boolean supportsValueRangeProviderFromEntity = !this.isListVariable();
+        Stream<MemberAccessor> applicableValueRangeProviderAccessors =
+                supportsValueRangeProviderFromEntity ? Stream.concat(
+                        descriptorPolicy.getAnonymousFromEntityValueRangeProviderSet().stream(),
+                        descriptorPolicy.getAnonymousFromSolutionValueRangeProviderSet().stream())
+                        : descriptorPolicy.getAnonymousFromSolutionValueRangeProviderSet().stream();
+        return applicableValueRangeProviderAccessors
+                .filter(valueRangeProviderAccessor -> {
+                    Class<?> variableType = variableMemberAccessor.getType();
+                    return variableType.isAssignableFrom(valueRangeProviderAccessor.getType());
+                })
+                .toArray(String[]::new);
     }
 
     private ValueRangeDescriptor<Solution_> buildValueRangeDescriptor(DescriptorPolicy descriptorPolicy,
