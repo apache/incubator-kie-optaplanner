@@ -32,6 +32,11 @@ public class DescriptorPolicy {
         }
     }
 
+    public boolean isFromSolutionValueRangeProvider(MemberAccessor memberAccessor) {
+        return fromSolutionValueRangeProviderMap.containsValue(memberAccessor)
+                || anonymousFromSolutionValueRangeProviderSet.contains(memberAccessor);
+    }
+
     public boolean hasFromSolutionValueRangeProvider(String id) {
         return fromSolutionValueRangeProviderMap.containsKey(id);
     }
@@ -51,6 +56,11 @@ public class DescriptorPolicy {
         } else {
             fromEntityValueRangeProviderMap.put(id, memberAccessor);
         }
+    }
+
+    public boolean isFromEntityValueRangeProvider(MemberAccessor memberAccessor) {
+        return fromEntityValueRangeProviderMap.containsValue(memberAccessor)
+                || anonymousFromEntityValueRangeProviderSet.contains(memberAccessor);
     }
 
     public boolean hasFromEntityValueRangeProvider(String id) {
