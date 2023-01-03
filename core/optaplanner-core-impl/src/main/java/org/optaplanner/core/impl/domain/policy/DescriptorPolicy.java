@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
@@ -79,8 +80,7 @@ public class DescriptorPolicy {
         ValueRangeProvider annotation = memberAccessor.getAnnotation(ValueRangeProvider.class);
         String id = annotation.id();
         if (id == null || id.isEmpty()) {
-            throw new IllegalStateException("The @" + ValueRangeProvider.class.getSimpleName()
-                    + " annotated member (" + memberAccessor + ")'s id (" + id + ") must not be empty.");
+            id = UUID.randomUUID().toString();
         }
         validateUniqueValueRangeProviderId(id, memberAccessor);
         return id;
