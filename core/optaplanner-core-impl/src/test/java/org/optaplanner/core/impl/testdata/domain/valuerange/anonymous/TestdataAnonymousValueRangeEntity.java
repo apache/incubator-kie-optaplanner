@@ -2,10 +2,6 @@ package org.optaplanner.core.impl.testdata.domain.valuerange.anonymous;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Year;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -30,10 +26,6 @@ public class TestdataAnonymousValueRangeEntity extends TestdataObject {
     private Long longValue;
     private BigInteger bigIntegerValue;
     private BigDecimal bigDecimalValue;
-    private LocalDate localDateValue;
-    private LocalTime localTimeValue;
-    private LocalDateTime localDateTimeValue;
-    private Year yearValue;
 
     public TestdataAnonymousValueRangeEntity() {
     }
@@ -85,42 +77,6 @@ public class TestdataAnonymousValueRangeEntity extends TestdataObject {
 
     public void setBigDecimalValue(BigDecimal bigDecimalValue) {
         this.bigDecimalValue = bigDecimalValue;
-    }
-
-    @PlanningVariable
-    public LocalDate getLocalDateValue() {
-        return localDateValue;
-    }
-
-    public void setLocalDateValue(LocalDate localDateValue) {
-        this.localDateValue = localDateValue;
-    }
-
-    @PlanningVariable
-    public LocalTime getLocalTimeValue() {
-        return localTimeValue;
-    }
-
-    public void setLocalTimeValue(LocalTime localTimeValue) {
-        this.localTimeValue = localTimeValue;
-    }
-
-    @PlanningVariable
-    public LocalDateTime getLocalDateTimeValue() {
-        return localDateTimeValue;
-    }
-
-    public void setLocalDateTimeValue(LocalDateTime localDateTimeValue) {
-        this.localDateTimeValue = localDateTimeValue;
-    }
-
-    @PlanningVariable
-    public Year getYearValue() {
-        return yearValue;
-    }
-
-    public void setYearValue(Year yearValue) {
-        this.yearValue = yearValue;
     }
 
     // ************************************************************************

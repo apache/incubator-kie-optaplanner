@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
+import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -98,18 +99,35 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
                         : descriptorPolicy.getAnonymousFromSolutionValueRangeProviderSet().stream();
         return applicableValueRangeProviderAccessors
                 .filter(valueRangeProviderAccessor -> {
-                    Class<?> variableType = variableMemberAccessor.getType();
+                    /*
+                     * For basic variable, the type is the type of the variable.
+                     * For list variable, the type is List<X>, and we need to know X.
+                     */
+                    Class<?> variableType =
+                            isListVariable() ? (Class<?>) ((ParameterizedType) variableMemberAccessor.getGenericType())
+                                    .getActualTypeArguments()[0] : variableMemberAccessor.getType();
+                    // We expect either ValueRange, Collection or an array.
                     Type valueRangeType = valueRangeProviderAccessor.getGenericType();
-                    if (!(valueRangeType instanceof ParameterizedType)) {
+                    if (valueRangeType instanceof ParameterizedType) {
+                        ParameterizedType parameterizedValueRangeType = (ParameterizedType) valueRangeType;
+                        Class<?> rawType = (Class<?>) parameterizedValueRangeType.getRawType();
+                        if (!ValueRange.class.isAssignableFrom(rawType) && !Collection.class.isAssignableFrom(rawType)) {
+                            return false;
+                        }
+                        Type[] generics = parameterizedValueRangeType.getActualTypeArguments();
+                        if (generics.length != 1) {
+                            return false;
+                        }
+                        Class<?> valueRangeGenericType = (Class<?>) generics[0];
+                        return variableType.isAssignableFrom(valueRangeGenericType);
+                    } else {
+                        Class<?> clz = (Class<?>) valueRangeType;
+                        if (clz.isArray()) {
+                            Class<?> componentType = clz.getComponentType();
+                            return variableType.isAssignableFrom(componentType);
+                        }
                         return false;
                     }
-                    ParameterizedType parameterizedValueRangeType = (ParameterizedType) valueRangeType;
-                    Type[] generics = parameterizedValueRangeType.getActualTypeArguments();
-                    if (generics.length != 1) {
-                        return false;
-                    }
-                    Class<?> valueRangeGenericType = (Class<?>) generics[0];
-                    return variableType.isAssignableFrom(valueRangeGenericType);
                 })
                 .toArray(MemberAccessor[]::new);
     }

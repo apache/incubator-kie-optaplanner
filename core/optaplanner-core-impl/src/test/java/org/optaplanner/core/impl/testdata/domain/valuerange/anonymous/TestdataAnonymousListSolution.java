@@ -7,18 +7,16 @@ import java.util.List;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
-import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
 @PlanningSolution
-public class TestdataAnonymousValueRangeSolution extends TestdataObject {
+public class TestdataAnonymousListSolution extends TestdataObject {
 
-    public static SolutionDescriptor<TestdataAnonymousValueRangeSolution> buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataAnonymousValueRangeSolution.class,
+    public static SolutionDescriptor<TestdataAnonymousListSolution> buildSolutionDescriptor() {
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataAnonymousListSolution.class,
                 TestdataAnonymousValueRangeEntity.class);
     }
 
@@ -26,10 +24,10 @@ public class TestdataAnonymousValueRangeSolution extends TestdataObject {
 
     private SimpleScore score;
 
-    public TestdataAnonymousValueRangeSolution() {
+    public TestdataAnonymousListSolution() {
     }
 
-    public TestdataAnonymousValueRangeSolution(String code) {
+    public TestdataAnonymousListSolution(String code) {
         super(code);
     }
 
@@ -56,24 +54,28 @@ public class TestdataAnonymousValueRangeSolution extends TestdataObject {
     // ************************************************************************
 
     @ValueRangeProvider
-    public CountableValueRange<Integer> createIntValueRange() {
-        return ValueRangeFactory.createIntValueRange(0, 3);
+    public List<Integer> createIntegerList() {
+        return List.of(0, 1);
     }
 
     @ValueRangeProvider
-    public CountableValueRange<Long> createLongValueRange() {
-        return ValueRangeFactory.createLongValueRange(1_000L, 1_003L);
+    public List<Long> createLongList() {
+        return List.of(0L, 1L);
     }
 
     @ValueRangeProvider
-    public CountableValueRange<BigInteger> createBigIntegerValueRange() {
-        return ValueRangeFactory.createBigIntegerValueRange(
-                BigInteger.valueOf(1_000_000L), BigInteger.valueOf(1_000_003L));
+    public List<Number> createNumberList() {
+        return List.of(0, BigInteger.TEN);
     }
 
     @ValueRangeProvider
-    public CountableValueRange<BigDecimal> createBigDecimalValueRange() {
-        return ValueRangeFactory.createBigDecimalValueRange(new BigDecimal("0.00"), new BigDecimal("0.03"));
+    public List<BigInteger> createBigIntegerList() {
+        return List.of(BigInteger.ZERO, BigInteger.TEN);
+    }
+
+    @ValueRangeProvider
+    public List<BigDecimal> createBigDecimalList() {
+        return List.of(BigDecimal.ZERO, BigDecimal.TEN);
     }
 
 }
