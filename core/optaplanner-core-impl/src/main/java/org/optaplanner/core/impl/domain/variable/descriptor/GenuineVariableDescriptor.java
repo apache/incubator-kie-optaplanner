@@ -1,5 +1,7 @@
 package org.optaplanner.core.impl.domain.variable.descriptor;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -60,7 +62,7 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
     protected void processValueRangeRefs(DescriptorPolicy descriptorPolicy, String[] valueRangeProviderRefs) {
         MemberAccessor[] valueRangeProviderMemberAccessors;
         if (valueRangeProviderRefs == null || valueRangeProviderRefs.length == 0) {
-            valueRangeProviderMemberAccessors = detectValueRangeRefs(descriptorPolicy);
+            valueRangeProviderMemberAccessors = findAnonymousValueRangeMemberAccessors(descriptorPolicy);
             if (valueRangeProviderMemberAccessors.length == 0) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a @" + PlanningVariable.class.getSimpleName()
@@ -70,7 +72,7 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
             }
         } else {
             valueRangeProviderMemberAccessors = Arrays.stream(valueRangeProviderRefs)
-                    .map(ref -> findValueRangeMemberDescriptor(descriptorPolicy, ref))
+                    .map(ref -> findValueRangeMemberAccessor(descriptorPolicy, ref))
                     .toArray(MemberAccessor[]::new);
         }
         List<ValueRangeDescriptor<Solution_>> valueRangeDescriptorList =
@@ -87,7 +89,7 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
         }
     }
 
-    private MemberAccessor[] detectValueRangeRefs(DescriptorPolicy descriptorPolicy) {
+    private MemberAccessor[] findAnonymousValueRangeMemberAccessors(DescriptorPolicy descriptorPolicy) {
         boolean supportsValueRangeProviderFromEntity = !this.isListVariable();
         Stream<MemberAccessor> applicableValueRangeProviderAccessors =
                 supportsValueRangeProviderFromEntity ? Stream.concat(
@@ -97,12 +99,22 @@ public abstract class GenuineVariableDescriptor<Solution_> extends VariableDescr
         return applicableValueRangeProviderAccessors
                 .filter(valueRangeProviderAccessor -> {
                     Class<?> variableType = variableMemberAccessor.getType();
-                    return variableType.isAssignableFrom(valueRangeProviderAccessor.getType());
+                    Type valueRangeType = valueRangeProviderAccessor.getGenericType();
+                    if (!(valueRangeType instanceof ParameterizedType)) {
+                        return false;
+                    }
+                    ParameterizedType parameterizedValueRangeType = (ParameterizedType) valueRangeType;
+                    Type[] generics = parameterizedValueRangeType.getActualTypeArguments();
+                    if (generics.length != 1) {
+                        return false;
+                    }
+                    Class<?> valueRangeGenericType = (Class<?>) generics[0];
+                    return variableType.isAssignableFrom(valueRangeGenericType);
                 })
                 .toArray(MemberAccessor[]::new);
     }
 
-    private MemberAccessor findValueRangeMemberDescriptor(DescriptorPolicy descriptorPolicy, String valueRangeProviderRef) {
+    private MemberAccessor findValueRangeMemberAccessor(DescriptorPolicy descriptorPolicy, String valueRangeProviderRef) {
         if (descriptorPolicy.hasFromSolutionValueRangeProvider(valueRangeProviderRef)) {
             return descriptorPolicy.getFromSolutionValueRangeProvider(valueRangeProviderRef);
         } else if (descriptorPolicy.hasFromEntityValueRangeProvider(valueRangeProviderRef)) {
