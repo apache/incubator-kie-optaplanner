@@ -14,6 +14,8 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarSupplyManager;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -47,6 +49,7 @@ public class SolverScope<Solution_> {
     protected volatile Solution_ bestSolution;
     protected volatile Score bestScore;
     protected Long bestSolutionTimeMillis;
+    protected SupplyManager pillarSupplyManager = new PillarSupplyManager();
     /**
      * Used for tracking step score
      */
@@ -192,6 +195,10 @@ public class SolverScope<Solution_> {
 
     public void setBestSolutionTimeMillis(Long bestSolutionTimeMillis) {
         this.bestSolutionTimeMillis = bestSolutionTimeMillis;
+    }
+
+    public SupplyManager getPillarSupplyManager() {
+        return pillarSupplyManager;
     }
 
     // ************************************************************************
