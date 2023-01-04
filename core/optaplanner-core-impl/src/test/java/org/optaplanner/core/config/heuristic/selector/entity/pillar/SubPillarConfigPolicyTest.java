@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 
 import java.util.Comparator;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class SubPillarConfigPolicyTest {
@@ -67,6 +68,29 @@ class SubPillarConfigPolicyTest {
                 .isInstanceOf(IllegalStateException.class);
         assertThatThrownBy(() -> SubPillarConfigPolicy.sequential(1, 2, null))
                 .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void equalitySizes() {
+        SubPillarConfigPolicy policy = SubPillarConfigPolicy.withSubpillars(1, 2);
+        Assertions.assertThat(policy).isEqualTo(policy);
+        SubPillarConfigPolicy policy2 = SubPillarConfigPolicy.withSubpillars(1, 2);
+        Assertions.assertThat(policy2).isEqualTo(policy);
+        SubPillarConfigPolicy policy3 = SubPillarConfigPolicy.withSubpillars(1, 3);
+        Assertions.assertThat(policy3).isNotEqualTo(policy2);
+        SubPillarConfigPolicy policy4 = SubPillarConfigPolicy.withSubpillars(2, 3);
+        Assertions.assertThat(policy4).isNotEqualTo(policy3);
+    }
+
+    @Test
+    void equalityComparator() {
+        Comparator<Object> comparator = (a, b) -> 0;
+        SubPillarConfigPolicy policy = SubPillarConfigPolicy.sequentialUnlimited(comparator);
+        Assertions.assertThat(policy).isEqualTo(policy);
+        SubPillarConfigPolicy policy2 = SubPillarConfigPolicy.sequentialUnlimited(comparator);
+        Assertions.assertThat(policy2).isEqualTo(policy);
+        SubPillarConfigPolicy policy3 = SubPillarConfigPolicy.sequentialUnlimited((a, b) -> 0);
+        Assertions.assertThat(policy3).isNotEqualTo(policy);
     }
 
 }
