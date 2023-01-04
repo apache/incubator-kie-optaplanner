@@ -7,7 +7,7 @@ import java.util.ListIterator;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-public class ShufflingEntitySelector<Solution_> extends AbstractCachingEntitySelector<Solution_> {
+public final class ShufflingEntitySelector<Solution_> extends AbstractCachingEntitySelector<Solution_> {
 
     public ShufflingEntitySelector(EntitySelector<Solution_> childEntitySelector, SelectionCacheType cacheType) {
         super(childEntitySelector, cacheType);
@@ -42,6 +42,13 @@ public class ShufflingEntitySelector<Solution_> extends AbstractCachingEntitySel
     public ListIterator<Object> listIterator(int index) {
         // Presumes that listIterator() has already been called and shuffling would be bad
         return cachedEntityList.listIterator(index);
+    }
+
+    @Override
+    protected Object[] getEqualityRequirements() {
+        return new Object[] {
+                super.childEntitySelector, super.cacheType
+        };
     }
 
     @Override

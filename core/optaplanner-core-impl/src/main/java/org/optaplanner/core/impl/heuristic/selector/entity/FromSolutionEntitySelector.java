@@ -14,7 +14,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 /**
  * This is the common {@link EntitySelector} implementation.
  */
-public class FromSolutionEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
+public final class FromSolutionEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
 
     protected final EntityDescriptor<Solution_> entityDescriptor;
     protected final SelectionCacheType minimumCacheType;
@@ -145,6 +145,13 @@ public class FromSolutionEntitySelector<Solution_> extends AbstractEntitySelecto
             throw new IllegalStateException("The selector (" + this + ") with minimumCacheType (" + minimumCacheType
                     + ")'s workingEntityList became dirty between steps but is still used afterwards.");
         }
+    }
+
+    @Override
+    protected Object[] getEqualityRequirements() {
+        return new Object[] {
+                entityDescriptor, minimumCacheType, randomSelection
+        };
     }
 
     @Override

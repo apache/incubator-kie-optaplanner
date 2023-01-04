@@ -186,9 +186,10 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
                 entitySelectorFactory.buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder);
         NearbyDistanceMeter nearbyDistanceMeter = ConfigUtils.newInstance(nearbySelectionConfig, "nearbyDistanceMeterClass",
                 nearbySelectionConfig.getNearbyDistanceMeterClass());
+        NearbyDistanceMeter wrappedNearbyDistanceMeter = new WrappedNearbyDistanceMeter<>(nearbyDistanceMeter);
         // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
         NearbyRandom nearbyRandom = NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(randomSelection);
-        return new NearEntityNearbyEntitySelector<>(entitySelector, originEntitySelector, nearbyDistanceMeter,
+        return new NearEntityNearbyEntitySelector<>(entitySelector, originEntitySelector, wrappedNearbyDistanceMeter,
                 nearbyRandom, randomSelection);
     }
 
@@ -197,7 +198,10 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
         if (hasFiltering(entityDescriptor)) {
             List<SelectionFilter<Solution_, Object>> filterList = new ArrayList<>(config.getFilterClass() == null ? 1 : 2);
             if (config.getFilterClass() != null) {
-                filterList.add(ConfigUtils.newInstance(config, "filterClass", config.getFilterClass()));
+                SelectionFilter<Solution_, Object> selectionFilter =
+                        ConfigUtils.newInstance(config, "filterClass", config.getFilterClass());
+                SelectionFilter<Solution_, Object> wrappedSelectionFilter = new WrappedSelectionFilter<>(selectionFilter);
+                filterList.add(wrappedSelectionFilter);
             }
             // Filter out pinned entities
             if (entityDescriptor.hasEffectiveMovableEntitySelectionFilter()) {
@@ -205,7 +209,7 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
             }
             // Do not filter out initialized entities here for CH and ES, because they can be partially initialized
             // Instead, ValueSelectorConfig.applyReinitializeVariableFiltering() does that.
-            entitySelector = new FilteringEntitySelector<Solution_>(entitySelector, filterList);
+            entitySelector = new FilteringEntitySelector<>(entitySelector, filterList);
         }
         return entitySelector;
     }
@@ -277,17 +281,20 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
                 }
                 sorter = EntitySelectorConfig.determineSorter(config.getSorterManner(), entityDescriptor);
             } else if (config.getSorterComparatorClass() != null) {
-                Comparator<Object> sorterComparator = ConfigUtils.newInstance(config,
-                        "sorterComparatorClass", config.getSorterComparatorClass());
-                sorter = new ComparatorSelectionSorter<>(sorterComparator,
+                Comparator<Object> sorterComparator =
+                        ConfigUtils.newInstance(config, "sorterComparatorClass", config.getSorterComparatorClass());
+                Comparator<Object> wrappedSorterComparator = new WrappedComparator<>(sorterComparator);
+                sorter = new ComparatorSelectionSorter<>(wrappedSorterComparator,
                         SelectionSorterOrder.resolve(config.getSorterOrder()));
             } else if (config.getSorterWeightFactoryClass() != null) {
-                SelectionSorterWeightFactory<Solution_, Object> sorterWeightFactory = ConfigUtils.newInstance(config,
-                        "sorterWeightFactoryClass", config.getSorterWeightFactoryClass());
-                sorter = new WeightFactorySelectionSorter<>(sorterWeightFactory,
+                SelectionSorterWeightFactory<Solution_, Object> sorterWeightFactory =
+                        ConfigUtils.newInstance(config, "sorterWeightFactoryClass", config.getSorterWeightFactoryClass());
+                SelectionSorterWeightFactory<Solution_, Object> wrappedSorterWeightFactory =
+                        new WrappedSelectionSorterWeightFactory<>(sorterWeightFactory);
+                sorter = new WeightFactorySelectionSorter<>(wrappedSorterWeightFactory,
                         SelectionSorterOrder.resolve(config.getSorterOrder()));
             } else if (config.getSorterClass() != null) {
-                sorter = ConfigUtils.newInstance(config, "sorterClass", config.getSorterClass());
+                sorter = new WrappedSelectionSorter<>(ConfigUtils.newInstance(config, "sorterClass", config.getSorterClass()));
             } else {
                 throw new IllegalArgumentException("The entitySelectorConfig (" + config
                         + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
@@ -321,10 +328,11 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
                         + config.getProbabilityWeightFactoryClass() + ").");
             }
             SelectionProbabilityWeightFactory<Solution_, Object> probabilityWeightFactory =
-                    ConfigUtils.newInstance(config, "probabilityWeightFactoryClass",
-                            config.getProbabilityWeightFactoryClass());
-            entitySelector = new ProbabilityEntitySelector<>(entitySelector, resolvedCacheType,
-                    probabilityWeightFactory);
+                    ConfigUtils.newInstance(config, "probabilityWeightFactoryClass", config.getProbabilityWeightFactoryClass());
+            SelectionProbabilityWeightFactory<Solution_, Object> wrappedProbabilityWeightFactory =
+                    new WrappedSelectionProbabilityWeightFactory<>(probabilityWeightFactory);
+            entitySelector =
+                    new ProbabilityEntitySelector<>(entitySelector, resolvedCacheType, wrappedProbabilityWeightFactory);
         }
         return entitySelector;
     }

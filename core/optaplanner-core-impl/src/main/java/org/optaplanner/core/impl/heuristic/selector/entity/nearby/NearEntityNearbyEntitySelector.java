@@ -15,14 +15,14 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
 public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
 
-    protected final EntitySelector<Solution_> childEntitySelector;
-    protected final EntitySelector<Solution_> replayingOriginEntitySelector;
-    protected final NearbyDistanceMeter<?, ?> nearbyDistanceMeter;
-    protected final NearbyRandom nearbyRandom;
-    protected final boolean randomSelection;
-    protected final boolean discardNearbyIndexZero = true; // TODO deactivate me when appropriate
+    private final EntitySelector<Solution_> childEntitySelector;
+    private final EntitySelector<Solution_> replayingOriginEntitySelector;
+    private final NearbyDistanceMeter<?, ?> nearbyDistanceMeter;
+    private final NearbyRandom nearbyRandom;
+    private final boolean randomSelection;
+    private final boolean discardNearbyIndexZero = true; // TODO deactivate me when appropriate
 
-    protected NearbyDistanceMatrix nearbyDistanceMatrix = null;
+    private NearbyDistanceMatrix nearbyDistanceMatrix = null;
 
     public NearEntityNearbyEntitySelector(EntitySelector<Solution_> childEntitySelector,
             EntitySelector<Solution_> originEntitySelector, NearbyDistanceMeter<?, ?> nearbyDistanceMeter,
@@ -147,6 +147,13 @@ public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEnt
         // TODO It should probably use nearby order
         // It must include the origin entity too
         return childEntitySelector.endingIterator();
+    }
+
+    @Override
+    protected Object[] getEqualityRequirements() {
+        return new Object[] {
+                childEntitySelector, replayingOriginEntitySelector, nearbyDistanceMatrix, nearbyRandom, randomSelection
+        };
     }
 
     private final class OriginalNearbyEntityIterator extends SelectionIterator<Object> {

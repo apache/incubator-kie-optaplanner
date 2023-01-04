@@ -6,6 +6,7 @@ import java.util.ListIterator;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.CompositeSelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionListIterator;
@@ -13,18 +14,18 @@ import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelecto
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
-public class FilteringEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
+public final class FilteringEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
 
-    protected final EntitySelector<Solution_> childEntitySelector;
-    protected final List<SelectionFilter<Solution_, Object>> filterList;
-    protected final boolean bailOutEnabled;
+    private final EntitySelector<Solution_> childEntitySelector;
+    private final SelectionFilter<Solution_, Object> selectionFilter;
+    private final boolean bailOutEnabled;
 
-    protected ScoreDirector<Solution_> scoreDirector = null;
+    private ScoreDirector<Solution_> scoreDirector = null;
 
     public FilteringEntitySelector(EntitySelector<Solution_> childEntitySelector,
             List<SelectionFilter<Solution_, Object>> filterList) {
         this.childEntitySelector = childEntitySelector;
-        this.filterList = filterList;
+        this.selectionFilter = new CompositeSelectionFilter<>(filterList);
         bailOutEnabled = childEntitySelector.isNeverEnding();
         phaseLifecycleSupport.addEventListener(childEntitySelector);
     }
@@ -70,6 +71,13 @@ public class FilteringEntitySelector<Solution_> extends AbstractEntitySelector<S
         return new JustInTimeFilteringEntityIterator(childEntitySelector.iterator(), determineBailOutSize());
     }
 
+    @Override
+    protected Object[] getEqualityRequirements() {
+        return new Object[] {
+                childEntitySelector, selectionFilter
+        };
+    }
+
     protected class JustInTimeFilteringEntityIterator extends UpcomingSelectionIterator<Object> {
 
         private final Iterator<Object> childEntityIterator;
@@ -98,7 +106,7 @@ public class FilteringEntitySelector<Solution_> extends AbstractEntitySelector<S
                     attemptsBeforeBailOut--;
                 }
                 next = childEntityIterator.next();
-            } while (!accept(scoreDirector, next));
+            } while (!selectionFilter.accept(scoreDirector, next));
             return next;
         }
 
@@ -119,7 +127,7 @@ public class FilteringEntitySelector<Solution_> extends AbstractEntitySelector<S
                     return noUpcomingSelection();
                 }
                 next = childEntityListIterator.next();
-            } while (!accept(scoreDirector, next));
+            } while (!selectionFilter.accept(scoreDirector, next));
             return next;
         }
 
@@ -131,7 +139,7 @@ public class FilteringEntitySelector<Solution_> extends AbstractEntitySelector<S
                     return noPreviousSelection();
                 }
                 previous = childEntityListIterator.previous();
-            } while (!accept(scoreDirector, previous));
+            } while (!selectionFilter.accept(scoreDirector, previous));
             return previous;
         }
     }
@@ -156,20 +164,11 @@ public class FilteringEntitySelector<Solution_> extends AbstractEntitySelector<S
         return new JustInTimeFilteringEntityIterator(childEntitySelector.endingIterator(), determineBailOutSize());
     }
 
-    protected long determineBailOutSize() {
+    private long determineBailOutSize() {
         if (!bailOutEnabled) {
             return -1L;
         }
         return childEntitySelector.getSize() * 10L;
-    }
-
-    protected boolean accept(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        for (SelectionFilter<Solution_, Object> filter : filterList) {
-            if (!filter.accept(scoreDirector, entity)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @Override

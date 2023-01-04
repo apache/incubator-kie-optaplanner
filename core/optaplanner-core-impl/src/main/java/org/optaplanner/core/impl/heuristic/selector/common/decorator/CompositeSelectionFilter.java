@@ -12,9 +12,9 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the selection type
  */
-public class CompositeSelectionFilter<Solution_, T> implements SelectionFilter<Solution_, T> {
+public final class CompositeSelectionFilter<Solution_, T> implements SelectionFilter<Solution_, T> {
 
-    protected final List<SelectionFilter<Solution_, T>> selectionFilterList;
+    private final List<SelectionFilter<Solution_, T>> selectionFilterList;
 
     public CompositeSelectionFilter(List<SelectionFilter<Solution_, T>> selectionFilterList) {
         this.selectionFilterList = selectionFilterList;

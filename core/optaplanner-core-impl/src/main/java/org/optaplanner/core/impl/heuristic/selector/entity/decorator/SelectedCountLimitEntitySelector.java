@@ -9,11 +9,11 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIte
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-public class SelectedCountLimitEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
+public final class SelectedCountLimitEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
 
-    protected final EntitySelector<Solution_> childEntitySelector;
-    protected final boolean randomSelection;
-    protected final long selectedCountLimit;
+    private final EntitySelector<Solution_> childEntitySelector;
+    private final boolean randomSelection;
+    private final long selectedCountLimit;
 
     public SelectedCountLimitEntitySelector(EntitySelector<Solution_> childEntitySelector, boolean randomSelection,
             long selectedCountLimit) {
@@ -78,6 +78,13 @@ public class SelectedCountLimitEntitySelector<Solution_> extends AbstractEntityS
         } else {
             return new SelectedCountLimitEntityIterator(childEntitySelector.endingIterator());
         }
+    }
+
+    @Override
+    protected Object[] getEqualityRequirements() {
+        return new Object[] {
+                childEntitySelector, randomSelection, selectedCountLimit
+        };
     }
 
     private class SelectedCountLimitEntityIterator extends SelectionIterator<Object> {

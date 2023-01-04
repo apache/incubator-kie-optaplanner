@@ -1,5 +1,12 @@
 package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
+/**
+ * It is recommended that instances be {@link Object#equals equal} if they represent the same meter,
+ * in order to support nearby entity selector equality.
+ *
+ * @param <O>
+ * @param <D>
+ */
 public interface NearbyDistanceMeter<O, D> {
 
     /**

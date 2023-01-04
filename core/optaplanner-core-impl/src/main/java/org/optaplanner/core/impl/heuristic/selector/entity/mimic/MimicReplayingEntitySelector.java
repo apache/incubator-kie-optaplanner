@@ -9,15 +9,15 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIte
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
-public class MimicReplayingEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
+public final class MimicReplayingEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
 
-    protected final EntityMimicRecorder<Solution_> entityMimicRecorder;
+    private final EntityMimicRecorder<Solution_> entityMimicRecorder;
 
-    protected boolean hasRecordingCreated;
-    protected boolean hasRecording;
-    protected boolean recordingCreated;
-    protected Object recording;
-    protected boolean recordingAlreadyReturned;
+    private boolean hasRecordingCreated;
+    private boolean hasRecording;
+    private boolean recordingCreated;
+    private Object recording;
+    private boolean recordingAlreadyReturned;
 
     public MimicReplayingEntitySelector(EntityMimicRecorder<Solution_> entityMimicRecorder) {
         this.entityMimicRecorder = entityMimicRecorder;
@@ -86,6 +86,13 @@ public class MimicReplayingEntitySelector<Solution_> extends AbstractEntitySelec
         recordingCreated = true;
         recording = next;
         recordingAlreadyReturned = false;
+    }
+
+    @Override
+    protected Object[] getEqualityRequirements() {
+        return new Object[] {
+                entityMimicRecorder
+        };
     }
 
     private class ReplayingEntityIterator extends SelectionIterator<Object> {

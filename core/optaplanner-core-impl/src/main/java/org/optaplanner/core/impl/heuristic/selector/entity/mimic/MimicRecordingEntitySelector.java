@@ -11,12 +11,12 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionLis
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-public class MimicRecordingEntitySelector<Solution_> extends AbstractEntitySelector<Solution_>
+public final class MimicRecordingEntitySelector<Solution_> extends AbstractEntitySelector<Solution_>
         implements EntityMimicRecorder<Solution_> {
 
-    protected final EntitySelector<Solution_> childEntitySelector;
+    private final EntitySelector<Solution_> childEntitySelector;
 
-    protected final List<MimicReplayingEntitySelector<Solution_>> replayingEntitySelectorList;
+    private final List<MimicReplayingEntitySelector<Solution_>> replayingEntitySelectorList;
 
     public MimicRecordingEntitySelector(EntitySelector<Solution_> childEntitySelector) {
         this.childEntitySelector = childEntitySelector;
@@ -56,6 +56,13 @@ public class MimicRecordingEntitySelector<Solution_> extends AbstractEntitySelec
     @Override
     public Iterator<Object> iterator() {
         return new RecordingEntityIterator(childEntitySelector.iterator());
+    }
+
+    @Override
+    protected Object[] getEqualityRequirements() {
+        return new Object[] {
+                childEntitySelector, replayingEntitySelectorList
+        };
     }
 
     private class RecordingEntityIterator extends SelectionIterator<Object> {

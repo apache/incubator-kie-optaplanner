@@ -16,6 +16,7 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
+import org.optaplanner.core.impl.heuristic.selector.entity.WrappedComparator;
 
 public class PillarSelectorFactory<Solution_>
         extends AbstractSelectorFactory<Solution_, PillarSelectorConfig> {
@@ -40,7 +41,7 @@ public class PillarSelectorFactory<Solution_>
      * @return never null
      */
     public PillarSelector<Solution_> buildPillarSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SubPillarType subPillarType, Class<? extends Comparator> subPillarSequenceComparatorClass,
+            SubPillarType subPillarType, Class<? extends Comparator<Object>> subPillarSequenceComparatorClass,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder,
             List<String> variableNameIncludeList) {
         if (subPillarType != SubPillarType.SEQUENCE && subPillarSequenceComparatorClass != null) {
@@ -78,7 +79,7 @@ public class PillarSelectorFactory<Solution_>
     }
 
     private SubPillarConfigPolicy configureSubPillars(SubPillarType pillarType,
-            Class<? extends Comparator> pillarOrderComparatorClass, EntitySelector<Solution_> entitySelector,
+            Class<? extends Comparator<Object>> pillarOrderComparatorClass, EntitySelector<Solution_> entitySelector,
             Integer minimumSubPillarSize, Integer maximumSubPillarSize) {
         int actualMinimumSubPillarSize = Objects.requireNonNullElse(minimumSubPillarSize, 1);
         int actualMaximumSubPillarSize = Objects.requireNonNullElse(maximumSubPillarSize, Integer.MAX_VALUE);
@@ -97,55 +98,16 @@ public class PillarSelectorFactory<Solution_>
                                 config + ") does not provide pillarOrderComparatorClass while the entity (" +
                                 entityClass.getCanonicalName() + ") does not implement Comparable.");
                     }
-                    Comparator<Comparable> comparator = Comparable::compareTo;
                     return SubPillarConfigPolicy.sequential(actualMinimumSubPillarSize, actualMaximumSubPillarSize,
-                            new PillarOrderComparator(Comparator.class, comparator));
+                            new WrappedComparator<>());
                 } else {
                     Comparator<Object> comparator = ConfigUtils.newInstance(config, "pillarOrderComparatorClass",
                             pillarOrderComparatorClass);
                     return SubPillarConfigPolicy.sequential(actualMinimumSubPillarSize, actualMaximumSubPillarSize,
-                            new PillarOrderComparator(pillarOrderComparatorClass, comparator));
+                            new WrappedComparator<>(comparator));
                 }
             default:
                 throw new IllegalStateException("Subpillars cannot be enabled and disabled at the same time.");
-        }
-    }
-
-    /**
-     * Exists so that {@link SubPillarConfigPolicy} can rely on the comparator in its
-     * {@link SubPillarConfigPolicy#equals(Object)}.
-     * If two instances share the same pillar order comparator class, they are considered the same comparator.
-     */
-    private static final class PillarOrderComparator implements Comparator<Object> {
-
-        private final Class<? extends Comparator> pillarOrderComparatorClass;
-        private final Comparator comparator;
-
-        PillarOrderComparator(Class<? extends Comparator> pillarOrderComparatorClass, Comparator comparator) {
-            this.pillarOrderComparatorClass = pillarOrderComparatorClass;
-            this.comparator = comparator;
-        }
-
-        @Override
-        public int compare(Object o1, Object o2) {
-            return comparator.compare(o1, o2);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            PillarOrderComparator that = (PillarOrderComparator) o;
-            return Objects.equals(pillarOrderComparatorClass, that.pillarOrderComparatorClass);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(pillarOrderComparatorClass);
         }
     }
 

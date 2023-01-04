@@ -51,6 +51,13 @@ public class SortingEntitySelector<Solution_> extends AbstractCachingEntitySelec
     }
 
     @Override
+    protected Object[] getEqualityRequirements() {
+        return new Object[] {
+                super.childEntitySelector, super.cacheType, sorter
+        };
+    }
+
+    @Override
     public String toString() {
         return "Sorting(" + childEntitySelector + ")";
     }

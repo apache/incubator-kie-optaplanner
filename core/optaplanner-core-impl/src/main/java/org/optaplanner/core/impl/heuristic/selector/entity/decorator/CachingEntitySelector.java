@@ -14,9 +14,9 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValue
  * <p>
  * Keep this code in sync with {@link CachingValueSelector} and {@link CachingMoveSelector}.
  */
-public class CachingEntitySelector<Solution_> extends AbstractCachingEntitySelector<Solution_> {
+public final class CachingEntitySelector<Solution_> extends AbstractCachingEntitySelector<Solution_> {
 
-    protected final boolean randomSelection;
+    private final boolean randomSelection;
 
     public CachingEntitySelector(EntitySelector<Solution_> childEntitySelector, SelectionCacheType cacheType,
             boolean randomSelection) {
@@ -61,6 +61,13 @@ public class CachingEntitySelector<Solution_> extends AbstractCachingEntitySelec
             throw new IllegalStateException("The selector (" + this
                     + ") does not support a ListIterator with randomSelection (" + randomSelection + ").");
         }
+    }
+
+    @Override
+    protected Object[] getEqualityRequirements() {
+        return new Object[] {
+                super.childEntitySelector, super.cacheType, randomSelection
+        };
     }
 
     @Override
