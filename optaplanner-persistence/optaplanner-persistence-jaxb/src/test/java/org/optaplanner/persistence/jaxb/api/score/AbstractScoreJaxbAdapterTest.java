@@ -119,7 +119,7 @@ public abstract class AbstractScoreJaxbAdapterTest {
         try {
             Class.forName("jakarta.xml.bind.JAXBContext", false, AbstractScoreJaxbAdapterTest.class.getClassLoader());
             return true;
-        } catch (ClassNotFoundException classNotFoundException) {
+        } catch (ClassNotFoundException | NoClassDefFoundError classNotFound) {
             return false;
         }
     }
