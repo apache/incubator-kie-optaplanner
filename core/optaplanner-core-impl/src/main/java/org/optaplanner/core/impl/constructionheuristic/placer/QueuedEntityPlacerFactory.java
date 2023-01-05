@@ -19,14 +19,15 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class QueuedEntityPlacerFactory<Solution_>
         extends AbstractEntityPlacerFactory<Solution_, QueuedEntityPlacerConfig> {
 
     public static <Solution_> QueuedEntityPlacerConfig unfoldNew(HeuristicConfigPolicy<Solution_> configPolicy,
-            List<MoveSelectorConfig> templateMoveSelectorConfigList) {
+            List<MoveSelectorConfig> templateMoveSelectorConfigList, ClassInstanceCache instanceCache) {
         QueuedEntityPlacerConfig config = new QueuedEntityPlacerConfig();
-        config.setEntitySelectorConfig(new QueuedEntityPlacerFactory<Solution_>(config)
+        config.setEntitySelectorConfig(new QueuedEntityPlacerFactory<Solution_>(config, instanceCache)
                 .buildEntitySelectorConfig(configPolicy));
         config.setMoveSelectorConfigList(new ArrayList<>(templateMoveSelectorConfigList.size()));
         List<MoveSelectorConfig> leafMoveSelectorConfigList = new ArrayList<>(templateMoveSelectorConfigList.size());
@@ -56,15 +57,16 @@ public class QueuedEntityPlacerFactory<Solution_>
         return config;
     }
 
-    public QueuedEntityPlacerFactory(QueuedEntityPlacerConfig placerConfig) {
-        super(placerConfig);
+    public QueuedEntityPlacerFactory(QueuedEntityPlacerConfig placerConfig, ClassInstanceCache instanceCache) {
+        super(placerConfig, instanceCache);
     }
 
     @Override
     public QueuedEntityPlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy) {
         EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(configPolicy);
-        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig_)
-                .buildEntitySelector(configPolicy, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
+        EntitySelector<Solution_> entitySelector =
+                EntitySelectorFactory.<Solution_> create(entitySelectorConfig_, instanceCache)
+                        .buildEntitySelector(configPolicy, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
 
         List<MoveSelectorConfig> moveSelectorConfigList_;
         if (ConfigUtils.isEmptyCollection(config.getMoveSelectorConfigList())) {
@@ -89,7 +91,7 @@ public class QueuedEntityPlacerFactory<Solution_>
         }
         List<MoveSelector<Solution_>> moveSelectorList = new ArrayList<>(moveSelectorConfigList_.size());
         for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList_) {
-            MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig)
+            MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig, instanceCache)
                     .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
             moveSelectorList.add(moveSelector);
         }

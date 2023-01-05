@@ -14,13 +14,16 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public abstract class AbstractFromConfigFactory<Solution_, Config_ extends AbstractConfig<Config_>> {
 
     protected final Config_ config;
+    protected final ClassInstanceCache instanceCache;
 
-    public AbstractFromConfigFactory(Config_ config) {
+    public AbstractFromConfigFactory(Config_ config, ClassInstanceCache instanceCache) {
         this.config = config;
+        this.instanceCache = Objects.requireNonNull(instanceCache);
     }
 
     public static <Solution_> EntitySelectorConfig getDefaultEntitySelectorConfigForEntity(

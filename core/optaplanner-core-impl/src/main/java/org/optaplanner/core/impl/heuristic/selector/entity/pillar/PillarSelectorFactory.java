@@ -10,23 +10,23 @@ import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfi
 import org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.move.generic.SubPillarType;
-import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
-import org.optaplanner.core.impl.heuristic.selector.entity.WrappedComparator;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class PillarSelectorFactory<Solution_>
         extends AbstractSelectorFactory<Solution_, PillarSelectorConfig> {
 
-    public static <Solution_> PillarSelectorFactory<Solution_> create(PillarSelectorConfig pillarSelectorConfig) {
-        return new PillarSelectorFactory<>(pillarSelectorConfig);
+    public static <Solution_> PillarSelectorFactory<Solution_> create(PillarSelectorConfig pillarSelectorConfig,
+            ClassInstanceCache instanceCache) {
+        return new PillarSelectorFactory<>(pillarSelectorConfig, instanceCache);
     }
 
-    public PillarSelectorFactory(PillarSelectorConfig pillarSelectorConfig) {
-        super(pillarSelectorConfig);
+    public PillarSelectorFactory(PillarSelectorConfig pillarSelectorConfig, ClassInstanceCache instanceCache) {
+        super(pillarSelectorConfig, instanceCache);
     }
 
     /**
@@ -59,7 +59,7 @@ public class PillarSelectorFactory<Solution_>
         // EntitySelector uses SelectionOrder.ORIGINAL because a DefaultPillarSelector STEP caches the values
         EntitySelectorConfig entitySelectorConfig =
                 Objects.requireNonNullElseGet(config.getEntitySelectorConfig(), EntitySelectorConfig::new);
-        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
+        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig, instanceCache)
                 .buildEntitySelector(configPolicy, minimumCacheType, SelectionOrder.ORIGINAL);
         List<GenuineVariableDescriptor<Solution_>> variableDescriptors =
                 deduceVariableDescriptorList(entitySelector.getEntityDescriptor(), variableNameIncludeList);
@@ -99,12 +99,11 @@ public class PillarSelectorFactory<Solution_>
                                 entityClass.getCanonicalName() + ") does not implement Comparable.");
                     }
                     return SubPillarConfigPolicy.sequential(actualMinimumSubPillarSize, actualMaximumSubPillarSize,
-                            new WrappedComparator<>());
+                            Comparator.naturalOrder());
                 } else {
-                    Comparator<Object> comparator = ConfigUtils.newInstance(config, "pillarOrderComparatorClass",
+                    Comparator<Object> comparator = instanceCache.newInstance(config, "pillarOrderComparatorClass",
                             pillarOrderComparatorClass);
-                    return SubPillarConfigPolicy.sequential(actualMinimumSubPillarSize, actualMaximumSubPillarSize,
-                            new WrappedComparator<>(comparator));
+                    return SubPillarConfigPolicy.sequential(actualMinimumSubPillarSize, actualMaximumSubPillarSize, comparator);
                 }
             default:
                 throw new IllegalStateException("Subpillars cannot be enabled and disabled at the same time.");

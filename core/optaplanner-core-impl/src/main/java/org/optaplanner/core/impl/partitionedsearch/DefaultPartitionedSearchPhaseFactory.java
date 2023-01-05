@@ -16,6 +16,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
@@ -27,8 +28,8 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultPartitionedSearchPhaseFactory.class);
 
-    public DefaultPartitionedSearchPhaseFactory(PartitionedSearchPhaseConfig phaseConfig) {
-        super(phaseConfig);
+    public DefaultPartitionedSearchPhaseFactory(PartitionedSearchPhaseConfig phaseConfig, ClassInstanceCache instanceCache) {
+        super(phaseConfig, instanceCache);
     }
 
     @Override
@@ -52,7 +53,8 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
                 threadFactory,
                 resolvedActiveThreadCount,
                 phaseConfigList_,
-                phaseConfigPolicy.createChildThreadConfigPolicy(ChildThreadType.PART_THREAD));
+                phaseConfigPolicy.createChildThreadConfigPolicy(ChildThreadType.PART_THREAD),
+                instanceCache);
 
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {

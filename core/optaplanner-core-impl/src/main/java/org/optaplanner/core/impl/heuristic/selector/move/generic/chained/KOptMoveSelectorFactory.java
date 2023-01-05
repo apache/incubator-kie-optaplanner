@@ -14,14 +14,15 @@ import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFac
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class KOptMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, KOptMoveSelectorConfig> {
 
     private static final int K = 3;
 
-    public KOptMoveSelectorFactory(KOptMoveSelectorConfig moveSelectorConfig) {
-        super(moveSelectorConfig);
+    public KOptMoveSelectorFactory(KOptMoveSelectorConfig moveSelectorConfig, ClassInstanceCache instanceCache) {
+        super(moveSelectorConfig, instanceCache);
     }
 
     @Override
@@ -32,11 +33,11 @@ public class KOptMoveSelectorFactory<Solution_>
         ValueSelectorConfig valueSelectorConfig =
                 Objects.requireNonNullElseGet(config.getValueSelectorConfig(), ValueSelectorConfig::new);
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
-        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
+        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig, instanceCache)
                 .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
         ValueSelector<Solution_>[] valueSelectors = new ValueSelector[K - 1];
         for (int i = 0; i < valueSelectors.length; i++) {
-            valueSelectors[i] = ValueSelectorFactory.<Solution_> create(valueSelectorConfig)
+            valueSelectors[i] = ValueSelectorFactory.<Solution_> create(valueSelectorConfig, instanceCache)
                     .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
 
         }

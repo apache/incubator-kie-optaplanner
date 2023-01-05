@@ -7,12 +7,14 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class CartesianProductMoveSelectorFactory<Solution_>
         extends AbstractCompositeMoveSelectorFactory<Solution_, CartesianProductMoveSelectorConfig> {
 
-    public CartesianProductMoveSelectorFactory(CartesianProductMoveSelectorConfig moveSelectorConfig) {
-        super(moveSelectorConfig);
+    public CartesianProductMoveSelectorFactory(CartesianProductMoveSelectorConfig moveSelectorConfig,
+            ClassInstanceCache instanceCache) {
+        super(moveSelectorConfig, instanceCache);
     }
 
     @Override

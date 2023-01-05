@@ -25,12 +25,13 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListSwapMo
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class SwapMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, SwapMoveSelectorConfig> {
 
-    public SwapMoveSelectorFactory(SwapMoveSelectorConfig moveSelectorConfig) {
-        super(moveSelectorConfig);
+    public SwapMoveSelectorFactory(SwapMoveSelectorConfig moveSelectorConfig, ClassInstanceCache instanceCache) {
+        super(moveSelectorConfig, instanceCache);
     }
 
     @Override
@@ -41,10 +42,12 @@ public class SwapMoveSelectorFactory<Solution_>
         EntitySelectorConfig secondaryEntitySelectorConfig =
                 Objects.requireNonNullElse(config.getSecondaryEntitySelectorConfig(), entitySelectorConfig);
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
-        EntitySelector<Solution_> leftEntitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
-                .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
-        EntitySelector<Solution_> rightEntitySelector = EntitySelectorFactory.<Solution_> create(secondaryEntitySelectorConfig)
-                .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
+        EntitySelector<Solution_> leftEntitySelector =
+                EntitySelectorFactory.<Solution_> create(entitySelectorConfig, instanceCache)
+                        .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
+        EntitySelector<Solution_> rightEntitySelector =
+                EntitySelectorFactory.<Solution_> create(secondaryEntitySelectorConfig, instanceCache)
+                        .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
         EntityDescriptor<Solution_> entityDescriptor = leftEntitySelector.getEntityDescriptor();
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
                 deduceVariableDescriptorList(entityDescriptor, config.getVariableNameIncludeList());
@@ -72,8 +75,9 @@ public class SwapMoveSelectorFactory<Solution_>
     private EntityIndependentValueSelector<Solution_> buildEntityIndependentValueSelector(
             HeuristicConfigPolicy<Solution_> configPolicy, EntityDescriptor<Solution_> entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
-        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(new ValueSelectorConfig())
-                .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder);
+        ValueSelector<Solution_> valueSelector =
+                ValueSelectorFactory.<Solution_> create(new ValueSelectorConfig(), instanceCache)
+                        .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The swapMoveSelector (" + config
                     + ") for a list variable needs to be based on an "
@@ -88,11 +92,11 @@ public class SwapMoveSelectorFactory<Solution_>
     protected MoveSelectorConfig<?> buildUnfoldedMoveSelectorConfig(
             HeuristicConfigPolicy<Solution_> configPolicy) {
         EntityDescriptor<Solution_> onlyEntityDescriptor = config.getEntitySelectorConfig() == null ? null
-                : EntitySelectorFactory.<Solution_> create(config.getEntitySelectorConfig())
+                : EntitySelectorFactory.<Solution_> create(config.getEntitySelectorConfig(), instanceCache)
                         .extractEntityDescriptor(configPolicy);
         if (config.getSecondaryEntitySelectorConfig() != null) {
             EntityDescriptor<Solution_> onlySecondaryEntityDescriptor =
-                    EntitySelectorFactory.<Solution_> create(config.getSecondaryEntitySelectorConfig())
+                    EntitySelectorFactory.<Solution_> create(config.getSecondaryEntitySelectorConfig(), instanceCache)
                             .extractEntityDescriptor(configPolicy);
             if (onlyEntityDescriptor != onlySecondaryEntityDescriptor) {
                 throw new IllegalArgumentException("The entitySelector (" + config.getEntitySelectorConfig()

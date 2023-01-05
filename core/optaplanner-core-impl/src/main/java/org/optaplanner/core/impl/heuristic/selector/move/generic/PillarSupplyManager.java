@@ -16,8 +16,8 @@ public final class PillarSupplyManager implements SupplyManager {
         return (Supply_) demandSupplyMap.computeIfAbsent((Demand) demand, key -> key.createExternalizedSupply(this));
     }
 
-    public void reset() {
-        demandSupplyMap.clear();
+    public <Supply_ extends Supply> void cancel(Demand<Supply_> demand) {
+        demandSupplyMap.remove(demand);
     }
 
 }

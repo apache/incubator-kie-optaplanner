@@ -10,12 +10,13 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 abstract class AbstractCompositeMoveSelectorFactory<Solution_, MoveSelectorConfig_ extends MoveSelectorConfig<MoveSelectorConfig_>>
         extends AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_> {
 
-    public AbstractCompositeMoveSelectorFactory(MoveSelectorConfig_ moveSelectorConfig) {
-        super(moveSelectorConfig);
+    public AbstractCompositeMoveSelectorFactory(MoveSelectorConfig_ moveSelectorConfig, ClassInstanceCache instanceCache) {
+        super(moveSelectorConfig, instanceCache);
     }
 
     protected List<MoveSelector<Solution_>> buildInnerMoveSelectors(List<MoveSelectorConfig> innerMoveSelectorList,
@@ -23,7 +24,8 @@ abstract class AbstractCompositeMoveSelectorFactory<Solution_, MoveSelectorConfi
             boolean randomSelection) {
         return innerMoveSelectorList.stream()
                 .map(moveSelectorConfig -> {
-                    MoveSelectorFactory<Solution_> innerMoveSelectorFactory = MoveSelectorFactory.create(moveSelectorConfig);
+                    MoveSelectorFactory<Solution_> innerMoveSelectorFactory =
+                            MoveSelectorFactory.create(moveSelectorConfig, instanceCache);
                     SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
                     return innerMoveSelectorFactory.buildMoveSelector(configPolicy, minimumCacheType, selectionOrder);
                 }).collect(Collectors.toList());

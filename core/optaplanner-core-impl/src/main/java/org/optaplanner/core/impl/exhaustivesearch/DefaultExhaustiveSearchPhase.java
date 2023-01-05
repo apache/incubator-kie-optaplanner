@@ -19,6 +19,7 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -236,8 +237,8 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
 
         public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination,
                 Comparator<ExhaustiveSearchNode> nodeComparator, EntitySelector<Solution_> entitySelector,
-                ExhaustiveSearchDecider<Solution_> decider) {
-            super(phaseIndex, logIndentation, phaseTermination);
+                ExhaustiveSearchDecider<Solution_> decider, ClassInstanceCache instanceCache) {
+            super(phaseIndex, logIndentation, phaseTermination, instanceCache);
             this.nodeComparator = nodeComparator;
             this.entitySelector = entitySelector;
             this.decider = decider;

@@ -9,6 +9,7 @@ import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 
@@ -17,7 +18,8 @@ class SubListChangeMoveSelectorFactoryTest {
     @Test
     void buildBaseMoveSelector() {
         SubListChangeMoveSelectorConfig config = new SubListChangeMoveSelectorConfig();
-        SubListChangeMoveSelectorFactory<TestdataListSolution> factory = new SubListChangeMoveSelectorFactory<>(config);
+        SubListChangeMoveSelectorFactory<TestdataListSolution> factory =
+                new SubListChangeMoveSelectorFactory<>(config, ClassInstanceCache.create());
 
         HeuristicConfigPolicy<TestdataListSolution> heuristicConfigPolicy =
                 buildHeuristicConfigPolicy(TestdataListSolution.buildSolutionDescriptor());
@@ -35,7 +37,8 @@ class SubListChangeMoveSelectorFactoryTest {
     void disableSelectReversingMoveToo() {
         SubListChangeMoveSelectorConfig config = new SubListChangeMoveSelectorConfig();
         config.setSelectReversingMoveToo(false);
-        SubListChangeMoveSelectorFactory<TestdataListSolution> factory = new SubListChangeMoveSelectorFactory<>(config);
+        SubListChangeMoveSelectorFactory<TestdataListSolution> factory =
+                new SubListChangeMoveSelectorFactory<>(config, ClassInstanceCache.create());
 
         HeuristicConfigPolicy<TestdataListSolution> heuristicConfigPolicy =
                 buildHeuristicConfigPolicy(TestdataListSolution.buildSolutionDescriptor());
@@ -50,7 +53,8 @@ class SubListChangeMoveSelectorFactoryTest {
     @Test
     void requiresListVariable() {
         SubListChangeMoveSelectorConfig config = new SubListChangeMoveSelectorConfig();
-        SubListChangeMoveSelectorFactory<TestdataSolution> factory = new SubListChangeMoveSelectorFactory<>(config);
+        SubListChangeMoveSelectorFactory<TestdataSolution> factory =
+                new SubListChangeMoveSelectorFactory<>(config, ClassInstanceCache.create());
 
         HeuristicConfigPolicy<TestdataSolution> heuristicConfigPolicy = buildHeuristicConfigPolicy();
 

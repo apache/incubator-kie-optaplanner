@@ -17,24 +17,26 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.localsearch.DefaultLocalSearchPhaseFactory;
 import org.optaplanner.core.impl.partitionedsearch.DefaultPartitionedSearchPhaseFactory;
 import org.optaplanner.core.impl.phase.custom.DefaultCustomPhaseFactory;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 public interface PhaseFactory<Solution_> {
 
-    static <Solution_> PhaseFactory<Solution_> create(PhaseConfig<?> phaseConfig) {
+    static <Solution_> PhaseFactory<Solution_> create(PhaseConfig<?> phaseConfig, ClassInstanceCache instanceCache) {
         if (LocalSearchPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new DefaultLocalSearchPhaseFactory<>((LocalSearchPhaseConfig) phaseConfig);
+            return new DefaultLocalSearchPhaseFactory<>((LocalSearchPhaseConfig) phaseConfig, instanceCache);
         } else if (ConstructionHeuristicPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new DefaultConstructionHeuristicPhaseFactory<>((ConstructionHeuristicPhaseConfig) phaseConfig);
+            return new DefaultConstructionHeuristicPhaseFactory<>((ConstructionHeuristicPhaseConfig) phaseConfig,
+                    instanceCache);
         } else if (PartitionedSearchPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new DefaultPartitionedSearchPhaseFactory<>((PartitionedSearchPhaseConfig) phaseConfig);
+            return new DefaultPartitionedSearchPhaseFactory<>((PartitionedSearchPhaseConfig) phaseConfig, instanceCache);
         } else if (CustomPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new DefaultCustomPhaseFactory<>((CustomPhaseConfig) phaseConfig);
+            return new DefaultCustomPhaseFactory<>((CustomPhaseConfig) phaseConfig, instanceCache);
         } else if (ExhaustiveSearchPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new DefaultExhaustiveSearchPhaseFactory<>((ExhaustiveSearchPhaseConfig) phaseConfig);
+            return new DefaultExhaustiveSearchPhaseFactory<>((ExhaustiveSearchPhaseConfig) phaseConfig, instanceCache);
         } else if (NoChangePhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
-            return new NoChangePhaseFactory<>((NoChangePhaseConfig) phaseConfig);
+            return new NoChangePhaseFactory<>((NoChangePhaseConfig) phaseConfig, instanceCache);
         } else {
             throw new IllegalArgumentException(String.format("Unknown %s type: (%s).",
                     PhaseConfig.class.getSimpleName(), phaseConfig.getClass().getName()));
@@ -43,7 +45,7 @@ public interface PhaseFactory<Solution_> {
 
     static <Solution_> List<Phase<Solution_>> buildPhases(List<PhaseConfig> phaseConfigList,
             HeuristicConfigPolicy<Solution_> configPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
-            Termination<Solution_> termination) {
+            Termination<Solution_> termination, ClassInstanceCache instanceCache) {
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList.size());
         for (int phaseIndex = 0; phaseIndex < phaseConfigList.size(); phaseIndex++) {
             PhaseConfig phaseConfig = phaseConfigList.get(phaseIndex);
@@ -55,7 +57,7 @@ public interface PhaseFactory<Solution_> {
                             + "without a configured termination (" + previousPhaseConfig + ").");
                 }
             }
-            PhaseFactory<Solution_> phaseFactory = PhaseFactory.create(phaseConfig);
+            PhaseFactory<Solution_> phaseFactory = PhaseFactory.create(phaseConfig, instanceCache);
             Phase<Solution_> phase =
                     phaseFactory.buildPhase(phaseIndex, configPolicy, bestSolutionRecaller, termination);
             phaseList.add(phase);

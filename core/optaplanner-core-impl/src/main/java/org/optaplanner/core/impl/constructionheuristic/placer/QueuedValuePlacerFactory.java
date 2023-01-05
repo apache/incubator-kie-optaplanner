@@ -16,6 +16,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class QueuedValuePlacerFactory<Solution_>
         extends AbstractEntityPlacerFactory<Solution_, QueuedValuePlacerConfig> {
@@ -25,15 +26,15 @@ public class QueuedValuePlacerFactory<Solution_>
                 + templateMoveSelectorConfig + ") and the <queuedValuePlacer> does not support unfolding those yet.");
     }
 
-    public QueuedValuePlacerFactory(QueuedValuePlacerConfig placerConfig) {
-        super(placerConfig);
+    public QueuedValuePlacerFactory(QueuedValuePlacerConfig placerConfig, ClassInstanceCache instanceCache) {
+        super(placerConfig, instanceCache);
     }
 
     @Override
     public QueuedValuePlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy) {
         EntityDescriptor<Solution_> entityDescriptor = deduceEntityDescriptor(configPolicy, config.getEntityClass());
         ValueSelectorConfig valueSelectorConfig_ = buildValueSelectorConfig(configPolicy, entityDescriptor);
-        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig_)
+        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig_, instanceCache)
                 .buildValueSelector(configPolicy, entityDescriptor, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL,
                         false, true); // TODO improve the ValueSelectorFactory API (avoid the boolean flags).
 
@@ -42,7 +43,7 @@ public class QueuedValuePlacerFactory<Solution_>
                         valueSelector.getVariableDescriptor())
                 : config.getMoveSelectorConfig();
 
-        MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig_)
+        MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig_, instanceCache)
                 .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The queuedValuePlacer (" + this

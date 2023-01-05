@@ -45,16 +45,18 @@ import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicRecordingVa
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.ValueMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.value.nearby.NearEntityNearbyValueSelector;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class ValueSelectorFactory<Solution_>
         extends AbstractSelectorFactory<Solution_, ValueSelectorConfig> {
 
-    public static <Solution_> ValueSelectorFactory<Solution_> create(ValueSelectorConfig valueSelectorConfig) {
-        return new ValueSelectorFactory<>(valueSelectorConfig);
+    public static <Solution_> ValueSelectorFactory<Solution_> create(ValueSelectorConfig valueSelectorConfig,
+            ClassInstanceCache instanceCache) {
+        return new ValueSelectorFactory<>(valueSelectorConfig, instanceCache);
     }
 
-    public ValueSelectorFactory(ValueSelectorConfig valueSelectorConfig) {
-        super(valueSelectorConfig);
+    public ValueSelectorFactory(ValueSelectorConfig valueSelectorConfig, ClassInstanceCache instanceCache) {
+        super(valueSelectorConfig, instanceCache);
     }
 
     public GenuineVariableDescriptor<Solution_> extractVariableDescriptor(HeuristicConfigPolicy<Solution_> configPolicy,
@@ -455,7 +457,7 @@ public class ValueSelectorFactory<Solution_>
             SelectionOrder resolvedSelectionOrder, ValueSelector<Solution_> valueSelector) {
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
         EntitySelectorFactory<Solution_> entitySelectorFactory =
-                EntitySelectorFactory.create(nearbySelectionConfig.getOriginEntitySelectorConfig());
+                EntitySelectorFactory.create(nearbySelectionConfig.getOriginEntitySelectorConfig(), instanceCache);
         EntitySelector<Solution_> originEntitySelector =
                 entitySelectorFactory.buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder);
         NearbyDistanceMeter<?, ?> nearbyDistanceMeter =

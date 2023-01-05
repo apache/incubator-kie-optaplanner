@@ -11,12 +11,13 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class UnionMoveSelectorFactory<Solution_>
         extends AbstractCompositeMoveSelectorFactory<Solution_, UnionMoveSelectorConfig> {
 
-    public UnionMoveSelectorFactory(UnionMoveSelectorConfig moveSelectorConfig) {
-        super(moveSelectorConfig);
+    public UnionMoveSelectorFactory(UnionMoveSelectorConfig moveSelectorConfig, ClassInstanceCache instanceCache) {
+        super(moveSelectorConfig, instanceCache);
     }
 
     @Override

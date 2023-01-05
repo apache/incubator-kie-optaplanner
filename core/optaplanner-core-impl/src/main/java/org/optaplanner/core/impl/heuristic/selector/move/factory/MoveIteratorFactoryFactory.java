@@ -6,12 +6,13 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class MoveIteratorFactoryFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, MoveIteratorFactoryConfig> {
 
-    public MoveIteratorFactoryFactory(MoveIteratorFactoryConfig moveSelectorConfig) {
-        super(moveSelectorConfig);
+    public MoveIteratorFactoryFactory(MoveIteratorFactoryConfig moveSelectorConfig, ClassInstanceCache instanceCache) {
+        super(moveSelectorConfig, instanceCache);
     }
 
     @Override

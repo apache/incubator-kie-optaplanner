@@ -22,12 +22,13 @@ import org.optaplanner.core.impl.heuristic.selector.move.decorator.ProbabilityMo
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.SelectedCountLimitMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.SortingMoveSelector;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public abstract class AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_ extends MoveSelectorConfig<MoveSelectorConfig_>>
         extends AbstractSelectorFactory<Solution_, MoveSelectorConfig_> implements MoveSelectorFactory<Solution_> {
 
-    public AbstractMoveSelectorFactory(MoveSelectorConfig_ moveSelectorConfig) {
-        super(moveSelectorConfig);
+    public AbstractMoveSelectorFactory(MoveSelectorConfig_ moveSelectorConfig, ClassInstanceCache instanceCache) {
+        super(moveSelectorConfig, instanceCache);
     }
 
     /**
@@ -52,7 +53,7 @@ public abstract class AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         MoveSelectorConfig<?> unfoldedMoveSelectorConfig = buildUnfoldedMoveSelectorConfig(configPolicy);
         if (unfoldedMoveSelectorConfig != null) {
-            return MoveSelectorFactory.<Solution_> create(unfoldedMoveSelectorConfig)
+            return MoveSelectorFactory.<Solution_> create(unfoldedMoveSelectorConfig, instanceCache)
                     .buildMoveSelector(configPolicy, minimumCacheType, inheritedSelectionOrder);
         }
 

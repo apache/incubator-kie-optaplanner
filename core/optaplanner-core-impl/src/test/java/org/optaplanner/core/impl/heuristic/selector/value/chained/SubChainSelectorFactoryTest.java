@@ -10,6 +10,7 @@ import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 
 class SubChainSelectorFactoryTest {
@@ -24,8 +25,9 @@ class SubChainSelectorFactoryTest {
         HeuristicConfigPolicy heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         DefaultSubChainSelector subChainSelector =
-                (DefaultSubChainSelector) SubChainSelectorFactory.create(config).buildSubChainSelector(heuristicConfigPolicy,
-                        entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+                (DefaultSubChainSelector) SubChainSelectorFactory.create(config, ClassInstanceCache.create())
+                        .buildSubChainSelector(heuristicConfigPolicy,
+                                entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(subChainSelector.maximumSubChainSize).isEqualTo(config.getMaximumSubChainSize());
         assertThat(subChainSelector.minimumSubChainSize).isEqualTo(config.getMinimumSubChainSize());
         assertThat(subChainSelector.randomSelection).isTrue();

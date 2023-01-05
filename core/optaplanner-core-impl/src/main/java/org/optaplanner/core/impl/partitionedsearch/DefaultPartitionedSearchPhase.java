@@ -22,6 +22,7 @@ import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.phase.PhaseFactory;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecallerFactory;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
@@ -83,7 +84,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 int partIndex = it.nextIndex();
                 Solution_ part = it.next();
                 PartitionSolver<Solution_> partitionSolver = buildPartitionSolver(
-                        childThreadPlumbingTermination, runnablePartThreadSemaphore, solverScope);
+                        childThreadPlumbingTermination, runnablePartThreadSemaphore, solverScope, instanceCache);
                 partitionSolver.addEventListener(event -> {
                     InnerScoreDirector<Solution_, ?> childScoreDirector =
                             partitionSolver.solverScope.getScoreDirector();
@@ -143,13 +144,13 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
 
     public PartitionSolver<Solution_> buildPartitionSolver(
             ChildThreadPlumbingTermination<Solution_> childThreadPlumbingTermination,
-            Semaphore runnablePartThreadSemaphore, SolverScope<Solution_> solverScope) {
+            Semaphore runnablePartThreadSemaphore, SolverScope<Solution_> solverScope, ClassInstanceCache instanceCache) {
         BestSolutionRecaller<Solution_> bestSolutionRecaller =
                 BestSolutionRecallerFactory.create().buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
         Termination<Solution_> partTermination = new OrCompositeTermination<>(childThreadPlumbingTermination,
                 phaseTermination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD));
         List<Phase<Solution_>> phaseList =
-                PhaseFactory.buildPhases(phaseConfigList, configPolicy, bestSolutionRecaller, partTermination);
+                PhaseFactory.buildPhases(phaseConfigList, configPolicy, bestSolutionRecaller, partTermination, instanceCache);
 
         // TODO create PartitionSolverScope alternative to deal with 3 layer terminations
         SolverScope<Solution_> partSolverScope = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
@@ -217,8 +218,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination,
                 SolutionPartitioner<Solution_> solutionPartitioner, ThreadFactory threadFactory,
                 Integer runnablePartThreadLimit, List<PhaseConfig> phaseConfigList,
-                HeuristicConfigPolicy<Solution_> configPolicy) {
-            super(phaseIndex, logIndentation, phaseTermination);
+                HeuristicConfigPolicy<Solution_> configPolicy, ClassInstanceCache instanceCache) {
+            super(phaseIndex, logIndentation, phaseTermination, instanceCache);
             this.solutionPartitioner = solutionPartitioner;
             this.threadFactory = threadFactory;
             this.runnablePartThreadLimit = runnablePartThreadLimit;

@@ -17,6 +17,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -223,8 +224,8 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
         private final LocalSearchDecider<Solution_> decider;
 
         public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination,
-                LocalSearchDecider<Solution_> decider) {
-            super(phaseIndex, logIndentation, phaseTermination);
+                LocalSearchDecider<Solution_> decider, ClassInstanceCache instanceCache) {
+            super(phaseIndex, logIndentation, phaseTermination, instanceCache);
             this.decider = decider;
         }
 

@@ -7,6 +7,7 @@ import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.custom.scope.CustomPhaseScope;
 import org.optaplanner.core.impl.phase.custom.scope.CustomStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -104,8 +105,8 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
         private final List<CustomPhaseCommand<Solution_>> customPhaseCommandList;
 
         public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination,
-                List<CustomPhaseCommand<Solution_>> customPhaseCommandList) {
-            super(phaseIndex, logIndentation, phaseTermination);
+                List<CustomPhaseCommand<Solution_>> customPhaseCommandList, ClassInstanceCache instanceCache) {
+            super(phaseIndex, logIndentation, phaseTermination, instanceCache);
             this.customPhaseCommandList = List.copyOf(customPhaseCommandList);
         }
 

@@ -33,8 +33,10 @@ public final class CompositeSelectionFilter<Solution_, T> implements SelectionFi
 
     @Override
     public boolean equals(Object other) {
-        if (this == other) return true;
-        if (other == null || getClass() != other.getClass()) return false;
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
         CompositeSelectionFilter<?, ?> that = (CompositeSelectionFilter<?, ?>) other;
         return Objects.equals(selectionFilterList, that.selectionFilterList);
     }

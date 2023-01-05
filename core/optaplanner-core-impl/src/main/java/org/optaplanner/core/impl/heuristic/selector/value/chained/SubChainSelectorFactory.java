@@ -13,6 +13,7 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class SubChainSelectorFactory<Solution_> {
 
@@ -25,14 +26,16 @@ public class SubChainSelectorFactory<Solution_> {
     private static final int DEFAULT_MAXIMUM_SUB_CHAIN_SIZE = Integer.MAX_VALUE;
 
     public static <Solution_> SubChainSelectorFactory<Solution_>
-            create(SubChainSelectorConfig subChainSelectorConfig) {
-        return new SubChainSelectorFactory<>(subChainSelectorConfig);
+            create(SubChainSelectorConfig subChainSelectorConfig, ClassInstanceCache instanceCache) {
+        return new SubChainSelectorFactory<>(subChainSelectorConfig, instanceCache);
     }
 
     private final SubChainSelectorConfig config;
+    private final ClassInstanceCache instanceCache;
 
-    public SubChainSelectorFactory(SubChainSelectorConfig subChainSelectorConfig) {
+    public SubChainSelectorFactory(SubChainSelectorConfig subChainSelectorConfig, ClassInstanceCache instanceCache) {
         this.config = subChainSelectorConfig;
+        this.instanceCache = Objects.requireNonNull(instanceCache);
     }
 
     /**
@@ -57,7 +60,7 @@ public class SubChainSelectorFactory<Solution_> {
         ValueSelectorConfig valueSelectorConfig =
                 Objects.requireNonNullElseGet(config.getValueSelectorConfig(), ValueSelectorConfig::new);
         // ValueSelector uses SelectionOrder.ORIGINAL because a SubChainSelector STEP caches the values
-        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig)
+        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig, instanceCache)
                 .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The subChainSelectorConfig (" + config

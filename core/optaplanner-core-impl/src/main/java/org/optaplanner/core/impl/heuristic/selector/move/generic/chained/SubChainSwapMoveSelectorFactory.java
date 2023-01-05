@@ -12,12 +12,14 @@ import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFac
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelectorFactory;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class SubChainSwapMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, SubChainSwapMoveSelectorConfig> {
 
-    public SubChainSwapMoveSelectorFactory(SubChainSwapMoveSelectorConfig moveSelectorConfig) {
-        super(moveSelectorConfig);
+    public SubChainSwapMoveSelectorFactory(SubChainSwapMoveSelectorConfig moveSelectorConfig,
+            ClassInstanceCache instanceCache) {
+        super(moveSelectorConfig, instanceCache);
     }
 
     @Override
@@ -30,10 +32,10 @@ public class SubChainSwapMoveSelectorFactory<Solution_>
                 Objects.requireNonNullElse(config.getSecondarySubChainSelectorConfig(), subChainSelectorConfig);
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
         SubChainSelector<Solution_> leftSubChainSelector =
-                SubChainSelectorFactory.<Solution_> create(subChainSelectorConfig)
+                SubChainSelectorFactory.<Solution_> create(subChainSelectorConfig, instanceCache)
                         .buildSubChainSelector(configPolicy, entityDescriptor, minimumCacheType, selectionOrder);
         SubChainSelector<Solution_> rightSubChainSelector =
-                SubChainSelectorFactory.<Solution_> create(secondarySubChainSelectorConfig)
+                SubChainSelectorFactory.<Solution_> create(secondarySubChainSelectorConfig, instanceCache)
                         .buildSubChainSelector(configPolicy, entityDescriptor, minimumCacheType, selectionOrder);
         return new SubChainSwapMoveSelector<>(leftSubChainSelector, rightSubChainSelector, randomSelection,
                 Objects.requireNonNullElse(config.getSelectReversingMoveToo(), true));

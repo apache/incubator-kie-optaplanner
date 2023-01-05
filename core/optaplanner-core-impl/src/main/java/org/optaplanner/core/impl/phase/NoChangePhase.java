@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.phase;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -35,8 +36,9 @@ public class NoChangePhase<Solution_> extends AbstractPhase<Solution_> {
 
     public static class Builder<Solution_> extends AbstractPhase.Builder<Solution_> {
 
-        public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination) {
-            super(phaseIndex, logIndentation, phaseTermination);
+        public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination,
+                ClassInstanceCache instanceCache) {
+            super(phaseIndex, logIndentation, phaseTermination, instanceCache);
         }
 
         @Override

@@ -100,7 +100,7 @@ public final class DefaultPillarSelector<Solution_> extends AbstractSelector<Sol
 
     @Override
     public void disposeCache(SolverScope<Solution_> solverScope) {
-        ((PillarSupplyManager) solverScope.getPillarSupplyManager()).reset();
+        ((PillarSupplyManager) solverScope.getPillarSupplyManager()).cancel(pillarDemand);
         cachedBasePillarList = null;
     }
 

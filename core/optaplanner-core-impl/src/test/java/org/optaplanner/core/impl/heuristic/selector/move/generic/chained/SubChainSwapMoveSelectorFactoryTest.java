@@ -9,6 +9,7 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubCh
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 
 class SubChainSwapMoveSelectorFactoryTest {
@@ -23,7 +24,8 @@ class SubChainSwapMoveSelectorFactoryTest {
         SubChainSwapMoveSelectorConfig config = new SubChainSwapMoveSelectorConfig();
         config.setSubChainSelectorConfig(leftSubChainSelectorConfig);
         config.setSecondarySubChainSelectorConfig(rightSubChainSelectorConfig);
-        SubChainSwapMoveSelectorFactory<TestdataChainedSolution> factory = new SubChainSwapMoveSelectorFactory<>(config);
+        SubChainSwapMoveSelectorFactory<TestdataChainedSolution> factory =
+                new SubChainSwapMoveSelectorFactory<>(config, ClassInstanceCache.create());
 
         HeuristicConfigPolicy<TestdataChainedSolution> heuristicConfigPolicy =
                 buildHeuristicConfigPolicy(TestdataChainedSolution.buildSolutionDescriptor());

@@ -16,12 +16,13 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class PooledEntityPlacerFactory<Solution_>
         extends AbstractEntityPlacerFactory<Solution_, PooledEntityPlacerConfig> {
 
     public static <Solution_> PooledEntityPlacerConfig unfoldNew(HeuristicConfigPolicy<Solution_> configPolicy,
-            MoveSelectorConfig templateMoveSelectorConfig) {
+            MoveSelectorConfig templateMoveSelectorConfig, ClassInstanceCache instanceCache) {
         PooledEntityPlacerConfig config = new PooledEntityPlacerConfig();
         List<MoveSelectorConfig> leafMoveSelectorConfigList = new ArrayList<>();
         MoveSelectorConfig moveSelectorConfig = (MoveSelectorConfig) templateMoveSelectorConfig.copyConfig();
@@ -46,7 +47,7 @@ public class PooledEntityPlacerFactory<Solution_>
                         + ") without explicitly configuring the <pooledEntityPlacer>.");
             }
             if (entitySelectorConfig == null) {
-                EntityDescriptor<Solution_> entityDescriptor = new PooledEntityPlacerFactory<Solution_>(config)
+                EntityDescriptor<Solution_> entityDescriptor = new PooledEntityPlacerFactory<Solution_>(config, instanceCache)
                         .getTheOnlyEntityDescriptor(configPolicy.getSolutionDescriptor());
                 entitySelectorConfig =
                         AbstractFromConfigFactory.getDefaultEntitySelectorConfigForEntity(configPolicy, entityDescriptor);
@@ -58,8 +59,8 @@ public class PooledEntityPlacerFactory<Solution_>
         return config;
     }
 
-    public PooledEntityPlacerFactory(PooledEntityPlacerConfig placerConfig) {
-        super(placerConfig);
+    public PooledEntityPlacerFactory(PooledEntityPlacerConfig placerConfig, ClassInstanceCache instanceCache) {
+        super(placerConfig, instanceCache);
     }
 
     @Override
@@ -67,7 +68,7 @@ public class PooledEntityPlacerFactory<Solution_>
         MoveSelectorConfig moveSelectorConfig_ =
                 config.getMoveSelectorConfig() == null ? buildMoveSelectorConfig(configPolicy) : config.getMoveSelectorConfig();
 
-        MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig_)
+        MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig_, instanceCache)
                 .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         return new PooledEntityPlacer<>(moveSelector);
     }

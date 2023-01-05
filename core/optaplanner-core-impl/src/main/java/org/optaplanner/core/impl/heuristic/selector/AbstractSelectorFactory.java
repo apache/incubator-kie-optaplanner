@@ -4,12 +4,13 @@ import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.impl.AbstractFromConfigFactory;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public abstract class AbstractSelectorFactory<Solution_, SelectorConfig_ extends SelectorConfig<SelectorConfig_>>
         extends AbstractFromConfigFactory<Solution_, SelectorConfig_> {
 
-    protected AbstractSelectorFactory(SelectorConfig_ selectorConfig) {
-        super(selectorConfig);
+    protected AbstractSelectorFactory(SelectorConfig_ selectorConfig, ClassInstanceCache instanceCache) {
+        super(selectorConfig, instanceCache);
     }
 
     protected void validateCacheTypeVersusSelectionOrder(SelectionCacheType resolvedCacheType,

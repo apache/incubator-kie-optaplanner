@@ -14,12 +14,13 @@ import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class PillarSwapMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, PillarSwapMoveSelectorConfig> {
 
-    public PillarSwapMoveSelectorFactory(PillarSwapMoveSelectorConfig moveSelectorConfig) {
-        super(moveSelectorConfig);
+    public PillarSwapMoveSelectorFactory(PillarSwapMoveSelectorConfig moveSelectorConfig, ClassInstanceCache instanceCache) {
+        super(moveSelectorConfig, instanceCache);
     }
 
     @Override
@@ -42,7 +43,7 @@ public class PillarSwapMoveSelectorFactory<Solution_>
     private PillarSelector<Solution_> buildPillarSelector(PillarSelectorConfig pillarSelectorConfig,
             HeuristicConfigPolicy<Solution_> configPolicy, SelectionCacheType minimumCacheType,
             boolean randomSelection) {
-        return PillarSelectorFactory.<Solution_> create(pillarSelectorConfig)
+        return PillarSelectorFactory.<Solution_> create(pillarSelectorConfig, instanceCache)
                 .buildPillarSelector(configPolicy, config.getSubPillarType(),
                         (Class<? extends Comparator<Object>>) config.getSubPillarSequenceComparatorClass(), minimumCacheType,
                         SelectionOrder.fromRandomSelectionBoolean(randomSelection),

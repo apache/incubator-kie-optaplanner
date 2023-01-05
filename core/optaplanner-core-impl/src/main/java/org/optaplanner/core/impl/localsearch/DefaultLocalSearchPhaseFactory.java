@@ -27,14 +27,15 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.AcceptorFactory;
 import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager;
 import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForagerFactory;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_, LocalSearchPhaseConfig> {
 
-    public DefaultLocalSearchPhaseFactory(LocalSearchPhaseConfig phaseConfig) {
-        super(phaseConfig);
+    public DefaultLocalSearchPhaseFactory(LocalSearchPhaseConfig phaseConfig, ClassInstanceCache instanceCache) {
+        super(phaseConfig, instanceCache);
     }
 
     @Override
@@ -46,7 +47,8 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
                 phaseIndex,
                 solverConfigPolicy.getLogIndentation(),
                 phaseTermination,
-                buildDecider(phaseConfigPolicy, phaseTermination));
+                buildDecider(phaseConfigPolicy, phaseTermination),
+                instanceCache);
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             builder.setAssertStepScoreFromScratch(true);
@@ -197,10 +199,10 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
             UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig().withMoveSelectors(
                     new ChangeMoveSelectorConfig(),
                     new SwapMoveSelectorConfig());
-            moveSelector = new UnionMoveSelectorFactory<Solution_>(unionMoveSelectorConfig)
+            moveSelector = new UnionMoveSelectorFactory<Solution_>(unionMoveSelectorConfig, instanceCache)
                     .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
         } else {
-            moveSelector = MoveSelectorFactory.<Solution_> create(phaseConfig.getMoveSelectorConfig())
+            moveSelector = MoveSelectorFactory.<Solution_> create(phaseConfig.getMoveSelectorConfig(), instanceCache)
                     .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
         }
         return moveSelector;

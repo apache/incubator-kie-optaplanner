@@ -14,12 +14,13 @@ import org.optaplanner.core.impl.heuristic.selector.Selector;
  * A filtered selection is considered as not selected, it does not count as an unaccepted selection.
  *
  * <p>
- * It is recommended that implementations of this interface override {@link Object#equals(Object)} so that,
- * if two filters are using the same predicate, they are considered equal.
+ * Implementations are expected to be stateless.
+ * The solver may choose to reuse instances.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the selection type
  */
+@FunctionalInterface
 public interface SelectionFilter<Solution_, T> {
 
     /**

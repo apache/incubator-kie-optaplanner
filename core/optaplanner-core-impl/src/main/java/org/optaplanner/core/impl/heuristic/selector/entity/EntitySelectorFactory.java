@@ -12,7 +12,6 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
-import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
@@ -36,16 +35,17 @@ import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicReco
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.nearby.NearEntityNearbyEntitySelector;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<Solution_, EntitySelectorConfig> {
 
     public static <Solution_> EntitySelectorFactory<Solution_> create(
-            EntitySelectorConfig entitySelectorConfig) {
-        return new EntitySelectorFactory<>(entitySelectorConfig);
+            EntitySelectorConfig entitySelectorConfig, ClassInstanceCache instanceCache) {
+        return new EntitySelectorFactory<>(entitySelectorConfig, instanceCache);
     }
 
-    public EntitySelectorFactory(EntitySelectorConfig entitySelectorConfig) {
-        super(entitySelectorConfig);
+    public EntitySelectorFactory(EntitySelectorConfig entitySelectorConfig, ClassInstanceCache instanceCache) {
+        super(entitySelectorConfig, instanceCache);
     }
 
     public EntityDescriptor<Solution_> extractEntityDescriptor(HeuristicConfigPolicy<Solution_> configPolicy) {
@@ -181,15 +181,14 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
             SelectionOrder resolvedSelectionOrder, EntitySelector<Solution_> entitySelector) {
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
         EntitySelectorFactory<Solution_> entitySelectorFactory =
-                EntitySelectorFactory.create(nearbySelectionConfig.getOriginEntitySelectorConfig());
+                EntitySelectorFactory.create(nearbySelectionConfig.getOriginEntitySelectorConfig(), instanceCache);
         EntitySelector<Solution_> originEntitySelector =
                 entitySelectorFactory.buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder);
-        NearbyDistanceMeter nearbyDistanceMeter = ConfigUtils.newInstance(nearbySelectionConfig, "nearbyDistanceMeterClass",
+        NearbyDistanceMeter nearbyDistanceMeter = instanceCache.newInstance(nearbySelectionConfig, "nearbyDistanceMeterClass",
                 nearbySelectionConfig.getNearbyDistanceMeterClass());
-        NearbyDistanceMeter wrappedNearbyDistanceMeter = new WrappedNearbyDistanceMeter<>(nearbyDistanceMeter);
         // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
         NearbyRandom nearbyRandom = NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(randomSelection);
-        return new NearEntityNearbyEntitySelector<>(entitySelector, originEntitySelector, wrappedNearbyDistanceMeter,
+        return new NearEntityNearbyEntitySelector<>(entitySelector, originEntitySelector, nearbyDistanceMeter,
                 nearbyRandom, randomSelection);
     }
 
@@ -199,9 +198,8 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
             List<SelectionFilter<Solution_, Object>> filterList = new ArrayList<>(config.getFilterClass() == null ? 1 : 2);
             if (config.getFilterClass() != null) {
                 SelectionFilter<Solution_, Object> selectionFilter =
-                        ConfigUtils.newInstance(config, "filterClass", config.getFilterClass());
-                SelectionFilter<Solution_, Object> wrappedSelectionFilter = new WrappedSelectionFilter<>(selectionFilter);
-                filterList.add(wrappedSelectionFilter);
+                        instanceCache.newInstance(config, "filterClass", config.getFilterClass());
+                filterList.add(selectionFilter);
             }
             // Filter out pinned entities
             if (entityDescriptor.hasEffectiveMovableEntitySelectionFilter()) {
@@ -282,19 +280,16 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
                 sorter = EntitySelectorConfig.determineSorter(config.getSorterManner(), entityDescriptor);
             } else if (config.getSorterComparatorClass() != null) {
                 Comparator<Object> sorterComparator =
-                        ConfigUtils.newInstance(config, "sorterComparatorClass", config.getSorterComparatorClass());
-                Comparator<Object> wrappedSorterComparator = new WrappedComparator<>(sorterComparator);
-                sorter = new ComparatorSelectionSorter<>(wrappedSorterComparator,
+                        instanceCache.newInstance(config, "sorterComparatorClass", config.getSorterComparatorClass());
+                sorter = new ComparatorSelectionSorter<>(sorterComparator,
                         SelectionSorterOrder.resolve(config.getSorterOrder()));
             } else if (config.getSorterWeightFactoryClass() != null) {
                 SelectionSorterWeightFactory<Solution_, Object> sorterWeightFactory =
-                        ConfigUtils.newInstance(config, "sorterWeightFactoryClass", config.getSorterWeightFactoryClass());
-                SelectionSorterWeightFactory<Solution_, Object> wrappedSorterWeightFactory =
-                        new WrappedSelectionSorterWeightFactory<>(sorterWeightFactory);
-                sorter = new WeightFactorySelectionSorter<>(wrappedSorterWeightFactory,
+                        instanceCache.newInstance(config, "sorterWeightFactoryClass", config.getSorterWeightFactoryClass());
+                sorter = new WeightFactorySelectionSorter<>(sorterWeightFactory,
                         SelectionSorterOrder.resolve(config.getSorterOrder()));
             } else if (config.getSorterClass() != null) {
-                sorter = new WrappedSelectionSorter<>(ConfigUtils.newInstance(config, "sorterClass", config.getSorterClass()));
+                sorter = instanceCache.newInstance(config, "sorterClass", config.getSorterClass());
             } else {
                 throw new IllegalArgumentException("The entitySelectorConfig (" + config
                         + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
@@ -327,12 +322,9 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
                         + ") needs a probabilityWeightFactoryClass ("
                         + config.getProbabilityWeightFactoryClass() + ").");
             }
-            SelectionProbabilityWeightFactory<Solution_, Object> probabilityWeightFactory =
-                    ConfigUtils.newInstance(config, "probabilityWeightFactoryClass", config.getProbabilityWeightFactoryClass());
-            SelectionProbabilityWeightFactory<Solution_, Object> wrappedProbabilityWeightFactory =
-                    new WrappedSelectionProbabilityWeightFactory<>(probabilityWeightFactory);
-            entitySelector =
-                    new ProbabilityEntitySelector<>(entitySelector, resolvedCacheType, wrappedProbabilityWeightFactory);
+            SelectionProbabilityWeightFactory<Solution_, Object> probabilityWeightFactory = instanceCache.newInstance(config,
+                    "probabilityWeightFactoryClass", config.getProbabilityWeightFactoryClass());
+            entitySelector = new ProbabilityEntitySelector<>(entitySelector, resolvedCacheType, probabilityWeightFactory);
         }
         return entitySelector;
     }

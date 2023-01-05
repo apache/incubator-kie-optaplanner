@@ -18,6 +18,7 @@ import org.optaplanner.core.impl.constructionheuristic.placer.QueuedValuePlacerF
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -31,7 +32,8 @@ class QueuedValuePlacerFactoryTest {
         config.setEntityClass(TestdataEntity.class);
 
         QueuedValuePlacer<TestdataSolution> placer =
-                new QueuedValuePlacerFactory<TestdataSolution>(config).buildEntityPlacer(buildHeuristicConfigPolicy());
+                new QueuedValuePlacerFactory<TestdataSolution>(config, ClassInstanceCache.create())
+                        .buildEntityPlacer(buildHeuristicConfigPolicy());
 
         SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
         placer.solvingStarted(solverScope);

@@ -9,13 +9,14 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 public class DefaultCustomPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_, CustomPhaseConfig> {
 
-    public DefaultCustomPhaseFactory(CustomPhaseConfig phaseConfig) {
-        super(phaseConfig);
+    public DefaultCustomPhaseFactory(CustomPhaseConfig phaseConfig, ClassInstanceCache instanceCache) {
+        super(phaseConfig, instanceCache);
     }
 
     @Override
@@ -41,7 +42,8 @@ public class DefaultCustomPhaseFactory<Solution_> extends AbstractPhaseFactory<S
                 phaseIndex,
                 solverConfigPolicy.getLogIndentation(),
                 buildPhaseTermination(phaseConfigPolicy, solverTermination),
-                customPhaseCommandList_);
+                customPhaseCommandList_,
+                instanceCache);
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             builder.setAssertStepScoreFromScratch(true);

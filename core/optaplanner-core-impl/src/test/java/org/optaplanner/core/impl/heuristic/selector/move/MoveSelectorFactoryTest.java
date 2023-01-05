@@ -21,6 +21,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.decorator.CachingMoveSe
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ProbabilityMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.SortingMoveSelector;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 class MoveSelectorFactoryTest {
@@ -240,7 +241,7 @@ class MoveSelectorFactoryTest {
 
         DummyMoveSelectorFactory(DummyMoveSelectorConfig moveSelectorConfig,
                 MoveSelector<TestdataSolution> baseMoveSelector) {
-            super(moveSelectorConfig);
+            super(moveSelectorConfig, ClassInstanceCache.create());
             this.baseMoveSelector = baseMoveSelector;
         }
 
