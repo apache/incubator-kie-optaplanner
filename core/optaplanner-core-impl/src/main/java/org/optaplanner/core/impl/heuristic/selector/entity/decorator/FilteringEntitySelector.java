@@ -25,6 +25,10 @@ public final class FilteringEntitySelector<Solution_> extends AbstractEntitySele
     public FilteringEntitySelector(EntitySelector<Solution_> childEntitySelector,
             List<SelectionFilter<Solution_, Object>> filterList) {
         this.childEntitySelector = childEntitySelector;
+        if (filterList == null || filterList.isEmpty()) {
+            throw new IllegalArgumentException(
+                    getClass().getSimpleName() + " must have at least one filter, but got (" + filterList + ").");
+        }
         this.selectionFilter = new CompositeSelectionFilter<>(filterList);
         bailOutEnabled = childEntitySelector.isNeverEnding();
         phaseLifecycleSupport.addEventListener(childEntitySelector);

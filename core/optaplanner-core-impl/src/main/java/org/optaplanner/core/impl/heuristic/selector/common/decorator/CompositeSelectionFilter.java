@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -28,6 +29,19 @@ public final class CompositeSelectionFilter<Solution_, T> implements SelectionFi
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        CompositeSelectionFilter<?, ?> that = (CompositeSelectionFilter<?, ?>) other;
+        return Objects.equals(selectionFilterList, that.selectionFilterList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(selectionFilterList);
     }
 
 }
