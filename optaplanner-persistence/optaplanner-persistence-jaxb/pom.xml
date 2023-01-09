@@ -25,17 +25,6 @@
     <java.module.name>org.optaplanner.persistence.jaxb</java.module.name>
   </properties>
 
-  <!-- TODO: Move to optaplanner-build-parent once https://github.com/quarkusio/quarkus-platform-bom-generator/issues/64 is solved.  -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.eclipse.persistence</groupId>
-        <artifactId>org.eclipse.persistence.moxy</artifactId>
-        <version>2.7.11</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -72,12 +61,6 @@
     <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>jakarta.json</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- MOXy needed as JAXB JSON provider -->
-    <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>org.eclipse.persistence.moxy</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- Testing -->
