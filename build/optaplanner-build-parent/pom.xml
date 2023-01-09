@@ -60,7 +60,7 @@
       If upgrading, ensure build still passes with the full profile (-Dfull).
     -->
     <version.javadoc.plugin>3.0.1</version.javadoc.plugin>
-    <version.jaxb2.plugin>2.5.0</version.jaxb2.plugin>
+    <version.jaxb2.plugin>3.1.0</version.jaxb2.plugin>
     <version.pitest.plugin>1.10.4</version.pitest.plugin>
     <version.revapi.plugin>0.15.0</version.revapi.plugin>
     <version.sniffer.plugin>1.22</version.sniffer.plugin>
