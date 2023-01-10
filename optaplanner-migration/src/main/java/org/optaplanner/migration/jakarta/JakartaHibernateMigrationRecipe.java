@@ -39,9 +39,10 @@ public class JakartaHibernateMigrationRecipe extends Recipe {
             @Override
             public Xml.Tag visitTag(Xml.Tag tag, ExecutionContext executionContext) {
                 if (isDependencyTag(HIBERNATE_GROUP_ID, HIBERNATE_ARTIFACT_ID)) {
-                    forEachExclusion(tag, (exclusionGroupId, exclusionArtifactId) ->
-                            doNext(new RemoveExclusion(HIBERNATE_GROUP_ID, HIBERNATE_ARTIFACT_ID,
-                                    exclusionGroupId, exclusionArtifactId)));
+                    forEachExclusion(tag,
+                            (exclusionGroupId, exclusionArtifactId) -> doNext(
+                                    new RemoveExclusion(HIBERNATE_GROUP_ID, HIBERNATE_ARTIFACT_ID,
+                                            exclusionGroupId, exclusionArtifactId)));
 
                     doNext(new ChangeDependencyGroupIdAndArtifactId(HIBERNATE_GROUP_ID, HIBERNATE_ARTIFACT_ID,
                             HIBERNATE_GROUP_ID, HIBERNATE_ARTIFACT_ID + "-jakarta", null, null));
@@ -51,15 +52,13 @@ public class JakartaHibernateMigrationRecipe extends Recipe {
             }
 
             private void forEachExclusion(Xml.Tag tag, BiConsumer<String, String> exclusionConsumer) {
-                tag.getChild("exclusions").ifPresent(exclusions ->
-                        exclusions.getChildren("exclusion").forEach(exclusion -> {
-                            Optional<String> exclusionGroupId = exclusion.getChildValue("groupId");
-                            Optional<String> exclusionArtifactId = exclusion.getChildValue("artifactId");
-                            if (exclusionGroupId.isPresent() && exclusionArtifactId.isPresent()) {
-                                exclusionConsumer.accept(exclusionGroupId.get(), exclusionArtifactId.get());
-                            }
-                        })
-                );
+                tag.getChild("exclusions").ifPresent(exclusions -> exclusions.getChildren("exclusion").forEach(exclusion -> {
+                    Optional<String> exclusionGroupId = exclusion.getChildValue("groupId");
+                    Optional<String> exclusionArtifactId = exclusion.getChildValue("artifactId");
+                    if (exclusionGroupId.isPresent() && exclusionArtifactId.isPresent()) {
+                        exclusionConsumer.accept(exclusionGroupId.get(), exclusionArtifactId.get());
+                    }
+                }));
             }
         };
     }
