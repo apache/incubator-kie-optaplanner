@@ -4,6 +4,10 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.drools.model.functions.Function1;
+import org.drools.model.functions.Function2;
+import org.drools.model.functions.Function3;
+import org.drools.model.functions.Function4;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.common.BiLeftHandSide;
 import org.optaplanner.constraint.streams.drools.quad.DroolsAbstractQuadConstraintStream;
@@ -25,56 +29,68 @@ public final class DroolsGroupingBiConstraintStream<Solution_, NewA, NewB>
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyAMapping,
             Function<A, NewB> groupKeyBMapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping);
+        Function1<A, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function1<A, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping);
     }
 
     public <A, B> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyAMapping,
             BiFunction<A, B, NewB> groupKeyBMapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping);
+        Function2<A, B, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function2<A, B, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping);
     }
 
     public <A, B, C> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriFunction<A, B, C, NewA> groupKeyAMapping,
             TriFunction<A, B, C, NewB> groupKeyBMapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping);
+        Function3<A, B, C, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function3<A, B, C, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping);
     }
 
     public <A, B, C, D> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
             QuadFunction<A, B, C, D, NewA> groupKeyAMapping, QuadFunction<A, B, C, D, NewB> groupKeyBMapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping);
+        Function4<A, B, C, D, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function4<A, B, C, D, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping);
     }
 
     public <A> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, NewA> groupKeyMapping,
             UniConstraintCollector<A, ?, NewB> collector) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyMapping, collector);
+        Function1<A, NewA> convertedMapping = constraintFactory.getInternalsFactory().convert(groupKeyMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedMapping, collector);
     }
 
     public <A, B> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractBiConstraintStream<Solution_, A, B> parent, BiFunction<A, B, NewA> groupKeyMapping,
             BiConstraintCollector<A, B, ?, NewB> collector) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyMapping, collector);
+        Function2<A, B, NewA> convertedMapping = constraintFactory.getInternalsFactory().convert(groupKeyMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedMapping, collector);
     }
 
     public <A, B, C> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriFunction<A, B, C, NewA> groupKeyMapping,
             TriConstraintCollector<A, B, C, ?, NewB> collector) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyMapping, collector);
+        Function3<A, B, C, NewA> convertedMapping = constraintFactory.getInternalsFactory().convert(groupKeyMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedMapping, collector);
     }
 
     public <A, B, C, D> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
             QuadFunction<A, B, C, D, NewA> groupKeyMapping, QuadConstraintCollector<A, B, C, D, ?, NewB> collector) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyMapping, collector);
+        Function4<A, B, C, D, NewA> convertedMapping = constraintFactory.getInternalsFactory().convert(groupKeyMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedMapping, collector);
     }
 
     public <A> DroolsGroupingBiConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,

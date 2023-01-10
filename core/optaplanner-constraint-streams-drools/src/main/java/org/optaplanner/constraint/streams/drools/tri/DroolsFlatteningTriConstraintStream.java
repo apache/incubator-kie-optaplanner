@@ -3,6 +3,7 @@ package org.optaplanner.constraint.streams.drools.tri;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.drools.model.functions.Function1;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.common.TriLeftHandSide;
 
@@ -14,7 +15,8 @@ public final class DroolsFlatteningTriConstraintStream<Solution_, A, B, NewC>
     public <C> DroolsFlatteningTriConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, Function<C, Iterable<NewC>> triMapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andFlattenLast(triMapping);
+        Function1<C, Iterable<NewC>> convertedMapping = constraintFactory.getInternalsFactory().convert(triMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andFlattenLast(convertedMapping);
     }
 
     @Override

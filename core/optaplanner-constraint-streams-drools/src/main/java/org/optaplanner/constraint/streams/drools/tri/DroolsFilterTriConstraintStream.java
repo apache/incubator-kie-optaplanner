@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.drools.tri;
 
 import java.util.function.Supplier;
 
+import org.drools.model.functions.Predicate3;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.common.TriLeftHandSide;
 import org.optaplanner.core.api.function.TriPredicate;
@@ -16,7 +17,8 @@ public final class DroolsFilterTriConstraintStream<Solution_, A, B, C>
             DroolsAbstractTriConstraintStream<Solution_, A, B, C> parent, TriPredicate<A, B, C> triPredicate) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-        this.leftHandSide = () -> parent.createLeftHandSide().andFilter(triPredicate);
+        Predicate3<A, B, C> convertedPredicate = constraintFactory.getInternalsFactory().convert(triPredicate);
+        this.leftHandSide = () -> parent.createLeftHandSide().andFilter(convertedPredicate);
     }
 
     @Override

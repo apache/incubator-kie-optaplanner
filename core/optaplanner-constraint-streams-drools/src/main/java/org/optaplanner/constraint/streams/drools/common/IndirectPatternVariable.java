@@ -1,8 +1,7 @@
 package org.optaplanner.constraint.streams.drools.common;
 
-import java.util.function.Function;
-
 import org.drools.model.Variable;
+import org.drools.model.functions.Function1;
 import org.drools.model.view.ViewItem;
 
 /**
@@ -48,16 +47,16 @@ import org.drools.model.view.ViewItem;
 final class IndirectPatternVariable<A, PatternVar_>
         extends AbstractPatternVariable<A, PatternVar_, IndirectPatternVariable<A, PatternVar_>> {
 
-    private final Function<PatternVar_, A> mappingFunction;
+    private final Function1<PatternVar_, A> mappingFunction;
 
     <OldA> IndirectPatternVariable(IndirectPatternVariable<OldA, PatternVar_> patternCreator, Variable<A> boundVariable,
-            Function<OldA, A> mappingFunction) {
+            Function1<OldA, A> mappingFunction) {
         super(patternCreator, boundVariable);
         this.mappingFunction = patternCreator.mappingFunction.andThen(mappingFunction);
     }
 
     IndirectPatternVariable(DirectPatternVariable<PatternVar_> patternCreator, Variable<A> boundVariable,
-            Function<PatternVar_, A> mappingFunction) {
+            Function1<PatternVar_, A> mappingFunction) {
         super(patternCreator, boundVariable);
         this.mappingFunction = mappingFunction;
     }

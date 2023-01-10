@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.drools.quad;
 
 import java.util.function.Supplier;
 
+import org.drools.model.functions.Predicate4;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.common.QuadLeftHandSide;
 import org.optaplanner.core.api.function.QuadPredicate;
@@ -16,7 +17,8 @@ public final class DroolsFilterQuadConstraintStream<Solution_, A, B, C, D>
             DroolsAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, QuadPredicate<A, B, C, D> predicate) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-        this.leftHandSide = () -> parent.createLeftHandSide().andFilter(predicate);
+        Predicate4<A, B, C, D> convertedPredicate = constraintFactory.getInternalsFactory().convert(predicate);
+        this.leftHandSide = () -> parent.createLeftHandSide().andFilter(convertedPredicate);
     }
 
     @Override

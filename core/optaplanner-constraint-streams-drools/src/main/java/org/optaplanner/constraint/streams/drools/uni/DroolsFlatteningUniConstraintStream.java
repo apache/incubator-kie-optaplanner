@@ -3,6 +3,7 @@ package org.optaplanner.constraint.streams.drools.uni;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.drools.model.functions.Function1;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.common.UniLeftHandSide;
 
@@ -14,7 +15,8 @@ public final class DroolsFlatteningUniConstraintStream<Solution_, NewA>
     public <A> DroolsFlatteningUniConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Function<A, Iterable<NewA>> mapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andFlattenLast(mapping);
+        Function1<A, Iterable<NewA>> convertedMapping = constraintFactory.getInternalsFactory().convert(mapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andFlattenLast(convertedMapping);
     }
 
     @Override

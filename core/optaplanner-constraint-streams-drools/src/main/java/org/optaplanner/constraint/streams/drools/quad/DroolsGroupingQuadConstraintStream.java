@@ -4,6 +4,10 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.drools.model.functions.Function1;
+import org.drools.model.functions.Function2;
+import org.drools.model.functions.Function3;
+import org.drools.model.functions.Function4;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.bi.DroolsAbstractBiConstraintStream;
 import org.optaplanner.constraint.streams.drools.common.QuadLeftHandSide;
@@ -26,7 +30,8 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             UniConstraintCollector<A, ?, NewB> collectorB, UniConstraintCollector<A, ?, NewC> collectorC,
             UniConstraintCollector<A, ?, NewD> collectorD) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, collectorB, collectorC, collectorD);
+        Function1<A, NewA> convertedMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedMapping, collectorB, collectorC, collectorD);
     }
 
     public <A, B> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -34,7 +39,8 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             BiConstraintCollector<A, B, ?, NewB> collectorB, BiConstraintCollector<A, B, ?, NewC> collectorC,
             BiConstraintCollector<A, B, ?, NewD> collectorD) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, collectorB, collectorC, collectorD);
+        Function2<A, B, NewA> convertedMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedMapping, collectorB, collectorC, collectorD);
     }
 
     public <A, B, C> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -42,7 +48,8 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             TriConstraintCollector<A, B, C, ?, NewB> collectorB, TriConstraintCollector<A, B, C, ?, NewC> collectorC,
             TriConstraintCollector<A, B, C, ?, NewD> collectorD) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, collectorB, collectorC, collectorD);
+        Function3<A, B, C, NewA> convertedMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedMapping, collectorB, collectorC, collectorD);
     }
 
     public <A, B, C, D> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -51,7 +58,8 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC,
             QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, collectorB, collectorC, collectorD);
+        Function4<A, B, C, D, NewA> convertedMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedMapping, collectorB, collectorC, collectorD);
     }
 
     public <A> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -59,8 +67,10 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             Function<A, NewB> groupKeyBMapping, UniConstraintCollector<A, ?, NewC> collectorC,
             UniConstraintCollector<A, ?, NewD> collectorD) {
         super(constraintFactory, parent.getRetrievalSemantics());
+        Function1<A, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function1<A, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
         this.leftHandSide =
-                () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
+                () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping, collectorC, collectorD);
     }
 
     public <A, B> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -68,8 +78,10 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             BiFunction<A, B, NewB> groupKeyBMapping, BiConstraintCollector<A, B, ?, NewC> collectorC,
             BiConstraintCollector<A, B, ?, NewD> collectorD) {
         super(constraintFactory, parent.getRetrievalSemantics());
+        Function2<A, B, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function2<A, B, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
         this.leftHandSide =
-                () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
+                () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping, collectorC, collectorD);
     }
 
     public <A, B, C> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -77,8 +89,10 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             TriFunction<A, B, C, NewB> groupKeyBMapping, TriConstraintCollector<A, B, C, ?, NewC> collectorC,
             TriConstraintCollector<A, B, C, ?, NewD> collectorD) {
         super(constraintFactory, parent.getRetrievalSemantics());
+        Function3<A, B, C, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function3<A, B, C, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
         this.leftHandSide =
-                () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
+                () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping, collectorC, collectorD);
     }
 
     public <A, B, C, D> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -87,8 +101,10 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             QuadConstraintCollector<A, B, C, D, ?, NewC> collectorC,
             QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD) {
         super(constraintFactory, parent.getRetrievalSemantics());
+        Function4<A, B, C, D, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function4<A, B, C, D, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
         this.leftHandSide =
-                () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, collectorC, collectorD);
+                () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping, collectorC, collectorD);
     }
 
     public <A> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -96,8 +112,11 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             Function<A, NewB> groupKeyBMapping, Function<A, NewC> groupKeyCMapping,
             UniConstraintCollector<A, ?, NewD> collectorD) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide =
-                () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, groupKeyCMapping, collectorD);
+        Function1<A, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function1<A, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
+        Function1<A, NewC> convertedCMapping = constraintFactory.getInternalsFactory().convert(groupKeyCMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping,
+                convertedCMapping, collectorD);
     }
 
     public <A, B> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -105,8 +124,11 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             BiFunction<A, B, NewB> groupKeyBMapping, BiFunction<A, B, NewC> groupKeyCMapping,
             BiConstraintCollector<A, B, ?, NewD> collectorD) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide =
-                () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, groupKeyCMapping, collectorD);
+        Function2<A, B, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function2<A, B, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
+        Function2<A, B, NewC> convertedCMapping = constraintFactory.getInternalsFactory().convert(groupKeyCMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping,
+                convertedCMapping, collectorD);
     }
 
     public <A, B, C> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -114,8 +136,11 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             TriFunction<A, B, C, NewB> groupKeyBMapping, TriFunction<A, B, C, NewC> groupKeyCMapping,
             TriConstraintCollector<A, B, C, ?, NewD> collectorD) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide =
-                () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, groupKeyCMapping, collectorD);
+        Function3<A, B, C, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function3<A, B, C, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
+        Function3<A, B, C, NewC> convertedCMapping = constraintFactory.getInternalsFactory().convert(groupKeyCMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping,
+                convertedCMapping, collectorD);
     }
 
     public <A, B, C, D> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -123,8 +148,11 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             QuadFunction<A, B, C, D, NewA> groupKeyAMapping, QuadFunction<A, B, C, D, NewB> groupKeyBMapping,
             QuadFunction<A, B, C, D, NewC> groupKeyCMapping, QuadConstraintCollector<A, B, C, D, ?, NewD> collectorD) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide =
-                () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, groupKeyCMapping, collectorD);
+        Function4<A, B, C, D, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function4<A, B, C, D, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
+        Function4<A, B, C, D, NewC> convertedCMapping = constraintFactory.getInternalsFactory().convert(groupKeyCMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping,
+                convertedCMapping, collectorD);
     }
 
     public <A> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -132,8 +160,12 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             Function<A, NewB> groupKeyBMapping, Function<A, NewC> groupKeyCMapping,
             Function<A, NewD> groupKeyDMapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, groupKeyCMapping,
-                groupKeyDMapping);
+        Function1<A, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function1<A, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
+        Function1<A, NewC> convertedCMapping = constraintFactory.getInternalsFactory().convert(groupKeyCMapping);
+        Function1<A, NewD> convertedDMapping = constraintFactory.getInternalsFactory().convert(groupKeyDMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping,
+                convertedCMapping, convertedDMapping);
     }
 
     public <A, B> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -141,8 +173,12 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             BiFunction<A, B, NewB> groupKeyBMapping, BiFunction<A, B, NewC> groupKeyCMapping,
             BiFunction<A, B, NewD> groupKeyDMapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, groupKeyCMapping,
-                groupKeyDMapping);
+        Function2<A, B, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function2<A, B, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
+        Function2<A, B, NewC> convertedCMapping = constraintFactory.getInternalsFactory().convert(groupKeyCMapping);
+        Function2<A, B, NewD> convertedDMapping = constraintFactory.getInternalsFactory().convert(groupKeyDMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping,
+                convertedCMapping, convertedDMapping);
     }
 
     public <A, B, C> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -150,8 +186,12 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             TriFunction<A, B, C, NewB> groupKeyBMapping, TriFunction<A, B, C, NewC> groupKeyCMapping,
             TriFunction<A, B, C, NewD> groupKeyDMapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, groupKeyCMapping,
-                groupKeyDMapping);
+        Function3<A, B, C, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function3<A, B, C, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
+        Function3<A, B, C, NewC> convertedCMapping = constraintFactory.getInternalsFactory().convert(groupKeyCMapping);
+        Function3<A, B, C, NewD> convertedDMapping = constraintFactory.getInternalsFactory().convert(groupKeyDMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping,
+                convertedCMapping, convertedDMapping);
     }
 
     public <A, B, C, D> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,
@@ -159,8 +199,12 @@ public final class DroolsGroupingQuadConstraintStream<Solution_, NewA, NewB, New
             QuadFunction<A, B, C, D, NewA> groupKeyAMapping, QuadFunction<A, B, C, D, NewB> groupKeyBMapping,
             QuadFunction<A, B, C, D, NewC> groupKeyCMapping, QuadFunction<A, B, C, D, NewD> groupKeyDMapping) {
         super(constraintFactory, parent.getRetrievalSemantics());
-        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(groupKeyAMapping, groupKeyBMapping, groupKeyCMapping,
-                groupKeyDMapping);
+        Function4<A, B, C, D, NewA> convertedAMapping = constraintFactory.getInternalsFactory().convert(groupKeyAMapping);
+        Function4<A, B, C, D, NewB> convertedBMapping = constraintFactory.getInternalsFactory().convert(groupKeyBMapping);
+        Function4<A, B, C, D, NewC> convertedCMapping = constraintFactory.getInternalsFactory().convert(groupKeyCMapping);
+        Function4<A, B, C, D, NewD> convertedDMapping = constraintFactory.getInternalsFactory().convert(groupKeyDMapping);
+        this.leftHandSide = () -> parent.createLeftHandSide().andGroupBy(convertedAMapping, convertedBMapping,
+                convertedCMapping, convertedDMapping);
     }
 
     public <A> DroolsGroupingQuadConstraintStream(DroolsConstraintFactory<Solution_> constraintFactory,

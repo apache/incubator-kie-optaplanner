@@ -2,19 +2,19 @@ package org.optaplanner.constraint.streams.drools.common;
 
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.drools.model.Variable;
+import org.drools.model.functions.Function1;
+import org.drools.model.functions.Predicate1;
+import org.drools.model.functions.Predicate2;
+import org.drools.model.functions.Predicate3;
+import org.drools.model.functions.Predicate4;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.constraint.streams.common.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
 import org.optaplanner.constraint.streams.common.tri.DefaultTriJoiner;
 import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
-import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
 public interface PatternVariable<A, PatternVar_, Child_ extends PatternVariable<A, PatternVar_, Child_>> {
@@ -25,17 +25,16 @@ public interface PatternVariable<A, PatternVar_, Child_ extends PatternVariable<
 
     List<ViewItem<?>> getDependentExpressions();
 
-    Child_ filter(Predicate<A> predicate);
+    Child_ filter(Predicate1<A> predicate);
 
-    <LeftJoinVar_> Child_ filter(BiPredicate<LeftJoinVar_, A> predicate, Variable<LeftJoinVar_> leftJoinVariable);
+    <LeftJoinVar_> Child_ filter(Predicate2<LeftJoinVar_, A> predicate, Variable<LeftJoinVar_> leftJoinVariable);
 
-    <LeftJoinVarA_, LeftJoinVarB_> Child_ filter(TriPredicate<LeftJoinVarA_, LeftJoinVarB_, A> predicate,
+    <LeftJoinVarA_, LeftJoinVarB_> Child_ filter(Predicate3<LeftJoinVarA_, LeftJoinVarB_, A> predicate,
             Variable<LeftJoinVarA_> leftJoinVariableA, Variable<LeftJoinVarB_> leftJoinVariableB);
 
     <LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> Child_ filter(
-            QuadPredicate<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> predicate,
-            Variable<LeftJoinVarA_> leftJoinVariableA, Variable<LeftJoinVarB_> leftJoinVariableB,
-            Variable<LeftJoinVarC_> leftJoinVariableC);
+            Predicate4<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> predicate, Variable<LeftJoinVarA_> leftJoinVariableA,
+            Variable<LeftJoinVarB_> leftJoinVariableB, Variable<LeftJoinVarC_> leftJoinVariableC);
 
     <LeftJoinVar_> PatternVariable<A, PatternVar_, Child_> filterForJoin(Variable<LeftJoinVar_> leftJoinVar,
             DefaultBiJoiner<LeftJoinVar_, A> joiner, JoinerType joinerType, int mappingIndex);
@@ -59,7 +58,7 @@ public interface PatternVariable<A, PatternVar_, Child_ extends PatternVariable<
      * @param <BoundVar_> generic type of the bound variable
      * @return never null
      */
-    <BoundVar_> Child_ bind(Variable<BoundVar_> boundVariable, Function<A, BoundVar_> bindingFunction);
+    <BoundVar_> Child_ bind(Variable<BoundVar_> boundVariable, Function1<A, BoundVar_> bindingFunction);
 
     /**
      * This must only be used in patterns that will eventually end up in accumulate() or groupBy().
