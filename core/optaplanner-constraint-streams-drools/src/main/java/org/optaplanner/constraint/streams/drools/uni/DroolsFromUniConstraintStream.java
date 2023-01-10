@@ -25,7 +25,7 @@ public final class DroolsFromUniConstraintStream<Solution_, A> extends DroolsAbs
 
     @Override
     public UniLeftHandSide<A> createLeftHandSide() {
-        return new UniLeftHandSide<>(fromClass, constraintFactory.getVariableFactory());
+        return new UniLeftHandSide<>(fromClass, constraintFactory.getInternalsFactory());
     }
 
     // ************************************************************************

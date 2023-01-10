@@ -4,20 +4,34 @@ import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.from;
 
 import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.drools.model.DSL;
 import org.drools.model.Variable;
+import org.drools.model.functions.Function1;
+import org.drools.model.functions.Function2;
+import org.drools.model.functions.Function3;
+import org.drools.model.functions.Function4;
+import org.drools.model.functions.Predicate1;
+import org.drools.model.functions.Predicate2;
+import org.drools.model.functions.Predicate3;
+import org.drools.model.functions.Predicate4;
 import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.function.TriPredicate;
 
-public final class DroolsVariableFactory {
+public final class DroolsInternalsFactory {
 
     private final AtomicLong counter = new AtomicLong(0);
 
-    DroolsVariableFactory() {
+    DroolsInternalsFactory() {
         // No external instances.
     }
 
@@ -64,7 +78,7 @@ public final class DroolsVariableFactory {
      * @return never null
      */
     public <U, V, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source1, Variable<V> source2,
-            BiFunction<U, V, Result_> mapping) {
+            Function2<U, V, Result_> mapping) {
         return (Variable<Result_>) declarationOf(Object.class, generateUniqueId(baseName),
                 from(source1, source2, (value1, value2) -> {
                     Result_ result = mapping.apply(value1, value2);
@@ -76,10 +90,10 @@ public final class DroolsVariableFactory {
     }
 
     /**
-     * As defined by {@link #createVariable(String, Variable, Variable, BiFunction)}.
+     * As defined by {@link #createVariable(String, Variable, Variable, Function2)}.
      */
     public <U, V, W, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source1, Variable<V> source2,
-            Variable<W> source3, TriFunction<U, V, W, Result_> mapping) {
+            Variable<W> source3, Function3<U, V, W, Result_> mapping) {
         return (Variable<Result_>) declarationOf(Object.class, generateUniqueId(baseName),
                 from(source1, source2, source3, (value1, value2, value3) -> {
                     Result_ result = mapping.apply(value1, value2, value3);
@@ -91,10 +105,10 @@ public final class DroolsVariableFactory {
     }
 
     /**
-     * As defined by {@link #createVariable(String, Variable, Variable, BiFunction)}.
+     * As defined by {@link #createVariable(String, Variable, Variable, Function2)}.
      */
     public <U, V, W, Y, Result_> Variable<Result_> createVariable(String baseName, Variable<U> source1, Variable<V> source2,
-            Variable<W> source3, Variable<Y> source4, QuadFunction<U, V, W, Y, Result_> mapping) {
+            Variable<W> source3, Variable<Y> source4, Function4<U, V, W, Y, Result_> mapping) {
         return (Variable<Result_>) declarationOf(Object.class, generateUniqueId(baseName),
                 from(source1, source2, source3, source4, (value1, value2, value3, value4) -> {
                     Result_ result = mapping.apply(value1, value2, value3, value4);
@@ -120,9 +134,52 @@ public final class DroolsVariableFactory {
      * @return
      */
     public <U, Result_> Variable<Result_> createFlattenedVariable(String baseName, Variable<U> source,
-            Function<U, Iterable<Result_>> mapping) {
+            Function1<U, Iterable<Result_>> mapping) {
         return (Variable<Result_>) declarationOf(Object.class, generateUniqueId(baseName),
                 from(source, mapping::apply)); // By default, from() flattens.
+    }
+
+    private final Map<Object, Object> map = new IdentityHashMap<>();
+
+    public <A> Predicate1<A> convert(Predicate<A> predicate) {
+        return (Predicate1<A>) map.computeIfAbsent(predicate,
+                k -> (Predicate1<A>) a -> ((Predicate<A>) k).test(a));
+    }
+
+    public <A, B> Predicate2<A, B> convert(BiPredicate<A, B> predicate) {
+        return (Predicate2<A, B>) map.computeIfAbsent(predicate,
+                k -> (Predicate2<A, B>) (a, b) -> ((BiPredicate<A, B>) k).test(a, b));
+    }
+
+    public <A, B, C> Predicate3<A, B, C> convert(TriPredicate<A, B, C> predicate) {
+        return (Predicate3<A, B, C>) map.computeIfAbsent(predicate,
+                k -> (Predicate3<A, B, C>) (a, b, c) -> ((TriPredicate<A, B, C>) k).test(a, b, c));
+    }
+
+    public <A, B, C, D> Predicate4<A, B, C, D> convert(QuadPredicate<A, B, C, D> predicate) {
+        return (Predicate4<A, B, C, D>) map.computeIfAbsent(predicate,
+                k -> (Predicate4<A, B, C, D>) (a, b, c, d) -> ((QuadPredicate<A, B, C, D>) k).test(a, b, c, d));
+    }
+
+    public <A, Result_> Function1<A, Result_> convert(Function<A, Result_> function) {
+        return (Function1<A, Result_>) map.computeIfAbsent(function,
+                k -> (Function1<A, Result_>) a -> ((Function<A, Result_>) k).apply(a));
+    }
+
+    public <A, B, Result_> Function2<A, B, Result_> convert(BiFunction<A, B, Result_> function) {
+        return (Function2<A, B, Result_>) map.computeIfAbsent(function,
+                k -> (Function2<A, B, Result_>) (a, b) -> ((BiFunction<A, B, Result_>) k).apply(a, b));
+    }
+
+    public <A, B, C, Result_> Function3<A, B, C, Result_> convert(TriFunction<A, B, C, Result_> function) {
+        return (Function3<A, B, C, Result_>) map.computeIfAbsent(function,
+                k -> (Function3<A, B, C, Result_>) (a, b, c) -> ((TriFunction<A, B, C, Result_>) k).apply(a, b, c));
+    }
+
+    public <A, B, C, D, Result_> Function4<A, B, C, D, Result_> convert(QuadFunction<A, B, C, D, Result_> function) {
+        return (Function4<A, B, C, D, Result_>) map.computeIfAbsent(function,
+                k -> (Function4<A, B, C, D, Result_>) (a, b, c, d) -> ((QuadFunction<A, B, C, D, Result_>) k).apply(a, b, c,
+                        d));
     }
 
 }
