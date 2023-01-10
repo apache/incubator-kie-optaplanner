@@ -75,9 +75,8 @@ final class IndirectPatternVariable<A, PatternVar_>
     }
 
     @Override
-    protected IndirectPatternVariable<A, PatternVar_> create(
-            ViewItem<?> dependentExpression) {
-        return new IndirectPatternVariable<>(this, dependentExpression);
+    public IndirectPatternVariable<A, PatternVar_> addDependentExpression(ViewItem<?> expression) {
+        return new IndirectPatternVariable<>(this, expression);
     }
 
 }

@@ -91,8 +91,6 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
      */
     protected abstract A extract(PatternVar_ patternVar);
 
-    protected abstract Child_ create(ViewItem<?> dependentExpression);
-
     @Override
     public final Child_ filter(Predicate<A> predicate) {
         pattern.expr("Filter using " + predicate, a -> predicate.test(extract(a)));
@@ -246,11 +244,6 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
                 (a, leftJoinVarA, leftJoinVarB, leftJoinVarC) -> bindingFunction.apply(extract(a), leftJoinVarA,
                         leftJoinVarB, leftJoinVarC));
         return (Child_) this;
-    }
-
-    @Override
-    public final Child_ addDependentExpression(ViewItem<?> expression) {
-        return create(expression);
     }
 
     @Override

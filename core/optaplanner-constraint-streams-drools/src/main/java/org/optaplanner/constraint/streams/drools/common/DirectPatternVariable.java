@@ -104,7 +104,8 @@ final class DirectPatternVariable<A> extends AbstractPatternVariable<A, A, Direc
     }
 
     @Override
-    protected DirectPatternVariable<A> create(ViewItem<?> dependentExpression) {
-        return new DirectPatternVariable<>(this, dependentExpression);
+    public DirectPatternVariable<A> addDependentExpression(ViewItem<?> expression) {
+        return new DirectPatternVariable<>(this, expression);
     }
+
 }
