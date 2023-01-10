@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
@@ -30,7 +29,6 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.constraint.streams.common.tri.DefaultTriJoiner;
 import org.optaplanner.constraint.streams.common.tri.FilteringTriJoiner;
 import org.optaplanner.constraint.streams.drools.DroolsInternalsFactory;
-import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
 import org.optaplanner.core.impl.score.stream.JoinerType;
@@ -101,7 +99,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
     }
 
     private <C> BiLeftHandSide<A, B> applyJoiners(Class<C> otherFactType, Predicate1<C> nullityFilter,
-            DefaultTriJoiner<A, B, C> joiner, TriPredicate<A, B, C> predicate, boolean shouldExist) {
+            DefaultTriJoiner<A, B, C> joiner, Predicate3<A, B, C> predicate, boolean shouldExist) {
         Variable<C> toExist = internalsFactory.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<C> existencePattern = pattern(toExist);
         if (nullityFilter != null) {
@@ -113,8 +111,8 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         int joinerCount = joiner.getJoinerCount();
         for (int mappingIndex = 0; mappingIndex < joinerCount; mappingIndex++) {
             JoinerType joinerType = joiner.getJoinerType(mappingIndex);
-            BiFunction<A, B, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-            Function<C, Object> rightMapping = joiner.getRightMapping(mappingIndex);
+            Function2<A, B, Object> leftMapping = internalsFactory.convert(joiner.getLeftMapping(mappingIndex));
+            Function1<C, Object> rightMapping = internalsFactory.convert(joiner.getRightMapping(mappingIndex));
             Predicate3<C, A, B> joinPredicate =
                     (c, a, b) -> joinerType.matches(leftMapping.apply(a, b), rightMapping.apply(c));
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
@@ -126,19 +124,20 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
 
     private <C> BetaIndex2<C, A, B, ?> createBetaIndex(DefaultTriJoiner<A, B, C> joiner, int mappingIndex) {
         JoinerType joinerType = joiner.getJoinerType(mappingIndex);
-        BiFunction<A, B, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-        Function<C, Object> rightMapping = joiner.getRightMapping(mappingIndex);
+        Function2<A, B, Object> leftMapping = internalsFactory.convert(joiner.getLeftMapping(mappingIndex));
+        Function1<C, Object> rightMapping = internalsFactory.convert(joiner.getRightMapping(mappingIndex));
         if (joinerType == JoinerType.EQUAL) {
-            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightMapping::apply,
-                    leftMapping::apply, Object.class);
+            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightMapping, leftMapping,
+                    Object.class);
         } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
             JoinerType reversedJoinerType = joinerType.flip();
+            // TODO fix the Comparable
             return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
-                    c -> (Comparable) rightMapping.apply(c), leftMapping::apply, Comparable.class);
+                    c -> (Comparable) rightMapping.apply(c), leftMapping, Comparable.class);
         }
     }
 
-    private <C> BiLeftHandSide<A, B> applyFilters(PatternDSL.PatternDef<C> existencePattern, TriPredicate<A, B, C> predicate,
+    private <C> BiLeftHandSide<A, B> applyFilters(PatternDSL.PatternDef<C> existencePattern, Predicate3<A, B, C> predicate,
             boolean shouldExist) {
         PatternDSL.PatternDef<C> possiblyFilteredExistencePattern = predicate == null ? existencePattern
                 : existencePattern.expr("Filter using " + predicate, patternVariableA.getPrimaryVariable(),
@@ -156,7 +155,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
         DefaultTriJoiner<A, B, C> finalJoiner = null;
-        TriPredicate<A, B, C> finalFilter = null;
+        Predicate3<A, B, C> finalFilter = null;
         for (int i = 0; i < joiners.length; i++) {
             TriJoiner<A, B, C> joiner = joiners[i];
             boolean hasAFilter = indexOfFirstFilter >= 0;
@@ -166,7 +165,8 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 }
                 // Merge all filters into one to avoid paying the penalty for lack of indexing more than once.
                 FilteringTriJoiner<A, B, C> castJoiner = (FilteringTriJoiner<A, B, C>) joiner;
-                finalFilter = finalFilter == null ? castJoiner.getFilter() : finalFilter.and(castJoiner.getFilter());
+                Predicate3<A, B, C> convertedFilter = internalsFactory.convert(castJoiner.getFilter());
+                finalFilter = finalFilter == null ? convertedFilter : internalsFactory.merge(finalFilter, convertedFilter);
             } else {
                 if (hasAFilter) {
                     throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("

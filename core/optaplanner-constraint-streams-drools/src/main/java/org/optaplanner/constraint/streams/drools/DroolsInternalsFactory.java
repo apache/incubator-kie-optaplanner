@@ -22,6 +22,8 @@ import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.Predicate4;
+import org.drools.model.functions.Predicate5;
+import org.optaplanner.core.api.function.PentaPredicate;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
@@ -173,6 +175,14 @@ public final class DroolsInternalsFactory {
                 k -> (Predicate4<A, B, C, D>) (a, b, c, d) -> ((QuadPredicate<A, B, C, D>) k).test(a, b, c, d));
     }
 
+    public <A, B, C, D, E> Predicate5<A, B, C, D, E> convert(PentaPredicate<A, B, C, D, E> predicate) {
+        if (predicate == null) {
+            return null;
+        }
+        return (Predicate5<A, B, C, D, E>) map.computeIfAbsent(predicate,
+                k -> (Predicate5<A, B, C, D, E>) (a, b, c, d, e) -> ((PentaPredicate<A, B, C, D, E>) k).test(a, b, c, d, e));
+    }
+
     public <A, Result_> Function1<A, Result_> convert(Function<A, Result_> function) {
         return (Function1<A, Result_>) map.computeIfAbsent(function,
                 k -> (Function1<A, Result_>) a -> ((Function<A, Result_>) k).apply(a));
@@ -192,6 +202,22 @@ public final class DroolsInternalsFactory {
         return (Function4<A, B, C, D, Result_>) map.computeIfAbsent(function,
                 k -> (Function4<A, B, C, D, Result_>) (a, b, c, d) -> ((QuadFunction<A, B, C, D, Result_>) k).apply(a, b, c,
                         d));
+    }
+
+    public <A, B> Predicate2<A, B> merge(Predicate2<A, B> first, Predicate2<A, B> second) {
+        return (a, b) -> first.test(a, b) && second.test(a, b);
+    }
+
+    public <A, B, C> Predicate3<A, B, C> merge(Predicate3<A, B, C> first, Predicate3<A, B, C> second) {
+        return (a, b, c) -> first.test(a, b, c) && second.test(a, b, c);
+    }
+
+    public <A, B, C, D> Predicate4<A, B, C, D> merge(Predicate4<A, B, C, D> first, Predicate4<A, B, C, D> second) {
+        return (a, b, c, d) -> first.test(a, b, c, d) && second.test(a, b, c, d);
+    }
+
+    public <A, B, C, D, E> Predicate5<A, B, C, D, E> merge(Predicate5<A, B, C, D, E> first, Predicate5<A, B, C, D, E> second) {
+        return (a, b, c, d, e) -> first.test(a, b, c, d, e) && second.test(a, b, c, d, e);
     }
 
 }

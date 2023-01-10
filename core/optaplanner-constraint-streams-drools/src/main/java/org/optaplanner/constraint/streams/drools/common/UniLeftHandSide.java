@@ -9,9 +9,7 @@ import static org.drools.model.PatternDSL.pattern;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.function.ToLongFunction;
 
@@ -48,7 +46,7 @@ import org.optaplanner.core.impl.score.stream.JoinerType;
  *
  * Left-hand side is that part of the rule between the "when" and "then" keywords.
  * The part between the "then" and "end" keywords is called the consequence of the rule, and this class does not represent it.
- * It can be created by calling {@link #andTerminate()}.
+ * It can be created by calling e.g. {@link #andTerminate(ToIntFunction)}.
  *
  * There are also more complex variants of rules that still result in just one variable:
  *
@@ -68,7 +66,7 @@ import org.optaplanner.core.impl.score.stream.JoinerType;
  * </pre>
  *
  * To create the simplest possible variant, call {@link #UniLeftHandSide(Class, DroolsInternalsFactory)}.
- * Further specializations can be introduced by calling builder methods such as {@link #andFilter(Predicate)}.
+ * Further specializations can be introduced by calling builder methods such as {@link #andFilter(Predicate1)}.
  *
  * These builder methods will always return a new instance of {@link AbstractLeftHandSide}, as these are immutable.
  * Some builder methods, such as {@link #andJoin(UniLeftHandSide, BiJoiner)}, will return an instance of
@@ -110,7 +108,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
     }
 
     private <B> UniLeftHandSide<A> applyJoiners(Class<B> otherFactType, Predicate1<B> nullityFilter,
-            DefaultBiJoiner<A, B> joiner, BiPredicate<A, B> predicate, boolean shouldExist) {
+            DefaultBiJoiner<A, B> joiner, Predicate2<A, B> predicate, boolean shouldExist) {
         Variable<B> toExist = internalsFactory.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<B> existencePattern = pattern(toExist);
         if (nullityFilter != null) {
@@ -122,8 +120,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         int joinerCount = joiner.getJoinerCount();
         for (int mappingIndex = 0; mappingIndex < joinerCount; mappingIndex++) {
             JoinerType joinerType = joiner.getJoinerType(mappingIndex);
-            Function<A, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-            Function<B, Object> rightMapping = joiner.getRightMapping(mappingIndex);
+            Function1<A, Object> leftMapping = internalsFactory.convert(joiner.getLeftMapping(mappingIndex));
+            Function1<B, Object> rightMapping = internalsFactory.convert(joiner.getRightMapping(mappingIndex));
             Predicate2<B, A> joinPredicate = (b, a) -> joinerType.matches(leftMapping.apply(a), rightMapping.apply(b));
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
                     patternVariable.getPrimaryVariable(), joinPredicate, createBetaIndex(joiner, mappingIndex));
@@ -133,19 +131,20 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
 
     private <B> BetaIndex<B, A, ?> createBetaIndex(DefaultBiJoiner<A, B> joiner, int mappingIndex) {
         JoinerType joinerType = joiner.getJoinerType(mappingIndex);
-        Function<A, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-        Function<B, Object> rightMapping = joiner.getRightMapping(mappingIndex);
+        Function1<A, Object> leftMapping = internalsFactory.convert(joiner.getLeftMapping(mappingIndex));
+        Function1<B, Object> rightMapping = internalsFactory.convert(joiner.getRightMapping(mappingIndex));
         if (joinerType == JoinerType.EQUAL) {
-            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightMapping::apply,
-                    leftMapping::apply, Object.class);
+            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightMapping, leftMapping,
+                    Object.class);
         } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
+            // TODO fix the Comparable
             JoinerType reversedJoinerType = joinerType.flip();
             return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
-                    b -> (Comparable) rightMapping.apply(b), leftMapping::apply, Comparable.class);
+                    b -> (Comparable) rightMapping.apply(b), leftMapping, Comparable.class);
         }
     }
 
-    private <B> UniLeftHandSide<A> applyFilters(PatternDSL.PatternDef<B> existencePattern, BiPredicate<A, B> predicate,
+    private <B> UniLeftHandSide<A> applyFilters(PatternDSL.PatternDef<B> existencePattern, Predicate2<A, B> predicate,
             boolean shouldExist) {
         PatternDSL.PatternDef<B> possiblyFilteredExistencePattern = predicate == null ? existencePattern
                 : existencePattern.expr("Filter using " + predicate, patternVariable.getPrimaryVariable(),
@@ -162,7 +161,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern.
         DefaultBiJoiner<A, B> finalJoiner = null;
-        BiPredicate<A, B> finalFilter = null;
+        Predicate2<A, B> finalFilter = null;
         for (int i = 0; i < joiners.length; i++) {
             BiJoiner<A, B> joiner = joiners[i];
             boolean hasAFilter = indexOfFirstFilter >= 0;
@@ -172,7 +171,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
                 }
                 // Merge all filters into one to avoid paying the penalty for lack of indexing more than once.
                 FilteringBiJoiner<A, B> castJoiner = (FilteringBiJoiner<A, B>) joiner;
-                finalFilter = finalFilter == null ? castJoiner.getFilter() : finalFilter.and(castJoiner.getFilter());
+                Predicate2<A, B> convertedFilter = internalsFactory.convert(castJoiner.getFilter());
+                finalFilter = finalFilter == null ? convertedFilter : internalsFactory.merge(finalFilter, convertedFilter);
             } else {
                 if (hasAFilter) {
                     throw new IllegalStateException("Indexing joiner (" + joiner + ") must not follow a filtering joiner ("
