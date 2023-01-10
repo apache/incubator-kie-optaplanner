@@ -1,7 +1,6 @@
 package org.optaplanner.constraint.streams.drools.common;
 
 import java.util.List;
-import java.util.function.BiFunction;
 
 import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
@@ -13,8 +12,6 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.constraint.streams.common.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
 import org.optaplanner.constraint.streams.common.tri.DefaultTriJoiner;
-import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
 public interface PatternVariable<A, PatternVar_, Child_ extends PatternVariable<A, PatternVar_, Child_>> {
@@ -51,7 +48,7 @@ public interface PatternVariable<A, PatternVar_, Child_ extends PatternVariable<
     /**
      * Bind a new variable.
      * This call is safe for use outside accumulate() and groupBy(),
-     * unlike {@link #bind(Variable, Variable, BiFunction)} etc.
+     * unlike binding with multiple bound variables.
      *
      * @param boundVariable the new variable
      * @param bindingFunction the function to apply to create the bound variable
@@ -59,56 +56,6 @@ public interface PatternVariable<A, PatternVar_, Child_ extends PatternVariable<
      * @return never null
      */
     <BoundVar_> Child_ bind(Variable<BoundVar_> boundVariable, Function1<A, BoundVar_> bindingFunction);
-
-    /**
-     * This must only be used in patterns that will eventually end up in accumulate() or groupBy().
-     * Drools does not support binding 2+ variables outside of accumulate() or groupBy().
-     * Disobeying will result in Drools {@link NullPointerException} at runtime.
-     *
-     * @param boundVariable the new variable
-     * @param leftJoinVariable the variable to use when creating the bound variable
-     * @param bindingFunction the function to apply to create the bound variable
-     * @param <BoundVar_> generic type of the bound variable
-     * @param <LeftJoinVar_> generic type of the join variable
-     * @return never null
-     */
-    <BoundVar_, LeftJoinVar_> Child_ bind(Variable<BoundVar_> boundVariable, Variable<LeftJoinVar_> leftJoinVariable,
-            BiFunction<A, LeftJoinVar_, BoundVar_> bindingFunction);
-
-    /**
-     * As defined by {@link #bind(Variable, Variable, BiFunction)}.
-     *
-     * @param boundVariable the new variable
-     * @param leftJoinVariableA the first variable to use when creating the bound variable
-     * @param leftJoinVariableB the second variable to use when creating the bound variable
-     * @param bindingFunction the function to apply to create the bound variable
-     * @param <BoundVar_> generic type of the bound variable
-     * @param <LeftJoinVarA_> generic type of the first join variable
-     * @param <LeftJoinVarB_> generic type of the second join variable
-     * @return never null
-     */
-    <BoundVar_, LeftJoinVarA_, LeftJoinVarB_> Child_ bind(Variable<BoundVar_> boundVariable,
-            Variable<LeftJoinVarA_> leftJoinVariableA, Variable<LeftJoinVarB_> leftJoinVariableB,
-            TriFunction<A, LeftJoinVarA_, LeftJoinVarB_, BoundVar_> bindingFunction);
-
-    /**
-     * As defined by {@link #bind(Variable, Variable, BiFunction)}.
-     *
-     * @param boundVariable the new variable
-     * @param leftJoinVariableA the first variable to use when creating the bound variable
-     * @param leftJoinVariableB the second variable to use when creating the bound variable
-     * @param leftJoinVariableC the third variable to use when creating the bound variable
-     * @param bindingFunction the function to apply to create the bound variable
-     * @param <BoundVar_> generic type of the bound variable
-     * @param <LeftJoinVarA_> generic type of the first join variable
-     * @param <LeftJoinVarB_> generic type of the second join variable
-     * @param <LeftJoinVarC_> generic type of the third join variable
-     * @return never null
-     */
-    <BoundVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> Child_ bind(Variable<BoundVar_> boundVariable,
-            Variable<LeftJoinVarA_> leftJoinVariableA, Variable<LeftJoinVarB_> leftJoinVariableB,
-            Variable<LeftJoinVarC_> leftJoinVariableC,
-            QuadFunction<A, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, BoundVar_> bindingFunction);
 
     Child_ addDependentExpression(ViewItem<?> expression);
 

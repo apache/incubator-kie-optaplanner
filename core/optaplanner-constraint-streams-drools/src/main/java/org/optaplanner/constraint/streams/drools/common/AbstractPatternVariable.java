@@ -4,8 +4,6 @@ import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.optaplanner.constraint.streams.drools.common.AbstractLeftHandSide.getConstraintType;
 
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,6 +13,8 @@ import org.drools.model.BetaIndex3;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
+import org.drools.model.functions.Function2;
+import org.drools.model.functions.Function3;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.Predicate3;
@@ -23,8 +23,7 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.constraint.streams.common.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
 import org.optaplanner.constraint.streams.common.tri.DefaultTriJoiner;
-import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.constraint.streams.drools.DroolsInternalsFactory;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
 abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPatternVariable<A, PatternVar_, Child_>>
@@ -34,13 +33,16 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
     private final PatternDSL.PatternDef<PatternVar_> pattern;
     private final List<ViewItem<?>> prerequisiteExpressions;
     private final List<ViewItem<?>> dependentExpressions;
+    private final DroolsInternalsFactory internalsFactory;
 
     protected AbstractPatternVariable(Variable<A> aVariable, PatternDSL.PatternDef<PatternVar_> pattern,
-            List<ViewItem<?>> prerequisiteExpressions, List<ViewItem<?>> dependentExpressions) {
+            List<ViewItem<?>> prerequisiteExpressions, List<ViewItem<?>> dependentExpressions,
+            DroolsInternalsFactory internalsFactory) {
         this.primaryVariable = aVariable;
         this.pattern = pattern;
         this.prerequisiteExpressions = prerequisiteExpressions;
         this.dependentExpressions = dependentExpressions;
+        this.internalsFactory = internalsFactory;
     }
 
     protected AbstractPatternVariable(AbstractPatternVariable<?, PatternVar_, ?> patternCreator, Variable<A> boundVariable) {
@@ -48,6 +50,7 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         this.pattern = patternCreator.getPattern();
         this.prerequisiteExpressions = patternCreator.getPrerequisiteExpressions();
         this.dependentExpressions = patternCreator.getDependentExpressions();
+        this.internalsFactory = patternCreator.internalsFactory;
     }
 
     protected AbstractPatternVariable(AbstractPatternVariable<A, PatternVar_, ?> patternCreator,
@@ -57,6 +60,7 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         this.prerequisiteExpressions = patternCreator.prerequisiteExpressions;
         this.dependentExpressions = Stream.concat(patternCreator.dependentExpressions.stream(), Stream.of(dependentExpression))
                 .collect(Collectors.toList());
+        this.internalsFactory = patternCreator.internalsFactory;
     }
 
     @Override
@@ -125,8 +129,8 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
     @Override
     public final <LeftJoinVar_> Child_ filterForJoin(Variable<LeftJoinVar_> leftJoinVar,
             DefaultBiJoiner<LeftJoinVar_, A> joiner, JoinerType joinerType, int mappingIndex) {
-        Function<LeftJoinVar_, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-        Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
+        Function1<LeftJoinVar_, Object> leftMapping = internalsFactory.convert(joiner.getLeftMapping(mappingIndex));
+        Function1<A, Object> rightMapping = internalsFactory.convert(joiner.getRightMapping(mappingIndex));
         Function1<PatternVar_, Object> rightExtractor = b -> rightMapping.apply(extract(b));
         Predicate2<PatternVar_, LeftJoinVar_> predicate =
                 (b, a) -> joinerType.matches(leftMapping.apply(a), rightExtractor.apply(b));
@@ -137,14 +141,15 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
     }
 
     private <LeftJoinVar_> BetaIndex<PatternVar_, LeftJoinVar_, ?> createBetaIndex(JoinerType joinerType, int mappingIndex,
-            Function<LeftJoinVar_, Object> leftMapping, Function1<PatternVar_, Object> rightExtractor) {
+            Function1<LeftJoinVar_, Object> leftMapping, Function1<PatternVar_, Object> rightExtractor) {
         if (joinerType == JoinerType.EQUAL) {
-            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping::apply,
+            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping,
                     Object.class);
         } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
             JoinerType reversedJoinerType = joinerType.flip();
+            // TODO fix the Comparable
             return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
-                    c -> (Comparable) rightExtractor.apply(c), leftMapping::apply, Comparable.class);
+                    c -> (Comparable) rightExtractor.apply(c), leftMapping, Comparable.class);
         }
     }
 
@@ -152,8 +157,9 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
     public final <LeftJoinVarA_, LeftJoinVarB_> Child_ filterForJoin(Variable<LeftJoinVarA_> leftJoinVarA,
             Variable<LeftJoinVarB_> leftJoinVarB, DefaultTriJoiner<LeftJoinVarA_, LeftJoinVarB_, A> joiner,
             JoinerType joinerType, int mappingIndex) {
-        BiFunction<LeftJoinVarA_, LeftJoinVarB_, Object> leftMapping = joiner.getLeftMapping(mappingIndex);
-        Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
+        Function2<LeftJoinVarA_, LeftJoinVarB_, Object> leftMapping =
+                internalsFactory.convert(joiner.getLeftMapping(mappingIndex));
+        Function1<A, Object> rightMapping = internalsFactory.convert(joiner.getRightMapping(mappingIndex));
         Function1<PatternVar_, Object> rightExtractor = b -> rightMapping.apply(extract(b));
         Predicate3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_> predicate =
                 (c, a, b) -> joinerType.matches(leftMapping.apply(a, b), rightExtractor.apply(c));
@@ -164,16 +170,16 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
     }
 
     private <LeftJoinVarA_, LeftJoinVarB_> BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, ?> createBetaIndex(
-            JoinerType joinerType,
-            int mappingIndex, BiFunction<LeftJoinVarA_, LeftJoinVarB_, Object> leftMapping,
+            JoinerType joinerType, int mappingIndex, Function2<LeftJoinVarA_, LeftJoinVarB_, Object> leftMapping,
             Function1<PatternVar_, Object> rightExtractor) {
         if (joinerType == JoinerType.EQUAL) {
-            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping::apply,
+            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping,
                     Object.class);
         } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
             JoinerType reversedJoinerType = joinerType.flip();
+            // TODO fix the Comparable
             return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
-                    c -> (Comparable) rightExtractor.apply(c), leftMapping::apply, Comparable.class);
+                    c -> (Comparable) rightExtractor.apply(c), leftMapping, Comparable.class);
         }
     }
 
@@ -182,9 +188,9 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
             Variable<LeftJoinVarB_> leftJoinVarB, Variable<LeftJoinVarC_> leftJoinVarC,
             DefaultQuadJoiner<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> joiner, JoinerType joinerType,
             int mappingIndex) {
-        TriFunction<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> leftMapping =
-                joiner.getLeftMapping(mappingIndex);
-        Function<A, Object> rightMapping = joiner.getRightMapping(mappingIndex);
+        Function3<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> leftMapping =
+                internalsFactory.convert(joiner.getLeftMapping(mappingIndex));
+        Function1<A, Object> rightMapping = internalsFactory.convert(joiner.getRightMapping(mappingIndex));
         Function1<PatternVar_, Object> rightExtractor = b -> rightMapping.apply(extract(b));
         Predicate4<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> predicate =
                 (d, a, b, c) -> joinerType.matches(leftMapping.apply(a, b, c), rightExtractor.apply(d));
@@ -197,49 +203,22 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
 
     private <LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_>
             BetaIndex3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, ?> createBetaIndex(JoinerType joinerType,
-                    int mappingIndex, TriFunction<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> leftMapping,
+                    int mappingIndex, Function3<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> leftMapping,
                     Function1<PatternVar_, Object> rightExtractor) {
         if (joinerType == JoinerType.EQUAL) {
-            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping::apply,
+            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping,
                     Object.class);
         } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
             JoinerType reversedJoinerType = joinerType.flip();
+            // TODO fix the Comparable
             return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
-                    c -> (Comparable) rightExtractor.apply(c), leftMapping::apply, Comparable.class);
+                    c -> (Comparable) rightExtractor.apply(c), leftMapping, Comparable.class);
         }
     }
 
     @Override
     public final <BoundVar_> Child_ bind(Variable<BoundVar_> boundVariable, Function1<A, BoundVar_> bindingFunction) {
         pattern.bind(boundVariable, a -> bindingFunction.apply(extract(a)));
-        return (Child_) this;
-    }
-
-    @Override
-    public final <BoundVar_, LeftJoinVar_> Child_ bind(Variable<BoundVar_> boundVariable,
-            Variable<LeftJoinVar_> leftJoinVariable, BiFunction<A, LeftJoinVar_, BoundVar_> bindingFunction) {
-        pattern.bind(boundVariable, leftJoinVariable,
-                (a, leftJoinVar) -> bindingFunction.apply(extract(a), leftJoinVar));
-        return (Child_) this;
-    }
-
-    @Override
-    public final <BoundVar_, LeftJoinVarA_, LeftJoinVarB_> Child_ bind(Variable<BoundVar_> boundVariable,
-            Variable<LeftJoinVarA_> leftJoinVariableA, Variable<LeftJoinVarB_> leftJoinVariableB,
-            TriFunction<A, LeftJoinVarA_, LeftJoinVarB_, BoundVar_> bindingFunction) {
-        pattern.bind(boundVariable, leftJoinVariableA, leftJoinVariableB,
-                (a, leftJoinVarA, leftJoinVarB) -> bindingFunction.apply(extract(a), leftJoinVarA, leftJoinVarB));
-        return (Child_) this;
-    }
-
-    @Override
-    public final <BoundVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> Child_ bind(Variable<BoundVar_> boundVariable,
-            Variable<LeftJoinVarA_> leftJoinVariableA, Variable<LeftJoinVarB_> leftJoinVariableB,
-            Variable<LeftJoinVarC_> leftJoinVariableC,
-            QuadFunction<A, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, BoundVar_> bindingFunction) {
-        pattern.bind(boundVariable, leftJoinVariableA, leftJoinVariableB, leftJoinVariableC,
-                (a, leftJoinVarA, leftJoinVarB, leftJoinVarC) -> bindingFunction.apply(extract(a), leftJoinVarA,
-                        leftJoinVarB, leftJoinVarC));
         return (Child_) this;
     }
 

@@ -72,11 +72,11 @@ abstract class AbstractLeftHandSide {
      * @param <B> generic type of the second bound variable
      * @return never null
      */
-    protected static <A, B> IndirectPatternVariable<B, BiTuple<A, B>> decompose(Variable<BiTuple<A, B>> primaryVariable,
+    protected <A, B> IndirectPatternVariable<B, BiTuple<A, B>> decompose(Variable<BiTuple<A, B>> primaryVariable,
             ViewItem<?> prerequisitePattern, Variable<A> boundVarA, Variable<B> boundVarB) {
         Function1<BiTuple<A, B>, B> bExtractor = tuple -> tuple.b;
         DirectPatternVariable<BiTuple<A, B>> tuplePatternVar =
-                new DirectPatternVariable<>(primaryVariable, prerequisitePattern)
+                new DirectPatternVariable<>(primaryVariable, prerequisitePattern, internalsFactory)
                         .bind(boundVarA, tuple -> tuple.a)
                         .bind(boundVarB, bExtractor);
         return new IndirectPatternVariable<>(tuplePatternVar, boundVarB, bExtractor);
@@ -96,14 +96,14 @@ abstract class AbstractLeftHandSide {
      * @param <C> generic type of the accumulate output variable
      * @return never null
      */
-    protected static <A, B, C> DirectPatternVariable<C> decomposeWithAccumulate(
+    protected <A, B, C> DirectPatternVariable<C> decomposeWithAccumulate(
             Variable<BiTuple<A, B>> primaryVariable, ViewItem<?> prerequisitePattern, Variable<A> boundVarA,
             Variable<B> boundVarB, Variable<C> accumulateOutput) {
         DirectPatternVariable<BiTuple<A, B>> tuplePatternVar =
-                new DirectPatternVariable<>(primaryVariable, prerequisitePattern)
+                new DirectPatternVariable<>(primaryVariable, prerequisitePattern, internalsFactory)
                         .bind(boundVarA, tuple -> tuple.a)
                         .bind(boundVarB, tuple -> tuple.b);
-        return new DirectPatternVariable<>(accumulateOutput, tuplePatternVar.build());
+        return new DirectPatternVariable<>(accumulateOutput, tuplePatternVar.build(), internalsFactory);
     }
 
     /**
@@ -119,12 +119,11 @@ abstract class AbstractLeftHandSide {
      * @param <C> generic type of the third bound variable
      * @return never null
      */
-    protected static <A, B, C> IndirectPatternVariable<C, TriTuple<A, B, C>> decompose(
-            Variable<TriTuple<A, B, C>> primaryVariable, ViewItem<?> prerequisitePattern, Variable<A> boundVarA,
-            Variable<B> boundVarB, Variable<C> boundVarC) {
+    protected <A, B, C> IndirectPatternVariable<C, TriTuple<A, B, C>> decompose(Variable<TriTuple<A, B, C>> primaryVariable,
+            ViewItem<?> prerequisitePattern, Variable<A> boundVarA, Variable<B> boundVarB, Variable<C> boundVarC) {
         Function1<TriTuple<A, B, C>, C> cExtractor = tuple -> tuple.c;
         DirectPatternVariable<TriTuple<A, B, C>> tuplePatternVar =
-                new DirectPatternVariable<>(primaryVariable, prerequisitePattern)
+                new DirectPatternVariable<>(primaryVariable, prerequisitePattern, internalsFactory)
                         .bind(boundVarA, tuple -> tuple.a)
                         .bind(boundVarB, tuple -> tuple.b)
                         .bind(boundVarC, cExtractor);
@@ -146,12 +145,12 @@ abstract class AbstractLeftHandSide {
      * @param <D> generic type of the fourth bound variable
      * @return never null
      */
-    protected static <A, B, C, D> IndirectPatternVariable<D, QuadTuple<A, B, C, D>> decompose(
+    protected <A, B, C, D> IndirectPatternVariable<D, QuadTuple<A, B, C, D>> decompose(
             Variable<QuadTuple<A, B, C, D>> primaryVariable, ViewItem<?> prerequisitePattern, Variable<A> boundVarA,
             Variable<B> boundVarB, Variable<C> boundVarC, Variable<D> boundVarD) {
         Function1<QuadTuple<A, B, C, D>, D> dExtractor = tuple -> tuple.d;
         DirectPatternVariable<QuadTuple<A, B, C, D>> tuplePatternVar =
-                new DirectPatternVariable<>(primaryVariable, prerequisitePattern)
+                new DirectPatternVariable<>(primaryVariable, prerequisitePattern, internalsFactory)
                         .bind(boundVarA, tuple -> tuple.a)
                         .bind(boundVarB, tuple -> tuple.b)
                         .bind(boundVarC, tuple -> tuple.c)
@@ -175,15 +174,15 @@ abstract class AbstractLeftHandSide {
      * @param <D> generic type of the accumulate output variable
      * @return never null
      */
-    protected static <A, B, C, D> DirectPatternVariable<D> decomposeWithAccumulate(
+    protected <A, B, C, D> DirectPatternVariable<D> decomposeWithAccumulate(
             Variable<TriTuple<A, B, C>> primaryVariable, ViewItem<?> prerequisitePattern, Variable<A> boundVarA,
             Variable<B> boundVarB, Variable<C> boundVarC, Variable<D> accumulateOutput) {
         DirectPatternVariable<TriTuple<A, B, C>> tuplePatternVar =
-                new DirectPatternVariable<>(primaryVariable, prerequisitePattern)
+                new DirectPatternVariable<>(primaryVariable, prerequisitePattern, internalsFactory)
                         .bind(boundVarA, tuple -> tuple.a)
                         .bind(boundVarB, tuple -> tuple.b)
                         .bind(boundVarC, tuple -> tuple.c);
-        return new DirectPatternVariable<>(accumulateOutput, tuplePatternVar.build());
+        return new DirectPatternVariable<>(accumulateOutput, tuplePatternVar.build(), internalsFactory);
     }
 
     protected static ViewItem<?> buildAccumulate(ViewItem<?> innerAccumulatePattern,

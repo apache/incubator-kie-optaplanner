@@ -3,7 +3,6 @@ package org.optaplanner.constraint.streams.drools.common;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiFunction;
 
 import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
@@ -15,8 +14,6 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.constraint.streams.common.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
 import org.optaplanner.constraint.streams.common.tri.DefaultTriJoiner;
-import org.optaplanner.core.api.function.QuadFunction;
-import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
 /**
@@ -134,28 +131,6 @@ final class DetachedPatternVariable<A, PatternVar_>
     @Override
     public <BoundVar_> DetachedPatternVariable<A, PatternVar_> bind(Variable<BoundVar_> boundVariable,
             Function1<A, BoundVar_> bindingFunction) {
-        throw new UnsupportedOperationException("Impossible state: Variable (" + primaryVariable + ") is detached.");
-    }
-
-    @Override
-    public <BoundVar_, LeftJoinVar_> DetachedPatternVariable<A, PatternVar_> bind(Variable<BoundVar_> boundVariable,
-            Variable<LeftJoinVar_> leftJoinVariable, BiFunction<A, LeftJoinVar_, BoundVar_> bindingFunction) {
-        throw new UnsupportedOperationException("Impossible state: Variable (" + primaryVariable + ") is detached.");
-    }
-
-    @Override
-    public <BoundVar_, LeftJoinVarA_, LeftJoinVarB_> DetachedPatternVariable<A, PatternVar_> bind(
-            Variable<BoundVar_> boundVariable, Variable<LeftJoinVarA_> leftJoinVariableA,
-            Variable<LeftJoinVarB_> leftJoinVariableB,
-            TriFunction<A, LeftJoinVarA_, LeftJoinVarB_, BoundVar_> bindingFunction) {
-        throw new UnsupportedOperationException("Impossible state: Variable (" + primaryVariable + ") is detached.");
-    }
-
-    @Override
-    public <BoundVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> DetachedPatternVariable<A, PatternVar_> bind(
-            Variable<BoundVar_> boundVariable, Variable<LeftJoinVarA_> leftJoinVariableA,
-            Variable<LeftJoinVarB_> leftJoinVariableB, Variable<LeftJoinVarC_> leftJoinVariableC,
-            QuadFunction<A, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, BoundVar_> bindingFunction) {
         throw new UnsupportedOperationException("Impossible state: Variable (" + primaryVariable + ") is detached.");
     }
 
