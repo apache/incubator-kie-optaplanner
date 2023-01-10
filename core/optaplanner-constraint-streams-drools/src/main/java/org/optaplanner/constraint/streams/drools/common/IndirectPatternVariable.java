@@ -1,9 +1,7 @@
 package org.optaplanner.constraint.streams.drools.common;
 
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 
-import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 
@@ -65,12 +63,6 @@ final class IndirectPatternVariable<A, PatternVar_>
     }
 
     private IndirectPatternVariable(IndirectPatternVariable<A, PatternVar_> patternCreator,
-            UnaryOperator<PatternDSL.PatternDef<PatternVar_>> patternMutator) {
-        super(patternCreator, patternMutator);
-        this.mappingFunction = patternCreator.mappingFunction;
-    }
-
-    private IndirectPatternVariable(IndirectPatternVariable<A, PatternVar_> patternCreator,
             ViewItem<?> dependentExpression) {
         super(patternCreator, dependentExpression);
         this.mappingFunction = patternCreator.mappingFunction;
@@ -80,12 +72,6 @@ final class IndirectPatternVariable<A, PatternVar_>
     protected A extract(PatternVar_ patternVar) {
         // Value of an indirect variable is a result of applying a mapping on the pattern variable.
         return mappingFunction.apply(patternVar);
-    }
-
-    @Override
-    protected IndirectPatternVariable<A, PatternVar_> create(
-            UnaryOperator<PatternDSL.PatternDef<PatternVar_>> patternMutator) {
-        return new IndirectPatternVariable<>(this, patternMutator);
     }
 
     @Override

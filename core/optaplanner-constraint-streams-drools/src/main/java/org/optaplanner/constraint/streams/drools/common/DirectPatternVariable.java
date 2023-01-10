@@ -4,9 +4,7 @@ import static org.drools.model.PatternDSL.pattern;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.UnaryOperator;
 
-import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 
@@ -89,16 +87,11 @@ final class DirectPatternVariable<A> extends AbstractPatternVariable<A, A, Direc
     }
 
     DirectPatternVariable(Variable<A> aVariable, List<ViewItem<?>> prerequisiteExpressions) {
-        super(aVariable, () -> pattern(aVariable), prerequisiteExpressions, Collections.emptyList());
+        super(aVariable, pattern(aVariable), prerequisiteExpressions, Collections.emptyList());
     }
 
     DirectPatternVariable(Variable<A> aVariable, ViewItem<?> prerequisiteExpression) {
         this(aVariable, Collections.singletonList(prerequisiteExpression));
-    }
-
-    private DirectPatternVariable(DirectPatternVariable<A> patternCreator,
-            UnaryOperator<PatternDSL.PatternDef<A>> patternMutator) {
-        super(patternCreator, patternMutator);
     }
 
     private DirectPatternVariable(DirectPatternVariable<A> patternCreator, ViewItem<?> dependentExpression) {
@@ -108,11 +101,6 @@ final class DirectPatternVariable<A> extends AbstractPatternVariable<A, A, Direc
     @Override
     protected A extract(A a) {
         return a; // Values of direct variables come straight from the pattern.
-    }
-
-    @Override
-    protected DirectPatternVariable<A> create(UnaryOperator<PatternDSL.PatternDef<A>> patternMutator) {
-        return new DirectPatternVariable<>(this, patternMutator);
     }
 
     @Override
