@@ -189,7 +189,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         ViewItem<?> outerAccumulatePattern = buildAccumulate(createAccumulateFunction(collectorA, accumulateOutputA),
                 createAccumulateFunction(collectorB, accumulateOutputB));
         return new BiLeftHandSide<>(accumulateOutputA,
-                new DirectPatternVariable<>(accumulateOutputB, outerAccumulatePattern, internalsFactory), internalsFactory);
+                new DirectPatternVariable<>(accumulateOutputB, outerAccumulatePattern), internalsFactory);
     }
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(
@@ -203,7 +203,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorB, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateOutputC));
         return new TriLeftHandSide<>(accumulateOutputA, accumulateOutputB,
-                new DirectPatternVariable<>(accumulateOutputC, outerAccumulatePattern, internalsFactory),
+                new DirectPatternVariable<>(accumulateOutputC, outerAccumulatePattern),
                 internalsFactory);
     }
 
@@ -221,7 +221,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorC, accumulateOutputC),
                 createAccumulateFunction(collectorD, accumulateOutputD));
         return new QuadLeftHandSide<>(accumulateOutputA, accumulateOutputB, accumulateOutputC,
-                new DirectPatternVariable<>(accumulateOutputD, outerAccumulatePattern, internalsFactory), internalsFactory);
+                new DirectPatternVariable<>(accumulateOutputD, outerAccumulatePattern), internalsFactory);
     }
 
     /**
@@ -257,7 +257,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         Variable<NewB> accumulateOutput = internalsFactory.createVariable("output");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMappingA,
                 createAccumulateFunction(collectorB, accumulateOutput));
-        return new BiLeftHandSide<>(groupKey, new DirectPatternVariable<>(accumulateOutput, groupByPattern, internalsFactory),
+        return new BiLeftHandSide<>(groupKey, new DirectPatternVariable<>(accumulateOutput, groupByPattern),
                 internalsFactory);
     }
 
@@ -271,7 +271,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorB, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateOutputC));
         return new TriLeftHandSide<>(groupKey, accumulateOutputB,
-                new DirectPatternVariable<>(accumulateOutputC, groupByPattern, internalsFactory), internalsFactory);
+                new DirectPatternVariable<>(accumulateOutputC, groupByPattern), internalsFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function4<A, B, C, D, NewA> keyMappingA,
@@ -287,7 +287,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorC, accumulateOutputC),
                 createAccumulateFunction(collectorD, accumulateOutputD));
         return new QuadLeftHandSide<>(groupKey, accumulateOutputB, accumulateOutputC,
-                new DirectPatternVariable<>(accumulateOutputD, groupByPattern, internalsFactory), internalsFactory);
+                new DirectPatternVariable<>(accumulateOutputD, groupByPattern), internalsFactory);
     }
 
     public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(Function4<A, B, C, D, NewA> keyMappingA,
@@ -438,7 +438,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 patternVariableD.getPrimaryVariable(), mapping);
         List<ViewItem<?>> allPrerequisites = mergeViewItems(patternVariableA, patternVariableB, patternVariableC,
                 patternVariableD);
-        DirectPatternVariable<NewA> newPatternVariableA = new DirectPatternVariable<>(newA, allPrerequisites, internalsFactory);
+        DirectPatternVariable<NewA> newPatternVariableA = new DirectPatternVariable<>(newA, allPrerequisites);
         return new UniLeftHandSide<>(newPatternVariableA, internalsFactory);
     }
 
@@ -447,7 +447,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         Variable<NewD> newD = internalsFactory.createFlattenedVariable("flattened", source, mapping);
         List<ViewItem<?>> allPrerequisites = mergeViewItems(patternVariableA, patternVariableB, patternVariableC,
                 patternVariableD);
-        PatternVariable<NewD, ?, ?> newPatternVariableD = new DirectPatternVariable<>(newD, allPrerequisites, internalsFactory);
+        PatternVariable<NewD, ?, ?> newPatternVariableD = new DirectPatternVariable<>(newD, allPrerequisites);
         return new QuadLeftHandSide<>(patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
                 patternVariableC.getPrimaryVariable(), newPatternVariableD, internalsFactory);
     }

@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
-import org.optaplanner.constraint.streams.drools.DroolsInternalsFactory;
 
 /**
  * Represents a single variable with all of its patterns in the left hand side of a Drools rule.
@@ -83,17 +82,16 @@ import org.optaplanner.constraint.streams.drools.DroolsInternalsFactory;
  */
 final class DirectPatternVariable<A> extends AbstractPatternVariable<A, A, DirectPatternVariable<A>> {
 
-    DirectPatternVariable(Variable<A> aVariable, DroolsInternalsFactory internalsFactory) {
-        this(aVariable, Collections.emptyList(), internalsFactory);
+    DirectPatternVariable(Variable<A> aVariable) {
+        this(aVariable, Collections.emptyList());
     }
 
-    DirectPatternVariable(Variable<A> aVariable, List<ViewItem<?>> prerequisiteExpressions,
-            DroolsInternalsFactory internalsFactory) {
-        super(aVariable, pattern(aVariable), prerequisiteExpressions, Collections.emptyList(), internalsFactory);
+    DirectPatternVariable(Variable<A> aVariable, List<ViewItem<?>> prerequisiteExpressions) {
+        super(aVariable, pattern(aVariable), prerequisiteExpressions, Collections.emptyList());
     }
 
-    DirectPatternVariable(Variable<A> aVariable, ViewItem<?> prerequisiteExpression, DroolsInternalsFactory internalsFactory) {
-        this(aVariable, Collections.singletonList(prerequisiteExpression), internalsFactory);
+    DirectPatternVariable(Variable<A> aVariable, ViewItem<?> prerequisiteExpression) {
+        this(aVariable, Collections.singletonList(prerequisiteExpression));
     }
 
     private DirectPatternVariable(DirectPatternVariable<A> patternCreator, ViewItem<?> dependentExpression) {
