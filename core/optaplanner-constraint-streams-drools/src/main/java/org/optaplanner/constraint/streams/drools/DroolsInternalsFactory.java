@@ -175,7 +175,7 @@ public final class DroolsInternalsFactory {
             return null;
         }
         return (Predicate1<A>) instanceCacheMap.computeIfAbsent(predicate,
-                k -> (Predicate1<A>) a -> ((Predicate<A>) k).test(a));
+                k -> (Predicate1<A>) ((Predicate<A>) k)::test);
     }
 
     /**
@@ -186,7 +186,7 @@ public final class DroolsInternalsFactory {
             return null;
         }
         return (Predicate2<A, B>) instanceCacheMap.computeIfAbsent(predicate,
-                k -> (Predicate2<A, B>) (a, b) -> ((BiPredicate<A, B>) k).test(a, b));
+                k -> (Predicate2<A, B>) ((BiPredicate<A, B>) k)::test);
     }
 
     /**
@@ -197,7 +197,7 @@ public final class DroolsInternalsFactory {
             return null;
         }
         return (Predicate3<A, B, C>) instanceCacheMap.computeIfAbsent(predicate,
-                k -> (Predicate3<A, B, C>) (a, b, c) -> ((TriPredicate<A, B, C>) k).test(a, b, c));
+                k -> (Predicate3<A, B, C>) ((TriPredicate<A, B, C>) k)::test);
     }
 
     /**
@@ -208,7 +208,7 @@ public final class DroolsInternalsFactory {
             return null;
         }
         return (Predicate4<A, B, C, D>) instanceCacheMap.computeIfAbsent(predicate,
-                k -> (Predicate4<A, B, C, D>) (a, b, c, d) -> ((QuadPredicate<A, B, C, D>) k).test(a, b, c, d));
+                k -> (Predicate4<A, B, C, D>) ((QuadPredicate<A, B, C, D>) k)::test);
     }
 
     /**
@@ -219,7 +219,7 @@ public final class DroolsInternalsFactory {
             return null;
         }
         return (Predicate5<A, B, C, D, E>) instanceCacheMap.computeIfAbsent(predicate,
-                k -> (Predicate5<A, B, C, D, E>) (a, b, c, d, e) -> ((PentaPredicate<A, B, C, D, E>) k).test(a, b, c, d, e));
+                k -> (Predicate5<A, B, C, D, E>) ((PentaPredicate<A, B, C, D, E>) k)::test);
     }
 
     /**
@@ -232,7 +232,7 @@ public final class DroolsInternalsFactory {
      */
     public <A, Result_> Function1<A, Result_> convert(Function<A, Result_> function) {
         return (Function1<A, Result_>) instanceCacheMap.computeIfAbsent(function,
-                k -> (Function1<A, Result_>) a -> ((Function<A, Result_>) k).apply(a));
+                k -> (Function1<A, Result_>) ((Function<A, Result_>) k)::apply);
     }
 
     /**
@@ -240,7 +240,7 @@ public final class DroolsInternalsFactory {
      */
     public <A, B, Result_> Function2<A, B, Result_> convert(BiFunction<A, B, Result_> function) {
         return (Function2<A, B, Result_>) instanceCacheMap.computeIfAbsent(function,
-                k -> (Function2<A, B, Result_>) (a, b) -> ((BiFunction<A, B, Result_>) k).apply(a, b));
+                k -> (Function2<A, B, Result_>) ((BiFunction<A, B, Result_>) k)::apply);
     }
 
     /**
@@ -248,7 +248,7 @@ public final class DroolsInternalsFactory {
      */
     public <A, B, C, Result_> Function3<A, B, C, Result_> convert(TriFunction<A, B, C, Result_> function) {
         return (Function3<A, B, C, Result_>) instanceCacheMap.computeIfAbsent(function,
-                k -> (Function3<A, B, C, Result_>) (a, b, c) -> ((TriFunction<A, B, C, Result_>) k).apply(a, b, c));
+                k -> (Function3<A, B, C, Result_>) ((TriFunction<A, B, C, Result_>) k)::apply);
     }
 
     /**
@@ -256,8 +256,7 @@ public final class DroolsInternalsFactory {
      */
     public <A, B, C, D, Result_> Function4<A, B, C, D, Result_> convert(QuadFunction<A, B, C, D, Result_> function) {
         return (Function4<A, B, C, D, Result_>) instanceCacheMap.computeIfAbsent(function,
-                k -> (Function4<A, B, C, D, Result_>) (a, b, c, d) -> ((QuadFunction<A, B, C, D, Result_>) k).apply(a, b, c,
-                        d));
+                k -> (Function4<A, B, C, D, Result_>) ((QuadFunction<A, B, C, D, Result_>) k)::apply);
     }
 
     /**
