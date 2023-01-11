@@ -130,8 +130,9 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                     Object.class);
         } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
             JoinerType reversedJoinerType = joinerType.flip();
+            // TODO fix the Comparable
             return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
-                    (Function1) rightMapping, leftMapping, Comparable.class);
+                    c -> (Comparable) rightMapping.apply(c), leftMapping, Comparable.class);
         }
     }
 

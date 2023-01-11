@@ -114,8 +114,9 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                     Object.class);
         } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
             JoinerType reversedJoinerType = joinerType.flip();
+            // TODO fix the Comparable
             return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
-                    (Function1) rightMapping, leftMapping, Comparable.class);
+                    e -> (Comparable) rightMapping.apply(e), leftMapping, Comparable.class);
         }
     }
 
