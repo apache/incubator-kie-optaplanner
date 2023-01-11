@@ -13,15 +13,15 @@ import org.drools.model.Index;
 import org.drools.model.Variable;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.view.ViewItem;
-import org.optaplanner.constraint.streams.drools.DroolsInternalsFactory;
+import org.optaplanner.constraint.streams.drools.DroolsVariableFactory;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
 abstract class AbstractLeftHandSide {
 
-    protected final DroolsInternalsFactory internalsFactory;
+    protected final DroolsVariableFactory variableFactory;
 
-    protected AbstractLeftHandSide(DroolsInternalsFactory internalsFactory) {
-        this.internalsFactory = Objects.requireNonNull(internalsFactory);
+    protected AbstractLeftHandSide(DroolsVariableFactory variableFactory) {
+        this.variableFactory = Objects.requireNonNull(variableFactory);
     }
 
     protected static Index.ConstraintType getConstraintType(JoinerType type) {

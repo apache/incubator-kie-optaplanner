@@ -12,7 +12,7 @@ public final class DroolsConstraintFactory<Solution_>
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
-    private final DroolsInternalsFactory internalsFactory = new DroolsInternalsFactory();
+    private final DroolsVariableFactory variableFactory = new DroolsVariableFactory();
 
     public DroolsConstraintFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
@@ -47,8 +47,8 @@ public final class DroolsConstraintFactory<Solution_>
         return solutionDescriptor;
     }
 
-    public DroolsInternalsFactory getInternalsFactory() {
-        return internalsFactory;
+    public DroolsVariableFactory getVariableFactory() {
+        return variableFactory;
     }
 
     @Override
