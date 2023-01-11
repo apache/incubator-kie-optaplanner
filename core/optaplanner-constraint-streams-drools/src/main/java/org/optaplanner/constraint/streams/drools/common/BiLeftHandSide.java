@@ -10,8 +10,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.stream.Stream;
@@ -20,10 +22,7 @@ import org.drools.model.BetaIndex2;
 import org.drools.model.DSL;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
-import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
-import org.drools.model.functions.Predicate1;
-import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.view.ViewItem;
@@ -95,17 +94,18 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 viewItems);
     }
 
-    public BiLeftHandSide<A, B> andFilter(Predicate2<A, B> predicate) {
-        return new BiLeftHandSide<>(patternVariableA, patternVariableB.filter(predicate, patternVariableA.getPrimaryVariable()),
-                internalsFactory);
+    public BiLeftHandSide<A, B> andFilter(BiPredicate<A, B> predicate) {
+        return new BiLeftHandSide<>(patternVariableA,
+                patternVariableB.filter(predicate, patternVariableA.getPrimaryVariable()), internalsFactory);
     }
 
-    private <C> BiLeftHandSide<A, B> applyJoiners(Class<C> otherFactType, Predicate1<C> nullityFilter,
+    private <C> BiLeftHandSide<A, B> applyJoiners(Class<C> otherFactType, Predicate<C> nullityFilter,
             DefaultTriJoiner<A, B, C> joiner, TriPredicate<A, B, C> predicate, boolean shouldExist) {
         Variable<C> toExist = internalsFactory.createVariable(otherFactType, "toExist");
         PatternDSL.PatternDef<C> existencePattern = pattern(toExist);
         if (nullityFilter != null) {
-            existencePattern = existencePattern.expr("Exclude nulls using " + nullityFilter, nullityFilter);
+            existencePattern = existencePattern.expr("Exclude nulls using " + nullityFilter,
+                    nullityFilter::test);
         }
         if (joiner == null) {
             return applyFilters(existencePattern, predicate, shouldExist);
@@ -151,8 +151,8 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 internalsFactory);
     }
 
-    private <C> BiLeftHandSide<A, B> existsOrNot(Class<C> cClass, TriJoiner<A, B, C>[] joiners, Predicate1<C> nullityFilter,
-            boolean shouldExist) {
+    private <C> BiLeftHandSide<A, B> existsOrNot(Class<C> cClass, TriJoiner<A, B, C>[] joiners,
+            Predicate<C> nullityFilter, boolean shouldExist) {
         int indexOfFirstFilter = -1;
         // Prepare the joiner and filter that will be used in the pattern
         DefaultTriJoiner<A, B, C> finalJoiner = null;
@@ -180,11 +180,11 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return applyJoiners(cClass, nullityFilter, finalJoiner, finalFilter, shouldExist);
     }
 
-    public <C> BiLeftHandSide<A, B> andExists(Class<C> cClass, TriJoiner<A, B, C>[] joiners, Predicate1<C> nullityFilter) {
+    public <C> BiLeftHandSide<A, B> andExists(Class<C> cClass, TriJoiner<A, B, C>[] joiners, Predicate<C> nullityFilter) {
         return existsOrNot(cClass, joiners, nullityFilter, true);
     }
 
-    public <C> BiLeftHandSide<A, B> andNotExists(Class<C> cClass, TriJoiner<A, B, C>[] joiners, Predicate1<C> nullityFilter) {
+    public <C> BiLeftHandSide<A, B> andNotExists(Class<C> cClass, TriJoiner<A, B, C>[] joiners, Predicate<C> nullityFilter) {
         return existsOrNot(cClass, joiners, nullityFilter, false);
     }
 
@@ -271,28 +271,28 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
                 .as(out);
     }
 
-    public <NewA> UniLeftHandSide<NewA> andGroupBy(Function2<A, B, NewA> keyMapping) {
+    public <NewA> UniLeftHandSide<NewA> andGroupBy(BiFunction<A, B, NewA> keyMapping) {
         Variable<NewA> groupKey = internalsFactory.createVariable("groupKey");
-        ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMapping);
+        ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMapping::apply);
         return new UniLeftHandSide<>(groupKey, singletonList(groupByPattern), internalsFactory);
     }
 
-    public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(Function2<A, B, NewA> keyMappingA,
+    public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
             BiConstraintCollector<A, B, ?, NewB> collectorB) {
         Variable<NewA> groupKey = internalsFactory.createVariable("groupKey");
         Variable<NewB> accumulateOutput = internalsFactory.createVariable("output");
-        ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMappingA,
+        ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMappingA::apply,
                 createAccumulateFunction(collectorB, accumulateOutput));
         return new BiLeftHandSide<>(groupKey,
                 new DirectPatternVariable<>(accumulateOutput, groupByPattern), internalsFactory);
     }
 
-    public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(Function2<A, B, NewA> keyMappingA,
+    public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
             BiConstraintCollector<A, B, ?, NewB> collectorB, BiConstraintCollector<A, B, ?, NewC> collectorC) {
         Variable<NewA> groupKey = internalsFactory.createVariable("groupKey");
         Variable<NewB> accumulateOutputB = internalsFactory.createVariable("outputB");
         Variable<NewC> accumulateOutputC = internalsFactory.createVariable("outputC");
-        ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMappingA,
+        ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMappingA::apply,
                 createAccumulateFunction(collectorB, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateOutputC));
         return new TriLeftHandSide<>(groupKey, accumulateOutputB,
@@ -300,13 +300,13 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
-            Function2<A, B, NewA> keyMappingA, BiConstraintCollector<A, B, ?, NewB> collectorB,
+            BiFunction<A, B, NewA> keyMappingA, BiConstraintCollector<A, B, ?, NewB> collectorB,
             BiConstraintCollector<A, B, ?, NewC> collectorC, BiConstraintCollector<A, B, ?, NewD> collectorD) {
         Variable<NewA> groupKey = internalsFactory.createVariable("groupKey");
         Variable<NewB> accumulateOutputB = internalsFactory.createVariable("outputB");
         Variable<NewC> accumulateOutputC = internalsFactory.createVariable("outputC");
         Variable<NewD> accumulateOutputD = internalsFactory.createVariable("outputD");
-        ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMappingA,
+        ViewItem<?> groupByPattern = buildGroupBy(groupKey, keyMappingA::apply,
                 createAccumulateFunction(collectorB, accumulateOutputB),
                 createAccumulateFunction(collectorC, accumulateOutputC),
                 createAccumulateFunction(collectorD, accumulateOutputD));
@@ -326,12 +326,12 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
      * @return never null, Drools function to convert the keys to a singular composite key
      */
     private <NewA, NewB> Function2<A, B, BiTuple<NewA, NewB>> createCompositeBiGroupKey(
-            Function2<A, B, NewA> keyMappingA, Function2<A, B, NewB> keyMappingB) {
+            BiFunction<A, B, NewA> keyMappingA, BiFunction<A, B, NewB> keyMappingB) {
         return (a, b) -> new BiTuple<>(keyMappingA.apply(a, b), keyMappingB.apply(a, b));
     }
 
-    public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(Function2<A, B, NewA> keyMappingA,
-            Function2<A, B, NewB> keyMappingB) {
+    public <NewA, NewB> BiLeftHandSide<NewA, NewB> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
+            BiFunction<A, B, NewB> keyMappingB) {
         Variable<BiTuple<NewA, NewB>> groupKey = internalsFactory.createVariable(BiTuple.class, "groupKey");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey, createCompositeBiGroupKey(keyMappingA, keyMappingB));
         Variable<NewA> newA = internalsFactory.createVariable("newA");
@@ -341,8 +341,8 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return new BiLeftHandSide<>(newA, bPatternVar, internalsFactory);
     }
 
-    public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(Function2<A, B, NewA> keyMappingA,
-            Function2<A, B, NewB> keyMappingB, BiConstraintCollector<A, B, ?, NewC> collectorC) {
+    public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
+            BiFunction<A, B, NewB> keyMappingB, BiConstraintCollector<A, B, ?, NewC> collectorC) {
         Variable<BiTuple<NewA, NewB>> groupKey = internalsFactory.createVariable(BiTuple.class, "groupKey");
         Variable<NewC> accumulateOutput = internalsFactory.createVariable("output");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey,
@@ -355,8 +355,8 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return new TriLeftHandSide<>(newA, newB, cPatternVar, internalsFactory);
     }
 
-    public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function2<A, B, NewA> keyMappingA,
-            Function2<A, B, NewB> keyMappingB, BiConstraintCollector<A, B, ?, NewC> collectorC,
+    public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
+            BiFunction<A, B, NewB> keyMappingB, BiConstraintCollector<A, B, ?, NewC> collectorC,
             BiConstraintCollector<A, B, ?, NewD> collectorD) {
         Variable<BiTuple<NewA, NewB>> groupKey = internalsFactory.createVariable(BiTuple.class, "groupKey");
         Variable<NewC> accumulateOutputC = internalsFactory.createVariable("outputC");
@@ -386,12 +386,13 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
      * @return never null, Drools function to convert the keys to a singular composite key
      */
     private <NewA, NewB, NewC> Function2<A, B, TriTuple<NewA, NewB, NewC>> createCompositeTriGroupKey(
-            Function2<A, B, NewA> keyMappingA, Function2<A, B, NewB> keyMappingB, Function2<A, B, NewC> keyMappingC) {
+            BiFunction<A, B, NewA> keyMappingA, BiFunction<A, B, NewB> keyMappingB,
+            BiFunction<A, B, NewC> keyMappingC) {
         return (a, b) -> new TriTuple<>(keyMappingA.apply(a, b), keyMappingB.apply(a, b), keyMappingC.apply(a, b));
     }
 
-    public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(Function2<A, B, NewA> keyMappingA,
-            Function2<A, B, NewB> keyMappingB, Function2<A, B, NewC> keyMappingC) {
+    public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(BiFunction<A, B, NewA> keyMappingA,
+            BiFunction<A, B, NewB> keyMappingB, BiFunction<A, B, NewC> keyMappingC) {
         Variable<TriTuple<NewA, NewB, NewC>> groupKey = internalsFactory.createVariable(TriTuple.class, "groupKey");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey,
                 createCompositeTriGroupKey(keyMappingA, keyMappingB, keyMappingC));
@@ -403,9 +404,9 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return new TriLeftHandSide<>(newA, newB, cPatternVar, internalsFactory);
     }
 
-    public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function2<A, B, NewA> keyMappingA,
-            Function2<A, B, NewB> keyMappingB, Function2<A, B, NewC> keyMappingC,
-            BiConstraintCollector<A, B, ?, NewD> collectorD) {
+    public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
+            BiFunction<A, B, NewA> keyMappingA, BiFunction<A, B, NewB> keyMappingB,
+            BiFunction<A, B, NewC> keyMappingC, BiConstraintCollector<A, B, ?, NewD> collectorD) {
         Variable<TriTuple<NewA, NewB, NewC>> groupKey = internalsFactory.createVariable(TriTuple.class, "groupKey");
         Variable<NewD> accumulateOutputD = internalsFactory.createVariable("outputD");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey,
@@ -433,14 +434,15 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
      * @return never null, Drools function to convert the keys to a singular composite key
      */
     private <NewA, NewB, NewC, NewD> Function2<A, B, QuadTuple<NewA, NewB, NewC, NewD>>
-            createCompositeQuadGroupKey(Function2<A, B, NewA> keyMappingA, Function2<A, B, NewB> keyMappingB,
-                    Function2<A, B, NewC> keyMappingC, Function2<A, B, NewD> keyMappingD) {
+            createCompositeQuadGroupKey(BiFunction<A, B, NewA> keyMappingA, BiFunction<A, B, NewB> keyMappingB,
+                    BiFunction<A, B, NewC> keyMappingC, BiFunction<A, B, NewD> keyMappingD) {
         return (a, b) -> new QuadTuple<>(keyMappingA.apply(a, b), keyMappingB.apply(a, b), keyMappingC.apply(a, b),
                 keyMappingD.apply(a, b));
     }
 
-    public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function2<A, B, NewA> keyMappingA,
-            Function2<A, B, NewB> keyMappingB, Function2<A, B, NewC> keyMappingC, Function2<A, B, NewD> keyMappingD) {
+    public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
+            BiFunction<A, B, NewA> keyMappingA, BiFunction<A, B, NewB> keyMappingB, BiFunction<A, B, NewC> keyMappingC,
+            BiFunction<A, B, NewD> keyMappingD) {
         Variable<QuadTuple<NewA, NewB, NewC, NewD>> groupKey = internalsFactory.createVariable(QuadTuple.class, "groupKey");
         ViewItem<?> groupByPattern = buildGroupBy(groupKey,
                 createCompositeQuadGroupKey(keyMappingA, keyMappingB, keyMappingC, keyMappingD));
@@ -453,17 +455,17 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         return new QuadLeftHandSide<>(newA, newB, newC, dPatternVar, internalsFactory);
     }
 
-    public <NewA> UniLeftHandSide<NewA> andMap(Function2<A, B, NewA> mapping) {
+    public <NewA> UniLeftHandSide<NewA> andMap(BiFunction<A, B, NewA> mapping) {
         Variable<NewA> newA = internalsFactory.createVariable("mapped", patternVariableA.getPrimaryVariable(),
-                patternVariableB.getPrimaryVariable(), mapping);
+                patternVariableB.getPrimaryVariable(), mapping::apply);
         List<ViewItem<?>> allPrerequisites = mergeViewItems(patternVariableA, patternVariableB);
         DirectPatternVariable<NewA> newPatternVariableA = new DirectPatternVariable<>(newA, allPrerequisites);
         return new UniLeftHandSide<>(newPatternVariableA, internalsFactory);
     }
 
-    public <NewB> BiLeftHandSide<A, NewB> andFlattenLast(Function1<B, Iterable<NewB>> mapping) {
+    public <NewB> BiLeftHandSide<A, NewB> andFlattenLast(Function<B, Iterable<NewB>> mapping) {
         Variable<B> source = patternVariableB.getPrimaryVariable();
-        Variable<NewB> newB = internalsFactory.createFlattenedVariable("flattened", source, mapping);
+        Variable<NewB> newB = internalsFactory.createFlattenedVariable("flattened", source, mapping::apply);
         List<ViewItem<?>> allPrerequisites = mergeViewItems(patternVariableA, patternVariableB);
         PatternVariable<NewB, ?, ?> newPatternVariableB = new DirectPatternVariable<>(newB, allPrerequisites);
         return new BiLeftHandSide<>(patternVariableA.getPrimaryVariable(), newPatternVariableB, internalsFactory);

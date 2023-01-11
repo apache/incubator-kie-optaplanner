@@ -1,8 +1,8 @@
 package org.optaplanner.constraint.streams.drools.quad;
 
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.drools.model.functions.Predicate1;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.common.QuadLeftHandSide;
 import org.optaplanner.core.api.score.stream.penta.PentaJoiner;
@@ -19,8 +19,7 @@ public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
             boolean shouldIncludeNullVars, Class<E> otherClass, PentaJoiner<A, B, C, D, E>... joiners) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-        Predicate1<E> nullityFilter = shouldIncludeNullVars ? null
-                : constraintFactory.getInternalsFactory().convert(constraintFactory.getNullityFilter(otherClass));
+        Predicate<E> nullityFilter = shouldIncludeNullVars ? null : constraintFactory.getNullityFilter(otherClass);
         this.leftHandSide = () -> shouldExist
                 ? parent.createLeftHandSide().andExists(otherClass, joiners, nullityFilter)
                 : parent.createLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);

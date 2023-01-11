@@ -4,19 +4,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.drools.model.Variable;
-import org.drools.model.functions.Function1;
-import org.drools.model.functions.Predicate1;
-import org.drools.model.functions.Predicate2;
-import org.drools.model.functions.Predicate3;
-import org.drools.model.functions.Predicate4;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.constraint.streams.common.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
 import org.optaplanner.constraint.streams.common.tri.DefaultTriJoiner;
 import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
 /**
@@ -83,26 +83,26 @@ final class DetachedPatternVariable<A, PatternVar_>
     }
 
     @Override
-    public DetachedPatternVariable<A, PatternVar_> filter(Predicate1<A> predicate) {
+    public DetachedPatternVariable<A, PatternVar_> filter(Predicate<A> predicate) {
         throw new UnsupportedOperationException("Impossible state: Variable (" + primaryVariable + ") is detached.");
     }
 
     @Override
-    public <LeftJoinVar_> DetachedPatternVariable<A, PatternVar_> filter(Predicate2<LeftJoinVar_, A> predicate,
+    public <LeftJoinVar_> DetachedPatternVariable<A, PatternVar_> filter(BiPredicate<LeftJoinVar_, A> predicate,
             Variable<LeftJoinVar_> leftJoinVariable) {
         throw new UnsupportedOperationException("Impossible state: Variable (" + primaryVariable + ") is detached.");
     }
 
     @Override
     public <LeftJoinVarA_, LeftJoinVarB_> DetachedPatternVariable<A, PatternVar_> filter(
-            Predicate3<LeftJoinVarA_, LeftJoinVarB_, A> predicate, Variable<LeftJoinVarA_> leftJoinVariableA,
+            TriPredicate<LeftJoinVarA_, LeftJoinVarB_, A> predicate, Variable<LeftJoinVarA_> leftJoinVariableA,
             Variable<LeftJoinVarB_> leftJoinVariableB) {
         throw new UnsupportedOperationException("Impossible state: Variable (" + primaryVariable + ") is detached.");
     }
 
     @Override
     public <LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> DetachedPatternVariable<A, PatternVar_> filter(
-            Predicate4<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> predicate, Variable<LeftJoinVarA_> leftJoinVariableA,
+            QuadPredicate<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> predicate, Variable<LeftJoinVarA_> leftJoinVariableA,
             Variable<LeftJoinVarB_> leftJoinVariableB, Variable<LeftJoinVarC_> leftJoinVariableC) {
         throw new UnsupportedOperationException("Impossible state: Variable (" + primaryVariable + ") is detached.");
     }
@@ -133,7 +133,7 @@ final class DetachedPatternVariable<A, PatternVar_>
 
     @Override
     public <BoundVar_> DetachedPatternVariable<A, PatternVar_> bind(Variable<BoundVar_> boundVariable,
-            Function1<A, BoundVar_> bindingFunction) {
+            Function<A, BoundVar_> bindingFunction) {
         throw new UnsupportedOperationException("Impossible state: Variable (" + primaryVariable + ") is detached.");
     }
 

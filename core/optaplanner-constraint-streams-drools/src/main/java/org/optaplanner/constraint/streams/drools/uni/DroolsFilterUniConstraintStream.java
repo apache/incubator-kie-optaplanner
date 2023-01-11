@@ -3,7 +3,6 @@ package org.optaplanner.constraint.streams.drools.uni;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.drools.model.functions.Predicate1;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.common.UniLeftHandSide;
 
@@ -16,8 +15,7 @@ public final class DroolsFilterUniConstraintStream<Solution_, A> extends DroolsA
             DroolsAbstractUniConstraintStream<Solution_, A> parent, Predicate<A> predicate) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-        Predicate1<A> convertedPredicate = constraintFactory.getInternalsFactory().convert(predicate);
-        this.leftHandSide = () -> parent.createLeftHandSide().andFilter(convertedPredicate);
+        this.leftHandSide = () -> parent.createLeftHandSide().andFilter(predicate);
     }
 
     @Override

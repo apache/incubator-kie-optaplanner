@@ -5,7 +5,9 @@ import static org.optaplanner.constraint.streams.drools.common.AbstractLeftHandS
 
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,7 +17,6 @@ import org.drools.model.BetaIndex3;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
-import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.Predicate3;
 import org.drools.model.functions.Predicate4;
@@ -24,7 +25,9 @@ import org.optaplanner.constraint.streams.common.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
 import org.optaplanner.constraint.streams.common.tri.DefaultTriJoiner;
 import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
 abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPatternVariable<A, PatternVar_, Child_>>
@@ -89,13 +92,13 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
     protected abstract A extract(PatternVar_ patternVar);
 
     @Override
-    public final Child_ filter(Predicate1<A> predicate) {
+    public final Child_ filter(Predicate<A> predicate) {
         pattern.expr("Filter using " + predicate, a -> predicate.test(extract(a)));
         return (Child_) this;
     }
 
     @Override
-    public final <LeftJoinVar_> Child_ filter(Predicate2<LeftJoinVar_, A> predicate,
+    public final <LeftJoinVar_> Child_ filter(BiPredicate<LeftJoinVar_, A> predicate,
             Variable<LeftJoinVar_> leftJoinVariable) {
         pattern.expr("Filter using " + predicate, leftJoinVariable,
                 (a, leftJoinVar) -> predicate.test(leftJoinVar, extract(a)));
@@ -104,7 +107,7 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
 
     @Override
     public final <LeftJoinVarA_, LeftJoinVarB_> Child_ filter(
-            Predicate3<LeftJoinVarA_, LeftJoinVarB_, A> predicate, Variable<LeftJoinVarA_> leftJoinVariableA,
+            TriPredicate<LeftJoinVarA_, LeftJoinVarB_, A> predicate, Variable<LeftJoinVarA_> leftJoinVariableA,
             Variable<LeftJoinVarB_> leftJoinVariableB) {
         pattern.expr("Filter using " + predicate, leftJoinVariableA, leftJoinVariableB,
                 (a, leftJoinVarA, leftJoinVarB) -> predicate.test(leftJoinVarA, leftJoinVarB, extract(a)));
@@ -113,7 +116,7 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
 
     @Override
     public final <LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> Child_ filter(
-            Predicate4<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> predicate,
+            QuadPredicate<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, A> predicate,
             Variable<LeftJoinVarA_> leftJoinVariableA, Variable<LeftJoinVarB_> leftJoinVariableB,
             Variable<LeftJoinVarC_> leftJoinVariableC) {
         pattern.expr("Filter using " + predicate, leftJoinVariableA, leftJoinVariableB, leftJoinVariableC,
@@ -210,7 +213,7 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
     }
 
     @Override
-    public final <BoundVar_> Child_ bind(Variable<BoundVar_> boundVariable, Function1<A, BoundVar_> bindingFunction) {
+    public final <BoundVar_> Child_ bind(Variable<BoundVar_> boundVariable, Function<A, BoundVar_> bindingFunction) {
         pattern.bind(boundVariable, a -> bindingFunction.apply(extract(a)));
         return (Child_) this;
     }

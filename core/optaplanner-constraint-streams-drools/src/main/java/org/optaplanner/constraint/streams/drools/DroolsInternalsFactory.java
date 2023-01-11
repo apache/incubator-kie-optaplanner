@@ -142,33 +142,21 @@ public final class DroolsInternalsFactory {
     private final Map<Object, Object> map = new IdentityHashMap<>();
 
     public <A> Predicate1<A> convert(Predicate<A> predicate) {
-        if (predicate == null) {
-            return null;
-        }
         return (Predicate1<A>) map.computeIfAbsent(predicate,
                 k -> (Predicate1<A>) a -> ((Predicate<A>) k).test(a));
     }
 
     public <A, B> Predicate2<A, B> convert(BiPredicate<A, B> predicate) {
-        if (predicate == null) {
-            return null;
-        }
         return (Predicate2<A, B>) map.computeIfAbsent(predicate,
                 k -> (Predicate2<A, B>) (a, b) -> ((BiPredicate<A, B>) k).test(a, b));
     }
 
     public <A, B, C> Predicate3<A, B, C> convert(TriPredicate<A, B, C> predicate) {
-        if (predicate == null) {
-            return null;
-        }
         return (Predicate3<A, B, C>) map.computeIfAbsent(predicate,
                 k -> (Predicate3<A, B, C>) (a, b, c) -> ((TriPredicate<A, B, C>) k).test(a, b, c));
     }
 
     public <A, B, C, D> Predicate4<A, B, C, D> convert(QuadPredicate<A, B, C, D> predicate) {
-        if (predicate == null) {
-            return null;
-        }
         return (Predicate4<A, B, C, D>) map.computeIfAbsent(predicate,
                 k -> (Predicate4<A, B, C, D>) (a, b, c, d) -> ((QuadPredicate<A, B, C, D>) k).test(a, b, c, d));
     }

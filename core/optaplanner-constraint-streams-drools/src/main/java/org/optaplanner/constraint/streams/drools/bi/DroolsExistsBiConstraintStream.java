@@ -1,8 +1,8 @@
 package org.optaplanner.constraint.streams.drools.bi;
 
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.drools.model.functions.Predicate1;
 import org.optaplanner.constraint.streams.drools.DroolsConstraintFactory;
 import org.optaplanner.constraint.streams.drools.common.BiLeftHandSide;
 import org.optaplanner.core.api.score.stream.tri.TriJoiner;
@@ -19,8 +19,7 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
             boolean shouldIncludeNullVars, Class<C> otherClass, TriJoiner<A, B, C>... joiners) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
-        Predicate1<C> nullityFilter = shouldIncludeNullVars ? null
-                : constraintFactory.getInternalsFactory().convert(constraintFactory.getNullityFilter(otherClass));
+        Predicate<C> nullityFilter = shouldIncludeNullVars ? null : constraintFactory.getNullityFilter(otherClass);
         this.leftHandSide = () -> shouldExist
                 ? parent.createLeftHandSide().andExists(otherClass, joiners, nullityFilter)
                 : parent.createLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
