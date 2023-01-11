@@ -4,7 +4,7 @@ import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.from;
 
 import java.util.Collections;
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
@@ -29,9 +29,30 @@ import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.function.TriPredicate;
 
+/**
+ * Used to {@link #createVariable(String) generate Drools variables} with unique names,
+ * and to {@link #convert(Predicate) convert} some Java interfaces to their Drools equivalents.
+ *
+ * <p>
+ * There is one crucial difference between {@link Function} and {@link Function1}.
+ * Java's lambdas do not implement equality - even two method references pointing to the same method
+ * will not produce the same object, or even two objects that would equal.
+ * This is where Drools interfaces (such as {@link Predicate1} or {@link Function1} are different.
+ * They use bytecode of the lambda to figure out if two lambda instances are equal.
+ *
+ * <p>
+ * In order to help with Drools node sharing, we use methods such as {@link #convert(Predicate)} to make sure that
+ * every time the same lambda instance is passed, it results in the same Drools type instance.
+ * This does not help in the case described above, where people pass the same method reference twice;
+ * those will still be converted to two different {@link Function1} instances,
+ * as the originals aren't equal either.
+ * But it helps in situations where two rules are generated from the same streams,
+ * in which case the references will be the same and we want to ensure that the matching Drools types are the same too.
+ */
 public final class DroolsInternalsFactory {
 
     private final AtomicLong counter = new AtomicLong(0);
+    private final Map<Object, Object> instanceCacheMap = new HashMap<>();
 
     DroolsInternalsFactory() {
         // No external instances.
@@ -141,81 +162,134 @@ public final class DroolsInternalsFactory {
                 from(source, mapping::apply)); // By default, from() flattens.
     }
 
-    private final Map<Object, Object> map = new IdentityHashMap<>();
-
+    /**
+     * Converts Java's {@link Predicate} to Drools' {@link Predicate1},
+     * caching the result in the process.
+     *
+     * @param predicate
+     * @return null if predicate is null
+     * @param <A>
+     */
     public <A> Predicate1<A> convert(Predicate<A> predicate) {
         if (predicate == null) {
             return null;
         }
-        return (Predicate1<A>) map.computeIfAbsent(predicate,
+        return (Predicate1<A>) instanceCacheMap.computeIfAbsent(predicate,
                 k -> (Predicate1<A>) a -> ((Predicate<A>) k).test(a));
     }
 
+    /**
+     * As defined by {@link #convert(Predicate)}.
+     */
     public <A, B> Predicate2<A, B> convert(BiPredicate<A, B> predicate) {
         if (predicate == null) {
             return null;
         }
-        return (Predicate2<A, B>) map.computeIfAbsent(predicate,
+        return (Predicate2<A, B>) instanceCacheMap.computeIfAbsent(predicate,
                 k -> (Predicate2<A, B>) (a, b) -> ((BiPredicate<A, B>) k).test(a, b));
     }
 
+    /**
+     * As defined by {@link #convert(Predicate)}.
+     */
     public <A, B, C> Predicate3<A, B, C> convert(TriPredicate<A, B, C> predicate) {
         if (predicate == null) {
             return null;
         }
-        return (Predicate3<A, B, C>) map.computeIfAbsent(predicate,
+        return (Predicate3<A, B, C>) instanceCacheMap.computeIfAbsent(predicate,
                 k -> (Predicate3<A, B, C>) (a, b, c) -> ((TriPredicate<A, B, C>) k).test(a, b, c));
     }
 
+    /**
+     * As defined by {@link #convert(Predicate)}.
+     */
     public <A, B, C, D> Predicate4<A, B, C, D> convert(QuadPredicate<A, B, C, D> predicate) {
         if (predicate == null) {
             return null;
         }
-        return (Predicate4<A, B, C, D>) map.computeIfAbsent(predicate,
+        return (Predicate4<A, B, C, D>) instanceCacheMap.computeIfAbsent(predicate,
                 k -> (Predicate4<A, B, C, D>) (a, b, c, d) -> ((QuadPredicate<A, B, C, D>) k).test(a, b, c, d));
     }
 
+    /**
+     * As defined by {@link #convert(Predicate)}.
+     */
     public <A, B, C, D, E> Predicate5<A, B, C, D, E> convert(PentaPredicate<A, B, C, D, E> predicate) {
         if (predicate == null) {
             return null;
         }
-        return (Predicate5<A, B, C, D, E>) map.computeIfAbsent(predicate,
+        return (Predicate5<A, B, C, D, E>) instanceCacheMap.computeIfAbsent(predicate,
                 k -> (Predicate5<A, B, C, D, E>) (a, b, c, d, e) -> ((PentaPredicate<A, B, C, D, E>) k).test(a, b, c, d, e));
     }
 
+    /**
+     * Converts Java's {@link Function} to Drools' {@link Function1},
+     * caching the result in the process.
+     *
+     * @param function
+     * @return never null
+     * @param <A>
+     */
     public <A, Result_> Function1<A, Result_> convert(Function<A, Result_> function) {
-        return (Function1<A, Result_>) map.computeIfAbsent(function,
+        return (Function1<A, Result_>) instanceCacheMap.computeIfAbsent(function,
                 k -> (Function1<A, Result_>) a -> ((Function<A, Result_>) k).apply(a));
     }
 
+    /**
+     * As defined by {@link #convert(Function)}.
+     */
     public <A, B, Result_> Function2<A, B, Result_> convert(BiFunction<A, B, Result_> function) {
-        return (Function2<A, B, Result_>) map.computeIfAbsent(function,
+        return (Function2<A, B, Result_>) instanceCacheMap.computeIfAbsent(function,
                 k -> (Function2<A, B, Result_>) (a, b) -> ((BiFunction<A, B, Result_>) k).apply(a, b));
     }
 
+    /**
+     * As defined by {@link #convert(Function)}.
+     */
     public <A, B, C, Result_> Function3<A, B, C, Result_> convert(TriFunction<A, B, C, Result_> function) {
-        return (Function3<A, B, C, Result_>) map.computeIfAbsent(function,
+        return (Function3<A, B, C, Result_>) instanceCacheMap.computeIfAbsent(function,
                 k -> (Function3<A, B, C, Result_>) (a, b, c) -> ((TriFunction<A, B, C, Result_>) k).apply(a, b, c));
     }
 
+    /**
+     * As defined by {@link #convert(Function)}.
+     */
     public <A, B, C, D, Result_> Function4<A, B, C, D, Result_> convert(QuadFunction<A, B, C, D, Result_> function) {
-        return (Function4<A, B, C, D, Result_>) map.computeIfAbsent(function,
+        return (Function4<A, B, C, D, Result_>) instanceCacheMap.computeIfAbsent(function,
                 k -> (Function4<A, B, C, D, Result_>) (a, b, c, d) -> ((QuadFunction<A, B, C, D, Result_>) k).apply(a, b, c,
                         d));
     }
 
+    /**
+     * Equivalent to {@link Predicate#and(Predicate)} for Drools' {@link Predicate2}.
+     *
+     * @param first never null
+     * @param second never null
+     * @return never null, applies both predicates in sequence
+     * @param <A>
+     * @param <B>
+     */
     public <A, B> Predicate2<A, B> merge(Predicate2<A, B> first, Predicate2<A, B> second) {
         return (a, b) -> first.test(a, b) && second.test(a, b);
     }
 
+    /**
+     * As defined by {@link #merge(Predicate2, Predicate2)}.
+     */
     public <A, B, C> Predicate3<A, B, C> merge(Predicate3<A, B, C> first, Predicate3<A, B, C> second) {
         return (a, b, c) -> first.test(a, b, c) && second.test(a, b, c);
     }
 
+    /**
+     * As defined by {@link #merge(Predicate2, Predicate2)}.
+     */
     public <A, B, C, D> Predicate4<A, B, C, D> merge(Predicate4<A, B, C, D> first, Predicate4<A, B, C, D> second) {
         return (a, b, c, d) -> first.test(a, b, c, d) && second.test(a, b, c, d);
     }
 
+    /**
+     * As defined by {@link #merge(Predicate2, Predicate2)}.
+     */
     public <A, B, C, D, E> Predicate5<A, B, C, D, E> merge(Predicate5<A, B, C, D, E> first, Predicate5<A, B, C, D, E> second) {
         return (a, b, c, d, e) -> first.test(a, b, c, d, e) && second.test(a, b, c, d, e);
     }

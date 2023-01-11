@@ -6,16 +6,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.drools.model.DSL;
 import org.drools.model.Index;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
+import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.accumulate.AccumulateFunction;
 import org.drools.model.view.ViewItem;
 import org.optaplanner.constraint.streams.drools.DroolsInternalsFactory;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
+/**
+ * This class and its children expect as input not the interfaces like {@link Function} or {@link Predicate},
+ * but rather their Drools equivalents {@link Function1} and {@link Predicate1}.
+ * Use e.g. {@link DroolsInternalsFactory#convert(Predicate)} to get the proper type.
+ */
 abstract class AbstractLeftHandSide {
 
     protected final DroolsInternalsFactory internalsFactory;

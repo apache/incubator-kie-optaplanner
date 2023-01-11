@@ -12,6 +12,7 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.constraint.streams.common.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
 import org.optaplanner.constraint.streams.common.tri.DefaultTriJoiner;
+import org.optaplanner.constraint.streams.drools.DroolsInternalsFactory;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
 public interface PatternVariable<A, PatternVar_, Child_ extends PatternVariable<A, PatternVar_, Child_>> {
@@ -21,6 +22,8 @@ public interface PatternVariable<A, PatternVar_, Child_ extends PatternVariable<
     List<ViewItem<?>> getPrerequisiteExpressions();
 
     List<ViewItem<?>> getDependentExpressions();
+
+    DroolsInternalsFactory getInternalsFactory();
 
     Child_ filter(Predicate1<A> predicate);
 

@@ -21,9 +21,9 @@ public final class DroolsExistsTriConstraintStream<Solution_, A, B, C>
         this.parent = parent;
         Predicate1<D> nullityFilter = shouldIncludeNullVars ? null
                 : constraintFactory.getInternalsFactory().convert(constraintFactory.getNullityFilter(otherClass));
-        this.leftHandSide = () -> shouldExist
-                ? parent.createLeftHandSide().andExists(otherClass, joiners, nullityFilter)
-                : parent.createLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
+        this.leftHandSide = shouldExist
+                ? () -> parent.createLeftHandSide().andExists(otherClass, joiners, nullityFilter)
+                : () -> parent.createLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
         this.streamName = shouldExist ? "TriIfExists()" : "TriIfNotExists()";
     }
 

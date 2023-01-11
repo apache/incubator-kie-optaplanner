@@ -14,6 +14,7 @@ import org.drools.model.view.ViewItem;
 import org.optaplanner.constraint.streams.common.bi.DefaultBiJoiner;
 import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
 import org.optaplanner.constraint.streams.common.tri.DefaultTriJoiner;
+import org.optaplanner.constraint.streams.drools.DroolsInternalsFactory;
 import org.optaplanner.core.impl.score.stream.JoinerType;
 
 /**
@@ -59,9 +60,11 @@ final class DetachedPatternVariable<A, PatternVar_>
         implements PatternVariable<A, PatternVar_, DetachedPatternVariable<A, PatternVar_>> {
 
     private final Variable<A> primaryVariable;
+    private final DroolsInternalsFactory internalsFactory;
 
-    DetachedPatternVariable(Variable<A> variable) {
+    DetachedPatternVariable(Variable<A> variable, DroolsInternalsFactory internalsFactory) {
         this.primaryVariable = Objects.requireNonNull(variable);
+        this.internalsFactory = Objects.requireNonNull(internalsFactory);
     }
 
     @Override
@@ -77,6 +80,11 @@ final class DetachedPatternVariable<A, PatternVar_>
     @Override
     public List<ViewItem<?>> getDependentExpressions() {
         throw new UnsupportedOperationException("Impossible state: Variable (" + primaryVariable + ") is detached.");
+    }
+
+    @Override
+    public DroolsInternalsFactory getInternalsFactory() {
+        return internalsFactory;
     }
 
     @Override
