@@ -2,9 +2,10 @@ package org.optaplanner.constraint.streams.drools;
 
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.from;
+import static org.drools.model.functions.Predicate1.Impl;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.BiFunction;
@@ -41,9 +42,12 @@ import org.optaplanner.core.api.function.TriPredicate;
  * They use bytecode of the lambda to figure out if two lambda instances are equal.
  *
  * <p>
- * In order to help with Drools node sharing, we use methods such as {@link #convert(Predicate)} to make sure that
- * every time the same lambda instance is passed, it results in the same Drools type instance.
- * This does not help in the case described above, where people pass the same method reference twice;
+ * In order to help with Drools node sharing,
+ * we use methods such as {@link #initPredicate(Predicate1)} and {@link #convert(Predicate)}
+ * to make sure that every time the same lambda instance is passed,
+ * it results in the same Drools type instance.
+ * This does not help in the case described above,
+ * where people pass the same method reference twice;
  * those will still be converted to two different {@link Function1} instances,
  * as the originals aren't equal either.
  * But it helps in situations where two rules are generated from the same streams,
@@ -52,7 +56,7 @@ import org.optaplanner.core.api.function.TriPredicate;
 public final class DroolsInternalsFactory {
 
     private final AtomicLong counter = new AtomicLong(0);
-    private final Map<Object, Object> instanceCacheMap = new HashMap<>();
+    private final Map<Object, Object> instanceCacheMap = new IdentityHashMap<>();
 
     DroolsInternalsFactory() {
         // No external instances.
@@ -163,8 +167,118 @@ public final class DroolsInternalsFactory {
     }
 
     /**
+     * The lambda equality properties are not guaranteed by {@link Predicate1}, but by its {@link Predicate1.Impl}.
+     * Since we do not want to expose this implementation detail in the surrounding code,
+     * every {@link Predicate1} needs to go through this method to be wrapped.
+     *
+     * @param predicate never null
+     * @return never null, a wrapped and cached instance of the input predicate
+     * @param <A>
+     */
+    public <A> Predicate1<A> initPredicate(Predicate1<A> predicate) {
+        if (predicate instanceof Impl) {
+            return predicate;
+        }
+        return (Predicate1<A>) instanceCacheMap.computeIfAbsent(predicate, k -> new Predicate1.Impl<>((Predicate1<A>) k));
+    }
+
+    /**
+     * As defined by {@link #initPredicate(Predicate1)}.
+     */
+    public <A, B> Predicate2<A, B> initPredicate(Predicate2<A, B> predicate) {
+        if (predicate instanceof Predicate2.Impl) {
+            return predicate;
+        }
+        return (Predicate2<A, B>) instanceCacheMap.computeIfAbsent(predicate, k -> new Predicate2.Impl<>((Predicate2<A, B>) k));
+    }
+
+    /**
+     * As defined by {@link #initPredicate(Predicate1)}.
+     */
+    public <A, B, C> Predicate3<A, B, C> initPredicate(Predicate3<A, B, C> predicate) {
+        if (predicate instanceof Predicate3.Impl) {
+            return predicate;
+        }
+        return (Predicate3<A, B, C>) instanceCacheMap.computeIfAbsent(predicate,
+                k -> new Predicate3.Impl<>((Predicate3<A, B, C>) k));
+    }
+
+    /**
+     * As defined by {@link #initPredicate(Predicate1)}.
+     */
+    public <A, B, C, D> Predicate4<A, B, C, D> initPredicate(Predicate4<A, B, C, D> predicate) {
+        if (predicate instanceof Predicate4.Impl) {
+            return predicate;
+        }
+        return (Predicate4<A, B, C, D>) instanceCacheMap.computeIfAbsent(predicate,
+                k -> new Predicate4.Impl<>((Predicate4<A, B, C, D>) k));
+    }
+
+    /**
+     * As defined by {@link #initPredicate(Predicate1)}.
+     */
+    public <A, B, C, D, E> Predicate5<A, B, C, D, E> initPredicate(Predicate5<A, B, C, D, E> predicate) {
+        if (predicate instanceof Predicate5.Impl) {
+            return predicate;
+        }
+        return (Predicate5<A, B, C, D, E>) instanceCacheMap.computeIfAbsent(predicate,
+                k -> new Predicate5.Impl<>((Predicate5<A, B, C, D, E>) k));
+    }
+
+    /**
+     * The lambda equality properties are not guaranteed by {@link Function1}, but by its {@link Function1.Impl}.
+     * Since we do not want to expose this implementation detail in the surrounding code,
+     * every {@link Function1} needs to go through this method to be wrapped.
+     *
+     * @param function never null
+     * @return never null, a wrapped and cached instance of the input function
+     * @param <A>
+     */
+    public <A, Result_> Function1<A, Result_> initFunction(Function1<A, Result_> function) {
+        if (function instanceof Function1.Impl) {
+            return function;
+        }
+        return (Function1<A, Result_>) instanceCacheMap.computeIfAbsent(function,
+                k -> new Function1.Impl<>((Function1<A, Result_>) k));
+    }
+
+    /**
+     * As defined by {@link #initFunction(Function1)}.
+     */
+    public <A, B, Result_> Function2<A, B, Result_> initFunction(Function2<A, B, Result_> function) {
+        if (function instanceof Function2.Impl) {
+            return function;
+        }
+        return (Function2<A, B, Result_>) instanceCacheMap.computeIfAbsent(function,
+                k -> new Function2.Impl<>((Function2<A, B, Result_>) k));
+    }
+
+    /**
+     * As defined by {@link #initFunction(Function1)}.
+     */
+    public <A, B, C, Result_> Function3<A, B, C, Result_> initFunction(Function3<A, B, C, Result_> function) {
+        if (function instanceof Function3.Impl) {
+            return function;
+        }
+        return (Function3<A, B, C, Result_>) instanceCacheMap.computeIfAbsent(function,
+                k -> new Function3.Impl<>((Function3<A, B, C, Result_>) k));
+    }
+
+    /**
+     * As defined by {@link #initFunction(Function1)}.
+     */
+    public <A, B, C, D, Result_> Function4<A, B, C, D, Result_> initFunction(Function4<A, B, C, D, Result_> function) {
+        if (function instanceof Function4.Impl) {
+            return function;
+        }
+        return (Function4<A, B, C, D, Result_>) instanceCacheMap.computeIfAbsent(function,
+                k -> new Function4.Impl<>((Function4<A, B, C, D, Result_>) k));
+    }
+
+    /**
      * Converts Java's {@link Predicate} to Drools' {@link Predicate1},
      * caching the result in the process.
+     * The resulting {@link Predicate1} has already gone through {@link #initPredicate(Predicate1)}.
      *
      * @param predicate
      * @return null if predicate is null
@@ -175,7 +289,7 @@ public final class DroolsInternalsFactory {
             return null;
         }
         return (Predicate1<A>) instanceCacheMap.computeIfAbsent(predicate,
-                k -> (Predicate1<A>) ((Predicate<A>) k)::test);
+                k -> initPredicate(((Predicate<A>) k)::test));
     }
 
     /**
@@ -186,7 +300,7 @@ public final class DroolsInternalsFactory {
             return null;
         }
         return (Predicate2<A, B>) instanceCacheMap.computeIfAbsent(predicate,
-                k -> (Predicate2<A, B>) ((BiPredicate<A, B>) k)::test);
+                k -> initPredicate(((BiPredicate<A, B>) k)::test));
     }
 
     /**
@@ -197,7 +311,7 @@ public final class DroolsInternalsFactory {
             return null;
         }
         return (Predicate3<A, B, C>) instanceCacheMap.computeIfAbsent(predicate,
-                k -> (Predicate3<A, B, C>) ((TriPredicate<A, B, C>) k)::test);
+                k -> initPredicate(((TriPredicate<A, B, C>) k)::test));
     }
 
     /**
@@ -208,7 +322,7 @@ public final class DroolsInternalsFactory {
             return null;
         }
         return (Predicate4<A, B, C, D>) instanceCacheMap.computeIfAbsent(predicate,
-                k -> (Predicate4<A, B, C, D>) ((QuadPredicate<A, B, C, D>) k)::test);
+                k -> initPredicate(((QuadPredicate<A, B, C, D>) k)::test));
     }
 
     /**
@@ -219,12 +333,13 @@ public final class DroolsInternalsFactory {
             return null;
         }
         return (Predicate5<A, B, C, D, E>) instanceCacheMap.computeIfAbsent(predicate,
-                k -> (Predicate5<A, B, C, D, E>) ((PentaPredicate<A, B, C, D, E>) k)::test);
+                k -> initPredicate(((PentaPredicate<A, B, C, D, E>) k)::test));
     }
 
     /**
      * Converts Java's {@link Function} to Drools' {@link Function1},
      * caching the result in the process.
+     * The resulting {@link Function1} has already gone through {@link #initFunction(Function1)}.
      *
      * @param function
      * @return never null
@@ -232,7 +347,7 @@ public final class DroolsInternalsFactory {
      */
     public <A, Result_> Function1<A, Result_> convert(Function<A, Result_> function) {
         return (Function1<A, Result_>) instanceCacheMap.computeIfAbsent(function,
-                k -> (Function1<A, Result_>) ((Function<A, Result_>) k)::apply);
+                k -> initFunction(((Function<A, Result_>) k)::apply));
     }
 
     /**
@@ -240,7 +355,7 @@ public final class DroolsInternalsFactory {
      */
     public <A, B, Result_> Function2<A, B, Result_> convert(BiFunction<A, B, Result_> function) {
         return (Function2<A, B, Result_>) instanceCacheMap.computeIfAbsent(function,
-                k -> (Function2<A, B, Result_>) ((BiFunction<A, B, Result_>) k)::apply);
+                k -> initFunction(((BiFunction<A, B, Result_>) k)::apply));
     }
 
     /**
@@ -248,7 +363,7 @@ public final class DroolsInternalsFactory {
      */
     public <A, B, C, Result_> Function3<A, B, C, Result_> convert(TriFunction<A, B, C, Result_> function) {
         return (Function3<A, B, C, Result_>) instanceCacheMap.computeIfAbsent(function,
-                k -> (Function3<A, B, C, Result_>) ((TriFunction<A, B, C, Result_>) k)::apply);
+                k -> initFunction(((TriFunction<A, B, C, Result_>) k)::apply));
     }
 
     /**
@@ -256,7 +371,7 @@ public final class DroolsInternalsFactory {
      */
     public <A, B, C, D, Result_> Function4<A, B, C, D, Result_> convert(QuadFunction<A, B, C, D, Result_> function) {
         return (Function4<A, B, C, D, Result_>) instanceCacheMap.computeIfAbsent(function,
-                k -> (Function4<A, B, C, D, Result_>) ((QuadFunction<A, B, C, D, Result_>) k)::apply);
+                k -> initFunction(((QuadFunction<A, B, C, D, Result_>) k)::apply));
     }
 
     /**
@@ -269,28 +384,28 @@ public final class DroolsInternalsFactory {
      * @param <B>
      */
     public <A, B> Predicate2<A, B> merge(Predicate2<A, B> first, Predicate2<A, B> second) {
-        return (a, b) -> first.test(a, b) && second.test(a, b);
+        return initPredicate((a, b) -> first.test(a, b) && second.test(a, b));
     }
 
     /**
      * As defined by {@link #merge(Predicate2, Predicate2)}.
      */
     public <A, B, C> Predicate3<A, B, C> merge(Predicate3<A, B, C> first, Predicate3<A, B, C> second) {
-        return (a, b, c) -> first.test(a, b, c) && second.test(a, b, c);
+        return initPredicate((a, b, c) -> first.test(a, b, c) && second.test(a, b, c));
     }
 
     /**
      * As defined by {@link #merge(Predicate2, Predicate2)}.
      */
     public <A, B, C, D> Predicate4<A, B, C, D> merge(Predicate4<A, B, C, D> first, Predicate4<A, B, C, D> second) {
-        return (a, b, c, d) -> first.test(a, b, c, d) && second.test(a, b, c, d);
+        return initPredicate((a, b, c, d) -> first.test(a, b, c, d) && second.test(a, b, c, d));
     }
 
     /**
      * As defined by {@link #merge(Predicate2, Predicate2)}.
      */
     public <A, B, C, D, E> Predicate5<A, B, C, D, E> merge(Predicate5<A, B, C, D, E> first, Predicate5<A, B, C, D, E> second) {
-        return (a, b, c, d, e) -> first.test(a, b, c, d, e) && second.test(a, b, c, d, e);
+        return initPredicate((a, b, c, d, e) -> first.test(a, b, c, d, e) && second.test(a, b, c, d, e));
     }
 
 }

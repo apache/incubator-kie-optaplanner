@@ -111,8 +111,8 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
             JoinerType joinerType = joiner.getJoinerType(mappingIndex);
             Function2<A, B, Object> leftMapping = internalsFactory.convert(joiner.getLeftMapping(mappingIndex));
             Function1<C, Object> rightMapping = internalsFactory.convert(joiner.getRightMapping(mappingIndex));
-            Predicate3<C, A, B> joinPredicate =
-                    (c, a, b) -> joinerType.matches(leftMapping.apply(a, b), rightMapping.apply(c));
+            Predicate3<C, A, B> joinPredicate = internalsFactory
+                    .initPredicate((c, a, b) -> joinerType.matches(leftMapping.apply(a, b), rightMapping.apply(c)));
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
                     patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(), joinPredicate,
                     createBetaIndex(joiner, mappingIndex));
@@ -131,7 +131,8 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
             boolean shouldExist) {
         PatternDSL.PatternDef<C> possiblyFilteredExistencePattern = predicate == null ? existencePattern
                 : existencePattern.expr("Filter using " + predicate, patternVariableA.getPrimaryVariable(),
-                        patternVariableB.getPrimaryVariable(), (c, a, b) -> predicate.test(a, b, c));
+                        patternVariableB.getPrimaryVariable(),
+                        internalsFactory.initPredicate((c, a, b) -> predicate.test(a, b, c)));
         ViewItem<?> existenceExpression = exists(possiblyFilteredExistencePattern);
         if (!shouldExist) {
             existenceExpression = not(possiblyFilteredExistencePattern);
@@ -474,7 +475,8 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
         Variable<A> inputA = patternVariableA.getPrimaryVariable();
         Variable<B> inputB = patternVariableB.getPrimaryVariable();
         ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariableA, patternVariableB);
-        return DSL.groupBy(innerGroupByPattern, inputA, inputB, groupKey, groupKeyExtractor, accFunctions);
+        return DSL.groupBy(innerGroupByPattern, inputA, inputB, groupKey, internalsFactory.initFunction(groupKeyExtractor),
+                accFunctions);
     }
 
 }
