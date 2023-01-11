@@ -149,9 +149,8 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
                     Object.class);
         } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
             JoinerType reversedJoinerType = joinerType.flip();
-            // TODO fix the Comparable
             return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
-                    c -> (Comparable) rightExtractor.apply(c), leftMapping, Comparable.class);
+                    (Function1) rightExtractor, leftMapping, Comparable.class);
         }
     }
 
@@ -179,9 +178,8 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
                     Object.class);
         } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
             JoinerType reversedJoinerType = joinerType.flip();
-            // TODO fix the Comparable
             return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
-                    c -> (Comparable) rightExtractor.apply(c), leftMapping, Comparable.class);
+                    (Function1) rightExtractor, leftMapping, Comparable.class);
         }
     }
 
@@ -212,9 +210,8 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
                     Object.class);
         } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
             JoinerType reversedJoinerType = joinerType.flip();
-            // TODO fix the Comparable
             return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
-                    c -> (Comparable) rightExtractor.apply(c), leftMapping, Comparable.class);
+                    (Function1) rightExtractor, leftMapping, Comparable.class);
         }
     }
 
