@@ -46,8 +46,11 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
     }
 
     protected AbstractPatternVariable(AbstractPatternVariable<?, PatternVar_, ?> patternCreator, Variable<A> boundVariable) {
-        this(boundVariable, patternCreator.getPattern(), patternCreator.getPrerequisiteExpressions(),
-                patternCreator.getDependentExpressions(), patternCreator.getInternalsFactory());
+        this.primaryVariable = boundVariable;
+        this.pattern = patternCreator.getPattern();
+        this.prerequisiteExpressions = patternCreator.getPrerequisiteExpressions();
+        this.dependentExpressions = patternCreator.getDependentExpressions();
+        this.internalsFactory = patternCreator.internalsFactory;
     }
 
     protected AbstractPatternVariable(AbstractPatternVariable<A, PatternVar_, ?> patternCreator,
