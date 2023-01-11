@@ -82,11 +82,6 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         return dependentExpressions;
     }
 
-    @Override
-    public DroolsInternalsFactory getInternalsFactory() {
-        return internalsFactory;
-    }
-
     /**
      * Variable values can be either read directly from the pattern variable (see {@link DirectPatternVariable}
      * or indirectly by applying a mapping function to it (see {@link IndirectPatternVariable}.

@@ -20,9 +20,9 @@ public final class DroolsExistsUniConstraintStream<Solution_, A> extends DroolsA
         this.parent = parent;
         Predicate1<B> nullityFilter = shouldIncludeNullVars ? null
                 : constraintFactory.getInternalsFactory().convert(constraintFactory.getNullityFilter(otherClass));
-        this.leftHandSide = shouldExist
-                ? () -> parent.createLeftHandSide().andExists(otherClass, joiners, nullityFilter)
-                : () -> parent.createLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
+        this.leftHandSide = () -> shouldExist
+                ? parent.createLeftHandSide().andExists(otherClass, joiners, nullityFilter)
+                : parent.createLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
         this.streamName = shouldExist ? "IfExists()" : "IfNotExists()";
     }
 

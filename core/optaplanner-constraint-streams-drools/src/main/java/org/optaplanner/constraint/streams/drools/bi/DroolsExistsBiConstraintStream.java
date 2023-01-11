@@ -21,9 +21,9 @@ public final class DroolsExistsBiConstraintStream<Solution_, A, B>
         this.parent = parent;
         Predicate1<C> nullityFilter = shouldIncludeNullVars ? null
                 : constraintFactory.getInternalsFactory().convert(constraintFactory.getNullityFilter(otherClass));
-        this.leftHandSide = shouldExist
-                ? () -> parent.createLeftHandSide().andExists(otherClass, joiners, nullityFilter)
-                : () -> parent.createLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
+        this.leftHandSide = () -> shouldExist
+                ? parent.createLeftHandSide().andExists(otherClass, joiners, nullityFilter)
+                : parent.createLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
         this.streamName = shouldExist ? "BiIfExists()" : "BiIfNotExists()";
     }
 

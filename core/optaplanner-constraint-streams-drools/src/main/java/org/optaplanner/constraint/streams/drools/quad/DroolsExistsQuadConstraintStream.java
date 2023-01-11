@@ -21,9 +21,9 @@ public final class DroolsExistsQuadConstraintStream<Solution_, A, B, C, D>
         this.parent = parent;
         Predicate1<E> nullityFilter = shouldIncludeNullVars ? null
                 : constraintFactory.getInternalsFactory().convert(constraintFactory.getNullityFilter(otherClass));
-        this.leftHandSide = shouldExist
-                ? () -> parent.createLeftHandSide().andExists(otherClass, joiners, nullityFilter)
-                : () -> parent.createLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
+        this.leftHandSide = () -> shouldExist
+                ? parent.createLeftHandSide().andExists(otherClass, joiners, nullityFilter)
+                : parent.createLeftHandSide().andNotExists(otherClass, joiners, nullityFilter);
         this.streamName = shouldExist ? "QuadIfExists()" : "QuadIfNotExists()";
     }
 
