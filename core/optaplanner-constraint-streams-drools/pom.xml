@@ -42,10 +42,6 @@
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
-            <artifactId>drools-mvel</artifactId> <!-- Lambda introspection for node sharing. -->
-        </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
             <artifactId>drools-alphanetwork-compiler</artifactId>
         </dependency>
 
@@ -119,7 +115,7 @@
                         <dependency>org.drools:*</dependency>
                     </ignoredUsedUndeclaredDependencies>
                     <ignoredUnusedDeclaredDependencies>
-                        <dependency>org.drools:*</dependency>
+                        <dependency>org.drools:drools-engine</dependency>
                     </ignoredUnusedDeclaredDependencies>
                 </configuration>
             </plugin>
