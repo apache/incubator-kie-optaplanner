@@ -19,24 +19,10 @@ recipeList:
   - io.quarkus.openrewrite.Quarkus3
   - org.optaplanner.migration.jakarta.JakartaHibernateMigrationRecipe
   - org.optaplanner.migration.jakarta.JakartaJsonMigrationRecipe
-  - org.openrewrite.maven.migrate.GraalVMSDK
+  - org.optaplanner.migration.jakarta.GraalVmMigrationRecipe
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.jaxb2.plugin
       newValue: 3.1.0
----
-type: specs.openrewrite.org/v1beta/recipe
-name: org.openrewrite.maven.migrate.GraalVMSDK
-displayName: Migrate to hibernate-jakarta artifacts
-tags:
-  - graalvm
-  - javax
-  - jakarta
-recipeList:
-  - org.openrewrite.maven.ChangeDependencyGroupIdAndArtifactId:
-      oldGroupId: org.graalvm.sdk
-      oldArtifactId: graal-sdk
-      newGroupId: org.graalvm.nativeimage
-      newArtifactId: svm
 ########################################################################
 #                   Quarkus 3 migration recipe
 ########################################################################
