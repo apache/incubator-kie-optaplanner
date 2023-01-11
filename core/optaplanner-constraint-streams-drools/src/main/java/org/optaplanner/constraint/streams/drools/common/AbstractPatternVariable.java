@@ -10,13 +10,11 @@ import java.util.stream.Stream;
 import org.drools.model.BetaIndex;
 import org.drools.model.BetaIndex2;
 import org.drools.model.BetaIndex3;
-import org.drools.model.BetaIndex4;
 import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.functions.Function1;
 import org.drools.model.functions.Function2;
 import org.drools.model.functions.Function3;
-import org.drools.model.functions.Function4;
 import org.drools.model.functions.Predicate1;
 import org.drools.model.functions.Predicate2;
 import org.drools.model.functions.Predicate3;
@@ -144,8 +142,7 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         return (Child_) this;
     }
 
-    static <PatternVar_, LeftJoinVar_> BetaIndex<PatternVar_, LeftJoinVar_, ?> createBetaIndex(JoinerType joinerType,
-            int mappingIndex,
+    private <LeftJoinVar_> BetaIndex<PatternVar_, LeftJoinVar_, ?> createBetaIndex(JoinerType joinerType, int mappingIndex,
             Function1<LeftJoinVar_, Object> leftMapping, Function1<PatternVar_, Object> rightExtractor) {
         if (joinerType == JoinerType.EQUAL) {
             return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping,
@@ -173,7 +170,7 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         return (Child_) this;
     }
 
-    static <PatternVar_, LeftJoinVarA_, LeftJoinVarB_> BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, ?> createBetaIndex(
+    private <LeftJoinVarA_, LeftJoinVarB_> BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, ?> createBetaIndex(
             JoinerType joinerType, int mappingIndex, Function2<LeftJoinVarA_, LeftJoinVarB_, Object> leftMapping,
             Function1<PatternVar_, Object> rightExtractor) {
         if (joinerType == JoinerType.EQUAL) {
@@ -204,24 +201,9 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         return (Child_) this;
     }
 
-    static <PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_>
+    private <LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_>
             BetaIndex3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, ?> createBetaIndex(JoinerType joinerType,
                     int mappingIndex, Function3<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> leftMapping,
-                    Function1<PatternVar_, Object> rightExtractor) {
-        if (joinerType == JoinerType.EQUAL) {
-            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping,
-                    Object.class);
-        } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
-            JoinerType reversedJoinerType = joinerType.flip();
-            return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
-                    (Function1) rightExtractor, leftMapping, Comparable.class);
-        }
-    }
-
-    static <PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, LeftJoinVarD_>
-            BetaIndex4<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, LeftJoinVarD_, ?>
-            createBetaIndex(JoinerType joinerType, int mappingIndex,
-                    Function4<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, LeftJoinVarD_, Object> leftMapping,
                     Function1<PatternVar_, Object> rightExtractor) {
         if (joinerType == JoinerType.EQUAL) {
             return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping,

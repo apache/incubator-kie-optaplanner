@@ -3,6 +3,7 @@ package org.optaplanner.constraint.streams.drools.common;
 import static java.util.Collections.singletonList;
 import static org.drools.model.DSL.exists;
 import static org.drools.model.DSL.not;
+import static org.drools.model.PatternDSL.betaIndexedBy;
 import static org.drools.model.PatternDSL.pattern;
 
 import java.math.BigDecimal;
@@ -108,7 +109,14 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         JoinerType joinerType = joiner.getJoinerType(mappingIndex);
         Function4<A, B, C, D, Object> leftMapping = internalsFactory.convert(joiner.getLeftMapping(mappingIndex));
         Function1<E, Object> rightMapping = internalsFactory.convert(joiner.getRightMapping(mappingIndex));
-        return AbstractPatternVariable.createBetaIndex(joinerType, mappingIndex, leftMapping, rightMapping);
+        if (joinerType == JoinerType.EQUAL) {
+            return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightMapping, leftMapping,
+                    Object.class);
+        } else { // Drools beta index on LT/LTE/GT/GTE requires Comparable.
+            JoinerType reversedJoinerType = joinerType.flip();
+            return betaIndexedBy(Comparable.class, getConstraintType(reversedJoinerType), mappingIndex,
+                    (Function1) rightMapping, leftMapping, Comparable.class);
+        }
     }
 
     private <E> QuadLeftHandSide<A, B, C, D> applyFilters(PatternDSL.PatternDef<E> existencePattern,
