@@ -98,23 +98,24 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
 
     @Override
     public final Child_ filter(Predicate1<A> predicate) {
-        pattern.expr("Filter using " + predicate, internalsFactory.initPredicate(a -> predicate.test(extract(a))));
+        pattern.expr("Filter using " + predicate, a -> predicate.test(extract(a)));
         return (Child_) this;
     }
 
     @Override
-    public final <LeftJoinVar_> Child_ filter(Predicate2<LeftJoinVar_, A> predicate, Variable<LeftJoinVar_> leftJoinVariable) {
+    public final <LeftJoinVar_> Child_ filter(Predicate2<LeftJoinVar_, A> predicate,
+            Variable<LeftJoinVar_> leftJoinVariable) {
         pattern.expr("Filter using " + predicate, leftJoinVariable,
-                internalsFactory.initPredicate((a, leftJoinVar) -> predicate.test(leftJoinVar, extract(a))));
+                (a, leftJoinVar) -> predicate.test(leftJoinVar, extract(a)));
         return (Child_) this;
     }
 
     @Override
-    public final <LeftJoinVarA_, LeftJoinVarB_> Child_ filter(Predicate3<LeftJoinVarA_, LeftJoinVarB_, A> predicate,
-            Variable<LeftJoinVarA_> leftJoinVariableA, Variable<LeftJoinVarB_> leftJoinVariableB) {
+    public final <LeftJoinVarA_, LeftJoinVarB_> Child_ filter(
+            Predicate3<LeftJoinVarA_, LeftJoinVarB_, A> predicate, Variable<LeftJoinVarA_> leftJoinVariableA,
+            Variable<LeftJoinVarB_> leftJoinVariableB) {
         pattern.expr("Filter using " + predicate, leftJoinVariableA, leftJoinVariableB,
-                internalsFactory.initPredicate(
-                        (a, leftJoinVarA, leftJoinVarB) -> predicate.test(leftJoinVarA, leftJoinVarB, extract(a))));
+                (a, leftJoinVarA, leftJoinVarB) -> predicate.test(leftJoinVarA, leftJoinVarB, extract(a)));
         return (Child_) this;
     }
 
@@ -124,8 +125,8 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
             Variable<LeftJoinVarA_> leftJoinVariableA, Variable<LeftJoinVarB_> leftJoinVariableB,
             Variable<LeftJoinVarC_> leftJoinVariableC) {
         pattern.expr("Filter using " + predicate, leftJoinVariableA, leftJoinVariableB, leftJoinVariableC,
-                internalsFactory.initPredicate((a, leftJoinVarA, leftJoinVarB, leftJoinVarC) -> predicate.test(leftJoinVarA,
-                        leftJoinVarB, leftJoinVarC, extract(a))));
+                (a, leftJoinVarA, leftJoinVarB, leftJoinVarC) -> predicate.test(leftJoinVarA, leftJoinVarB, leftJoinVarC,
+                        extract(a)));
         return (Child_) this;
     }
 
@@ -134,16 +135,18 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
             DefaultBiJoiner<LeftJoinVar_, A> joiner, JoinerType joinerType, int mappingIndex) {
         Function1<LeftJoinVar_, Object> leftMapping = internalsFactory.convert(joiner.getLeftMapping(mappingIndex));
         Function1<A, Object> rightMapping = internalsFactory.convert(joiner.getRightMapping(mappingIndex));
-        Function1<PatternVar_, Object> rightExtractor = internalsFactory.initFunction(b -> rightMapping.apply(extract(b)));
+        Function1<PatternVar_, Object> rightExtractor = b -> rightMapping.apply(extract(b));
         Predicate2<PatternVar_, LeftJoinVar_> predicate =
-                internalsFactory.initPredicate((b, a) -> joinerType.matches(leftMapping.apply(a), rightExtractor.apply(b)));
-        BetaIndex<PatternVar_, LeftJoinVar_, ?> index = createBetaIndex(joinerType, mappingIndex, leftMapping, rightExtractor);
+                (b, a) -> joinerType.matches(leftMapping.apply(a), rightExtractor.apply(b));
+        BetaIndex<PatternVar_, LeftJoinVar_, ?> index =
+                createBetaIndex(joinerType, mappingIndex, leftMapping, rightExtractor);
         pattern.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVar, predicate, index);
         return (Child_) this;
     }
 
     static <PatternVar_, LeftJoinVar_> BetaIndex<PatternVar_, LeftJoinVar_, ?> createBetaIndex(JoinerType joinerType,
-            int mappingIndex, Function1<LeftJoinVar_, Object> leftMapping, Function1<PatternVar_, Object> rightExtractor) {
+            int mappingIndex,
+            Function1<LeftJoinVar_, Object> leftMapping, Function1<PatternVar_, Object> rightExtractor) {
         if (joinerType == JoinerType.EQUAL) {
             return betaIndexedBy(Object.class, getConstraintType(joinerType), mappingIndex, rightExtractor, leftMapping,
                     Object.class);
@@ -161,9 +164,9 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         Function2<LeftJoinVarA_, LeftJoinVarB_, Object> leftMapping =
                 internalsFactory.convert(joiner.getLeftMapping(mappingIndex));
         Function1<A, Object> rightMapping = internalsFactory.convert(joiner.getRightMapping(mappingIndex));
-        Function1<PatternVar_, Object> rightExtractor = internalsFactory.initFunction(b -> rightMapping.apply(extract(b)));
-        Predicate3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_> predicate = internalsFactory
-                .initPredicate((c, a, b) -> joinerType.matches(leftMapping.apply(a, b), rightExtractor.apply(c)));
+        Function1<PatternVar_, Object> rightExtractor = b -> rightMapping.apply(extract(b));
+        Predicate3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_> predicate =
+                (c, a, b) -> joinerType.matches(leftMapping.apply(a, b), rightExtractor.apply(c));
         BetaIndex2<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, ?> index =
                 createBetaIndex(joinerType, mappingIndex, leftMapping, rightExtractor);
         pattern.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB, predicate, index);
@@ -191,14 +194,13 @@ abstract class AbstractPatternVariable<A, PatternVar_, Child_ extends AbstractPa
         Function3<LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, Object> leftMapping =
                 internalsFactory.convert(joiner.getLeftMapping(mappingIndex));
         Function1<A, Object> rightMapping = internalsFactory.convert(joiner.getRightMapping(mappingIndex));
-        Function1<PatternVar_, Object> rightExtractor = internalsFactory.initFunction(b -> rightMapping.apply(extract(b)));
+        Function1<PatternVar_, Object> rightExtractor = b -> rightMapping.apply(extract(b));
         Predicate4<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_> predicate =
-                internalsFactory
-                        .initPredicate((d, a, b, c) -> joinerType.matches(leftMapping.apply(a, b, c), rightExtractor.apply(d)));
+                (d, a, b, c) -> joinerType.matches(leftMapping.apply(a, b, c), rightExtractor.apply(d));
         BetaIndex3<PatternVar_, LeftJoinVarA_, LeftJoinVarB_, LeftJoinVarC_, ?> index =
                 createBetaIndex(joinerType, mappingIndex, leftMapping, rightExtractor);
-        pattern.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB, leftJoinVarC,
-                predicate, index);
+        pattern.expr("Join using joiner #" + mappingIndex + " in " + joiner, leftJoinVarA, leftJoinVarB,
+                leftJoinVarC, predicate, index);
         return (Child_) this;
     }
 

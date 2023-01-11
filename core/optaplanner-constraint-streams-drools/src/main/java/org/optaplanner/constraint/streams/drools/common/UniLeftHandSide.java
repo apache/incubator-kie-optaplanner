@@ -121,8 +121,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
             JoinerType joinerType = joiner.getJoinerType(mappingIndex);
             Function1<A, Object> leftMapping = internalsFactory.convert(joiner.getLeftMapping(mappingIndex));
             Function1<B, Object> rightMapping = internalsFactory.convert(joiner.getRightMapping(mappingIndex));
-            Predicate2<B, A> joinPredicate =
-                    internalsFactory.initPredicate((b, a) -> joinerType.matches(leftMapping.apply(a), rightMapping.apply(b)));
+            Predicate2<B, A> joinPredicate = (b, a) -> joinerType.matches(leftMapping.apply(a), rightMapping.apply(b));
             existencePattern = existencePattern.expr("Join using joiner #" + mappingIndex + " in " + joiner,
                     patternVariable.getPrimaryVariable(), joinPredicate, createBetaIndex(joiner, mappingIndex));
         }
@@ -140,7 +139,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
             boolean shouldExist) {
         PatternDSL.PatternDef<B> possiblyFilteredExistencePattern = predicate == null ? existencePattern
                 : existencePattern.expr("Filter using " + predicate, patternVariable.getPrimaryVariable(),
-                        internalsFactory.initPredicate((b, a) -> predicate.test(a, b)));
+                        (b, a) -> predicate.test(a, b));
         ViewItem<?> existenceExpression = exists(possiblyFilteredExistencePattern);
         if (!shouldExist) {
             existenceExpression = not(possiblyFilteredExistencePattern);
@@ -429,8 +428,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
             Function1<A, GroupKey_> groupKeyExtractor, AccumulateFunction... accFunctions) {
         Variable<A> input = patternVariable.getPrimaryVariable();
         ViewItem<?> innerGroupByPattern = joinViewItemsWithLogicalAnd(patternVariable);
-        return DSL.groupBy(innerGroupByPattern, input, groupKey, internalsFactory.initFunction(groupKeyExtractor),
-                accFunctions);
+        return DSL.groupBy(innerGroupByPattern, input, groupKey, groupKeyExtractor, accFunctions);
     }
 
 }
