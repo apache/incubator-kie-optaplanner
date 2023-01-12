@@ -10,13 +10,14 @@ ${mvn_cmd} clean install -Dquickly
 project_version=$(${mvn_cmd} help:evaluate -Dexpression=project.version -q -DforceStdout)
 
 # Run the recipe.
-${mvn_cmd} org.openrewrite.maven:rewrite-maven-plugin:4.38.2:run \
+${mvn_cmd} rewrite:run \
   -Drewrite.configLocation="${optaplanner_file}" \
   -Drewrite.recipeArtifactCoordinates=org.optaplanner:optaplanner-migration:"$project_version" \
   -Drewrite.exclusions=optaplanner-operator/** \
   -Drewrite.activeRecipes=org.optaplanner.openrewrite.Quarkus3 \
   -Dfull \
   -Dquickly \
+  -Djakarta.migration \
 
 # Commit the changes.
 git status

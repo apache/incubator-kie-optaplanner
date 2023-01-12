@@ -38,6 +38,7 @@
          the default GroupId:ArtifactId to map both main branch and 7.x branches to the same SonarCloud project.
          As the sonar.moduleKey inherits the value of sonar.projectKey by default, we have to override it too. -->
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+    <version.rewrite.plugin>4.38.2</version.rewrite.plugin>
   </properties>
 
   <distributionManagement>
@@ -125,6 +126,7 @@
     <module>optaplanner-quarkus-integration</module>
     <module>optaplanner-migration</module>
     <module>optaplanner-examples</module>
+    <module>optaplanner-operator</module>
   </modules>
 
   <profiles>
@@ -151,6 +153,25 @@
       <modules>
         <module>optaplanner-operator</module>
       </modules>
+    </profile>
+    <profile>
+      <id>jakartaMigration</id>
+      <activation>
+        <property>
+          <name>jakarta.migration</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.openrewrite.maven</groupId>
+              <artifactId>rewrite-maven-plugin</artifactId>
+              <version>${version.rewrite.plugin}</version>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
     </profile>
   </profiles>
 </project>
