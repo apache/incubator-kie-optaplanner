@@ -17,7 +17,7 @@ ${mvn_cmd} rewrite:run \
   -Drewrite.activeRecipes=org.optaplanner.openrewrite.Quarkus3 \
   -Dfull \
   -Dquickly \
-  -Djakarta.migration \
+  -Dmigration \
 
 # Commit the changes.
 git status

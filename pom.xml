@@ -155,10 +155,15 @@
       </modules>
     </profile>
     <profile>
-      <id>jakartaMigration</id>
+      <!--
+        Migration to OptaPlanner 9 involves upgrading to Quarkus 3, Spring Boot 3 and migrating to jakarta.* packages.
+        OptaPlanner 8 remains compatible with Quarkus 2, Spring Boot 2 and javax.* packages.
+        Both OptaPlanner 8 and 9 are functionally equal and will be released simultaneously.
+      -->
+      <id>8-to-9-migration</id>
       <activation>
         <property>
-          <name>jakarta.migration</name>
+          <name>migration</name>
         </property>
       </activation>
       <build>
