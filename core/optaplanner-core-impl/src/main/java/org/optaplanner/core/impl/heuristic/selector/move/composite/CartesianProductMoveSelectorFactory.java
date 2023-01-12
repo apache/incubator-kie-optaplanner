@@ -12,16 +12,15 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
 public class CartesianProductMoveSelectorFactory<Solution_>
         extends AbstractCompositeMoveSelectorFactory<Solution_, CartesianProductMoveSelectorConfig> {
 
-    public CartesianProductMoveSelectorFactory(CartesianProductMoveSelectorConfig moveSelectorConfig,
-            ClassInstanceCache instanceCache) {
-        super(moveSelectorConfig, instanceCache);
+    public CartesianProductMoveSelectorFactory(CartesianProductMoveSelectorConfig moveSelectorConfig) {
+        super(moveSelectorConfig);
     }
 
     @Override
     public MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
+            SelectionCacheType minimumCacheType, boolean randomSelection, ClassInstanceCache instanceCache) {
         List<MoveSelector<Solution_>> moveSelectorList = buildInnerMoveSelectors(config.getMoveSelectorList(),
-                configPolicy, minimumCacheType, randomSelection);
+                configPolicy, minimumCacheType, randomSelection, instanceCache);
         boolean ignoreEmptyChildIterators_ = Objects.requireNonNullElse(config.getIgnoreEmptyChildIterators(), true);
         return new CartesianProductMoveSelector<>(moveSelectorList, ignoreEmptyChildIterators_, randomSelection);
     }

@@ -30,10 +30,9 @@ class EntitySelectorFactoryTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        EntitySelector<TestdataSolution> entitySelector =
-                EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig, ClassInstanceCache.create())
-                        .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME,
-                                SelectionOrder.RANDOM);
+        EntitySelector<TestdataSolution> entitySelector = EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig)
+                .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM,
+                        ClassInstanceCache.create());
         assertThat(entitySelector)
                 .isInstanceOf(FromSolutionEntitySelector.class);
         assertThat(entitySelector)
@@ -46,10 +45,9 @@ class EntitySelectorFactoryTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.STEP);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        EntitySelector<TestdataSolution> entitySelector =
-                EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig, ClassInstanceCache.create())
-                        .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME,
-                                SelectionOrder.RANDOM);
+        EntitySelector<TestdataSolution> entitySelector = EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig)
+                .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM,
+                        ClassInstanceCache.create());
         assertThat(entitySelector)
                 .isInstanceOf(FromSolutionEntitySelector.class);
         assertThat(entitySelector)
@@ -62,10 +60,9 @@ class EntitySelectorFactoryTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        EntitySelector<TestdataSolution> entitySelector =
-                EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig, ClassInstanceCache.create())
-                        .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME,
-                                SelectionOrder.RANDOM);
+        EntitySelector<TestdataSolution> entitySelector = EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig)
+                .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM,
+                        ClassInstanceCache.create());
         assertThat(entitySelector)
                 .isInstanceOf(FromSolutionEntitySelector.class);
         // cacheType gets upgraded to STEP
@@ -77,10 +74,9 @@ class EntitySelectorFactoryTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        EntitySelector<TestdataSolution> entitySelector =
-                EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig, ClassInstanceCache.create())
-                        .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME,
-                                SelectionOrder.RANDOM);
+        EntitySelector<TestdataSolution> entitySelector = EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig)
+                .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM,
+                        ClassInstanceCache.create());
         assertThat(entitySelector)
                 .isInstanceOf(FromSolutionEntitySelector.class);
         assertThat(entitySelector)
@@ -93,10 +89,9 @@ class EntitySelectorFactoryTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.STEP);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        EntitySelector<TestdataSolution> entitySelector =
-                EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig, ClassInstanceCache.create())
-                        .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME,
-                                SelectionOrder.RANDOM);
+        EntitySelector<TestdataSolution> entitySelector = EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig)
+                .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM,
+                        ClassInstanceCache.create());
         assertThat(entitySelector)
                 .isInstanceOf(FromSolutionEntitySelector.class);
         assertThat(entitySelector)
@@ -109,10 +104,9 @@ class EntitySelectorFactoryTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        EntitySelector<TestdataSolution> entitySelector =
-                EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig, ClassInstanceCache.create())
-                        .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME,
-                                SelectionOrder.RANDOM);
+        EntitySelector<TestdataSolution> entitySelector = EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig)
+                .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM,
+                        ClassInstanceCache.create());
         assertThat(entitySelector)
                 .isInstanceOf(FromSolutionEntitySelector.class);
         // cacheType gets upgraded to STEP
@@ -124,10 +118,9 @@ class EntitySelectorFactoryTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        EntitySelector<TestdataSolution> entitySelector =
-                EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig, ClassInstanceCache.create())
-                        .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME,
-                                SelectionOrder.RANDOM);
+        EntitySelector<TestdataSolution> entitySelector = EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig)
+                .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM,
+                        ClassInstanceCache.create());
         assertThat(entitySelector)
                 .isInstanceOf(ShufflingEntitySelector.class);
         assertThat(((ShufflingEntitySelector<TestdataSolution>) entitySelector).getChildEntitySelector())
@@ -140,10 +133,9 @@ class EntitySelectorFactoryTest {
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
         entitySelectorConfig.setCacheType(SelectionCacheType.STEP);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        EntitySelector<TestdataSolution> entitySelector =
-                EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig, ClassInstanceCache.create())
-                        .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME,
-                                SelectionOrder.RANDOM);
+        EntitySelector<TestdataSolution> entitySelector = EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig)
+                .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM,
+                        ClassInstanceCache.create());
         assertThat(entitySelector)
                 .isInstanceOf(ShufflingEntitySelector.class);
         assertThat(((ShufflingEntitySelector<TestdataSolution>) entitySelector).getChildEntitySelector())
@@ -157,10 +149,9 @@ class EntitySelectorFactoryTest {
         entitySelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         entitySelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
         assertThatIllegalArgumentException()
-                .isThrownBy(
-                        () -> EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig, ClassInstanceCache.create())
-                                .buildEntitySelector(buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME,
-                                        SelectionOrder.RANDOM));
+                .isThrownBy(() -> EntitySelectorFactory.<TestdataSolution> create(entitySelectorConfig).buildEntitySelector(
+                        buildHeuristicConfigPolicy(), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM,
+                        ClassInstanceCache.create()));
     }
 
     @Test
@@ -179,12 +170,12 @@ class EntitySelectorFactoryTest {
 
     private void applySorting(EntitySelectorConfig entitySelectorConfig) {
         EntitySelectorFactory<TestdataSolution> entitySelectorFactory =
-                EntitySelectorFactory.create(entitySelectorConfig, ClassInstanceCache.create());
+                EntitySelectorFactory.create(entitySelectorConfig);
         entitySelectorFactory.validateSorting(SelectionOrder.SORTED);
 
         EntitySelector<TestdataSolution> baseEntitySelector = mock(EntitySelector.class);
-        EntitySelector<TestdataSolution> resultingEntitySelector =
-                entitySelectorFactory.applySorting(SelectionCacheType.PHASE, SelectionOrder.SORTED, baseEntitySelector);
+        EntitySelector<TestdataSolution> resultingEntitySelector = entitySelectorFactory.applySorting(SelectionCacheType.PHASE,
+                SelectionOrder.SORTED, baseEntitySelector, ClassInstanceCache.create());
         assertThat(resultingEntitySelector).isExactlyInstanceOf(SortingEntitySelector.class);
     }
 
@@ -196,10 +187,10 @@ class EntitySelectorFactoryTest {
         EntitySelector<TestdataSolution> baseValueSelector =
                 SelectorTestUtils.mockEntitySelector(TestdataEntity.class, new TestdataEntity("e1"));
         EntitySelectorFactory<TestdataSolution> entitySelectorFactory =
-                EntitySelectorFactory.create(entitySelectorConfig, ClassInstanceCache.create());
+                EntitySelectorFactory.create(entitySelectorConfig);
         entitySelectorFactory.validateProbability(SelectionOrder.PROBABILISTIC);
         EntitySelector<TestdataSolution> resultingEntitySelector = entitySelectorFactory.applyProbability(
-                SelectionCacheType.PHASE, SelectionOrder.PROBABILISTIC, baseValueSelector);
+                SelectionCacheType.PHASE, SelectionOrder.PROBABILISTIC, baseValueSelector, ClassInstanceCache.create());
         assertThat(resultingEntitySelector).isExactlyInstanceOf(ProbabilityEntitySelector.class);
     }
 
@@ -210,7 +201,7 @@ class EntitySelectorFactoryTest {
         entitySelectorConfig.setMimicSelectorRef("someSelectorId");
 
         assertThatIllegalArgumentException().isThrownBy(
-                () -> EntitySelectorFactory.create(entitySelectorConfig, ClassInstanceCache.create())
+                () -> EntitySelectorFactory.create(entitySelectorConfig)
                         .buildMimicReplaying(mock(HeuristicConfigPolicy.class)))
                 .withMessageContaining("has another property");
     }

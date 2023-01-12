@@ -15,13 +15,14 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 public class DefaultCustomPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_, CustomPhaseConfig> {
 
-    public DefaultCustomPhaseFactory(CustomPhaseConfig phaseConfig, ClassInstanceCache instanceCache) {
-        super(phaseConfig, instanceCache);
+    public DefaultCustomPhaseFactory(CustomPhaseConfig phaseConfig) {
+        super(phaseConfig);
     }
 
     @Override
     public CustomPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination,
+            ClassInstanceCache instanceCache) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         if (ConfigUtils.isEmptyCollection(phaseConfig.getCustomPhaseCommandClassList())
                 && ConfigUtils.isEmptyCollection(phaseConfig.getCustomPhaseCommandList())) {
@@ -38,12 +39,9 @@ public class DefaultCustomPhaseFactory<Solution_> extends AbstractPhaseFactory<S
         if (phaseConfig.getCustomPhaseCommandList() != null) {
             customPhaseCommandList_.addAll((Collection) phaseConfig.getCustomPhaseCommandList());
         }
-        DefaultCustomPhase.Builder<Solution_> builder = new DefaultCustomPhase.Builder<>(
-                phaseIndex,
-                solverConfigPolicy.getLogIndentation(),
-                buildPhaseTermination(phaseConfigPolicy, solverTermination),
-                customPhaseCommandList_,
-                instanceCache);
+        DefaultCustomPhase.Builder<Solution_> builder =
+                new DefaultCustomPhase.Builder<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
+                        buildPhaseTermination(phaseConfigPolicy, solverTermination), customPhaseCommandList_);
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             builder.setAssertStepScoreFromScratch(true);

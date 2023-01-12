@@ -26,25 +26,27 @@ public class QueuedValuePlacerFactory<Solution_>
                 + templateMoveSelectorConfig + ") and the <queuedValuePlacer> does not support unfolding those yet.");
     }
 
-    public QueuedValuePlacerFactory(QueuedValuePlacerConfig placerConfig, ClassInstanceCache instanceCache) {
-        super(placerConfig, instanceCache);
+    public QueuedValuePlacerFactory(QueuedValuePlacerConfig placerConfig) {
+        super(placerConfig);
     }
 
     @Override
-    public QueuedValuePlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy) {
+    public QueuedValuePlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy,
+            ClassInstanceCache instanceCache) {
         EntityDescriptor<Solution_> entityDescriptor = deduceEntityDescriptor(configPolicy, config.getEntityClass());
         ValueSelectorConfig valueSelectorConfig_ = buildValueSelectorConfig(configPolicy, entityDescriptor);
-        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig_, instanceCache)
+        // TODO improve the ValueSelectorFactory API (avoid the boolean flags).
+        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig_)
                 .buildValueSelector(configPolicy, entityDescriptor, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL,
-                        false, true); // TODO improve the ValueSelectorFactory API (avoid the boolean flags).
+                        false, true, instanceCache);
 
         MoveSelectorConfig moveSelectorConfig_ = config.getMoveSelectorConfig() == null
                 ? buildChangeMoveSelectorConfig(configPolicy, valueSelectorConfig_.getId(),
                         valueSelector.getVariableDescriptor())
                 : config.getMoveSelectorConfig();
 
-        MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig_, instanceCache)
-                .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
+        MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig_)
+                .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL, instanceCache);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The queuedValuePlacer (" + this
                     + ") needs to be based on an "

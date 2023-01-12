@@ -9,7 +9,6 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSel
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.constructionheuristic.placer.PooledEntityPlacerFactory;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
@@ -22,7 +21,7 @@ class PooledEntityPlacerFactoryTest {
 
         HeuristicConfigPolicy<TestdataSolution> configPolicy = buildHeuristicConfigPolicy();
         PooledEntityPlacerConfig placerConfig =
-                PooledEntityPlacerFactory.unfoldNew(configPolicy, moveSelectorConfig, ClassInstanceCache.create());
+                PooledEntityPlacerFactory.unfoldNew(configPolicy, moveSelectorConfig);
 
         assertThat(placerConfig.getMoveSelectorConfig()).isExactlyInstanceOf(ChangeMoveSelectorConfig.class);
 

@@ -16,15 +16,15 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
 public class UnionMoveSelectorFactory<Solution_>
         extends AbstractCompositeMoveSelectorFactory<Solution_, UnionMoveSelectorConfig> {
 
-    public UnionMoveSelectorFactory(UnionMoveSelectorConfig moveSelectorConfig, ClassInstanceCache instanceCache) {
-        super(moveSelectorConfig, instanceCache);
+    public UnionMoveSelectorFactory(UnionMoveSelectorConfig moveSelectorConfig) {
+        super(moveSelectorConfig);
     }
 
     @Override
     public MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
+            SelectionCacheType minimumCacheType, boolean randomSelection, ClassInstanceCache instanceCache) {
         List<MoveSelector<Solution_>> moveSelectorList = buildInnerMoveSelectors(config.getMoveSelectorList(),
-                configPolicy, minimumCacheType, randomSelection);
+                configPolicy, minimumCacheType, randomSelection, instanceCache);
 
         SelectionProbabilityWeightFactory<Solution_, MoveSelector<Solution_>> selectorProbabilityWeightFactory;
         if (config.getSelectorProbabilityWeightFactoryClass() != null) {

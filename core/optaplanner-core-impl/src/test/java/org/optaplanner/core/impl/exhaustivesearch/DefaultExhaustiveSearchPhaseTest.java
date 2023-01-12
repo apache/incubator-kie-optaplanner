@@ -25,7 +25,6 @@ import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchStepScop
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -81,7 +80,7 @@ class DefaultExhaustiveSearchPhaseTest {
         when(stepScope.getExpandingNode()).thenReturn(node4B);
 
         DefaultExhaustiveSearchPhase<TestdataSolution> phase = new DefaultExhaustiveSearchPhase.Builder<>(0, "", null, null,
-                mock(EntitySelector.class), mock(ExhaustiveSearchDecider.class), ClassInstanceCache.create()).build();
+                mock(EntitySelector.class), mock(ExhaustiveSearchDecider.class)).build();
         phase.restoreWorkingSolution(stepScope);
 
         verify(node0.getMove(), times(0)).doMove(any(ScoreDirector.class));

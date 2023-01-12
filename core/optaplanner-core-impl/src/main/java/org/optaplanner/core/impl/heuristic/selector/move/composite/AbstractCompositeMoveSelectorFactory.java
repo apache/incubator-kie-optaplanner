@@ -15,19 +15,19 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
 abstract class AbstractCompositeMoveSelectorFactory<Solution_, MoveSelectorConfig_ extends MoveSelectorConfig<MoveSelectorConfig_>>
         extends AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_> {
 
-    public AbstractCompositeMoveSelectorFactory(MoveSelectorConfig_ moveSelectorConfig, ClassInstanceCache instanceCache) {
-        super(moveSelectorConfig, instanceCache);
+    public AbstractCompositeMoveSelectorFactory(MoveSelectorConfig_ moveSelectorConfig) {
+        super(moveSelectorConfig);
     }
 
     protected List<MoveSelector<Solution_>> buildInnerMoveSelectors(List<MoveSelectorConfig> innerMoveSelectorList,
             HeuristicConfigPolicy<Solution_> configPolicy, SelectionCacheType minimumCacheType,
-            boolean randomSelection) {
+            boolean randomSelection, ClassInstanceCache instanceCache) {
         return innerMoveSelectorList.stream()
                 .map(moveSelectorConfig -> {
-                    MoveSelectorFactory<Solution_> innerMoveSelectorFactory =
-                            MoveSelectorFactory.create(moveSelectorConfig, instanceCache);
+                    MoveSelectorFactory<Solution_> innerMoveSelectorFactory = MoveSelectorFactory.create(moveSelectorConfig);
                     SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
-                    return innerMoveSelectorFactory.buildMoveSelector(configPolicy, minimumCacheType, selectionOrder);
+                    return innerMoveSelectorFactory.buildMoveSelector(configPolicy, minimumCacheType, selectionOrder,
+                            instanceCache);
                 }).collect(Collectors.toList());
     }
 }

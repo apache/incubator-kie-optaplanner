@@ -50,13 +50,12 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
 public class ValueSelectorFactory<Solution_>
         extends AbstractSelectorFactory<Solution_, ValueSelectorConfig> {
 
-    public static <Solution_> ValueSelectorFactory<Solution_> create(ValueSelectorConfig valueSelectorConfig,
-            ClassInstanceCache instanceCache) {
-        return new ValueSelectorFactory<>(valueSelectorConfig, instanceCache);
+    public static <Solution_> ValueSelectorFactory<Solution_> create(ValueSelectorConfig valueSelectorConfig) {
+        return new ValueSelectorFactory<>(valueSelectorConfig);
     }
 
-    public ValueSelectorFactory(ValueSelectorConfig valueSelectorConfig, ClassInstanceCache instanceCache) {
-        super(valueSelectorConfig, instanceCache);
+    public ValueSelectorFactory(ValueSelectorConfig valueSelectorConfig) {
+        super(valueSelectorConfig);
     }
 
     public GenuineVariableDescriptor<Solution_> extractVariableDescriptor(HeuristicConfigPolicy<Solution_> configPolicy,
@@ -83,15 +82,15 @@ public class ValueSelectorFactory<Solution_>
      */
     public ValueSelector<Solution_> buildValueSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             EntityDescriptor<Solution_> entityDescriptor, SelectionCacheType minimumCacheType,
-            SelectionOrder inheritedSelectionOrder) {
+            SelectionOrder inheritedSelectionOrder, ClassInstanceCache instanceCache) {
         return buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder,
-                configPolicy.isReinitializeVariableFilterEnabled(), false);
+                configPolicy.isReinitializeVariableFilterEnabled(), false, instanceCache);
     }
 
     public ValueSelector<Solution_> buildValueSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             EntityDescriptor<Solution_> entityDescriptor, SelectionCacheType minimumCacheType,
             SelectionOrder inheritedSelectionOrder, boolean applyReinitializeVariableFiltering,
-            boolean applyUnassignedValueFiltering) {
+            boolean applyUnassignedValueFiltering, ClassInstanceCache instanceCache) {
         GenuineVariableDescriptor<Solution_> variableDescriptor = deduceGenuineVariableDescriptor(
                 downcastEntityDescriptor(configPolicy, entityDescriptor), config.getVariableName());
         if (config.getMimicSelectorRef() != null) {
@@ -120,7 +119,7 @@ public class ValueSelectorFactory<Solution_>
         if (config.getNearbySelectionConfig() != null) {
             // TODO Static filtering (such as movableEntitySelectionFilter) should affect nearbySelection too
             valueSelector = applyNearbySelection(configPolicy, config.getNearbySelectionConfig(), minimumCacheType,
-                    resolvedSelectionOrder, valueSelector);
+                    resolvedSelectionOrder, valueSelector, instanceCache);
         }
         valueSelector = applyFiltering(valueSelector);
         valueSelector = applyInitializedChainedValueFilter(configPolicy, variableDescriptor, valueSelector);
@@ -454,12 +453,13 @@ public class ValueSelectorFactory<Solution_>
 
     private ValueSelector<Solution_> applyNearbySelection(HeuristicConfigPolicy<Solution_> configPolicy,
             NearbySelectionConfig nearbySelectionConfig, SelectionCacheType minimumCacheType,
-            SelectionOrder resolvedSelectionOrder, ValueSelector<Solution_> valueSelector) {
+            SelectionOrder resolvedSelectionOrder, ValueSelector<Solution_> valueSelector, ClassInstanceCache instanceCache) {
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
         EntitySelectorFactory<Solution_> entitySelectorFactory =
-                EntitySelectorFactory.create(nearbySelectionConfig.getOriginEntitySelectorConfig(), instanceCache);
+                EntitySelectorFactory.create(nearbySelectionConfig.getOriginEntitySelectorConfig());
         EntitySelector<Solution_> originEntitySelector =
-                entitySelectorFactory.buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder);
+                entitySelectorFactory.buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder,
+                        instanceCache);
         NearbyDistanceMeter<?, ?> nearbyDistanceMeter =
                 (NearbyDistanceMeter<?, ?>) ConfigUtils.newInstance(nearbySelectionConfig, "nearbyDistanceMeterClass",
                         nearbySelectionConfig.getNearbyDistanceMeterClass());

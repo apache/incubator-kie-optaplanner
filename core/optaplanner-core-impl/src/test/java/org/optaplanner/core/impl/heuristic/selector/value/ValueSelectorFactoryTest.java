@@ -39,9 +39,8 @@ class ValueSelectorFactoryTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        ValueSelector valueSelector =
-                ValueSelectorFactory.create(valueSelectorConfig, ClassInstanceCache.create()).buildValueSelector(configPolicy,
-                        entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
+                entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM, ClassInstanceCache.create());
         assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class)
                 .isNotInstanceOf(ShufflingValueSelector.class);
         assertThat(valueSelector.getCacheType()).isEqualTo(SelectionCacheType.PHASE);
@@ -55,9 +54,8 @@ class ValueSelectorFactoryTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        ValueSelector valueSelector =
-                ValueSelectorFactory.create(valueSelectorConfig, ClassInstanceCache.create()).buildValueSelector(configPolicy,
-                        entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
+                entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM, ClassInstanceCache.create());
         assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class)
                 .isNotInstanceOf(ShufflingValueSelector.class);
         // PHASE instead of STEP because these values are cacheable, so there's no reason not to cache them?
@@ -72,9 +70,8 @@ class ValueSelectorFactoryTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
-        ValueSelector valueSelector =
-                ValueSelectorFactory.create(valueSelectorConfig, ClassInstanceCache.create()).buildValueSelector(configPolicy,
-                        entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
+                entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM, ClassInstanceCache.create());
         assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class);
         // cacheType gets upgraded to STEP
         // assertEquals(SelectionCacheType.JUST_IN_TIME, valueSelector.getCacheType());
@@ -88,10 +85,8 @@ class ValueSelectorFactoryTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        ValueSelector valueSelector =
-                ValueSelectorFactory.create(valueSelectorConfig, ClassInstanceCache.create()).buildValueSelector(
-                        configPolicy, entityDescriptor,
-                        SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
+                entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM, ClassInstanceCache.create());
         assertThat(valueSelector)
                 .isInstanceOf(FromSolutionPropertyValueSelector.class);
         assertThat(valueSelector)
@@ -107,9 +102,8 @@ class ValueSelectorFactoryTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        ValueSelector valueSelector =
-                ValueSelectorFactory.create(valueSelectorConfig, ClassInstanceCache.create()).buildValueSelector(configPolicy,
-                        entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
+                entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM, ClassInstanceCache.create());
         assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class)
                 .isNotInstanceOf(ShufflingValueSelector.class);
         // PHASE instead of STEP because these values are cacheable, so there's no reason not to cache them?
@@ -124,9 +118,8 @@ class ValueSelectorFactoryTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        ValueSelector valueSelector =
-                ValueSelectorFactory.create(valueSelectorConfig, ClassInstanceCache.create()).buildValueSelector(configPolicy,
-                        entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
+                entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM, ClassInstanceCache.create());
         assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class);
         // cacheType gets upgraded to STEP
         // assertEquals(SelectionCacheType.JUST_IN_TIME, valueSelector.getCacheType());
@@ -140,9 +133,8 @@ class ValueSelectorFactoryTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        ValueSelector valueSelector =
-                ValueSelectorFactory.create(valueSelectorConfig, ClassInstanceCache.create()).buildValueSelector(configPolicy,
-                        entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
+                entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM, ClassInstanceCache.create());
         assertThat(valueSelector).isInstanceOf(ShufflingValueSelector.class);
         assertThat(((ShufflingValueSelector) valueSelector).getChildValueSelector())
                 .isInstanceOf(FromSolutionPropertyValueSelector.class);
@@ -157,9 +149,8 @@ class ValueSelectorFactoryTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        ValueSelector valueSelector =
-                ValueSelectorFactory.create(valueSelectorConfig, ClassInstanceCache.create()).buildValueSelector(configPolicy,
-                        entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
+                entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM, ClassInstanceCache.create());
         assertThat(valueSelector).isInstanceOf(ShufflingValueSelector.class);
         assertThat(((ShufflingValueSelector) valueSelector).getChildValueSelector())
                 .isInstanceOf(FromSolutionPropertyValueSelector.class);
@@ -174,9 +165,9 @@ class ValueSelectorFactoryTest {
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        assertThatIllegalArgumentException().isThrownBy(() -> ValueSelectorFactory
-                .create(valueSelectorConfig, ClassInstanceCache.create())
-                .buildValueSelector(configPolicy, entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
+                        entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM, ClassInstanceCache.create()));
     }
 
     @Test
@@ -187,7 +178,7 @@ class ValueSelectorFactoryTest {
         ValueSelector baseValueSelector =
                 SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value", new TestdataValue("v1"));
         ValueSelector resultingValueSelector =
-                ValueSelectorFactory.create(valueSelectorConfig, ClassInstanceCache.create()).applyFiltering(baseValueSelector);
+                ValueSelectorFactory.create(valueSelectorConfig).applyFiltering(baseValueSelector);
         assertThat(resultingValueSelector).isExactlyInstanceOf(FilteringValueSelector.class);
     }
 
@@ -198,7 +189,7 @@ class ValueSelectorFactoryTest {
 
         ValueSelector baseValueSelector = mock(EntityIndependentValueSelector.class);
         ValueSelectorFactory valueSelectorFactory =
-                ValueSelectorFactory.create(valueSelectorConfig, ClassInstanceCache.create());
+                ValueSelectorFactory.create(valueSelectorConfig);
         valueSelectorFactory.validateProbability(SelectionOrder.PROBABILISTIC);
         ValueSelector resultingValueSelector =
                 valueSelectorFactory.applyProbability(SelectionCacheType.PHASE, SelectionOrder.PROBABILISTIC,
@@ -222,7 +213,7 @@ class ValueSelectorFactoryTest {
 
     private void applySorting(ValueSelectorConfig valueSelectorConfig) {
         ValueSelectorFactory valueSelectorFactory =
-                ValueSelectorFactory.create(valueSelectorConfig, ClassInstanceCache.create());
+                ValueSelectorFactory.create(valueSelectorConfig);
         valueSelectorFactory.validateSorting(SelectionOrder.SORTED);
 
         ValueSelector baseValueSelector = mock(EntityIndependentValueSelector.class);
@@ -238,7 +229,7 @@ class ValueSelectorFactoryTest {
     @Test
     void applySortingFailsFast_withoutAnySorter() {
         ValueSelectorFactory valueSelectorFactory =
-                ValueSelectorFactory.create(new ValueSelectorConfig(), ClassInstanceCache.create());
+                ValueSelectorFactory.create(new ValueSelectorConfig());
         ValueSelector baseValueSelector = mock(ValueSelector.class);
         assertThatIllegalArgumentException().isThrownBy(
                 () -> valueSelectorFactory.applySorting(SelectionCacheType.PHASE, SelectionOrder.SORTED, baseValueSelector))
@@ -252,7 +243,7 @@ class ValueSelectorFactoryTest {
         valueSelectorConfig.setMimicSelectorRef("someSelectorId");
 
         assertThatIllegalArgumentException().isThrownBy(
-                () -> ValueSelectorFactory.create(valueSelectorConfig, ClassInstanceCache.create())
+                () -> ValueSelectorFactory.create(valueSelectorConfig)
                         .buildMimicReplaying(mock(HeuristicConfigPolicy.class)))
                 .withMessageContaining("has another property");
     }

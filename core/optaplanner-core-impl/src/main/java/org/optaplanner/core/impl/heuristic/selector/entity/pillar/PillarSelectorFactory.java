@@ -20,13 +20,12 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
 public class PillarSelectorFactory<Solution_>
         extends AbstractSelectorFactory<Solution_, PillarSelectorConfig> {
 
-    public static <Solution_> PillarSelectorFactory<Solution_> create(PillarSelectorConfig pillarSelectorConfig,
-            ClassInstanceCache instanceCache) {
-        return new PillarSelectorFactory<>(pillarSelectorConfig, instanceCache);
+    public static <Solution_> PillarSelectorFactory<Solution_> create(PillarSelectorConfig pillarSelectorConfig) {
+        return new PillarSelectorFactory<>(pillarSelectorConfig);
     }
 
-    public PillarSelectorFactory(PillarSelectorConfig pillarSelectorConfig, ClassInstanceCache instanceCache) {
-        super(pillarSelectorConfig, instanceCache);
+    public PillarSelectorFactory(PillarSelectorConfig pillarSelectorConfig) {
+        super(pillarSelectorConfig);
     }
 
     /**
@@ -38,12 +37,13 @@ public class PillarSelectorFactory<Solution_>
      *        and less would be pointless.
      * @param inheritedSelectionOrder never null
      * @param variableNameIncludeList sometimes null
+     * @param instanceCache
      * @return never null
      */
     public PillarSelector<Solution_> buildPillarSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SubPillarType subPillarType, Class<? extends Comparator<Object>> subPillarSequenceComparatorClass,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder,
-            List<String> variableNameIncludeList) {
+            List<String> variableNameIncludeList, ClassInstanceCache instanceCache) {
         if (subPillarType != SubPillarType.SEQUENCE && subPillarSequenceComparatorClass != null) {
             throw new IllegalArgumentException("Subpillar type (" + subPillarType + ") on pillarSelectorConfig (" + config +
                     ") is not " + SubPillarType.SEQUENCE + ", yet subPillarSequenceComparatorClass (" +
@@ -59,8 +59,9 @@ public class PillarSelectorFactory<Solution_>
         // EntitySelector uses SelectionOrder.ORIGINAL because a DefaultPillarSelector STEP caches the values
         EntitySelectorConfig entitySelectorConfig =
                 Objects.requireNonNullElseGet(config.getEntitySelectorConfig(), EntitySelectorConfig::new);
-        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig, instanceCache)
-                .buildEntitySelector(configPolicy, minimumCacheType, SelectionOrder.ORIGINAL);
+        EntitySelector<Solution_> entitySelector =
+                EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
+                        .buildEntitySelector(configPolicy, minimumCacheType, SelectionOrder.ORIGINAL, instanceCache);
         List<GenuineVariableDescriptor<Solution_>> variableDescriptors =
                 deduceVariableDescriptorList(entitySelector.getEntityDescriptor(), variableNameIncludeList);
         if (!subPillarEnabled
@@ -72,7 +73,7 @@ public class PillarSelectorFactory<Solution_>
 
         SubPillarConfigPolicy subPillarPolicy = subPillarEnabled
                 ? configureSubPillars(subPillarType, subPillarSequenceComparatorClass, entitySelector,
-                        config.getMinimumSubPillarSize(), config.getMaximumSubPillarSize())
+                        config.getMinimumSubPillarSize(), config.getMaximumSubPillarSize(), instanceCache)
                 : SubPillarConfigPolicy.withoutSubpillars();
         return new DefaultPillarSelector<>(entitySelector, variableDescriptors,
                 inheritedSelectionOrder.toRandomSelectionBoolean(), subPillarPolicy);
@@ -80,7 +81,7 @@ public class PillarSelectorFactory<Solution_>
 
     private SubPillarConfigPolicy configureSubPillars(SubPillarType pillarType,
             Class<? extends Comparator<Object>> pillarOrderComparatorClass, EntitySelector<Solution_> entitySelector,
-            Integer minimumSubPillarSize, Integer maximumSubPillarSize) {
+            Integer minimumSubPillarSize, Integer maximumSubPillarSize, ClassInstanceCache instanceCache) {
         int actualMinimumSubPillarSize = Objects.requireNonNullElse(minimumSubPillarSize, 1);
         int actualMaximumSubPillarSize = Objects.requireNonNullElse(maximumSubPillarSize, Integer.MAX_VALUE);
         if (pillarType == null) { // for backwards compatibility reasons

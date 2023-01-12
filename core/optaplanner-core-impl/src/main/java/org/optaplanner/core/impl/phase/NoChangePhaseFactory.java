@@ -8,15 +8,16 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 public class NoChangePhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_, NoChangePhaseConfig> {
 
-    public NoChangePhaseFactory(NoChangePhaseConfig phaseConfig, ClassInstanceCache instanceCache) {
-        super(phaseConfig, instanceCache);
+    public NoChangePhaseFactory(NoChangePhaseConfig phaseConfig) {
+        super(phaseConfig);
     }
 
     @Override
     public NoChangePhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination,
+            ClassInstanceCache instanceCache) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         return new NoChangePhase.Builder<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
-                buildPhaseTermination(phaseConfigPolicy, solverTermination), instanceCache).build();
+                buildPhaseTermination(phaseConfigPolicy, solverTermination)).build();
     }
 }

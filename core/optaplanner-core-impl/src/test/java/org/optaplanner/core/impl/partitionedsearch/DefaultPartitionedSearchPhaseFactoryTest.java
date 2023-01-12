@@ -44,7 +44,7 @@ class DefaultPartitionedSearchPhaseFactoryTest {
 
     private DefaultPartitionedSearchPhaseFactory<TestdataSolution> createDefaultPartitionedSearchPhaseFactory() {
         PartitionedSearchPhaseConfig phaseConfig = new PartitionedSearchPhaseConfig();
-        return new DefaultPartitionedSearchPhaseFactory<>(phaseConfig, ClassInstanceCache.create());
+        return new DefaultPartitionedSearchPhaseFactory<>(phaseConfig);
     }
 
     @Test
@@ -72,9 +72,9 @@ class DefaultPartitionedSearchPhaseFactoryTest {
         PartitionedSearchPhaseConfig phaseConfig = new PartitionedSearchPhaseConfig();
         phaseConfig.setSolutionPartitionerClass(TestdataSolutionPartitioner.class);
         DefaultPartitionedSearchPhaseFactory<TestdataSolution> partitionedSearchPhaseFactory =
-                new DefaultPartitionedSearchPhaseFactory<>(phaseConfig, ClassInstanceCache.create());
+                new DefaultPartitionedSearchPhaseFactory<>(phaseConfig);
         return (DefaultPartitionedSearchPhase<TestdataSolution>) partitionedSearchPhaseFactory.buildPhase(0,
-                heuristicConfigPolicy, mock(BestSolutionRecaller.class), mock(Termination.class));
+                heuristicConfigPolicy, mock(BestSolutionRecaller.class), mock(Termination.class), ClassInstanceCache.create());
     }
 
 }

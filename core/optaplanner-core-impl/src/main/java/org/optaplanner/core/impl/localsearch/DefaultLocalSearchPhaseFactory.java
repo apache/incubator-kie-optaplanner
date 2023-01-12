@@ -34,21 +34,19 @@ import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
 public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_, LocalSearchPhaseConfig> {
 
-    public DefaultLocalSearchPhaseFactory(LocalSearchPhaseConfig phaseConfig, ClassInstanceCache instanceCache) {
-        super(phaseConfig, instanceCache);
+    public DefaultLocalSearchPhaseFactory(LocalSearchPhaseConfig phaseConfig) {
+        super(phaseConfig);
     }
 
     @Override
     public LocalSearchPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination,
+            ClassInstanceCache instanceCache) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
-        DefaultLocalSearchPhase.Builder<Solution_> builder = new DefaultLocalSearchPhase.Builder<>(
-                phaseIndex,
-                solverConfigPolicy.getLogIndentation(),
-                phaseTermination,
-                buildDecider(phaseConfigPolicy, phaseTermination),
-                instanceCache);
+        DefaultLocalSearchPhase.Builder<Solution_> builder =
+                new DefaultLocalSearchPhase.Builder<>(phaseIndex, solverConfigPolicy.getLogIndentation(), phaseTermination,
+                        buildDecider(phaseConfigPolicy, phaseTermination, instanceCache));
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             builder.setAssertStepScoreFromScratch(true);
@@ -61,8 +59,8 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
     }
 
     private LocalSearchDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,
-            Termination<Solution_> termination) {
-        MoveSelector<Solution_> moveSelector = buildMoveSelector(configPolicy);
+            Termination<Solution_> termination, ClassInstanceCache instanceCache) {
+        MoveSelector<Solution_> moveSelector = buildMoveSelector(configPolicy, instanceCache);
         Acceptor<Solution_> acceptor = buildAcceptor(configPolicy);
         LocalSearchForager<Solution_> forager = buildForager(configPolicy);
         if (moveSelector.isNeverEnding() && !forager.supportsNeverEndingMoveSelector()) {
@@ -185,7 +183,8 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
         return LocalSearchForagerFactory.<Solution_> create(foragerConfig_).buildForager();
     }
 
-    protected MoveSelector<Solution_> buildMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy) {
+    protected MoveSelector<Solution_> buildMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
+            ClassInstanceCache instanceCache) {
         MoveSelector<Solution_> moveSelector;
         SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME;
         SelectionOrder defaultSelectionOrder;
@@ -199,11 +198,11 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
             UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig().withMoveSelectors(
                     new ChangeMoveSelectorConfig(),
                     new SwapMoveSelectorConfig());
-            moveSelector = new UnionMoveSelectorFactory<Solution_>(unionMoveSelectorConfig, instanceCache)
-                    .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
+            moveSelector = new UnionMoveSelectorFactory<Solution_>(unionMoveSelectorConfig)
+                    .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder, instanceCache);
         } else {
-            moveSelector = MoveSelectorFactory.<Solution_> create(phaseConfig.getMoveSelectorConfig(), instanceCache)
-                    .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
+            moveSelector = MoveSelectorFactory.<Solution_> create(phaseConfig.getMoveSelectorConfig())
+                    .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder, instanceCache);
         }
         return moveSelector;
     }

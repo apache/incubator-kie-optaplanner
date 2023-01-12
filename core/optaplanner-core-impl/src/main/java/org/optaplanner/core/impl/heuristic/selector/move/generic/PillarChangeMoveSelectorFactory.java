@@ -22,14 +22,13 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
 public class PillarChangeMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, PillarChangeMoveSelectorConfig> {
 
-    public PillarChangeMoveSelectorFactory(PillarChangeMoveSelectorConfig moveSelectorConfig,
-            ClassInstanceCache instanceCache) {
-        super(moveSelectorConfig, instanceCache);
+    public PillarChangeMoveSelectorFactory(PillarChangeMoveSelectorConfig moveSelectorConfig) {
+        super(moveSelectorConfig);
     }
 
     @Override
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
+            SelectionCacheType minimumCacheType, boolean randomSelection, ClassInstanceCache instanceCache) {
         PillarSelectorConfig pillarSelectorConfig =
                 Objects.requireNonNullElseGet(config.getPillarSelectorConfig(), PillarSelectorConfig::new);
         ValueSelectorConfig valueSelectorConfig =
@@ -38,12 +37,13 @@ public class PillarChangeMoveSelectorFactory<Solution_>
                 || config.getValueSelectorConfig().getVariableName() == null ? null
                         : Collections.singletonList(config.getValueSelectorConfig().getVariableName());
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
-        PillarSelector<Solution_> pillarSelector = PillarSelectorFactory.<Solution_> create(pillarSelectorConfig, instanceCache)
+        PillarSelector<Solution_> pillarSelector = PillarSelectorFactory.<Solution_> create(pillarSelectorConfig)
                 .buildPillarSelector(configPolicy, config.getSubPillarType(),
                         (Class<? extends Comparator<Object>>) config.getSubPillarSequenceComparatorClass(),
-                        minimumCacheType, selectionOrder, variableNameIncludeList);
-        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig, instanceCache)
-                .buildValueSelector(configPolicy, pillarSelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
+                        minimumCacheType, selectionOrder, variableNameIncludeList, instanceCache);
+        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig)
+                .buildValueSelector(configPolicy, pillarSelector.getEntityDescriptor(), minimumCacheType, selectionOrder,
+                        instanceCache);
         return new PillarChangeMoveSelector<>(pillarSelector, valueSelector, randomSelection);
     }
 }

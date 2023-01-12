@@ -39,13 +39,12 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<Solution_, EntitySelectorConfig> {
 
-    public static <Solution_> EntitySelectorFactory<Solution_> create(
-            EntitySelectorConfig entitySelectorConfig, ClassInstanceCache instanceCache) {
-        return new EntitySelectorFactory<>(entitySelectorConfig, instanceCache);
+    public static <Solution_> EntitySelectorFactory<Solution_> create(EntitySelectorConfig entitySelectorConfig) {
+        return new EntitySelectorFactory<>(entitySelectorConfig);
     }
 
-    public EntitySelectorFactory(EntitySelectorConfig entitySelectorConfig, ClassInstanceCache instanceCache) {
-        super(entitySelectorConfig, instanceCache);
+    public EntitySelectorFactory(EntitySelectorConfig entitySelectorConfig) {
+        super(entitySelectorConfig);
     }
 
     public EntityDescriptor<Solution_> extractEntityDescriptor(HeuristicConfigPolicy<Solution_> configPolicy) {
@@ -78,7 +77,7 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
      * @return never null
      */
     public EntitySelector<Solution_> buildEntitySelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder, ClassInstanceCache instanceCache) {
         if (config.getMimicSelectorRef() != null) {
             return buildMimicReplaying(configPolicy);
         }
@@ -102,11 +101,11 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
         if (config.getNearbySelectionConfig() != null) {
             // TODO Static filtering (such as movableEntitySelectionFilter) should affect nearbySelection
             entitySelector = applyNearbySelection(configPolicy, config.getNearbySelectionConfig(), minimumCacheType,
-                    resolvedSelectionOrder, entitySelector);
+                    resolvedSelectionOrder, entitySelector, instanceCache);
         }
-        entitySelector = applyFiltering(entitySelector);
-        entitySelector = applySorting(resolvedCacheType, resolvedSelectionOrder, entitySelector);
-        entitySelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, entitySelector);
+        entitySelector = applyFiltering(entitySelector, instanceCache);
+        entitySelector = applySorting(resolvedCacheType, resolvedSelectionOrder, entitySelector, instanceCache);
+        entitySelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, entitySelector, instanceCache);
         entitySelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applySelectedLimit(resolvedSelectionOrder, entitySelector);
@@ -178,12 +177,13 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
 
     private EntitySelector<Solution_> applyNearbySelection(HeuristicConfigPolicy<Solution_> configPolicy,
             NearbySelectionConfig nearbySelectionConfig, SelectionCacheType minimumCacheType,
-            SelectionOrder resolvedSelectionOrder, EntitySelector<Solution_> entitySelector) {
+            SelectionOrder resolvedSelectionOrder, EntitySelector<Solution_> entitySelector, ClassInstanceCache instanceCache) {
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
         EntitySelectorFactory<Solution_> entitySelectorFactory =
-                EntitySelectorFactory.create(nearbySelectionConfig.getOriginEntitySelectorConfig(), instanceCache);
+                EntitySelectorFactory.create(nearbySelectionConfig.getOriginEntitySelectorConfig());
         EntitySelector<Solution_> originEntitySelector =
-                entitySelectorFactory.buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder);
+                entitySelectorFactory.buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder,
+                        instanceCache);
         NearbyDistanceMeter nearbyDistanceMeter = instanceCache.newInstance(nearbySelectionConfig, "nearbyDistanceMeterClass",
                 nearbySelectionConfig.getNearbyDistanceMeterClass());
         // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
@@ -192,7 +192,8 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
                 nearbyRandom, randomSelection);
     }
 
-    private EntitySelector<Solution_> applyFiltering(EntitySelector<Solution_> entitySelector) {
+    private EntitySelector<Solution_> applyFiltering(EntitySelector<Solution_> entitySelector,
+            ClassInstanceCache instanceCache) {
         EntityDescriptor<Solution_> entityDescriptor = entitySelector.getEntityDescriptor();
         if (hasFiltering(entityDescriptor)) {
             List<SelectionFilter<Solution_, Object>> filterList = new ArrayList<>(config.getFilterClass() == null ? 1 : 2);
@@ -269,7 +270,7 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
     }
 
     protected EntitySelector<Solution_> applySorting(SelectionCacheType resolvedCacheType,
-            SelectionOrder resolvedSelectionOrder, EntitySelector<Solution_> entitySelector) {
+            SelectionOrder resolvedSelectionOrder, EntitySelector<Solution_> entitySelector, ClassInstanceCache instanceCache) {
         if (resolvedSelectionOrder == SelectionOrder.SORTED) {
             SelectionSorter<Solution_, Object> sorter;
             if (config.getSorterManner() != null) {
@@ -314,7 +315,7 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
     }
 
     protected EntitySelector<Solution_> applyProbability(SelectionCacheType resolvedCacheType,
-            SelectionOrder resolvedSelectionOrder, EntitySelector<Solution_> entitySelector) {
+            SelectionOrder resolvedSelectionOrder, EntitySelector<Solution_> entitySelector, ClassInstanceCache instanceCache) {
         if (resolvedSelectionOrder == SelectionOrder.PROBABILISTIC) {
             if (config.getProbabilityWeightFactoryClass() == null) {
                 throw new IllegalArgumentException("The entitySelectorConfig (" + config

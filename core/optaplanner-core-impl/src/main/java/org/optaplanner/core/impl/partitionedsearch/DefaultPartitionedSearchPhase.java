@@ -46,6 +46,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
 
     protected final List<PhaseConfig> phaseConfigList;
     protected final HeuristicConfigPolicy<Solution_> configPolicy;
+    private final ClassInstanceCache instanceCache;
 
     private DefaultPartitionedSearchPhase(Builder<Solution_> builder) {
         super(builder);
@@ -54,6 +55,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         runnablePartThreadLimit = builder.runnablePartThreadLimit;
         phaseConfigList = builder.phaseConfigList;
         configPolicy = builder.configPolicy;
+        instanceCache = builder.instanceCache;
     }
 
     @Override
@@ -211,20 +213,21 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         private final SolutionPartitioner<Solution_> solutionPartitioner;
         private final ThreadFactory threadFactory;
         private final Integer runnablePartThreadLimit;
-
         private final List<PhaseConfig> phaseConfigList;
         private final HeuristicConfigPolicy<Solution_> configPolicy;
+        private final ClassInstanceCache instanceCache;
 
         public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination,
                 SolutionPartitioner<Solution_> solutionPartitioner, ThreadFactory threadFactory,
                 Integer runnablePartThreadLimit, List<PhaseConfig> phaseConfigList,
                 HeuristicConfigPolicy<Solution_> configPolicy, ClassInstanceCache instanceCache) {
-            super(phaseIndex, logIndentation, phaseTermination, instanceCache);
+            super(phaseIndex, logIndentation, phaseTermination);
             this.solutionPartitioner = solutionPartitioner;
             this.threadFactory = threadFactory;
             this.runnablePartThreadLimit = runnablePartThreadLimit;
             this.phaseConfigList = List.copyOf(phaseConfigList);
             this.configPolicy = configPolicy;
+            this.instanceCache = instanceCache;
         }
 
         @Override

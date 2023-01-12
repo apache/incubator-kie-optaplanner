@@ -9,19 +9,18 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public interface EntityPlacerFactory<Solution_> {
 
-    static <Solution_> EntityPlacerFactory<Solution_> create(EntityPlacerConfig<?> entityPlacerConfig,
-            ClassInstanceCache instanceCache) {
+    static <Solution_> EntityPlacerFactory<Solution_> create(EntityPlacerConfig<?> entityPlacerConfig) {
         if (PooledEntityPlacerConfig.class.isAssignableFrom(entityPlacerConfig.getClass())) {
-            return new PooledEntityPlacerFactory<>((PooledEntityPlacerConfig) entityPlacerConfig, instanceCache);
+            return new PooledEntityPlacerFactory<>((PooledEntityPlacerConfig) entityPlacerConfig);
         } else if (QueuedEntityPlacerConfig.class.isAssignableFrom(entityPlacerConfig.getClass())) {
-            return new QueuedEntityPlacerFactory<>((QueuedEntityPlacerConfig) entityPlacerConfig, instanceCache);
+            return new QueuedEntityPlacerFactory<>((QueuedEntityPlacerConfig) entityPlacerConfig);
         } else if (QueuedValuePlacerConfig.class.isAssignableFrom(entityPlacerConfig.getClass())) {
-            return new QueuedValuePlacerFactory<>((QueuedValuePlacerConfig) entityPlacerConfig, instanceCache);
+            return new QueuedValuePlacerFactory<>((QueuedValuePlacerConfig) entityPlacerConfig);
         } else {
             throw new IllegalArgumentException(String.format("Unknown %s type: (%s).",
                     EntityPlacerConfig.class.getSimpleName(), entityPlacerConfig.getClass().getName()));
         }
     }
 
-    EntityPlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy);
+    EntityPlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy, ClassInstanceCache instanceCache);
 }

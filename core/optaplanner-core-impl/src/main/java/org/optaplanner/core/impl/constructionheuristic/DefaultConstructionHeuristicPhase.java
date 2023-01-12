@@ -8,7 +8,6 @@ import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeurist
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.phase.AbstractPhase;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -154,9 +153,8 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
         private final ConstructionHeuristicDecider<Solution_> decider;
 
         public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination,
-                EntityPlacer<Solution_> entityPlacer, ConstructionHeuristicDecider<Solution_> decider,
-                ClassInstanceCache instanceCache) {
-            super(phaseIndex, logIndentation, phaseTermination, instanceCache);
+                EntityPlacer<Solution_> entityPlacer, ConstructionHeuristicDecider<Solution_> decider) {
+            super(phaseIndex, logIndentation, phaseTermination);
             this.entityPlacer = entityPlacer;
             this.decider = decider;
         }

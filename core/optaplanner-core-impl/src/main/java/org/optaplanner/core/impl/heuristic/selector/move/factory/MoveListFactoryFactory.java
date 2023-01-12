@@ -11,13 +11,13 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
 public class MoveListFactoryFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, MoveListFactoryConfig> {
 
-    public MoveListFactoryFactory(MoveListFactoryConfig moveSelectorConfig, ClassInstanceCache instanceCache) {
-        super(moveSelectorConfig, instanceCache);
+    public MoveListFactoryFactory(MoveListFactoryConfig moveSelectorConfig) {
+        super(moveSelectorConfig);
     }
 
     @Override
     public MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
+            SelectionCacheType minimumCacheType, boolean randomSelection, ClassInstanceCache instanceCache) {
         if (config.getMoveListFactoryClass() == null) {
             throw new IllegalArgumentException("The moveListFactoryConfig (" + config
                     + ") lacks a moveListFactoryClass (" + config.getMoveListFactoryClass() + ").");

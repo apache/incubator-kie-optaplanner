@@ -5,7 +5,6 @@ import java.util.Objects;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.termination.PhaseToSolverTerminationBridge;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.termination.TerminationFactory;
@@ -14,11 +13,9 @@ public abstract class AbstractPhaseFactory<Solution_, PhaseConfig_ extends Phase
         implements PhaseFactory<Solution_> {
 
     protected final PhaseConfig_ phaseConfig;
-    protected final ClassInstanceCache instanceCache;
 
-    public AbstractPhaseFactory(PhaseConfig_ phaseConfig, ClassInstanceCache instanceCache) {
+    public AbstractPhaseFactory(PhaseConfig_ phaseConfig) {
         this.phaseConfig = phaseConfig;
-        this.instanceCache = Objects.requireNonNull(instanceCache);
     }
 
     protected Termination<Solution_> buildPhaseTermination(HeuristicConfigPolicy<Solution_> configPolicy,

@@ -29,13 +29,13 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
 public class ChangeMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, ChangeMoveSelectorConfig> {
 
-    public ChangeMoveSelectorFactory(ChangeMoveSelectorConfig moveSelectorConfig, ClassInstanceCache instanceCache) {
-        super(moveSelectorConfig, instanceCache);
+    public ChangeMoveSelectorFactory(ChangeMoveSelectorConfig moveSelectorConfig) {
+        super(moveSelectorConfig);
     }
 
     @Override
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
+            SelectionCacheType minimumCacheType, boolean randomSelection, ClassInstanceCache instanceCache) {
         if (config.getEntitySelectorConfig() == null) {
             throw new IllegalStateException("The entitySelectorConfig (" + config.getEntitySelectorConfig()
                     + ") should haven been initialized during unfolding.");
@@ -46,11 +46,12 @@ public class ChangeMoveSelectorFactory<Solution_>
         }
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
         EntitySelector<Solution_> entitySelector =
-                EntitySelectorFactory.<Solution_> create(config.getEntitySelectorConfig(), instanceCache)
-                        .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
+                EntitySelectorFactory.<Solution_> create(config.getEntitySelectorConfig())
+                        .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder, instanceCache);
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory
-                .<Solution_> create(config.getValueSelectorConfig(), instanceCache)
-                .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
+                .<Solution_> create(config.getValueSelectorConfig())
+                .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder,
+                        instanceCache);
         if (valueSelector.getVariableDescriptor().isListVariable()) {
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The changeMoveSelector (" + config
@@ -72,7 +73,7 @@ public class ChangeMoveSelectorFactory<Solution_>
     protected MoveSelectorConfig<?> buildUnfoldedMoveSelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy) {
         Collection<EntityDescriptor<Solution_>> entityDescriptors;
         EntityDescriptor<Solution_> onlyEntityDescriptor = config.getEntitySelectorConfig() == null ? null
-                : EntitySelectorFactory.<Solution_> create(config.getEntitySelectorConfig(), instanceCache)
+                : EntitySelectorFactory.<Solution_> create(config.getEntitySelectorConfig())
                         .extractEntityDescriptor(configPolicy);
         if (onlyEntityDescriptor != null) {
             entityDescriptors = Collections.singletonList(onlyEntityDescriptor);
@@ -82,7 +83,7 @@ public class ChangeMoveSelectorFactory<Solution_>
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList = new ArrayList<>();
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptors) {
             GenuineVariableDescriptor<Solution_> onlyVariableDescriptor = config.getValueSelectorConfig() == null ? null
-                    : ValueSelectorFactory.<Solution_> create(config.getValueSelectorConfig(), instanceCache)
+                    : ValueSelectorFactory.<Solution_> create(config.getValueSelectorConfig())
                             .extractVariableDescriptor(configPolicy, entityDescriptor);
             if (onlyVariableDescriptor != null) {
                 if (onlyEntityDescriptor != null) {

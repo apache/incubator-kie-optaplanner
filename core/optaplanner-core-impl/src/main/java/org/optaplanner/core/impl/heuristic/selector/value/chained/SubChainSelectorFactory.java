@@ -25,17 +25,14 @@ public class SubChainSelectorFactory<Solution_> {
     private static final int DEFAULT_MINIMUM_SUB_CHAIN_SIZE = 1;
     private static final int DEFAULT_MAXIMUM_SUB_CHAIN_SIZE = Integer.MAX_VALUE;
 
-    public static <Solution_> SubChainSelectorFactory<Solution_>
-            create(SubChainSelectorConfig subChainSelectorConfig, ClassInstanceCache instanceCache) {
-        return new SubChainSelectorFactory<>(subChainSelectorConfig, instanceCache);
+    public static <Solution_> SubChainSelectorFactory<Solution_> create(SubChainSelectorConfig subChainSelectorConfig) {
+        return new SubChainSelectorFactory<>(subChainSelectorConfig);
     }
 
     private final SubChainSelectorConfig config;
-    private final ClassInstanceCache instanceCache;
 
-    public SubChainSelectorFactory(SubChainSelectorConfig subChainSelectorConfig, ClassInstanceCache instanceCache) {
+    public SubChainSelectorFactory(SubChainSelectorConfig subChainSelectorConfig) {
         this.config = subChainSelectorConfig;
-        this.instanceCache = Objects.requireNonNull(instanceCache);
     }
 
     /**
@@ -50,7 +47,7 @@ public class SubChainSelectorFactory<Solution_> {
      */
     public SubChainSelector<Solution_> buildSubChainSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             EntityDescriptor<Solution_> entityDescriptor, SelectionCacheType minimumCacheType,
-            SelectionOrder inheritedSelectionOrder) {
+            SelectionOrder inheritedSelectionOrder, ClassInstanceCache instanceCache) {
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
             throw new IllegalArgumentException("The subChainSelectorConfig (" + config
                     + ")'s minimumCacheType (" + minimumCacheType
@@ -60,8 +57,8 @@ public class SubChainSelectorFactory<Solution_> {
         ValueSelectorConfig valueSelectorConfig =
                 Objects.requireNonNullElseGet(config.getValueSelectorConfig(), ValueSelectorConfig::new);
         // ValueSelector uses SelectionOrder.ORIGINAL because a SubChainSelector STEP caches the values
-        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig, instanceCache)
-                .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, SelectionOrder.ORIGINAL);
+        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig)
+                .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, SelectionOrder.ORIGINAL, instanceCache);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The subChainSelectorConfig (" + config
                     + ") needs to be based on an "

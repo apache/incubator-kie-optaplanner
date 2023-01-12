@@ -13,7 +13,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.AbstractSolver;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
@@ -32,7 +31,6 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
 
     // Called "phaseTermination" to clearly distinguish from "solverTermination" inside AbstractSolver.
     protected final Termination<Solution_> phaseTermination;
-    protected final ClassInstanceCache instanceCache;
 
     protected final boolean assertStepScoreFromScratch;
     protected final boolean assertExpectedStepScore;
@@ -47,7 +45,6 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
         phaseIndex = builder.phaseIndex;
         logIndentation = builder.logIndentation;
         phaseTermination = builder.phaseTermination;
-        instanceCache = builder.instanceCache;
         assertStepScoreFromScratch = builder.assertStepScoreFromScratch;
         assertExpectedStepScore = builder.assertExpectedStepScore;
         assertShadowVariablesAreNotStaleAfterStep = builder.assertShadowVariablesAreNotStaleAfterStep;
@@ -216,18 +213,15 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
         private final int phaseIndex;
         private final String logIndentation;
         private final Termination<Solution_> phaseTermination;
-        private final ClassInstanceCache instanceCache;
 
         private boolean assertStepScoreFromScratch = false;
         private boolean assertExpectedStepScore = false;
         private boolean assertShadowVariablesAreNotStaleAfterStep = false;
 
-        protected Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination,
-                ClassInstanceCache instanceCache) {
+        protected Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination) {
             this.phaseIndex = phaseIndex;
             this.logIndentation = logIndentation;
             this.phaseTermination = phaseTermination;
-            this.instanceCache = instanceCache;
         }
 
         public void setAssertStepScoreFromScratch(boolean assertStepScoreFromScratch) {

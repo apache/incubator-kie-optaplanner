@@ -25,9 +25,8 @@ class SubChainSelectorFactoryTest {
         HeuristicConfigPolicy heuristicConfigPolicy = mock(HeuristicConfigPolicy.class);
         EntityDescriptor entityDescriptor = TestdataChainedEntity.buildEntityDescriptor();
         DefaultSubChainSelector subChainSelector =
-                (DefaultSubChainSelector) SubChainSelectorFactory.create(config, ClassInstanceCache.create())
-                        .buildSubChainSelector(heuristicConfigPolicy,
-                                entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+                (DefaultSubChainSelector) SubChainSelectorFactory.create(config).buildSubChainSelector(heuristicConfigPolicy,
+                        entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM, ClassInstanceCache.create());
         assertThat(subChainSelector.maximumSubChainSize).isEqualTo(config.getMaximumSubChainSize());
         assertThat(subChainSelector.minimumSubChainSize).isEqualTo(config.getMinimumSubChainSize());
         assertThat(subChainSelector.randomSelection).isTrue();

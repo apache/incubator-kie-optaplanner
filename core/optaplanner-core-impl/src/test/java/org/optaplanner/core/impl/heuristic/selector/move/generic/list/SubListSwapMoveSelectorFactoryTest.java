@@ -19,14 +19,14 @@ class SubListSwapMoveSelectorFactoryTest {
     void buildBaseMoveSelector() {
         SubListSwapMoveSelectorConfig config = new SubListSwapMoveSelectorConfig();
         SubListSwapMoveSelectorFactory<TestdataListSolution> factory =
-                new SubListSwapMoveSelectorFactory<>(config, ClassInstanceCache.create());
+                new SubListSwapMoveSelectorFactory<>(config);
 
         HeuristicConfigPolicy<TestdataListSolution> heuristicConfigPolicy =
                 buildHeuristicConfigPolicy(TestdataListSolution.buildSolutionDescriptor());
 
         RandomSubListSwapMoveSelector<TestdataListSolution> selector =
                 (RandomSubListSwapMoveSelector<TestdataListSolution>) factory.buildBaseMoveSelector(heuristicConfigPolicy,
-                        SelectionCacheType.JUST_IN_TIME, true);
+                        SelectionCacheType.JUST_IN_TIME, true, ClassInstanceCache.create());
 
         assertThat(selector.isCountable()).isTrue();
         assertThat(selector.isNeverEnding()).isTrue();
@@ -37,14 +37,14 @@ class SubListSwapMoveSelectorFactoryTest {
         SubListSwapMoveSelectorConfig config = new SubListSwapMoveSelectorConfig();
         config.setSelectReversingMoveToo(false);
         SubListSwapMoveSelectorFactory<TestdataListSolution> factory =
-                new SubListSwapMoveSelectorFactory<>(config, ClassInstanceCache.create());
+                new SubListSwapMoveSelectorFactory<>(config);
 
         HeuristicConfigPolicy<TestdataListSolution> heuristicConfigPolicy =
                 buildHeuristicConfigPolicy(TestdataListSolution.buildSolutionDescriptor());
 
         RandomSubListSwapMoveSelector<TestdataListSolution> selector =
                 (RandomSubListSwapMoveSelector<TestdataListSolution>) factory.buildBaseMoveSelector(heuristicConfigPolicy,
-                        SelectionCacheType.JUST_IN_TIME, true);
+                        SelectionCacheType.JUST_IN_TIME, true, ClassInstanceCache.create());
 
         assertThat(selector.isSelectReversingMoveToo()).isFalse();
     }
@@ -53,12 +53,13 @@ class SubListSwapMoveSelectorFactoryTest {
     void requiresListVariable() {
         SubListSwapMoveSelectorConfig config = new SubListSwapMoveSelectorConfig();
         SubListSwapMoveSelectorFactory<TestdataSolution> factory =
-                new SubListSwapMoveSelectorFactory<>(config, ClassInstanceCache.create());
+                new SubListSwapMoveSelectorFactory<>(config);
 
         HeuristicConfigPolicy<TestdataSolution> heuristicConfigPolicy = buildHeuristicConfigPolicy();
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> factory.buildBaseMoveSelector(heuristicConfigPolicy, SelectionCacheType.JUST_IN_TIME, true))
+                .isThrownBy(() -> factory.buildBaseMoveSelector(heuristicConfigPolicy, SelectionCacheType.JUST_IN_TIME, true,
+                        ClassInstanceCache.create()))
                 .withMessageContaining("@" + PlanningListVariable.class.getSimpleName());
     }
 }

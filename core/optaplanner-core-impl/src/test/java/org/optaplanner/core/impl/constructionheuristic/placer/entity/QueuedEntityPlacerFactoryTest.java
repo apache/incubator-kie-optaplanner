@@ -41,7 +41,7 @@ class QueuedEntityPlacerFactoryTest {
 
         HeuristicConfigPolicy<TestdataMultiVarSolution> configPolicy = buildHeuristicConfigPolicy(solutionDescriptor);
         QueuedEntityPlacerConfig placerConfig = QueuedEntityPlacerFactory.unfoldNew(configPolicy,
-                Arrays.asList(primaryMoveSelectorConfig, secondaryMoveSelectorConfig), ClassInstanceCache.create());
+                Arrays.asList(primaryMoveSelectorConfig, secondaryMoveSelectorConfig));
 
         assertThat(placerConfig.getEntitySelectorConfig().getEntityClass()).isAssignableFrom(TestdataMultiVarEntity.class);
         assertThat(placerConfig.getMoveSelectorConfigList())
@@ -49,8 +49,8 @@ class QueuedEntityPlacerFactoryTest {
                 .hasOnlyElementsOfType(ChangeMoveSelectorConfig.class);
 
         QueuedEntityPlacer<TestdataMultiVarSolution> entityPlacer =
-                new QueuedEntityPlacerFactory<TestdataMultiVarSolution>(placerConfig, ClassInstanceCache.create())
-                        .buildEntityPlacer(configPolicy);
+                new QueuedEntityPlacerFactory<TestdataMultiVarSolution>(placerConfig)
+                        .buildEntityPlacer(configPolicy, ClassInstanceCache.create());
 
         SolverScope<TestdataMultiVarSolution> solverScope = mock(SolverScope.class);
         entityPlacer.solvingStarted(solverScope);

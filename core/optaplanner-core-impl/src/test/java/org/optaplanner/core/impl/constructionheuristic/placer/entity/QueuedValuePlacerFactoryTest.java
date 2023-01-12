@@ -32,8 +32,8 @@ class QueuedValuePlacerFactoryTest {
         config.setEntityClass(TestdataEntity.class);
 
         QueuedValuePlacer<TestdataSolution> placer =
-                new QueuedValuePlacerFactory<TestdataSolution>(config, ClassInstanceCache.create())
-                        .buildEntityPlacer(buildHeuristicConfigPolicy());
+                new QueuedValuePlacerFactory<TestdataSolution>(config)
+                        .buildEntityPlacer(buildHeuristicConfigPolicy(), ClassInstanceCache.create());
 
         SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
         placer.solvingStarted(solverScope);

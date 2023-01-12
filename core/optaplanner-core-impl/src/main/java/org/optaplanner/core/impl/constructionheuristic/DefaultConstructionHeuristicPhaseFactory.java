@@ -44,15 +44,14 @@ import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         extends AbstractPhaseFactory<Solution_, ConstructionHeuristicPhaseConfig> {
 
-    public DefaultConstructionHeuristicPhaseFactory(ConstructionHeuristicPhaseConfig phaseConfig,
-            ClassInstanceCache instanceCache) {
-        super(phaseConfig, instanceCache);
+    public DefaultConstructionHeuristicPhaseFactory(ConstructionHeuristicPhaseConfig phaseConfig) {
+        super(phaseConfig);
     }
 
     @Override
-    public ConstructionHeuristicPhase<Solution_> buildPhase(int phaseIndex,
-            HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
-            Termination<Solution_> solverTermination) {
+    public ConstructionHeuristicPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination,
+            ClassInstanceCache instanceCache) {
         ConstructionHeuristicType constructionHeuristicType_ = Objects.requireNonNullElse(
                 phaseConfig.getConstructionHeuristicType(),
                 ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
@@ -71,16 +70,15 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         EntityPlacerConfig entityPlacerConfig_ = getValidEntityPlacerConfig()
                 .orElseGet(() -> buildDefaultEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_));
-        EntityPlacer<Solution_> entityPlacer = EntityPlacerFactory.<Solution_> create(entityPlacerConfig_, instanceCache)
-                .buildEntityPlacer(phaseConfigPolicy);
+        EntityPlacer<Solution_> entityPlacer = EntityPlacerFactory.<Solution_> create(entityPlacerConfig_)
+                .buildEntityPlacer(phaseConfigPolicy, instanceCache);
 
         DefaultConstructionHeuristicPhase.Builder<Solution_> builder = new DefaultConstructionHeuristicPhase.Builder<>(
                 phaseIndex,
                 solverConfigPolicy.getLogIndentation(),
                 phaseTermination,
                 entityPlacer,
-                buildDecider(phaseConfigPolicy, phaseTermination),
-                instanceCache);
+                buildDecider(phaseConfigPolicy, phaseTermination));
 
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
@@ -227,8 +225,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
             case STRONGEST_FIT_DECREASING:
             case ALLOCATE_ENTITY_FROM_QUEUE:
                 if (!ConfigUtils.isEmptyCollection(phaseConfig.getMoveSelectorConfigList())) {
-                    return QueuedEntityPlacerFactory.unfoldNew(phaseConfigPolicy, phaseConfig.getMoveSelectorConfigList(),
-                            instanceCache);
+                    return QueuedEntityPlacerFactory.unfoldNew(phaseConfigPolicy, phaseConfig.getMoveSelectorConfigList());
                 }
                 return new QueuedEntityPlacerConfig();
             case ALLOCATE_TO_VALUE_FROM_QUEUE:
@@ -239,8 +236,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
             case CHEAPEST_INSERTION:
             case ALLOCATE_FROM_POOL:
                 if (!ConfigUtils.isEmptyCollection(phaseConfig.getMoveSelectorConfigList())) {
-                    return PooledEntityPlacerFactory.unfoldNew(phaseConfigPolicy, checkSingleMoveSelectorConfig(),
-                            instanceCache);
+                    return PooledEntityPlacerFactory.unfoldNew(phaseConfigPolicy, checkSingleMoveSelectorConfig());
                 }
                 return new PooledEntityPlacerConfig();
             default:

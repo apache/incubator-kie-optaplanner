@@ -19,23 +19,23 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
 public class TailChainSwapMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, TailChainSwapMoveSelectorConfig> {
 
-    public TailChainSwapMoveSelectorFactory(TailChainSwapMoveSelectorConfig moveSelectorConfig,
-            ClassInstanceCache instanceCache) {
-        super(moveSelectorConfig, instanceCache);
+    public TailChainSwapMoveSelectorFactory(TailChainSwapMoveSelectorConfig moveSelectorConfig) {
+        super(moveSelectorConfig);
     }
 
     @Override
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection) {
+            SelectionCacheType minimumCacheType, boolean randomSelection, ClassInstanceCache instanceCache) {
         EntitySelectorConfig entitySelectorConfig =
                 Objects.requireNonNullElseGet(config.getEntitySelectorConfig(), EntitySelectorConfig::new);
         ValueSelectorConfig valueSelectorConfig =
                 Objects.requireNonNullElseGet(config.getValueSelectorConfig(), ValueSelectorConfig::new);
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
-        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig, instanceCache)
-                .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
-        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig, instanceCache)
-                .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
+        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
+                .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder, instanceCache);
+        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig)
+                .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder,
+                        instanceCache);
         return new TailChainSwapMoveSelector<>(entitySelector, valueSelector, randomSelection);
     }
 }

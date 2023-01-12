@@ -25,14 +25,15 @@ class SubChainChangeMoveSelectorFactoryTest {
         config.setSubChainSelectorConfig(subChainSelectorConfig);
         config.setValueSelectorConfig(valueSelectorConfig);
         SubChainChangeMoveSelectorFactory<TestdataChainedSolution> factory =
-                new SubChainChangeMoveSelectorFactory<>(config, ClassInstanceCache.create());
+                new SubChainChangeMoveSelectorFactory<>(config);
 
         HeuristicConfigPolicy<TestdataChainedSolution> heuristicConfigPolicy =
                 HeuristicConfigPolicyTestUtils.buildHeuristicConfigPolicy(buildSolutionDescriptor());
 
         SubChainChangeMoveSelector<TestdataChainedSolution> selector =
                 (SubChainChangeMoveSelector<TestdataChainedSolution>) factory
-                        .buildBaseMoveSelector(heuristicConfigPolicy, SelectionCacheType.JUST_IN_TIME, true);
+                        .buildBaseMoveSelector(heuristicConfigPolicy, SelectionCacheType.JUST_IN_TIME, true,
+                                ClassInstanceCache.create());
         assertThat(selector.subChainSelector).isNotNull();
         assertThat(selector.valueSelector).isNotNull();
         assertThat(selector.randomSelection).isTrue();
