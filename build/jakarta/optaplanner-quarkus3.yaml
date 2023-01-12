@@ -854,11 +854,12 @@ recipeList:
   #      version: 3.x
   #      onlyIfUsing: javax.xml.bind.*
 
+  # TODO: enable once the optaplanner-migration module can be excluded from the rewrite:run.
   # Upgrade the dependency to use the jakarta namespace if an older version already exists.
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: jakarta.xml.bind
-      artifactId: jakarta.xml.bind-api
-      newVersion: 3.x
+  #  - org.openrewrite.maven.UpgradeDependencyVersion:
+  #      groupId: jakarta.xml.bind
+  #      artifactId: jakarta.xml.bind-api
+  #      newVersion: 3.x
 
   # JaxB Runtime(x) .. update
   #  - org.openrewrite.maven.AddDependency:
