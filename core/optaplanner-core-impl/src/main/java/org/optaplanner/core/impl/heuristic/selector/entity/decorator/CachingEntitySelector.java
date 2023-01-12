@@ -2,6 +2,7 @@ package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.Objects;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRandomIterator;
@@ -64,10 +65,20 @@ public final class CachingEntitySelector<Solution_> extends AbstractCachingEntit
     }
 
     @Override
-    protected Object[] getEqualityRequirements() {
-        return new Object[] {
-                super.childEntitySelector, super.cacheType, randomSelection
-        };
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        if (!super.equals(o))
+            return false;
+        CachingEntitySelector<?> that = (CachingEntitySelector<?>) o;
+        return randomSelection == that.randomSelection;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), randomSelection);
     }
 
     @Override

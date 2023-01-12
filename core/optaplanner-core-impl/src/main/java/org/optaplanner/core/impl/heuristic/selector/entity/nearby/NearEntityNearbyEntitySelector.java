@@ -2,6 +2,7 @@ package org.optaplanner.core.impl.heuristic.selector.entity.nearby;
 
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
@@ -149,13 +150,6 @@ public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEnt
         return childEntitySelector.endingIterator();
     }
 
-    @Override
-    protected Object[] getEqualityRequirements() {
-        return new Object[] {
-                childEntitySelector, replayingOriginEntitySelector, nearbyDistanceMatrix, nearbyRandom, randomSelection
-        };
-    }
-
     private final class OriginalNearbyEntityIterator extends SelectionIterator<Object> {
 
         private final Iterator<Object> replayingOriginEntityIterator;
@@ -228,6 +222,25 @@ public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEnt
             return nearbyDistanceMatrix.getDestination(origin, nearbyIndex);
         }
 
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        NearEntityNearbyEntitySelector<?> that = (NearEntityNearbyEntitySelector<?>) other;
+        return randomSelection == that.randomSelection && Objects.equals(childEntitySelector, that.childEntitySelector)
+                && Objects.equals(replayingOriginEntitySelector, that.replayingOriginEntitySelector)
+                && Objects.equals(nearbyDistanceMeter, that.nearbyDistanceMeter)
+                && Objects.equals(nearbyRandom, that.nearbyRandom);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childEntitySelector, replayingOriginEntitySelector, nearbyDistanceMeter, nearbyRandom,
+                randomSelection);
     }
 
 }

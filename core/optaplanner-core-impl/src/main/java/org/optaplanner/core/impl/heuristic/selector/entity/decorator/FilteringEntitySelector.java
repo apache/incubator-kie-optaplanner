@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -73,13 +74,6 @@ public final class FilteringEntitySelector<Solution_> extends AbstractEntitySele
     @Override
     public Iterator<Object> iterator() {
         return new JustInTimeFilteringEntityIterator(childEntitySelector.iterator(), determineBailOutSize());
-    }
-
-    @Override
-    protected Object[] getEqualityRequirements() {
-        return new Object[] {
-                childEntitySelector, selectionFilter
-        };
     }
 
     protected class JustInTimeFilteringEntityIterator extends UpcomingSelectionIterator<Object> {
@@ -173,6 +167,22 @@ public final class FilteringEntitySelector<Solution_> extends AbstractEntitySele
             return -1L;
         }
         return childEntitySelector.getSize() * 10L;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        FilteringEntitySelector<?> that = (FilteringEntitySelector<?>) other;
+        return Objects.equals(childEntitySelector, that.childEntitySelector)
+                && Objects.equals(selectionFilter, that.selectionFilter);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childEntitySelector, selectionFilter);
     }
 
     @Override

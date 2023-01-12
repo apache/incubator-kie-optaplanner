@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
@@ -56,13 +57,6 @@ public final class MimicRecordingEntitySelector<Solution_> extends AbstractEntit
     @Override
     public Iterator<Object> iterator() {
         return new RecordingEntityIterator(childEntitySelector.iterator());
-    }
-
-    @Override
-    protected Object[] getEqualityRequirements() {
-        return new Object[] {
-                childEntitySelector, replayingEntitySelectorList
-        };
     }
 
     private class RecordingEntityIterator extends SelectionIterator<Object> {
@@ -165,6 +159,22 @@ public final class MimicRecordingEntitySelector<Solution_> extends AbstractEntit
             return childEntityIterator.previousIndex();
         }
 
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        MimicRecordingEntitySelector<?> that = (MimicRecordingEntitySelector<?>) other;
+        return Objects.equals(childEntitySelector, that.childEntitySelector)
+                && Objects.equals(replayingEntitySelectorList, that.replayingEntitySelectorList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childEntitySelector, replayingEntitySelectorList);
     }
 
     @Override

@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.heuristic.selector.entity.decorator;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
@@ -80,13 +81,6 @@ public final class SelectedCountLimitEntitySelector<Solution_> extends AbstractE
         }
     }
 
-    @Override
-    protected Object[] getEqualityRequirements() {
-        return new Object[] {
-                childEntitySelector, randomSelection, selectedCountLimit
-        };
-    }
-
     private class SelectedCountLimitEntityIterator extends SelectionIterator<Object> {
 
         private final Iterator<Object> childEntityIterator;
@@ -111,6 +105,22 @@ public final class SelectedCountLimitEntitySelector<Solution_> extends AbstractE
             return childEntityIterator.next();
         }
 
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        SelectedCountLimitEntitySelector<?> that = (SelectedCountLimitEntitySelector<?>) other;
+        return randomSelection == that.randomSelection && selectedCountLimit == that.selectedCountLimit
+                && Objects.equals(childEntitySelector, that.childEntitySelector);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childEntitySelector, randomSelection, selectedCountLimit);
     }
 
     @Override

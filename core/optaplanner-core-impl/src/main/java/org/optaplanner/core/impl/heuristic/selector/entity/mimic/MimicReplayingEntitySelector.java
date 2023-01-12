@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.heuristic.selector.entity.mimic;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
@@ -88,13 +89,6 @@ public final class MimicReplayingEntitySelector<Solution_> extends AbstractEntit
         recordingAlreadyReturned = false;
     }
 
-    @Override
-    protected Object[] getEqualityRequirements() {
-        return new Object[] {
-                entityMimicRecorder
-        };
-    }
-
     private class ReplayingEntityIterator extends SelectionIterator<Object> {
 
         private ReplayingEntityIterator() {
@@ -154,6 +148,21 @@ public final class MimicReplayingEntitySelector<Solution_> extends AbstractEntit
     public ListIterator<Object> listIterator(int index) {
         // TODO Not yet implemented
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        MimicReplayingEntitySelector<?> that = (MimicReplayingEntitySelector<?>) other;
+        return Objects.equals(entityMimicRecorder, that.entityMimicRecorder);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(entityMimicRecorder);
     }
 
     @Override

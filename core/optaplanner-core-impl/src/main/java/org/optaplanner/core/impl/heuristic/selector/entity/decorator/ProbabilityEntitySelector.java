@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Objects;
 import java.util.TreeMap;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -134,10 +135,19 @@ public final class ProbabilityEntitySelector<Solution_> extends AbstractEntitySe
     }
 
     @Override
-    protected Object[] getEqualityRequirements() {
-        return new Object[] {
-                childEntitySelector, cacheType, probabilityWeightFactory
-        };
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        ProbabilityEntitySelector<?> that = (ProbabilityEntitySelector<?>) other;
+        return Objects.equals(childEntitySelector, that.childEntitySelector) && cacheType == that.cacheType
+                && Objects.equals(probabilityWeightFactory, that.probabilityWeightFactory);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(childEntitySelector, cacheType, probabilityWeightFactory);
     }
 
     @Override

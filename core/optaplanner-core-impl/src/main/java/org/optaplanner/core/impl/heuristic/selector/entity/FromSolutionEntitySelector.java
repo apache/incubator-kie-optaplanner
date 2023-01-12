@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.heuristic.selector.entity;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -148,10 +149,19 @@ public final class FromSolutionEntitySelector<Solution_> extends AbstractEntityS
     }
 
     @Override
-    protected Object[] getEqualityRequirements() {
-        return new Object[] {
-                entityDescriptor, minimumCacheType, randomSelection
-        };
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+        if (other == null || getClass() != other.getClass())
+            return false;
+        FromSolutionEntitySelector<?> that = (FromSolutionEntitySelector<?>) other;
+        return randomSelection == that.randomSelection && Objects.equals(entityDescriptor, that.entityDescriptor)
+                && minimumCacheType == that.minimumCacheType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(entityDescriptor, minimumCacheType, randomSelection);
     }
 
     @Override

@@ -45,13 +45,6 @@ public final class ShufflingEntitySelector<Solution_> extends AbstractCachingEnt
     }
 
     @Override
-    protected Object[] getEqualityRequirements() {
-        return new Object[] {
-                super.childEntitySelector, super.cacheType
-        };
-    }
-
-    @Override
     public String toString() {
         return "Shuffling(" + childEntitySelector + ")";
     }
