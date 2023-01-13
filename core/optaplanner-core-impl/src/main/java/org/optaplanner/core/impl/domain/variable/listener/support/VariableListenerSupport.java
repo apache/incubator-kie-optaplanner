@@ -2,6 +2,7 @@ package org.optaplanner.core.impl.domain.variable.listener.support;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -25,27 +26,21 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  */
 public final class VariableListenerSupport<Solution_> implements SupplyManager {
 
+    public static <Solution_> VariableListenerSupport<Solution_> create(InnerScoreDirector<Solution_, ?> scoreDirector) {
+        return new VariableListenerSupport<>(scoreDirector, new NotifiableRegistry<>(scoreDirector.getSolutionDescriptor()));
+    }
+
     private final InnerScoreDirector<Solution_, ?> scoreDirector;
     private final NotifiableRegistry<Solution_> notifiableRegistry;
-    private final Map<Demand<?>, Supply> supplyMap;
+    private final Map<Demand<?>, Supply> supplyMap = new LinkedHashMap<>();
+    private final Map<Demand<?>, Long> demandCounterMap = new HashMap<>();
 
     private boolean notificationQueuesAreEmpty = true;
     private int nextGlobalOrder = 0;
 
-    VariableListenerSupport(
-            InnerScoreDirector<Solution_, ?> scoreDirector,
-            NotifiableRegistry<Solution_> notifiableRegistry,
-            Map<Demand<?>, Supply> supplyMap) {
+    VariableListenerSupport(InnerScoreDirector<Solution_, ?> scoreDirector, NotifiableRegistry<Solution_> notifiableRegistry) {
         this.scoreDirector = scoreDirector;
         this.notifiableRegistry = notifiableRegistry;
-        this.supplyMap = supplyMap;
-    }
-
-    public static <Solution_> VariableListenerSupport<Solution_> create(InnerScoreDirector<Solution_, ?> scoreDirector) {
-        return new VariableListenerSupport<>(
-                scoreDirector,
-                new NotifiableRegistry<>(scoreDirector.getSolutionDescriptor()),
-                new LinkedHashMap<>());
     }
 
     public void linkVariableListeners() {
@@ -63,7 +58,11 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
             AbstractVariableListener<Solution_, Object> variableListener = listenerWithSources.getVariableListener();
             if (variableListener instanceof Supply) {
                 // Non-sourced variable listeners (ie. ones provided by the user) can never be a supply.
-                supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), (Supply) variableListener);
+                Demand<?> demand = shadowVariableDescriptor.getProvidedDemand();
+                synchronized (this) {
+                    supplyMap.put(demand, (Supply) variableListener);
+                    demandCounterMap.put(demand, 1L);
+                }
             }
             int globalOrder = shadowVariableDescriptor.getGlobalShadowOrder();
             notifiableRegistry.registerNotifiable(
@@ -74,8 +73,14 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
     }
 
     @Override
-    public <Supply_ extends Supply> Supply_ demand(Demand<Supply_> demand) {
-        return (Supply_) supplyMap.computeIfAbsent(demand, this::createSupply);
+    public synchronized <Supply_ extends Supply> Supply_ demand(Demand<Supply_> demand) {
+        if (demandCounterMap.compute(demand, (key, count) -> count == null ? 1 : count + 1) == 1) {
+            Supply_ supply = (Supply_) createSupply(demand);
+            supplyMap.put(demand, supply);
+            return supply;
+        } else {
+            return (Supply_) supplyMap.get(demand);
+        }
     }
 
     private Supply createSupply(Demand<?> demand) {
@@ -91,6 +96,22 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
                     AbstractNotifiable.buildNotifiable(scoreDirector, variableListener, nextGlobalOrder++));
         }
         return supply;
+    }
+
+    @Override
+    public synchronized <Supply_ extends Supply> boolean cancel(Demand<Supply_> demand) {
+        long result = demandCounterMap.compute(demand, (key, count) -> count == null ? -1 : count - 1);
+        if (result < 0) {
+            return false;
+        } else if (result == 0) {
+            return supplyMap.remove(demand) != null;
+        }
+        return true;
+    }
+
+    @Override
+    public synchronized <Supply_ extends Supply> long getActiveCount(Demand<Supply_> demand) {
+        return demandCounterMap.getOrDefault(demand, 0L);
     }
 
     // ************************************************************************

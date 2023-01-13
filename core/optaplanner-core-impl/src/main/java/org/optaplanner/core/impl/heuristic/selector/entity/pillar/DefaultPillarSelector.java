@@ -21,7 +21,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSele
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarDemand;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarSupply;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarSupplyManager;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 /**
@@ -91,16 +90,29 @@ public final class DefaultPillarSelector<Solution_> extends AbstractSelector<Sol
         return CACHE_TYPE;
     }
 
+    Demand<PillarSupply> getPillarDemand() {
+        return pillarDemand;
+    }
+
     @Override
     public void constructCache(SolverScope<Solution_> solverScope) {
-        cachedBasePillarList = solverScope.getPillarSupplyManager()
+        /*
+         * The first pillar selector creates the supply.
+         * Other matching pillar selectors, if there are any, reuse the supply.
+         */
+        cachedBasePillarList = solverScope.getScoreDirector().getSupplyManager()
                 .demand(pillarDemand)
                 .getPillars();
     }
 
     @Override
     public void disposeCache(SolverScope<Solution_> solverScope) {
-        ((PillarSupplyManager) solverScope.getPillarSupplyManager()).cancel(pillarDemand);
+        /*
+         * Cancel the demand of each pillar selector.
+         * The final pillar selector's demand cancellation will cause the supply to be removed entirely.
+         */
+        solverScope.getScoreDirector().getSupplyManager()
+                .cancel(pillarDemand);
         cachedBasePillarList = null;
     }
 
