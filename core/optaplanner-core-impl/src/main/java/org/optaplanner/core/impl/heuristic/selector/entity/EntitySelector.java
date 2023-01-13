@@ -9,7 +9,7 @@ import org.optaplanner.core.impl.heuristic.selector.ListIterableSelector;
 /**
  * Selects instances of 1 {@link PlanningEntity} annotated class.
  * It is expected that if two instances share the same properties,
- * they will be {@link Object#equals(Object) equal} to one another.
+ * they are {@link Object#equals(Object) equal} to one another.
  * This is necessary for proper performance of caches, such as pillar cache.
  *
  * @see AbstractEntitySelector
