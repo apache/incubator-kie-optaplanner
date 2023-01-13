@@ -19,6 +19,9 @@ ${mvn_cmd} rewrite:run \
   -Dquickly \
   -Dmigration \
 
+# Remove obsolete spring.factories
+find "${script_dir_path}/../../optaplanner-spring-integration" -type f -name "spring.factories" -exec rm {} \;
+
 # Commit the changes.
 git status
 git add -u
