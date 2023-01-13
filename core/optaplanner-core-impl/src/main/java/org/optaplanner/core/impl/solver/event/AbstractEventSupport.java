@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.EventListener;
 import java.util.Map;
 import java.util.SortedMap;
-import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class AbstractEventSupport<E extends EventListener> {
@@ -16,13 +16,12 @@ public class AbstractEventSupport<E extends EventListener> {
      *
      * <ul>
      * <li>Acts on value identity, not equality;</li>
-     * <li>maintains insertion order;</li>
-     * <li>is thread-safe.</li>
+     * <li>maintains insertion order.</li>
      * </ul>
      *
-     * In the absence of ConcurrentLinkedIdentityHashSet, this has to do.
+     * In the absence of LinkedIdentityHashSet, this has to do.
      */
-    private final SortedMap<Long, E> eventListenerMap = new ConcurrentSkipListMap<>();
+    private final SortedMap<Long, E> eventListenerMap = new TreeMap<>();
 
     public void addEventListener(E eventListener) {
         eventListenerMap.put(ID_COUNTER.getAndIncrement(), eventListener);
