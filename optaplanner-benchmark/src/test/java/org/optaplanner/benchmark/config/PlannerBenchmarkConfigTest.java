@@ -18,6 +18,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.optaplanner.benchmark.impl.io.PlannerBenchmarkConfigIO;
 import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.persistence.common.api.domain.solution.RigidTestdataSolutionFileIO;
 import org.optaplanner.persistence.jackson.impl.domain.solution.JacksonSolutionFileIO;
 import org.xml.sax.SAXParseException;
 
@@ -80,6 +81,12 @@ class PlannerBenchmarkConfigTest {
                 .isThrownBy(() -> xmlIO.read(stringReader))
                 .withRootCauseExactlyInstanceOf(SAXParseException.class)
                 .withMessageContaining("solutionKlazz");
+    }
+
+    @Test
+    public void assignCustomSolutionIO() {
+        new ProblemBenchmarksConfig()
+                .setSolutionFileIOClass(RigidTestdataSolutionFileIO.class);
     }
 
     private static class TestdataSolutionFileIO extends JacksonSolutionFileIO<TestdataSolution> {
