@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDemand;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
@@ -21,7 +22,9 @@ public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEnt
     private final NearbyDistanceMeter<?, ?> nearbyDistanceMeter;
     private final NearbyRandom nearbyRandom;
     private final boolean randomSelection;
-    private final boolean discardNearbyIndexZero = true; // TODO deactivate me when appropriate
+    // TODO deactivate me when appropriate; consider if this field needs to be included in selector equality
+    private final boolean discardNearbyIndexZero = true;
+    private final NearbyDemand<Solution_, ?, ?> nearbyDemand;
 
     private NearbyDistanceMatrix nearbyDistanceMatrix = null;
 
@@ -51,31 +54,27 @@ public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEnt
                     + ") which is not a superclass of the originEntitySelector's entityClass ("
                     + originEntitySelector.getEntityDescriptor().getEntityClass() + ").");
         }
+        this.nearbyDemand = new NearbyDemand<>(nearbyDistanceMeter, childEntitySelector, replayingOriginEntitySelector,
+                origin -> computeDestinationSize(childEntitySelector.getSize()));
+
         phaseLifecycleSupport.addEventListener(childEntitySelector);
         phaseLifecycleSupport.addEventListener(originEntitySelector);
     }
 
     @Override
     public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
-        // Cannot be done during solverStarted because
+        // Cannot be done during solverStarted because child selectors may only be initialized at phase start.
+        // TODO Figure out how to move to solver scope so that construction heuristics and local search can share.
         super.phaseStarted(phaseScope);
-        long originSize = replayingOriginEntitySelector.getSize();
-        if (originSize > Integer.MAX_VALUE) {
-            throw new IllegalStateException("The originEntitySelector (" + replayingOriginEntitySelector
-                    + ") has an entitySize (" + originSize
-                    + ") which is higher than Integer.MAX_VALUE.");
-        }
         final long childSize = childEntitySelector.getSize();
         if (childSize > Integer.MAX_VALUE) {
             throw new IllegalStateException("The childEntitySelector (" + childEntitySelector
                     + ") has an entitySize (" + childSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
-
-        nearbyDistanceMatrix = new NearbyDistanceMatrix(nearbyDistanceMeter, (int) originSize,
-                origin -> childEntitySelector.endingIterator(), origin -> computeDestinationSize(childSize));
-        replayingOriginEntitySelector.endingIterator()
-                .forEachRemaining(origin -> nearbyDistanceMatrix.addAllDestinations(origin));
+        nearbyDistanceMatrix = phaseScope.getScoreDirector().getSupplyManager()
+                .demand(nearbyDemand)
+                .getDistanceMatrix();
     }
 
     private int computeDestinationSize(long childSize) {
@@ -98,6 +97,7 @@ public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEnt
     @Override
     public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
+        phaseScope.getScoreDirector().getSupplyManager().cancel(nearbyDemand);
         nearbyDistanceMatrix = null;
     }
 

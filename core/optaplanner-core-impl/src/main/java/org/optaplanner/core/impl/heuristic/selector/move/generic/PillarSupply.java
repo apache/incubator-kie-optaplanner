@@ -4,15 +4,9 @@ import java.util.List;
 
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
 
-public final class PillarSupply implements Supply {
+@FunctionalInterface
+public interface PillarSupply extends Supply {
 
-    private final List<List<Object>> pillars;
+    List<List<Object>> getPillars();
 
-    public PillarSupply(List<List<Object>> pillars) {
-        this.pillars = pillars;
-    }
-
-    public List<List<Object>> getPillars() {
-        return pillars;
-    }
 }

@@ -11,7 +11,6 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
-import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentValueRangeDescriptor;
@@ -121,10 +120,10 @@ public class ValueSelectorFactory<Solution_>
             valueSelector = applyNearbySelection(configPolicy, config.getNearbySelectionConfig(), minimumCacheType,
                     resolvedSelectionOrder, valueSelector, instanceCache);
         }
-        valueSelector = applyFiltering(valueSelector);
+        valueSelector = applyFiltering(valueSelector, instanceCache);
         valueSelector = applyInitializedChainedValueFilter(configPolicy, variableDescriptor, valueSelector);
-        valueSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, valueSelector);
-        valueSelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, valueSelector, instanceCache);
+        valueSelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, valueSelector, instanceCache);
         valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applySelectedLimit(valueSelector);
@@ -236,12 +235,13 @@ public class ValueSelectorFactory<Solution_>
         return config.getFilterClass() != null || variableDescriptor.hasMovableChainedTrailingValueFilter();
     }
 
-    protected ValueSelector<Solution_> applyFiltering(ValueSelector<Solution_> valueSelector) {
+    protected ValueSelector<Solution_> applyFiltering(ValueSelector<Solution_> valueSelector,
+            ClassInstanceCache instanceCache) {
         GenuineVariableDescriptor<Solution_> variableDescriptor = valueSelector.getVariableDescriptor();
         if (hasFiltering(variableDescriptor)) {
             List<SelectionFilter<Solution_, Object>> filterList = new ArrayList<>(config.getFilterClass() == null ? 1 : 2);
             if (config.getFilterClass() != null) {
-                filterList.add(ConfigUtils.newInstance(config, "filterClass", config.getFilterClass()));
+                filterList.add(instanceCache.newInstance(config, "filterClass", config.getFilterClass()));
             }
             // Filter out pinned entities
             if (variableDescriptor.hasMovableChainedTrailingValueFilter()) {
@@ -316,8 +316,8 @@ public class ValueSelectorFactory<Solution_>
         }
     }
 
-    protected ValueSelector<Solution_> applySorting(SelectionCacheType resolvedCacheType,
-            SelectionOrder resolvedSelectionOrder, ValueSelector<Solution_> valueSelector) {
+    protected ValueSelector<Solution_> applySorting(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            ValueSelector<Solution_> valueSelector, ClassInstanceCache instanceCache) {
         if (resolvedSelectionOrder == SelectionOrder.SORTED) {
             SelectionSorter<Solution_, Object> sorter;
             if (config.getSorterManner() != null) {
@@ -328,16 +328,16 @@ public class ValueSelectorFactory<Solution_>
                 sorter = ValueSelectorConfig.determineSorter(config.getSorterManner(), variableDescriptor);
             } else if (config.getSorterComparatorClass() != null) {
                 Comparator<Object> sorterComparator =
-                        ConfigUtils.newInstance(config, "sorterComparatorClass", config.getSorterComparatorClass());
+                        instanceCache.newInstance(config, "sorterComparatorClass", config.getSorterComparatorClass());
                 sorter = new ComparatorSelectionSorter<>(sorterComparator,
                         SelectionSorterOrder.resolve(config.getSorterOrder()));
             } else if (config.getSorterWeightFactoryClass() != null) {
                 SelectionSorterWeightFactory<Solution_, Object> sorterWeightFactory =
-                        ConfigUtils.newInstance(config, "sorterWeightFactoryClass", config.getSorterWeightFactoryClass());
+                        instanceCache.newInstance(config, "sorterWeightFactoryClass", config.getSorterWeightFactoryClass());
                 sorter = new WeightFactorySelectionSorter<>(sorterWeightFactory,
                         SelectionSorterOrder.resolve(config.getSorterOrder()));
             } else if (config.getSorterClass() != null) {
-                sorter = ConfigUtils.newInstance(config, "sorterClass", config.getSorterClass());
+                sorter = instanceCache.newInstance(config, "sorterClass", config.getSorterClass());
             } else {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + config
                         + ") with resolvedSelectionOrder (" + resolvedSelectionOrder
@@ -376,7 +376,7 @@ public class ValueSelectorFactory<Solution_>
     }
 
     protected ValueSelector<Solution_> applyProbability(SelectionCacheType resolvedCacheType,
-            SelectionOrder resolvedSelectionOrder, ValueSelector<Solution_> valueSelector) {
+            SelectionOrder resolvedSelectionOrder, ValueSelector<Solution_> valueSelector, ClassInstanceCache instanceCache) {
         if (resolvedSelectionOrder == SelectionOrder.PROBABILISTIC) {
             if (config.getProbabilityWeightFactoryClass() == null) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + config
@@ -384,9 +384,8 @@ public class ValueSelectorFactory<Solution_>
                         + ") needs a probabilityWeightFactoryClass ("
                         + config.getProbabilityWeightFactoryClass() + ").");
             }
-            SelectionProbabilityWeightFactory<Solution_, Object> probabilityWeightFactory =
-                    ConfigUtils.newInstance(config, "probabilityWeightFactoryClass",
-                            config.getProbabilityWeightFactoryClass());
+            SelectionProbabilityWeightFactory<Solution_, Object> probabilityWeightFactory = instanceCache.newInstance(config,
+                    "probabilityWeightFactoryClass", config.getProbabilityWeightFactoryClass());
             if (!(valueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + config
                         + ") with resolvedCacheType (" + resolvedCacheType
@@ -460,9 +459,8 @@ public class ValueSelectorFactory<Solution_>
         EntitySelector<Solution_> originEntitySelector =
                 entitySelectorFactory.buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder,
                         instanceCache);
-        NearbyDistanceMeter<?, ?> nearbyDistanceMeter =
-                (NearbyDistanceMeter<?, ?>) ConfigUtils.newInstance(nearbySelectionConfig, "nearbyDistanceMeterClass",
-                        nearbySelectionConfig.getNearbyDistanceMeterClass());
+        NearbyDistanceMeter<?, ?> nearbyDistanceMeter = instanceCache.newInstance(nearbySelectionConfig,
+                "nearbyDistanceMeterClass", nearbySelectionConfig.getNearbyDistanceMeterClass());
         // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
         NearbyRandom nearbyRandom =
                 NearbyRandomFactory.create(config.getNearbySelectionConfig()).buildNearbyRandom(randomSelection);

@@ -60,13 +60,11 @@ public class PillarDemand<Solution_> implements Demand<PillarSupply> {
         // Store the cache. Exclude pillars of size lower than the minimumSubPillarSize, as we shouldn't select those.
         Collection<List<Object>> pillarLists = valueStateToPillarMap.values();
         int minimumSubPillarSize = subpillarConfigPolicy.getMinimumSubPillarSize();
-        if (minimumSubPillarSize > 1) {
-            return new PillarSupply(pillarLists.stream()
-                    .filter(pillar -> pillar.size() >= minimumSubPillarSize)
-                    .collect(Collectors.toList()));
-        } else { // Use shortcut when we don't intend to remove anything.
-            return new PillarSupply(new ArrayList<>(pillarLists));
-        }
+        List<List<Object>> result = minimumSubPillarSize > 1 ? pillarLists.stream()
+                .filter(pillar -> pillar.size() >= minimumSubPillarSize)
+                .collect(Collectors.toList())
+                : new ArrayList<>(pillarLists);
+        return () -> result;
     }
 
     private static <Solution_> List<Object> getSingleVariableValueState(Object entity,

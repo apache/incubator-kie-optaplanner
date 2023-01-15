@@ -178,7 +178,7 @@ class ValueSelectorFactoryTest {
         ValueSelector baseValueSelector =
                 SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value", new TestdataValue("v1"));
         ValueSelector resultingValueSelector =
-                ValueSelectorFactory.create(valueSelectorConfig).applyFiltering(baseValueSelector);
+                ValueSelectorFactory.create(valueSelectorConfig).applyFiltering(baseValueSelector, ClassInstanceCache.create());
         assertThat(resultingValueSelector).isExactlyInstanceOf(FilteringValueSelector.class);
     }
 
@@ -191,9 +191,8 @@ class ValueSelectorFactoryTest {
         ValueSelectorFactory valueSelectorFactory =
                 ValueSelectorFactory.create(valueSelectorConfig);
         valueSelectorFactory.validateProbability(SelectionOrder.PROBABILISTIC);
-        ValueSelector resultingValueSelector =
-                valueSelectorFactory.applyProbability(SelectionCacheType.PHASE, SelectionOrder.PROBABILISTIC,
-                        baseValueSelector);
+        ValueSelector resultingValueSelector = valueSelectorFactory.applyProbability(SelectionCacheType.PHASE,
+                SelectionOrder.PROBABILISTIC, baseValueSelector, ClassInstanceCache.create());
         assertThat(resultingValueSelector).isExactlyInstanceOf(ProbabilityValueSelector.class);
     }
 
@@ -222,7 +221,8 @@ class ValueSelectorFactoryTest {
         when(variableDescriptor.isValueRangeEntityIndependent()).thenReturn(true);
 
         ValueSelector resultingValueSelector =
-                valueSelectorFactory.applySorting(SelectionCacheType.PHASE, SelectionOrder.SORTED, baseValueSelector);
+                valueSelectorFactory.applySorting(SelectionCacheType.PHASE, SelectionOrder.SORTED, baseValueSelector,
+                        ClassInstanceCache.create());
         assertThat(resultingValueSelector).isExactlyInstanceOf(SortingValueSelector.class);
     }
 
@@ -232,7 +232,8 @@ class ValueSelectorFactoryTest {
                 ValueSelectorFactory.create(new ValueSelectorConfig());
         ValueSelector baseValueSelector = mock(ValueSelector.class);
         assertThatIllegalArgumentException().isThrownBy(
-                () -> valueSelectorFactory.applySorting(SelectionCacheType.PHASE, SelectionOrder.SORTED, baseValueSelector))
+                () -> valueSelectorFactory.applySorting(SelectionCacheType.PHASE, SelectionOrder.SORTED, baseValueSelector,
+                        ClassInstanceCache.create()))
                 .withMessageContaining("needs a sorterManner");
     }
 

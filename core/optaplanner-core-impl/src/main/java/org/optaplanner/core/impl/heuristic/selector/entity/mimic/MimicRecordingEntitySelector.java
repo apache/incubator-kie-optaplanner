@@ -168,13 +168,19 @@ public final class MimicRecordingEntitySelector<Solution_> extends AbstractEntit
         if (other == null || getClass() != other.getClass())
             return false;
         MimicRecordingEntitySelector<?> that = (MimicRecordingEntitySelector<?>) other;
+        /*
+         * Using list size in order to prevent recursion in equals/hashcode.
+         * Since the replaying selector will always point back to this instance,
+         * we only need to know if the lists are the same
+         * in order to be able to tell if two instances are equal.
+         */
         return Objects.equals(childEntitySelector, that.childEntitySelector)
-                && Objects.equals(replayingEntitySelectorList, that.replayingEntitySelectorList);
+                && Objects.equals(replayingEntitySelectorList.size(), that.replayingEntitySelectorList.size());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(childEntitySelector, replayingEntitySelectorList);
+        return Objects.hash(childEntitySelector, replayingEntitySelectorList.size());
     }
 
     @Override

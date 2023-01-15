@@ -384,7 +384,6 @@ class DefaultPillarSelectorTest {
         TestdataValue val1 = new TestdataValue("1");
         TestdataValue val2 = new TestdataValue("2");
         TestdataValue val3 = new TestdataValue("3");
-        TestdataValue val4 = new TestdataValue("4");
 
         final TestdataEntity a = new TestdataEntity("a", val1);
         final TestdataEntity b = new TestdataEntity("b", val2);
