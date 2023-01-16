@@ -6,20 +6,13 @@ ecosystem:
     - opta.*
 git:
   branches:
-  - name: main
+  - name: 9.x
     seed:
       branch: main
-  - name: 8.29.x
-    seed:
-      branch: seed-optaplanner-8.29.x
-  - name: 8.31.x
-    seed:
-      branch: seed-optaplanner-8.31.x
-  - name: 8.32.x
-    seed:
-      branch: seed-optaplanner-8.32.x
-  main_branch:
-    default: main
+      config_file:
+        git:
+          branch: 9.x-dsl-config
+  main_branch: 9.x
 seed:
   config_file:
     git:
@@ -27,7 +20,9 @@ seed:
       author:
         name: kiegroup
         credentials_id: kie-ci
-      branch: main
+      branch: 9.x-dsl-config
     path: .ci/jenkins/config/branch.yaml
 jenkins:
   email_creds_id: OPTAPLANNER_CI_EMAIL
+
+

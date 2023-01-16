@@ -1,9 +1,0 @@
-<solver>
-  <scoreDirectorFactory>
-    <constraintStreamImplType>BAVET</constraintStreamImplType>
-    <constraintProviderClass>org.optaplanner.benchmark.quarkus.testdata.normal.constraints.TestdataQuarkusConstraintProvider</constraintProviderClass>
-  </scoreDirectorFactory>
-  <termination>
-    <scoreCalculationCountLimit>50</scoreCalculationCountLimit>
-  </termination>
-</solver>
