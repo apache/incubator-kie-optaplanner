@@ -7,6 +7,7 @@ ecosystem:
 git:
   branches:
   - name: 9.x
+    main_branch: true
     seed:
       branch: main
       config_file:
