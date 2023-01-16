@@ -2,6 +2,7 @@ package org.optaplanner.benchmark.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,6 +13,7 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -19,6 +21,7 @@ import org.optaplanner.benchmark.impl.io.PlannerBenchmarkConfigIO;
 import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.persistence.common.api.domain.solution.RigidTestdataSolutionFileIO;
+import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.persistence.jackson.impl.domain.solution.JacksonSolutionFileIO;
 import org.xml.sax.SAXParseException;
 
@@ -85,8 +88,11 @@ class PlannerBenchmarkConfigTest {
 
     @Test
     public void assignCustomSolutionIO() {
-        new ProblemBenchmarksConfig()
-                .setSolutionFileIOClass(RigidTestdataSolutionFileIO.class);
+        ProblemBenchmarksConfig pbc = new ProblemBenchmarksConfig();
+        pbc.setSolutionFileIOClass(RigidTestdataSolutionFileIO.class);
+
+        Class<? extends SolutionFileIO<?>> configured = pbc.getSolutionFileIOClass();
+        assertNotNull(configured);
     }
 
     private static class TestdataSolutionFileIO extends JacksonSolutionFileIO<TestdataSolution> {
