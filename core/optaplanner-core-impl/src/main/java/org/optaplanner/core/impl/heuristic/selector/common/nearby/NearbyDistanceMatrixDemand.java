@@ -15,23 +15,24 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
  * therefore we want to reuse it as much as possible.
  *
  * <p>
- * In cases where the demand represents the same nearby selector (as defined by {@link NearbyDemand#equals(Object)})
- * the {@link SupplyManager} ensures that the same {@link NearbySupply} instance is returned
+ * In cases where the demand represents the same nearby selector (as defined by
+ * {@link NearbyDistanceMatrixDemand#equals(Object)})
+ * the {@link SupplyManager} ensures that the same {@link NearbyDistanceMatrixSupply} instance is returned
  * with the pre-computed {@link NearbyDistanceMatrix}.
  *
  * @param <Solution_>
  * @param <Origin_>
  * @param <Destination_>
  */
-public final class NearbyDemand<Solution_, Origin_, Destination_>
-        implements Demand<NearbySupply<Origin_, Destination_>> {
+public final class NearbyDistanceMatrixDemand<Solution_, Origin_, Destination_>
+        implements Demand<NearbyDistanceMatrixSupply<Origin_, Destination_>> {
 
     private final NearbyDistanceMeter<Origin_, Destination_> meter;
     private final Selector<Solution_> childSelector;
     private final EntitySelector<Solution_> replayingOriginEntitySelector;
     private final ToIntFunction<Origin_> destinationSizeFunction;
 
-    public NearbyDemand(NearbyDistanceMeter<Origin_, Destination_> meter, Selector<Solution_> childSelector,
+    public NearbyDistanceMatrixDemand(NearbyDistanceMeter<Origin_, Destination_> meter, Selector<Solution_> childSelector,
             EntitySelector<Solution_> replayingOriginEntitySelector, ToIntFunction<Origin_> destinationSizeFunction) {
         this.meter = meter;
         this.childSelector = childSelector;
@@ -40,7 +41,7 @@ public final class NearbyDemand<Solution_, Origin_, Destination_>
     }
 
     @Override
-    public NearbySupply<Origin_, Destination_> createExternalizedSupply(SupplyManager supplyManager) {
+    public NearbyDistanceMatrixSupply<Origin_, Destination_> createExternalizedSupply(SupplyManager supplyManager) {
         long originSize = replayingOriginEntitySelector.getSize();
         if (originSize > Integer.MAX_VALUE) {
             throw new IllegalStateException("The originEntitySelector (" + replayingOriginEntitySelector
@@ -76,7 +77,7 @@ public final class NearbyDemand<Solution_, Origin_, Destination_>
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        NearbyDemand<?, ?, ?> that = (NearbyDemand<?, ?, ?>) o;
+        NearbyDistanceMatrixDemand<?, ?, ?> that = (NearbyDistanceMatrixDemand<?, ?, ?>) o;
         return Objects.equals(meter, that.meter)
                 && Objects.equals(childSelector, that.childSelector)
                 && Objects.equals(replayingOriginEntitySelector, that.replayingOriginEntitySelector);

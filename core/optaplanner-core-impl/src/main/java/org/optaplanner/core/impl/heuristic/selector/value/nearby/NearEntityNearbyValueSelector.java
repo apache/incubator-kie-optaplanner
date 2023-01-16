@@ -5,8 +5,8 @@ import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDemand;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrixDemand;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -23,7 +23,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
     private final NearbyRandom nearbyRandom;
     private final boolean randomSelection;
     private final boolean discardNearbyIndexZero;
-    private final NearbyDemand<Solution_, ?, ?> nearbyDemand;
+    private final NearbyDistanceMatrixDemand<Solution_, ?, ?> nearbyDistanceMatrixDemand;
 
     private NearbyDistanceMatrix nearbyDistanceMatrix = null;
 
@@ -46,7 +46,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
         }
         this.discardNearbyIndexZero = childValueSelector.getVariableDescriptor().getVariablePropertyType().isAssignableFrom(
                 originEntitySelector.getEntityDescriptor().getEntityClass());
-        this.nearbyDemand = new NearbyDemand<>(nearbyDistanceMeter, childValueSelector, replayingOriginEntitySelector,
+        this.nearbyDistanceMatrixDemand = new NearbyDistanceMatrixDemand<>(nearbyDistanceMeter, childValueSelector, replayingOriginEntitySelector,
                 this::computeDestinationSize);
         phaseLifecycleSupport.addEventListener(childValueSelector);
         phaseLifecycleSupport.addEventListener(originEntitySelector);
@@ -63,7 +63,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
         // TODO Figure out how to move to solver scope so that construction heuristics and local search can share.
         super.phaseStarted(phaseScope);
         nearbyDistanceMatrix = phaseScope.getScoreDirector().getSupplyManager()
-                .demand(nearbyDemand)
+                .demand(nearbyDistanceMatrixDemand)
                 .getDistanceMatrix();
     }
 
@@ -91,7 +91,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
     @Override
     public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
-        phaseScope.getScoreDirector().getSupplyManager().cancel(nearbyDemand);
+        phaseScope.getScoreDirector().getSupplyManager().cancel(nearbyDistanceMatrixDemand);
         nearbyDistanceMatrix = null;
     }
 
