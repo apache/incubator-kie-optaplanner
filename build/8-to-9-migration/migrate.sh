@@ -22,7 +22,15 @@ ${mvn_cmd} rewrite:run \
 # Remove obsolete spring.factories
 find "${script_dir_path}/../../optaplanner-spring-integration" -type f -name "spring.factories" -exec rm {} \;
 
+# 8.x.y(-SNAPSHOT|.Final) -> 9.x.y(-SNAPSHOT|.Final)
+new_project_version="9${project_version:1}"
+${mvn_cmd} versions:set \
+  -Dfull \
+  -DallowSnapshots=true \
+  -DgenerateBackupPoms=false \
+  -DnewVersion="${new_project_version}" \
+
 # Commit the changes.
 git status
 git add -u
-git commit -m "Migrate to Quarkus 3 and Jakarta packages"
+git commit -m "Migrate to OptaPlanner 9"
