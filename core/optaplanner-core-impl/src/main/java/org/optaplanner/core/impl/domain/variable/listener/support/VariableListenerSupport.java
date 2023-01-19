@@ -22,6 +22,8 @@ import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
+ * This class is not thread-safe.
+ *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public final class VariableListenerSupport<Solution_> implements SupplyManager {
@@ -32,6 +34,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
 
     private final InnerScoreDirector<Solution_, ?> scoreDirector;
     private final NotifiableRegistry<Solution_> notifiableRegistry;
+    // If thread-safety is ever required, the two collections before need to be updated together.
     private final Map<Demand<?>, Supply> supplyMap = new LinkedHashMap<>();
     private final Map<Demand<?>, Long> demandCounterMap = new HashMap<>();
 
@@ -59,10 +62,8 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
             if (variableListener instanceof Supply) {
                 // Non-sourced variable listeners (ie. ones provided by the user) can never be a supply.
                 Demand<?> demand = shadowVariableDescriptor.getProvidedDemand();
-                synchronized (this) {
-                    supplyMap.put(demand, (Supply) variableListener);
-                    demandCounterMap.put(demand, 1L);
-                }
+                supplyMap.put(demand, (Supply) variableListener);
+                demandCounterMap.put(demand, 1L);
             }
             int globalOrder = shadowVariableDescriptor.getGlobalShadowOrder();
             notifiableRegistry.registerNotifiable(
@@ -73,7 +74,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
     }
 
     @Override
-    public synchronized <Supply_ extends Supply> Supply_ demand(Demand<Supply_> demand) {
+    public <Supply_ extends Supply> Supply_ demand(Demand<Supply_> demand) {
         if (demandCounterMap.compute(demand, (key, count) -> count == null ? 1 : count + 1) == 1) {
             Supply_ supply = (Supply_) createSupply(demand);
             supplyMap.put(demand, supply);
@@ -99,7 +100,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
     }
 
     @Override
-    public synchronized <Supply_ extends Supply> boolean cancel(Demand<Supply_> demand) {
+    public <Supply_ extends Supply> boolean cancel(Demand<Supply_> demand) {
         long result = demandCounterMap.compute(demand, (key, count) -> count == null ? -1 : count - 1);
         if (result < 0) {
             return false;
@@ -110,7 +111,7 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
     }
 
     @Override
-    public synchronized <Supply_ extends Supply> long getActiveCount(Demand<Supply_> demand) {
+    public <Supply_ extends Supply> long getActiveCount(Demand<Supply_> demand) {
         return demandCounterMap.getOrDefault(demand, 0L);
     }
 
