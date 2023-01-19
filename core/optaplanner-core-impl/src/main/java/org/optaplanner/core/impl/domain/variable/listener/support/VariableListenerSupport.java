@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.AbstractVariableListener;
@@ -75,11 +76,12 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
 
     @Override
     public <Supply_ extends Supply> Supply_ demand(Demand<Supply_> demand) {
-        if (demandCounterMap.compute(demand, (key, count) -> count == null ? 1 : count + 1) == 1) {
+        long activeDemandCount = demandCounterMap.compute(demand, (key, count) -> count == null ? 1L : count + 1L);
+        if (activeDemandCount == 1L) { // This is a new demand, create the supply.
             Supply_ supply = (Supply_) createSupply(demand);
             supplyMap.put(demand, supply);
             return supply;
-        } else {
+        } else { // Return existing supply.
             return (Supply_) supplyMap.get(demand);
         }
     }
@@ -101,13 +103,11 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
 
     @Override
     public <Supply_ extends Supply> boolean cancel(Demand<Supply_> demand) {
-        long result = demandCounterMap.compute(demand, (key, count) -> count == null ? -1 : count - 1);
-        if (result < 0) {
-            return false;
-        } else if (result == 0) {
-            return supplyMap.remove(demand) != null;
+        Long result = demandCounterMap.computeIfPresent(demand, (key, count) -> Objects.equals(count, 1L) ? null : count - 1L);
+        if (result != null) {
+            return true;
         }
-        return true;
+        return supplyMap.remove(demand) != null;
     }
 
     @Override
