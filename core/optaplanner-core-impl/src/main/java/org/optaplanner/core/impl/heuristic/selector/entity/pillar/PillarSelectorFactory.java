@@ -37,13 +37,12 @@ public class PillarSelectorFactory<Solution_>
      *        and less would be pointless.
      * @param inheritedSelectionOrder never null
      * @param variableNameIncludeList sometimes null
-     * @param instanceCache
      * @return never null
      */
     public PillarSelector<Solution_> buildPillarSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SubPillarType subPillarType, Class<? extends Comparator<Object>> subPillarSequenceComparatorClass,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder,
-            List<String> variableNameIncludeList, ClassInstanceCache instanceCache) {
+            List<String> variableNameIncludeList) {
         if (subPillarType != SubPillarType.SEQUENCE && subPillarSequenceComparatorClass != null) {
             throw new IllegalArgumentException("Subpillar type (" + subPillarType + ") on pillarSelectorConfig (" + config +
                     ") is not " + SubPillarType.SEQUENCE + ", yet subPillarSequenceComparatorClass (" +
@@ -61,7 +60,7 @@ public class PillarSelectorFactory<Solution_>
                 Objects.requireNonNullElseGet(config.getEntitySelectorConfig(), EntitySelectorConfig::new);
         EntitySelector<Solution_> entitySelector =
                 EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
-                        .buildEntitySelector(configPolicy, minimumCacheType, SelectionOrder.ORIGINAL, instanceCache);
+                        .buildEntitySelector(configPolicy, minimumCacheType, SelectionOrder.ORIGINAL);
         List<GenuineVariableDescriptor<Solution_>> variableDescriptors =
                 deduceVariableDescriptorList(entitySelector.getEntityDescriptor(), variableNameIncludeList);
         if (!subPillarEnabled
@@ -73,7 +72,8 @@ public class PillarSelectorFactory<Solution_>
 
         SubPillarConfigPolicy subPillarPolicy = subPillarEnabled
                 ? configureSubPillars(subPillarType, subPillarSequenceComparatorClass, entitySelector,
-                        config.getMinimumSubPillarSize(), config.getMaximumSubPillarSize(), instanceCache)
+                        config.getMinimumSubPillarSize(), config.getMaximumSubPillarSize(),
+                        configPolicy.getClassInstanceCache())
                 : SubPillarConfigPolicy.withoutSubpillars();
         return new DefaultPillarSelector<>(entitySelector, variableDescriptors,
                 inheritedSelectionOrder.toRandomSelectionBoolean(), subPillarPolicy);

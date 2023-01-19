@@ -70,7 +70,6 @@ public class ValueSelectorFactory<Solution_>
     }
 
     /**
-     *
      * @param configPolicy never null
      * @param entityDescriptor never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
@@ -81,15 +80,15 @@ public class ValueSelectorFactory<Solution_>
      */
     public ValueSelector<Solution_> buildValueSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             EntityDescriptor<Solution_> entityDescriptor, SelectionCacheType minimumCacheType,
-            SelectionOrder inheritedSelectionOrder, ClassInstanceCache instanceCache) {
+            SelectionOrder inheritedSelectionOrder) {
         return buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder,
-                configPolicy.isReinitializeVariableFilterEnabled(), false, instanceCache);
+                configPolicy.isReinitializeVariableFilterEnabled(), false);
     }
 
     public ValueSelector<Solution_> buildValueSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             EntityDescriptor<Solution_> entityDescriptor, SelectionCacheType minimumCacheType,
             SelectionOrder inheritedSelectionOrder, boolean applyReinitializeVariableFiltering,
-            boolean applyUnassignedValueFiltering, ClassInstanceCache instanceCache) {
+            boolean applyUnassignedValueFiltering) {
         GenuineVariableDescriptor<Solution_> variableDescriptor = deduceGenuineVariableDescriptor(
                 downcastEntityDescriptor(configPolicy, entityDescriptor), config.getVariableName());
         if (config.getMimicSelectorRef() != null) {
@@ -118,8 +117,9 @@ public class ValueSelectorFactory<Solution_>
         if (config.getNearbySelectionConfig() != null) {
             // TODO Static filtering (such as movableEntitySelectionFilter) should affect nearbySelection too
             valueSelector = applyNearbySelection(configPolicy, config.getNearbySelectionConfig(), minimumCacheType,
-                    resolvedSelectionOrder, valueSelector, instanceCache);
+                    resolvedSelectionOrder, valueSelector);
         }
+        ClassInstanceCache instanceCache = configPolicy.getClassInstanceCache();
         valueSelector = applyFiltering(valueSelector, instanceCache);
         valueSelector = applyInitializedChainedValueFilter(configPolicy, variableDescriptor, valueSelector);
         valueSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, valueSelector, instanceCache);
@@ -452,14 +452,13 @@ public class ValueSelectorFactory<Solution_>
 
     private ValueSelector<Solution_> applyNearbySelection(HeuristicConfigPolicy<Solution_> configPolicy,
             NearbySelectionConfig nearbySelectionConfig, SelectionCacheType minimumCacheType,
-            SelectionOrder resolvedSelectionOrder, ValueSelector<Solution_> valueSelector, ClassInstanceCache instanceCache) {
+            SelectionOrder resolvedSelectionOrder, ValueSelector<Solution_> valueSelector) {
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
         EntitySelectorFactory<Solution_> entitySelectorFactory =
                 EntitySelectorFactory.create(nearbySelectionConfig.getOriginEntitySelectorConfig());
         EntitySelector<Solution_> originEntitySelector =
-                entitySelectorFactory.buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder,
-                        instanceCache);
-        NearbyDistanceMeter<?, ?> nearbyDistanceMeter = instanceCache.newInstance(nearbySelectionConfig,
+                entitySelectorFactory.buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder);
+        NearbyDistanceMeter<?, ?> nearbyDistanceMeter = configPolicy.getClassInstanceCache().newInstance(nearbySelectionConfig,
                 "nearbyDistanceMeterClass", nearbySelectionConfig.getNearbyDistanceMeterClass());
         // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
         NearbyRandom nearbyRandom =

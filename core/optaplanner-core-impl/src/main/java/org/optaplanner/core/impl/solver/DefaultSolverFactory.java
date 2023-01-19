@@ -81,7 +81,6 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
 
     @Override
     public Solver<Solution_> buildSolver() {
-        ClassInstanceCache instanceCache = ClassInstanceCache.create();
         boolean daemon_ = Objects.requireNonNullElse(solverConfig.getDaemon(), false);
 
         SolverScope<Solution_> solverScope = new SolverScope<>();
@@ -117,13 +116,14 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                 solverConfig.getMoveThreadBufferSize(),
                 solverConfig.getThreadFactoryClass(),
                 scoreDirectorFactory.getInitializingScoreTrend(),
-                solutionDescriptor).build();
+                solutionDescriptor,
+                ClassInstanceCache.create()).build();
         TerminationConfig terminationConfig_ =
                 Objects.requireNonNullElseGet(solverConfig.getTerminationConfig(), TerminationConfig::new);
         BasicPlumbingTermination<Solution_> basicPlumbingTermination = new BasicPlumbingTermination<>(daemon_);
         Termination<Solution_> termination = TerminationFactory.<Solution_> create(terminationConfig_)
                 .buildTermination(configPolicy, basicPlumbingTermination);
-        List<Phase<Solution_>> phaseList = buildPhaseList(configPolicy, bestSolutionRecaller, termination, instanceCache);
+        List<Phase<Solution_>> phaseList = buildPhaseList(configPolicy, bestSolutionRecaller, termination);
 
         RandomFactory randomFactory = buildRandomFactory(environmentMode_);
         return new DefaultSolver<>(environmentMode_, randomFactory, bestSolutionRecaller, basicPlumbingTermination,
@@ -189,8 +189,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
     }
 
     private List<Phase<Solution_>> buildPhaseList(HeuristicConfigPolicy<Solution_> configPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination,
-            ClassInstanceCache instanceCache) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
         List<PhaseConfig> phaseConfigList_ = solverConfig.getPhaseConfigList();
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
             Collection<EntityDescriptor<Solution_>> genuineEntityDescriptors =
@@ -231,7 +230,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
             }
             phaseConfigList_.add(new LocalSearchPhaseConfig());
         }
-        return PhaseFactory.buildPhases(phaseConfigList_, configPolicy, bestSolutionRecaller, termination, instanceCache);
+        return PhaseFactory.buildPhases(phaseConfigList_, configPolicy, bestSolutionRecaller, termination);
     }
 
     // Required for testability as final classes cannot be mocked.

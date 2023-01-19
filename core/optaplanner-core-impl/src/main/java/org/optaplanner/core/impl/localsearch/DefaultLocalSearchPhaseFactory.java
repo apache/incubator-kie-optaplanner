@@ -27,7 +27,6 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.AcceptorFactory;
 import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForager;
 import org.optaplanner.core.impl.localsearch.decider.forager.LocalSearchForagerFactory;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
@@ -40,13 +39,12 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
 
     @Override
     public LocalSearchPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination,
-            ClassInstanceCache instanceCache) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         DefaultLocalSearchPhase.Builder<Solution_> builder =
                 new DefaultLocalSearchPhase.Builder<>(phaseIndex, solverConfigPolicy.getLogIndentation(), phaseTermination,
-                        buildDecider(phaseConfigPolicy, phaseTermination, instanceCache));
+                        buildDecider(phaseConfigPolicy, phaseTermination));
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             builder.setAssertStepScoreFromScratch(true);
@@ -59,8 +57,8 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
     }
 
     private LocalSearchDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,
-            Termination<Solution_> termination, ClassInstanceCache instanceCache) {
-        MoveSelector<Solution_> moveSelector = buildMoveSelector(configPolicy, instanceCache);
+            Termination<Solution_> termination) {
+        MoveSelector<Solution_> moveSelector = buildMoveSelector(configPolicy);
         Acceptor<Solution_> acceptor = buildAcceptor(configPolicy);
         LocalSearchForager<Solution_> forager = buildForager(configPolicy);
         if (moveSelector.isNeverEnding() && !forager.supportsNeverEndingMoveSelector()) {
@@ -183,8 +181,7 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
         return LocalSearchForagerFactory.<Solution_> create(foragerConfig_).buildForager();
     }
 
-    protected MoveSelector<Solution_> buildMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            ClassInstanceCache instanceCache) {
+    protected MoveSelector<Solution_> buildMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy) {
         MoveSelector<Solution_> moveSelector;
         SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME;
         SelectionOrder defaultSelectionOrder;
@@ -199,10 +196,10 @@ public class DefaultLocalSearchPhaseFactory<Solution_> extends AbstractPhaseFact
                     new ChangeMoveSelectorConfig(),
                     new SwapMoveSelectorConfig());
             moveSelector = new UnionMoveSelectorFactory<Solution_>(unionMoveSelectorConfig)
-                    .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder, instanceCache);
+                    .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
         } else {
             moveSelector = MoveSelectorFactory.<Solution_> create(phaseConfig.getMoveSelectorConfig())
-                    .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder, instanceCache);
+                    .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
         }
         return moveSelector;
     }

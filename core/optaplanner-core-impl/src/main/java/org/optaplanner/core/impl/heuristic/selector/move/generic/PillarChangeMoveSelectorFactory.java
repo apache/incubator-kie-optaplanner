@@ -17,7 +17,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFac
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class PillarChangeMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, PillarChangeMoveSelectorConfig> {
@@ -28,7 +27,7 @@ public class PillarChangeMoveSelectorFactory<Solution_>
 
     @Override
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection, ClassInstanceCache instanceCache) {
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         PillarSelectorConfig pillarSelectorConfig =
                 Objects.requireNonNullElseGet(config.getPillarSelectorConfig(), PillarSelectorConfig::new);
         ValueSelectorConfig valueSelectorConfig =
@@ -40,10 +39,9 @@ public class PillarChangeMoveSelectorFactory<Solution_>
         PillarSelector<Solution_> pillarSelector = PillarSelectorFactory.<Solution_> create(pillarSelectorConfig)
                 .buildPillarSelector(configPolicy, config.getSubPillarType(),
                         (Class<? extends Comparator<Object>>) config.getSubPillarSequenceComparatorClass(),
-                        minimumCacheType, selectionOrder, variableNameIncludeList, instanceCache);
+                        minimumCacheType, selectionOrder, variableNameIncludeList);
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig)
-                .buildValueSelector(configPolicy, pillarSelector.getEntityDescriptor(), minimumCacheType, selectionOrder,
-                        instanceCache);
+                .buildValueSelector(configPolicy, pillarSelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
         return new PillarChangeMoveSelector<>(pillarSelector, valueSelector, randomSelection);
     }
 }

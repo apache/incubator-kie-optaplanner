@@ -19,7 +19,6 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class QueuedEntityPlacerFactory<Solution_>
         extends AbstractEntityPlacerFactory<Solution_, QueuedEntityPlacerConfig> {
@@ -62,12 +61,11 @@ public class QueuedEntityPlacerFactory<Solution_>
     }
 
     @Override
-    public QueuedEntityPlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy,
-            ClassInstanceCache instanceCache) {
+    public QueuedEntityPlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy) {
         EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(configPolicy);
         EntitySelector<Solution_> entitySelector =
                 EntitySelectorFactory.<Solution_> create(entitySelectorConfig_)
-                        .buildEntitySelector(configPolicy, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL, instanceCache);
+                        .buildEntitySelector(configPolicy, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
 
         List<MoveSelectorConfig> moveSelectorConfigList_;
         if (ConfigUtils.isEmptyCollection(config.getMoveSelectorConfigList())) {
@@ -93,7 +91,7 @@ public class QueuedEntityPlacerFactory<Solution_>
         List<MoveSelector<Solution_>> moveSelectorList = new ArrayList<>(moveSelectorConfigList_.size());
         for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList_) {
             MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig)
-                    .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL, instanceCache);
+                    .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
             moveSelectorList.add(moveSelector);
         }
         return new QueuedEntityPlacer<>(entitySelector, moveSelectorList);

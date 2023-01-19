@@ -5,7 +5,6 @@ import org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlac
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public interface EntityPlacerFactory<Solution_> {
 
@@ -22,5 +21,5 @@ public interface EntityPlacerFactory<Solution_> {
         }
     }
 
-    EntityPlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy, ClassInstanceCache instanceCache);
+    EntityPlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy);
 }

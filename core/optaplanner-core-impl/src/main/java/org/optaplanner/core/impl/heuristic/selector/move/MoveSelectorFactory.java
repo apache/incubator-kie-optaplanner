@@ -32,7 +32,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChai
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListChangeMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListSwapMoveSelectorFactory;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public interface MoveSelectorFactory<Solution_> {
 
@@ -79,9 +78,8 @@ public interface MoveSelectorFactory<Solution_> {
      *        then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      *        and less would be pointless.
      * @param inheritedSelectionOrder never null
-     * @param instanceCache never null
      * @return never null
      */
     MoveSelector<Solution_> buildMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder, ClassInstanceCache instanceCache);
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder);
 }

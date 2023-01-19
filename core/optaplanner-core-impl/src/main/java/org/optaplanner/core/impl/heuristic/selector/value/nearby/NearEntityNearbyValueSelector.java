@@ -46,8 +46,9 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
         }
         this.discardNearbyIndexZero = childValueSelector.getVariableDescriptor().getVariablePropertyType().isAssignableFrom(
                 originEntitySelector.getEntityDescriptor().getEntityClass());
-        this.nearbyDistanceMatrixDemand = new NearbyDistanceMatrixDemand<>(nearbyDistanceMeter, childValueSelector, replayingOriginEntitySelector,
-                this::computeDestinationSize);
+        this.nearbyDistanceMatrixDemand =
+                new NearbyDistanceMatrixDemand<>(nearbyDistanceMeter, childValueSelector, replayingOriginEntitySelector,
+                        this::computeDestinationSize);
         phaseLifecycleSupport.addEventListener(childValueSelector);
         phaseLifecycleSupport.addEventListener(originEntitySelector);
     }

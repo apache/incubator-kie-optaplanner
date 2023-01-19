@@ -14,7 +14,6 @@ import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class PillarSwapMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, PillarSwapMoveSelectorConfig> {
@@ -25,15 +24,15 @@ public class PillarSwapMoveSelectorFactory<Solution_>
 
     @Override
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection, ClassInstanceCache instanceCache) {
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         PillarSelectorConfig leftPillarSelectorConfig =
                 Objects.requireNonNullElseGet(config.getPillarSelectorConfig(), PillarSelectorConfig::new);
         PillarSelectorConfig rightPillarSelectorConfig =
                 Objects.requireNonNullElse(config.getSecondaryPillarSelectorConfig(), leftPillarSelectorConfig);
         PillarSelector<Solution_> leftPillarSelector =
-                buildPillarSelector(leftPillarSelectorConfig, configPolicy, minimumCacheType, randomSelection, instanceCache);
+                buildPillarSelector(leftPillarSelectorConfig, configPolicy, minimumCacheType, randomSelection);
         PillarSelector<Solution_> rightPillarSelector =
-                buildPillarSelector(rightPillarSelectorConfig, configPolicy, minimumCacheType, randomSelection, instanceCache);
+                buildPillarSelector(rightPillarSelectorConfig, configPolicy, minimumCacheType, randomSelection);
 
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
                 deduceVariableDescriptorList(leftPillarSelector.getEntityDescriptor(), config.getVariableNameIncludeList());
@@ -41,13 +40,12 @@ public class PillarSwapMoveSelectorFactory<Solution_>
     }
 
     private PillarSelector<Solution_> buildPillarSelector(PillarSelectorConfig pillarSelectorConfig,
-            HeuristicConfigPolicy<Solution_> configPolicy, SelectionCacheType minimumCacheType,
-            boolean randomSelection, ClassInstanceCache instanceCache) {
+            HeuristicConfigPolicy<Solution_> configPolicy, SelectionCacheType minimumCacheType, boolean randomSelection) {
         return PillarSelectorFactory.<Solution_> create(pillarSelectorConfig)
                 .buildPillarSelector(configPolicy, config.getSubPillarType(),
                         (Class<? extends Comparator<Object>>) config.getSubPillarSequenceComparatorClass(), minimumCacheType,
                         SelectionOrder.fromRandomSelectionBoolean(randomSelection),
-                        config.getVariableNameIncludeList(), instanceCache);
+                        config.getVariableNameIncludeList());
     }
 
 }

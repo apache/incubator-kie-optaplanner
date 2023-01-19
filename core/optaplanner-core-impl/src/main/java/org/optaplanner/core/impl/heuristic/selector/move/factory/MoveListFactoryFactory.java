@@ -6,7 +6,6 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class MoveListFactoryFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, MoveListFactoryConfig> {
@@ -17,7 +16,7 @@ public class MoveListFactoryFactory<Solution_>
 
     @Override
     public MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection, ClassInstanceCache instanceCache) {
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         if (config.getMoveListFactoryClass() == null) {
             throw new IllegalArgumentException("The moveListFactoryConfig (" + config
                     + ") lacks a moveListFactoryClass (" + config.getMoveListFactoryClass() + ").");

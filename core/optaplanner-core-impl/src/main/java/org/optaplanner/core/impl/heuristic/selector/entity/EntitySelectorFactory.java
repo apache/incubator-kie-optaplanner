@@ -77,7 +77,7 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
      * @return never null
      */
     public EntitySelector<Solution_> buildEntitySelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder, ClassInstanceCache instanceCache) {
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         if (config.getMimicSelectorRef() != null) {
             return buildMimicReplaying(configPolicy);
         }
@@ -101,8 +101,9 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
         if (config.getNearbySelectionConfig() != null) {
             // TODO Static filtering (such as movableEntitySelectionFilter) should affect nearbySelection
             entitySelector = applyNearbySelection(configPolicy, config.getNearbySelectionConfig(), minimumCacheType,
-                    resolvedSelectionOrder, entitySelector, instanceCache);
+                    resolvedSelectionOrder, entitySelector);
         }
+        ClassInstanceCache instanceCache = configPolicy.getClassInstanceCache();
         entitySelector = applyFiltering(entitySelector, instanceCache);
         entitySelector = applySorting(resolvedCacheType, resolvedSelectionOrder, entitySelector, instanceCache);
         entitySelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, entitySelector, instanceCache);
@@ -177,15 +178,15 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
 
     private EntitySelector<Solution_> applyNearbySelection(HeuristicConfigPolicy<Solution_> configPolicy,
             NearbySelectionConfig nearbySelectionConfig, SelectionCacheType minimumCacheType,
-            SelectionOrder resolvedSelectionOrder, EntitySelector<Solution_> entitySelector, ClassInstanceCache instanceCache) {
+            SelectionOrder resolvedSelectionOrder, EntitySelector<Solution_> entitySelector) {
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
         EntitySelectorFactory<Solution_> entitySelectorFactory =
                 EntitySelectorFactory.create(nearbySelectionConfig.getOriginEntitySelectorConfig());
         EntitySelector<Solution_> originEntitySelector =
-                entitySelectorFactory.buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder,
-                        instanceCache);
-        NearbyDistanceMeter nearbyDistanceMeter = instanceCache.newInstance(nearbySelectionConfig, "nearbyDistanceMeterClass",
-                nearbySelectionConfig.getNearbyDistanceMeterClass());
+                entitySelectorFactory.buildEntitySelector(configPolicy, minimumCacheType, resolvedSelectionOrder);
+        NearbyDistanceMeter nearbyDistanceMeter =
+                configPolicy.getClassInstanceCache().newInstance(nearbySelectionConfig, "nearbyDistanceMeterClass",
+                        nearbySelectionConfig.getNearbyDistanceMeterClass());
         // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
         NearbyRandom nearbyRandom = NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(randomSelection);
         return new NearEntityNearbyEntitySelector<>(entitySelector, originEntitySelector, nearbyDistanceMeter,

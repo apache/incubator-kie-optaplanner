@@ -22,7 +22,6 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
@@ -50,7 +49,7 @@ class QueuedEntityPlacerFactoryTest {
 
         QueuedEntityPlacer<TestdataMultiVarSolution> entityPlacer =
                 new QueuedEntityPlacerFactory<TestdataMultiVarSolution>(placerConfig)
-                        .buildEntityPlacer(configPolicy, ClassInstanceCache.create());
+                        .buildEntityPlacer(configPolicy);
 
         SolverScope<TestdataMultiVarSolution> solverScope = mock(SolverScope.class);
         entityPlacer.solvingStarted(solverScope);

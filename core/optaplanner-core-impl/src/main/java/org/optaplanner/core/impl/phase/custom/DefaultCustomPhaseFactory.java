@@ -9,7 +9,6 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -21,8 +20,7 @@ public class DefaultCustomPhaseFactory<Solution_> extends AbstractPhaseFactory<S
 
     @Override
     public CustomPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination,
-            ClassInstanceCache instanceCache) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         if (ConfigUtils.isEmptyCollection(phaseConfig.getCustomPhaseCommandClassList())
                 && ConfigUtils.isEmptyCollection(phaseConfig.getCustomPhaseCommandList())) {

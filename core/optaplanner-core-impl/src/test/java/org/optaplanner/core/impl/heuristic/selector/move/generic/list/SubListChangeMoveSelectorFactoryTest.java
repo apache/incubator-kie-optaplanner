@@ -9,7 +9,6 @@ import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 
@@ -26,7 +25,7 @@ class SubListChangeMoveSelectorFactoryTest {
 
         RandomSubListChangeMoveSelector<TestdataListSolution> selector =
                 (RandomSubListChangeMoveSelector<TestdataListSolution>) factory.buildBaseMoveSelector(heuristicConfigPolicy,
-                        SelectionCacheType.JUST_IN_TIME, true, ClassInstanceCache.create());
+                        SelectionCacheType.JUST_IN_TIME, true);
 
         assertThat(selector.isCountable()).isTrue();
         assertThat(selector.isNeverEnding()).isTrue();
@@ -45,7 +44,7 @@ class SubListChangeMoveSelectorFactoryTest {
 
         RandomSubListChangeMoveSelector<TestdataListSolution> selector =
                 (RandomSubListChangeMoveSelector<TestdataListSolution>) factory.buildBaseMoveSelector(heuristicConfigPolicy,
-                        SelectionCacheType.JUST_IN_TIME, true, ClassInstanceCache.create());
+                        SelectionCacheType.JUST_IN_TIME, true);
 
         assertThat(selector.isSelectReversingMoveToo()).isFalse();
     }
@@ -59,8 +58,7 @@ class SubListChangeMoveSelectorFactoryTest {
         HeuristicConfigPolicy<TestdataSolution> heuristicConfigPolicy = buildHeuristicConfigPolicy();
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> factory.buildBaseMoveSelector(heuristicConfigPolicy, SelectionCacheType.JUST_IN_TIME, true,
-                        ClassInstanceCache.create()))
+                .isThrownBy(() -> factory.buildBaseMoveSelector(heuristicConfigPolicy, SelectionCacheType.JUST_IN_TIME, true))
                 .withMessageContaining("@" + PlanningListVariable.class.getSimpleName());
     }
 }

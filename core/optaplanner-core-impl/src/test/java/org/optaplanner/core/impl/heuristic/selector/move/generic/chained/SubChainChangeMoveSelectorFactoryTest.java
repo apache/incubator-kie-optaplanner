@@ -10,7 +10,6 @@ import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.chained.SubChainSelectorConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicyTestUtils;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 
 class SubChainChangeMoveSelectorFactoryTest {
@@ -32,8 +31,7 @@ class SubChainChangeMoveSelectorFactoryTest {
 
         SubChainChangeMoveSelector<TestdataChainedSolution> selector =
                 (SubChainChangeMoveSelector<TestdataChainedSolution>) factory
-                        .buildBaseMoveSelector(heuristicConfigPolicy, SelectionCacheType.JUST_IN_TIME, true,
-                                ClassInstanceCache.create());
+                        .buildBaseMoveSelector(heuristicConfigPolicy, SelectionCacheType.JUST_IN_TIME, true);
         assertThat(selector.subChainSelector).isNotNull();
         assertThat(selector.valueSelector).isNotNull();
         assertThat(selector.randomSelection).isTrue();

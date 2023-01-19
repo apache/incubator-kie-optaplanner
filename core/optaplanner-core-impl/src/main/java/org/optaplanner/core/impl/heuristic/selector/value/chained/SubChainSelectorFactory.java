@@ -13,7 +13,6 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class SubChainSelectorFactory<Solution_> {
 
@@ -36,7 +35,6 @@ public class SubChainSelectorFactory<Solution_> {
     }
 
     /**
-     *
      * @param configPolicy never null
      * @param entityDescriptor never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
@@ -47,7 +45,7 @@ public class SubChainSelectorFactory<Solution_> {
      */
     public SubChainSelector<Solution_> buildSubChainSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             EntityDescriptor<Solution_> entityDescriptor, SelectionCacheType minimumCacheType,
-            SelectionOrder inheritedSelectionOrder, ClassInstanceCache instanceCache) {
+            SelectionOrder inheritedSelectionOrder) {
         if (minimumCacheType.compareTo(SelectionCacheType.STEP) > 0) {
             throw new IllegalArgumentException("The subChainSelectorConfig (" + config
                     + ")'s minimumCacheType (" + minimumCacheType
@@ -58,7 +56,7 @@ public class SubChainSelectorFactory<Solution_> {
                 Objects.requireNonNullElseGet(config.getValueSelectorConfig(), ValueSelectorConfig::new);
         // ValueSelector uses SelectionOrder.ORIGINAL because a SubChainSelector STEP caches the values
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig)
-                .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, SelectionOrder.ORIGINAL, instanceCache);
+                .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The subChainSelectorConfig (" + config
                     + ") needs to be based on an "

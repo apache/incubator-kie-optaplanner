@@ -25,7 +25,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListSwapMo
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class SwapMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, SwapMoveSelectorConfig> {
@@ -36,7 +35,7 @@ public class SwapMoveSelectorFactory<Solution_>
 
     @Override
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection, ClassInstanceCache instanceCache) {
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig =
                 Objects.requireNonNullElseGet(config.getEntitySelectorConfig(), EntitySelectorConfig::new);
         EntitySelectorConfig secondaryEntitySelectorConfig =
@@ -44,19 +43,19 @@ public class SwapMoveSelectorFactory<Solution_>
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
         EntitySelector<Solution_> leftEntitySelector =
                 EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
-                        .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder, instanceCache);
+                        .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
         EntitySelector<Solution_> rightEntitySelector =
                 EntitySelectorFactory.<Solution_> create(secondaryEntitySelectorConfig)
-                        .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder, instanceCache);
+                        .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
         EntityDescriptor<Solution_> entityDescriptor = leftEntitySelector.getEntityDescriptor();
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
                 deduceVariableDescriptorList(entityDescriptor, config.getVariableNameIncludeList());
         if (variableDescriptorList.size() == 1 && variableDescriptorList.get(0).isListVariable()) {
             // TODO add ValueSelector to the config
             EntityIndependentValueSelector<Solution_> leftValueSelector = buildEntityIndependentValueSelector(configPolicy,
-                    entityDescriptor, minimumCacheType, selectionOrder, instanceCache);
+                    entityDescriptor, minimumCacheType, selectionOrder);
             EntityIndependentValueSelector<Solution_> rightValueSelector = buildEntityIndependentValueSelector(configPolicy,
-                    entityDescriptor, minimumCacheType, selectionOrder, instanceCache);
+                    entityDescriptor, minimumCacheType, selectionOrder);
             return new ListSwapMoveSelector<>(
                     (ListVariableDescriptor<Solution_>) variableDescriptorList.get(0),
                     leftValueSelector,
@@ -74,11 +73,10 @@ public class SwapMoveSelectorFactory<Solution_>
 
     private EntityIndependentValueSelector<Solution_> buildEntityIndependentValueSelector(
             HeuristicConfigPolicy<Solution_> configPolicy, EntityDescriptor<Solution_> entityDescriptor,
-            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder, ClassInstanceCache instanceCache) {
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         ValueSelector<Solution_> valueSelector =
                 ValueSelectorFactory.<Solution_> create(new ValueSelectorConfig())
-                        .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder,
-                                instanceCache);
+                        .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The swapMoveSelector (" + config
                     + ") for a list variable needs to be based on an "

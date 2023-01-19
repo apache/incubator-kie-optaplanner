@@ -11,7 +11,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -74,7 +73,7 @@ class DefaultPartitionedSearchPhaseFactoryTest {
         DefaultPartitionedSearchPhaseFactory<TestdataSolution> partitionedSearchPhaseFactory =
                 new DefaultPartitionedSearchPhaseFactory<>(phaseConfig);
         return (DefaultPartitionedSearchPhase<TestdataSolution>) partitionedSearchPhaseFactory.buildPhase(0,
-                heuristicConfigPolicy, mock(BestSolutionRecaller.class), mock(Termination.class), ClassInstanceCache.create());
+                heuristicConfigPolicy, mock(BestSolutionRecaller.class), mock(Termination.class));
     }
 
 }

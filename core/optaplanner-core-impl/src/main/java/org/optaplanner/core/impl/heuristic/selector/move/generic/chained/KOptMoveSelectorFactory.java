@@ -14,7 +14,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFac
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class KOptMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, KOptMoveSelectorConfig> {
@@ -27,19 +26,18 @@ public class KOptMoveSelectorFactory<Solution_>
 
     @Override
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection, ClassInstanceCache instanceCache) {
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig =
                 Objects.requireNonNullElseGet(config.getEntitySelectorConfig(), EntitySelectorConfig::new);
         ValueSelectorConfig valueSelectorConfig =
                 Objects.requireNonNullElseGet(config.getValueSelectorConfig(), ValueSelectorConfig::new);
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
         EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
-                .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder, instanceCache);
+                .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
         ValueSelector<Solution_>[] valueSelectors = new ValueSelector[K - 1];
         for (int i = 0; i < valueSelectors.length; i++) {
             valueSelectors[i] = ValueSelectorFactory.<Solution_> create(valueSelectorConfig)
-                    .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder,
-                            instanceCache);
+                    .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
 
         }
         return new KOptMoveSelector<>(entitySelector, valueSelectors, randomSelection);

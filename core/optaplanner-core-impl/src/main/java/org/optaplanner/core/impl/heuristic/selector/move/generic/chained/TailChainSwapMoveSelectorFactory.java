@@ -14,7 +14,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFac
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class TailChainSwapMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, TailChainSwapMoveSelectorConfig> {
@@ -25,17 +24,16 @@ public class TailChainSwapMoveSelectorFactory<Solution_>
 
     @Override
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection, ClassInstanceCache instanceCache) {
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig =
                 Objects.requireNonNullElseGet(config.getEntitySelectorConfig(), EntitySelectorConfig::new);
         ValueSelectorConfig valueSelectorConfig =
                 Objects.requireNonNullElseGet(config.getValueSelectorConfig(), ValueSelectorConfig::new);
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
         EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
-                .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder, instanceCache);
+                .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig)
-                .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder,
-                        instanceCache);
+                .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
         return new TailChainSwapMoveSelector<>(entitySelector, valueSelector, randomSelection);
     }
 }

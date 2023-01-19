@@ -16,7 +16,6 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
@@ -34,8 +33,7 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
 
     @Override
     public PartitionedSearchPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination,
-            ClassInstanceCache instanceCache) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         ThreadFactory threadFactory = solverConfigPolicy.buildThreadFactory(ChildThreadType.PART_THREAD);
         Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
@@ -48,7 +46,7 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
         DefaultPartitionedSearchPhase.Builder<Solution_> builder = new DefaultPartitionedSearchPhase.Builder<>(phaseIndex,
                 solverConfigPolicy.getLogIndentation(), phaseTermination, buildSolutionPartitioner(), threadFactory,
                 resolvedActiveThreadCount, phaseConfigList_,
-                phaseConfigPolicy.createChildThreadConfigPolicy(ChildThreadType.PART_THREAD), instanceCache);
+                phaseConfigPolicy.createChildThreadConfigPolicy(ChildThreadType.PART_THREAD));
 
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {

@@ -36,7 +36,6 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
@@ -50,8 +49,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
 
     @Override
     public ConstructionHeuristicPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination,
-            ClassInstanceCache instanceCache) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
         ConstructionHeuristicType constructionHeuristicType_ = Objects.requireNonNullElse(
                 phaseConfig.getConstructionHeuristicType(),
                 ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
@@ -71,7 +69,7 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
         EntityPlacerConfig entityPlacerConfig_ = getValidEntityPlacerConfig()
                 .orElseGet(() -> buildDefaultEntityPlacerConfig(phaseConfigPolicy, constructionHeuristicType_));
         EntityPlacer<Solution_> entityPlacer = EntityPlacerFactory.<Solution_> create(entityPlacerConfig_)
-                .buildEntityPlacer(phaseConfigPolicy, instanceCache);
+                .buildEntityPlacer(phaseConfigPolicy);
 
         DefaultConstructionHeuristicPhase.Builder<Solution_> builder = new DefaultConstructionHeuristicPhase.Builder<>(
                 phaseIndex,

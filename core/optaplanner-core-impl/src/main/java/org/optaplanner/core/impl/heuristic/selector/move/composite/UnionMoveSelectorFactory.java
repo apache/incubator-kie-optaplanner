@@ -11,7 +11,6 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class UnionMoveSelectorFactory<Solution_>
         extends AbstractCompositeMoveSelectorFactory<Solution_, UnionMoveSelectorConfig> {
@@ -22,9 +21,9 @@ public class UnionMoveSelectorFactory<Solution_>
 
     @Override
     public MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection, ClassInstanceCache instanceCache) {
+            SelectionCacheType minimumCacheType, boolean randomSelection) {
         List<MoveSelector<Solution_>> moveSelectorList = buildInnerMoveSelectors(config.getMoveSelectorList(),
-                configPolicy, minimumCacheType, randomSelection, instanceCache);
+                configPolicy, minimumCacheType, randomSelection);
 
         SelectionProbabilityWeightFactory<Solution_, MoveSelector<Solution_>> selectorProbabilityWeightFactory;
         if (config.getSelectorProbabilityWeightFactoryClass() != null) {

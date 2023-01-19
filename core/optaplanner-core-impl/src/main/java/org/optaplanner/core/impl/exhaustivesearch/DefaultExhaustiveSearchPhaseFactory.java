@@ -31,7 +31,6 @@ import org.optaplanner.core.impl.heuristic.selector.entity.mimic.ManualEntityMim
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -44,8 +43,7 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
 
     @Override
     public ExhaustiveSearchPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination,
-            ClassInstanceCache instanceCache) {
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
         ExhaustiveSearchType exhaustiveSearchType_ = Objects.requireNonNullElse(
                 phaseConfig.getExhaustiveSearchType(),
                 ExhaustiveSearchType.BRANCH_AND_BOUND);
@@ -80,13 +78,12 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
         EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(phaseConfigPolicy);
         EntitySelector<Solution_> entitySelector =
                 EntitySelectorFactory.<Solution_> create(entitySelectorConfig_)
-                        .buildEntitySelector(phaseConfigPolicy, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL,
-                                instanceCache);
+                        .buildEntitySelector(phaseConfigPolicy, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
 
         DefaultExhaustiveSearchPhase.Builder<Solution_> builder = new DefaultExhaustiveSearchPhase.Builder<>(phaseIndex,
                 solverConfigPolicy.getLogIndentation(), phaseTermination,
                 nodeExplorationType_.buildNodeComparator(scoreBounderEnabled), entitySelector, buildDecider(phaseConfigPolicy,
-                        entitySelector, bestSolutionRecaller, phaseTermination, scoreBounderEnabled, instanceCache));
+                        entitySelector, bestSolutionRecaller, phaseTermination, scoreBounderEnabled));
 
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
@@ -138,7 +135,7 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
 
     private ExhaustiveSearchDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,
             EntitySelector<Solution_> sourceEntitySelector, BestSolutionRecaller<Solution_> bestSolutionRecaller,
-            Termination<Solution_> termination, boolean scoreBounderEnabled, ClassInstanceCache instanceCache) {
+            Termination<Solution_> termination, boolean scoreBounderEnabled) {
         ManualEntityMimicRecorder<Solution_> manualEntityMimicRecorder =
                 new ManualEntityMimicRecorder<>(sourceEntitySelector);
         String mimicSelectorId = sourceEntitySelector.getEntityDescriptor().getEntityClass().getName(); // TODO mimicSelectorId must be a field
@@ -146,7 +143,7 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
         MoveSelectorConfig<?> moveSelectorConfig_ = buildMoveSelectorConfig(configPolicy,
                 sourceEntitySelector, mimicSelectorId);
         MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig_)
-                .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL, instanceCache);
+                .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         ScoreBounder scoreBounder = scoreBounderEnabled
                 ? new TrendBasedScoreBounder(configPolicy.getScoreDefinition(), configPolicy.getInitializingScoreTrend())
                 : null;

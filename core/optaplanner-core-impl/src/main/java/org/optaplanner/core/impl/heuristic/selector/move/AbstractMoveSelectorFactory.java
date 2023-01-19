@@ -22,7 +22,6 @@ import org.optaplanner.core.impl.heuristic.selector.move.decorator.ProbabilityMo
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.SelectedCountLimitMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.ShufflingMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.decorator.SortingMoveSelector;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public abstract class AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_ extends MoveSelectorConfig<MoveSelectorConfig_>>
         extends AbstractSelectorFactory<Solution_, MoveSelectorConfig_> implements MoveSelectorFactory<Solution_> {
@@ -40,22 +39,21 @@ public abstract class AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_
      *        and less would be pointless.
      * @param randomSelection true is equivalent to {@link SelectionOrder#RANDOM},
      *        false is equivalent to {@link SelectionOrder#ORIGINAL}
-     * @param instanceCache never null
      * @return never null
      */
     protected abstract MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, boolean randomSelection, ClassInstanceCache instanceCache);
+            SelectionCacheType minimumCacheType, boolean randomSelection);
 
     /**
      * {@inheritDoc}
      */
     @Override
     public MoveSelector<Solution_> buildMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
-            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder, ClassInstanceCache instanceCache) {
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         MoveSelectorConfig<?> unfoldedMoveSelectorConfig = buildUnfoldedMoveSelectorConfig(configPolicy);
         if (unfoldedMoveSelectorConfig != null) {
             return MoveSelectorFactory.<Solution_> create(unfoldedMoveSelectorConfig)
-                    .buildMoveSelector(configPolicy, minimumCacheType, inheritedSelectionOrder, instanceCache);
+                    .buildMoveSelector(configPolicy, minimumCacheType, inheritedSelectionOrder);
         }
 
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(config.getCacheType(), minimumCacheType);
@@ -69,8 +67,7 @@ public abstract class AbstractMoveSelectorFactory<Solution_, MoveSelectorConfig_
 
         boolean randomMoveSelection = determineBaseRandomSelection(resolvedCacheType, resolvedSelectionOrder);
         SelectionCacheType selectionCacheType = SelectionCacheType.max(minimumCacheType, resolvedCacheType);
-        MoveSelector<Solution_> moveSelector =
-                buildBaseMoveSelector(configPolicy, selectionCacheType, randomMoveSelection, instanceCache);
+        MoveSelector<Solution_> moveSelector = buildBaseMoveSelector(configPolicy, selectionCacheType, randomMoveSelection);
         validateResolvedCacheType(resolvedCacheType, moveSelector);
 
         moveSelector = applyFiltering(moveSelector);

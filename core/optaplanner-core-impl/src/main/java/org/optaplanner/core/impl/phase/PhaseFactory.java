@@ -17,7 +17,6 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.localsearch.DefaultLocalSearchPhaseFactory;
 import org.optaplanner.core.impl.partitionedsearch.DefaultPartitionedSearchPhaseFactory;
 import org.optaplanner.core.impl.phase.custom.DefaultCustomPhaseFactory;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -44,7 +43,7 @@ public interface PhaseFactory<Solution_> {
 
     static <Solution_> List<Phase<Solution_>> buildPhases(List<PhaseConfig> phaseConfigList,
             HeuristicConfigPolicy<Solution_> configPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
-            Termination<Solution_> termination, ClassInstanceCache instanceCache) {
+            Termination<Solution_> termination) {
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList.size());
         for (int phaseIndex = 0; phaseIndex < phaseConfigList.size(); phaseIndex++) {
             PhaseConfig phaseConfig = phaseConfigList.get(phaseIndex);
@@ -57,8 +56,7 @@ public interface PhaseFactory<Solution_> {
                 }
             }
             PhaseFactory<Solution_> phaseFactory = PhaseFactory.create(phaseConfig);
-            Phase<Solution_> phase =
-                    phaseFactory.buildPhase(phaseIndex, configPolicy, bestSolutionRecaller, termination, instanceCache);
+            Phase<Solution_> phase = phaseFactory.buildPhase(phaseIndex, configPolicy, bestSolutionRecaller, termination);
             phaseList.add(phase);
         }
         return phaseList;
@@ -75,6 +73,5 @@ public interface PhaseFactory<Solution_> {
     }
 
     Phase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination,
-            ClassInstanceCache instanceCache);
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination);
 }

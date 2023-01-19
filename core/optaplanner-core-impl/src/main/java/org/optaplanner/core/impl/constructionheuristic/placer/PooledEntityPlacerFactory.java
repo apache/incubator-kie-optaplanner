@@ -16,7 +16,6 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class PooledEntityPlacerFactory<Solution_>
         extends AbstractEntityPlacerFactory<Solution_, PooledEntityPlacerConfig> {
@@ -64,13 +63,12 @@ public class PooledEntityPlacerFactory<Solution_>
     }
 
     @Override
-    public PooledEntityPlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy,
-            ClassInstanceCache instanceCache) {
+    public PooledEntityPlacer<Solution_> buildEntityPlacer(HeuristicConfigPolicy<Solution_> configPolicy) {
         MoveSelectorConfig moveSelectorConfig_ =
                 config.getMoveSelectorConfig() == null ? buildMoveSelectorConfig(configPolicy) : config.getMoveSelectorConfig();
 
         MoveSelector<Solution_> moveSelector = MoveSelectorFactory.<Solution_> create(moveSelectorConfig_)
-                .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL, instanceCache);
+                .buildMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         return new PooledEntityPlacer<>(moveSelector);
     }
 
