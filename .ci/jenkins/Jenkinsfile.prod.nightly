@@ -226,9 +226,11 @@ String calculateArchiveRepoBranch() {
 // Parse version from main branch of the given project
 //      * project: in the form of owner/repository
 def parseVersionFromPom(String project) {
+    def currentBranch = getCurrentBranch() ?: env.GIT_BRANCH
     def pomFilename = "${project.replaceAll("/", "_")}_pom.xml"
+    def pomPath = "${env.WORKSPACE}/${pomFilename}"
 
-    sh "curl https://raw.githubusercontent.com/${project}/main/pom.xml -o ${env.WORKSPACE}/${pomFilename}"
-    def pom = readMavenPom file: "${env.WORKSPACE}/${pomFilename}"
-    return pom.getVersion().replaceAll("-SNAPSHOT", "")
+    sh "curl https://raw.githubusercontent.com/${project}/${currentBranch}/pom.xml -o ${pomPath}"
+    def pom = readMavenPom file: pomPath
+    return pom.getVersion().replaceAll('-SNAPSHOT', '')
 }
