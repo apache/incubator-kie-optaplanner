@@ -1,10 +1,16 @@
 #!/bin/bash
 
+# The script setups enviromment for testing
+# optaplanner-operator in kubernetes
+#
+# Before starting the script make sure
+# that your cluster is running
+
 readonly ARTEMIS_CLOUD_VERSION=1.0.7
 readonly KEDA_VERSION=2.8.0
 readonly KEDA_NAMESPACE=keda
 readonly OPTAPLANNER_OPERATOR_NAMESPACE=optaplanner-operator
-readonly BASEDIR=$(pwd -P)
+readonly BASEDIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd -P)
 readonly QUARKUS_CONTAINER_IMAGE_REGISTRY=quay.io
 readonly QUARKUS_CONTAINER_IMAGE_GROUP=optaplanner
 readonly ARTEMIS_NAMESPACE=artemis-operator
@@ -37,15 +43,17 @@ function install_artemis_cloud() {
   kubectl apply -f $DEPLOY_PATH/090_election_role_binding.yaml
   kubectl apply -f $DEPLOY_PATH/100_operator_config.yaml
   kubectl apply -f $DEPLOY_PATH/110_operator.yaml
-#  to listen all namespaces
+  #  Make artemis-operator watching all awalible namespaces
   sed -e "/WATCH_NAMESPACE/,/- name/ { /WATCH_NAMESPACE/b; /valueFrom:/bx; /- name/b; d; :x s/valueFrom://}" $DEPLOY_PATH/110_operator.yaml | kubectl apply -f -
 }
 
 function install_optaplanner_operator() {
   cd "$BASEDIR"/../../ || exit
+  #  Create optaplanner-operator image
   mvn clean -am -pl :optaplanner-operator-impl package -DskipTests -Doperator.image.build -Dquarkus.container-image.registry=$QUARKUS_CONTAINER_IMAGE_REGISTRY -Dquarkus.container-image.group=$QUARKUS_CONTAINER_IMAGE_GROUP -Dquarkus.container-image.tag="$project_version"
 
   local operator_distribution_directory_local="$BASEDIR"/../optaplanner-operator-impl/target/install
+  #  Never pull optaplanner-operator image from remote
   sed -i "s/imagePullPolicy: Always/imagePullPolicy: Never/g" "$operator_distribution_directory_local"/optaplanner-operator.yml
 
   kubectl create namespace "$OPTAPLANNER_OPERATOR_NAMESPACE"
@@ -54,6 +62,7 @@ function install_optaplanner_operator() {
 }
 
 function minikubeSetup() {
+  #Allow minikube reuse docker images
   eval "$(minikube -p minikube docker-env)"
   minikube image pull quay.io/adupliak/school-timetabling
 }
