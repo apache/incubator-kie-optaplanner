@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
@@ -9,6 +10,7 @@ import org.optaplanner.core.impl.heuristic.selector.Selector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.solver.ClassInstanceCache;
+import org.optaplanner.core.impl.util.MemoizingSupply;
 
 /**
  * Calculating {@link NearbyDistanceMatrix} is very expensive,
@@ -25,7 +27,7 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
  * @param <Destination_>
  */
 public final class NearbyDistanceMatrixDemand<Solution_, Origin_, Destination_>
-        implements Demand<NearbyDistanceMatrixSupply<Origin_, Destination_>> {
+        implements Demand<MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>>> {
 
     private final NearbyDistanceMeter<Origin_, Destination_> meter;
     private final Selector<Solution_> childSelector;
@@ -41,21 +43,24 @@ public final class NearbyDistanceMatrixDemand<Solution_, Origin_, Destination_>
     }
 
     @Override
-    public NearbyDistanceMatrixSupply<Origin_, Destination_> createExternalizedSupply(SupplyManager supplyManager) {
-        long originSize = replayingOriginEntitySelector.getSize();
-        if (originSize > Integer.MAX_VALUE) {
-            throw new IllegalStateException("The originEntitySelector (" + replayingOriginEntitySelector
-                    + ") has an entitySize (" + originSize
-                    + ") which is higher than Integer.MAX_VALUE.");
-        }
-        NearbyDistanceMatrix<Origin_, Destination_> nearbyDistanceMatrix = childSelector instanceof EntitySelector
-                ? new NearbyDistanceMatrix<>(meter, (int) originSize, (EntitySelector<?>) childSelector,
-                        destinationSizeFunction)
-                : new NearbyDistanceMatrix<>(meter, (int) originSize, (ValueSelector<?>) childSelector,
-                        destinationSizeFunction);
-        replayingOriginEntitySelector.endingIterator()
-                .forEachRemaining(origin -> nearbyDistanceMatrix.addAllDestinations((Origin_) origin));
-        return () -> nearbyDistanceMatrix;
+    public MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>> createExternalizedSupply(SupplyManager supplyManager) {
+        Supplier<NearbyDistanceMatrix<Origin_, Destination_>> supplier = () -> {
+            long originSize = replayingOriginEntitySelector.getSize();
+            if (originSize > Integer.MAX_VALUE) {
+                throw new IllegalStateException("The originEntitySelector (" + replayingOriginEntitySelector
+                        + ") has an entitySize (" + originSize
+                        + ") which is higher than Integer.MAX_VALUE.");
+            }
+            NearbyDistanceMatrix<Origin_, Destination_> nearbyDistanceMatrix = childSelector instanceof EntitySelector
+                    ? new NearbyDistanceMatrix<>(meter, (int) originSize, (EntitySelector<?>) childSelector,
+                            destinationSizeFunction)
+                    : new NearbyDistanceMatrix<>(meter, (int) originSize, (ValueSelector<?>) childSelector,
+                            destinationSizeFunction);
+            replayingOriginEntitySelector.endingIterator()
+                    .forEachRemaining(origin -> nearbyDistanceMatrix.addAllDestinations((Origin_) origin));
+            return nearbyDistanceMatrix;
+        };
+        return new MemoizingSupply<>(supplier);
     }
 
     /**

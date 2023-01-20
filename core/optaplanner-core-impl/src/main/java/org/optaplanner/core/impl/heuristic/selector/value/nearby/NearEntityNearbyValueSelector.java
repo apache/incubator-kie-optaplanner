@@ -65,7 +65,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
         super.phaseStarted(phaseScope);
         nearbyDistanceMatrix = phaseScope.getScoreDirector().getSupplyManager()
                 .demand(nearbyDistanceMatrixDemand)
-                .getDistanceMatrix();
+                .read();
     }
 
     private int computeDestinationSize(Object origin) {

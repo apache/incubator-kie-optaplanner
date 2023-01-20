@@ -12,7 +12,6 @@ import org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarCon
 import org.optaplanner.core.config.heuristic.selector.move.generic.SubPillarType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
@@ -20,7 +19,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.CachedListRa
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarDemand;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarSupply;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 /**
@@ -34,7 +32,7 @@ public final class DefaultPillarSelector<Solution_> extends AbstractSelector<Sol
     private final EntitySelector<Solution_> entitySelector;
     private final boolean randomSelection;
     private final SubPillarConfigPolicy subpillarConfigPolicy;
-    private final Demand<PillarSupply> pillarDemand;
+    private final PillarDemand<Solution_> pillarDemand;
 
     private List<List<Object>> cachedBasePillarList = null;
 
@@ -90,7 +88,7 @@ public final class DefaultPillarSelector<Solution_> extends AbstractSelector<Sol
         return CACHE_TYPE;
     }
 
-    Demand<PillarSupply> getPillarDemand() {
+    PillarDemand<Solution_> getPillarDemand() {
         return pillarDemand;
     }
 
@@ -102,7 +100,7 @@ public final class DefaultPillarSelector<Solution_> extends AbstractSelector<Sol
          */
         cachedBasePillarList = solverScope.getScoreDirector().getSupplyManager()
                 .demand(pillarDemand)
-                .getPillars();
+                .read();
     }
 
     @Override
