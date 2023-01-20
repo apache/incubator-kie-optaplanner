@@ -1,20 +1,20 @@
 environment:
   quarkus:
     main:
-      enabled: true
+      enabled: false
     branch:
       enabled: true
-      version: '2.15'
+      version: '3.0'
     lts:
-      enabled: true
+      enabled: false
       version: '2.13'
   native:
     enabled: true
   mandrel:
-    enabled: true
+    enabled: false
     builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.3-java17
   mandrel_lts:
-    enabled: true
+    enabled: false
     builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.3-java17
     quarkus_version: 2.13
   runtimes_bdd:
@@ -24,7 +24,7 @@ disable:
   triggers: false
 repositories:
 - name: optaplanner
-  branch: main
+  branch: 9.x
 - name: optaweb-vehicle-routing
   branch: main
 - name: optaplanner-quickstarts
@@ -51,6 +51,7 @@ git:
 buildchain_config:
   git:
     repository: optaplanner
+    branch: main
     file_path: .ci/buildchain-config.yaml
 maven:
   settings_file_id: kogito_release_settings
