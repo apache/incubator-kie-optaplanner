@@ -45,6 +45,14 @@ public final class NearbyDistanceMatrixDemand<Solution_, Origin_, Destination_>
     @Override
     public MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>> createExternalizedSupply(SupplyManager supplyManager) {
         Supplier<NearbyDistanceMatrix<Origin_, Destination_>> supplier = () -> {
+            if (childSelector instanceof EntitySelector) {
+                final long childSize = ((EntitySelector<Solution_>) childSelector).getSize();
+                if (childSize > Integer.MAX_VALUE) {
+                    throw new IllegalStateException("The childEntitySelector (" + childSelector
+                            + ") has an entitySize (" + childSize
+                            + ") which is higher than Integer.MAX_VALUE.");
+                }
+            }
             long originSize = replayingOriginEntitySelector.getSize();
             if (originSize > Integer.MAX_VALUE) {
                 throw new IllegalStateException("The originEntitySelector (" + replayingOriginEntitySelector

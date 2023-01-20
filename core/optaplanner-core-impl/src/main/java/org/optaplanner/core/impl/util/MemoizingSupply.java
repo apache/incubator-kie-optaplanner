@@ -7,7 +7,7 @@ import org.optaplanner.core.impl.domain.variable.supply.Supply;
 
 /**
  * Supply whose value is pre-computed and cached the first time {@link #read()} is called.
- * 
+ *
  * @param <T>
  */
 public final class MemoizingSupply<T> implements Supply {

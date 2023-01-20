@@ -14,6 +14,8 @@ import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingE
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
+import org.optaplanner.core.impl.util.MemoizingSupply;
 
 public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValueSelector<Solution_> {
 
@@ -25,7 +27,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
     private final boolean discardNearbyIndexZero;
     private final NearbyDistanceMatrixDemand<Solution_, ?, ?> nearbyDistanceMatrixDemand;
 
-    private NearbyDistanceMatrix nearbyDistanceMatrix = null;
+    private MemoizingSupply<NearbyDistanceMatrix> nearbyDistanceMatrixSupply = null;
 
     public NearEntityNearbyValueSelector(ValueSelector<Solution_> childValueSelector,
             EntitySelector<Solution_> originEntitySelector, NearbyDistanceMeter<?, ?> nearbyDistanceMeter,
@@ -59,13 +61,23 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
     }
 
     @Override
+    public void solvingStarted(SolverScope<Solution_> solverScope) {
+        super.solvingStarted(solverScope);
+        /*
+         * Supply will ask questions of the child selector.
+         * However, child selector will only be initialized during phase start.
+         * Yet we still want the very expensive nearby distance matrix to be reused across phases.
+         * Therefore we request the supply here, but actually lazily initialize it during phase start.
+         */
+        nearbyDistanceMatrixSupply = (MemoizingSupply) solverScope.getScoreDirector().getSupplyManager()
+                .demand(nearbyDistanceMatrixDemand);
+    }
+
+    @Override
     public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
-        // Cannot be done during solverStarted because child selectors may only be initialized at phase start.
-        // TODO Figure out how to move to solver scope so that construction heuristics and local search can share.
         super.phaseStarted(phaseScope);
-        nearbyDistanceMatrix = phaseScope.getScoreDirector().getSupplyManager()
-                .demand(nearbyDistanceMatrixDemand)
-                .read();
+        // Lazily initialize the supply, so that steps can then have uniform performance.
+        nearbyDistanceMatrixSupply.read();
     }
 
     private int computeDestinationSize(Object origin) {
@@ -90,10 +102,10 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
     }
 
     @Override
-    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
-        super.phaseEnded(phaseScope);
-        phaseScope.getScoreDirector().getSupplyManager().cancel(nearbyDistanceMatrixDemand);
-        nearbyDistanceMatrix = null;
+    public void solvingEnded(SolverScope<Solution_> solverScope) {
+        super.solvingEnded(solverScope);
+        solverScope.getScoreDirector().getSupplyManager().cancel(nearbyDistanceMatrixDemand);
+        nearbyDistanceMatrixSupply = null;
     }
 
     // ************************************************************************
@@ -174,7 +186,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
         @Override
         public Object next() {
             selectOrigin();
-            Object next = nearbyDistanceMatrix.getDestination(origin, nextNearbyIndex);
+            Object next = nearbyDistanceMatrixSupply.read().getDestination(origin, nextNearbyIndex);
             nextNearbyIndex++;
             return next;
         }
@@ -215,7 +227,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
             if (discardNearbyIndexZero) {
                 nearbyIndex++;
             }
-            return nearbyDistanceMatrix.getDestination(origin, nearbyIndex);
+            return nearbyDistanceMatrixSupply.read().getDestination(origin, nearbyIndex);
         }
 
     }
