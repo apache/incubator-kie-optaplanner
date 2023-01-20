@@ -125,6 +125,7 @@
     <module>optaplanner-quarkus-integration</module>
     <module>optaplanner-migration</module>
     <module>optaplanner-examples</module>
+      <module>optaplanner-operator/school-timetabling-parent</module>
   </modules>
 
   <profiles>

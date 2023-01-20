@@ -50,7 +50,7 @@ function install_artemis_cloud() {
 function install_optaplanner_operator() {
   cd "$BASEDIR"/../../ || exit
   #  Create optaplanner-operator image
-  mvn clean -am -pl :optaplanner-operator-impl package -DskipTests -Doperator.image.build -Dquarkus.container-image.registry=$QUARKUS_CONTAINER_IMAGE_REGISTRY -Dquarkus.container-image.group=$QUARKUS_CONTAINER_IMAGE_GROUP -Dquarkus.container-image.tag="$project_version"
+  mvn clean -am -pl :optaplanner-operator-impl package -DskipTests -Doperator.image.build -Dquarkus.container-image.registry=$QUARKUS_CONTAINER_IMAGE_REGISTRY -Dquarkus.container-image.group=$QUARKUS_CONTAINER_IMAGE_GROUP -Dquarkus.container-image.tag=""
 
   local operator_distribution_directory_local="$BASEDIR"/../optaplanner-operator-impl/target/install
   #  Never pull optaplanner-operator image from remote
@@ -61,13 +61,18 @@ function install_optaplanner_operator() {
   kubectl apply -f "$operator_distribution_directory_local/optaplanner-operator.yml" -n "$OPTAPLANNER_OPERATOR_NAMESPACE"
 }
 
+function build_solver_image() {
+  cd "$BASEDIR"/../../ || exit
+  mvn clean -am -pl :kubernetes-demo-school-timetabling package  -Dopenshift -Dquarkus.container-image.group=$QUARKUS_CONTAINER_IMAGE_GROUP -Dquarkus.container-image.registry=$QUARKUS_CONTAINER_IMAGE_REGISTRY -Dquarkus.container-image.build=true  -Dquarkus.container-image.tag="" -DskipTests -Dquarkus.container-image.push=false
+}
+
 function minikubeSetup() {
   #Allow minikube reuse docker images
   eval "$(minikube -p minikube docker-env)"
-  minikube image pull quay.io/adupliak/school-timetabling
 }
 
 function setup_operators() {
+  build_solver_image
   install_keda
   install_artemis_cloud
   install_optaplanner_operator

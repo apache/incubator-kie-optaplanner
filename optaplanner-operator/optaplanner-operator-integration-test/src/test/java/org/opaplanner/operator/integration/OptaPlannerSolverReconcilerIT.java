@@ -79,7 +79,8 @@ public class OptaPlannerSolverReconcilerIT {
         solver.getMetadata().setName(solverName);
         solver.getMetadata().setNamespace(solverName);
         solver.setSpec(new OptaPlannerSolverSpec());
-        solver.getSpec().setTemplate(createPodTemplateSpec("quay.io/adupliak/school-timetabling:latest", "image" + solverName));
+        solver.getSpec()
+                .setTemplate(createPodTemplateSpec("quay.io/optaplanner/school-timetabling:latest", "image" + solverName));
         solver.getSpec().setAmqBroker(amqBroker);
         solver.getSpec().setScaling(new Scaling(true, 3));
         kubernetesClient.resources(OptaPlannerSolver.class).inNamespace(solverName).create(solver);

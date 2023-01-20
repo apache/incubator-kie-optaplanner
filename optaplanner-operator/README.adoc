@@ -61,7 +61,7 @@ To run the operator-e2e tests on kubernetes start minikube
 
 To run all operator-e2e with the environment setup run
 
-`mvn clean verify -f optaplanner-operator -Doperator-e2e`
+`mvn clean -pl :optaplanner-operator-integration-test -am verify -Poperator-e2e`
 
 
 ==== Running tests on minikube by runOnKubernetes.sh
