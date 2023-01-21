@@ -9,8 +9,13 @@ import java.util.Map;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.*;
-import org.optaplanner.operator.impl.solver.model.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.optaplanner.operator.impl.solver.model.ConfigMapDependentResource;
+import org.optaplanner.operator.impl.solver.model.OptaPlannerSolver;
+import org.optaplanner.operator.impl.solver.model.OptaPlannerSolverStatus;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
@@ -25,11 +30,9 @@ public class OptaPlannerSolverReconcilerIT {
 
     public static final String ARTEMIS_BROKER_YAML = "artemis-broker.yaml";
     public static final String SCHOOL_TIMETABLING_SOLVER_YML = "school-timetabling-solver.yml";
-    private static String solverName;
-
-    private static Namespace testNamespace;
-
     private final static KubernetesClient kubernetesClient = new DefaultKubernetesClient();
+    private static String solverName;
+    private static Namespace testNamespace;
 
     @AfterAll
     public static void tearDown() {

@@ -14,28 +14,10 @@ import javax.inject.Inject;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.optaplanner.operator.impl.solver.model.AmqBroker;
-import org.optaplanner.operator.impl.solver.model.ConfigMapDependentResource;
-import org.optaplanner.operator.impl.solver.model.OptaPlannerSolver;
-import org.optaplanner.operator.impl.solver.model.OptaPlannerSolverSpec;
-import org.optaplanner.operator.impl.solver.model.OptaPlannerSolverStatus;
-import org.optaplanner.operator.impl.solver.model.Scaling;
-import org.optaplanner.operator.impl.solver.model.keda.ScaledObject;
-import org.optaplanner.operator.impl.solver.model.keda.ScaledObjectDependentResource;
-import org.optaplanner.operator.impl.solver.model.keda.SecretTargetRef;
-import org.optaplanner.operator.impl.solver.model.keda.Trigger;
-import org.optaplanner.operator.impl.solver.model.keda.TriggerAuthentication;
-import org.optaplanner.operator.impl.solver.model.keda.TriggerAuthenticationDependentResource;
+import org.optaplanner.operator.impl.solver.model.*;
+import org.optaplanner.operator.impl.solver.model.keda.*;
 
-import io.fabric8.kubernetes.api.model.Condition;
-import io.fabric8.kubernetes.api.model.ConfigMap;
-import io.fabric8.kubernetes.api.model.ContainerBuilder;
-import io.fabric8.kubernetes.api.model.EnvVar;
-import io.fabric8.kubernetes.api.model.EnvVarBuilder;
-import io.fabric8.kubernetes.api.model.PodTemplateSpec;
-import io.fabric8.kubernetes.api.model.PodTemplateSpecBuilder;
-import io.fabric8.kubernetes.api.model.Quantity;
-import io.fabric8.kubernetes.api.model.SecretKeySelector;
+import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.javaoperatorsdk.operator.Operator;
@@ -47,13 +29,12 @@ public class OptaPlannerSolverReconcilerTest extends AbstractKubernetesTest {
 
     @Inject
     private Operator operator;
+    private String namespace;
 
     // TODO: Replace with @BeforeEach after https://github.com/quarkiverse/quarkus-operator-sdk/issues/388 is resolved.
     public void onStart(@Observes StartupEvent startupEvent) {
         operator.start();
     }
-
-    private String namespace;
 
     @BeforeEach
     public void createNamespace() {

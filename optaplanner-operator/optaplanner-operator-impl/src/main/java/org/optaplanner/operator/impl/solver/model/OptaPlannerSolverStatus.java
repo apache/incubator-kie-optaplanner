@@ -18,6 +18,13 @@ public final class OptaPlannerSolverStatus {
     private static final String CONDITION_REASON_IN_PROGRESS = "InProgress";
 
     private static final String CONDITION_REASON_SOLVER_READY = "SolverReady";
+    private List<Condition> conditions;
+    private String inputMessageAddress;
+    private String outputMessageAddress;
+
+    public OptaPlannerSolverStatus() {
+        // required by Jackson
+    }
 
     /**
      * @return the current timestamp in ISO 8601 format, e.g. "2022-09-02T12:36:10.571Z".
@@ -66,31 +73,6 @@ public final class OptaPlannerSolverStatus {
         return optaPlannerSolverStatus;
     }
 
-    public enum ConditionStatus {
-        UNKNOWN("Unknown"),
-        TRUE("True"),
-        FALSE("False");
-
-        private final String name;
-
-        ConditionStatus(String name) {
-            this.name = name;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
-
-    private List<Condition> conditions;
-
-    private String inputMessageAddress;
-    private String outputMessageAddress;
-
-    public OptaPlannerSolverStatus() {
-        // required by Jackson
-    }
-
     public String getInputMessageAddress() {
         return inputMessageAddress;
     }
@@ -113,5 +95,21 @@ public final class OptaPlannerSolverStatus {
 
     public void setConditions(List<Condition> conditions) {
         this.conditions = conditions;
+    }
+
+    public enum ConditionStatus {
+        UNKNOWN("Unknown"),
+        TRUE("True"),
+        FALSE("False");
+
+        private final String name;
+
+        ConditionStatus(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 }

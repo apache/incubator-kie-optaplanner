@@ -10,14 +10,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.JMSConsumer;
-import javax.jms.JMSContext;
-import javax.jms.JMSException;
-import javax.jms.JMSProducer;
-import javax.jms.Message;
-import javax.jms.Session;
+import javax.jms.*;
 
 import org.acme.common.domain.Lesson;
 import org.acme.common.domain.Room;
@@ -120,7 +113,7 @@ public class MessageHandlerTest {
     private String receiveMessage(String queueName, int timeoutSeconds) {
         try (JMSContext context = connectionFactory.createContext("admin", "admin", Session.AUTO_ACKNOWLEDGE)) {
             JMSConsumer consumer = context.createConsumer(context.createQueue(queueName));
-            Message message = consumer.receive(timeoutSeconds * 1_000);
+            Message message = consumer.receive(timeoutSeconds * 1_000L);
             return message.getBody(String.class);
         } catch (JMSException e) {
             throw new RuntimeException(e);

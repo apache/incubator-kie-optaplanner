@@ -1,17 +1,13 @@
 package org.acme.schooltimetabling.messaging;
 
+import java.lang.IllegalStateException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSConsumer;
-import javax.jms.JMSContext;
-import javax.jms.JMSProducer;
-import javax.jms.Message;
-import javax.jms.Queue;
+import javax.jms.*;
 
 import org.acme.common.domain.TimeTable;
 import org.acme.common.message.SolverRequest;
@@ -32,24 +28,19 @@ import io.quarkus.runtime.StartupEvent;
 public class MessageHandler implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageHandler.class);
-
+    private final ExecutorService scheduler = Executors.newSingleThreadExecutor();
     @Inject
     TimeTableRepository repository;
-
     @Inject
     ObjectMapper objectMapper;
-
     @Inject
     ConnectionFactory connectionFactory;
-
     private Solver<TimeTable> solver;
 
     @Inject
     public MessageHandler(SolverFactory<TimeTable> solverFactory) {
         solver = solverFactory.buildSolver();
     }
-
-    private final ExecutorService scheduler = Executors.newSingleThreadExecutor();
 
     void onStart(@Observes StartupEvent event) {
         scheduler.submit(this);

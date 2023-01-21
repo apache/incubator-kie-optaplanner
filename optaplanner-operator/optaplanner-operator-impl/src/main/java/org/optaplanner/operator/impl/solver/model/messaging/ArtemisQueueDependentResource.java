@@ -12,13 +12,13 @@ import io.javaoperatorsdk.operator.processing.dependent.kubernetes.KubernetesDep
 @KubernetesDependent
 public final class ArtemisQueueDependentResource extends CRUDKubernetesDependentResource<ArtemisQueue, OptaPlannerSolver> {
 
+    private final MessageAddress messageAddress;
+
     public ArtemisQueueDependentResource(MessageAddress messageAddress, KubernetesClient kubernetesClient) {
         super(ArtemisQueue.class);
         this.messageAddress = messageAddress;
         setKubernetesClient(kubernetesClient);
     }
-
-    private final MessageAddress messageAddress;
 
     @Override
     protected ArtemisQueue desired(OptaPlannerSolver solver, Context<OptaPlannerSolver> context) {

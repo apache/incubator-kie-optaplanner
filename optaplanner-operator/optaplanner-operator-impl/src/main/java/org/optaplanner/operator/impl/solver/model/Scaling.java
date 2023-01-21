@@ -19,12 +19,12 @@ public final class Scaling {
         return dynamic;
     }
 
-    public int getReplicas() {
-        return replicas;
-    }
-
     public void setDynamic(boolean dynamic) {
         this.dynamic = dynamic;
+    }
+
+    public int getReplicas() {
+        return replicas;
     }
 
     public void setReplicas(int replicas) {

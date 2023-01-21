@@ -4,14 +4,9 @@ import io.fabric8.kubernetes.api.model.SecretKeySelector;
 
 public final class SecretTargetRef {
 
-    public static SecretTargetRef fromSecretKeySelector(String parameter, SecretKeySelector secretKeySelector) {
-        return new SecretTargetRef(parameter, secretKeySelector.getName(), secretKeySelector.getKey());
-    }
-
     private String parameter;
     private String name;
     private String key;
-
     public SecretTargetRef() {
         // Required by Jackson.
     }
@@ -20,6 +15,10 @@ public final class SecretTargetRef {
         this.parameter = parameter;
         this.name = name;
         this.key = key;
+    }
+
+    public static SecretTargetRef fromSecretKeySelector(String parameter, SecretKeySelector secretKeySelector) {
+        return new SecretTargetRef(parameter, secretKeySelector.getName(), secretKeySelector.getKey());
     }
 
     public String getParameter() {

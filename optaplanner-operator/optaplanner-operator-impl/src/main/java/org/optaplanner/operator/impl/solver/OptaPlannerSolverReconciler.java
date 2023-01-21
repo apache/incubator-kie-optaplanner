@@ -16,15 +16,7 @@ import org.optaplanner.operator.impl.solver.model.messaging.ArtemisQueueDependen
 import org.optaplanner.operator.impl.solver.model.messaging.MessageAddress;
 
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.javaoperatorsdk.operator.api.reconciler.Context;
-import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration;
-import io.javaoperatorsdk.operator.api.reconciler.ErrorStatusHandler;
-import io.javaoperatorsdk.operator.api.reconciler.ErrorStatusUpdateControl;
-import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext;
-import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer;
-import io.javaoperatorsdk.operator.api.reconciler.Reconciler;
-import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator;
-import io.javaoperatorsdk.operator.api.reconciler.UpdateControl;
+import io.javaoperatorsdk.operator.api.reconciler.*;
 import io.javaoperatorsdk.operator.processing.event.ResourceID;
 import io.javaoperatorsdk.operator.processing.event.source.EventSource;
 
@@ -32,14 +24,13 @@ import io.javaoperatorsdk.operator.processing.event.source.EventSource;
 public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlannerSolver>, ErrorStatusHandler<OptaPlannerSolver>,
         EventSourceInitializer<OptaPlannerSolver> {
 
-    private KubernetesClient kubernetesClient;
-
     private final DeploymentDependentResource deploymentDependentResource;
     private final ArtemisQueueDependentResource inputQueueDependentResource;
     private final ArtemisQueueDependentResource outputQueueDependentResource;
     private final ConfigMapDependentResource configMapDependentResource;
     private final TriggerAuthenticationDependentResource triggerAuthenticationDependentResource;
     private final ScaledObjectDependentResource scaledObjectDependentResource;
+    private KubernetesClient kubernetesClient;
 
     @Inject
     public OptaPlannerSolverReconciler(KubernetesClient kubernetesClient) {
