@@ -1,0 +1,13 @@
+apiVersion: broker.amq.io/v1beta1
+kind: ActiveMQArtemis
+metadata:
+  name: ex-aao
+spec:
+  acceptors:
+    - name: amqp
+      connectionsAllowed: 100
+      port: 5672
+      protocols: amqp
+  deploymentPlan:
+    size: 1
+    image: placeholder

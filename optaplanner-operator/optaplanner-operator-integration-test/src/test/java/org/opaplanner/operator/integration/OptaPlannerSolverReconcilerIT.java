@@ -9,11 +9,10 @@ import java.util.Map;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.optaplanner.operator.impl.solver.model.*;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -23,7 +22,6 @@ import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.client.DefaultKubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.dsl.base.CustomResourceDefinitionContext;
-import io.fabric8.kubernetes.client.utils.Serialization;
 
 public class OptaPlannerSolverReconcilerIT {
 
@@ -38,17 +36,6 @@ public class OptaPlannerSolverReconcilerIT {
         kubernetesClient.close();
     }
 
-    private PodTemplateSpec createPodTemplateSpec(String imageName, String name) {
-        return new PodTemplateSpecBuilder()
-                .withNewSpec()
-                .withContainers(new ContainerBuilder()
-                        .withImage(imageName)
-                        .withName(name)
-                        .withImagePullPolicy("Never")
-                        .build())
-                .endSpec()
-                .build();
-    }
 
     @AfterEach
     public void remove() {
@@ -60,29 +47,20 @@ public class OptaPlannerSolverReconcilerIT {
         solverName = "school-timetabling-" + RandomStringUtils.randomNumeric(4);
         testNamespace = kubernetesClient.namespaces()
                 .create(new NamespaceBuilder().withNewMetadata().withName(solverName).endMetadata().build());
-
     }
 
     @Test
-    public void optaPlannerSolverReconcilerIT() throws JsonProcessingException {
+    public void optaPlannerSolverReconcilerIT(){
 
         createCrAmqBroker(solverName);
 
-        final AmqBroker amqBroker = new AmqBroker();
-        amqBroker.setHost("ex-aao-amqp-0-svc." + solverName + ".svc.cluster.local");
-        amqBroker.setPort(5672);
-        amqBroker.setManagementHost("ex-aao-hdls-svc." + solverName + ".svc.cluster.local");
-        amqBroker.setUsernameSecretRef(new SecretKeySelector("AMQ_USER", "ex-aao-credentials-secret", false));
-        amqBroker.setPasswordSecretRef(new SecretKeySelector("AMQ_PASSWORD", "ex-aao-credentials-secret", false));
-
-        final OptaPlannerSolver solver = new OptaPlannerSolver();
+        OptaPlannerSolver solver = new Yaml(new Constructor(OptaPlannerSolver.class))
+                .load(OptaPlannerSolverReconcilerIT.class.getClassLoader()
+                        .getResourceAsStream("school-timetabling-solver.yml"));
+        solver.getSpec().getAmqBroker().setHost("ex-aao-amqp-0-svc." + solverName + ".svc.cluster.local");
+        solver.getSpec().getAmqBroker().setManagementHost("ex-aao-hdls-svc." + solverName + ".svc.cluster.local");
         solver.getMetadata().setName(solverName);
         solver.getMetadata().setNamespace(solverName);
-        solver.setSpec(new OptaPlannerSolverSpec());
-        solver.getSpec()
-                .setTemplate(createPodTemplateSpec("quay.io/optaplanner/school-timetabling:latest", "image" + solverName));
-        solver.getSpec().setAmqBroker(amqBroker);
-        solver.getSpec().setScaling(new Scaling(true, 3));
         kubernetesClient.resources(OptaPlannerSolver.class).inNamespace(solverName).create(solver);
 
         final String expectedMessageAddressIn = solver.getInputMessageAddressName();
@@ -126,31 +104,7 @@ public class OptaPlannerSolverReconcilerIT {
         assertThat(deployments.get(0).getMetadata().getName()).isEqualTo(solverName);
     }
 
-    private void createCrAmqBroker(String namespace) throws JsonProcessingException {
-        String crBasicString = "{\n" +
-                "  \"apiVersion\": \"broker.amq.io/v1beta1\",\n" +
-                "  \"kind\": \"ActiveMQArtemis\",\n" +
-                "  \"metadata\": {\n" +
-                "    \"name\": \"ex-aao\"\n" +
-                "  },\n" +
-                "  \"spec\": {\n" +
-                "    \"acceptors\": [\n" +
-                "      {\n" +
-                "        \"name\": \"amqp\",\n" +
-                "        \"connectionsAllowed\": 100,\n" +
-                "        \"port\": 5672,\n" +
-                "        \"protocols\": \"amqp\"\n" +
-                "      }\n" +
-                "    ],\n" +
-                "    \"deploymentPlan\": {\n" +
-                "      \"size\": 1,\n" +
-                "      \"image\": \"placeholder\"\n" +
-                "    }\n" +
-                "  }\n" +
-                "}";
-
-        GenericKubernetesResource brokerResource =
-                Serialization.jsonMapper().readValue(crBasicString, GenericKubernetesResource.class);
+    private void createCrAmqBroker(String namespace) {
 
         CustomResourceDefinition brokerCrd = kubernetesClient.apiextensions().v1()
                 .customResourceDefinitions()
@@ -159,8 +113,12 @@ public class OptaPlannerSolverReconcilerIT {
 
         CustomResourceDefinitionContext brokerContextFromCrd = CustomResourceDefinitionContext.fromCrd(brokerCrd);
 
+        GenericKubernetesResource genericKubernetesResource = kubernetesClient
+                .genericKubernetesResources(brokerContextFromCrd)
+                .load(OptaPlannerSolverReconcilerIT.class.getClassLoader().getResourceAsStream("artemis-broker.yaml"))
+                .get();
         kubernetesClient.genericKubernetesResources(brokerContextFromCrd).inNamespace(namespace)
-                .create(brokerResource);
+                .resource(genericKubernetesResource).create();
     }
 
     private void assertStatusCondition(Condition condition, OptaPlannerSolver optaPlannerSolver,
