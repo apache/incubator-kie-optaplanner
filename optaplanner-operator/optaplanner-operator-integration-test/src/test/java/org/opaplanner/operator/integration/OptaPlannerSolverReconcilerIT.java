@@ -14,8 +14,6 @@ import org.optaplanner.operator.impl.solver.model.*;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apiextensions.v1.CustomResourceDefinition;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
@@ -25,6 +23,8 @@ import io.fabric8.kubernetes.client.dsl.base.CustomResourceDefinitionContext;
 
 public class OptaPlannerSolverReconcilerIT {
 
+    public static final String ARTEMIS_BROKER_YAML = "artemis-broker.yaml";
+    public static final String SCHOOL_TIMETABLING_SOLVER_YML = "school-timetabling-solver.yml";
     private static String solverName;
 
     private static Namespace testNamespace;
@@ -35,7 +35,6 @@ public class OptaPlannerSolverReconcilerIT {
     public static void tearDown() {
         kubernetesClient.close();
     }
-
 
     @AfterEach
     public void remove() {
@@ -50,13 +49,13 @@ public class OptaPlannerSolverReconcilerIT {
     }
 
     @Test
-    public void optaPlannerSolverReconcilerIT(){
+    public void optaPlannerSolverReconcilerIT() {
 
         createCrAmqBroker(solverName);
 
         OptaPlannerSolver solver = new Yaml(new Constructor(OptaPlannerSolver.class))
                 .load(OptaPlannerSolverReconcilerIT.class.getClassLoader()
-                        .getResourceAsStream("school-timetabling-solver.yml"));
+                        .getResourceAsStream(SCHOOL_TIMETABLING_SOLVER_YML));
         solver.getSpec().getAmqBroker().setHost("ex-aao-amqp-0-svc." + solverName + ".svc.cluster.local");
         solver.getSpec().getAmqBroker().setManagementHost("ex-aao-hdls-svc." + solverName + ".svc.cluster.local");
         solver.getMetadata().setName(solverName);
@@ -115,7 +114,7 @@ public class OptaPlannerSolverReconcilerIT {
 
         GenericKubernetesResource genericKubernetesResource = kubernetesClient
                 .genericKubernetesResources(brokerContextFromCrd)
-                .load(OptaPlannerSolverReconcilerIT.class.getClassLoader().getResourceAsStream("artemis-broker.yaml"))
+                .load(OptaPlannerSolverReconcilerIT.class.getClassLoader().getResourceAsStream(ARTEMIS_BROKER_YAML))
                 .get();
         kubernetesClient.genericKubernetesResources(brokerContextFromCrd).inNamespace(namespace)
                 .resource(genericKubernetesResource).create();

@@ -6,11 +6,9 @@
 # Before starting the script make sure
 # that your cluster is running
 
-readonly ARTEMIS_CLOUD_VERSION=1.0.7
-readonly KEDA_VERSION=2.8.0
+readonly BASEDIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd -P)
 readonly KEDA_NAMESPACE=keda
 readonly OPTAPLANNER_OPERATOR_NAMESPACE=optaplanner-operator
-readonly BASEDIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd -P)
 readonly QUARKUS_CONTAINER_IMAGE_REGISTRY=quay.io
 readonly QUARKUS_CONTAINER_IMAGE_GROUP=optaplanner
 readonly ARTEMIS_NAMESPACE=artemis-operator
@@ -78,8 +76,20 @@ function setup_operators() {
   install_optaplanner_operator
 }
 
-if [[ $1 == "minikube" ]]; then
-  minikubeSetup
+if [ -z "$1" ] || [ -z "$2" ]; then
+    print_help
+else
+    ARTEMIS_CLOUD_VERSION=$1
+    KEDA_VERSION=$2
+    minikubeSetup
+    setup_operators
 fi
 
-setup_operators
+function print_help() {
+  echo "Usage: ./runOnKubernetes.sh [ARTEMIS_CLOUD_VERSION] [KEDA_VERSION]"
+  echo
+  echo "Examples:"
+  echo "./runOnKubernetes.sh 1.0.7 2.8.0  Configures minikube to share images from docker"
+  echo "                                  Installs artemis, keda and optaplanner operators"
+  echo "                                  Creates school-timetabling image"
+}

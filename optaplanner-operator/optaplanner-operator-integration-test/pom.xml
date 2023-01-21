@@ -15,6 +15,10 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <solver.api.version>org.optaplanner.solver/v1alpha1</solver.api.version>
+        <broker.api.version>broker.amq.io/v1beta1</broker.api.version>
+        <atremis.operator.version>1.0.7</atremis.operator.version>
+        <keda.operator.version>2.8.0</keda.operator.version>
     </properties>
     <dependencies>
         <dependency>
@@ -109,7 +113,8 @@
                                     <useMavenLogger>true</useMavenLogger>
                                     <executable>./runOnKubernetes.sh</executable>
                                     <arguments>
-                                        <argument>minikube</argument>
+                                        <argument>${atremis.operator.version}</argument>
+                                        <argument>${keda.operator.version}</argument>
                                     </arguments>
                                 </configuration>
                             </execution>
