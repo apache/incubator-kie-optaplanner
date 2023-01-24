@@ -47,13 +47,11 @@ To check the created resource, run `kubectl get solver -n <namespace>` (Minikube
 
 == Integration tests
 
-This test aimed to check how operator behaves on cloud without mocking
-It downloads the latest version of quickstarts, runs demo.sh setup and launches tests.
-After all tests get executed it launches demo.sh delete
+This tests are aimed to check how operator behaves on cloud without mocking
 
 === Testing on minikube
 
-To run the operator-e2e tests on kubernetes start minikube
+To run the operator-e2e tests on kubernetes start minikube first
 
 `minikube start`
 
