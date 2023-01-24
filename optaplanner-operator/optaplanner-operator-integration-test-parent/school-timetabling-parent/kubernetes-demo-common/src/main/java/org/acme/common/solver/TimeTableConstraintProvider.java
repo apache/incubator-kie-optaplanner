@@ -78,9 +78,9 @@ public class TimeTableConstraintProvider implements ConstraintProvider {
                 .filter((lesson1, lesson2) -> {
                     Duration between = Duration.between(lesson1.getTimeslot().getEndTime(),
                             lesson2.getTimeslot().getStartTime());
-                    return !between.isNegative() && between.compareTo(Duration.ofMinutes(30)) <= 0;
+                    return !between.isNegative() && between.compareTo(Duration.ofMinutes(30)) > 0;
                 })
-                .reward("Teacher time efficiency", HardSoftScore.ONE_SOFT);
+                .penalize( HardSoftScore.ONE_SOFT).asConstraint("Teacher time efficiency");
     }
 
     Constraint studentGroupSubjectVariety(ConstraintFactory constraintFactory) {
