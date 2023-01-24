@@ -108,7 +108,7 @@ public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlanner
 
     @Override
     public ErrorStatusUpdateControl<OptaPlannerSolver> updateErrorStatus(OptaPlannerSolver solver,
-                                                                         Context<OptaPlannerSolver> context, Exception e) {
+            Context<OptaPlannerSolver> context, Exception e) {
         solver.setStatus(OptaPlannerSolverStatus.error(solver.getMetadata().getGeneration(), e));
         return ErrorStatusUpdateControl.updateStatus(solver);
     }
