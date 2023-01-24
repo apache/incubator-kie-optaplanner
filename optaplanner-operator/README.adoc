@@ -77,6 +77,6 @@ and minikube images
 . optaplanner-operator
 . school-timetabling
 
-After environment is ready you can run test separately.
+After the environment is ready you can run tests.
 Each test will create a different namespace
 that is watched by keda and activemq
