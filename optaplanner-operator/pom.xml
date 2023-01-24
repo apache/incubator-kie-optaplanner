@@ -10,7 +10,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>optaplanner-operator</artifactId>
+  <artifactId>optaplanner-operator-parent</artifactId>
   <packaging>pom</packaging>
   <name>[Experimental] OptaPlanner Operator</name>
   <description>
@@ -45,7 +45,7 @@
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-operator-impl</artifactId>
+        <artifactId>optaplanner-operator</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

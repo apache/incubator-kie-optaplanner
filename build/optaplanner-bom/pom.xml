@@ -573,24 +573,24 @@
       <!-- OptaPlanner operator -->
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-operator-impl</artifactId>
+        <artifactId>optaplanner-operator</artifactId>
         <version>${version.org.optaplanner}</version>
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-operator-impl</artifactId>
+        <artifactId>optaplanner-operator</artifactId>
         <version>${version.org.optaplanner}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-operator-impl</artifactId>
+        <artifactId>optaplanner-operator</artifactId>
         <type>test-jar</type>
         <version>${version.org.optaplanner}</version>
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-operator-impl</artifactId>
+        <artifactId>optaplanner-operator</artifactId>
         <version>${version.org.optaplanner}</version>
         <classifier>javadoc</classifier>
       </dependency>

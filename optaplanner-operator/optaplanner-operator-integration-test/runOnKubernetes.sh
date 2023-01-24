@@ -48,9 +48,9 @@ function install_artemis_cloud() {
 function install_optaplanner_operator() {
   cd "$BASEDIR"/../../ || exit
   #  Create optaplanner-operator image
-  mvn clean -am -pl :optaplanner-operator-impl package -DskipTests -Doperator.image.build -Dquarkus.container-image.registry=$QUARKUS_CONTAINER_IMAGE_REGISTRY -Dquarkus.container-image.group=$QUARKUS_CONTAINER_IMAGE_GROUP -Dquarkus.container-image.tag=""
+  mvn clean -am -pl :optaplanner-operator package -DskipTests -Doperator.image.build -Dquarkus.container-image.registry=$QUARKUS_CONTAINER_IMAGE_REGISTRY -Dquarkus.container-image.group=$QUARKUS_CONTAINER_IMAGE_GROUP -Dquarkus.container-image.tag=""
 
-  local operator_distribution_directory_local="$BASEDIR"/../optaplanner-operator-impl/target/install
+  local operator_distribution_directory_local="$BASEDIR"/../optaplanner-operator/target/install
   #  Never pull optaplanner-operator image from remote
   sed -i "s/imagePullPolicy: Always/imagePullPolicy: Never/g" "$operator_distribution_directory_local"/optaplanner-operator.yml
 
