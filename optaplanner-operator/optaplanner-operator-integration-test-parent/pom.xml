@@ -4,33 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <groupId>org.optaplanner</groupId>
-    <artifactId>optaplanner-build-parent</artifactId>
+    <artifactId>optaplanner-operator-parent</artifactId>
     <version>8.34.0-SNAPSHOT</version>
-    <relativePath>../build/optaplanner-build-parent/pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>optaplanner-operator-parent</artifactId>
+  <artifactId>optaplanner-operator-integration-test-parent</artifactId>
   <packaging>pom</packaging>
-  <name>[Experimental] OptaPlanner Operator</name>
-  <description>
-    OptaPlanner solves planning problems.
-    This lightweight, embeddable planning engine implements powerful and scalable algorithms
-    to optimize business resource scheduling and planning.
-
-    This module contains an operator that enables running OptaPlanner workloads on Kubernetes.
-  </description>
-  <url>https://www.optaplanner.org</url>
-
-  <properties>
-    <java.module.name>org.optaplanner.operator</java.module.name>
-    <!-- Quarkus Ecosystem CI (and other CI possibly too) updates the version.io.quarkus property. -->
-    <version.io.quarkus.override>2.15.0.Final</version.io.quarkus.override>
-  </properties>
+  <name>OptaPlanner Operator Integration tests </name>
 
   <modules>
-    <module>optaplanner-operator-impl</module>
-    <module>optaplanner-operator-integration-test-parent</module>
+    <module>school-timetabling-parent</module>
+    <module>optaplanner-operator-integration-test</module>
   </modules>
 
   <!-- TODO: Remove when upgrading to Quarkus Operator SDK compatible with latest Quarkus versions. -->

@@ -16,7 +16,15 @@ import org.optaplanner.operator.impl.solver.model.messaging.ArtemisQueueDependen
 import org.optaplanner.operator.impl.solver.model.messaging.MessageAddress;
 
 import io.fabric8.kubernetes.client.KubernetesClient;
-import io.javaoperatorsdk.operator.api.reconciler.*;
+import io.javaoperatorsdk.operator.api.reconciler.Context;
+import io.javaoperatorsdk.operator.api.reconciler.ControllerConfiguration;
+import io.javaoperatorsdk.operator.api.reconciler.ErrorStatusHandler;
+import io.javaoperatorsdk.operator.api.reconciler.ErrorStatusUpdateControl;
+import io.javaoperatorsdk.operator.api.reconciler.EventSourceContext;
+import io.javaoperatorsdk.operator.api.reconciler.EventSourceInitializer;
+import io.javaoperatorsdk.operator.api.reconciler.Reconciler;
+import io.javaoperatorsdk.operator.api.reconciler.ResourceIDMatcherDiscriminator;
+import io.javaoperatorsdk.operator.api.reconciler.UpdateControl;
 import io.javaoperatorsdk.operator.processing.event.ResourceID;
 import io.javaoperatorsdk.operator.processing.event.source.EventSource;
 
@@ -100,7 +108,7 @@ public final class OptaPlannerSolverReconciler implements Reconciler<OptaPlanner
 
     @Override
     public ErrorStatusUpdateControl<OptaPlannerSolver> updateErrorStatus(OptaPlannerSolver solver,
-            Context<OptaPlannerSolver> context, Exception e) {
+                                                                         Context<OptaPlannerSolver> context, Exception e) {
         solver.setStatus(OptaPlannerSolverStatus.error(solver.getMetadata().getGeneration(), e));
         return ErrorStatusUpdateControl.updateStatus(solver);
     }
