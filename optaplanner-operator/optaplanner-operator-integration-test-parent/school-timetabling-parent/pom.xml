@@ -66,21 +66,6 @@
                 <artifactId>assertj-core</artifactId>
                 <version>3.23.1</version>
             </dependency>
-            <dependency>
-                <groupId>org.webjars</groupId>
-                <artifactId>bootstrap</artifactId>
-                <version>4.5.3</version>
-            </dependency>
-            <dependency>
-                <groupId>org.webjars</groupId>
-                <artifactId>jquery</artifactId>
-                <version>3.5.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.webjars</groupId>
-                <artifactId>font-awesome</artifactId>
-                <version>5.15.1</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
