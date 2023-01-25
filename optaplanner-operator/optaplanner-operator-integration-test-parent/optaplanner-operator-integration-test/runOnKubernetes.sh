@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# The script setups enviromment for testing
-# optaplanner-operator in kubernetes
+# The script setups environment for testing optaplanner-operator in Kubernetes.
 #
 # Before starting the script make sure that the Kubernetes cluster is running.
 
