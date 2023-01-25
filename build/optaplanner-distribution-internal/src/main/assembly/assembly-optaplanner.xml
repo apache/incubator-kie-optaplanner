@@ -55,7 +55,7 @@
     </fileSet>
     <!-- OptaPlanner Operator distribution. -->
     <fileSet>
-      <directory>../../../optaplanner-operator/target/install</directory>
+      <directory>../../optaplanner-operator/optaplanner-operator/target/install</directory>
       <outputDirectory>extra/optaplanner-operator</outputDirectory>
     </fileSet>
   </fileSets>
