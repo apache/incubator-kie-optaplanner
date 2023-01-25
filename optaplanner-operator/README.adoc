@@ -47,7 +47,7 @@ To check the created resource, run `kubectl get solver -n <namespace>` (Minikube
 
 == Integration tests
 
-This tests are aimed to check how operator behaves on cloud without mocking
+These tests are aimed to check how the operator behaves on the cloud without mocking.
 
 === Testing on minikube
 
