@@ -51,7 +51,7 @@ This tests are aimed to check how operator behaves on cloud without mocking
 
 === Testing on minikube
 
-To run the operator-e2e tests on kubernetes start minikube first
+To run the operator-e2e tests on kubernetes start minikube first:
 
 `minikube start`
 
