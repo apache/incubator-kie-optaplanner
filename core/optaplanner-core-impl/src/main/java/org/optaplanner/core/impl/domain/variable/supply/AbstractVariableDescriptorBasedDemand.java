@@ -6,10 +6,8 @@ import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 
 /**
  * Some {@link Demand} implementation classes are defined by their {@link VariableDescriptor} and nothing else.
- * However, they still must not have the same {@link #hashCode()} as other {@link Demand} implementation classes
- * defined by the same {@link VariableDescriptor}.
- * Otherwise these different {@link Demand} implementations would be considered identical in hash maps
- * and the same supply would be used for them.
+ * However, they still must not equal (and therefore have the same {@link #hashCode()})
+ * as other {@link Demand} implementation classes defined by the same {@link VariableDescriptor}.
  * This helper abstraction exists so that this logic can be shared across all such {@link Demand} implementations.
  *
  * @param <Solution_>
