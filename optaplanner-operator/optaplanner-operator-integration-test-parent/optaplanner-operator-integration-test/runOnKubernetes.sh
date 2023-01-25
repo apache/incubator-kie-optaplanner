@@ -3,8 +3,7 @@
 # The script setups enviromment for testing
 # optaplanner-operator in kubernetes
 #
-# Before starting the script make sure
-# that your cluster is running
+# Before starting the script make sure that the Kubernetes cluster is running.
 
 readonly BASEDIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd -P)
 readonly KEDA_NAMESPACE=keda
