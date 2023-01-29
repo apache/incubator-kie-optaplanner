@@ -26,7 +26,7 @@ public abstract class AbstractBendableScore<Score_ extends AbstractBendableScore
     }
 
     /**
-     * @param initScore see {@link Score#getInitScore()}
+     * @param initScore see {@link Score#initScore()}
      */
     protected AbstractBendableScore(int initScore) {
         super(initScore);

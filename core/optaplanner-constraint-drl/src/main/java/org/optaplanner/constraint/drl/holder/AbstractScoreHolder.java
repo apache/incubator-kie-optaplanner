@@ -146,8 +146,8 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
     // ************************************************************************
 
     public void configureConstraintWeight(Rule rule, Score_ constraintWeight) {
-        if (constraintWeight.getInitScore() != 0) {
-            throw new IllegalStateException("The initScore (" + constraintWeight.getInitScore() + ") must be 0.");
+        if (constraintWeight.initScore() != 0) {
+            throw new IllegalStateException("The initScore (" + constraintWeight.initScore() + ") must be 0.");
         }
         if (constraintMatchEnabled) {
             String constraintPackage = rule.getPackageName();

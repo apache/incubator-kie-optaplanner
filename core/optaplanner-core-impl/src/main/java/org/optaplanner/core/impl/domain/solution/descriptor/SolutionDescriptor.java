@@ -813,11 +813,11 @@ public class SolutionDescriptor<Solution_> {
                                     + constraintConfigurationDescriptor.getConstraintConfigurationClass()
                                     + ") for that constraint (" + constraintName + ")."));
         }
-        if (constraintWeight.getInitScore() != 0) {
+        if (constraintWeight.initScore() != 0) {
             throw new IllegalArgumentException("The constraintWeight (" + constraintWeight
                     + ") for constraintPackage (" + constraintPackage
                     + ") and constraintName (" + constraintName
-                    + ") must have an initScore (" + constraintWeight.getInitScore() + ") equal to 0.\n"
+                    + ") must have an initScore (" + constraintWeight.initScore() + ") equal to 0.\n"
                     + (constraintConfigurationDescriptor == null ? "Maybe check your constraint implementation."
                             : "Maybe validate the data input of your constraintConfigurationClass ("
                                     + constraintConfigurationDescriptor.getConstraintConfigurationClass()
@@ -837,13 +837,13 @@ public class SolutionDescriptor<Solution_> {
             IBendableScore bendableConstraintWeight = (IBendableScore) constraintWeight;
             AbstractBendableScoreDefinition bendableScoreDefinition =
                     (AbstractBendableScoreDefinition) scoreDescriptor.getScoreDefinition();
-            if (bendableConstraintWeight.getHardLevelsSize() != bendableScoreDefinition.getHardLevelsSize()
-                    || bendableConstraintWeight.getSoftLevelsSize() != bendableScoreDefinition.getSoftLevelsSize()) {
+            if (bendableConstraintWeight.hardLevelsSize() != bendableScoreDefinition.getHardLevelsSize()
+                    || bendableConstraintWeight.softLevelsSize() != bendableScoreDefinition.getSoftLevelsSize()) {
                 throw new IllegalArgumentException("The bendable constraintWeight (" + constraintWeight
                         + ") for constraintPackage (" + constraintPackage
                         + ") and constraintName (" + constraintName
-                        + ") has a hardLevelsSize (" + bendableConstraintWeight.getHardLevelsSize()
-                        + ") or a softLevelsSize (" + bendableConstraintWeight.getSoftLevelsSize()
+                        + ") has a hardLevelsSize (" + bendableConstraintWeight.hardLevelsSize()
+                        + ") or a softLevelsSize (" + bendableConstraintWeight.softLevelsSize()
                         + ") that doesn't match the score definition's hardLevelsSize ("
                         + bendableScoreDefinition.getHardLevelsSize()
                         + ") or softLevelsSize (" + bendableScoreDefinition.getSoftLevelsSize() + ").\n"

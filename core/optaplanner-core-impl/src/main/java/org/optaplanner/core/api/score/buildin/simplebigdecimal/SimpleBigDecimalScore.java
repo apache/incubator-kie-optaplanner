@@ -57,7 +57,7 @@ public final class SimpleBigDecimalScore implements Score<SimpleBigDecimalScore>
     }
 
     @Override
-    public int getInitScore() {
+    public int initScore() {
         return initScore;
     }
 
@@ -68,6 +68,16 @@ public final class SimpleBigDecimalScore implements Score<SimpleBigDecimalScore>
      *
      * @return higher is better, usually negative, 0 if no constraints are broken/fulfilled
      */
+    public BigDecimal score() {
+        return score;
+    }
+
+    /**
+     * As defined by {@link #score()}.
+     *
+     * @deprecated Use {@link #score()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public BigDecimal getScore() {
         return score;
     }
@@ -84,15 +94,15 @@ public final class SimpleBigDecimalScore implements Score<SimpleBigDecimalScore>
     @Override
     public SimpleBigDecimalScore add(SimpleBigDecimalScore addend) {
         return new SimpleBigDecimalScore(
-                initScore + addend.getInitScore(),
-                score.add(addend.getScore()));
+                initScore + addend.initScore(),
+                score.add(addend.score()));
     }
 
     @Override
     public SimpleBigDecimalScore subtract(SimpleBigDecimalScore subtrahend) {
         return new SimpleBigDecimalScore(
-                initScore - subtrahend.getInitScore(),
-                score.subtract(subtrahend.getScore()));
+                initScore - subtrahend.initScore(),
+                score.subtract(subtrahend.score()));
     }
 
     @Override
@@ -166,8 +176,8 @@ public final class SimpleBigDecimalScore implements Score<SimpleBigDecimalScore>
             return true;
         } else if (o instanceof SimpleBigDecimalScore) {
             SimpleBigDecimalScore other = (SimpleBigDecimalScore) o;
-            return initScore == other.getInitScore()
-                    && score.stripTrailingZeros().equals(other.getScore().stripTrailingZeros());
+            return initScore == other.initScore()
+                    && score.stripTrailingZeros().equals(other.score().stripTrailingZeros());
         } else {
             return false;
         }
@@ -180,10 +190,10 @@ public final class SimpleBigDecimalScore implements Score<SimpleBigDecimalScore>
 
     @Override
     public int compareTo(SimpleBigDecimalScore other) {
-        if (initScore != other.getInitScore()) {
-            return Integer.compare(initScore, other.getInitScore());
+        if (initScore != other.initScore()) {
+            return Integer.compare(initScore, other.initScore());
         } else {
-            return score.compareTo(other.getScore());
+            return score.compareTo(other.score());
         }
     }
 

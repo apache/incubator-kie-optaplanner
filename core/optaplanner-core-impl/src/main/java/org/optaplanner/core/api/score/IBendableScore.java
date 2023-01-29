@@ -5,7 +5,7 @@ import java.io.Serializable;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 
 /**
- * Bendable score is a {@link Score} whose {@link #getHardLevelsSize()} and {@link #getSoftLevelsSize()}
+ * Bendable score is a {@link Score} whose {@link #hardLevelsSize()} and {@link #softLevelsSize()}
  * are only known at runtime.
  * <p>
  * Implementations must be immutable.
@@ -17,24 +17,54 @@ public interface IBendableScore<Score_ extends IBendableScore<Score_>>
         extends Score<Score_>, Serializable {
 
     /**
-     * The sum of this and {@link #getSoftLevelsSize()} equals {@link #getLevelsSize()}.
+     * The sum of this and {@link #softLevelsSize()} equals {@link #levelsSize()}.
      *
-     * @return {@code >= 0} and {@code <} {@link #getLevelsSize()}
+     * @return {@code >= 0} and {@code <} {@link #levelsSize()}
      */
-    int getHardLevelsSize();
+    int hardLevelsSize();
 
     /**
-     * The sum of {@link #getHardLevelsSize()} and this equals {@link #getLevelsSize()}.
+     * As defined by {@link #hardLevelsSize()}.
      *
-     * @return {@code >= 0} and {@code <} {@link #getLevelsSize()}
+     * @deprecated Use {@link #hardLevelsSize()} instead.
      */
-    int getSoftLevelsSize();
+    @Deprecated(forRemoval = true)
+    default int getHardLevelsSize() {
+        return hardLevelsSize();
+    }
 
     /**
-     * @return {@link #getHardLevelsSize()} + {@link #getSoftLevelsSize()}
+     * The sum of {@link #hardLevelsSize()} and this equals {@link #levelsSize()}.
+     *
+     * @return {@code >= 0} and {@code <} {@link #levelsSize()}
      */
+    int softLevelsSize();
+
+    /**
+     * As defined by {@link #softLevelsSize()}.
+     *
+     * @deprecated Use {@link #softLevelsSize()} instead.
+     */
+    @Deprecated(forRemoval = true)
+    default int getSoftLevelsSize() {
+        return softLevelsSize();
+    }
+
+    /**
+     * @return {@link #hardLevelsSize()} + {@link #softLevelsSize()}
+     */
+    default int levelsSize() {
+        return hardLevelsSize() + softLevelsSize();
+    }
+
+    /**
+     * As defined by {@link #levelsSize()}.
+     *
+     * @deprecated Use {@link #levelsSize()} instead.
+     */
+    @Deprecated(forRemoval = true)
     default int getLevelsSize() {
-        return getHardLevelsSize() + getSoftLevelsSize();
+        return levelsSize();
     }
 
 }

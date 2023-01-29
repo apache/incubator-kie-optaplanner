@@ -55,7 +55,7 @@ public final class SimpleScore implements Score<SimpleScore> {
     }
 
     @Override
-    public int getInitScore() {
+    public int initScore() {
         return initScore;
     }
 
@@ -66,6 +66,16 @@ public final class SimpleScore implements Score<SimpleScore> {
      *
      * @return higher is better, usually negative, 0 if no constraints are broken/fulfilled
      */
+    public int score() {
+        return score;
+    }
+
+    /**
+     * As defined by {@link #score()}.
+     *
+     * @deprecated Use {@link #score()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public int getScore() {
         return score;
     }
@@ -82,15 +92,15 @@ public final class SimpleScore implements Score<SimpleScore> {
     @Override
     public SimpleScore add(SimpleScore addend) {
         return new SimpleScore(
-                initScore + addend.getInitScore(),
-                score + addend.getScore());
+                initScore + addend.initScore(),
+                score + addend.score());
     }
 
     @Override
     public SimpleScore subtract(SimpleScore subtrahend) {
         return new SimpleScore(
-                initScore - subtrahend.getInitScore(),
-                score - subtrahend.getScore());
+                initScore - subtrahend.initScore(),
+                score - subtrahend.score());
     }
 
     @Override
@@ -150,8 +160,8 @@ public final class SimpleScore implements Score<SimpleScore> {
             return true;
         } else if (o instanceof SimpleScore) {
             SimpleScore other = (SimpleScore) o;
-            return initScore == other.getInitScore()
-                    && score == other.getScore();
+            return initScore == other.initScore()
+                    && score == other.score();
         } else {
             return false;
         }
@@ -164,10 +174,10 @@ public final class SimpleScore implements Score<SimpleScore> {
 
     @Override
     public int compareTo(SimpleScore other) {
-        if (initScore != other.getInitScore()) {
-            return Integer.compare(initScore, other.getInitScore());
+        if (initScore != other.initScore()) {
+            return Integer.compare(initScore, other.initScore());
         } else {
-            return Integer.compare(score, other.getScore());
+            return Integer.compare(score, other.score());
         }
     }
 

@@ -59,7 +59,7 @@ public abstract class AbstractScore<Score_ extends AbstractScore<Score_>> implem
     protected final int initScore;
 
     /**
-     * @param initScore see {@link Score#getInitScore()}
+     * @param initScore see {@link Score#initScore()}
      */
     protected AbstractScore(int initScore) {
         this.initScore = initScore;
@@ -67,7 +67,7 @@ public abstract class AbstractScore<Score_ extends AbstractScore<Score_>> implem
     }
 
     @Override
-    public int getInitScore() {
+    public int initScore() {
         return initScore;
     }
 

@@ -11,7 +11,12 @@ import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 /**
  * A Score is result of the score function (AKA fitness function) on a single possible solution.
  * <p>
- * Implementations must be immutable.
+ * Implementations must be immutable,
+ * preferably a Java record or even a primitive record,
+ * if the target JDK permits that.
+ * <p>
+ * Implementations must extend {@link #initScore()},
+ * or else an endless loop occurs.
  * <p>
  * Implementations are allowed to optionally implement Pareto comparison
  * and therefore slightly violate the transitive requirement of {@link Comparable#compareTo(Object)}.
@@ -33,13 +38,26 @@ public interface Score<Score_ extends Score<Score_>>
      * @return higher is better, always negative (except in statistical calculations), 0 if all planning variables are
      *         initialized
      */
-    int getInitScore();
+    default int initScore() {
+        // TODO remove default implementation in 9.0; exists only for backwards compatibility
+        return getInitScore();
+    }
+
+    /**
+     * As defined by {@link #initScore()}.
+     *
+     * @deprecated Use {@link #initScore()} instead.
+     */
+    @Deprecated(forRemoval = true)
+    default int getInitScore() {
+        return initScore();
+    }
 
     /**
      * For example {@code 0hard/-8soft} with {@code -7} returns {@code -7init/0hard/-8soft}.
      *
      * @param newInitScore always negative (except in statistical calculations), 0 if all planning variables are initialized
-     * @return equals score except that {@link #getInitScore()} is set to {@code newInitScore}
+     * @return equals score except that {@link #initScore()} is set to {@code newInitScore}
      */
     Score_ withInitScore(int newInitScore);
 
@@ -133,7 +151,7 @@ public interface Score<Score_ extends Score<Score_>>
      * <p>
      * For example: {@code -0hard/-7soft} returns {@code new int{-0, -7}}
      * <p>
-     * The level numbers do not contain the {@link #getInitScore()}.
+     * The level numbers do not contain the {@link #initScore()}.
      * For example: {@code -3init/-0hard/-7soft} also returns {@code new int{-0, -7}}
      *
      * @return never null
@@ -157,7 +175,7 @@ public interface Score<Score_ extends Score<Score_>>
     /**
      * Checks if the {@link PlanningSolution} of this score was fully initialized when it was calculated.
      *
-     * @return true if {@link #getInitScore()} is 0
+     * @return true if {@link #initScore()} is 0
      */
     boolean isSolutionInitialized();
 
@@ -166,9 +184,9 @@ public interface Score<Score_ extends Score<Score_>>
      * and {@link #isSolutionInitialized()} is true.
      *
      * Simple scores ({@link SimpleScore}, {@link SimpleLongScore}, {@link SimpleBigDecimalScore}) are always feasible,
-     * if their {@link #getInitScore()} is 0.
+     * if their {@link #initScore()} is 0.
      *
-     * @return true if the hard score is 0 or higher and the {@link #getInitScore()} is 0.
+     * @return true if the hard score is 0 or higher and the {@link #initScore()} is 0.
      */
     boolean isFeasible();
 

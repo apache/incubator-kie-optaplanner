@@ -84,7 +84,7 @@ public final class HardMediumSoftScore implements Score<HardMediumSoftScore> {
     }
 
     @Override
-    public int getInitScore() {
+    public int initScore() {
         return initScore;
     }
 
@@ -95,6 +95,16 @@ public final class HardMediumSoftScore implements Score<HardMediumSoftScore> {
      *
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
+    public int hardScore() {
+        return hardScore;
+    }
+
+    /**
+     * As defined by {@link #hardScore()}.
+     *
+     * @deprecated Use {@link #hardScore()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public int getHardScore() {
         return hardScore;
     }
@@ -108,6 +118,16 @@ public final class HardMediumSoftScore implements Score<HardMediumSoftScore> {
      *
      * @return higher is better, usually negative, 0 if no medium constraints are broken/fulfilled
      */
+    public int mediumScore() {
+        return mediumScore;
+    }
+
+    /**
+     * As defined by {@link #mediumScore()}.
+     *
+     * @deprecated Use {@link #mediumScore()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public int getMediumScore() {
         return mediumScore;
     }
@@ -121,6 +141,16 @@ public final class HardMediumSoftScore implements Score<HardMediumSoftScore> {
      *
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */
+    public int softScore() {
+        return softScore;
+    }
+
+    /**
+     * As defined by {@link #softScore()}.
+     *
+     * @deprecated Use {@link #softScore()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public int getSoftScore() {
         return softScore;
     }
@@ -137,7 +167,7 @@ public final class HardMediumSoftScore implements Score<HardMediumSoftScore> {
     /**
      * A {@link PlanningSolution} is feasible if it has no broken hard constraints.
      *
-     * @return true if the {@link #getHardScore()} is 0 or higher
+     * @return true if the {@link #hardScore()} is 0 or higher
      */
     @Override
     public boolean isFeasible() {
@@ -147,19 +177,19 @@ public final class HardMediumSoftScore implements Score<HardMediumSoftScore> {
     @Override
     public HardMediumSoftScore add(HardMediumSoftScore addend) {
         return new HardMediumSoftScore(
-                initScore + addend.getInitScore(),
-                hardScore + addend.getHardScore(),
-                mediumScore + addend.getMediumScore(),
-                softScore + addend.getSoftScore());
+                initScore + addend.initScore(),
+                hardScore + addend.hardScore(),
+                mediumScore + addend.mediumScore(),
+                softScore + addend.softScore());
     }
 
     @Override
     public HardMediumSoftScore subtract(HardMediumSoftScore subtrahend) {
         return new HardMediumSoftScore(
-                initScore - subtrahend.getInitScore(),
-                hardScore - subtrahend.getHardScore(),
-                mediumScore - subtrahend.getMediumScore(),
-                softScore - subtrahend.getSoftScore());
+                initScore - subtrahend.initScore(),
+                hardScore - subtrahend.hardScore(),
+                mediumScore - subtrahend.mediumScore(),
+                softScore - subtrahend.softScore());
     }
 
     @Override
@@ -220,10 +250,10 @@ public final class HardMediumSoftScore implements Score<HardMediumSoftScore> {
             return true;
         } else if (o instanceof HardMediumSoftScore) {
             HardMediumSoftScore other = (HardMediumSoftScore) o;
-            return initScore == other.getInitScore()
-                    && hardScore == other.getHardScore()
-                    && mediumScore == other.getMediumScore()
-                    && softScore == other.getSoftScore();
+            return initScore == other.initScore()
+                    && hardScore == other.hardScore()
+                    && mediumScore == other.mediumScore()
+                    && softScore == other.softScore();
         } else {
             return false;
         }
@@ -236,14 +266,14 @@ public final class HardMediumSoftScore implements Score<HardMediumSoftScore> {
 
     @Override
     public int compareTo(HardMediumSoftScore other) {
-        if (initScore != other.getInitScore()) {
-            return Integer.compare(initScore, other.getInitScore());
-        } else if (hardScore != other.getHardScore()) {
-            return Integer.compare(hardScore, other.getHardScore());
-        } else if (mediumScore != other.getMediumScore()) {
-            return Integer.compare(mediumScore, other.getMediumScore());
+        if (initScore != other.initScore()) {
+            return Integer.compare(initScore, other.initScore());
+        } else if (hardScore != other.hardScore()) {
+            return Integer.compare(hardScore, other.hardScore());
+        } else if (mediumScore != other.mediumScore()) {
+            return Integer.compare(mediumScore, other.mediumScore());
         } else {
-            return Integer.compare(softScore, other.getSoftScore());
+            return Integer.compare(softScore, other.softScore());
         }
     }
 

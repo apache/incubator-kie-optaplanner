@@ -74,7 +74,7 @@ public final class HardSoftBigDecimalScore implements Score<HardSoftBigDecimalSc
     }
 
     @Override
-    public int getInitScore() {
+    public int initScore() {
         return initScore;
     }
 
@@ -85,6 +85,16 @@ public final class HardSoftBigDecimalScore implements Score<HardSoftBigDecimalSc
      *
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
+    public BigDecimal hardScore() {
+        return hardScore;
+    }
+
+    /**
+     * As defined by {@link #hardScore()}.
+     *
+     * @deprecated Use {@link #hardScore()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public BigDecimal getHardScore() {
         return hardScore;
     }
@@ -98,6 +108,16 @@ public final class HardSoftBigDecimalScore implements Score<HardSoftBigDecimalSc
      *
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */
+    public BigDecimal softScore() {
+        return softScore;
+    }
+
+    /**
+     * As defined by {@link #softScore()}.
+     *
+     * @deprecated Use {@link #softScore()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public BigDecimal getSoftScore() {
         return softScore;
     }
@@ -119,17 +139,17 @@ public final class HardSoftBigDecimalScore implements Score<HardSoftBigDecimalSc
     @Override
     public HardSoftBigDecimalScore add(HardSoftBigDecimalScore addend) {
         return new HardSoftBigDecimalScore(
-                initScore + addend.getInitScore(),
-                hardScore.add(addend.getHardScore()),
-                softScore.add(addend.getSoftScore()));
+                initScore + addend.initScore(),
+                hardScore.add(addend.hardScore()),
+                softScore.add(addend.softScore()));
     }
 
     @Override
     public HardSoftBigDecimalScore subtract(HardSoftBigDecimalScore subtrahend) {
         return new HardSoftBigDecimalScore(
-                initScore - subtrahend.getInitScore(),
-                hardScore.subtract(subtrahend.getHardScore()),
-                softScore.subtract(subtrahend.getSoftScore()));
+                initScore - subtrahend.initScore(),
+                hardScore.subtract(subtrahend.hardScore()),
+                softScore.subtract(subtrahend.softScore()));
     }
 
     @Override
@@ -201,9 +221,9 @@ public final class HardSoftBigDecimalScore implements Score<HardSoftBigDecimalSc
             return true;
         } else if (o instanceof HardSoftBigDecimalScore) {
             HardSoftBigDecimalScore other = (HardSoftBigDecimalScore) o;
-            return initScore == other.getInitScore()
-                    && hardScore.stripTrailingZeros().equals(other.getHardScore().stripTrailingZeros())
-                    && softScore.stripTrailingZeros().equals(other.getSoftScore().stripTrailingZeros());
+            return initScore == other.initScore()
+                    && hardScore.stripTrailingZeros().equals(other.hardScore().stripTrailingZeros())
+                    && softScore.stripTrailingZeros().equals(other.softScore().stripTrailingZeros());
         } else {
             return false;
         }
@@ -216,14 +236,14 @@ public final class HardSoftBigDecimalScore implements Score<HardSoftBigDecimalSc
 
     @Override
     public int compareTo(HardSoftBigDecimalScore other) {
-        if (initScore != other.getInitScore()) {
-            return Integer.compare(initScore, other.getInitScore());
+        if (initScore != other.initScore()) {
+            return Integer.compare(initScore, other.initScore());
         }
-        int hardScoreComparison = hardScore.compareTo(other.getHardScore());
+        int hardScoreComparison = hardScore.compareTo(other.hardScore());
         if (hardScoreComparison != 0) {
             return hardScoreComparison;
         } else {
-            return softScore.compareTo(other.getSoftScore());
+            return softScore.compareTo(other.softScore());
         }
     }
 

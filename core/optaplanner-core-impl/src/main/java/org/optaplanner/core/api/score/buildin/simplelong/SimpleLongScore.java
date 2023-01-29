@@ -55,7 +55,7 @@ public final class SimpleLongScore implements Score<SimpleLongScore> {
     }
 
     @Override
-    public int getInitScore() {
+    public int initScore() {
         return initScore;
     }
 
@@ -66,6 +66,16 @@ public final class SimpleLongScore implements Score<SimpleLongScore> {
      *
      * @return higher is better, usually negative, 0 if no constraints are broken/fulfilled
      */
+    public long score() {
+        return score;
+    }
+
+    /**
+     * As defined by {@link #score()}.
+     *
+     * @deprecated Use {@link #score()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public long getScore() {
         return score;
     }
@@ -82,14 +92,14 @@ public final class SimpleLongScore implements Score<SimpleLongScore> {
     @Override
     public SimpleLongScore add(SimpleLongScore addend) {
         return new SimpleLongScore(
-                initScore + addend.getInitScore(),
+                initScore + addend.initScore(),
                 score + addend.getScore());
     }
 
     @Override
     public SimpleLongScore subtract(SimpleLongScore subtrahend) {
         return new SimpleLongScore(
-                initScore - subtrahend.getInitScore(),
+                initScore - subtrahend.initScore(),
                 score - subtrahend.getScore());
     }
 
@@ -150,7 +160,7 @@ public final class SimpleLongScore implements Score<SimpleLongScore> {
             return true;
         } else if (o instanceof SimpleLongScore) {
             SimpleLongScore other = (SimpleLongScore) o;
-            return initScore == other.getInitScore()
+            return initScore == other.initScore()
                     && score == other.getScore();
         } else {
             return false;
@@ -164,8 +174,8 @@ public final class SimpleLongScore implements Score<SimpleLongScore> {
 
     @Override
     public int compareTo(SimpleLongScore other) {
-        if (initScore != other.getInitScore()) {
-            return Integer.compare(initScore, other.getInitScore());
+        if (initScore != other.initScore()) {
+            return Integer.compare(initScore, other.initScore());
         } else {
             return Long.compare(score, other.getScore());
         }

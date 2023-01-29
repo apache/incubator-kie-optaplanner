@@ -14,7 +14,7 @@ import org.optaplanner.core.impl.score.buildin.BendableScoreDefinition;
  * <p>
  * This class is immutable.
  * <p>
- * The {@link #getHardLevelsSize()} and {@link #getSoftLevelsSize()} must be the same as in the
+ * The {@link #hardLevelsSize()} and {@link #softLevelsSize()} must be the same as in the
  * {@link BendableScoreDefinition} used.
  *
  * @see Score
@@ -42,7 +42,7 @@ public final class BendableScore implements IBendableScore<BendableScore> {
     /**
      * Creates a new {@link BendableScore}.
      *
-     * @param initScore see {@link Score#getInitScore()}
+     * @param initScore see {@link Score#initScore()}
      * @param hardScores never null, never change that array afterwards: it must be immutable
      * @param softScores never null, never change that array afterwards: it must be immutable
      * @return never null
@@ -122,7 +122,7 @@ public final class BendableScore implements IBendableScore<BendableScore> {
     }
 
     /**
-     * @param initScore see {@link Score#getInitScore()}
+     * @param initScore see {@link Score#initScore()}
      * @param hardScores never null
      * @param softScores never null
      */
@@ -133,50 +133,90 @@ public final class BendableScore implements IBendableScore<BendableScore> {
     }
 
     @Override
-    public int getInitScore() {
+    public int initScore() {
         return initScore;
     }
 
     /**
      * @return not null, array copy because this class is immutable
      */
-    public int[] getHardScores() {
+    public int[] hardScores() {
         return Arrays.copyOf(hardScores, hardScores.length);
+    }
+
+    /**
+     * As defined by {@link #hardScores()}.
+     *
+     * @deprecated Use {@link #hardScores()} instead.
+     */
+    @Deprecated(forRemoval = true)
+    public int[] getHardScores() {
+        return hardScores();
     }
 
     /**
      * @return not null, array copy because this class is immutable
      */
-    public int[] getSoftScores() {
+    public int[] softScores() {
         return Arrays.copyOf(softScores, softScores.length);
     }
 
+    /**
+     * As defined by {@link #softScores()}.
+     *
+     * @deprecated Use {@link #softScores()} instead.
+     */
+    @Deprecated(forRemoval = true)
+    public int[] getSoftScores() {
+        return softScores();
+    }
+
     @Override
-    public int getHardLevelsSize() {
+    public int hardLevelsSize() {
         return hardScores.length;
     }
 
     /**
-     * @param hardLevel {@code 0 <= hardLevel <} {@link #getHardLevelsSize()}.
+     * @param hardLevel {@code 0 <= hardLevel <} {@link #hardLevelsSize()}.
      *        The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @return higher is better
      */
-    public int getHardScore(int hardLevel) {
+    public int hardScore(int hardLevel) {
         return hardScores[hardLevel];
     }
 
+    /**
+     * As defined by {@link #hardScore(int)}.
+     *
+     * @deprecated Use {@link #hardScore(int)} instead.
+     */
+    @Deprecated(forRemoval = true)
+    public int getHardScore(int hardLevel) {
+        return hardScore(hardLevel);
+    }
+
     @Override
-    public int getSoftLevelsSize() {
+    public int softLevelsSize() {
         return softScores.length;
     }
 
     /**
-     * @param softLevel {@code 0 <= softLevel <} {@link #getSoftLevelsSize()}.
+     * @param softLevel {@code 0 <= softLevel <} {@link #softLevelsSize()}.
      *        The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @return higher is better
      */
-    public int getSoftScore(int softLevel) {
+    public int softScore(int softLevel) {
         return softScores[softLevel];
+    }
+
+    /**
+     * As defined by {@link #softScore(int)}.
+     *
+     * @deprecated Use {@link #softScore(int)} instead.
+     */
+    @Deprecated(forRemoval = true)
+    public int getSoftScore(int hardLevel) {
+        return softScore(hardLevel);
     }
 
     // ************************************************************************
@@ -189,15 +229,25 @@ public final class BendableScore implements IBendableScore<BendableScore> {
     }
 
     /**
-     * @param level {@code 0 <= level <} {@link #getLevelsSize()}
+     * @param level {@code 0 <= level <} {@link #levelsSize()}
      * @return higher is better
      */
-    public int getHardOrSoftScore(int level) {
+    public int hardOrSoftScore(int level) {
         if (level < hardScores.length) {
             return hardScores[level];
         } else {
             return softScores[level - hardScores.length];
         }
+    }
+
+    /**
+     * As defined by {@link #hardOrSoftScore(int)}.
+     *
+     * @deprecated Use {@link #hardOrSoftScore(int)} instead.
+     */
+    @Deprecated(forRemoval = true)
+    public int getHardOrSoftScore(int level) {
+        return hardOrSoftScore(level);
     }
 
     @Override
@@ -224,13 +274,13 @@ public final class BendableScore implements IBendableScore<BendableScore> {
         int[] newHardScores = new int[hardScores.length];
         int[] newSoftScores = new int[softScores.length];
         for (int i = 0; i < newHardScores.length; i++) {
-            newHardScores[i] = hardScores[i] + addend.getHardScore(i);
+            newHardScores[i] = hardScores[i] + addend.hardScore(i);
         }
         for (int i = 0; i < newSoftScores.length; i++) {
-            newSoftScores[i] = softScores[i] + addend.getSoftScore(i);
+            newSoftScores[i] = softScores[i] + addend.softScore(i);
         }
         return new BendableScore(
-                initScore + addend.getInitScore(),
+                initScore + addend.initScore(),
                 newHardScores, newSoftScores);
     }
 
@@ -240,13 +290,13 @@ public final class BendableScore implements IBendableScore<BendableScore> {
         int[] newHardScores = new int[hardScores.length];
         int[] newSoftScores = new int[softScores.length];
         for (int i = 0; i < newHardScores.length; i++) {
-            newHardScores[i] = hardScores[i] - subtrahend.getHardScore(i);
+            newHardScores[i] = hardScores[i] - subtrahend.hardScore(i);
         }
         for (int i = 0; i < newSoftScores.length; i++) {
-            newSoftScores[i] = softScores[i] - subtrahend.getSoftScore(i);
+            newSoftScores[i] = softScores[i] - subtrahend.softScore(i);
         }
         return new BendableScore(
-                initScore - subtrahend.getInitScore(),
+                initScore - subtrahend.initScore(),
                 newHardScores, newSoftScores);
     }
 
@@ -323,7 +373,7 @@ public final class BendableScore implements IBendableScore<BendableScore> {
 
     @Override
     public BendableScore zero() {
-        return BendableScore.zero(getHardLevelsSize(), getSoftLevelsSize());
+        return BendableScore.zero(hardLevelsSize(), softLevelsSize());
     }
 
     @Override
@@ -344,20 +394,20 @@ public final class BendableScore implements IBendableScore<BendableScore> {
             return true;
         } else if (o instanceof BendableScore) {
             BendableScore other = (BendableScore) o;
-            if (getHardLevelsSize() != other.getHardLevelsSize()
-                    || getSoftLevelsSize() != other.getSoftLevelsSize()) {
+            if (hardLevelsSize() != other.hardLevelsSize()
+                    || softLevelsSize() != other.softLevelsSize()) {
                 return false;
             }
-            if (initScore != other.getInitScore()) {
+            if (initScore != other.initScore()) {
                 return false;
             }
             for (int i = 0; i < hardScores.length; i++) {
-                if (hardScores[i] != other.getHardScore(i)) {
+                if (hardScores[i] != other.hardScore(i)) {
                     return false;
                 }
             }
             for (int i = 0; i < softScores.length; i++) {
-                if (softScores[i] != other.getSoftScore(i)) {
+                if (softScores[i] != other.softScore(i)) {
                     return false;
                 }
             }
@@ -375,17 +425,17 @@ public final class BendableScore implements IBendableScore<BendableScore> {
     @Override
     public int compareTo(BendableScore other) {
         validateCompatible(other);
-        if (initScore != other.getInitScore()) {
-            return Integer.compare(initScore, other.getInitScore());
+        if (initScore != other.initScore()) {
+            return Integer.compare(initScore, other.initScore());
         }
         for (int i = 0; i < hardScores.length; i++) {
-            if (hardScores[i] != other.getHardScore(i)) {
-                return Integer.compare(hardScores[i], other.getHardScore(i));
+            if (hardScores[i] != other.hardScore(i)) {
+                return Integer.compare(hardScores[i], other.hardScore(i));
             }
         }
         for (int i = 0; i < softScores.length; i++) {
-            if (softScores[i] != other.getSoftScore(i)) {
-                return Integer.compare(softScores[i], other.getSoftScore(i));
+            if (softScores[i] != other.softScore(i)) {
+                return Integer.compare(softScores[i], other.softScore(i));
             }
         }
         return 0;
@@ -425,17 +475,17 @@ public final class BendableScore implements IBendableScore<BendableScore> {
     }
 
     public void validateCompatible(BendableScore other) {
-        if (getHardLevelsSize() != other.getHardLevelsSize()) {
+        if (hardLevelsSize() != other.hardLevelsSize()) {
             throw new IllegalArgumentException("The score (" + this
-                    + ") with hardScoreSize (" + getHardLevelsSize()
+                    + ") with hardScoreSize (" + hardLevelsSize()
                     + ") is not compatible with the other score (" + other
-                    + ") with hardScoreSize (" + other.getHardLevelsSize() + ").");
+                    + ") with hardScoreSize (" + other.hardLevelsSize() + ").");
         }
-        if (getSoftLevelsSize() != other.getSoftLevelsSize()) {
+        if (softLevelsSize() != other.softLevelsSize()) {
             throw new IllegalArgumentException("The score (" + this
-                    + ") with softScoreSize (" + getSoftLevelsSize()
+                    + ") with softScoreSize (" + softLevelsSize()
                     + ") is not compatible with the other score (" + other
-                    + ") with softScoreSize (" + other.getSoftLevelsSize() + ").");
+                    + ") with softScoreSize (" + other.softLevelsSize() + ").");
         }
     }
 

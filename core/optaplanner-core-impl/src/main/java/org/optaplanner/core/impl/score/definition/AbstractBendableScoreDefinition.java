@@ -59,9 +59,9 @@ public abstract class AbstractBendableScoreDefinition<Score_ extends Score<Score
     public boolean isCompatibleArithmeticArgument(Score score) {
         if (super.isCompatibleArithmeticArgument(score)) {
             IBendableScore<?> bendableScore = (IBendableScore<?>) score;
-            return getLevelsSize() == bendableScore.getLevelsSize()
-                    && getHardLevelsSize() == bendableScore.getHardLevelsSize()
-                    && getSoftLevelsSize() == bendableScore.getSoftLevelsSize();
+            return getLevelsSize() == bendableScore.levelsSize()
+                    && getHardLevelsSize() == bendableScore.hardLevelsSize()
+                    && getSoftLevelsSize() == bendableScore.softLevelsSize();
         }
         return false;
     }

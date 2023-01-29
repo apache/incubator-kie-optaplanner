@@ -138,7 +138,7 @@ public final class ScoreUtil {
 
     public static <Score_ extends Score<Score_>> String buildShortString(Score<Score_> score, Predicate<Number> notZero,
             String... levelLabels) {
-        int initScore = score.getInitScore();
+        int initScore = score.initScore();
         StringBuilder shortString = new StringBuilder();
         if (initScore != 0) {
             shortString.append(initScore).append(INIT_LABEL);
@@ -208,13 +208,13 @@ public final class ScoreUtil {
 
     public static <Score_ extends IBendableScore<Score_>> String buildBendableShortString(IBendableScore<Score_> score,
             Predicate<Number> notZero) {
-        int initScore = score.getInitScore();
+        int initScore = score.initScore();
         StringBuilder shortString = new StringBuilder();
         if (initScore != 0) {
             shortString.append(initScore).append(INIT_LABEL);
         }
         Number[] levelNumbers = score.toLevelNumbers();
-        int hardLevelsSize = score.getHardLevelsSize();
+        int hardLevelsSize = score.hardLevelsSize();
         if (Arrays.stream(levelNumbers).limit(hardLevelsSize).anyMatch(notZero)) {
             if (shortString.length() > 0) {
                 shortString.append("/");
@@ -231,7 +231,7 @@ public final class ScoreUtil {
             }
             shortString.append("]").append(HARD_LABEL);
         }
-        int softLevelsSize = score.getSoftLevelsSize();
+        int softLevelsSize = score.softLevelsSize();
         if (Arrays.stream(levelNumbers).skip(hardLevelsSize).anyMatch(notZero)) {
             if (shortString.length() > 0) {
                 shortString.append("/");

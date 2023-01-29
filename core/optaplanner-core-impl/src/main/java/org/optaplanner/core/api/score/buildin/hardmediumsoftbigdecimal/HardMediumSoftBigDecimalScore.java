@@ -94,7 +94,7 @@ public final class HardMediumSoftBigDecimalScore implements Score<HardMediumSoft
     }
 
     @Override
-    public int getInitScore() {
+    public int initScore() {
         return initScore;
     }
 
@@ -105,6 +105,16 @@ public final class HardMediumSoftBigDecimalScore implements Score<HardMediumSoft
      *
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
+    public BigDecimal hardScore() {
+        return hardScore;
+    }
+
+    /**
+     * As defined by {@link #hardScore()}.
+     *
+     * @deprecated Use {@link #hardScore()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public BigDecimal getHardScore() {
         return hardScore;
     }
@@ -118,6 +128,16 @@ public final class HardMediumSoftBigDecimalScore implements Score<HardMediumSoft
      *
      * @return higher is better, usually negative, 0 if no medium constraints are broken/fulfilled
      */
+    public BigDecimal mediumScore() {
+        return mediumScore;
+    }
+
+    /**
+     * As defined by {@link #mediumScore()}.
+     *
+     * @deprecated Use {@link #mediumScore()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public BigDecimal getMediumScore() {
         return mediumScore;
     }
@@ -131,6 +151,16 @@ public final class HardMediumSoftBigDecimalScore implements Score<HardMediumSoft
      *
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */
+    public BigDecimal softScore() {
+        return softScore;
+    }
+
+    /**
+     * As defined by {@link #softScore()}.
+     *
+     * @deprecated Use {@link #softScore()} instead.
+     */
+    @Deprecated(forRemoval = true)
     public BigDecimal getSoftScore() {
         return softScore;
     }
@@ -147,7 +177,7 @@ public final class HardMediumSoftBigDecimalScore implements Score<HardMediumSoft
     /**
      * A {@link PlanningSolution} is feasible if it has no broken hard constraints.
      *
-     * @return true if the {@link #getHardScore()} is 0 or higher
+     * @return true if the {@link #hardScore()} is 0 or higher
      */
     @Override
     public boolean isFeasible() {
@@ -157,19 +187,19 @@ public final class HardMediumSoftBigDecimalScore implements Score<HardMediumSoft
     @Override
     public HardMediumSoftBigDecimalScore add(HardMediumSoftBigDecimalScore addend) {
         return new HardMediumSoftBigDecimalScore(
-                initScore + addend.getInitScore(),
-                hardScore.add(addend.getHardScore()),
-                mediumScore.add(addend.getMediumScore()),
-                softScore.add(addend.getSoftScore()));
+                initScore + addend.initScore(),
+                hardScore.add(addend.hardScore()),
+                mediumScore.add(addend.mediumScore()),
+                softScore.add(addend.softScore()));
     }
 
     @Override
     public HardMediumSoftBigDecimalScore subtract(HardMediumSoftBigDecimalScore subtrahend) {
         return new HardMediumSoftBigDecimalScore(
-                initScore - subtrahend.getInitScore(),
-                hardScore.subtract(subtrahend.getHardScore()),
-                mediumScore.subtract(subtrahend.getMediumScore()),
-                softScore.subtract(subtrahend.getSoftScore()));
+                initScore - subtrahend.initScore(),
+                hardScore.subtract(subtrahend.hardScore()),
+                mediumScore.subtract(subtrahend.mediumScore()),
+                softScore.subtract(subtrahend.softScore()));
     }
 
     @Override
@@ -240,10 +270,10 @@ public final class HardMediumSoftBigDecimalScore implements Score<HardMediumSoft
             return true;
         } else if (o instanceof HardMediumSoftBigDecimalScore) {
             HardMediumSoftBigDecimalScore other = (HardMediumSoftBigDecimalScore) o;
-            return initScore == other.getInitScore()
-                    && hardScore.stripTrailingZeros().equals(other.getHardScore().stripTrailingZeros())
-                    && mediumScore.stripTrailingZeros().equals(other.getMediumScore().stripTrailingZeros())
-                    && softScore.stripTrailingZeros().equals(other.getSoftScore().stripTrailingZeros());
+            return initScore == other.initScore()
+                    && hardScore.stripTrailingZeros().equals(other.hardScore().stripTrailingZeros())
+                    && mediumScore.stripTrailingZeros().equals(other.mediumScore().stripTrailingZeros())
+                    && softScore.stripTrailingZeros().equals(other.softScore().stripTrailingZeros());
         } else {
             return false;
         }
@@ -257,18 +287,18 @@ public final class HardMediumSoftBigDecimalScore implements Score<HardMediumSoft
 
     @Override
     public int compareTo(HardMediumSoftBigDecimalScore other) {
-        if (initScore != other.getInitScore()) {
-            return Integer.compare(initScore, other.getInitScore());
+        if (initScore != other.initScore()) {
+            return Integer.compare(initScore, other.initScore());
         }
-        int hardScoreComparison = hardScore.compareTo(other.getHardScore());
+        int hardScoreComparison = hardScore.compareTo(other.hardScore());
         if (hardScoreComparison != 0) {
             return hardScoreComparison;
         }
-        int mediumScoreComparison = mediumScore.compareTo(other.getMediumScore());
+        int mediumScoreComparison = mediumScore.compareTo(other.mediumScore());
         if (mediumScoreComparison != 0) {
             return mediumScoreComparison;
         } else {
-            return softScore.compareTo(other.getSoftScore());
+            return softScore.compareTo(other.softScore());
         }
     }
 
