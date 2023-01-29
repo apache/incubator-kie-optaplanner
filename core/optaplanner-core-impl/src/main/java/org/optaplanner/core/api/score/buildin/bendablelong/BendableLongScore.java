@@ -3,8 +3,9 @@ package org.optaplanner.core.api.score.buildin.bendablelong;
 import java.util.Arrays;
 import java.util.Objects;
 
-import org.optaplanner.core.api.score.AbstractBendableScore;
+import org.optaplanner.core.api.score.IBendableScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.ScoreUtil;
 import org.optaplanner.core.impl.score.buildin.BendableLongScoreDefinition;
 
 /**
@@ -18,22 +19,22 @@ import org.optaplanner.core.impl.score.buildin.BendableLongScoreDefinition;
  *
  * @see Score
  */
-public final class BendableLongScore extends AbstractBendableScore<BendableLongScore> {
+public final class BendableLongScore implements IBendableScore<BendableLongScore> {
 
     /**
      * @param scoreString never null
      * @return never null
      */
     public static BendableLongScore parseScore(String scoreString) {
-        String[][] scoreTokens = parseBendableScoreTokens(BendableLongScore.class, scoreString);
-        int initScore = parseInitScore(BendableLongScore.class, scoreString, scoreTokens[0][0]);
+        String[][] scoreTokens = ScoreUtil.parseBendableScoreTokens(BendableLongScore.class, scoreString);
+        int initScore = ScoreUtil.parseInitScore(BendableLongScore.class, scoreString, scoreTokens[0][0]);
         long[] hardScores = new long[scoreTokens[1].length];
         for (int i = 0; i < hardScores.length; i++) {
-            hardScores[i] = parseLevelAsLong(BendableLongScore.class, scoreString, scoreTokens[1][i]);
+            hardScores[i] = ScoreUtil.parseLevelAsLong(BendableLongScore.class, scoreString, scoreTokens[1][i]);
         }
         long[] softScores = new long[scoreTokens[2].length];
         for (int i = 0; i < softScores.length; i++) {
-            softScores[i] = parseLevelAsLong(BendableLongScore.class, scoreString, scoreTokens[2][i]);
+            softScores[i] = ScoreUtil.parseLevelAsLong(BendableLongScore.class, scoreString, scoreTokens[2][i]);
         }
         return ofUninitialized(initScore, hardScores, softScores);
     }
@@ -106,6 +107,7 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
     // Fields
     // ************************************************************************
 
+    private final int initScore;
     private final long[] hardScores;
     private final long[] softScores;
 
@@ -125,9 +127,14 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
      * @param softScores never null
      */
     private BendableLongScore(int initScore, long[] hardScores, long[] softScores) {
-        super(initScore);
+        this.initScore = initScore;
         this.hardScores = hardScores;
         this.softScores = softScores;
+    }
+
+    @Override
+    public int getInitScore() {
+        return initScore;
     }
 
     /**
@@ -177,11 +184,6 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
     @Override
     public BendableLongScore withInitScore(int newInitScore) {
         return new BendableLongScore(newInitScore, hardScores, softScores);
-    }
-
-    @Override
-    public int getLevelsSize() {
-        return hardScores.length + softScores.length;
     }
 
     /**
@@ -330,6 +332,11 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
     }
 
     @Override
+    public boolean isSolutionInitialized() {
+        return initScore >= 0;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -384,13 +391,13 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
 
     @Override
     public String toShortString() {
-        return buildBendableShortString((n) -> n.longValue() != 0L);
+        return ScoreUtil.buildBendableShortString(this, n -> n.longValue() != 0L);
     }
 
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder(((hardScores.length + softScores.length) * 4) + 13);
-        s.append(getInitPrefix());
+        s.append(ScoreUtil.getInitPrefix(initScore));
         s.append("[");
         boolean first = true;
         for (long hardScore : hardScores) {

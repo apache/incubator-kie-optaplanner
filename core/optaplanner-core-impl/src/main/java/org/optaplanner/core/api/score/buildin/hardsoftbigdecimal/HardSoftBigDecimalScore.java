@@ -1,11 +1,14 @@
 package org.optaplanner.core.api.score.buildin.hardsoftbigdecimal;
 
+import static org.optaplanner.core.impl.score.ScoreUtil.HARD_LABEL;
+import static org.optaplanner.core.impl.score.ScoreUtil.SOFT_LABEL;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
 
-import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.ScoreUtil;
 
 /**
  * This {@link Score} is based on 2 levels of {@link BigDecimal} constraints: hard and soft.
@@ -16,19 +19,17 @@ import org.optaplanner.core.api.score.Score;
  *
  * @see Score
  */
-public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDecimalScore> {
+public final class HardSoftBigDecimalScore implements Score<HardSoftBigDecimalScore> {
 
     public static final HardSoftBigDecimalScore ZERO = new HardSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ZERO);
     public static final HardSoftBigDecimalScore ONE_HARD = new HardSoftBigDecimalScore(0, BigDecimal.ONE, BigDecimal.ZERO);
     public static final HardSoftBigDecimalScore ONE_SOFT = new HardSoftBigDecimalScore(0, BigDecimal.ZERO, BigDecimal.ONE);
-    private static final String HARD_LABEL = "hard";
-    private static final String SOFT_LABEL = "soft";
 
     public static HardSoftBigDecimalScore parseScore(String scoreString) {
-        String[] scoreTokens = parseScoreTokens(HardSoftBigDecimalScore.class, scoreString, HARD_LABEL, SOFT_LABEL);
-        int initScore = parseInitScore(HardSoftBigDecimalScore.class, scoreString, scoreTokens[0]);
-        BigDecimal hardScore = parseLevelAsBigDecimal(HardSoftBigDecimalScore.class, scoreString, scoreTokens[1]);
-        BigDecimal softScore = parseLevelAsBigDecimal(HardSoftBigDecimalScore.class, scoreString, scoreTokens[2]);
+        String[] scoreTokens = ScoreUtil.parseScoreTokens(HardSoftBigDecimalScore.class, scoreString, HARD_LABEL, SOFT_LABEL);
+        int initScore = ScoreUtil.parseInitScore(HardSoftBigDecimalScore.class, scoreString, scoreTokens[0]);
+        BigDecimal hardScore = ScoreUtil.parseLevelAsBigDecimal(HardSoftBigDecimalScore.class, scoreString, scoreTokens[1]);
+        BigDecimal softScore = ScoreUtil.parseLevelAsBigDecimal(HardSoftBigDecimalScore.class, scoreString, scoreTokens[2]);
         return ofUninitialized(initScore, hardScore, softScore);
     }
 
@@ -52,6 +53,7 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     // Fields
     // ************************************************************************
 
+    private final int initScore;
     private final BigDecimal hardScore;
     private final BigDecimal softScore;
 
@@ -66,9 +68,14 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     }
 
     private HardSoftBigDecimalScore(int initScore, BigDecimal hardScore, BigDecimal softScore) {
-        super(initScore);
+        this.initScore = initScore;
         this.hardScore = hardScore;
         this.softScore = softScore;
+    }
+
+    @Override
+    public int getInitScore() {
+        return initScore;
     }
 
     /**
@@ -184,6 +191,11 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     }
 
     @Override
+    public boolean isSolutionInitialized() {
+        return initScore >= 0;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -217,12 +229,12 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
 
     @Override
     public String toShortString() {
-        return buildShortString((n) -> ((BigDecimal) n).compareTo(BigDecimal.ZERO) != 0, HARD_LABEL, SOFT_LABEL);
+        return ScoreUtil.buildShortString(this, n -> ((BigDecimal) n).compareTo(BigDecimal.ZERO) != 0, HARD_LABEL, SOFT_LABEL);
     }
 
     @Override
     public String toString() {
-        return getInitPrefix() + hardScore + HARD_LABEL + "/" + softScore + SOFT_LABEL;
+        return ScoreUtil.getInitPrefix(initScore) + hardScore + HARD_LABEL + "/" + softScore + SOFT_LABEL;
     }
 
 }

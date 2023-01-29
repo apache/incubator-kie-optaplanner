@@ -1,5 +1,7 @@
 package org.optaplanner.core.api.score;
 
+import java.io.Serializable;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -13,14 +15,12 @@ import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
  * <p>
  * Implementations are allowed to optionally implement Pareto comparison
  * and therefore slightly violate the transitive requirement of {@link Comparable#compareTo(Object)}.
- * <p>
- * An implementation must extend {@link AbstractScore} to ensure backwards compatibility in future versions.
  *
  * @param <Score_> the actual score type to allow addition, subtraction and other arithmetic
- * @see AbstractScore
  * @see HardSoftScore
  */
-public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> {
+public interface Score<Score_ extends Score<Score_>>
+        extends Comparable<Score_>, Serializable {
 
     /**
      * The init score is the negative of the number of uninitialized genuine planning variables.
@@ -34,13 +34,6 @@ public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> 
      *         initialized
      */
     int getInitScore();
-
-    /**
-     * Checks if the {@link PlanningSolution} of this score was fully initialized when it was calculated.
-     *
-     * @return true if {@link #getInitScore()} is 0
-     */
-    boolean isSolutionInitialized();
 
     /**
      * For example {@code 0hard/-8soft} with {@code -7} returns {@code -7init/0hard/-8soft}.
@@ -160,6 +153,13 @@ public interface Score<Score_ extends Score<Score_>> extends Comparable<Score_> 
         }
         return levelDoubles;
     }
+
+    /**
+     * Checks if the {@link PlanningSolution} of this score was fully initialized when it was calculated.
+     *
+     * @return true if {@link #getInitScore()} is 0
+     */
+    boolean isSolutionInitialized();
 
     /**
      * A {@link PlanningSolution} is feasible if it has no broken hard constraints

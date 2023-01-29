@@ -42,7 +42,7 @@ import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.ProblemFactProperty;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.AbstractBendableScore;
+import org.optaplanner.core.api.score.IBendableScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -833,8 +833,8 @@ public class SolutionDescriptor<Solution_> {
                                     + constraintConfigurationDescriptor.getConstraintConfigurationClass()
                                     + ") for that constraint (" + constraintName + ")."));
         }
-        if (constraintWeight instanceof AbstractBendableScore) {
-            AbstractBendableScore bendableConstraintWeight = (AbstractBendableScore) constraintWeight;
+        if (constraintWeight instanceof IBendableScore) {
+            IBendableScore bendableConstraintWeight = (IBendableScore) constraintWeight;
             AbstractBendableScoreDefinition bendableScoreDefinition =
                     (AbstractBendableScoreDefinition) scoreDescriptor.getScoreDefinition();
             if (bendableConstraintWeight.getHardLevelsSize() != bendableScoreDefinition.getHardLevelsSize()

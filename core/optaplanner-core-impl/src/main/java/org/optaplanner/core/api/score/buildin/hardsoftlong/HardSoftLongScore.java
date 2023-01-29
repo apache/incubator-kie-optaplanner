@@ -1,9 +1,12 @@
 package org.optaplanner.core.api.score.buildin.hardsoftlong;
 
+import static org.optaplanner.core.impl.score.ScoreUtil.HARD_LABEL;
+import static org.optaplanner.core.impl.score.ScoreUtil.SOFT_LABEL;
+
 import java.util.Objects;
 
-import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.ScoreUtil;
 
 /**
  * This {@link Score} is based on 2 levels of long constraints: hard and soft.
@@ -14,19 +17,17 @@ import org.optaplanner.core.api.score.Score;
  *
  * @see Score
  */
-public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore> {
+public final class HardSoftLongScore implements Score<HardSoftLongScore> {
 
     public static final HardSoftLongScore ZERO = new HardSoftLongScore(0, 0L, 0L);
     public static final HardSoftLongScore ONE_HARD = new HardSoftLongScore(0, 1L, 0L);
     public static final HardSoftLongScore ONE_SOFT = new HardSoftLongScore(0, 0L, 1L);
-    private static final String HARD_LABEL = "hard";
-    private static final String SOFT_LABEL = "soft";
 
     public static HardSoftLongScore parseScore(String scoreString) {
-        String[] scoreTokens = parseScoreTokens(HardSoftLongScore.class, scoreString, HARD_LABEL, SOFT_LABEL);
-        int initScore = parseInitScore(HardSoftLongScore.class, scoreString, scoreTokens[0]);
-        long hardScore = parseLevelAsLong(HardSoftLongScore.class, scoreString, scoreTokens[1]);
-        long softScore = parseLevelAsLong(HardSoftLongScore.class, scoreString, scoreTokens[2]);
+        String[] scoreTokens = ScoreUtil.parseScoreTokens(HardSoftLongScore.class, scoreString, HARD_LABEL, SOFT_LABEL);
+        int initScore = ScoreUtil.parseInitScore(HardSoftLongScore.class, scoreString, scoreTokens[0]);
+        long hardScore = ScoreUtil.parseLevelAsLong(HardSoftLongScore.class, scoreString, scoreTokens[1]);
+        long softScore = ScoreUtil.parseLevelAsLong(HardSoftLongScore.class, scoreString, scoreTokens[2]);
         return ofUninitialized(initScore, hardScore, softScore);
     }
 
@@ -50,6 +51,7 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore> {
     // Fields
     // ************************************************************************
 
+    private final int initScore;
     private final long hardScore;
     private final long softScore;
 
@@ -64,9 +66,14 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore> {
     }
 
     private HardSoftLongScore(int initScore, long hardScore, long softScore) {
-        super(initScore);
+        this.initScore = initScore;
         this.hardScore = hardScore;
         this.softScore = softScore;
+    }
+
+    @Override
+    public int getInitScore() {
+        return initScore;
     }
 
     /**
@@ -168,6 +175,11 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore> {
     }
 
     @Override
+    public boolean isSolutionInitialized() {
+        return initScore >= 0;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -199,12 +211,12 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore> {
 
     @Override
     public String toShortString() {
-        return buildShortString((n) -> n.longValue() != 0L, HARD_LABEL, SOFT_LABEL);
+        return ScoreUtil.buildShortString(this, n -> n.longValue() != 0L, HARD_LABEL, SOFT_LABEL);
     }
 
     @Override
     public String toString() {
-        return getInitPrefix() + hardScore + HARD_LABEL + "/" + softScore + SOFT_LABEL;
+        return ScoreUtil.getInitPrefix(initScore) + hardScore + HARD_LABEL + "/" + softScore + SOFT_LABEL;
     }
 
 }

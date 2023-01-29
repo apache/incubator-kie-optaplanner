@@ -6,8 +6,9 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import org.optaplanner.core.api.score.AbstractBendableScore;
+import org.optaplanner.core.api.score.IBendableScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.ScoreUtil;
 import org.optaplanner.core.impl.score.buildin.BendableScoreDefinition;
 
 /**
@@ -21,22 +22,22 @@ import org.optaplanner.core.impl.score.buildin.BendableScoreDefinition;
  *
  * @see Score
  */
-public final class BendableBigDecimalScore extends AbstractBendableScore<BendableBigDecimalScore> {
+public final class BendableBigDecimalScore implements IBendableScore<BendableBigDecimalScore> {
 
     /**
      * @param scoreString never null
      * @return never null
      */
     public static BendableBigDecimalScore parseScore(String scoreString) {
-        String[][] scoreTokens = parseBendableScoreTokens(BendableBigDecimalScore.class, scoreString);
-        int initScore = parseInitScore(BendableBigDecimalScore.class, scoreString, scoreTokens[0][0]);
+        String[][] scoreTokens = ScoreUtil.parseBendableScoreTokens(BendableBigDecimalScore.class, scoreString);
+        int initScore = ScoreUtil.parseInitScore(BendableBigDecimalScore.class, scoreString, scoreTokens[0][0]);
         BigDecimal[] hardScores = new BigDecimal[scoreTokens[1].length];
         for (int i = 0; i < hardScores.length; i++) {
-            hardScores[i] = parseLevelAsBigDecimal(BendableBigDecimalScore.class, scoreString, scoreTokens[1][i]);
+            hardScores[i] = ScoreUtil.parseLevelAsBigDecimal(BendableBigDecimalScore.class, scoreString, scoreTokens[1][i]);
         }
         BigDecimal[] softScores = new BigDecimal[scoreTokens[2].length];
         for (int i = 0; i < softScores.length; i++) {
-            softScores[i] = parseLevelAsBigDecimal(BendableBigDecimalScore.class, scoreString, scoreTokens[2][i]);
+            softScores[i] = ScoreUtil.parseLevelAsBigDecimal(BendableBigDecimalScore.class, scoreString, scoreTokens[2][i]);
         }
         return ofUninitialized(initScore, hardScores, softScores);
     }
@@ -119,6 +120,7 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
     // Fields
     // ************************************************************************
 
+    private final int initScore;
     private final BigDecimal[] hardScores;
     private final BigDecimal[] softScores;
 
@@ -138,9 +140,14 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
      * @param softScores never null
      */
     private BendableBigDecimalScore(int initScore, BigDecimal[] hardScores, BigDecimal[] softScores) {
-        super(initScore);
+        this.initScore = initScore;
         this.hardScores = hardScores;
         this.softScores = softScores;
+    }
+
+    @Override
+    public int getInitScore() {
+        return initScore;
     }
 
     /**
@@ -192,11 +199,6 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
         return new BendableBigDecimalScore(newInitScore, hardScores, softScores);
     }
 
-    @Override
-    public int getLevelsSize() {
-        return hardScores.length + softScores.length;
-    }
-
     /**
      * @param index {@code 0 <= index <} {@link #getLevelsSize()}
      * @return higher is better
@@ -207,6 +209,11 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
         } else {
             return softScores[index - hardScores.length];
         }
+    }
+
+    @Override
+    public boolean isSolutionInitialized() {
+        return initScore >= 0;
     }
 
     @Override
@@ -417,13 +424,13 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
 
     @Override
     public String toShortString() {
-        return buildBendableShortString((n) -> ((BigDecimal) n).compareTo(BigDecimal.ZERO) != 0);
+        return ScoreUtil.buildBendableShortString(this, n -> ((BigDecimal) n).compareTo(BigDecimal.ZERO) != 0);
     }
 
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder(((hardScores.length + softScores.length) * 4) + 13);
-        s.append(getInitPrefix());
+        s.append(ScoreUtil.getInitPrefix(initScore));
         s.append("[");
         boolean first = true;
         for (BigDecimal hardScore : hardScores) {

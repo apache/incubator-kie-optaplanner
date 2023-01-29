@@ -2,8 +2,8 @@ package org.optaplanner.core.api.score.buildin.simple;
 
 import java.util.Objects;
 
-import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.ScoreUtil;
 
 /**
  * This {@link Score} is based on 1 level of int constraints.
@@ -12,15 +12,15 @@ import org.optaplanner.core.api.score.Score;
  *
  * @see Score
  */
-public final class SimpleScore extends AbstractScore<SimpleScore> {
+public final class SimpleScore implements Score<SimpleScore> {
 
     public static final SimpleScore ZERO = new SimpleScore(0, 0);
     public static final SimpleScore ONE = new SimpleScore(0, 1);
 
     public static SimpleScore parseScore(String scoreString) {
-        String[] scoreTokens = parseScoreTokens(SimpleScore.class, scoreString, "");
-        int initScore = parseInitScore(SimpleScore.class, scoreString, scoreTokens[0]);
-        int score = parseLevelAsInt(SimpleScore.class, scoreString, scoreTokens[1]);
+        String[] scoreTokens = ScoreUtil.parseScoreTokens(SimpleScore.class, scoreString, "");
+        int initScore = ScoreUtil.parseInitScore(SimpleScore.class, scoreString, scoreTokens[0]);
+        int score = ScoreUtil.parseLevelAsInt(SimpleScore.class, scoreString, scoreTokens[1]);
         return ofUninitialized(initScore, score);
     }
 
@@ -36,6 +36,7 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     // Fields
     // ************************************************************************
 
+    private final int initScore;
     private final int score;
 
     /**
@@ -49,8 +50,13 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     }
 
     private SimpleScore(int initScore, int score) {
-        super(initScore);
+        this.initScore = initScore;
         this.score = score;
+    }
+
+    @Override
+    public int getInitScore() {
+        return initScore;
     }
 
     /**
@@ -134,6 +140,11 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     }
 
     @Override
+    public boolean isSolutionInitialized() {
+        return initScore >= 0;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -162,12 +173,12 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
 
     @Override
     public String toShortString() {
-        return buildShortString((n) -> n.intValue() != 0, "");
+        return ScoreUtil.buildShortString(this, n -> n.intValue() != 0, "");
     }
 
     @Override
     public String toString() {
-        return getInitPrefix() + score;
+        return ScoreUtil.getInitPrefix(initScore) + score;
     }
 
 }
