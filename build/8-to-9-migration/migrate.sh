@@ -30,6 +30,8 @@ ${mvn_cmd} versions:set \
   -DgenerateBackupPoms=false \
   -DnewVersion="${new_project_version}" \
 
+${mvn_cmd} process-test-sources
+
 # Commit the changes.
 git status
 git add -u
