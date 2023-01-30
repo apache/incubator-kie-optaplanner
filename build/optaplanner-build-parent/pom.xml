@@ -63,7 +63,7 @@
     <version.pitest.plugin>1.10.4</version.pitest.plugin>
     <version.revapi.plugin>0.15.0</version.revapi.plugin>
     <version.sniffer.plugin>1.22</version.sniffer.plugin>
-    <version.surefire.plugin>3.0.0-M7</version.surefire.plugin>
+    <version.surefire.plugin>3.0.0-M8</version.surefire.plugin>
     <version.versions.plugin>2.14.2</version.versions.plugin>
 
     <!-- Plugin configuration properties -->
