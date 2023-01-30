@@ -15,6 +15,7 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.chained.KOptM
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListKOptMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
@@ -30,6 +31,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.KOptMov
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorFactory;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListKOptMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListChangeMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListSwapMoveSelectorFactory;
 
@@ -64,6 +66,8 @@ public interface MoveSelectorFactory<Solution_> {
             return new MoveListFactoryFactory<>((MoveListFactoryConfig) moveSelectorConfig);
         } else if (KOptMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
             return new KOptMoveSelectorFactory<>((KOptMoveSelectorConfig) moveSelectorConfig);
+        } else if (ListKOptMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
+            return new ListKOptMoveSelectorFactory<>((ListKOptMoveSelectorConfig) moveSelectorConfig);
         } else {
             throw new IllegalArgumentException(String.format("Unknown %s type: (%s).",
                     MoveSelectorConfig.class.getSimpleName(), moveSelectorConfig.getClass().getName()));
