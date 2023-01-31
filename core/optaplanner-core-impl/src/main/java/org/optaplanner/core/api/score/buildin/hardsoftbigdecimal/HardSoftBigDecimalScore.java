@@ -211,11 +211,6 @@ public final class HardSoftBigDecimalScore implements Score<HardSoftBigDecimalSc
     }
 
     @Override
-    public boolean isSolutionInitialized() {
-        return initScore >= 0;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

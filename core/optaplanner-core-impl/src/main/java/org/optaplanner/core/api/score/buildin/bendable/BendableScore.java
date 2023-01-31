@@ -251,11 +251,6 @@ public final class BendableScore implements IBendableScore<BendableScore> {
     }
 
     @Override
-    public boolean isSolutionInitialized() {
-        return initScore >= 0;
-    }
-
-    @Override
     public boolean isFeasible() {
         if (initScore < 0) {
             return false;

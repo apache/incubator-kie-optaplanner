@@ -177,7 +177,9 @@ public interface Score<Score_ extends Score<Score_>>
      *
      * @return true if {@link #initScore()} is 0
      */
-    boolean isSolutionInitialized();
+    default boolean isSolutionInitialized() {
+        return initScore() >= 0;
+    }
 
     /**
      * A {@link PlanningSolution} is feasible if it has no broken hard constraints

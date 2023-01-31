@@ -241,11 +241,6 @@ public final class HardMediumSoftLongScore implements Score<HardMediumSoftLongSc
     }
 
     @Override
-    public boolean isSolutionInitialized() {
-        return initScore >= 0;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

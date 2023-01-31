@@ -150,11 +150,6 @@ public final class SimpleScore implements Score<SimpleScore> {
     }
 
     @Override
-    public boolean isSolutionInitialized() {
-        return initScore >= 0;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

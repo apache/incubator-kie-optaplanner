@@ -166,11 +166,6 @@ public final class SimpleBigDecimalScore implements Score<SimpleBigDecimalScore>
     }
 
     @Override
-    public boolean isSolutionInitialized() {
-        return initScore >= 0;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

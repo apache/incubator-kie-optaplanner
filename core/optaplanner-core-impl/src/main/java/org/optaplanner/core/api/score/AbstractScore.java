@@ -75,11 +75,6 @@ public abstract class AbstractScore<Score_ extends AbstractScore<Score_>> implem
     // Worker methods
     // ************************************************************************
 
-    @Override
-    public boolean isSolutionInitialized() {
-        return initScore >= 0;
-    }
-
     protected String getInitPrefix() {
         return ScoreUtil.getInitPrefix(initScore);
     }
