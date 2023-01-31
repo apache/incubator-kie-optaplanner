@@ -255,4 +255,8 @@ public final class ScoreUtil {
         return shortString.toString();
     }
 
+    private ScoreUtil() {
+        // No external instances.
+    }
+
 }
