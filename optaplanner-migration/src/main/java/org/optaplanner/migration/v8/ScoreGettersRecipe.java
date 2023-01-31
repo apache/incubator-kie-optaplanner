@@ -133,9 +133,9 @@ public class ScoreGettersRecipe extends Recipe {
 
     private static final class MatcherMeta {
 
-        public String scoreClassFqn;
-        public MethodMatcher methodMatcher;
-        public String methodName;
+        public final String scoreClassFqn;
+        public final MethodMatcher methodMatcher;
+        public final String methodName;
 
         public MatcherMeta(String select, String method) {
             String className;
@@ -151,8 +151,7 @@ public class ScoreGettersRecipe extends Recipe {
                             + select;
             }
             this.scoreClassFqn = className;
-            String signature = scoreClassFqn + " " + method.replace("BigDecimal", "java.math.BigDecimal");
-            this.methodMatcher = new MethodMatcher(signature);
+            this.methodMatcher = new MethodMatcher(scoreClassFqn + " " + method);
             this.methodName = method;
         }
     }

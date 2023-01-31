@@ -7,11 +7,13 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 /**
  * Bendable score is a {@link Score} whose {@link #hardLevelsSize()} and {@link #softLevelsSize()}
  * are only known at runtime.
- * <p>
- * Implementations must be immutable.
  *
+ * @apiNote Interfaces in OptaPlanner are usually not prefixed with "I".
+ *          However, the conflict in name with its implementation ({@link BendableScore}) made this necessary.
+ *          All the other options were considered worse, some even harmful.
+ *          This is a minor issue, as users will access the implementation and not the interface anyway.
+ * @implSpec As defined by {@link Score}.
  * @param <Score_> the actual score type to allow addition, subtraction and other arithmetic
- * @see BendableScore
  */
 public interface IBendableScore<Score_ extends IBendableScore<Score_>>
         extends Score<Score_>, Serializable {
