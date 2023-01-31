@@ -1583,12 +1583,6 @@ class ConstraintCollectorsTest {
          * exercising the PECS principle in our generics
          * in a way that Integer would not.
          */
-        /*
-         * LocalDateTime is chosen because it doesn't implement Comparable<LocalDateTime>.
-         * Rather it implements Comparable<? super LocalDateTime>,
-         * exercising the PECS principle in our generics
-         * in a way that Integer would not.
-         */
         var baseLocalDateTime = LocalDateTime.of(2023, 1, 1, 0, 0);
         var collector = min((Integer a, Integer b, Integer c, Integer d) -> baseLocalDateTime.plusMinutes(a + b + c + d));
         var container = collector.supplier().get();
