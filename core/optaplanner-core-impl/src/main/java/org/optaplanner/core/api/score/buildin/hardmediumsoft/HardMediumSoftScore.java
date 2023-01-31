@@ -220,11 +220,6 @@ public final class HardMediumSoftScore implements Score<HardMediumSoftScore> {
     }
 
     @Override
-    public HardMediumSoftScore negate() {
-        return new HardMediumSoftScore(-initScore, -hardScore, -mediumScore, -softScore);
-    }
-
-    @Override
     public HardMediumSoftScore abs() {
         return new HardMediumSoftScore(Math.abs(initScore), Math.abs(hardScore), Math.abs(mediumScore), Math.abs(softScore));
     }

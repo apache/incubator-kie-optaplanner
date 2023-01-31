@@ -125,11 +125,6 @@ public final class SimpleLongScore implements Score<SimpleLongScore> {
     }
 
     @Override
-    public SimpleLongScore negate() {
-        return new SimpleLongScore(-initScore, -score);
-    }
-
-    @Override
     public SimpleLongScore abs() {
         return new SimpleLongScore(Math.abs(initScore), Math.abs(score));
     }

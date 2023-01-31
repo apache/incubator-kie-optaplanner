@@ -366,7 +366,7 @@ public final class BendableBigDecimalScore implements IBendableScore<BendableBig
     }
 
     @Override
-    public BendableBigDecimalScore negate() {
+    public BendableBigDecimalScore negate() { // Overridden as the default impl would create zero() all the time.
         BigDecimal[] newHardScores = new BigDecimal[hardScores.length];
         BigDecimal[] newSoftScores = new BigDecimal[softScores.length];
         for (int i = 0; i < newHardScores.length; i++) {

@@ -10,7 +10,7 @@ import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 
 /**
  * A Score is result of the score function (AKA fitness function) on a single possible solution.
- * 
+ *
  * @implSpec
  *           <ul>
  *           <li>Implementations must be immutable,
@@ -118,7 +118,14 @@ public interface Score<Score_ extends Score<Score_>>
      *
      * @return - this
      */
-    Score_ negate();
+    default Score_ negate() {
+        Score_ zero = zero();
+        Score_ current = (Score_) this;
+        if (zero.equals(current)) {
+            return current;
+        }
+        return zero.subtract(current);
+    }
 
     /**
      * Returns a Score whose value is the absolute value of the score, i.e. |this|.

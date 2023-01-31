@@ -125,11 +125,6 @@ public final class SimpleScore implements Score<SimpleScore> {
     }
 
     @Override
-    public SimpleScore negate() {
-        return new SimpleScore(-initScore, -score);
-    }
-
-    @Override
     public SimpleScore abs() {
         return new SimpleScore(Math.abs(initScore), Math.abs(score));
     }

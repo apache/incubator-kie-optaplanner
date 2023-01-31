@@ -339,7 +339,7 @@ public final class BendableLongScore implements IBendableScore<BendableLongScore
     }
 
     @Override
-    public BendableLongScore negate() {
+    public BendableLongScore negate() { // Overridden as the default impl would create zero() all the time.
         long[] newHardScores = new long[hardScores.length];
         long[] newSoftScores = new long[softScores.length];
         for (int i = 0; i < newHardScores.length; i++) {

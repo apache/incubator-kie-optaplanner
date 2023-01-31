@@ -191,11 +191,6 @@ public final class HardSoftBigDecimalScore implements Score<HardSoftBigDecimalSc
     }
 
     @Override
-    public HardSoftBigDecimalScore negate() {
-        return new HardSoftBigDecimalScore(-initScore, hardScore.negate(), softScore.negate());
-    }
-
-    @Override
     public HardSoftBigDecimalScore abs() {
         return new HardSoftBigDecimalScore(Math.abs(initScore), hardScore.abs(), softScore.abs());
     }

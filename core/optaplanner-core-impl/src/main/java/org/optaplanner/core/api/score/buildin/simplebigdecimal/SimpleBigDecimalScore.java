@@ -141,11 +141,6 @@ public final class SimpleBigDecimalScore implements Score<SimpleBigDecimalScore>
     }
 
     @Override
-    public SimpleBigDecimalScore negate() {
-        return new SimpleBigDecimalScore(-initScore, score.negate());
-    }
-
-    @Override
     public SimpleBigDecimalScore abs() {
         return new SimpleBigDecimalScore(Math.abs(initScore), score.abs());
     }

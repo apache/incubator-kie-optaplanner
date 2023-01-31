@@ -240,11 +240,6 @@ public final class HardMediumSoftBigDecimalScore implements Score<HardMediumSoft
     }
 
     @Override
-    public HardMediumSoftBigDecimalScore negate() {
-        return new HardMediumSoftBigDecimalScore(-initScore, hardScore.negate(), mediumScore.negate(), softScore.negate());
-    }
-
-    @Override
     public HardMediumSoftBigDecimalScore abs() {
         return new HardMediumSoftBigDecimalScore(Math.abs(initScore), hardScore.abs(), mediumScore.abs(), softScore.abs());
     }

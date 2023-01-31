@@ -341,7 +341,7 @@ public final class BendableScore implements IBendableScore<BendableScore> {
     }
 
     @Override
-    public BendableScore negate() {
+    public BendableScore negate() { // Overridden as the default impl would create zero() all the time.
         int[] newHardScores = new int[hardScores.length];
         int[] newSoftScores = new int[softScores.length];
         for (int i = 0; i < newHardScores.length; i++) {

@@ -178,11 +178,6 @@ public final class HardSoftScore implements Score<HardSoftScore> {
     }
 
     @Override
-    public HardSoftScore negate() {
-        return new HardSoftScore(-initScore, -hardScore, -softScore);
-    }
-
-    @Override
     public HardSoftScore abs() {
         return new HardSoftScore(Math.abs(initScore), Math.abs(hardScore), Math.abs(softScore));
     }
