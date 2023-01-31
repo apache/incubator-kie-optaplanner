@@ -269,6 +269,69 @@
           "old": "class org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>",
           "new": "class org.optaplanner.core.api.score.AbstractScore<Score_ extends org.optaplanner.core.api.score.AbstractScore<Score_>>",
           "justification": "Serialization is deprecated, should not be used and many places in the solver don't support it anyway."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.simple.SimpleScore org.optaplanner.core.api.score.buildin.simple.SimpleScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.simple.SimpleScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore",
+          "justification": "Implementation moved to a default method on an interface."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.returnTypeErasureChanged",
+          "old": "method org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore::negate()",
+          "new": "method Score_ org.optaplanner.core.api.score.Score<Score_ extends org.optaplanner.core.api.score.Score<Score_>>::negate() @ org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore",
+          "justification": "Implementation moved to a default method on an interface."
         }
       ]
     }
