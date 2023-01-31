@@ -2,7 +2,6 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -106,8 +105,7 @@ public final class UnassignedValueSelector<Solution_>
     }
 
     private Stream<Object> streamUnassignedValues() {
-        return StreamSupport
-                .stream(Spliterators.spliterator(childValueSelector.iterator(), childValueSelector.getSize(), 0), false)
+        return StreamSupport.stream(childValueSelector.spliterator(), false)
                 // Skip assigned values.
                 .filter(value -> inverseVariableSupply.getInverseSingleton(value) == null);
     }
