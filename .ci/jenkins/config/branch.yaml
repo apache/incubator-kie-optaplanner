@@ -7,11 +7,13 @@ environment:
       version: '3.0'
     lts:
       enabled: false
+      # TODO: upgrade with Quarkus 3
       version: '2.13'
   native:
     enabled: true
   mandrel:
     enabled: false
+    # TODO: upgrade with Quarkus 3
     builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.3-java17
   mandrel_lts:
     enabled: false
@@ -75,5 +77,5 @@ cloud:
 jenkins:
   email_creds_id: OPTAPLANNER_CI_EMAIL
   default_tools:
-    jdk: kie-jdk11
-    maven: kie-maven-3.8.6
+    jdk: kie-jdk17
+    maven: kie-maven-3.8.7
