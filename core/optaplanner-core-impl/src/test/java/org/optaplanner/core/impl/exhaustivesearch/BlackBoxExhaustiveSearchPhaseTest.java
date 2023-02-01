@@ -353,10 +353,10 @@ class BlackBoxExhaustiveSearchPhaseTest {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
                 TestdataDifficultyComparingSolution.class, TestdataDifficultyComparingEntity.class);
 
-        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
-        entitySelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
-        entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
-        entitySelectorConfig.setSorterManner(entitySorterManner);
+        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig()
+                .withSelectionOrder(SelectionOrder.SORTED)
+                .withCacheType(SelectionCacheType.PHASE)
+                .withSorterManner(entitySorterManner);
 
         ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
         valueSelectorConfig.setSelectionOrder(SelectionOrder.SORTED);

@@ -87,18 +87,17 @@ public class QueuedValuePlacerFactory<Solution_>
             HeuristicConfigPolicy<Solution_> configPolicy, String valueSelectorConfigId,
             GenuineVariableDescriptor<Solution_> variableDescriptor) {
         ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
-        EntitySelectorConfig changeEntitySelectorConfig = new EntitySelectorConfig();
         EntityDescriptor<Solution_> entityDescriptor = variableDescriptor.getEntityDescriptor();
-        changeEntitySelectorConfig.setEntityClass(entityDescriptor.getEntityClass());
+        EntitySelectorConfig changeEntitySelectorConfig = new EntitySelectorConfig()
+                .withEntityClass(entityDescriptor.getEntityClass());
         if (EntitySelectorConfig.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
-            changeEntitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
-            changeEntitySelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
-            changeEntitySelectorConfig.setSorterManner(configPolicy.getEntitySorterManner());
+            changeEntitySelectorConfig = changeEntitySelectorConfig.withCacheType(SelectionCacheType.PHASE)
+                    .withSelectionOrder(SelectionOrder.SORTED)
+                    .withSorterManner(configPolicy.getEntitySorterManner());
         }
-        changeMoveSelectorConfig.setEntitySelectorConfig(changeEntitySelectorConfig);
         ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
         changeValueSelectorConfig.setMimicSelectorRef(valueSelectorConfigId);
-        changeMoveSelectorConfig.setValueSelectorConfig(changeValueSelectorConfig);
-        return changeMoveSelectorConfig;
+        return changeMoveSelectorConfig.withEntitySelectorConfig(changeEntitySelectorConfig)
+                .withValueSelectorConfig(changeValueSelectorConfig);
     }
 }

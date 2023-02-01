@@ -101,13 +101,13 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
     private EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy) {
         EntitySelectorConfig entitySelectorConfig_;
         if (phaseConfig.getEntitySelectorConfig() == null) {
-            entitySelectorConfig_ = new EntitySelectorConfig();
             EntityDescriptor<Solution_> entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
-            entitySelectorConfig_.setEntityClass(entityDescriptor.getEntityClass());
+            entitySelectorConfig_ = new EntitySelectorConfig()
+                    .withEntityClass(entityDescriptor.getEntityClass());
             if (EntitySelectorConfig.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
-                entitySelectorConfig_.setCacheType(SelectionCacheType.PHASE);
-                entitySelectorConfig_.setSelectionOrder(SelectionOrder.SORTED);
-                entitySelectorConfig_.setSorterManner(configPolicy.getEntitySorterManner());
+                entitySelectorConfig_ = entitySelectorConfig_.withCacheType(SelectionCacheType.PHASE)
+                        .withSelectionOrder(SelectionOrder.SORTED)
+                        .withSorterManner(configPolicy.getEntitySorterManner());
             }
         } else {
             entitySelectorConfig_ = phaseConfig.getEntitySelectorConfig();
