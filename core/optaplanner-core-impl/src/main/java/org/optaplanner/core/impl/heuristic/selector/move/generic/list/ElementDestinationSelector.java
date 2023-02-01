@@ -78,7 +78,6 @@ public class ElementDestinationSelector<Solution_> extends AbstractSelector<Solu
         if (entitySelector.getSize() == 0) {
             return 0;
         }
-        // FIXME do not count unassigned values (use AssignedValueSelector)
         return entitySelector.getSize() + valueSelector.getSize();
     }
 
@@ -117,8 +116,6 @@ public class ElementDestinationSelector<Solution_> extends AbstractSelector<Solu
                     StreamSupport.stream(entitySelector.spliterator(), false)
                             .map(entity -> ElementRef.of(entity, 0)),
                     StreamSupport.stream(valueSelector.spliterator(), false)
-                            // TODO do not filter here, leave it up to the AssignedValueSelector
-                            .filter(value -> inverseVariableSupply.getInverseSingleton(value) != null)
                             .map(value -> ElementRef.of(
                                     inverseVariableSupply.getInverseSingleton(value),
                                     indexVariableSupply.getIndex(value) + 1)))

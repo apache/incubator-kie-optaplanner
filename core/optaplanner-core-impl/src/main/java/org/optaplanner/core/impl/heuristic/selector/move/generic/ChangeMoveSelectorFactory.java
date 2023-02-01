@@ -61,7 +61,23 @@ public class ChangeMoveSelectorFactory<Solution_>
             }
             ValueSelector<Solution_> destinationValueSelector = ValueSelectorFactory
                     .<Solution_> create(new ValueSelectorConfig())
-                    .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
+                    .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder,
+                            // Do not override reinitializeVariableFilterEnabled.
+                            configPolicy.isReinitializeVariableFilterEnabled(),
+                            /*
+                             * Filter assigned values (but only if this filtering type is allowed by the configPolicy).
+                             *
+                             * The destination selector requires the child value selector to only select assign values.
+                             * To guarantee this during CH where not all values are assigned, the UnassignedValueSelector filter
+                             * must be applied.
+                             *
+                             * In the LS phase, not only is the filter redundant because there are no unassigned values,
+                             * but it would also crash if the base value selector inherits random selection order,
+                             * because the filter cannot work on a never-ending child value selector.
+                             * Therefore, it must not be applied even though it is requested here. This is accomplished by
+                             * the configPolicy that only allows this filtering type in the CH phase.
+                             */
+                            ValueSelectorFactory.ListValueFilteringType.ACCEPT_ASSIGNED);
 
             ListVariableDescriptor<Solution_> listVariableDescriptor =
                     (ListVariableDescriptor<Solution_>) sourceValueSelector.getVariableDescriptor();

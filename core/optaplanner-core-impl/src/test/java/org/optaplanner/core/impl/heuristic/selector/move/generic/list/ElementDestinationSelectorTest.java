@@ -12,7 +12,6 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesO
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertEmptyNeverEndingIterableSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
@@ -200,35 +199,5 @@ class ElementDestinationSelectorTest {
 
         verifyPhaseLifecycle(entitySelector, 1, 1, 2);
         verifyPhaseLifecycle(valueSelector, 1, 1, 2);
-    }
-
-    @Test
-    @Disabled
-    void constructionHeuristic() {
-        TestdataListValue v1 = new TestdataListValue("1");
-        TestdataListValue v2 = new TestdataListValue("2");
-        TestdataListValue v3 = new TestdataListValue("3");
-        TestdataListValue v4 = new TestdataListValue("4");
-        TestdataListValue v5 = new TestdataListValue("5");
-        TestdataListEntity a = new TestdataListEntity("A");
-        TestdataListEntity b = new TestdataListEntity("B");
-        TestdataListEntity c = TestdataListEntity.createWithValues("C", v5);
-
-        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
-                PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
-
-        ElementDestinationSelector<TestdataListSolution> selector = new ElementDestinationSelector<>(
-                getListVariableDescriptor(scoreDirector),
-                mockEntitySelector(a, b, c),
-                mockEntityIndependentValueSelector(v3, v1, v4, v2, v5),
-                false);
-
-        solvingStarted(selector, scoreDirector);
-
-        assertAllCodesOfIterableSelector(selector, 4,
-                "A[0]",
-                "B[0]",
-                "C[0]",
-                "C[1]");
     }
 }
