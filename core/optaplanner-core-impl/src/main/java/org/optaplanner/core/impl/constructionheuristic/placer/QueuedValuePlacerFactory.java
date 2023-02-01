@@ -59,15 +59,15 @@ public class QueuedValuePlacerFactory<Solution_>
             EntityDescriptor<Solution_> entityDescriptor) {
         ValueSelectorConfig valueSelectorConfig_;
         if (config.getValueSelectorConfig() == null) {
-            valueSelectorConfig_ = new ValueSelectorConfig();
             Class<?> entityClass = entityDescriptor.getEntityClass();
             GenuineVariableDescriptor<Solution_> variableDescriptor = getTheOnlyVariableDescriptor(entityDescriptor);
-            valueSelectorConfig_.setId(entityClass.getName() + "." + variableDescriptor.getVariableName());
-            valueSelectorConfig_.setVariableName(variableDescriptor.getVariableName());
+            valueSelectorConfig_ = new ValueSelectorConfig()
+                    .withId(entityClass.getName() + "." + variableDescriptor.getVariableName())
+                    .withVariableName(variableDescriptor.getVariableName());
             if (ValueSelectorConfig.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {
-                valueSelectorConfig_.setCacheType(SelectionCacheType.PHASE);
-                valueSelectorConfig_.setSelectionOrder(SelectionOrder.SORTED);
-                valueSelectorConfig_.setSorterManner(configPolicy.getValueSorterManner());
+                valueSelectorConfig_ = valueSelectorConfig_.withCacheType(SelectionCacheType.PHASE)
+                        .withSelectionOrder(SelectionOrder.SORTED)
+                        .withSorterManner(configPolicy.getValueSorterManner());
             }
         } else {
             valueSelectorConfig_ = config.getValueSelectorConfig();
@@ -95,8 +95,8 @@ public class QueuedValuePlacerFactory<Solution_>
                     .withSelectionOrder(SelectionOrder.SORTED)
                     .withSorterManner(configPolicy.getEntitySorterManner());
         }
-        ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
-        changeValueSelectorConfig.setMimicSelectorRef(valueSelectorConfigId);
+        ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig()
+                .withMimicSelectorRef(valueSelectorConfigId);
         return changeMoveSelectorConfig.withEntitySelectorConfig(changeEntitySelectorConfig)
                 .withValueSelectorConfig(changeValueSelectorConfig);
     }

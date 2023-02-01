@@ -1,5 +1,7 @@
 package org.optaplanner.core.impl.exhaustivesearch;
 
+import static org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType.STEP;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -178,16 +180,13 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
                 ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
                 changeMoveSelectorConfig.setEntitySelectorConfig(
                         EntitySelectorConfig.newMimicSelectorConfig(mimicSelectorId));
-                ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
-                changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
+                ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig()
+                        .withVariableName(variableDescriptor.getVariableName());
                 if (ValueSelectorConfig.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {
-                    if (variableDescriptor.isValueRangeEntityIndependent()) {
-                        changeValueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
-                    } else {
-                        changeValueSelectorConfig.setCacheType(SelectionCacheType.STEP);
-                    }
-                    changeValueSelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
-                    changeValueSelectorConfig.setSorterManner(configPolicy.getValueSorterManner());
+                    changeValueSelectorConfig = changeValueSelectorConfig
+                            .withCacheType(variableDescriptor.isValueRangeEntityIndependent() ? SelectionCacheType.PHASE : STEP)
+                            .withSelectionOrder(SelectionOrder.SORTED)
+                            .withSorterManner(configPolicy.getValueSorterManner());
                 }
                 changeMoveSelectorConfig.setValueSelectorConfig(changeValueSelectorConfig);
                 subMoveSelectorConfigList.add(changeMoveSelectorConfig);

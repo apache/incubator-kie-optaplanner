@@ -358,10 +358,10 @@ class BlackBoxExhaustiveSearchPhaseTest {
                 .withCacheType(SelectionCacheType.PHASE)
                 .withSorterManner(entitySorterManner);
 
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        valueSelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
-        valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
-        valueSelectorConfig.setSorterManner(valueSorterManner);
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withSelectionOrder(SelectionOrder.SORTED)
+                .withCacheType(SelectionCacheType.PHASE)
+                .withSorterManner(valueSorterManner);
 
         ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig()
                 .withEntitySelectorConfig(entitySelectorConfig)
