@@ -163,11 +163,9 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
 
         // Finally, QueuedValuePlacer uses the recording ValueSelector and a ChangeMoveSelector.
         // The ChangeMoveSelector's replaying ValueSelector mimics the QueuedValuePlacer's recording ValueSelector.
-        QueuedValuePlacerConfig queuedValuePlacerConfig = new QueuedValuePlacerConfig()
+        return new QueuedValuePlacerConfig()
                 .withValueSelectorConfig(mimicRecordingValueSelectorConfig)
                 .withMoveSelectorConfig(changeMoveSelectorConfig);
-
-        return queuedValuePlacerConfig;
     }
 
     private ConstructionHeuristicDecider<Solution_> buildDecider(HeuristicConfigPolicy<Solution_> configPolicy,
