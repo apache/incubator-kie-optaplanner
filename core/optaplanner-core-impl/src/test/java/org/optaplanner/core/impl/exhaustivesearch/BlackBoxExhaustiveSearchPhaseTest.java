@@ -363,9 +363,9 @@ class BlackBoxExhaustiveSearchPhaseTest {
         valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
         valueSelectorConfig.setSorterManner(valueSorterManner);
 
-        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
-        moveSelectorConfig.setEntitySelectorConfig(entitySelectorConfig);
-        moveSelectorConfig.setValueSelectorConfig(valueSelectorConfig);
+        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig()
+                .withEntitySelectorConfig(entitySelectorConfig)
+                .withValueSelectorConfig(valueSelectorConfig);
 
         ExhaustiveSearchPhaseConfig exhaustiveSearchPhaseConfig = new ExhaustiveSearchPhaseConfig();
         exhaustiveSearchPhaseConfig.setExhaustiveSearchType(exhaustiveSearchType);
