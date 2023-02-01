@@ -1,5 +1,6 @@
 import org.jenkinsci.plugins.workflow.libs.Library
-@Library('jenkins-pipeline-shared-libraries')_
+
+@Library('jenkins-pipeline-shared-libraries') _
 
 import org.kie.jenkins.MavenCommand
 import org.kie.jenkins.MavenStagingHelper
@@ -84,20 +85,30 @@ pipeline {
 
         stage('Clone repositories') {
             steps {
-                checkoutRepo(optaplannerRepository)
-                checkoutQuickstarts()
-                checkoutRepo(vehicleRoutingRepository)
+                script {
+                    checkoutRepo(optaplannerRepository)
+                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                    if (isStream8()) {
+                        checkoutQuickstarts()
+                        checkoutRepo(vehicleRoutingRepository)
+                    }
+                }
             }
         }
 
         stage('Prepare for PR') {
             when {
-                expression { return isRelease() || isCreatePr()  }
+                expression { return isRelease() || isCreatePr() }
             }
             steps {
-                prepareForPR(optaplannerRepository)
-                prepareForPR(vehicleRoutingRepository)
-                prepareForPR(quickstartsRepository)
+                script {
+                    prepareForPR(optaplannerRepository)
+                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                    if (isStream8()) {
+                        prepareForPR(vehicleRoutingRepository)
+                        prepareForPR(quickstartsRepository)
+                    }
+                }
             }
         }
 
@@ -111,9 +122,12 @@ pipeline {
 
                     mavenCleanInstallOptaPlannerParents()
 
-                    maven.mvnVersionsUpdateParentAndChildModules(getOptawebVehicleRoutingMavenCommand(), getProjectVersion(), !isRelease())
+                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                    if (isStream8()) {
+                        maven.mvnVersionsUpdateParentAndChildModules(getOptawebVehicleRoutingMavenCommand(), getProjectVersion(), !isRelease())
 
-                    updateQuickstartsVersions()
+                        updateQuickstartsVersions()
+                    }
                 }
             }
         }
@@ -142,9 +156,16 @@ pipeline {
         }
 
         stage('Build Quickstarts') {
+            when {
+                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                expression { return isStream8() }
+            }
             steps {
                 script {
-                    getOptaplannerQuickstartsMavenCommand().withProperty('maven.test.failure.ignore', true).skipTests(params.SKIP_TESTS).run('clean install')
+                    getOptaplannerQuickstartsMavenCommand()
+                            .withProperty('maven.test.failure.ignore', true)
+                            .skipTests(params.SKIP_TESTS)
+                            .run('clean install')
                 }
             }
             post {
@@ -158,6 +179,10 @@ pipeline {
         }
 
         stage('Build Vehicle Routing') {
+            when {
+                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                expression { return isStream8() }
+            }
             steps {
                 script {
                     buildOptaweb(getOptawebVehicleRoutingMavenCommand())
@@ -181,8 +206,11 @@ pipeline {
             steps {
                 script {
                     runMavenDeploy(getOptaplannerMavenCommand())
-                    runMavenDeploy(getOptaplannerQuickstartsMavenCommand().withOptions(['-pl', ':optaplanner-distribution']))
-                    runMavenDeploy(getOptawebVehicleRoutingMavenCommand())
+                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                    if (isStream8()) {
+                        runMavenDeploy(getOptaplannerQuickstartsMavenCommand().withOptions(['-pl', ':optaplanner-distribution']))
+                        runMavenDeploy(getOptawebVehicleRoutingMavenCommand())
+                    }
                 }
             }
         }
@@ -193,7 +221,10 @@ pipeline {
             steps {
                 script {
                     runMavenDeploy(getOptaplannerMavenCommand(), optaplannerRepository)
-                    runMavenDeploy(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
+                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                    if (isStream8()) {
+                        runMavenDeploy(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
+                    }
                 }
             }
         }
@@ -205,7 +236,10 @@ pipeline {
                 script {
                     // Deploy to specific repository with credentials
                     maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(optaplannerRepository), getMavenRepoZipUrl())
-                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(vehicleRoutingRepository), getMavenRepoZipUrl())
+                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                    if (isStream8()) {
+                        maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(vehicleRoutingRepository), getMavenRepoZipUrl())
+                    }
                 }
             }
         }
@@ -217,7 +251,10 @@ pipeline {
                 script {
                     // Stage release artifacts
                     runMavenStage(getOptaplannerMavenCommand(), optaplannerRepository)
-                    runMavenStage(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
+                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                    if (isStream8()) {
+                        runMavenStage(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
+                    }
                 }
             }
         }
@@ -227,9 +264,14 @@ pipeline {
                 expression { return isRelease() || isCreatePr() }
             }
             steps {
-                commitAndCreatePR(optaplannerRepository, getBuildBranch())
-                commitAndCreatePRIgnoringNpmRegistry(vehicleRoutingRepository, getBuildBranch())
-                commitAndCreatePR(quickstartsRepository, getQuickStartsBranch())
+                script {
+                    commitAndCreatePR(optaplannerRepository, getBuildBranch())
+                    // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                    if (isStream8()) {
+                        commitAndCreatePRIgnoringNpmRegistry(vehicleRoutingRepository, getBuildBranch())
+                        commitAndCreatePR(quickstartsRepository, getQuickStartsBranch())
+                    }
+                }
             }
             post {
                 success {
@@ -250,7 +292,7 @@ pipeline {
 
         stage('Push a temporary operator image to a registry') {
             when {
-                expression { return isRelease() }
+                expression { return isRelease() && isStream8() }
             }
             steps {
                 script {
@@ -581,4 +623,12 @@ void pushOperatorTemporaryImage() {
             getOperatorImageNamespace(), getOperatorImageName(), temporaryImageTag)
     imageUtils.tagImage(localImage, temporaryImageFullName)
     imageUtils.pushImage(temporaryImageFullName)
+}
+
+boolean isStream8() {
+    return env.OPTAPLANNER_LATEST_STREAM == '8'
+}
+
+boolean isStream9() {
+    return env.OPTAPLANNER_LATEST_STREAM == '9'
 }
