@@ -1,6 +1,11 @@
 version: "2.1"
 dependencies:
   - project: kiegroup/drools
+    mapping:
+      dependant:
+        default:
+          - source: 8.33.x
+            target: 8.29.x
 
   - project: kiegroup/optaplanner
     dependencies:
