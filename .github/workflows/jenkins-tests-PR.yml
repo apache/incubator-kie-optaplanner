@@ -3,6 +3,8 @@
 name: Jenkins Tests
 on:
   pull_request:
+    branches: 
+    - main
     paths: 
     - '.ci/jenkins/**'
     - '.github/workflows/jenkins-tests-PR.yml'
