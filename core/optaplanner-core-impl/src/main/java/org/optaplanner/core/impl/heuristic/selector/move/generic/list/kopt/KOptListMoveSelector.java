@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
+package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
 import java.util.Iterator;
 
@@ -14,7 +14,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSele
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class ListKOptMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
+public class KOptListMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntitySelector<Solution_> entitySelector;
@@ -24,7 +24,7 @@ public class ListKOptMoveSelector<Solution_> extends GenericMoveSelector<Solutio
     private SingletonInverseVariableSupply inverseVariableSupply;
     private IndexVariableSupply indexVariableSupply;
 
-    public ListKOptMoveSelector(
+    public KOptListMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntitySelector<Solution_> entitySelector,
             ValueSelector<Solution_> valueSelector,
@@ -79,7 +79,7 @@ public class ListKOptMoveSelector<Solution_> extends GenericMoveSelector<Solutio
 
     @Override
     public Iterator<Move<Solution_>> iterator() {
-        return new ListKOptMoveIterator(workingRandom, listVariableDescriptor, inverseVariableSupply, indexVariableSupply,
+        return new KOptListMoveIterator(workingRandom, listVariableDescriptor, inverseVariableSupply, indexVariableSupply,
                 entitySelector, valueSelector, minK, maxK);
     }
 

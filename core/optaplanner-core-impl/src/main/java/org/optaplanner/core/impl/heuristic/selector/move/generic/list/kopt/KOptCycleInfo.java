@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
+package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
 public class KOptCycleInfo {
     public final int cycleCount;

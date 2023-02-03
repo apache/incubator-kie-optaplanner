@@ -1,14 +1,13 @@
-package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
+package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListKOptMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.kopt.KOptListMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -21,13 +20,13 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
-public class ListKOptMoveSelectorFactory<Solution_>
-        extends AbstractMoveSelectorFactory<Solution_, ListKOptMoveSelectorConfig> {
+public class KOptListMoveSelectorFactory<Solution_>
+        extends AbstractMoveSelectorFactory<Solution_, KOptListMoveSelectorConfig> {
 
     private static final int DEFAULT_MINIMUM_K = 2;
-    private static final int DEFAULT_MAXIMUM_K = 3;
+    private static final int DEFAULT_MAXIMUM_K = 4;
 
-    public ListKOptMoveSelectorFactory(ListKOptMoveSelectorConfig moveSelectorConfig) {
+    public KOptListMoveSelectorFactory(KOptListMoveSelectorConfig moveSelectorConfig) {
         super(moveSelectorConfig);
     }
 
@@ -54,7 +53,8 @@ public class ListKOptMoveSelectorFactory<Solution_>
                 entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
         int minimumK = Objects.requireNonNullElse(config.getMinimumK(), DEFAULT_MINIMUM_K);
         int maximumK = Objects.requireNonNullElse(config.getMaximumK(), DEFAULT_MAXIMUM_K);
-        return new ListKOptMoveSelector<>(((ListVariableDescriptor<Solution_>) variableDescriptor), entitySelector, valueSelector,
+        return new KOptListMoveSelector<>(((ListVariableDescriptor<Solution_>) variableDescriptor), entitySelector,
+                valueSelector,
                 minimumK, maximumK);
     }
 

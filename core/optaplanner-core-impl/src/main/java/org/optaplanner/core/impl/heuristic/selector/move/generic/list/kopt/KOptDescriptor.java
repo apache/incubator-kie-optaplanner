@@ -1,4 +1,4 @@
-package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
+package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,8 +50,8 @@ public final class KOptDescriptor<Solution_> {
         out[1] = t.length - 1;
         out[t.length - 1] = 1;
         for (int i = 1; i < k; i++) {
-            out[2*i + 1] = 2 * i;
-            out[2*i] = 2*i + 1;
+            out[2 * i + 1] = 2 * i;
+            out[2 * i] = 2 * i + 1;
         }
 
         return out;
@@ -69,7 +69,7 @@ public final class KOptDescriptor<Solution_> {
             Integer[] incl,
             Function<Object, Object> SUC,
             TriPredicate<Object, Object, Object> BETWEEN) {
-        int i,j;
+        int i, j;
         this.k = (t.length - 1) >> 1;
         this.t = t;
         this.p = new Integer[t.length];
@@ -80,12 +80,12 @@ public final class KOptDescriptor<Solution_> {
             p[j] = (SUC.apply(t[i]) == t[i + 1]) ? i : i + 1;
         }
 
-        Comparator<Integer> Compare = (pa, pb) -> pa.equals(pb)? 0 : (BETWEEN.test(t[p[1]], t[pa], t[pb])? -1 : 1);
+        Comparator<Integer> Compare = (pa, pb) -> pa.equals(pb) ? 0 : (BETWEEN.test(t[p[1]], t[pa], t[pb]) ? -1 : 1);
         Arrays.sort(p, 2, k + 1, Compare);
 
         for (j = 2 * k; j >= 2; j -= 2) {
             p[j - 1] = i = p[j / 2];
-            p[j] = ((i & 1) == 1)? i + 1 : i - 1;
+            p[j] = ((i & 1) == 1) ? i + 1 : i - 1;
         }
 
         for (i = 1; i <= 2 * k; i++) {
@@ -125,7 +125,7 @@ public final class KOptDescriptor<Solution_> {
     public List<Pair<Object, Object>> getInEdges() {
         List<Pair<Object, Object>> out = new ArrayList<>(2 * k);
         for (int i = 1; i <= k; i++) {
-            out.add(Pair.of(t[2*i], t[(2*i + 1) % (2 * k)]));
+            out.add(Pair.of(t[2 * i], t[(2 * i + 1) % (2 * k)]));
         }
         return out;
     }
@@ -133,20 +133,25 @@ public final class KOptDescriptor<Solution_> {
     public List<Pair<Object, Object>> getOutEdges() {
         List<Pair<Object, Object>> out = new ArrayList<>(2 * k);
         for (int i = 1; i <= k; i++) {
-            out.add(Pair.of(t[2*i - 1], t[2*i]));
+            out.add(Pair.of(t[2 * i - 1], t[2 * i]));
         }
         return out;
     }
 
-    public List<List2OptMove<Solution_>> as2OptMoves(ListVariableDescriptor listVariableDescriptor,
-                                                     IndexVariableSupply indexVariableSupply,
-                                                     Object entity) {
+    public KOptListMove<Solution_> getKOptListMove(ListVariableDescriptor listVariableDescriptor,
+            IndexVariableSupply indexVariableSupply,
+            Object entity) {
         if (!isFeasible()) {
-            return List.of();
+            return new KOptListMove<>(listVariableDescriptor, entity, k, List.of(), 0);
         }
 
         int i, j, Best_i, Best_j, BestScore, s;
-        List<List2OptMove<Solution_>> out = new ArrayList<>();
+        int entityListSize = listVariableDescriptor.getListSize(entity);
+        List<FlipSublistMove<Solution_>> out = new ArrayList<>();
+        List<Integer> originalToCurrentIndexList = new ArrayList<>(entityListSize);
+        for (int index = 0; index < entityListSize; index++) {
+            originalToCurrentIndexList.add(index);
+        }
 
         boolean isMoveNotDone = true;
         Best_i = -1;
@@ -156,20 +161,22 @@ public final class KOptDescriptor<Solution_> {
             for (i = 1; i <= 2 * k - 2; i++) {
                 j = q[incl[p[i]]];
                 if (j >= i + 2 && (i & 1) == (j & 1) &&
-                        (s = (i & 1) == 1 ? Score(i + 1, j, k) :
-                                Score(i, j - 1, k)) > BestScore) {
-                    BestScore = s; Best_i = i; Best_j = j;
+                        (s = (i & 1) == 1 ? Score(i + 1, j, k) : Score(i, j - 1, k)) > BestScore) {
+                    BestScore = s;
+                    Best_i = i;
+                    Best_j = j;
                 }
             }
             if (BestScore >= 0) {
-                i = Best_i; j = Best_j;
+                i = Best_i;
+                j = Best_j;
                 if ((i & 1) == 1) {
-                    out.add(FLIP(listVariableDescriptor, indexVariableSupply, entity,
-                                 t[p[i + 1]], t[p[i]], t[p[j]], t[p[j + 1]]));
+                    out.add(FLIP(listVariableDescriptor, indexVariableSupply, originalToCurrentIndexList, entity,
+                            t[p[i + 1]], t[p[i]], t[p[j]], t[p[j + 1]]));
                     Reverse(i + 1, j);
                 } else {
-                    out.add(FLIP(listVariableDescriptor, indexVariableSupply, entity,
-                                 t[p[i - 1]], t[p[i]], t[p[j]], t[p[j - 1]]));
+                    out.add(FLIP(listVariableDescriptor, indexVariableSupply, originalToCurrentIndexList, entity,
+                            t[p[i - 1]], t[p[i]], t[p[j]], t[p[j - 1]]));
                     Reverse(i, j - 1);
                 }
                 continue FindNextReversal;
@@ -177,15 +184,15 @@ public final class KOptDescriptor<Solution_> {
             for (i = 1; i <= 2 * k - 1; i += 2) {
                 j = q[incl[p[i]]];
                 if (j >= i + 2) {
-                    out.add(FLIP(listVariableDescriptor, indexVariableSupply, entity,
-                                 t[p[i]], t[p[i + 1]], t[p[j]], t[p[j - 1]]));
+                    out.add(FLIP(listVariableDescriptor, indexVariableSupply, originalToCurrentIndexList, entity,
+                            t[p[i]], t[p[i + 1]], t[p[j]], t[p[j - 1]]));
                     Reverse(i + 1, j - 1);
                     continue FindNextReversal;
                 }
             }
             isMoveNotDone = false;
         }
-        return out;
+        return new KOptListMove<>(listVariableDescriptor, entity, k, out, -originalToCurrentIndexList.indexOf(0));
     }
 
     public boolean isFeasible() {
@@ -217,15 +224,31 @@ public final class KOptDescriptor<Solution_> {
         return count;
     }
 
-    private List2OptMove<Solution_> FLIP(ListVariableDescriptor<Solution_> listVariableDescriptor,
-                                         IndexVariableSupply indexVariableSupply,
-                                         Object entity,
-                                         Object firstEdgeStart,
-                                         Object firstEdgeEnd,
-                                         Object secondEdgeStart,
-                                         Object secondEdgeEnd) {
-        return new List2OptMove<>(listVariableDescriptor, indexVariableSupply, entity,
-                                  firstEdgeStart, firstEdgeEnd, secondEdgeEnd, secondEdgeStart);
+    private FlipSublistMove<Solution_> FLIP(ListVariableDescriptor<Solution_> listVariableDescriptor,
+            IndexVariableSupply indexVariableSupply,
+            List<Integer> originalToCurrentIndexList,
+            Object entity,
+            Object firstEdgeStart,
+            Object firstEdgeEnd,
+            Object secondEdgeStart,
+            Object secondEdgeEnd) {
+        int originalFirstEdgeStartIndex = originalToCurrentIndexList.indexOf(indexVariableSupply.getIndex(firstEdgeStart));
+        int originalFirstEdgeEndIndex = originalToCurrentIndexList.indexOf(indexVariableSupply.getIndex(firstEdgeEnd));
+        int originalSecondEdgeStartIndex = originalToCurrentIndexList.indexOf(indexVariableSupply.getIndex(secondEdgeStart));
+        int originalSecondEdgeEndIndex = originalToCurrentIndexList.indexOf(indexVariableSupply.getIndex(secondEdgeEnd));
+
+        int firstEndpoint = ((originalFirstEdgeStartIndex + 1) % originalToCurrentIndexList.size()) == originalFirstEdgeEndIndex
+                ? originalFirstEdgeEndIndex
+                : originalFirstEdgeStartIndex;
+
+        int secondEndpoint =
+                ((originalSecondEdgeStartIndex + 1) % originalToCurrentIndexList.size()) == originalSecondEdgeEndIndex
+                        ? originalSecondEdgeEndIndex
+                        : originalSecondEdgeStartIndex;
+
+        FlipSublistMove.flipSublist(originalToCurrentIndexList, firstEndpoint, secondEndpoint);
+        return new FlipSublistMove<>(listVariableDescriptor, entity,
+                firstEndpoint, secondEndpoint);
     }
 
     public int getK() {

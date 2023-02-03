@@ -1,4 +1,4 @@
-package org.optaplanner.core.config.heuristic.selector.move.generic.list;
+package org.optaplanner.core.config.heuristic.selector.move.generic.list.kopt;
 
 import java.util.function.Consumer;
 
@@ -11,9 +11,9 @@ import org.optaplanner.core.config.util.ConfigUtils;
         "minimumK",
         "maximumK",
 })
-public class ListKOptMoveSelectorConfig extends MoveSelectorConfig<ListKOptMoveSelectorConfig> {
+public class KOptListMoveSelectorConfig extends MoveSelectorConfig<KOptListMoveSelectorConfig> {
 
-    public static final String XML_ELEMENT_NAME = "listKOptMoveSelector";
+    public static final String XML_ELEMENT_NAME = "kOptListMoveSelector";
 
     protected Integer minimumK = null;
     protected Integer maximumK = null;
@@ -35,7 +35,7 @@ public class ListKOptMoveSelectorConfig extends MoveSelectorConfig<ListKOptMoveS
     }
 
     @Override
-    public ListKOptMoveSelectorConfig inherit(ListKOptMoveSelectorConfig inheritedConfig) {
+    public KOptListMoveSelectorConfig inherit(KOptListMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         this.minimumK =
                 ConfigUtils.inheritOverwritableProperty(minimumK, inheritedConfig.minimumK);
@@ -45,8 +45,8 @@ public class ListKOptMoveSelectorConfig extends MoveSelectorConfig<ListKOptMoveS
     }
 
     @Override
-    public ListKOptMoveSelectorConfig copyConfig() {
-        return new ListKOptMoveSelectorConfig().inherit(this);
+    public KOptListMoveSelectorConfig copyConfig() {
+        return new KOptListMoveSelectorConfig().inherit(this);
     }
 
     @Override

@@ -18,9 +18,9 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelec
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListKOptMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.kopt.KOptListMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 
@@ -36,7 +36,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
             @XmlElement(name = CartesianProductMoveSelectorConfig.XML_ELEMENT_NAME,
                     type = CartesianProductMoveSelectorConfig.class),
             @XmlElement(name = ChangeMoveSelectorConfig.XML_ELEMENT_NAME, type = ChangeMoveSelectorConfig.class),
-            @XmlElement(name = ListKOptMoveSelectorConfig.XML_ELEMENT_NAME, type = ListKOptMoveSelectorConfig.class),
+            @XmlElement(name = KOptListMoveSelectorConfig.XML_ELEMENT_NAME, type = KOptListMoveSelectorConfig.class),
             @XmlElement(name = MoveIteratorFactoryConfig.XML_ELEMENT_NAME, type = MoveIteratorFactoryConfig.class),
             @XmlElement(name = MoveListFactoryConfig.XML_ELEMENT_NAME, type = MoveListFactoryConfig.class),
             @XmlElement(name = PillarChangeMoveSelectorConfig.XML_ELEMENT_NAME,

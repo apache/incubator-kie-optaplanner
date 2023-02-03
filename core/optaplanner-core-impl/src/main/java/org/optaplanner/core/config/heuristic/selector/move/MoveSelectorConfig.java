@@ -22,9 +22,9 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelec
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListKOptMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.kopt.KOptListMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 @XmlSeeAlso({
         CartesianProductMoveSelectorConfig.class,
         ChangeMoveSelectorConfig.class,
-        ListKOptMoveSelectorConfig.class,
+        KOptListMoveSelectorConfig.class,
         MoveIteratorFactoryConfig.class,
         MoveListFactoryConfig.class,
         PillarChangeMoveSelectorConfig.class,
