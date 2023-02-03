@@ -16,11 +16,12 @@ class PooledEntityPlacerFactoryTest {
 
     @Test
     void unfoldNew() {
-        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
-        moveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("value"));
+        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig()
+                .withValueSelectorConfig(new ValueSelectorConfig("value"));
 
         HeuristicConfigPolicy<TestdataSolution> configPolicy = buildHeuristicConfigPolicy();
-        PooledEntityPlacerConfig placerConfig = PooledEntityPlacerFactory.unfoldNew(configPolicy, moveSelectorConfig);
+        PooledEntityPlacerConfig placerConfig =
+                PooledEntityPlacerFactory.unfoldNew(configPolicy, moveSelectorConfig);
 
         assertThat(placerConfig.getMoveSelectorConfig()).isExactlyInstanceOf(ChangeMoveSelectorConfig.class);
 

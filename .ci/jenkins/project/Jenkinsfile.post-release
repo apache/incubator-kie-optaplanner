@@ -7,11 +7,10 @@ import org.kie.jenkins.MavenCommand
 String optaplannerRepository = 'optaplanner'
 String quickstartsRepository = 'optaplanner-quickstarts'
 String stableBranchName = 'stable'
-String kieBenchmarksRepo = 'kie-benchmarks'
 
 pipeline {
     agent {
-        label 'kie-rhel7 && !built-in'
+        label 'kie-rhel8 && !built-in'
     }
 
     tools {
@@ -58,6 +57,10 @@ pipeline {
         }
 
         stage('Reset Quickstarts stable branch') {
+            when {
+                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                expression { return isStream8() }
+            }
             steps {
                 script {
                     dir(quickstartsRepository) {
@@ -70,6 +73,10 @@ pipeline {
         }
 
         stage('Upload OptaPlanner distribution from Quickstarts') {
+            when {
+                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                expression { return isStream8() }
+            }
             steps {
                 script {
                     dir(optaplannerRepository) {
@@ -84,6 +91,10 @@ pipeline {
         }
 
         stage('Update OptaPlanner website') {
+            when {
+                // TODO: switch to the 9 stream after quickstarts and the optaweb will have been migrated.
+                expression { return isStream8() }
+            }
             steps {
                 script {
                     final String websiteRepository = 'optaplanner-website'
@@ -113,28 +124,6 @@ pipeline {
                         checkoutRepo(websiteRepository, 'main')
                         mergeAndPush(prLink, 'main')
                         githubscm.removeRemoteBranch('origin', prBranchName, getGitAuthorCredsID())
-                    }
-                }
-            }
-        }
-        stage('update version.org.optaplanner property in kie-benchmarks') {
-            steps {
-                script {
-                    String prLink = null
-                    String commitMsg = 'bumped up kie-version to next SNAPSHOT'
-                    String localBranch = "bump-up-kie-benchmarks-${env.BOT_BRANCH_HASH}"
-                    String targetBranch = 'main'
-                    dir(kieBenchmarksRepo){
-                        checkoutRepo(kieBenchmarksRepo, targetBranch)
-                        githubscm.setUserConfigFromCreds()
-                        githubscm.createBranch(localBranch)
-                        // update version.org.optaplanner property in kie-benchmarks
-                        maven.mvnSetVersionProperty('version.org.optaplanner', getNextMinorSnapshotVersion(getProjectVersion()))
-                        // Add changed files, commit, open and merge PR
-                        prLink = commitAndCreatePR(commitMsg, { sh "git add --all" }, localBranch, targetBranch)
-                        sh "git checkout ${targetBranch}"
-                        mergeAndPush(prLink, targetBranch)
-                        githubscm.removeRemoteBranch('origin', localBranch, getGitAuthorCredsID())
                     }
                 }
             }
@@ -386,4 +375,12 @@ void assertGithubCLI(String ghPath) {
     else {
         error "gh not found at $ghPath"
     }
+}
+
+boolean isStream8() {
+    return env.OPTAPLANNER_LATEST_STREAM == '8'
+}
+
+boolean isStream9() {
+    return env.OPTAPLANNER_LATEST_STREAM == '9'
 }

@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-build-parent</artifactId>
-    <version>8.32.0-SNAPSHOT</version>
+    <version>8.34.0-SNAPSHOT</version>
     <relativePath>../build/optaplanner-build-parent/pom.xml</relativePath>
   </parent>
 
@@ -156,10 +156,6 @@
       <artifactId>kie-api</artifactId>
     </dependency>
     <!-- External dependencies -->
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>jakarta.json</artifactId>

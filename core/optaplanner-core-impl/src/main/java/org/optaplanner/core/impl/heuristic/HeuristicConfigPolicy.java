@@ -15,6 +15,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.ValueMimicRecorder;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 
@@ -27,12 +28,12 @@ public class HeuristicConfigPolicy<Solution_> {
     private final Class<? extends ThreadFactory> threadFactoryClass;
     private final InitializingScoreTrend initializingScoreTrend;
     private final SolutionDescriptor<Solution_> solutionDescriptor;
-
     private final EntitySorterManner entitySorterManner;
     private final ValueSorterManner valueSorterManner;
-
+    private final ClassInstanceCache classInstanceCache;
     private final boolean reinitializeVariableFilterEnabled;
     private final boolean initializedChainedValueFilterEnabled;
+    private final boolean unassignedValuesAllowed;
 
     private final Map<String, EntityMimicRecorder<Solution_>> entityMimicRecorderMap = new HashMap<>();
     private final Map<String, ValueMimicRecorder<Solution_>> valueMimicRecorderMap = new HashMap<>();
@@ -47,8 +48,10 @@ public class HeuristicConfigPolicy<Solution_> {
         this.solutionDescriptor = builder.solutionDescriptor;
         this.entitySorterManner = builder.entitySorterManner;
         this.valueSorterManner = builder.valueSorterManner;
+        this.classInstanceCache = builder.classInstanceCache;
         this.reinitializeVariableFilterEnabled = builder.reinitializeVariableFilterEnabled;
         this.initializedChainedValueFilterEnabled = builder.initializedChainedValueFilterEnabled;
+        this.unassignedValuesAllowed = builder.unassignedValuesAllowed;
     }
 
     public EnvironmentMode getEnvironmentMode() {
@@ -87,6 +90,10 @@ public class HeuristicConfigPolicy<Solution_> {
         return valueSorterManner;
     }
 
+    public ClassInstanceCache getClassInstanceCache() {
+        return classInstanceCache;
+    }
+
     public boolean isReinitializeVariableFilterEnabled() {
         return reinitializeVariableFilterEnabled;
     }
@@ -95,13 +102,17 @@ public class HeuristicConfigPolicy<Solution_> {
         return initializedChainedValueFilterEnabled;
     }
 
+    public boolean isUnassignedValuesAllowed() {
+        return unassignedValuesAllowed;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
 
     public Builder<Solution_> cloneBuilder() {
         return new Builder<>(environmentMode, moveThreadCount, moveThreadBufferSize, threadFactoryClass, initializingScoreTrend,
-                solutionDescriptor).withLogIndentation(logIndentation);
+                solutionDescriptor, classInstanceCache).withLogIndentation(logIndentation);
     }
 
     public HeuristicConfigPolicy<Solution_> createPhaseConfigPolicy() {
@@ -174,6 +185,7 @@ public class HeuristicConfigPolicy<Solution_> {
         private final Class<? extends ThreadFactory> threadFactoryClass;
         private final InitializingScoreTrend initializingScoreTrend;
         private final SolutionDescriptor<Solution_> solutionDescriptor;
+        private final ClassInstanceCache classInstanceCache;
 
         private String logIndentation = "";
 
@@ -182,16 +194,18 @@ public class HeuristicConfigPolicy<Solution_> {
 
         private boolean reinitializeVariableFilterEnabled = false;
         private boolean initializedChainedValueFilterEnabled = false;
+        private boolean unassignedValuesAllowed = false;
 
-        public Builder(EnvironmentMode environmentMode, Integer moveThreadCount,
-                Integer moveThreadBufferSize, Class<? extends ThreadFactory> threadFactoryClass,
-                InitializingScoreTrend initializingScoreTrend, SolutionDescriptor<Solution_> solutionDescriptor) {
+        public Builder(EnvironmentMode environmentMode, Integer moveThreadCount, Integer moveThreadBufferSize,
+                Class<? extends ThreadFactory> threadFactoryClass, InitializingScoreTrend initializingScoreTrend,
+                SolutionDescriptor<Solution_> solutionDescriptor, ClassInstanceCache classInstanceCache) {
             this.environmentMode = environmentMode;
             this.moveThreadCount = moveThreadCount;
             this.moveThreadBufferSize = moveThreadBufferSize;
             this.threadFactoryClass = threadFactoryClass;
             this.initializingScoreTrend = initializingScoreTrend;
             this.solutionDescriptor = solutionDescriptor;
+            this.classInstanceCache = classInstanceCache;
         }
 
         public Builder<Solution_> withLogIndentation(String logIndentation) {
@@ -216,6 +230,11 @@ public class HeuristicConfigPolicy<Solution_> {
 
         public Builder<Solution_> withInitializedChainedValueFilterEnabled(boolean initializedChainedValueFilterEnabled) {
             this.initializedChainedValueFilterEnabled = initializedChainedValueFilterEnabled;
+            return this;
+        }
+
+        public Builder<Solution_> withUnassignedValuesAllowed(boolean unassignedValuesAllowed) {
+            this.unassignedValuesAllowed = unassignedValuesAllowed;
             return this;
         }
 

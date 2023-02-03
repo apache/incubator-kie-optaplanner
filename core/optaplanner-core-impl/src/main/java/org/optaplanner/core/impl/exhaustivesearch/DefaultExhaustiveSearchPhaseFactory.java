@@ -1,5 +1,7 @@
 package org.optaplanner.core.impl.exhaustivesearch;
 
+import static org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType.STEP;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -42,9 +44,8 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
     }
 
     @Override
-    public ExhaustiveSearchPhase<Solution_> buildPhase(int phaseIndex,
-            HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
-            Termination<Solution_> solverTermination) {
+    public ExhaustiveSearchPhase<Solution_> buildPhase(int phaseIndex, HeuristicConfigPolicy<Solution_> solverConfigPolicy,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
         ExhaustiveSearchType exhaustiveSearchType_ = Objects.requireNonNullElse(
                 phaseConfig.getExhaustiveSearchType(),
                 ExhaustiveSearchType.BRANCH_AND_BOUND);
@@ -77,16 +78,14 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
                     NodeExplorationType.DEPTH_FIRST);
         }
         EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(phaseConfigPolicy);
-        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(entitySelectorConfig_)
-                .buildEntitySelector(phaseConfigPolicy, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
+        EntitySelector<Solution_> entitySelector =
+                EntitySelectorFactory.<Solution_> create(entitySelectorConfig_)
+                        .buildEntitySelector(phaseConfigPolicy, SelectionCacheType.PHASE, SelectionOrder.ORIGINAL);
 
-        DefaultExhaustiveSearchPhase.Builder<Solution_> builder = new DefaultExhaustiveSearchPhase.Builder<>(
-                phaseIndex,
-                solverConfigPolicy.getLogIndentation(),
-                phaseTermination,
-                nodeExplorationType_.buildNodeComparator(scoreBounderEnabled),
-                entitySelector,
-                buildDecider(phaseConfigPolicy, entitySelector, bestSolutionRecaller, phaseTermination, scoreBounderEnabled));
+        DefaultExhaustiveSearchPhase.Builder<Solution_> builder = new DefaultExhaustiveSearchPhase.Builder<>(phaseIndex,
+                solverConfigPolicy.getLogIndentation(), phaseTermination,
+                nodeExplorationType_.buildNodeComparator(scoreBounderEnabled), entitySelector, buildDecider(phaseConfigPolicy,
+                        entitySelector, bestSolutionRecaller, phaseTermination, scoreBounderEnabled));
 
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
@@ -104,13 +103,13 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
     private EntitySelectorConfig buildEntitySelectorConfig(HeuristicConfigPolicy<Solution_> configPolicy) {
         EntitySelectorConfig entitySelectorConfig_;
         if (phaseConfig.getEntitySelectorConfig() == null) {
-            entitySelectorConfig_ = new EntitySelectorConfig();
             EntityDescriptor<Solution_> entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
-            entitySelectorConfig_.setEntityClass(entityDescriptor.getEntityClass());
+            entitySelectorConfig_ = new EntitySelectorConfig()
+                    .withEntityClass(entityDescriptor.getEntityClass());
             if (EntitySelectorConfig.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
-                entitySelectorConfig_.setCacheType(SelectionCacheType.PHASE);
-                entitySelectorConfig_.setSelectionOrder(SelectionOrder.SORTED);
-                entitySelectorConfig_.setSorterManner(configPolicy.getEntitySorterManner());
+                entitySelectorConfig_ = entitySelectorConfig_.withCacheType(SelectionCacheType.PHASE)
+                        .withSelectionOrder(SelectionOrder.SORTED)
+                        .withSorterManner(configPolicy.getEntitySorterManner());
             }
         } else {
             entitySelectorConfig_ = phaseConfig.getEntitySelectorConfig();
@@ -181,16 +180,13 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
                 ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
                 changeMoveSelectorConfig.setEntitySelectorConfig(
                         EntitySelectorConfig.newMimicSelectorConfig(mimicSelectorId));
-                ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
-                changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
+                ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig()
+                        .withVariableName(variableDescriptor.getVariableName());
                 if (ValueSelectorConfig.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {
-                    if (variableDescriptor.isValueRangeEntityIndependent()) {
-                        changeValueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
-                    } else {
-                        changeValueSelectorConfig.setCacheType(SelectionCacheType.STEP);
-                    }
-                    changeValueSelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
-                    changeValueSelectorConfig.setSorterManner(configPolicy.getValueSorterManner());
+                    changeValueSelectorConfig = changeValueSelectorConfig
+                            .withCacheType(variableDescriptor.isValueRangeEntityIndependent() ? SelectionCacheType.PHASE : STEP)
+                            .withSelectionOrder(SelectionOrder.SORTED)
+                            .withSorterManner(configPolicy.getValueSorterManner());
                 }
                 changeMoveSelectorConfig.setValueSelectorConfig(changeValueSelectorConfig);
                 subMoveSelectorConfigList.add(changeMoveSelectorConfig);

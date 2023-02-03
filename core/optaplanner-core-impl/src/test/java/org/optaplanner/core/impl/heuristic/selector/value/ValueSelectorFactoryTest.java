@@ -2,13 +2,19 @@ package org.optaplanner.core.impl.heuristic.selector.value;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.heuristic.HeuristicConfigPolicyTestUtils.buildHeuristicConfigPolicy;
 
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -20,13 +26,21 @@ import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.AssignedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.FilteringValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.SortingValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.UnassignedValueSelector;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.solver.ClassInstanceCache;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 
 class ValueSelectorFactoryTest {
 
@@ -35,9 +49,9 @@ class ValueSelectorFactoryTest {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
-        valueSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withCacheType(SelectionCacheType.PHASE)
+                .withSelectionOrder(SelectionOrder.ORIGINAL);
         ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
                 entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class)
@@ -50,9 +64,9 @@ class ValueSelectorFactoryTest {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
-        valueSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withCacheType(SelectionCacheType.STEP)
+                .withSelectionOrder(SelectionOrder.ORIGINAL);
         ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
                 entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class)
@@ -66,9 +80,9 @@ class ValueSelectorFactoryTest {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
-        valueSelectorConfig.setSelectionOrder(SelectionOrder.ORIGINAL);
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withCacheType(SelectionCacheType.JUST_IN_TIME)
+                .withSelectionOrder(SelectionOrder.ORIGINAL);
         ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
                 entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class);
@@ -81,12 +95,11 @@ class ValueSelectorFactoryTest {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
-        valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
-        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(
-                configPolicy, entityDescriptor,
-                SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withCacheType(SelectionCacheType.PHASE)
+                .withSelectionOrder(SelectionOrder.RANDOM);
+        ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
+                entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector)
                 .isInstanceOf(FromSolutionPropertyValueSelector.class);
         assertThat(valueSelector)
@@ -99,9 +112,9 @@ class ValueSelectorFactoryTest {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
-        valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withCacheType(SelectionCacheType.STEP)
+                .withSelectionOrder(SelectionOrder.RANDOM);
         ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
                 entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class)
@@ -115,9 +128,9 @@ class ValueSelectorFactoryTest {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
-        valueSelectorConfig.setSelectionOrder(SelectionOrder.RANDOM);
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withCacheType(SelectionCacheType.JUST_IN_TIME)
+                .withSelectionOrder(SelectionOrder.RANDOM);
         ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
                 entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector).isInstanceOf(FromSolutionPropertyValueSelector.class);
@@ -130,9 +143,9 @@ class ValueSelectorFactoryTest {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        valueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
-        valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withCacheType(SelectionCacheType.PHASE)
+                .withSelectionOrder(SelectionOrder.SHUFFLED);
         ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
                 entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector).isInstanceOf(ShufflingValueSelector.class);
@@ -146,9 +159,9 @@ class ValueSelectorFactoryTest {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor = configPolicy.getSolutionDescriptor()
                 .findEntityDescriptorOrFail(TestdataEntity.class);
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        valueSelectorConfig.setCacheType(SelectionCacheType.STEP);
-        valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withCacheType(SelectionCacheType.STEP)
+                .withSelectionOrder(SelectionOrder.SHUFFLED);
         ValueSelector valueSelector = ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
                 entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(valueSelector).isInstanceOf(ShufflingValueSelector.class);
@@ -162,55 +175,55 @@ class ValueSelectorFactoryTest {
         HeuristicConfigPolicy configPolicy = buildHeuristicConfigPolicy();
         EntityDescriptor entityDescriptor =
                 configPolicy.getSolutionDescriptor().findEntityDescriptorOrFail(TestdataEntity.class);
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        valueSelectorConfig.setCacheType(SelectionCacheType.JUST_IN_TIME);
-        valueSelectorConfig.setSelectionOrder(SelectionOrder.SHUFFLED);
-        assertThatIllegalArgumentException().isThrownBy(() -> ValueSelectorFactory.create(valueSelectorConfig)
-                .buildValueSelector(configPolicy, entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM));
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withCacheType(SelectionCacheType.JUST_IN_TIME)
+                .withSelectionOrder(SelectionOrder.SHUFFLED);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> ValueSelectorFactory.create(valueSelectorConfig).buildValueSelector(configPolicy,
+                        entityDescriptor, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM));
     }
 
     @Test
     void applyFiltering_withFilterClass() {
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        valueSelectorConfig.setFilterClass(DummyValueFilter.class);
-
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withFilterClass(DummyValueFilter.class);
         ValueSelector baseValueSelector =
                 SelectorTestUtils.mockValueSelector(TestdataEntity.class, "value", new TestdataValue("v1"));
         ValueSelector resultingValueSelector =
-                ValueSelectorFactory.create(valueSelectorConfig).applyFiltering(baseValueSelector);
+                ValueSelectorFactory.create(valueSelectorConfig).applyFiltering(baseValueSelector, ClassInstanceCache.create());
         assertThat(resultingValueSelector).isExactlyInstanceOf(FilteringValueSelector.class);
     }
 
     @Test
     void applyProbability_withSelectionProbabilityWeightFactory() {
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        valueSelectorConfig.setProbabilityWeightFactoryClass(DummySelectionProbabilityWeightFactory.class);
-
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withProbabilityWeightFactoryClass(DummySelectionProbabilityWeightFactory.class);
         ValueSelector baseValueSelector = mock(EntityIndependentValueSelector.class);
-        ValueSelectorFactory valueSelectorFactory = ValueSelectorFactory.create(valueSelectorConfig);
+        ValueSelectorFactory valueSelectorFactory =
+                ValueSelectorFactory.create(valueSelectorConfig);
         valueSelectorFactory.validateProbability(SelectionOrder.PROBABILISTIC);
-        ValueSelector resultingValueSelector =
-                valueSelectorFactory.applyProbability(SelectionCacheType.PHASE, SelectionOrder.PROBABILISTIC,
-                        baseValueSelector);
+        ValueSelector resultingValueSelector = valueSelectorFactory.applyProbability(SelectionCacheType.PHASE,
+                SelectionOrder.PROBABILISTIC, baseValueSelector, ClassInstanceCache.create());
         assertThat(resultingValueSelector).isExactlyInstanceOf(ProbabilityValueSelector.class);
     }
 
     @Test
     void applySorting_withSorterComparatorClass() {
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        valueSelectorConfig.setSorterComparatorClass(DummyValueComparator.class);
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withSorterComparatorClass(DummyValueComparator.class);
         applySorting(valueSelectorConfig);
     }
 
     @Test
     void applySorting_withSorterWeightFactoryClass() {
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        valueSelectorConfig.setSorterWeightFactoryClass(DummySelectionSorterWeightFactory.class);
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withSorterWeightFactoryClass(DummySelectionSorterWeightFactory.class);
         applySorting(valueSelectorConfig);
     }
 
     private void applySorting(ValueSelectorConfig valueSelectorConfig) {
-        ValueSelectorFactory valueSelectorFactory = ValueSelectorFactory.create(valueSelectorConfig);
+        ValueSelectorFactory valueSelectorFactory =
+                ValueSelectorFactory.create(valueSelectorConfig);
         valueSelectorFactory.validateSorting(SelectionOrder.SORTED);
 
         ValueSelector baseValueSelector = mock(EntityIndependentValueSelector.class);
@@ -219,7 +232,8 @@ class ValueSelectorFactoryTest {
         when(variableDescriptor.isValueRangeEntityIndependent()).thenReturn(true);
 
         ValueSelector resultingValueSelector =
-                valueSelectorFactory.applySorting(SelectionCacheType.PHASE, SelectionOrder.SORTED, baseValueSelector);
+                valueSelectorFactory.applySorting(SelectionCacheType.PHASE, SelectionOrder.SORTED, baseValueSelector,
+                        ClassInstanceCache.create());
         assertThat(resultingValueSelector).isExactlyInstanceOf(SortingValueSelector.class);
     }
 
@@ -228,19 +242,54 @@ class ValueSelectorFactoryTest {
         ValueSelectorFactory valueSelectorFactory = ValueSelectorFactory.create(new ValueSelectorConfig());
         ValueSelector baseValueSelector = mock(ValueSelector.class);
         assertThatIllegalArgumentException().isThrownBy(
-                () -> valueSelectorFactory.applySorting(SelectionCacheType.PHASE, SelectionOrder.SORTED, baseValueSelector))
+                () -> valueSelectorFactory.applySorting(SelectionCacheType.PHASE, SelectionOrder.SORTED, baseValueSelector,
+                        ClassInstanceCache.create()))
                 .withMessageContaining("needs a sorterManner");
     }
 
     @Test
     void failFast_ifMimicRecordingIsUsedWithOtherProperty() {
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        valueSelectorConfig.setSelectedCountLimit(10L);
-        valueSelectorConfig.setMimicSelectorRef("someSelectorId");
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withSelectedCountLimit(10L)
+                .withMimicSelectorRef("someSelectorId");
 
         assertThatIllegalArgumentException().isThrownBy(
-                () -> ValueSelectorFactory.create(valueSelectorConfig).buildMimicReplaying(mock(HeuristicConfigPolicy.class)))
+                () -> ValueSelectorFactory.create(valueSelectorConfig)
+                        .buildMimicReplaying(mock(HeuristicConfigPolicy.class)))
                 .withMessageContaining("has another property");
+    }
+
+    static Stream<Arguments> applyListValueFiltering() {
+        return Stream.of(
+                arguments(true, ValueSelectorFactory.ListValueFilteringType.ACCEPT_ASSIGNED, AssignedValueSelector.class),
+                arguments(true, ValueSelectorFactory.ListValueFilteringType.ACCEPT_UNASSIGNED, UnassignedValueSelector.class),
+                arguments(true, ValueSelectorFactory.ListValueFilteringType.NONE,
+                        DummyEntityIndependentValueSelector.class),
+                arguments(false, ValueSelectorFactory.ListValueFilteringType.ACCEPT_ASSIGNED,
+                        DummyEntityIndependentValueSelector.class),
+                arguments(false, ValueSelectorFactory.ListValueFilteringType.ACCEPT_UNASSIGNED,
+                        DummyEntityIndependentValueSelector.class),
+                arguments(false, ValueSelectorFactory.ListValueFilteringType.NONE,
+                        DummyEntityIndependentValueSelector.class));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void applyListValueFiltering(
+            boolean isUnassignedValuesAllowed,
+            ValueSelectorFactory.ListValueFilteringType listValueFilteringType,
+            Class<? extends ValueSelector> expectedValueSelectorClass) {
+        HeuristicConfigPolicy<TestdataListSolution> configPolicy = mock(HeuristicConfigPolicy.class);
+        when(configPolicy.isUnassignedValuesAllowed()).thenReturn(isUnassignedValuesAllowed);
+
+        DummyEntityIndependentValueSelector baseValueSelector = new DummyEntityIndependentValueSelector();
+        GenuineVariableDescriptor<TestdataListSolution> variableDescriptor = baseValueSelector.getVariableDescriptor();
+
+        ValueSelector<TestdataListSolution> valueSelector =
+                ValueSelectorFactory.<TestdataListSolution> create(new ValueSelectorConfig())
+                        .applyListValueFiltering(configPolicy, listValueFilteringType, variableDescriptor, baseValueSelector);
+
+        assertThat(valueSelector).isExactlyInstanceOf(expectedValueSelectorClass);
     }
 
     public static class DummyValueFilter implements SelectionFilter<TestdataSolution, TestdataValue> {
@@ -271,6 +320,84 @@ class ValueSelectorFactoryTest {
         @Override
         public int compare(TestdataValue testdataValue, TestdataValue testdataValue2) {
             return 0;
+        }
+    }
+
+    private static class DummyEntityIndependentValueSelector implements EntityIndependentValueSelector<TestdataListSolution> {
+
+        @Override
+        public long getSize() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Iterator<Object> iterator() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isCountable() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public boolean isNeverEnding() {
+            return false;
+        }
+
+        @Override
+        public SelectionCacheType getCacheType() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public GenuineVariableDescriptor<TestdataListSolution> getVariableDescriptor() {
+            return TestdataListEntity.buildVariableDescriptorForValueList();
+        }
+
+        @Override
+        public long getSize(Object entity) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Iterator<Object> iterator(Object entity) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Iterator<Object> endingIterator(Object entity) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void phaseStarted(AbstractPhaseScope<TestdataListSolution> phaseScope) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void stepStarted(AbstractStepScope<TestdataListSolution> stepScope) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void stepEnded(AbstractStepScope<TestdataListSolution> stepScope) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void phaseEnded(AbstractPhaseScope<TestdataListSolution> phaseScope) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void solvingStarted(SolverScope<TestdataListSolution> solverScope) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void solvingEnded(SolverScope<TestdataListSolution> solverScope) {
+            throw new UnsupportedOperationException();
         }
     }
 }

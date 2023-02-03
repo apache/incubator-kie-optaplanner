@@ -1,6 +1,52 @@
 [[releaseNotes-8.x]]
 == OptaPlanner 8.x Release Notes
 
+[[releaseNotes-8.34.0.Final]]
+=== OptaPlanner 8.34.0.Final
+
+==== Performance improvements in pillar moves and nearby selection
+
+OptaPlanner can now auto-detect situations where multiple xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#pillarMoveSelectors[pillar move selectors] can share a pre-computed pillar cache and reuse it instead of recomputing it for each move selector.
+Users who combine different pillar moves (such as `PillarChangeMove` and `PillarSwapMove`) should see significant benefits.
+
+The same applies to users of xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#nearbySelection[nearby selection].
+OptaPlanner can now auto-detect situations where a pre-computed distance matrix can be shared between multiple move selectors, saving a considerable amount of memory and CPU processing time.
+
+As a consequence, implementations of the following interfaces are expected to be stateless:
+
+* `org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter`
+* `org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter`
+* `org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory`
+* `org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter`
+* `org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory`
+
+In general, if solver configuration asks the user to implement an interface,
+the expectation is that the implementation will be stateless
+or at the very least not try to include external state.
+With the aforementioned performance improvements,
+failing to follow this requirement will result in subtle bugs and score corruption
+as the solver will now reuse these instances as it sees fit.
+
+==== OptaPlanner configuration becomes even more fluent
+
+Various configuration classes, such as `EntitySelectorConfig` and `ValueSelectorConfig`,
+received new builder methods which make it easier than ever
+to replace XML-based solver config with fluent Java code.
+
+
+[[releaseNotes-8.33.0.Final]]
+=== OptaPlanner 8.33.0.Final
+
+==== Value range auto-detection
+
+In most cases, links between planning variables and value ranges can now be auto-detected.
+Therefore, ``@ValueRangeProvider`` no longer needs to provide an ``id`` property.
+Likewise, planning variables no longer need to reference value range providers via ``valueRangeProviderRefs`` property.
+
+No code changes or configuration changes are required.
+Users who prefer clarity over brevity may continue to explicitly reference their value range providers.
+
+
 [[releaseNotes-8.32.0.Final]]
 === OptaPlanner 8.32.0.Final
 
@@ -130,7 +176,7 @@ We encourage users to check out the https://github.com/kiegroup/optaplanner-quic
 
 ==== Score DRL deprecated in favor of Constraint Streams
 
-Support for Score DRL has been deprecated and users are encouraged to migrate to xref:constraint-streams/constraint-streams.adoc[Constraint Streams] at their earliest convenience.
+Support for Score DRL has been deprecated and users are encouraged to migrate to xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] at their earliest convenience.
 link:https://www.optaplanner.org/download/upgradeRecipe/[Read the migration guide from score DRL to Constraint Streams].
 Score DRL is not going away in OptaPlanner 8.
 
@@ -196,7 +242,7 @@ image:release-notes/quarkusCallCenter.png[Quarkus Call Center]
 
 ==== Mapping in Constraint Streams
 
-The xref:constraint-streams/constraint-streams.adoc[Constraint Streams API] received a major new functionality.
+The xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams API] received a major new functionality.
 You can now modify your streams using xref:constraint-streams/constraint-streams.adoc#constraintStreamsMappingTuples[mapping functions].
 
 ==== Ready for OpenJDK 16
@@ -236,7 +282,7 @@ There is a new `activemq-quarkus-school-timetabling` quickstart that shows how t
 
 ==== Major performance improvements for Constraint Streams
 
-The default implementation of the xref:constraint-streams/constraint-streams.adoc[Constraint Streams API]
+The default implementation of the xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams API]
 has seen major performance improvements.
 Use cases with tri and quad streams may experience order of magnitude speedups.
 Use cases with xref:constraint-streams/constraint-streams.adoc#constraintStreamsGroupingAndCollectors[grouping]

@@ -33,10 +33,10 @@ class QueuedEntityPlacerFactoryTest {
     void buildFromUnfoldNew() {
         SolutionDescriptor<TestdataMultiVarSolution> solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
 
-        ChangeMoveSelectorConfig primaryMoveSelectorConfig = new ChangeMoveSelectorConfig();
-        primaryMoveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("primaryValue"));
-        ChangeMoveSelectorConfig secondaryMoveSelectorConfig = new ChangeMoveSelectorConfig();
-        secondaryMoveSelectorConfig.setValueSelectorConfig(new ValueSelectorConfig("secondaryValue"));
+        ChangeMoveSelectorConfig primaryMoveSelectorConfig = new ChangeMoveSelectorConfig()
+                .withValueSelectorConfig(new ValueSelectorConfig("primaryValue"));
+        ChangeMoveSelectorConfig secondaryMoveSelectorConfig = new ChangeMoveSelectorConfig()
+                .withValueSelectorConfig(new ValueSelectorConfig("secondaryValue"));
 
         HeuristicConfigPolicy<TestdataMultiVarSolution> configPolicy = buildHeuristicConfigPolicy(solutionDescriptor);
         QueuedEntityPlacerConfig placerConfig = QueuedEntityPlacerFactory.unfoldNew(configPolicy,
@@ -48,7 +48,8 @@ class QueuedEntityPlacerFactoryTest {
                 .hasOnlyElementsOfType(ChangeMoveSelectorConfig.class);
 
         QueuedEntityPlacer<TestdataMultiVarSolution> entityPlacer =
-                new QueuedEntityPlacerFactory<TestdataMultiVarSolution>(placerConfig).buildEntityPlacer(configPolicy);
+                new QueuedEntityPlacerFactory<TestdataMultiVarSolution>(placerConfig)
+                        .buildEntityPlacer(configPolicy);
 
         SolverScope<TestdataMultiVarSolution> solverScope = mock(SolverScope.class);
         entityPlacer.solvingStarted(solverScope);

@@ -25,9 +25,6 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 public class SubListChangeMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, SubListChangeMoveSelectorConfig> {
 
-    private static final int DEFAULT_MINIMUM_SUB_LIST_SIZE = 1;
-    private static final int DEFAULT_MAXIMUM_SUB_LIST_SIZE = Integer.MAX_VALUE;
-
     public SubListChangeMoveSelectorFactory(SubListChangeMoveSelectorConfig moveSelectorConfig) {
         super(moveSelectorConfig);
     }
@@ -36,8 +33,9 @@ public class SubListChangeMoveSelectorFactory<Solution_>
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
-        EntitySelector<Solution_> entitySelector = EntitySelectorFactory.<Solution_> create(new EntitySelectorConfig())
-                .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
+        EntitySelector<Solution_> entitySelector =
+                EntitySelectorFactory.<Solution_> create(new EntitySelectorConfig())
+                        .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
         // TODO support coexistence of list and basic variables https://issues.redhat.com/browse/PLANNER-2755
         GenuineVariableDescriptor<Solution_> variableDescriptor =
                 getTheOnlyVariableDescriptor(entitySelector.getEntityDescriptor());
@@ -48,20 +46,29 @@ public class SubListChangeMoveSelectorFactory<Solution_>
                     + " and make sure it has a @" + PlanningListVariable.class.getSimpleName() + ".");
         }
 
-        EntityIndependentValueSelector<Solution_> valueSelector = buildEntityIndependentValueSelector(
-                configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
-        int minimumSubListSize = Objects.requireNonNullElse(config.getMinimumSubListSize(), DEFAULT_MINIMUM_SUB_LIST_SIZE);
-        int maximumSubListSize = Objects.requireNonNullElse(config.getMaximumSubListSize(), DEFAULT_MAXIMUM_SUB_LIST_SIZE);
+        ListVariableDescriptor<Solution_> listVariableDescriptor = (ListVariableDescriptor<Solution_>) variableDescriptor;
+
+        RandomSubListSelector<Solution_> subListSelector = SubListSelectorFactory.<Solution_> create(config)
+                .buildSubListSelector(configPolicy, listVariableDescriptor, entitySelector, minimumCacheType, selectionOrder);
+
+        EntityIndependentValueSelector<Solution_> valueSelector = buildEntityIndependentValueSelector(configPolicy,
+                entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
+
+        ElementDestinationSelector<Solution_> destinationSelector =
+                new ElementDestinationSelector<>(listVariableDescriptor, entitySelector, valueSelector, true);
+
         boolean selectReversingMoveToo = Objects.requireNonNullElse(config.getSelectReversingMoveToo(), true);
-        return new RandomSubListChangeMoveSelector<>(((ListVariableDescriptor<Solution_>) variableDescriptor), entitySelector,
-                valueSelector, minimumSubListSize, maximumSubListSize, selectReversingMoveToo);
+
+        return new RandomSubListChangeMoveSelector<>(listVariableDescriptor, subListSelector, destinationSelector,
+                selectReversingMoveToo);
     }
 
     private EntityIndependentValueSelector<Solution_> buildEntityIndependentValueSelector(
             HeuristicConfigPolicy<Solution_> configPolicy, EntityDescriptor<Solution_> entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
-        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(new ValueSelectorConfig())
-                .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder);
+        ValueSelector<Solution_> valueSelector =
+                ValueSelectorFactory.<Solution_> create(new ValueSelectorConfig())
+                        .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The subListChangeMoveSelector (" + config
                     + ") for a list variable needs to be based on an "

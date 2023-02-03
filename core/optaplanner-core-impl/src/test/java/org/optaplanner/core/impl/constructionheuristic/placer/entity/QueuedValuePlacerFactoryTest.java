@@ -27,11 +27,12 @@ class QueuedValuePlacerFactoryTest {
 
     @Test
     void buildEntityPlacer_withoutConfiguredMoveSelector() {
-        QueuedValuePlacerConfig config = new QueuedValuePlacerConfig();
-        config.setEntityClass(TestdataEntity.class);
+        QueuedValuePlacerConfig config = new QueuedValuePlacerConfig()
+                .withEntityClass(TestdataEntity.class);
 
         QueuedValuePlacer<TestdataSolution> placer =
-                new QueuedValuePlacerFactory<TestdataSolution>(config).buildEntityPlacer(buildHeuristicConfigPolicy());
+                new QueuedValuePlacerFactory<TestdataSolution>(config)
+                        .buildEntityPlacer(buildHeuristicConfigPolicy());
 
         SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
         placer.solvingStarted(solverScope);

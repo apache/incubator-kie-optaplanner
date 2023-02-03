@@ -343,20 +343,20 @@ class DefaultSolverTest {
             if (step.get() != -1) {
                 assertThat(
                         meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".hard.score", "VALUE").intValue())
-                                .isEqualTo(0);
+                        .isEqualTo(0);
             }
             if (step.get() == 0) {
                 assertThat(
                         meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".soft.score", "VALUE").intValue())
-                                .isEqualTo(0);
+                        .isEqualTo(0);
             } else if (step.get() == 1) {
                 assertThat(
                         meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".soft.score", "VALUE").intValue())
-                                .isEqualTo(1);
+                        .isEqualTo(1);
             } else if (step.get() == 2) {
                 assertThat(
                         meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".soft.score", "VALUE").intValue())
-                                .isEqualTo(2);
+                        .isEqualTo(2);
             }
             step.incrementAndGet();
         });
@@ -451,33 +451,33 @@ class DefaultSolverTest {
                         assertThat(
                                 meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".hard.score", "VALUE")
                                         .intValue())
-                                                .isEqualTo(0);
+                                .isEqualTo(0);
 
                         if (step.get() == 2) {
                             assertThat(
                                     meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
                                             .intValue())
-                                                    .isEqualTo(0);
+                                    .isEqualTo(0);
                         } else if (step.get() == 3) {
                             assertThat(
                                     meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
                                             .intValue())
-                                                    .isEqualTo(1);
+                                    .isEqualTo(1);
                         } else if (step.get() == 4) {
                             assertThat(
                                     meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
                                             .intValue())
-                                                    .isEqualTo(2);
+                                    .isEqualTo(2);
                         } else if (step.get() == 5) {
                             assertThat(
                                     meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
                                             .intValue())
-                                                    .isEqualTo(1);
+                                    .isEqualTo(1);
                         } else if (step.get() == 6) {
                             assertThat(
                                     meterRegistry.getMeasurement(SolverMetric.STEP_SCORE.getMeterId() + ".soft.score", "VALUE")
                                             .intValue())
-                                                    .isEqualTo(2);
+                                    .isEqualTo(2);
                         }
                         step.incrementAndGet();
                     }
@@ -740,18 +740,18 @@ class DefaultSolverTest {
                 .collect(Collectors.toList()));
 
         Score<?> score = ScoreManager.create(solverFactory).updateScore(solution);
-        assertThat(score.getInitScore()).isEqualTo(-entityCount);
+        assertThat(score.initScore()).isEqualTo(-entityCount);
         assertThat(score.isSolutionInitialized()).isFalse();
 
         // Keep restarting the solver until the solution is initialized.
         for (int initScore = -entityCount; initScore < 0; initScore += stepCountLimit) {
-            softly.assertThat(solution.getScore().getInitScore()).isEqualTo(initScore);
+            softly.assertThat(solution.getScore().initScore()).isEqualTo(initScore);
             softly.assertThat(solution.getScore().isSolutionInitialized()).isFalse();
             solution = solver.solve(solution);
         }
 
         // Finally, the initScore is 0.
-        softly.assertThat(solution.getScore().getInitScore()).isZero();
+        softly.assertThat(solution.getScore().initScore()).isZero();
         softly.assertThat(solution.getScore().isSolutionInitialized()).isTrue();
     }
 
@@ -772,18 +772,18 @@ class DefaultSolverTest {
         TestdataListSolution solution = TestdataListSolution.generateUninitializedSolution(valueCount, 8);
 
         Score<?> score = ScoreManager.create(solverFactory).updateScore(solution);
-        assertThat(score.getInitScore()).isEqualTo(-valueCount);
+        assertThat(score.initScore()).isEqualTo(-valueCount);
         assertThat(score.isSolutionInitialized()).isFalse();
 
         // Keep restarting the solver until the solution is initialized.
         for (int initScore = -valueCount; initScore < 0; initScore += stepCountLimit) {
-            softly.assertThat(solution.getScore().getInitScore()).isEqualTo(initScore);
+            softly.assertThat(solution.getScore().initScore()).isEqualTo(initScore);
             softly.assertThat(solution.getScore().isSolutionInitialized()).isFalse();
             solution = solver.solve(solution);
         }
 
         // Finally, the initScore is 0.
-        softly.assertThat(solution.getScore().getInitScore()).isZero();
+        softly.assertThat(solution.getScore().initScore()).isZero();
         softly.assertThat(solution.getScore().isSolutionInitialized()).isTrue();
     }
 

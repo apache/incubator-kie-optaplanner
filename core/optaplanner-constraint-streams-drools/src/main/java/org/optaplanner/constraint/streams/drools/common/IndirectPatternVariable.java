@@ -1,9 +1,7 @@
 package org.optaplanner.constraint.streams.drools.common;
 
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 
-import org.drools.model.PatternDSL;
 import org.drools.model.Variable;
 import org.drools.model.view.ViewItem;
 
@@ -43,7 +41,7 @@ import org.drools.model.view.ViewItem;
  * Unfortunately, this would have been inefficient, as that would prevent these higher-arity functions from being
  * properly JITted and the performance would arguably suffer more than when we have to call an inexpensive mapping
  * function which would likely be optimized by the JIT anyway.
- * 
+ *
  * @param <A> generic type of the primary variable as obtained by the mapping function from the pattern variable
  * @param <PatternVar_>> generic type of the pattern variable
  */
@@ -65,12 +63,6 @@ final class IndirectPatternVariable<A, PatternVar_>
     }
 
     private IndirectPatternVariable(IndirectPatternVariable<A, PatternVar_> patternCreator,
-            UnaryOperator<PatternDSL.PatternDef<PatternVar_>> patternMutator) {
-        super(patternCreator, patternMutator);
-        this.mappingFunction = patternCreator.mappingFunction;
-    }
-
-    private IndirectPatternVariable(IndirectPatternVariable<A, PatternVar_> patternCreator,
             ViewItem<?> dependentExpression) {
         super(patternCreator, dependentExpression);
         this.mappingFunction = patternCreator.mappingFunction;
@@ -83,15 +75,8 @@ final class IndirectPatternVariable<A, PatternVar_>
     }
 
     @Override
-    protected IndirectPatternVariable<A, PatternVar_> create(
-            UnaryOperator<PatternDSL.PatternDef<PatternVar_>> patternMutator) {
-        return new IndirectPatternVariable<>(this, patternMutator);
-    }
-
-    @Override
-    protected IndirectPatternVariable<A, PatternVar_> create(
-            ViewItem<?> dependentExpression) {
-        return new IndirectPatternVariable<>(this, dependentExpression);
+    public IndirectPatternVariable<A, PatternVar_> addDependentExpression(ViewItem<?> expression) {
+        return new IndirectPatternVariable<>(this, expression);
     }
 
 }
