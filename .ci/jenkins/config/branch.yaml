@@ -17,7 +17,6 @@ environments:
     - native
     - prod
   quarkus-main:
-    enabled: false
     env_vars:
       QUARKUS_BRANCH: main
     ids:
