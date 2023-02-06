@@ -22,17 +22,20 @@ ${mvn_cmd} rewrite:run \
 # Remove obsolete spring.factories
 find "${script_dir_path}/../../optaplanner-spring-integration" -type f -name "spring.factories" -exec rm {} \;
 
-# 8.x.y(-SNAPSHOT|.Final) -> 9.x.y(-SNAPSHOT|.Final)
-new_project_version="9${project_version:1}"
-${mvn_cmd} versions:set \
-  -Dfull \
-  -DallowSnapshots=true \
-  -DgenerateBackupPoms=false \
-  -DnewVersion="${new_project_version}" \
+if [[ ! "$1" == "test" ]]; then
+  # 8.x.y(-SNAPSHOT|.Final) -> 9.x.y(-SNAPSHOT|.Final)
+  new_project_version="9${project_version:1}"
+  ${mvn_cmd} versions:set \
+    -Dfull \
+    -DallowSnapshots=true \
+    -DgenerateBackupPoms=false \
+    -DnewVersion="${new_project_version}" \
 
-${mvn_cmd} process-test-sources
+  # The formatter and impsort goals override validation activated by the CI environment variable.
+  ${mvn_cmd} process-test-sources -Dformatter.goal=format -Dimpsort.goal=sort
 
-# Commit the changes.
-git status
-git add -u
-git commit -m "Migrate to OptaPlanner 9"
+  # Commit the changes.
+  git status
+  git add -u
+  git commit -m "Migrate to OptaPlanner 9"
+fi
