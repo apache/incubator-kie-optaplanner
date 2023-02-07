@@ -1,7 +1,7 @@
 package org.optaplanner.persistence.jpa.impl.score.buildin.bendable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Parameter;

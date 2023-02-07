@@ -1,6 +1,6 @@
 package org.optaplanner.benchmark.config.ranking;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 import org.optaplanner.benchmark.impl.ranking.TotalRankSolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.ranking.TotalScoreSolverRankingComparator;
