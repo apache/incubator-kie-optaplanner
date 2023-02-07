@@ -59,12 +59,13 @@ disable:
 repositories:
 - name: optaplanner
   branch: 9.x
-- name: optaweb-vehicle-routing
-  branch: main
-- name: optaplanner-quickstarts
-  branch: development
-- name: optaplanner-website
-  branch: main
+# TODO: enable after migrating the optaweb and quickstarts to OptaPlanner 9  
+#- name: optaweb-vehicle-routing
+#  branch: main
+#- name: optaplanner-quickstarts
+#  branch: development
+#- name: optaplanner-website
+#  branch: main
 git:
   author:
     name: kiegroup
