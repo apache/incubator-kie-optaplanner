@@ -14,9 +14,10 @@ import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintJustification;
 import org.optaplanner.core.api.score.stream.DefaultConstraintJustification;
+import org.optaplanner.core.api.solver.SolutionManager;
 
 /**
- * Build by {@link ScoreManager#explainScore(Object)} to hold {@link ConstraintMatchTotal}s and {@link Indictment}s
+ * Build by {@link SolutionManager#explainScore(Object)} to hold {@link ConstraintMatchTotal}s and {@link Indictment}s
  * necessary to explain the quality of a particular {@link Score}.
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

@@ -984,30 +984,6 @@
         {
           "ignore": true,
           "code": "java.method.addedToInterface",
-          "new": "method org.optaplanner.core.api.score.ScoreExplanation<Solution_, Score_> org.optaplanner.core.api.score.ScoreManager<Solution_, Score_ extends org.optaplanner.core.api.score.Score<Score_>>::explainScore(Solution_, boolean)",
-          "justification": "ScoreManager is an interface we don't expect anyone to implement. The old methods are now default."
-        },
-        {
-          "ignore": true,
-          "code": "java.method.addedToInterface",
-          "new": "method java.lang.String org.optaplanner.core.api.score.ScoreManager<Solution_, Score_ extends org.optaplanner.core.api.score.Score<Score_>>::getSummary(Solution_, boolean)",
-          "justification": "ScoreManager is an interface we don't expect anyone to implement. The old methods are now default."
-        },
-        {
-          "ignore": true,
-          "code": "java.method.addedToInterface",
-          "new": "method void org.optaplanner.core.api.score.ScoreManager<Solution_, Score_ extends org.optaplanner.core.api.score.Score<Score_>>::triggerVariableListeners(Solution_)",
-          "justification": "ScoreManager is an interface we don't expect anyone to implement. The old methods are now default."
-        },
-        {
-          "ignore": true,
-          "code": "java.method.addedToInterface",
-          "new": "method Score_ org.optaplanner.core.api.score.ScoreManager<Solution_, Score_ extends org.optaplanner.core.api.score.Score<Score_>>::updateScore(Solution_, boolean)",
-          "justification": "ScoreManager is an interface we don't expect anyone to implement. The old methods are now default."
-        },
-        {
-          "ignore": true,
-          "code": "java.method.addedToInterface",
           "new": "method void org.optaplanner.core.api.solver.change.ProblemChangeDirector::triggerVariableListeners()",
           "justification": "ProblemChangeDirector is an interface we don't expect anyone to implement."
         }
