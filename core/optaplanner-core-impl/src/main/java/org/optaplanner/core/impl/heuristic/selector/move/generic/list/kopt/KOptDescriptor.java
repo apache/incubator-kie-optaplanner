@@ -22,33 +22,42 @@ public final class KOptDescriptor<Solution_> {
     private final int k;
 
     /**
-     * A sequence of 2K nodes (t_0, t_1, ..., t_2K) where:
-     * (t_(2i - 1), t_(2i)) is an out-edge (an edge to be deleted)
-     * (t_(2i), t_(2i+1)) is an in-edge (an edge to be added)
+     * A sequence of 2K nodes that forms the sequence of edges being removed
      */
-    private final Object[] t;
+    private final Object[] removedEdges;
 
     /**
-     * The order each node is visited when the tour is travelled in the successor direction
+     * The order each node is visited when the tour is travelled in the successor direction. This forms
+     * a 2K-cycle representing the permutation performed by the K-opt move.
      */
-    private final Integer[] p;
+    private final Integer[] removedEdgeIndexToTourOrder;
 
     /**
-     * The order each node is visited when the tour is travelled in the successor direction. It the
-     * inverse of {@link KOptDescriptor#p} (i.e.
-     * {@link KOptDescriptor#p}[predecessorVisitingOrder[i]] == i
+     * The order each node is visited when the tour is travelled in the predecessor direction. It the
+     * inverse of {@link KOptDescriptor#removedEdgeIndexToTourOrder} (i.e.
+     * {@link KOptDescriptor#removedEdgeIndexToTourOrder}[inverseRemovedEdgeIndexToTourOrder[i]] == i
      *
      */
-    private final Integer[] q;
+    private final Integer[] inverseRemovedEdgeIndexToTourOrder;
 
-    private final Integer[] incl;
+    /**
+     * Maps the index of a removed edge endpoint to its corresponding added edge other endpoint. For instance,
+     * if the removed edges are (a, b), (c, d), (e, f) and the added edges are (a, d), (c, f), (e, b), then
+     * <br />
+     * removedEdges = [null, a, b, c, d, e, f] <br />
+     * addedEdgeToOtherEndpoint = [null, 4, 5, 6, 1, 2, 3] <br />
+     * <br />
+     * For any valid removedEdges index, (removedEdges[index], removedEdges[addedEdgeToOtherEndpoint[index]])
+     * is an edge added by this K-Opt move.
+     */
+    private final Integer[] addedEdgeToOtherEndpoint;
 
-    private static Integer[] computeInEdges(Object[] t) {
-        Integer[] out = new Integer[t.length];
-        int k = (t.length - 1) >> 1;
+    private static Integer[] computeInEdgesForSequentialMove(Object[] removedEdges) {
+        Integer[] out = new Integer[removedEdges.length];
+        int k = (removedEdges.length - 1) >> 1;
 
-        out[1] = t.length - 1;
-        out[t.length - 1] = 1;
+        out[1] = removedEdges.length - 1;
+        out[removedEdges.length - 1] = 1;
         for (int i = 1; i < k; i++) {
             out[2 * i + 1] = 2 * i;
             out[2 * i] = 2 * i + 1;
@@ -57,60 +66,107 @@ public final class KOptDescriptor<Solution_> {
         return out;
     }
 
+    /**
+     * Create a sequential {@link KOptDescriptor} from the given removed edges.
+     *
+     * @param removedEdges The edges removed from the tour. The added edges will
+     *        be formed from opposite endpoints for consecutive edges.
+     * @param SUC A {@link Function} that maps an endpoint to its successor
+     * @param BETWEEN A {@link TriPredicate} that return true if and only if its middle
+     *        argument is between its first and last argument when the tour is
+     *        taken in the successor direction.
+     */
     public KOptDescriptor(
-            Object[] t,
+            Object[] removedEdges,
             Function<Object, Object> SUC,
             TriPredicate<Object, Object, Object> BETWEEN) {
-        this(t, computeInEdges(t), SUC, BETWEEN);
-    }
-
-    public KOptDescriptor(
-            Object[] t,
-            Integer[] incl,
-            Function<Object, Object> SUC,
-            TriPredicate<Object, Object, Object> BETWEEN) {
-        int i, j;
-        this.k = (t.length - 1) >> 1;
-        this.t = t;
-        this.p = new Integer[t.length];
-        this.q = new Integer[t.length];
-        this.incl = incl;
-
-        for (i = j = 1; j <= k; i += 2, j++) {
-            p[j] = (SUC.apply(t[i]) == t[i + 1]) ? i : i + 1;
-        }
-
-        Comparator<Integer> Compare = (pa, pb) -> pa.equals(pb) ? 0 : (BETWEEN.test(t[p[1]], t[pa], t[pb]) ? -1 : 1);
-        Arrays.sort(p, 2, k + 1, Compare);
-
-        for (j = 2 * k; j >= 2; j -= 2) {
-            p[j - 1] = i = p[j / 2];
-            p[j] = ((i & 1) == 1) ? i + 1 : i - 1;
-        }
-
-        for (i = 1; i <= 2 * k; i++) {
-            q[p[i]] = i;
-        }
-    }
-
-    public Integer[] getPermutation() {
-        return p;
+        this(removedEdges, computeInEdgesForSequentialMove(removedEdges), SUC, BETWEEN);
     }
 
     /**
-     * Breaks the permutation p into its disjoint cycles
+     * Create as sequential or non-sequential {@link KOptDescriptor} from the given removed
+     * and added edges.
+     *
+     * @param removedEdges The edges removed from the tour.
+     * @param addedEdgeToOtherEndpoint The edges added to the tour.
+     * @param SUC A {@link Function} that maps an endpoint to its successor
+     * @param BETWEEN A {@link TriPredicate} that return true if and only if its middle
+     *        argument is between its first and last argument when the tour is
+     *        taken in the successor direction.
      */
-    public KOptCycleInfo Cycles() {
+    public KOptDescriptor(
+            Object[] removedEdges,
+            Integer[] addedEdgeToOtherEndpoint,
+            Function<Object, Object> SUC,
+            TriPredicate<Object, Object, Object> BETWEEN) {
+        int i, j;
+        this.k = (removedEdges.length - 1) >> 1;
+        this.removedEdges = removedEdges;
+        this.removedEdgeIndexToTourOrder = new Integer[removedEdges.length];
+        this.inverseRemovedEdgeIndexToTourOrder = new Integer[removedEdges.length];
+        this.addedEdgeToOtherEndpoint = addedEdgeToOtherEndpoint;
+
+        // Compute the permutation as described in FindPermutation
+        // (Section 5.3 "Determination of the feasibility of a move",
+        //  An Effective Implementation of K-opt Moves for the Lin-Kernighan TSP Heuristic)
+        for (i = j = 1; j <= k; i += 2, j++) {
+            removedEdgeIndexToTourOrder[j] = (SUC.apply(removedEdges[i]) == removedEdges[i + 1]) ? i : i + 1;
+        }
+
+        Comparator<Integer> Compare = (pa, pb) -> pa.equals(pb) ? 0
+                : (BETWEEN.test(removedEdges[removedEdgeIndexToTourOrder[1]], removedEdges[pa], removedEdges[pb]) ? -1 : 1);
+        Arrays.sort(removedEdgeIndexToTourOrder, 2, k + 1, Compare);
+
+        for (j = 2 * k; j >= 2; j -= 2) {
+            removedEdgeIndexToTourOrder[j - 1] = i = removedEdgeIndexToTourOrder[j / 2];
+            removedEdgeIndexToTourOrder[j] = ((i & 1) == 1) ? i + 1 : i - 1;
+        }
+
+        for (i = 1; i <= 2 * k; i++) {
+            inverseRemovedEdgeIndexToTourOrder[removedEdgeIndexToTourOrder[i]] = i;
+        }
+    }
+
+    public Integer[] getRemovedEdgeIndexToTourOrder() {
+        return removedEdgeIndexToTourOrder;
+    }
+
+    /**
+     * Calculate the disjoint k-cycles for {@link KOptDescriptor#removedEdgeIndexToTourOrder}. <br />
+     * <br />
+     * Any permutation can be expressed as combination of k-cycles. A k-cycle is a sequence of
+     * unique elements (p_1, p_2, ..., p_k) where
+     * <ul>
+     * <li>p_1 maps to p_2 in the permutation</li>
+     * <li>p_2 maps to p_3 in the permutation</li>
+     * <li>p_(k-1) maps to p_k in the permutation</li>
+     * <li>p_k maps to p_1 in the permutation</li>
+     * <li>In general: p_i maps to p_(i+1) in the permutation</li>
+     * </ul>
+     * For instance, the permutation
+     * <ul>
+     * <li>1 -> 2</li>
+     * <li>2 -> 3</li>
+     * <li>3 -> 1</li>
+     * <li>4 -> 5</li>
+     * <li>5 -> 4</li>
+     * </ul>
+     * can be expressed as `(1, 2, 3)(4, 5)`.
+     *
+     * @return The {@link KOptCycleInfo} corresponding to the permutation described by
+     *         {@link KOptDescriptor#removedEdgeIndexToTourOrder}.
+     */
+    public KOptCycleInfo getCyclesForPermutation() {
         int cycleCount = 0;
-        Integer[] indexToCycle = new Integer[p.length];
-        Set<Integer> remaining = IntStream.range(1, p.length).boxed().collect(Collectors.toSet());
+        Integer[] indexToCycle = new Integer[removedEdgeIndexToTourOrder.length];
+        Set<Integer> remaining = IntStream.range(1, removedEdgeIndexToTourOrder.length).boxed().collect(Collectors.toSet());
         while (!remaining.isEmpty()) {
             Integer current = remaining.iterator().next();
             remaining.remove(current);
 
             while (true) {
                 indexToCycle[current] = cycleCount;
-                current = q[incl[p[current]]];
+                current = inverseRemovedEdgeIndexToTourOrder[addedEdgeToOtherEndpoint[removedEdgeIndexToTourOrder[current]]];
                 if (!remaining.contains(current)) {
                     break;
                 }
@@ -122,30 +178,72 @@ public final class KOptDescriptor<Solution_> {
         return new KOptCycleInfo(cycleCount, indexToCycle);
     }
 
-    public List<Pair<Object, Object>> getInEdges() {
+    public List<Pair<Object, Object>> getAddedEdges() {
         List<Pair<Object, Object>> out = new ArrayList<>(2 * k);
         for (int i = 1; i <= k; i++) {
-            out.add(Pair.of(t[2 * i], t[(2 * i + 1) % (2 * k)]));
+            out.add(Pair.of(removedEdges[2 * i], removedEdges[(2 * i + 1) % (2 * k)]));
         }
         return out;
     }
 
-    public List<Pair<Object, Object>> getOutEdges() {
+    public List<Pair<Object, Object>> getRemovedEdges() {
         List<Pair<Object, Object>> out = new ArrayList<>(2 * k);
         for (int i = 1; i <= k; i++) {
-            out.add(Pair.of(t[2 * i - 1], t[2 * i]));
+            out.add(Pair.of(removedEdges[2 * i - 1], removedEdges[2 * i]));
         }
         return out;
     }
 
+    /**
+     * This return a {@link KOptListMove} that corresponds to this {@link KOptDescriptor}. <br />
+     * <br />
+     * It implements the algorithm described in the paper
+     * <a href="https://dl.acm.org/doi/pdf/10.1145/300515.300516">"Transforming Cabbage into Turnip: Polynomial
+     * Algorithm for Sorting Signed Permutations by Reversals"</a> which is used in the paper
+     * <a href="http://webhotel4.ruc.dk/~keld/research/LKH/KoptReport.pdf">"An Effective Implementation of K-opt Moves
+     * for the Lin-Kernighan TSP Heuristic"</a> (Section 5.4 "Execution of a feasible move") to perform a K-opt move
+     * by performing the minimal number of list reversals to transform the current route into the new route after the
+     * K-opt. We use it here to calculate the {@link FlipSublistMove} list for the {@link KOptListMove} that is
+     * described by this {@link KOptDescriptor}.<br />
+     * <br />
+     * The algorithm goal is to convert a signed permutation (p_1, p_2, ..., p_(2k)) into the identify permutation
+     * (+1, +2, +3, ..., +(2k - 1), +2k). It can be summarized as:
+     *
+     * <ul>
+     * <li>
+     * As long as there are oriented pairs, perform the reversal that corresponds to the oriented pair with the
+     * maximal score (described in {@link #countOrientedPairsForReversal}).
+     * </li>
+     * <li>
+     * If there are no oriented pairs, Find the pair (p_i, p_j) for which |p_j – p_i| = 1, j >= i + 3,
+     * and i is minimal. Then reverse the segment (p_(i+1) ... p_(j-1). This corresponds to a
+     * hurdle cutting operation. Normally, this is not enough to guarantee the number of reversals
+     * is optimal, but since each hurdle corresponds to a unique cycle, the number of hurdles in
+     * the list at any point is at most 1 (and thus, hurdle cutting is the optimal move). (A hurdle
+     * is an subsequence [i, p_j, p_(j+1)..., p_(j+k-1) i+k] that can be sorted so
+     * [i, p_j, p_(j+1)..., p_(j+k-1), i+k] are all consecutive integers, which does not contain a subsequence
+     * with the previous property ([4, 7, 6, 5, 8] is a hurdle, since the subsequence [7, 6, 5] does not
+     * contain all the items between 7 and 5 [8, 1, 2, 3, 4]). This create enough enough oriented pairs
+     * to completely sort the permutation.
+     * </li>
+     * <li>
+     * When there are no oriented pairs and no hurdles, the algorithm is completed.
+     * </li>
+     * </ul>
+     *
+     * @param listVariableDescriptor
+     * @param indexVariableSupply
+     * @param entity
+     * @return
+     */
     public KOptListMove<Solution_> getKOptListMove(ListVariableDescriptor listVariableDescriptor,
             IndexVariableSupply indexVariableSupply,
             Object entity) {
         if (!isFeasible()) {
-            return new KOptListMove<>(listVariableDescriptor, entity, k, List.of(), 0);
+            // A KOptListMove move with an empty flip move list is not feasible, since if executed, it a no-op
+            return new KOptListMove<>(listVariableDescriptor, entity, this, List.of(), 0);
         }
 
-        int i, j, Best_i, Best_j, BestScore, s;
         int entityListSize = listVariableDescriptor.getListSize(entity);
         List<FlipSublistMove<Solution_>> out = new ArrayList<>();
         List<Integer> originalToCurrentIndexList = new ArrayList<>(entityListSize);
@@ -154,77 +252,198 @@ public final class KOptDescriptor<Solution_> {
         }
 
         boolean isMoveNotDone = true;
-        Best_i = -1;
-        Best_j = -1;
+        int bestOrientedPairFirstEndpoint = -1;
+        int bestOrientedPairSecondEndpoint = -1;
+
+        // Copy removedEdgeIndexToTourOrder and inverseRemovedEdgeIndexToTourOrder
+        // to avoid mutating the original arrays (since this function mutate the arrays
+        // into the sorted signed permutation (+1, +2, ...)
+        Integer[] currentRemovedEdgeIndexToTourOrder =
+                Arrays.copyOf(removedEdgeIndexToTourOrder, removedEdgeIndexToTourOrder.length);
+        Integer[] currentInverseRemovedEdgeIndexToTourOrder =
+                Arrays.copyOf(inverseRemovedEdgeIndexToTourOrder, inverseRemovedEdgeIndexToTourOrder.length);
+
         FindNextReversal: while (isMoveNotDone) {
-            BestScore = -1;
-            for (i = 1; i <= 2 * k - 2; i++) {
-                j = q[incl[p[i]]];
-                if (j >= i + 2 && (i & 1) == (j & 1) &&
-                        (s = (i & 1) == 1 ? Score(i + 1, j, k) : Score(i, j - 1, k)) > BestScore) {
-                    BestScore = s;
-                    Best_i = i;
-                    Best_j = j;
+            int maximumOrientedPairCountAfterReversal = -1;
+            for (int firstEndpoint = 1; firstEndpoint <= 2 * k - 2; firstEndpoint++) {
+                int secondEndpoint =
+                        currentInverseRemovedEdgeIndexToTourOrder[addedEdgeToOtherEndpoint[currentRemovedEdgeIndexToTourOrder[firstEndpoint]]];
+                if (secondEndpoint >= firstEndpoint + 2 && (firstEndpoint & 1) == (secondEndpoint & 1)) {
+                    int orientedPairCountAfterReversal = ((firstEndpoint & 1) == 1)
+                            ? countOrientedPairsForReversal(currentRemovedEdgeIndexToTourOrder,
+                                    currentInverseRemovedEdgeIndexToTourOrder,
+                                    firstEndpoint + 1,
+                                    secondEndpoint)
+                            : countOrientedPairsForReversal(currentRemovedEdgeIndexToTourOrder,
+                                    currentInverseRemovedEdgeIndexToTourOrder,
+                                    firstEndpoint,
+                                    secondEndpoint - 1);
+                    if (orientedPairCountAfterReversal > maximumOrientedPairCountAfterReversal) {
+                        maximumOrientedPairCountAfterReversal = orientedPairCountAfterReversal;
+                        bestOrientedPairFirstEndpoint = firstEndpoint;
+                        bestOrientedPairSecondEndpoint = secondEndpoint;
+                    }
                 }
             }
-            if (BestScore >= 0) {
-                i = Best_i;
-                j = Best_j;
-                if ((i & 1) == 1) {
-                    out.add(FLIP(listVariableDescriptor, indexVariableSupply, originalToCurrentIndexList, entity,
-                            t[p[i + 1]], t[p[i]], t[p[j]], t[p[j + 1]]));
-                    Reverse(i + 1, j);
+            if (maximumOrientedPairCountAfterReversal >= 0) {
+                int firstEndpoint = bestOrientedPairFirstEndpoint;
+                int secondEndpoint = bestOrientedPairSecondEndpoint;
+                if ((firstEndpoint & 1) == 1) {
+                    out.add(getListReversalMoveForEdgePair(listVariableDescriptor, indexVariableSupply,
+                            originalToCurrentIndexList, entity,
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[firstEndpoint + 1]],
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[firstEndpoint]],
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[secondEndpoint]],
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[secondEndpoint + 1]]));
+                    reversePermutationPart(currentRemovedEdgeIndexToTourOrder,
+                            currentInverseRemovedEdgeIndexToTourOrder,
+                            firstEndpoint + 1,
+                            secondEndpoint);
                 } else {
-                    out.add(FLIP(listVariableDescriptor, indexVariableSupply, originalToCurrentIndexList, entity,
-                            t[p[i - 1]], t[p[i]], t[p[j]], t[p[j - 1]]));
-                    Reverse(i, j - 1);
+                    out.add(getListReversalMoveForEdgePair(listVariableDescriptor, indexVariableSupply,
+                            originalToCurrentIndexList, entity,
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[firstEndpoint - 1]],
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[firstEndpoint]],
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[secondEndpoint]],
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[secondEndpoint - 1]]));
+                    reversePermutationPart(currentRemovedEdgeIndexToTourOrder,
+                            currentInverseRemovedEdgeIndexToTourOrder,
+                            firstEndpoint,
+                            secondEndpoint - 1);
                 }
                 continue FindNextReversal;
             }
-            for (i = 1; i <= 2 * k - 1; i += 2) {
-                j = q[incl[p[i]]];
-                if (j >= i + 2) {
-                    out.add(FLIP(listVariableDescriptor, indexVariableSupply, originalToCurrentIndexList, entity,
-                            t[p[i]], t[p[i + 1]], t[p[j]], t[p[j - 1]]));
-                    Reverse(i + 1, j - 1);
+
+            // There are no oriented pairs; check for a hurdle
+            for (int firstEndpoint = 1; firstEndpoint <= 2 * k - 1; firstEndpoint += 2) {
+                int secondEndpoint =
+                        currentInverseRemovedEdgeIndexToTourOrder[addedEdgeToOtherEndpoint[currentRemovedEdgeIndexToTourOrder[firstEndpoint]]];
+                if (secondEndpoint >= firstEndpoint + 2) {
+                    out.add(getListReversalMoveForEdgePair(listVariableDescriptor, indexVariableSupply,
+                            originalToCurrentIndexList, entity,
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[firstEndpoint]],
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[firstEndpoint + 1]],
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[secondEndpoint]],
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[secondEndpoint - 1]]));
+                    reversePermutationPart(currentRemovedEdgeIndexToTourOrder,
+                            currentInverseRemovedEdgeIndexToTourOrder,
+                            firstEndpoint + 1, secondEndpoint - 1);
                     continue FindNextReversal;
                 }
             }
             isMoveNotDone = false;
         }
-        return new KOptListMove<>(listVariableDescriptor, entity, k, out, -originalToCurrentIndexList.indexOf(0));
+
+        return new KOptListMove<>(listVariableDescriptor, entity, this, out, -originalToCurrentIndexList.indexOf(0));
     }
 
+    /**
+     * Return true if and only if performing the K-opt move described by this {@link KOptDescriptor} will result in a
+     * single cycle.
+     *
+     * @return true if and only if performing the K-opt move described by this {@link KOptDescriptor} will result in a
+     *         single cycle, false otherwise.
+     */
     public boolean isFeasible() {
-        int Count = 1, i = 2 * k;
-        while ((i = q[incl[p[i]]] ^ 1) != 0) {
-            Count++;
+        int count = 0;
+        int currentEndpoint = 2 * k;
+
+        // This loop calculate the length of the cycle that the endpoint at removedEdges[2k] is connected
+        // to by iterating the loop in reverse. We know that the successor of removedEdges[2k] is 0, which
+        // give us our terminating condition.
+        while (currentEndpoint != 0) {
+            count++;
+            currentEndpoint =
+                    inverseRemovedEdgeIndexToTourOrder[addedEdgeToOtherEndpoint[removedEdgeIndexToTourOrder[currentEndpoint]]]
+                            ^ 1;
         }
-        return (Count == k);
+        return (count == k);
     }
 
-    private void Reverse(int i, int j) {
-        for (; i < j; i++, j--) {
-            int pi = p[i];
-            q[p[i] = p[j]] = i;
-            q[p[j] = pi] = j;
+    /**
+     * Reverse an array between two indices and update its inverse array to point at the new locations.
+     *
+     * @param startInclusive Reverse the array starting at and including this index.
+     * @param endExclusive Reverse the array ending at and excluding this index.
+     */
+    private void reversePermutationPart(Integer[] currentRemovedEdgeIndexToTourOrder,
+            Integer[] currentInverseRemovedEdgeIndexToTourOrder,
+            int startInclusive, int endExclusive) {
+        for (; startInclusive < endExclusive; startInclusive++, endExclusive--) {
+            int savedFirstElement = currentRemovedEdgeIndexToTourOrder[startInclusive];
+            currentInverseRemovedEdgeIndexToTourOrder[currentRemovedEdgeIndexToTourOrder[startInclusive] =
+                    currentRemovedEdgeIndexToTourOrder[endExclusive]] = startInclusive;
+            currentInverseRemovedEdgeIndexToTourOrder[currentRemovedEdgeIndexToTourOrder[endExclusive] = savedFirstElement] =
+                    endExclusive;
         }
     }
 
-    private int Score(int left, int right, int k) {
+    /**
+     * Calculate the "score" of performing a flip on a signed permutation p.<br>
+     * <br>
+     * Let p = (p_1 ..., p_n) be a signed permutation. An oriented pair (p_i, p_j) is a pair
+     * of adjacent integers, that is |p_i| - |p_j| = ±1, with opposite signs. For example,
+     * the signed permutation <br />
+     * (+1 -2 -5 +4 +3) <br />
+     * contains three oriented pairs: (+1, -2), (-2, +3), and (-5, +4).
+     * Oriented pairs are useful as they indicate reversals that cause adjacent integers to be
+     * consecutive in the resulting permutation. For example, the oriented pair (-2, +3) induces
+     * the reversal <br>
+     * (+1 -2 -5 +4 +3) -> (+1 -4 +5 +2 +3) <br>
+     * creating a permutation where +3 is consecutive to +2. <br />
+     * <br />
+     * In general, the reversal induced by and oriented pair (p_i, p_j) is <br />
+     * p(i, j-1), if p_i + p_j = +1, and <br />
+     * p(i+1, j), if p_i + p_j = -1 <br />
+     * Such a reversal is called an oriented reversal. <br />
+     *
+     * The score of an oriented reversal is defined as the number of oriented pairs
+     * in the resulting permutation. <br />
+     * <br />
+     * This function perform the reversal indicated by the oriented pair, count the
+     * number of oriented pairs in the new permutation, undo the reversal and return
+     * the score.
+     *
+     * @param left The left endpoint of the flip
+     * @param right the right endpoint of the flip
+     * @return The score of the performing the signed reversal
+     */
+    private int countOrientedPairsForReversal(Integer[] currentRemovedEdgeIndexToTourOrder,
+            Integer[] currentInverseRemovedEdgeIndexToTourOrder,
+            int left, int right) {
         int count = 0, i, j;
-        Reverse(left, right);
+        reversePermutationPart(
+                currentRemovedEdgeIndexToTourOrder,
+                currentInverseRemovedEdgeIndexToTourOrder,
+                left, right);
         for (i = 1; i <= 2 * k - 2; i++) {
-            j = q[incl[p[i]]];
+            j = currentInverseRemovedEdgeIndexToTourOrder[addedEdgeToOtherEndpoint[currentRemovedEdgeIndexToTourOrder[i]]];
             if (j >= i + 2 && (i & 1) == (j & 1)) {
                 count++;
             }
         }
-        Reverse(left, right);
+        reversePermutationPart(
+                currentRemovedEdgeIndexToTourOrder,
+                currentInverseRemovedEdgeIndexToTourOrder,
+                left, right);
         return count;
     }
 
-    private FlipSublistMove<Solution_> FLIP(ListVariableDescriptor<Solution_> listVariableDescriptor,
+    /**
+     * Get a {@link FlipSublistMove} that reverses the sublist that consists of the path
+     * between the start and end of the given edges.
+     *
+     * @param listVariableDescriptor
+     * @param indexVariableSupply
+     * @param originalToCurrentIndexList
+     * @param entity
+     * @param firstEdgeStart
+     * @param firstEdgeEnd
+     * @param secondEdgeStart
+     * @param secondEdgeEnd
+     * @return
+     */
+    private FlipSublistMove<Solution_> getListReversalMoveForEdgePair(ListVariableDescriptor<Solution_> listVariableDescriptor,
             IndexVariableSupply indexVariableSupply,
             List<Integer> originalToCurrentIndexList,
             Object entity,
@@ -255,40 +474,7 @@ public final class KOptDescriptor<Solution_> {
         return k;
     }
 
-    public String getMoveInfo() {
-        StringBuilder out = new StringBuilder();
-        out.append("k =    ").append(k).append("\n");
-
-        out.append("t =    [");
-        for (int i = 1; i < t.length; i++) {
-            out.append(t[i]).append(", ");
-        }
-        out.delete(out.length() - 2, out.length()).append("]\n");
-
-        out.append("p =    [");
-        for (int i = 1; i < p.length; i++) {
-            out.append(p[i]).append(", ");
-        }
-        out.delete(out.length() - 2, out.length()).append("]\n");
-
-        out.append("q =    [");
-        for (int i = 1; i < q.length; i++) {
-            out.append(q[i]).append(", ");
-        }
-        out.delete(out.length() - 2, out.length()).append("]\n");
-
-        out.append("incl = [");
-        for (int i = 1; i < incl.length; i++) {
-            out.append(incl[i]).append(", ");
-        }
-        out.delete(out.length() - 2, out.length()).append("]\n");
-
-        out.append("cycles = ").append(Cycles()).append("\n");
-
-        return out.toString();
-    }
-
     public String toString() {
-        return k + "-opt(t=" + Arrays.toString(t) + "\nout-edges=" + getOutEdges() + "\n, in-edges=" + getInEdges() + ")";
+        return k + "-opt(removed=[" + getRemovedEdges() + "]\n, added=[" + getAddedEdges() + "])";
     }
 }

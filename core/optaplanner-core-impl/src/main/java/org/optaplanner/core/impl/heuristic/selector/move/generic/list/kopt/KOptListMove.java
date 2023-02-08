@@ -25,16 +25,18 @@ public class KOptListMove<Solution_> extends AbstractMove<Solution_> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final Object entity;
-    private final int k;
+    private final KOptDescriptor<Solution_> descriptor;
     private final List<FlipSublistMove<Solution_>> equivalent2Opts;
     private final int postShiftAmount;
 
     public KOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
             Object entity,
-            int k, List<FlipSublistMove<Solution_>> equivalent2Opts, int postShiftAmount) {
+            KOptDescriptor<Solution_> descriptor,
+            List<FlipSublistMove<Solution_>> equivalent2Opts,
+            int postShiftAmount) {
         this.listVariableDescriptor = listVariableDescriptor;
         this.entity = entity;
-        this.k = k;
+        this.descriptor = descriptor;
         this.equivalent2Opts = equivalent2Opts;
         this.postShiftAmount = postShiftAmount;
     }
@@ -48,7 +50,7 @@ public class KOptListMove<Solution_> extends AbstractMove<Solution_> {
             for (int i = equivalent2Opts.size() - 1; i >= 0; i--) {
                 inverse2Opts.add(equivalent2Opts.get(i).createUndoMove(scoreDirector));
             }
-            return new UndoKOptListMove<>(listVariableDescriptor, entity, k, inverse2Opts, -postShiftAmount);
+            return new UndoKOptListMove<>(listVariableDescriptor, entity, descriptor, inverse2Opts, -postShiftAmount);
         }
     }
 
@@ -83,12 +85,12 @@ public class KOptListMove<Solution_> extends AbstractMove<Solution_> {
             rebasedEquivalent2Opts.add(twoOpt.rebase(destinationScoreDirector));
         }
         return new KOptListMove<>(listVariableDescriptor, destinationScoreDirector.lookUpWorkingObject(entity),
-                k, rebasedEquivalent2Opts, postShiftAmount);
+                descriptor, rebasedEquivalent2Opts, postShiftAmount);
     }
 
     @Override
     public String getSimpleMoveTypeDescription() {
-        return k + "-opt(" + listVariableDescriptor.getSimpleEntityAndVariableName() + ")";
+        return descriptor.getK() + "-opt(" + listVariableDescriptor.getSimpleEntityAndVariableName() + ")";
     }
 
     @Override
@@ -235,9 +237,7 @@ public class KOptListMove<Solution_> extends AbstractMove<Solution_> {
     }
 
     public String toString() {
-        return k + "-opt(equivalent2Opt="
-                + equivalent2Opts.stream().map(FlipSublistMove::toString).collect(Collectors.joining(", ", "[", "]"))
-                + ")";
+        return descriptor.toString();
     }
 
     /**
@@ -249,16 +249,18 @@ public class KOptListMove<Solution_> extends AbstractMove<Solution_> {
     private static final class UndoKOptListMove<Solution_> extends AbstractMove<Solution_> {
         private final ListVariableDescriptor<Solution_> listVariableDescriptor;
         private final Object entity;
-        private final int k;
+        private final KOptDescriptor<Solution_> descriptor;
         private final List<FlipSublistMove<Solution_>> equivalent2Opts;
         private final int preShiftAmount;
 
         public UndoKOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
                 Object entity,
-                int k, List<FlipSublistMove<Solution_>> equivalent2Opts, int preShiftAmount) {
+                KOptDescriptor<Solution_> descriptor,
+                List<FlipSublistMove<Solution_>> equivalent2Opts,
+                int preShiftAmount) {
             this.listVariableDescriptor = listVariableDescriptor;
             this.entity = entity;
-            this.k = k;
+            this.descriptor = descriptor;
             this.equivalent2Opts = equivalent2Opts;
             this.preShiftAmount = preShiftAmount;
         }
@@ -277,6 +279,10 @@ public class KOptListMove<Solution_> extends AbstractMove<Solution_> {
         protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
             rotateToOriginalPositions(scoreDirector, listVariableDescriptor, entity, preShiftAmount);
             equivalent2Opts.forEach(twoOpt -> twoOpt.doMoveOnGenuineVariables(scoreDirector));
+        }
+
+        public String toString() {
+            return "Undo" + descriptor.toString();
         }
     }
 
