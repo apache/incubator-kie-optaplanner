@@ -980,6 +980,30 @@
           "old": "method <A, B, C, Mapped extends java.lang.Comparable<Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>)",
           "new": "method <A, B, C, Mapped extends java.lang.Comparable<? super Mapped>> org.optaplanner.core.api.score.stream.tri.TriConstraintCollector<A, B, C, ?, java.util.SortedSet<Mapped>> org.optaplanner.core.api.score.stream.ConstraintCollectors::toSortedSet(org.optaplanner.core.api.function.TriFunction<A, B, C, Mapped>)",
           "justification": "Apply the PECS principle to support a wider range of types, such as LocalDateTime."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.addedToInterface",
+          "new": "method org.optaplanner.core.api.score.ScoreExplanation<Solution_, Score_> org.optaplanner.core.api.score.ScoreManager<Solution_, Score_ extends org.optaplanner.core.api.score.Score<Score_>>::explainScore(Solution_, boolean)",
+          "justification": "ScoreManager is an interface we don't expect anyone to implement. The old methods are now default."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.addedToInterface",
+          "new": "method java.lang.String org.optaplanner.core.api.score.ScoreManager<Solution_, Score_ extends org.optaplanner.core.api.score.Score<Score_>>::getSummary(Solution_, boolean)",
+          "justification": "ScoreManager is an interface we don't expect anyone to implement. The old methods are now default."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.addedToInterface",
+          "new": "method void org.optaplanner.core.api.score.ScoreManager<Solution_, Score_ extends org.optaplanner.core.api.score.Score<Score_>>::triggerVariableListeners(Solution_)",
+          "justification": "ScoreManager is an interface we don't expect anyone to implement. The old methods are now default."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.addedToInterface",
+          "new": "method Score_ org.optaplanner.core.api.score.ScoreManager<Solution_, Score_ extends org.optaplanner.core.api.score.Score<Score_>>::updateScore(Solution_, boolean)",
+          "justification": "ScoreManager is an interface we don't expect anyone to implement. The old methods are now default."
         }
       ]
     }

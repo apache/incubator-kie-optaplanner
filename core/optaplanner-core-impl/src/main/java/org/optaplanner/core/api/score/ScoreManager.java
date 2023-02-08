@@ -61,15 +61,49 @@ public interface ScoreManager<Solution_, Score_ extends Score<Score_>> {
     // ************************************************************************
 
     /**
+     * As defined by {@link #updateScore(Object, boolean)},
+     * with the second argument set to false.
+     */
+    default Score_ updateScore(Solution_ solution) {
+        return updateScore(solution, false);
+    }
+
+    /**
      * Calculates the {@link Score} of a {@link PlanningSolution} and updates its {@link PlanningScore} member.
+     * Optionally calls {@link #triggerVariableListeners(Object)}.
+     *
+     * @param solution never null
+     * @param triggerVariableListeners if true, {@link #triggerVariableListeners(Object)} will be called
+     * @return never null
+     */
+    Score_ updateScore(Solution_ solution, boolean triggerVariableListeners);
+
+    /**
+     * Calls variable listeners on a given {@link PlanningSolution}.
+     * <p>
+     * Useful when loading a solution from a persistent storage,
+     * where it is stored in a normalized form without the data calculated by shadow variable listeners.
+     * After this method finishes, such a solution will have all shadow variable fields filled for all entities.
+     * <p>
+     * Calling this method may be expensive.
      *
      * @param solution never null
      */
-    Score_ updateScore(Solution_ solution);
+    void triggerVariableListeners(Solution_ solution);
+
+    /**
+     * As defined by {@link #getSummary(Object, boolean)},
+     * with the second argument set to false.
+     */
+    default String getSummary(Solution_ solution) {
+        return getSummary(solution, false);
+    }
 
     /**
      * Returns a diagnostic text that explains the solution through the {@link ConstraintMatch} API to identify which
      * constraints or planning entities cause that score quality.
+     * Optionally calls {@link #triggerVariableListeners(Object)}.
+     * <p>
      * In case of an {@link Score#isFeasible() infeasible} solution, this can help diagnose the cause of that.
      * <p>
      * Do not parse this string.
@@ -78,21 +112,32 @@ public interface ScoreManager<Solution_, Score_ extends Score<Score_>> {
      * and convert those into a domain specific API.
      *
      * @param solution never null
+     * @param triggerVariableListeners if true, {@link #triggerVariableListeners(Object)} will be called
      * @return null if {@link #updateScore(Object)} returns null with the same solution
      * @throws IllegalStateException when constraint matching is disabled or not supported by the underlying score
      *         calculator, such as {@link EasyScoreCalculator}.
      */
-    String getSummary(Solution_ solution);
+    String getSummary(Solution_ solution, boolean triggerVariableListeners);
+
+    /**
+     * As defined by {@link #explainScore(Object, boolean)},
+     * with the second argument set to false.
+     */
+    default ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution) {
+        return explainScore(solution, false);
+    }
 
     /**
      * Calculates and retrieves {@link ConstraintMatchTotal}s and {@link Indictment}s necessary for describing the
      * quality of a particular solution.
+     * Optionally calls {@link #triggerVariableListeners(Object)}.
      *
      * @param solution never null
+     * @param triggerVariableListeners if true, {@link #triggerVariableListeners(Object)} will be called
      * @return never null
      * @throws IllegalStateException when constraint matching is disabled or not supported by the underlying score
      *         calculator, such as {@link EasyScoreCalculator}.
      */
-    ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution);
+    ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution, boolean triggerVariableListeners);
 
 }

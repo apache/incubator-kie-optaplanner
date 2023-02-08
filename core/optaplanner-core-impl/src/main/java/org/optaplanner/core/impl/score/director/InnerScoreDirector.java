@@ -257,8 +257,8 @@ public interface InnerScoreDirector<Solution_, Score_ extends Score<Score_>>
     void assertExpectedUndoMoveScore(Move<Solution_> move, Score_ beforeMoveScore);
 
     /**
-     * Asserts that none of the planning facts from {@link SolutionDescriptor#getAllFacts(Object)} for
-     * {@link #getWorkingSolution()} have {@link PlanningId}s with a null value.
+     * Asserts that none of the planning facts from {@link #getWorkingSolution()}
+     * have {@link PlanningId}s with a null value.
      */
     void assertNonNullPlanningIds();
 
