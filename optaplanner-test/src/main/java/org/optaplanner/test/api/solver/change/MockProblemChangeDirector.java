@@ -84,6 +84,11 @@ public class MockProblemChangeDirector implements ProblemChangeDirector {
         return Optional.of((EntityOrProblemFact) lookUpTable.get(externalObject));
     }
 
+    @Override
+    public void triggerVariableListeners() {
+        // Do nothing.
+    }
+
     /**
      * Defines what {@link #lookUpWorkingObjectOrFail(Object)} returns.
      */

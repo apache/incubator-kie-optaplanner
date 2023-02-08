@@ -79,19 +79,6 @@ public interface ScoreManager<Solution_, Score_ extends Score<Score_>> {
     Score_ updateScore(Solution_ solution, boolean triggerVariableListeners);
 
     /**
-     * Calls variable listeners on a given {@link PlanningSolution}.
-     * <p>
-     * Useful when loading a solution from a persistent storage,
-     * where it is stored in a normalized form without the data calculated by shadow variable listeners.
-     * After this method finishes, such a solution will have all shadow variable fields filled for all entities.
-     * <p>
-     * Calling this method may be expensive.
-     *
-     * @param solution never null
-     */
-    void triggerVariableListeners(Solution_ solution);
-
-    /**
      * As defined by {@link #getSummary(Object, boolean)},
      * with the second argument set to false.
      */
@@ -139,5 +126,16 @@ public interface ScoreManager<Solution_, Score_ extends Score<Score_>> {
      *         calculator, such as {@link EasyScoreCalculator}.
      */
     ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution, boolean triggerVariableListeners);
+
+    /**
+     * Calls variable listeners on a given {@link PlanningSolution}.
+     * After this method finishes, such a solution will have all shadow variable fields filled for all entities.
+     *
+     * @param solution never null
+     * @apiNote Useful when loading a solution from a persistent storage,
+     *          where it is stored in a normalized form without the data calculated by shadow variable listeners.
+     * @implNote Calling this method may be expensive.
+     */
+    void triggerVariableListeners(Solution_ solution);
 
 }

@@ -1004,6 +1004,12 @@
           "code": "java.method.addedToInterface",
           "new": "method Score_ org.optaplanner.core.api.score.ScoreManager<Solution_, Score_ extends org.optaplanner.core.api.score.Score<Score_>>::updateScore(Solution_, boolean)",
           "justification": "ScoreManager is an interface we don't expect anyone to implement. The old methods are now default."
+        },
+        {
+          "ignore": true,
+          "code": "java.method.addedToInterface",
+          "new": "method void org.optaplanner.core.api.solver.change.ProblemChangeDirector::triggerVariableListeners()",
+          "justification": "ProblemChangeDirector is an interface we don't expect anyone to implement."
         }
       ]
     }

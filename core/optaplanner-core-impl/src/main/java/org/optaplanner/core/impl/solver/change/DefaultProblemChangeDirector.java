@@ -92,9 +92,14 @@ public final class DefaultProblemChangeDirector<Solution_> implements ProblemCha
         return Optional.ofNullable(scoreDirector.lookUpWorkingObjectOrReturnNull(externalObject));
     }
 
+    @Override
+    public void triggerVariableListeners() {
+        scoreDirector.triggerVariableListeners();
+    }
+
     public Score<?> doProblemChange(ProblemChange<Solution_> problemChange) {
         problemChange.doChange(scoreDirector.getWorkingSolution(), this);
-        scoreDirector.triggerVariableListeners();
+        triggerVariableListeners();
         return scoreDirector.calculateScore();
     }
 }
