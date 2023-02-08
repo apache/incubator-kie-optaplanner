@@ -14,6 +14,7 @@ environments:
   quarkus-branch:
     env_vars:
       QUARKUS_BRANCH: '3.0'
+      QUARKUS_VERSION: 999-jakarta-SNAPSHOT
     ids:
     - quarkus
   quarkus-lts:
