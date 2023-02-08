@@ -1,6 +1,21 @@
 [[releaseNotes-8.x]]
 == OptaPlanner 8.x Release Notes
 
+[[releaseNotes-8.35.0.Final]]
+=== OptaPlanner 8.35.0.Final
+
+==== `SolutionManager` gets support for triggering variable listeners
+
+`SolutionManager` (formerly `ScoreManager`) received a new method called `triggerVariableListeners()`.
+This method has often been requested by users who load their solutions from persistent storage (such as a relation database)
+and these solutions do not carry the information carried in xref:shadow-variable/shadow-variable.adoc[shadow variables].
+By calling it,
+OptaPlanner will automatically compute values for all the shadow variables
+in the given solution.
+
+`ProblemChangeDirector` also received a new method of the same name,
+to serve the same purpose during xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning].
+
 [[releaseNotes-8.34.0.Final]]
 === OptaPlanner 8.34.0.Final
 
