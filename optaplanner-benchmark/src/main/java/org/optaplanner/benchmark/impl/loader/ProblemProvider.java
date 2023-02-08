@@ -1,6 +1,6 @@
 package org.optaplanner.benchmark.impl.loader;
 
-import javax.xml.bind.annotation.XmlSeeAlso;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
 
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;

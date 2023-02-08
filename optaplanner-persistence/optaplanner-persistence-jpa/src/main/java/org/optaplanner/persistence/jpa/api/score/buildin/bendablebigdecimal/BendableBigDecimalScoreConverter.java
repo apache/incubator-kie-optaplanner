@@ -1,7 +1,7 @@
 package org.optaplanner.persistence.jpa.api.score.buildin.bendablebigdecimal;
 
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 
