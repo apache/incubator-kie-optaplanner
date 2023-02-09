@@ -85,7 +85,7 @@ public class MockProblemChangeDirector implements ProblemChangeDirector {
     }
 
     @Override
-    public void triggerVariableListeners() {
+    public void updateShadowVariables() {
         // Do nothing.
     }
 

@@ -93,13 +93,13 @@ public final class DefaultProblemChangeDirector<Solution_> implements ProblemCha
     }
 
     @Override
-    public void triggerVariableListeners() {
+    public void updateShadowVariables() {
         scoreDirector.triggerVariableListeners();
     }
 
     public Score<?> doProblemChange(ProblemChange<Solution_> problemChange) {
         problemChange.doChange(scoreDirector.getWorkingSolution(), this);
-        triggerVariableListeners();
+        updateShadowVariables();
         return scoreDirector.calculateScore();
     }
 }

@@ -34,40 +34,22 @@ public final class DefaultSolutionManager<Solution_, Score_ extends Score<Score_
     }
 
     @Override
-    public Score_ updateScore(Solution_ solution, boolean triggerVariableListeners) {
-        return callScoreDirector(solution, InnerScoreDirector::calculateScore, triggerVariableListeners, false);
+    public Score_ updateScore(Solution_ solution, boolean updateShadowVariables) {
+        return callScoreDirector(solution, InnerScoreDirector::calculateScore, updateShadowVariables, false);
     }
 
     @Override
-    public void triggerVariableListeners(Solution_ solution) {
-        callScoreDirector(solution, s -> null, true, false);
-    }
-
-    private void innerTriggerVariableListeners(InnerScoreDirector<Solution_, Score_> innerScoreDirector, Solution_ solution) {
-        SolutionDescriptor<Solution_> solutionDescriptor = innerScoreDirector.getSolutionDescriptor();
-        solutionDescriptor.visitAllProblemFacts(solution, entity -> {
-            innerScoreDirector.beforeProblemFactAdded(entity);
-            innerScoreDirector.afterProblemFactAdded(entity);
-        });
-        solutionDescriptor.visitAllEntities(solution, fact -> {
-            innerScoreDirector.beforeEntityAdded(fact);
-            innerScoreDirector.afterEntityAdded(fact);
-        });
-        innerScoreDirector.triggerVariableListeners();
+    public String getSummary(Solution_ solution, boolean updateShadowVariables) {
+        return explainScore(solution, updateShadowVariables).getSummary();
     }
 
     @Override
-    public String getSummary(Solution_ solution, boolean triggerVariableListeners) {
-        return explainScore(solution, triggerVariableListeners).getSummary();
-    }
-
-    @Override
-    public ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution, boolean triggerVariableListeners) {
-        return callScoreDirector(solution, DefaultScoreExplanation::new, triggerVariableListeners, true);
+    public ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution, boolean updateShadowVariables) {
+        return callScoreDirector(solution, DefaultScoreExplanation::new, updateShadowVariables, true);
     }
 
     private <Result_> Result_ callScoreDirector(Solution_ solution,
-            Function<InnerScoreDirector<Solution_, Score_>, Result_> function, boolean triggerVariableListeners,
+            Function<InnerScoreDirector<Solution_, Score_>, Result_> function, boolean updateShadowVariables,
             boolean enableConstraintMatch) {
         try (InnerScoreDirector<Solution_, Score_> scoreDirector =
                 scoreDirectorFactory.buildScoreDirector(false, enableConstraintMatch)) {
@@ -76,9 +58,17 @@ public final class DefaultSolutionManager<Solution_, Score_ extends Score<Score_
                 throw new IllegalStateException("When constraintMatchEnabled (" + constraintMatchEnabled
                         + ") is disabled, this method should not be called.");
             }
+            if (updateShadowVariables) {
+                SolutionDescriptor<Solution_> solutionDescriptor = scoreDirector.getSolutionDescriptor();
+                solutionDescriptor.visitAllProblemFacts(solution, scoreDirector::beforeProblemFactAdded);
+                solutionDescriptor.visitAllEntities(solution, scoreDirector::beforeEntityAdded);
+            }
             scoreDirector.setWorkingSolution(solution); // Init the ScoreDirector first, else NPEs may be thrown.
-            if (triggerVariableListeners) {
-                innerTriggerVariableListeners(scoreDirector, solution);
+            if (updateShadowVariables) {
+                SolutionDescriptor<Solution_> solutionDescriptor = scoreDirector.getSolutionDescriptor();
+                solutionDescriptor.visitAllProblemFacts(solution, scoreDirector::afterProblemFactAdded);
+                solutionDescriptor.visitAllEntities(solution, scoreDirector::afterEntityAdded);
+                scoreDirector.triggerVariableListeners();
             }
             return function.apply(scoreDirector);
         }

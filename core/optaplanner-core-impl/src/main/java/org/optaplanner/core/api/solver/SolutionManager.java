@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
@@ -62,7 +63,7 @@ public interface SolutionManager<Solution_, Score_ extends Score<Score_>> {
 
     /**
      * As defined by {@link #updateScore(Object, boolean)},
-     * with the second argument set to false.
+     * without updating shadow variables.
      */
     default Score_ updateScore(Solution_ solution) {
         return updateScore(solution, false);
@@ -70,17 +71,18 @@ public interface SolutionManager<Solution_, Score_ extends Score<Score_>> {
 
     /**
      * Calculates the {@link Score} of a {@link PlanningSolution} and updates its {@link PlanningScore} member.
-     * Optionally calls {@link #triggerVariableListeners(Object)}.
+     * Optionally refreshes all the {@link ShadowVariable shadow variables},
+     * incurring a performance cost.
      *
      * @param solution never null
-     * @param triggerVariableListeners if true, {@link #triggerVariableListeners(Object)} will be called
+     * @param updateShadowVariables if true, all entities get all of their shadow variables updated
      * @return never null
      */
-    Score_ updateScore(Solution_ solution, boolean triggerVariableListeners);
+    Score_ updateScore(Solution_ solution, boolean updateShadowVariables);
 
     /**
      * As defined by {@link #getSummary(Object, boolean)},
-     * with the second argument set to false.
+     * without updating shadow variables.
      */
     default String getSummary(Solution_ solution) {
         return getSummary(solution, false);
@@ -89,26 +91,27 @@ public interface SolutionManager<Solution_, Score_ extends Score<Score_>> {
     /**
      * Returns a diagnostic text that explains the solution through the {@link ConstraintMatch} API to identify which
      * constraints or planning entities cause that score quality.
-     * Optionally calls {@link #triggerVariableListeners(Object)}.
+     * Optionally refreshes all the {@link ShadowVariable shadow variables},
+     * incurring a performance cost.
      * <p>
      * In case of an {@link Score#isFeasible() infeasible} solution, this can help diagnose the cause of that.
-     * <p>
-     * Do not parse this string.
-     * Instead, to provide this information in a UI or a service, use {@link #explainScore(Object)}
-     * to retrieve {@link ScoreExplanation#getConstraintMatchTotalMap()} and {@link ScoreExplanation#getIndictmentMap()}
-     * and convert those into a domain specific API.
      *
+     * @apiNote Do not parse the return value, its format may change without warning.
+     *          Instead, to provide this information in a UI or a service, use {@link #explainScore(Object)}
+     *          to retrieve {@link ScoreExplanation#getConstraintMatchTotalMap()} and
+     *          {@link ScoreExplanation#getIndictmentMap()}
+     *          and convert those into a domain specific API.
      * @param solution never null
-     * @param triggerVariableListeners if true, {@link #triggerVariableListeners(Object)} will be called
+     * @param updateShadowVariables if true, all entities get all of their shadow variables updated
      * @return null if {@link #updateScore(Object)} returns null with the same solution
      * @throws IllegalStateException when constraint matching is disabled or not supported by the underlying score
      *         calculator, such as {@link EasyScoreCalculator}.
      */
-    String getSummary(Solution_ solution, boolean triggerVariableListeners);
+    String getSummary(Solution_ solution, boolean updateShadowVariables);
 
     /**
      * As defined by {@link #explainScore(Object, boolean)},
-     * with the second argument set to false.
+     * without updating shadow variables.
      */
     default ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution) {
         return explainScore(solution, false);
@@ -117,25 +120,15 @@ public interface SolutionManager<Solution_, Score_ extends Score<Score_>> {
     /**
      * Calculates and retrieves {@link ConstraintMatchTotal}s and {@link Indictment}s necessary for describing the
      * quality of a particular solution.
-     * Optionally calls {@link #triggerVariableListeners(Object)}.
+     * Optionally refreshes all the {@link ShadowVariable shadow variables},
+     * incurring a performance cost.
      *
      * @param solution never null
-     * @param triggerVariableListeners if true, {@link #triggerVariableListeners(Object)} will be called
+     * @param updateShadowVariables if true, all entities get all of their shadow variables updated
      * @return never null
      * @throws IllegalStateException when constraint matching is disabled or not supported by the underlying score
      *         calculator, such as {@link EasyScoreCalculator}.
      */
-    ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution, boolean triggerVariableListeners);
-
-    /**
-     * Calls variable listeners on a given {@link PlanningSolution}.
-     * After this method finishes, such a solution will have all shadow variable fields filled for all entities.
-     *
-     * @param solution never null
-     * @apiNote Useful when loading a solution from a persistent storage,
-     *          where it is stored in a normalized form without the data calculated by shadow variable listeners.
-     * @implNote Calling this method may be expensive.
-     */
-    void triggerVariableListeners(Solution_ solution);
+    ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution, boolean updateShadowVariables);
 
 }

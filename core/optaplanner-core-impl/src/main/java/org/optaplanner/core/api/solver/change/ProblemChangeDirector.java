@@ -119,8 +119,7 @@ public interface ProblemChangeDirector {
      *
      * @apiNote This happens automatically after the entire {@link ProblemChange} has been processed,
      *          but this method allows the user to specifically request it in the middle of the {@link ProblemChange}.
-     * @implNote Calling this method may be expensive.
      */
-    void triggerVariableListeners();
+    void updateShadowVariables();
 
 }

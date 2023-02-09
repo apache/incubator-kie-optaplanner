@@ -6,14 +6,14 @@
 
 ==== `SolutionManager` gets support for triggering variable listeners
 
-`SolutionManager` (formerly `ScoreManager`) received a new method called `triggerVariableListeners()`.
-This method has often been requested by users who load their solutions from persistent storage (such as a relation database)
-and these solutions do not carry the information carried in xref:shadow-variable/shadow-variable.adoc[shadow variables].
-By calling it,
+`SolutionManager` (formerly `ScoreManager`) methods such as `explainScore(solution)` and `updateScore(solution)`  received a new override with an extra boolean argument, `updateShadowVariables`.
+This has often been requested by users who load their solutions from persistent storage (such as a relational database),
+where these solutions do not include the information carried by xref:shadow-variable/shadow-variable.adoc[shadow variables].
+By calling these new overrides and setting the flag to `true`,
 OptaPlanner will automatically compute values for all the shadow variables
 in the given solution.
 
-`ProblemChangeDirector` also received a new method of the same name,
+Similarly, `ProblemChangeDirector` received a new method called `updateShadowVariables(),
 to serve the same purpose during xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning].
 
 [[releaseNotes-8.34.0.Final]]
