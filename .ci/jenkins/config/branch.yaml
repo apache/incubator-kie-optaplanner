@@ -59,12 +59,12 @@ disable:
 repositories:
 - name: optaplanner
   branch: 9.34.x
-- name: optaweb-vehicle-routing
-  branch: 9.34.x
-- name: optaplanner-quickstarts
-  branch: 9.34.x
-- name: optaplanner-website
-  branch: 9.34.x
+#- name: optaweb-vehicle-routing
+#  branch: 9.34.x
+#- name: optaplanner-quickstarts
+#  branch: 9.34.x
+#- name: optaplanner-website
+#  branch: 9.34.x
 git:
   author:
     name: kiegroup
