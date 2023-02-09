@@ -111,11 +111,13 @@ public final class KOptDescriptor<Solution_> {
         // (Section 5.3 "Determination of the feasibility of a move",
         //  An Effective Implementation of K-opt Moves for the Lin-Kernighan TSP Heuristic)
         for (i = j = 1; j <= k; i += 2, j++) {
-            removedEdgeIndexToTourOrder[j] = (endpointToSuccessorFunction.apply(removedEdges[i]) == removedEdges[i + 1]) ? i : i + 1;
+            removedEdgeIndexToTourOrder[j] =
+                    (endpointToSuccessorFunction.apply(removedEdges[i]) == removedEdges[i + 1]) ? i : i + 1;
         }
 
         IntComparator comparator = (pa, pb) -> pa == pb ? 0
-                : (betweenPredicate.test(removedEdges[removedEdgeIndexToTourOrder[1]], removedEdges[pa], removedEdges[pb]) ? -1 : 1);
+                : (betweenPredicate.test(removedEdges[removedEdgeIndexToTourOrder[1]], removedEdges[pa], removedEdges[pb]) ? -1
+                        : 1);
         TimSort.sort(removedEdgeIndexToTourOrder, 2, k + 1, comparator);
 
         for (j = 2 * k; j >= 2; j -= 2) {

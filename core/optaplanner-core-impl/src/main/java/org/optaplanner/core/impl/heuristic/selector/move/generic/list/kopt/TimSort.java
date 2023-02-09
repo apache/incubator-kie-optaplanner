@@ -7,9 +7,9 @@ import java.util.Comparator;
  * to support primitive int arrays.
  *
  * TODO smells a bit of plagiarism; maybe we should bring our own sort?
- *  I'm thinking block sort (https://en.wikipedia.org/wiki/Block_sort)
- *  Stable, O(n log n) worst case, no extra memory use.
- *  That said, TimSort already does all of that except for the memory use.
+ * I'm thinking block sort (https://en.wikipedia.org/wiki/Block_sort)
+ * Stable, O(n log n) worst case, no extra memory use.
+ * That said, TimSort already does all of that except for the memory use.
  */
 class TimSort {
     /**

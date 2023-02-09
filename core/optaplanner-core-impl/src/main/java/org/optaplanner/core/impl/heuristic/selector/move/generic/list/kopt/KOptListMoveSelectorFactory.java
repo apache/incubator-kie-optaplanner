@@ -63,6 +63,6 @@ public class KOptListMoveSelectorFactory<Solution_>
             HeuristicConfigPolicy<Solution_> configPolicy, EntityDescriptor<Solution_> entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         return ValueSelectorFactory.<Solution_> create(new ValueSelectorConfig())
-                        .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder);
+                .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder);
     }
 }
