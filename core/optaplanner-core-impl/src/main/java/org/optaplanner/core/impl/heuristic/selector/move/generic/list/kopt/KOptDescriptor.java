@@ -252,9 +252,9 @@ public final class KOptDescriptor<Solution_> {
         // TODO consider turning this to int[] as well;
         //  I checked the operations on this list and doing it as an array shouldn't prevent them.
         //  This is on the hot path, the benefits will be worth it.
-        List<Integer> originalToCurrentIndexList = new ArrayList<>(entityListSize);
+        int[] originalToCurrentIndexList = new int[entityListSize];
         for (int index = 0; index < entityListSize; index++) {
-            originalToCurrentIndexList.add(index);
+            originalToCurrentIndexList[index] = index;
         }
 
         boolean isMoveNotDone = true;
@@ -340,7 +340,7 @@ public final class KOptDescriptor<Solution_> {
             isMoveNotDone = false;
         }
 
-        return new KOptListMove<>(listVariableDescriptor, entity, this, out, -originalToCurrentIndexList.indexOf(0));
+        return new KOptListMove<>(listVariableDescriptor, entity, this, out, -indexOf(originalToCurrentIndexList, 0));
     }
 
     /**
@@ -450,29 +450,38 @@ public final class KOptDescriptor<Solution_> {
      */
     private FlipSublistMove<Solution_> getListReversalMoveForEdgePair(ListVariableDescriptor<Solution_> listVariableDescriptor,
             IndexVariableSupply indexVariableSupply,
-            List<Integer> originalToCurrentIndexList,
+            int[] originalToCurrentIndexList,
             Object entity,
             Object firstEdgeStart,
             Object firstEdgeEnd,
             Object secondEdgeStart,
             Object secondEdgeEnd) {
-        int originalFirstEdgeStartIndex = originalToCurrentIndexList.indexOf(indexVariableSupply.getIndex(firstEdgeStart));
-        int originalFirstEdgeEndIndex = originalToCurrentIndexList.indexOf(indexVariableSupply.getIndex(firstEdgeEnd));
-        int originalSecondEdgeStartIndex = originalToCurrentIndexList.indexOf(indexVariableSupply.getIndex(secondEdgeStart));
-        int originalSecondEdgeEndIndex = originalToCurrentIndexList.indexOf(indexVariableSupply.getIndex(secondEdgeEnd));
+        int originalFirstEdgeStartIndex = indexOf(originalToCurrentIndexList, indexVariableSupply.getIndex(firstEdgeStart));
+        int originalFirstEdgeEndIndex = indexOf(originalToCurrentIndexList, indexVariableSupply.getIndex(firstEdgeEnd));
+        int originalSecondEdgeStartIndex = indexOf(originalToCurrentIndexList, indexVariableSupply.getIndex(secondEdgeStart));
+        int originalSecondEdgeEndIndex = indexOf(originalToCurrentIndexList, indexVariableSupply.getIndex(secondEdgeEnd));
 
-        int firstEndpoint = ((originalFirstEdgeStartIndex + 1) % originalToCurrentIndexList.size()) == originalFirstEdgeEndIndex
+        int firstEndpoint = ((originalFirstEdgeStartIndex + 1) % originalToCurrentIndexList.length) == originalFirstEdgeEndIndex
                 ? originalFirstEdgeEndIndex
                 : originalFirstEdgeStartIndex;
 
         int secondEndpoint =
-                ((originalSecondEdgeStartIndex + 1) % originalToCurrentIndexList.size()) == originalSecondEdgeEndIndex
+                ((originalSecondEdgeStartIndex + 1) % originalToCurrentIndexList.length) == originalSecondEdgeEndIndex
                         ? originalSecondEdgeEndIndex
                         : originalSecondEdgeStartIndex;
 
-        FlipSublistMove.flipSublist(originalToCurrentIndexList, firstEndpoint, secondEndpoint);
+        FlipSublistMove.flipSubarray(originalToCurrentIndexList, firstEndpoint, secondEndpoint);
         return new FlipSublistMove<>(listVariableDescriptor, entity,
                 firstEndpoint, secondEndpoint);
+    }
+
+    private static int indexOf(int[] search, int query) {
+        for (int i = 0; i < search.length; i++) {
+            if (search[i] == query) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public int getK() {

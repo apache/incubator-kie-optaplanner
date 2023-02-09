@@ -130,7 +130,6 @@ public class FlipSublistMove<Solution_> extends AbstractMove<Solution_> {
             int totalLength = firstHalfReversedPath.size() + secondHalfReversedPath.size();
 
             // Used to rotate the list to put the first element back in its original position
-            int firstElementShift = 0;
             for (int i = 0; (i < totalLength >> 1); i++) {
                 if (i < firstHalfReversedPath.size()) {
                     if (i < secondHalfReversedPath.size()) {
@@ -153,6 +152,50 @@ public class FlipSublistMove<Solution_> extends AbstractMove<Solution_> {
                     secondHalfReversedPath.set(firstIndex, secondHalfReversedPath.get(secondIndex));
                     secondHalfReversedPath.set(secondIndex, savedFirstItem);
                 }
+            }
+        }
+    }
+
+    public static <T> void flipSubarray(int[] array, int fromIndexInclusive, int toIndexExclusive) {
+        if (fromIndexInclusive < toIndexExclusive) {
+            int length = (toIndexExclusive - fromIndexInclusive) >> 1;
+            for (int i = 0; i < length; i++) {
+                int index = fromIndexInclusive + i;
+                int oppositeIndex = toIndexExclusive - i - 1;
+                int saved = array[index];
+                array[index] = array[oppositeIndex];
+                array[oppositeIndex] = saved;
+            }
+        } else {
+            int firstHalfSize = array.length - fromIndexInclusive;
+            int secondHalfSize = toIndexExclusive;
+
+            // Reverse the combined list firstHalfReversedPath + secondHalfReversedPath
+            // For instance, (1, 2, 3)(4, 5, 6, 7, 8, 9) becomes
+            // (9, 8, 7)(6, 5, 4, 3, 2, 1)
+            int totalLength = firstHalfSize + secondHalfSize;
+
+            // Used to rotate the list to put the first element back in its original position
+            for (int i = 0; (i < totalLength >> 1); i++) {
+                int firstHalfIndex;
+                int secondHalfIndex;
+
+                if (i < firstHalfSize) {
+                    if (i < secondHalfSize) {
+                        firstHalfIndex = fromIndexInclusive + i;
+                        secondHalfIndex = secondHalfSize - i - 1;
+                    } else {
+                        // firstIndex = i
+                        firstHalfIndex  = fromIndexInclusive + i;
+                        secondHalfIndex = firstHalfSize - i + secondHalfSize - 1;
+                    }
+                } else {
+                    firstHalfIndex = i - firstHalfSize;
+                    secondHalfIndex = secondHalfSize - i - 1;
+                }
+                int saved = array[firstHalfIndex];
+                array[firstHalfIndex] = array[secondHalfIndex];
+                array[secondHalfIndex] = saved;
             }
         }
     }
