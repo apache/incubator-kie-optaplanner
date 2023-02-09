@@ -13,6 +13,8 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescript
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
 import org.optaplanner.core.impl.util.Pair;
 
+// TODO consider making this generic in Edge_
+//  to get rid of all those anonymous Object references
 public final class KOptDescriptor<Solution_> {
 
     /**
@@ -245,6 +247,9 @@ public final class KOptDescriptor<Solution_> {
 
         int entityListSize = listVariableDescriptor.getListSize(entity);
         List<FlipSublistMove<Solution_>> out = new ArrayList<>();
+        // TODO consider turning this to int[] as well;
+        //  I checked the operations on this list and doing it as an array shouldn't prevent them.
+        //  This is on the hot path, the benefits will be worth it.
         List<Integer> originalToCurrentIndexList = new ArrayList<>(entityListSize);
         for (int index = 0; index < entityListSize; index++) {
             originalToCurrentIndexList.add(index);
