@@ -7,6 +7,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.solver.SolutionManager;
+import org.optaplanner.core.api.solver.SolutionUpdatePolicy;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -24,16 +25,17 @@ public final class DefaultScoreManager<Solution_, Score_ extends Score<Score_>>
 
     @Override
     public Score_ updateScore(Solution_ solution) {
-        return solutionManager.updateScore(solution);
+        return solutionManager.update(solution, SolutionUpdatePolicy.SCORE_ONLY);
     }
 
     @Override
     public String getSummary(Solution_ solution) {
-        return solutionManager.getSummary(solution);
+        return explainScore(solution)
+                .getSummary();
     }
 
     @Override
     public ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution) {
-        return solutionManager.explainScore(solution);
+        return solutionManager.explain(solution, SolutionUpdatePolicy.SCORE_ONLY);
     }
 }

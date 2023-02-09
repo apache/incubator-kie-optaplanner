@@ -1,10 +1,11 @@
 package org.optaplanner.core.api.solver;
 
+import static org.optaplanner.core.api.solver.SolutionUpdatePolicy.ALL;
+import static org.optaplanner.core.api.solver.SolutionUpdatePolicy.SCORE_ONLY;
+
 import java.util.UUID;
 
-import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.variable.ShadowVariable;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
@@ -62,73 +63,92 @@ public interface SolutionManager<Solution_, Score_ extends Score<Score_>> {
     // ************************************************************************
 
     /**
-     * As defined by {@link #updateScore(Object, boolean)},
-     * without updating shadow variables.
+     * As defined by {@link #update(Object, SolutionUpdatePolicy)},
+     * using {@link SolutionUpdatePolicy#ALL}.
+     *
      */
-    default Score_ updateScore(Solution_ solution) {
-        return updateScore(solution, false);
+    default Score_ update(Solution_ solution) {
+        return update(solution, ALL);
     }
 
     /**
-     * Calculates the {@link Score} of a {@link PlanningSolution} and updates its {@link PlanningScore} member.
-     * Optionally refreshes all the {@link ShadowVariable shadow variables},
-     * incurring a performance cost.
+     * Updates the given solution according to the {@link SolutionUpdatePolicy}.
      *
      * @param solution never null
-     * @param updateShadowVariables if true, all entities get all of their shadow variables updated
-     * @return never null
+     * @param solutionUpdatePolicy never null; if unsure, pick {@link SolutionUpdatePolicy#ALL}
+     * @return possibly null if already null and {@link SolutionUpdatePolicy} didn't cause its update
+     * @see SolutionUpdatePolicy Description of individual policies with respect to performance trade-offs.
      */
-    Score_ updateScore(Solution_ solution, boolean updateShadowVariables);
-
-    /**
-     * As defined by {@link #getSummary(Object, boolean)},
-     * without updating shadow variables.
-     */
-    default String getSummary(Solution_ solution) {
-        return getSummary(solution, false);
-    }
+    Score_ update(Solution_ solution, SolutionUpdatePolicy solutionUpdatePolicy);
 
     /**
      * Returns a diagnostic text that explains the solution through the {@link ConstraintMatch} API to identify which
      * constraints or planning entities cause that score quality.
-     * Optionally refreshes all the {@link ShadowVariable shadow variables},
-     * incurring a performance cost.
      * <p>
      * In case of an {@link Score#isFeasible() infeasible} solution, this can help diagnose the cause of that.
      *
      * @apiNote Do not parse the return value, its format may change without warning.
-     *          Instead, to provide this information in a UI or a service, use {@link #explainScore(Object)}
+     *          Instead, to provide this information in a UI or a service, use {@link #explain(Object)}
      *          to retrieve {@link ScoreExplanation#getConstraintMatchTotalMap()} and
      *          {@link ScoreExplanation#getIndictmentMap()}
      *          and convert those into a domain specific API.
+     * @deprecated Use {@link ScoreExplanation#getSummary()} obtained by {@link #explain(Object)}.
      * @param solution never null
-     * @param updateShadowVariables if true, all entities get all of their shadow variables updated
-     * @return null if {@link #updateScore(Object)} returns null with the same solution
+     * @return never null
      * @throws IllegalStateException when constraint matching is disabled or not supported by the underlying score
      *         calculator, such as {@link EasyScoreCalculator}.
      */
-    String getSummary(Solution_ solution, boolean updateShadowVariables);
+    @Deprecated(forRemoval = true)
+    default String getSummary(Solution_ solution) {
+        return explainScore(solution)
+                .getSummary();
+    }
 
     /**
-     * As defined by {@link #explainScore(Object, boolean)},
-     * without updating shadow variables.
+     * As defined by {@link #explain(Object)},
+     * using {@link SolutionUpdatePolicy#ALL}.
      */
-    default ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution) {
-        return explainScore(solution, false);
+    default ScoreExplanation<Solution_, Score_> explain(Solution_ solution) {
+        return explain(solution, ALL);
     }
 
     /**
      * Calculates and retrieves {@link ConstraintMatchTotal}s and {@link Indictment}s necessary for describing the
      * quality of a particular solution.
-     * Optionally refreshes all the {@link ShadowVariable shadow variables},
-     * incurring a performance cost.
      *
      * @param solution never null
-     * @param updateShadowVariables if true, all entities get all of their shadow variables updated
+     * @param solutionUpdatePolicy never null; if unsure, pick {@link SolutionUpdatePolicy#ALL}
      * @return never null
      * @throws IllegalStateException when constraint matching is disabled or not supported by the underlying score
      *         calculator, such as {@link EasyScoreCalculator}.
+     * @see SolutionUpdatePolicy Description of individual policies with respect to performance trade-offs.
      */
-    ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution, boolean updateShadowVariables);
+    ScoreExplanation<Solution_, Score_> explain(Solution_ solution, SolutionUpdatePolicy solutionUpdatePolicy);
+
+    /**
+     * As defined by {@link #update(Object, SolutionUpdatePolicy)},
+     * using {@link SolutionUpdatePolicy#SCORE_ONLY}.
+     *
+     * @deprecated Use {@link #update(Object)} as is
+     *             or {@link #update(Object, SolutionUpdatePolicy)},
+     *             picking the update policy that best suits your planning solution.
+     */
+    @Deprecated(forRemoval = true)
+    default Score_ updateScore(Solution_ solution) {
+        return update(solution, SCORE_ONLY);
+    }
+
+    /**
+     * As defined by {@link #explain(Object, SolutionUpdatePolicy)},
+     * using {@link SolutionUpdatePolicy#SCORE_ONLY}.
+     *
+     * @deprecated Use {@link #explain(Object)} as is
+     *             or {@link #explain(Object, SolutionUpdatePolicy)},
+     *             picking the update policy that best suits your planning solution.
+     */
+    @Deprecated(forRemoval = true)
+    default ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution) {
+        return explain(solution, SCORE_ONLY);
+    }
 
 }

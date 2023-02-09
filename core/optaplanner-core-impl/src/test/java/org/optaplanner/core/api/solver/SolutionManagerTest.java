@@ -23,7 +23,7 @@ public class SolutionManagerTest {
         assertThat(SolutionManager).isNotNull();
         TestdataSolution solution = TestdataSolution.generateSolution();
         assertThat(solution.getScore()).isNull();
-        SolutionManager.updateScore(solution);
+        SolutionManager.update(solution);
         assertThat(solution.getScore()).isNotNull();
     }
 
@@ -33,7 +33,7 @@ public class SolutionManagerTest {
         SolutionManager<TestdataSolution, ?> SolutionManager = SolutionManagerSource.createSolutionManager(SOLVER_FACTORY);
         assertThat(SolutionManager).isNotNull();
         TestdataSolution solution = TestdataSolution.generateSolution();
-        ScoreExplanation<TestdataSolution, ?> scoreExplanation = SolutionManager.explainScore(solution);
+        ScoreExplanation<TestdataSolution, ?> scoreExplanation = SolutionManager.explain(solution);
         assertThat(scoreExplanation).isNotNull();
         assertSoftly(softly -> {
             softly.assertThat(scoreExplanation.getScore()).isNotNull();

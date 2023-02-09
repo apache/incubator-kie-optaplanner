@@ -262,6 +262,11 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
         variableListenerSupport.triggerVariableListenersInNotificationQueues();
     }
 
+    @Override
+    public void forceTriggerVariableListeners() {
+        variableListenerSupport.forceTriggerAllVariableListeners(getWorkingSolution());
+    }
+
     protected void setCalculatedScore(Score_ score) {
         getSolutionDescriptor().setScore(workingSolution, score);
         calculationCount++;

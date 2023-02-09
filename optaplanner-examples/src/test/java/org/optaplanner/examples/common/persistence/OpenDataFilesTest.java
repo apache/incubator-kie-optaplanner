@@ -70,7 +70,7 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
         // Make sure we can process the solution from an existing file.
         Solution_ originalSolution = solutionFileIO.read(solutionFile);
         logger.info("Opened: {}", solutionFile);
-        Score_ originalScore = solutionManager.updateScore(originalSolution);
+        Score_ originalScore = solutionManager.update(originalSolution);
         assertThat(originalScore).isNotNull();
         // Write the solution to a temp file and read it back.
         Solution_ roundTripSolution = null;
@@ -85,7 +85,7 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
             Assertions.fail("Failed to write solution.", ex);
         }
         // Make sure the solutions equal by checking their scores against each other.
-        Score_ roundTripScore = solutionManager.updateScore(roundTripSolution);
+        Score_ roundTripScore = solutionManager.update(roundTripSolution);
         assertThat(roundTripScore).isEqualTo(originalScore);
     }
 

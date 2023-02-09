@@ -1,6 +1,7 @@
 package org.optaplanner.examples.common.business;
 
 import static java.util.stream.Collectors.toList;
+import static org.optaplanner.core.api.solver.SolutionUpdatePolicy.NONE;
 
 import java.io.File;
 import java.io.IOException;
@@ -214,7 +215,7 @@ public final class SolutionBusiness<Solution_, Score_ extends Score<Score_>> imp
     }
 
     public Score_ getScore() {
-        return solutionManager.updateScore(getSolution());
+        return solutionManager.update(getSolution());
     }
 
     public boolean isSolving() {
@@ -240,7 +241,7 @@ public final class SolutionBusiness<Solution_, Score_ extends Score<Score_>> imp
     }
 
     public List<ConstraintMatchTotal<Score_>> getConstraintMatchTotalList() {
-        return solutionManager.explainScore(getSolution())
+        return solutionManager.explain(getSolution(), NONE)
                 .getConstraintMatchTotalMap()
                 .values()
                 .stream()
@@ -249,7 +250,7 @@ public final class SolutionBusiness<Solution_, Score_ extends Score<Score_>> imp
     }
 
     public Map<Object, Indictment<Score_>> getIndictmentMap() {
-        return solutionManager.explainScore(getSolution()).getIndictmentMap();
+        return solutionManager.explain(getSolution(), NONE).getIndictmentMap();
     }
 
     public void importSolution(File file) {

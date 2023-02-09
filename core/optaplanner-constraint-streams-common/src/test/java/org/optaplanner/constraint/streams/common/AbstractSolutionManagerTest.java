@@ -44,7 +44,7 @@ public abstract class AbstractSolutionManagerTest {
         // Prepare the solution.
         int entityCount = 3;
         TestdataSolution solution = TestdataSolution.generateSolution(2, entityCount);
-        ScoreExplanation<TestdataSolution, SimpleScore> scoreExplanation = solutionManager.explainScore(solution);
+        ScoreExplanation<TestdataSolution, SimpleScore> scoreExplanation = solutionManager.explain(solution);
 
         // Check for expected results.
         SoftAssertions.assertSoftly(softly -> {

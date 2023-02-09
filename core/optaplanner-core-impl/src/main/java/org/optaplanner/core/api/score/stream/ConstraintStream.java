@@ -19,7 +19,7 @@ import org.optaplanner.core.api.solver.SolutionManager;
  * A constraint stream is a declaration on how to match {@link UniConstraintStream one}, {@link BiConstraintStream two}
  * or more objects.
  * Constraint streams are similar to a declaration of a JDK {@link Stream} or an SQL query,
- * but they support incremental score calculation and {@link SolutionManager#explainScore(Object)} score justification}.
+ * but they support incremental score calculation and {@link SolutionManager#explain(Object)} score justification}.
  * <p>
  * An object that passes through constraint streams is called a fact.
  * It's either a {@link ProblemFactCollectionProperty problem fact} or a {@link PlanningEntity planning entity}.

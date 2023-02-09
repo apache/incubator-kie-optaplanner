@@ -739,7 +739,7 @@ class DefaultSolverTest {
                 .mapToObj(id -> new TestdataEntity("e" + id))
                 .collect(Collectors.toList()));
 
-        Score<?> score = SolutionManager.create(solverFactory).updateScore(solution);
+        Score<?> score = SolutionManager.create(solverFactory).update(solution);
         assertThat(score.initScore()).isEqualTo(-entityCount);
         assertThat(score.isSolutionInitialized()).isFalse();
 
@@ -771,7 +771,7 @@ class DefaultSolverTest {
         final int valueCount = 24;
         TestdataListSolution solution = TestdataListSolution.generateUninitializedSolution(valueCount, 8);
 
-        Score<?> score = SolutionManager.create(solverFactory).updateScore(solution);
+        Score<?> score = SolutionManager.create(solverFactory).update(solution);
         assertThat(score.initScore()).isEqualTo(-valueCount);
         assertThat(score.isSolutionInitialized()).isFalse();
 

@@ -6,9 +6,9 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.solver.SolutionManager;
+import org.optaplanner.core.api.solver.SolutionUpdatePolicy;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.DefaultScoreExplanation;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
@@ -34,22 +34,23 @@ public final class DefaultSolutionManager<Solution_, Score_ extends Score<Score_
     }
 
     @Override
-    public Score_ updateScore(Solution_ solution, boolean updateShadowVariables) {
-        return callScoreDirector(solution, InnerScoreDirector::calculateScore, updateShadowVariables, false);
+    public Score_ update(Solution_ solution, SolutionUpdatePolicy solutionUpdatePolicy) {
+        if (solutionUpdatePolicy == SolutionUpdatePolicy.NONE) {
+            throw new IllegalArgumentException("Can not call " + this.getClass().getSimpleName()
+                    + ".update() with this solutionUpdatePolicy (" + solutionUpdatePolicy + ").");
+        }
+        return callScoreDirector(solution, solutionUpdatePolicy,
+                s -> (Score_) s.getSolutionDescriptor().getScore(s.getWorkingSolution()),
+                false);
     }
 
     @Override
-    public String getSummary(Solution_ solution, boolean updateShadowVariables) {
-        return explainScore(solution, updateShadowVariables).getSummary();
-    }
-
-    @Override
-    public ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution, boolean updateShadowVariables) {
-        return callScoreDirector(solution, DefaultScoreExplanation::new, updateShadowVariables, true);
+    public ScoreExplanation<Solution_, Score_> explain(Solution_ solution, SolutionUpdatePolicy solutionUpdatePolicy) {
+        return callScoreDirector(solution, solutionUpdatePolicy, DefaultScoreExplanation::new, true);
     }
 
     private <Result_> Result_ callScoreDirector(Solution_ solution,
-            Function<InnerScoreDirector<Solution_, Score_>, Result_> function, boolean updateShadowVariables,
+            SolutionUpdatePolicy solutionUpdatePolicy, Function<InnerScoreDirector<Solution_, Score_>, Result_> function,
             boolean enableConstraintMatch) {
         try (InnerScoreDirector<Solution_, Score_> scoreDirector =
                 scoreDirectorFactory.buildScoreDirector(false, enableConstraintMatch)) {
@@ -58,17 +59,12 @@ public final class DefaultSolutionManager<Solution_, Score_ extends Score<Score_
                 throw new IllegalStateException("When constraintMatchEnabled (" + constraintMatchEnabled
                         + ") is disabled, this method should not be called.");
             }
-            if (updateShadowVariables) {
-                SolutionDescriptor<Solution_> solutionDescriptor = scoreDirector.getSolutionDescriptor();
-                solutionDescriptor.visitAllProblemFacts(solution, scoreDirector::beforeProblemFactAdded);
-                solutionDescriptor.visitAllEntities(solution, scoreDirector::beforeEntityAdded);
-            }
             scoreDirector.setWorkingSolution(solution); // Init the ScoreDirector first, else NPEs may be thrown.
-            if (updateShadowVariables) {
-                SolutionDescriptor<Solution_> solutionDescriptor = scoreDirector.getSolutionDescriptor();
-                solutionDescriptor.visitAllProblemFacts(solution, scoreDirector::afterProblemFactAdded);
-                solutionDescriptor.visitAllEntities(solution, scoreDirector::afterEntityAdded);
-                scoreDirector.triggerVariableListeners();
+            if (solutionUpdatePolicy.isShadowVariableUpdateEnabled()) {
+                scoreDirector.forceTriggerVariableListeners();
+            }
+            if (solutionUpdatePolicy.isScoreUpdateEnabled()) {
+                scoreDirector.calculateScore();
             }
             return function.apply(scoreDirector);
         }

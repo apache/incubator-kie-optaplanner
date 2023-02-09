@@ -203,12 +203,12 @@ public abstract class SolverSmokeTest<Solution_, Score_ extends Score<Score_>> e
             Score_ bestScoreLimit) {
         assertThat(bestSolution).isNotNull();
         SolutionManager<Solution_, Score_> solutionManager = SolutionManager.create(solverFactory);
-        Score_ bestScore = solutionManager.updateScore(bestSolution);
+        Score_ bestScore = solutionManager.update(bestSolution);
         assertThat(bestScore)
                 .as("The bestScore (" + bestScore + ") must be at least the bestScoreLimit (" + bestScoreLimit + ").")
                 .isGreaterThanOrEqualTo(bestScoreLimit);
 
-        ScoreExplanation<Solution_, Score_> scoreExplanation = solutionManager.explainScore(bestSolution);
+        ScoreExplanation<Solution_, Score_> scoreExplanation = solutionManager.explain(bestSolution);
         Map<String, ConstraintMatchTotal<Score_>> constraintMatchTotals =
                 scoreExplanation.getConstraintMatchTotalMap();
         assertThat(constraintMatchTotals).isNotNull();

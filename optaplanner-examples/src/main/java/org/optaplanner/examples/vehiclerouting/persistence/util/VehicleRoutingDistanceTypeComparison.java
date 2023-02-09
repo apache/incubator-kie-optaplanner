@@ -84,7 +84,7 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
             inputCustomer.setNextCustomer(findInputObjectById(inputCustomerMap, varCustomer.getNextCustomer()));
             inputCustomer.setVehicle(findInputObjectById(inputVehicleMap, varCustomer.getVehicle()));
         }
-        solutionManager.updateScore(inputSolution);
+        solutionManager.update(inputSolution);
     }
 
     private <T extends AbstractPersistable> T findInputObjectById(Map<Long, T> inputMap, T varObject) {

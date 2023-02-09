@@ -65,7 +65,7 @@ public abstract class AbstractPhaseTest<Solution_, T> extends LoggingTest {
         Solution_ bestSolution = solver.solve(problem);
         assertSolution(bestSolution);
         SolutionManager<Solution_, ?> solutionManager = SolutionManager.create(solverFactory);
-        assertThat(solutionManager.updateScore(bestSolution)).isNotNull();
+        assertThat(solutionManager.update(bestSolution)).isNotNull();
     }
 
     private static File buildFile(File unsolvedDataDir, String unsolvedFileName) {

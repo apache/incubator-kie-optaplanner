@@ -984,7 +984,7 @@
         {
           "ignore": true,
           "code": "java.method.addedToInterface",
-          "new": "method void org.optaplanner.core.api.solver.change.ProblemChangeDirector::triggerVariableListeners()",
+          "new": "method void org.optaplanner.core.api.solver.change.ProblemChangeDirector::updateShadowVariables()",
           "justification": "ProblemChangeDirector is an interface we don't expect anyone to implement."
         }
       ]
