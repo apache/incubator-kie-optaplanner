@@ -2,7 +2,6 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -30,7 +29,7 @@ public final class KOptDescriptor<Solution_> {
      * The order each node is visited when the tour is travelled in the successor direction. This forms
      * a 2K-cycle representing the permutation performed by the K-opt move.
      */
-    private final Integer[] removedEdgeIndexToTourOrder;
+    private final int[] removedEdgeIndexToTourOrder;
 
     /**
      * The order each node is visited when the tour is travelled in the predecessor direction. It the
@@ -38,7 +37,7 @@ public final class KOptDescriptor<Solution_> {
      * {@link KOptDescriptor#removedEdgeIndexToTourOrder}[inverseRemovedEdgeIndexToTourOrder[i]] == i
      *
      */
-    private final Integer[] inverseRemovedEdgeIndexToTourOrder;
+    private final int[] inverseRemovedEdgeIndexToTourOrder;
 
     /**
      * Maps the index of a removed edge endpoint to its corresponding added edge other endpoint. For instance,
@@ -50,10 +49,10 @@ public final class KOptDescriptor<Solution_> {
      * For any valid removedEdges index, (removedEdges[index], removedEdges[addedEdgeToOtherEndpoint[index]])
      * is an edge added by this K-Opt move.
      */
-    private final Integer[] addedEdgeToOtherEndpoint;
+    private final int[] addedEdgeToOtherEndpoint;
 
-    private static Integer[] computeInEdgesForSequentialMove(Object[] removedEdges) {
-        Integer[] out = new Integer[removedEdges.length];
+    private static int[] computeInEdgesForSequentialMove(Object[] removedEdges) {
+        int[] out = new int[removedEdges.length];
         int k = (removedEdges.length - 1) >> 1;
 
         out[1] = removedEdges.length - 1;
@@ -96,14 +95,14 @@ public final class KOptDescriptor<Solution_> {
      */
     public KOptDescriptor(
             Object[] removedEdges,
-            Integer[] addedEdgeToOtherEndpoint,
+            int[] addedEdgeToOtherEndpoint,
             Function<Object, Object> SUC,
             TriPredicate<Object, Object, Object> BETWEEN) {
         int i, j;
         this.k = (removedEdges.length - 1) >> 1;
         this.removedEdges = removedEdges;
-        this.removedEdgeIndexToTourOrder = new Integer[removedEdges.length];
-        this.inverseRemovedEdgeIndexToTourOrder = new Integer[removedEdges.length];
+        this.removedEdgeIndexToTourOrder = new int[removedEdges.length];
+        this.inverseRemovedEdgeIndexToTourOrder = new int[removedEdges.length];
         this.addedEdgeToOtherEndpoint = addedEdgeToOtherEndpoint;
 
         // Compute the permutation as described in FindPermutation
@@ -113,9 +112,9 @@ public final class KOptDescriptor<Solution_> {
             removedEdgeIndexToTourOrder[j] = (SUC.apply(removedEdges[i]) == removedEdges[i + 1]) ? i : i + 1;
         }
 
-        Comparator<Integer> Compare = (pa, pb) -> pa.equals(pb) ? 0
+        IntComparator comparator = (pa, pb) -> pa == pb ? 0
                 : (BETWEEN.test(removedEdges[removedEdgeIndexToTourOrder[1]], removedEdges[pa], removedEdges[pb]) ? -1 : 1);
-        Arrays.sort(removedEdgeIndexToTourOrder, 2, k + 1, Compare);
+        TimSort.sort(removedEdgeIndexToTourOrder, 2, k + 1, comparator);
 
         for (j = 2 * k; j >= 2; j -= 2) {
             removedEdgeIndexToTourOrder[j - 1] = i = removedEdgeIndexToTourOrder[j / 2];
@@ -127,7 +126,7 @@ public final class KOptDescriptor<Solution_> {
         }
     }
 
-    public Integer[] getRemovedEdgeIndexToTourOrder() {
+    public int[] getRemovedEdgeIndexToTourOrder() {
         return removedEdgeIndexToTourOrder;
     }
 
@@ -158,7 +157,7 @@ public final class KOptDescriptor<Solution_> {
      */
     public KOptCycleInfo getCyclesForPermutation() {
         int cycleCount = 0;
-        Integer[] indexToCycle = new Integer[removedEdgeIndexToTourOrder.length];
+        int[] indexToCycle = new int[removedEdgeIndexToTourOrder.length];
         Set<Integer> remaining = IntStream.range(1, removedEdgeIndexToTourOrder.length).boxed().collect(Collectors.toSet());
         while (!remaining.isEmpty()) {
             Integer current = remaining.iterator().next();
@@ -236,7 +235,7 @@ public final class KOptDescriptor<Solution_> {
      * @param entity
      * @return
      */
-    public KOptListMove<Solution_> getKOptListMove(ListVariableDescriptor listVariableDescriptor,
+    public KOptListMove<Solution_> getKOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
             IndexVariableSupply indexVariableSupply,
             Object entity) {
         if (!isFeasible()) {
@@ -258,9 +257,9 @@ public final class KOptDescriptor<Solution_> {
         // Copy removedEdgeIndexToTourOrder and inverseRemovedEdgeIndexToTourOrder
         // to avoid mutating the original arrays (since this function mutate the arrays
         // into the sorted signed permutation (+1, +2, ...)
-        Integer[] currentRemovedEdgeIndexToTourOrder =
+        int[] currentRemovedEdgeIndexToTourOrder =
                 Arrays.copyOf(removedEdgeIndexToTourOrder, removedEdgeIndexToTourOrder.length);
-        Integer[] currentInverseRemovedEdgeIndexToTourOrder =
+        int[] currentInverseRemovedEdgeIndexToTourOrder =
                 Arrays.copyOf(inverseRemovedEdgeIndexToTourOrder, inverseRemovedEdgeIndexToTourOrder.length);
 
         FindNextReversal: while (isMoveNotDone) {
@@ -366,8 +365,8 @@ public final class KOptDescriptor<Solution_> {
      * @param startInclusive Reverse the array starting at and including this index.
      * @param endExclusive Reverse the array ending at and excluding this index.
      */
-    private void reversePermutationPart(Integer[] currentRemovedEdgeIndexToTourOrder,
-            Integer[] currentInverseRemovedEdgeIndexToTourOrder,
+    private void reversePermutationPart(int[] currentRemovedEdgeIndexToTourOrder,
+            int[] currentInverseRemovedEdgeIndexToTourOrder,
             int startInclusive, int endExclusive) {
         for (; startInclusive < endExclusive; startInclusive++, endExclusive--) {
             int savedFirstElement = currentRemovedEdgeIndexToTourOrder[startInclusive];
@@ -408,9 +407,8 @@ public final class KOptDescriptor<Solution_> {
      * @param right the right endpoint of the flip
      * @return The score of the performing the signed reversal
      */
-    private int countOrientedPairsForReversal(Integer[] currentRemovedEdgeIndexToTourOrder,
-            Integer[] currentInverseRemovedEdgeIndexToTourOrder,
-            int left, int right) {
+    private int countOrientedPairsForReversal(int[] currentRemovedEdgeIndexToTourOrder,
+            int[] currentInverseRemovedEdgeIndexToTourOrder, int left, int right) {
         int count = 0, i, j;
         reversePermutationPart(
                 currentRemovedEdgeIndexToTourOrder,

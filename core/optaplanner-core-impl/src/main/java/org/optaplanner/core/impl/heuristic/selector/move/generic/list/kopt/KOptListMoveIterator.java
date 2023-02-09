@@ -174,10 +174,10 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
     KOptDescriptor<Solution_> patchCycles(Iterator<Object> valueIterator,
                                           KOptDescriptor<Solution_> descriptor, Object[] oldRemovedEdges, int k) {
         Object s1, s2;
-        Integer[] removedEdgeIndexToTourOrder = descriptor.getRemovedEdgeIndexToTourOrder();
+        int[] removedEdgeIndexToTourOrder = descriptor.getRemovedEdgeIndexToTourOrder();
         KOptCycleInfo cycleInfo = descriptor.getCyclesForPermutation();
         int cycleCount = cycleInfo.cycleCount;
-        Integer[] cycle = cycleInfo.indexToCycleIdentifier;
+        int[] cycle = cycleInfo.indexToCycleIdentifier;
 
         if (cycleCount == 1 || cycleCount > Patching_C) {
             return descriptor;
@@ -193,7 +193,7 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
                     removedEdges[2 * k + 1] = s1;
                     s2 = getNodeSuccessor(s1);
                     removedEdges[2 * k + 2] = s2;
-                    Integer[] addedEdgeToOtherEndpoint = new Integer[removedEdges.length];
+                    int[] addedEdgeToOtherEndpoint = new int[removedEdges.length];
                     KOptDescriptor<Solution_> newMove = patchCyclesRec(valueIterator, descriptor, removedEdges, addedEdgeToOtherEndpoint, cycle, currentCycle,
                                                                        k, 2, cycleCount);
                     if (newMove.isFeasible()) {
@@ -206,7 +206,7 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
     }
 
     KOptDescriptor<Solution_> patchCyclesRec(Iterator<Object> valueIterator, KOptDescriptor<Solution_> originalMove,
-                                             Object[] oldRemovedEdges, Integer[] addedEdgeToOtherEndpoint, Integer[] cycle, int currentCycle,
+                                             Object[] oldRemovedEdges, int[] addedEdgeToOtherEndpoint, int[] cycle, int currentCycle,
                                              int k, int patchedCycleCount, int cycleCount) {
         Object s1, s2, s3, s4;
         int NewCycle, i;
@@ -262,7 +262,7 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
         return originalMove;
     }
 
-    int findCycleIdentifierForNode(Object value, Object[] pickedValues, Integer[] permutation, Integer[] indexToCycle) {
+    int findCycleIdentifierForNode(Object value, Object[] pickedValues, int[] permutation, int[] indexToCycle) {
         for (int i = 1; i < pickedValues.length; i++) {
             if (isMiddleNodeBetween(pickedValues[permutation[i]], value, pickedValues[permutation[i + 1]])) {
                 return indexToCycle[permutation[i]];
@@ -271,8 +271,8 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
         throw new IllegalStateException("Cannot find cycle the " + value + " belongs to");
     }
 
-    int getShortestCycleIdentifier(Object[] removeEdgeEndpoints, Integer[] endpointIndexToCycle,
-                                   Integer[] removeEdgeEndpointIndexToTourOrder, int cycleCount, int k) {
+    int getShortestCycleIdentifier(Object[] removeEdgeEndpoints, int[] endpointIndexToCycle,
+                                   int[] removeEdgeEndpointIndexToTourOrder, int cycleCount, int k) {
         int i;
         int minCycleIdentifier = 0;
         int minSize = Integer.MAX_VALUE;

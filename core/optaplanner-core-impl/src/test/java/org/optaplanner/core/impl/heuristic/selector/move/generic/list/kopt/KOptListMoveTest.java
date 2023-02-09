@@ -224,7 +224,7 @@ class KOptListMoveTest {
         }
 
         Object[] tourArray = new Object[removedEdgeList.size() + 1];
-        Integer[] incl = new Integer[removedEdgeList.size() + 1];
+        int[] incl = new int[removedEdgeList.size() + 1];
         for (int i = 0; i < removedEdgeList.size(); i += 2) {
             tourArray[i + 1] = removedEdgeList.get(i);
             tourArray[i + 2] = removedEdgeList.get(i + 1);

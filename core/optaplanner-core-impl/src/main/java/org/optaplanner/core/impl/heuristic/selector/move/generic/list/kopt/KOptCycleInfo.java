@@ -17,9 +17,9 @@ public class KOptCycleInfo {
      * Maps an index in the removed endpoints to the cycle it belongs to
      * after the new edges are added. Ranges from 0 to {@link #cycleCount} - 1.
      */
-    public final Integer[] indexToCycleIdentifier;
+    public final int[] indexToCycleIdentifier;
 
-    public KOptCycleInfo(int cycleCount, Integer[] indexToCycleIdentifier) {
+    public KOptCycleInfo(int cycleCount, int[] indexToCycleIdentifier) {
         this.cycleCount = cycleCount;
         this.indexToCycleIdentifier = indexToCycleIdentifier;
     }
