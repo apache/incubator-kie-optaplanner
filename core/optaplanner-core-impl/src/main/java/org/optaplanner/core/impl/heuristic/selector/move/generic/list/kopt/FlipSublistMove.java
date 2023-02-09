@@ -109,8 +109,7 @@ public class FlipSublistMove<Solution_> extends AbstractMove<Solution_> {
         } else {
             List<Object> firstHalfReversedPath = listVariable.subList(fromIndexInclusive, listVariable.size());
             List<Object> secondHalfReversedPath = listVariable.subList(0, toIndexExclusive);
-            List<Object> out = new ArrayList<>(firstHalfReversedPath.size() + secondHalfReversedPath.size());
-            return out;
+            return new ArrayList<>(firstHalfReversedPath.size() + secondHalfReversedPath.size());
         }
     }
 

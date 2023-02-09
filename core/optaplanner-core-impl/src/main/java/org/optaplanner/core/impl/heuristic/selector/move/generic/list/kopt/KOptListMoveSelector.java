@@ -79,8 +79,8 @@ public class KOptListMoveSelector<Solution_> extends GenericMoveSelector<Solutio
 
     @Override
     public Iterator<Move<Solution_>> iterator() {
-        return new KOptListMoveIterator(workingRandom, listVariableDescriptor, inverseVariableSupply, indexVariableSupply,
-                entitySelector, valueSelector, minK, maxK);
+        return new KOptListMoveIterator<>(workingRandom, listVariableDescriptor, inverseVariableSupply, indexVariableSupply,
+                entitySelector, minK, maxK);
     }
 
     @Override

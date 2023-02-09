@@ -70,16 +70,16 @@ public final class KOptDescriptor<Solution_> {
      *
      * @param removedEdges The edges removed from the tour. The added edges will
      *        be formed from opposite endpoints for consecutive edges.
-     * @param SUC A {@link Function} that maps an endpoint to its successor
-     * @param BETWEEN A {@link TriPredicate} that return true if and only if its middle
+     * @param endpointToSuccessorFunction A {@link Function} that maps an endpoint to its successor
+     * @param betweenPredicate A {@link TriPredicate} that return true if and only if its middle
      *        argument is between its first and last argument when the tour is
      *        taken in the successor direction.
      */
     public KOptDescriptor(
             Object[] removedEdges,
-            Function<Object, Object> SUC,
-            TriPredicate<Object, Object, Object> BETWEEN) {
-        this(removedEdges, computeInEdgesForSequentialMove(removedEdges), SUC, BETWEEN);
+            Function<Object, Object> endpointToSuccessorFunction,
+            TriPredicate<Object, Object, Object> betweenPredicate) {
+        this(removedEdges, computeInEdgesForSequentialMove(removedEdges), endpointToSuccessorFunction, betweenPredicate);
     }
 
     /**
@@ -88,16 +88,16 @@ public final class KOptDescriptor<Solution_> {
      *
      * @param removedEdges The edges removed from the tour.
      * @param addedEdgeToOtherEndpoint The edges added to the tour.
-     * @param SUC A {@link Function} that maps an endpoint to its successor
-     * @param BETWEEN A {@link TriPredicate} that return true if and only if its middle
+     * @param endpointToSuccessorFunction A {@link Function} that maps an endpoint to its successor
+     * @param betweenPredicate A {@link TriPredicate} that return true if and only if its middle
      *        argument is between its first and last argument when the tour is
      *        taken in the successor direction.
      */
     public KOptDescriptor(
             Object[] removedEdges,
             int[] addedEdgeToOtherEndpoint,
-            Function<Object, Object> SUC,
-            TriPredicate<Object, Object, Object> BETWEEN) {
+            Function<Object, Object> endpointToSuccessorFunction,
+            TriPredicate<Object, Object, Object> betweenPredicate) {
         int i, j;
         this.k = (removedEdges.length - 1) >> 1;
         this.removedEdges = removedEdges;
@@ -109,11 +109,11 @@ public final class KOptDescriptor<Solution_> {
         // (Section 5.3 "Determination of the feasibility of a move",
         //  An Effective Implementation of K-opt Moves for the Lin-Kernighan TSP Heuristic)
         for (i = j = 1; j <= k; i += 2, j++) {
-            removedEdgeIndexToTourOrder[j] = (SUC.apply(removedEdges[i]) == removedEdges[i + 1]) ? i : i + 1;
+            removedEdgeIndexToTourOrder[j] = (endpointToSuccessorFunction.apply(removedEdges[i]) == removedEdges[i + 1]) ? i : i + 1;
         }
 
         IntComparator comparator = (pa, pb) -> pa == pb ? 0
-                : (BETWEEN.test(removedEdges[removedEdgeIndexToTourOrder[1]], removedEdges[pa], removedEdges[pb]) ? -1 : 1);
+                : (betweenPredicate.test(removedEdges[removedEdgeIndexToTourOrder[1]], removedEdges[pa], removedEdges[pb]) ? -1 : 1);
         TimSort.sort(removedEdgeIndexToTourOrder, 2, k + 1, comparator);
 
         for (j = 2 * k; j >= 2; j -= 2) {

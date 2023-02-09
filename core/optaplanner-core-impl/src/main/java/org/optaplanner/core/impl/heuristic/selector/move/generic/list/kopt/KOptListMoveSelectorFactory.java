@@ -35,6 +35,7 @@ public class KOptListMoveSelectorFactory<Solution_>
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
+        // TODO let's not forget this here
         //entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
         EntitySelector<Solution_> entitySelector =
                 EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
@@ -61,10 +62,7 @@ public class KOptListMoveSelectorFactory<Solution_>
     private ValueSelector<Solution_> buildEntityDependentValueSelector(
             HeuristicConfigPolicy<Solution_> configPolicy, EntityDescriptor<Solution_> entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-        ValueSelector<Solution_> valueSelector =
-                ValueSelectorFactory.<Solution_> create(new ValueSelectorConfig())
+        return ValueSelectorFactory.<Solution_> create(new ValueSelectorConfig())
                         .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder);
-        return valueSelector;
     }
 }
