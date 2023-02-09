@@ -9,7 +9,8 @@ environment:
       enabled: false
       version: '2.13'
   native:
-    enabled: true
+  # Native broken with Quarkus 2.13.5 due to https://github.com/oracle/graal/issues/5303. Upgrade to 2.13.7 before enabling.
+    enabled: false
   mandrel:
     enabled: false
     builder_image: quay.io/quarkus/ubi-quarkus-mandrel:22.3-java17
