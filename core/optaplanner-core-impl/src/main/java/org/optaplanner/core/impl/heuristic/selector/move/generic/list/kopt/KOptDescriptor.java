@@ -183,8 +183,14 @@ public final class KOptDescriptor<Solution_> {
 
     public List<Pair<Object, Object>> getAddedEdges() {
         List<Pair<Object, Object>> out = new ArrayList<>(2 * k);
-        for (int i = 1; i <= k; i++) {
-            out.add(Pair.of(removedEdges[2 * i], removedEdges[(2 * i + 1) % (2 * k)]));
+        int currentEndpoint = 2 * k;
+
+        // This loop iterate through the new tour create
+        while (currentEndpoint != 0) {
+            out.add(Pair.of(removedEdges[currentEndpoint], removedEdges[addedEdgeToOtherEndpoint[currentEndpoint]]));
+            currentEndpoint =
+                    inverseRemovedEdgeIndexToTourOrder[addedEdgeToOtherEndpoint[removedEdgeIndexToTourOrder[currentEndpoint]]]
+                            ^ 1;
         }
         return out;
     }

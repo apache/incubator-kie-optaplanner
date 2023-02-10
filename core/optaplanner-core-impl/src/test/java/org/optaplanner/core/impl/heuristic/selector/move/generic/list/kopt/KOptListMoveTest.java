@@ -36,6 +36,10 @@ class KOptListMoveTest {
     private final TestdataListValue v6 = new TestdataListValue("6");
     private final TestdataListValue v7 = new TestdataListValue("7");
     private final TestdataListValue v8 = new TestdataListValue("8");
+    private final TestdataListValue v9 = new TestdataListValue("9");
+    private final TestdataListValue v10 = new TestdataListValue("10");
+    private final TestdataListValue v11 = new TestdataListValue("11");
+    private final TestdataListValue v12 = new TestdataListValue("12");
 
     @Test
     void test3Opt() {
@@ -59,6 +63,30 @@ class KOptListMoveTest {
         assertThat(e1.getValueList()).containsExactly(v1, v2, v5, v6, v4, v3);
         undoMove.doMoveOnly(scoreDirector);
         assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4, v5, v6);
+    }
+
+    @Test
+    void test3OptLong() {
+        IndexVariableSupply indexVariableSupply =
+                scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor));
+        IndexVariableListener indexVariableListener = (IndexVariableListener) indexVariableSupply;
+        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(List.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10)));
+        indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 6);
+        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
+                                                                                   indexVariableSupply,
+                                                                                   e1,
+                                                                                   List.of(v10, v1,
+                                                                                           v3, v4,
+                                                                                           v8, v9),
+                                                                                   List.of(v1, v4,
+                                                                                           v3, v9,
+                                                                                           v8, v10));
+
+        assertThat(kOptListMove.isMoveDoable(scoreDirector)).isTrue();
+        AbstractMove<TestdataListSolution> undoMove = kOptListMove.doMove(scoreDirector);
+        assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v9, v10, v8, v7, v6, v5, v4);
+        undoMove.doMoveOnly(scoreDirector);
+        assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
     }
 
     @Test
@@ -96,6 +124,74 @@ class KOptListMoveTest {
     }
 
     @Test
+    void test4OptLong() {
+        IndexVariableSupply indexVariableSupply =
+                scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor));
+        IndexVariableListener indexVariableListener = (IndexVariableListener) indexVariableSupply;
+        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(
+                List.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12)));
+
+        indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
+        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
+                                                                                   indexVariableSupply,
+                                                                                   e1,
+                                                                                   List.of(v1, v12,
+                                                                                           v2, v3,
+                                                                                           v5, v6,
+                                                                                           v9, v10),
+                                                                                   List.of(
+                                                                                           v1, v3,
+                                                                                           v2, v6,
+                                                                                           v5, v10,
+                                                                                           v9, v12));
+
+        assertThat(kOptListMove.isMoveDoable(scoreDirector)).isTrue();
+        AbstractMove<TestdataListSolution> undoMove = kOptListMove.doMove(scoreDirector);
+
+        assertThat(e1.getValueList()).containsExactly(v1, v3, v4, v5, v10, v11, v12, v9, v8, v7, v6, v2);
+
+        undoMove.doMoveOnly(scoreDirector);
+
+        assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12);
+    }
+
+    @Test
+    void testInverted4OptLong() {
+        IndexVariableSupply indexVariableSupply =
+                scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor));
+        IndexVariableListener indexVariableListener = (IndexVariableListener) indexVariableSupply;
+        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(
+                List.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12)));
+
+        indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
+
+        // Note: using only endpoints work (removing v4, v7, v8, v11) from the above list works
+        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
+                                                                                   indexVariableSupply,
+                                                                                   e1,
+                                                                                   List.of(
+                                                                                           v2, v3,
+                                                                                           v6, v5,
+                                                                                           v10, v9,
+                                                                                           v12, v1),
+                                                                                   List.of(
+                                                                                           v2, v5,
+                                                                                           v6, v10,
+                                                                                           v9, v1,
+                                                                                           v12, v3));
+
+
+        assertThat(kOptListMove.isMoveDoable(scoreDirector)).isTrue();
+        AbstractMove<TestdataListSolution> undoMove = kOptListMove.doMove(scoreDirector);
+
+        assertThat(e1.getValueList()).containsExactly(v1, v9, v8, v7, v6, v10, v11, v12, v3, v4, v5, v2);
+
+        undoMove.doMoveOnly(scoreDirector);
+
+        assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12);
+    }
+
+    @Test
     void testDoubleBridge4Opt() {
         IndexVariableSupply indexVariableSupply =
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor));
@@ -126,6 +222,39 @@ class KOptListMoveTest {
         undoMove.doMoveOnly(scoreDirector);
 
         assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4, v5, v6, v7, v8);
+    }
+
+    @Test
+    void testDoubleBridge4OptLong() {
+        IndexVariableSupply indexVariableSupply =
+                scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor));
+        IndexVariableListener indexVariableListener = (IndexVariableListener) indexVariableSupply;
+        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(
+                List.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12)));
+
+        indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
+
+        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
+                                                                                   indexVariableSupply,
+                                                                                   e1,
+                                                                                   List.of(v12, v1,
+                                                                                           v5, v6,
+                                                                                           v2, v3,
+                                                                                           v8, v9),
+                                                                                   List.of(
+                                                                                           v1, v5,
+                                                                                           v8, v3,
+                                                                                           v6, v12,
+                                                                                           v9, v2));
+
+        assertThat(kOptListMove.isMoveDoable(scoreDirector)).isTrue();
+        AbstractMove<TestdataListSolution> undoMove = kOptListMove.doMove(scoreDirector);
+
+        assertThat(e1.getValueList()).containsExactly(v1, v2, v9, v10, v11, v12, v6, v7, v8, v3, v4, v5);
+
+        undoMove.doMoveOnly(scoreDirector);
+
+        assertThat(e1.getValueList()).containsExactly(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12);
     }
 
     @Test
