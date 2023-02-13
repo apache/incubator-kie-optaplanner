@@ -8,6 +8,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import it.unimi.dsi.fastutil.ints.IntArrays;
+import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
@@ -118,7 +120,7 @@ public final class KOptDescriptor<Solution_> {
         IntComparator comparator = (pa, pb) -> pa == pb ? 0
                 : (betweenPredicate.test(removedEdges[removedEdgeIndexToTourOrder[1]], removedEdges[pa], removedEdges[pb]) ? -1
                         : 1);
-        TimSort.sort(removedEdgeIndexToTourOrder, 2, k + 1, comparator);
+        IntArrays.stableSort(removedEdgeIndexToTourOrder, 2, k + 1, comparator);
 
         for (j = 2 * k; j >= 2; j -= 2) {
             removedEdgeIndexToTourOrder[j - 1] = i = removedEdgeIndexToTourOrder[j / 2];
