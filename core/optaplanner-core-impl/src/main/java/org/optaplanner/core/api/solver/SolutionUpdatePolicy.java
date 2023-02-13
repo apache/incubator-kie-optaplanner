@@ -16,40 +16,40 @@ package org.optaplanner.core.api.solver;
  * Advanced users therefore get a choice of which to perform.
  *
  * <p>
- * If unsure, pick {@link #ALL}.
+ * If unsure, pick {@link #UPDATE_ALL}.
  *
  */
 public enum SolutionUpdatePolicy {
 
     /**
-     * Combines the effects of {@link #SCORE_ONLY} and {@link #SHADOW_VARIABLES_ONLY},
+     * Combines the effects of {@link #UPDATE_SCORE_ONLY} and {@link #UPDATE_SHADOW_VARIABLES_ONLY},
      * in effect fully updating the solution.
      */
-    ALL(true, true),
+    UPDATE_ALL(true, true),
     /**
      * Calculates the score based on the entities in the solution,
      * and writes it back to the solution.
      * Does not trigger shadow variables;
      * if score calculation requires shadow variable values,
      * {@link NullPointerException} is likely to be thrown.
-     * To avoid this, use {@link #ALL} instead.
+     * To avoid this, use {@link #UPDATE_ALL} instead.
      */
-    SCORE_ONLY(true, false),
+    UPDATE_SCORE_ONLY(true, false),
     /**
      * Runs variable listeners on all planning entities and problem facts,
      * updates shadow variables.
      * Does not update score;
      * the solution will keep the current score, even if it is stale or null.
-     * To avoid this, use {@link #ALL} instead.
+     * To avoid this, use {@link #UPDATE_ALL} instead.
      */
-    SHADOW_VARIABLES_ONLY(false, true),
+    UPDATE_SHADOW_VARIABLES_ONLY(false, true),
     /**
      * Does not run anything.
      * Improves performance during {@link SolutionManager#explain(Object, SolutionUpdatePolicy)},
      * where the user can guarantee that the solution is already up to date.
      * Otherwise serves no purpose.
      */
-    NONE(false, false);
+    NO_UPDATE(false, false);
 
     private final boolean scoreUpdateEnabled;
     private final boolean shadowVariableUpdateEnabled;

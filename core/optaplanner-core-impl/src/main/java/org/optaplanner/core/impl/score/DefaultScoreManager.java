@@ -8,10 +8,11 @@ import org.optaplanner.core.api.score.ScoreExplanation;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.solver.SolutionManager;
 import org.optaplanner.core.api.solver.SolutionUpdatePolicy;
+import org.optaplanner.core.impl.solver.DefaultSolutionManager;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
- * @deprecated Use {@link org.optaplanner.core.impl.solver.DefaultSolutionManager} instead.
+ * @deprecated Use {@link DefaultSolutionManager} instead.
  */
 @Deprecated(forRemoval = true)
 public final class DefaultScoreManager<Solution_, Score_ extends Score<Score_>>
@@ -25,7 +26,7 @@ public final class DefaultScoreManager<Solution_, Score_ extends Score<Score_>>
 
     @Override
     public Score_ updateScore(Solution_ solution) {
-        return solutionManager.update(solution, SolutionUpdatePolicy.SCORE_ONLY);
+        return solutionManager.update(solution, SolutionUpdatePolicy.UPDATE_SCORE_ONLY);
     }
 
     @Override
@@ -36,6 +37,17 @@ public final class DefaultScoreManager<Solution_, Score_ extends Score<Score_>>
 
     @Override
     public ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution) {
-        return solutionManager.explain(solution, SolutionUpdatePolicy.SCORE_ONLY);
+        return solutionManager.explain(solution, SolutionUpdatePolicy.UPDATE_SCORE_ONLY);
     }
+
+    @Override
+    public Score_ update(Solution_ solution, SolutionUpdatePolicy solutionUpdatePolicy) {
+        return solutionManager.update(solution, solutionUpdatePolicy);
+    }
+
+    @Override
+    public ScoreExplanation<Solution_, Score_> explain(Solution_ solution, SolutionUpdatePolicy solutionUpdatePolicy) {
+        return solutionManager.explain(solution, solutionUpdatePolicy);
+    }
+
 }

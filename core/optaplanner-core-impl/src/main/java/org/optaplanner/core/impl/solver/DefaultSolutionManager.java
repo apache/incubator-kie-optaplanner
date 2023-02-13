@@ -35,7 +35,7 @@ public final class DefaultSolutionManager<Solution_, Score_ extends Score<Score_
 
     @Override
     public Score_ update(Solution_ solution, SolutionUpdatePolicy solutionUpdatePolicy) {
-        if (solutionUpdatePolicy == SolutionUpdatePolicy.NONE) {
+        if (solutionUpdatePolicy == SolutionUpdatePolicy.NO_UPDATE) {
             throw new IllegalArgumentException("Can not call " + this.getClass().getSimpleName()
                     + ".update() with this solutionUpdatePolicy (" + solutionUpdatePolicy + ").");
         }

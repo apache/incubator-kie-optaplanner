@@ -14,17 +14,17 @@ import org.openrewrite.java.search.UsesMethod;
 import org.openrewrite.java.tree.Expression;
 import org.openrewrite.java.tree.J;
 
-public class SolutionManagerMethodsRecipe extends Recipe {
+public class ScoreManagerMethodsRecipe extends Recipe {
 
     private static final MatcherMeta[] MATCHER_METAS = {
-            new MatcherMeta("getSummary(Object)"),
-            //new MatcherMeta("explainScore(Object)"),
-            //new MatcherMeta("updateScore(Object)")
+            new MatcherMeta("getSummary(..)"),
+            new MatcherMeta("explainScore(..)"),
+            new MatcherMeta("updateScore(..)")
     };
 
     @Override
     public String getDisplayName() {
-        return "SolutionManager: explain(), update()";
+        return "ScoreManager: explain(), update()";
     }
 
     @Override
@@ -63,31 +63,18 @@ public class SolutionManagerMethodsRecipe extends Recipe {
                 J.MethodInvocation mi = (J.MethodInvocation) e;
                 Expression select = mi.getSelect();
                 List<Expression> arguments = mi.getArguments();
-
-                if (matcherMeta.methodName.contains("Summary")) {
-                    String pattern = "#{any(" + matcherMeta.classFqn + ")}"
-                            + ".explain(#{any()})"
-                            + ".getSummary()";
-                    JavaTemplate template = JavaTemplate.builder(() -> getCursor().getParentOrThrow(), pattern)
-                            .javaParser(() -> buildJavaParser().build())
-                            .imports("org.optaplanner.core.api.solver.SolutionUpdatePolicy")
-                            .build();
-                    return e.withTemplate(template, e.getCoordinates().replace(), select, arguments.get(0));
-                } else {
-                    throw new UnsupportedOperationException();
-                    /*
-                    String method = matcherMeta.methodName.replace("Score", "")
-                            .replace(")", ", SolutionUpdatePolicy.SCORE_ONLY)");
-                    String pattern = "#{any(" + matcherMeta.classFqn + ")}"
-                            + " "
-                            + method;
-                    JavaTemplate template = JavaTemplate.builder(() -> getCursor().getParentOrThrow(), pattern)
-                            .javaParser(() -> buildJavaParser().build())
-                            .imports("org.optaplanner.core.api.solver.SolutionUpdatePolicy")
-                            .build();
-                    return e.withTemplate(template, e.getCoordinates().replace(), select, arguments.get(0));
-                     */
-                }
+                String pattern = "#{any(" + matcherMeta.classFqn + ")}." +
+                        (matcherMeta.methodName.contains("Summary")
+                                ? "explain(#{any()}, SolutionUpdatePolicy.UPDATE_SCORE_ONLY).getSummary()"
+                                : matcherMeta.methodName.replace(")", ", SolutionUpdatePolicy.UPDATE_SCORE_ONLY)")
+                                        .replace("..", "#{any()}")
+                                        .replace("Score(", "("));
+                maybeAddImport("org.optaplanner.core.api.solver.SolutionUpdatePolicy");
+                JavaTemplate template = JavaTemplate.builder(() -> getCursor().getParentOrThrow(), pattern)
+                        .javaParser(() -> buildJavaParser().build())
+                        .imports("org.optaplanner.core.api.solver.SolutionUpdatePolicy")
+                        .build();
+                return e.withTemplate(template, e.getCoordinates().replace(), select, arguments.get(0));
             }
         };
     }
@@ -103,7 +90,7 @@ public class SolutionManagerMethodsRecipe extends Recipe {
         public final String methodName;
 
         public MatcherMeta(String method) {
-            this.classFqn = "org.optaplanner.core.api.solver.SolutionManager";
+            this.classFqn = "org.optaplanner.core.api.score.ScoreManager";
             this.methodMatcher = new MethodMatcher(classFqn + " " + method);
             this.methodName = method;
         }

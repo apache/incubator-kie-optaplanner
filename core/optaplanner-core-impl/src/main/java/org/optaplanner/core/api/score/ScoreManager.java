@@ -1,5 +1,7 @@
 package org.optaplanner.core.api.score;
 
+import static org.optaplanner.core.api.solver.SolutionUpdatePolicy.UPDATE_ALL;
+
 import java.util.UUID;
 
 import org.optaplanner.core.api.domain.solution.PlanningScore;
@@ -9,13 +11,13 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolutionManager;
+import org.optaplanner.core.api.solver.SolutionUpdatePolicy;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.impl.score.DefaultScoreManager;
 
 /**
- * A stateless service to help calculate {@link org.optaplanner.core.api.score.Score}, {@link ConstraintMatchTotal},
- * {@link Indictment}, etc.
+ * A stateless service to help calculate {@link Score}, {@link ConstraintMatchTotal}, {@link Indictment}, etc.
  * <p>
  * To create a ScoreManager, use {@link #create(SolverFactory)}.
  * <p>
@@ -23,7 +25,7 @@ import org.optaplanner.core.impl.score.DefaultScoreManager;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <Score_> the actual score type
- * @deprecated Use {@link org.optaplanner.core.api.solver.SolutionManager} instead.
+ * @deprecated Use {@link SolutionManager} instead.
  */
 @Deprecated(forRemoval = true)
 public interface ScoreManager<Solution_, Score_ extends Score<Score_>> {
@@ -97,5 +99,45 @@ public interface ScoreManager<Solution_, Score_ extends Score<Score_>> {
      *         calculator, such as {@link EasyScoreCalculator}.
      */
     ScoreExplanation<Solution_, Score_> explainScore(Solution_ solution);
+
+    /**
+     * As defined by {@link #update(Object, SolutionUpdatePolicy)},
+     * using {@link SolutionUpdatePolicy#UPDATE_ALL}.
+     *
+     */
+    default Score_ update(Solution_ solution) {
+        return update(solution, UPDATE_ALL);
+    }
+
+    /**
+     * Updates the given solution according to the {@link SolutionUpdatePolicy}.
+     *
+     * @param solution never null
+     * @param solutionUpdatePolicy never null; if unsure, pick {@link SolutionUpdatePolicy#UPDATE_ALL}
+     * @return possibly null if already null and {@link SolutionUpdatePolicy} didn't cause its update
+     * @see SolutionUpdatePolicy Description of individual policies with respect to performance trade-offs.
+     */
+    Score_ update(Solution_ solution, SolutionUpdatePolicy solutionUpdatePolicy);
+
+    /**
+     * As defined by {@link #explain(Object)},
+     * using {@link SolutionUpdatePolicy#UPDATE_ALL}.
+     */
+    default ScoreExplanation<Solution_, Score_> explain(Solution_ solution) {
+        return explain(solution, UPDATE_ALL);
+    }
+
+    /**
+     * Calculates and retrieves {@link ConstraintMatchTotal}s and {@link Indictment}s necessary for describing the
+     * quality of a particular solution.
+     *
+     * @param solution never null
+     * @param solutionUpdatePolicy never null; if unsure, pick {@link SolutionUpdatePolicy#UPDATE_ALL}
+     * @return never null
+     * @throws IllegalStateException when constraint matching is disabled or not supported by the underlying score
+     *         calculator, such as {@link EasyScoreCalculator}.
+     * @see SolutionUpdatePolicy Description of individual policies with respect to performance trade-offs.
+     */
+    ScoreExplanation<Solution_, Score_> explain(Solution_ solution, SolutionUpdatePolicy solutionUpdatePolicy);
 
 }

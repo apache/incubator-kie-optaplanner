@@ -11,9 +11,11 @@ recipeList:
       oldPropertyKey: quarkus.optaplanner.solver.solve-length
       newPropertyKey: quarkus.optaplanner.solver.solve.duration
       fileMatcher: '**/application.properties'
+  - org.optaplanner.migration.v8.ScoreManagerMethodsRecipe
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: org.optaplanner.core.api.score.ScoreManager
       newFullyQualifiedTypeName: org.optaplanner.core.api.solver.SolutionManager
       ignoreDefinition: true
   - org.optaplanner.migration.v8.AsConstraintRecipe
   - org.optaplanner.migration.v8.ScoreGettersRecipe
+  - org.openrewrite.java.RemoveUnusedImports
