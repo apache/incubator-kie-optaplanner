@@ -129,7 +129,6 @@ public class FlipSublistMove<Solution_> extends AbstractMove<Solution_> {
             // (9, 8, 7)(6, 5, 4, 3, 2, 1)
             int totalLength = firstHalfReversedPath.size() + secondHalfReversedPath.size();
 
-            // Used to rotate the list to put the first element back in its original position
             for (int i = 0; (i < totalLength >> 1); i++) {
                 if (i < firstHalfReversedPath.size()) {
                     if (i < secondHalfReversedPath.size()) {
@@ -185,14 +184,14 @@ public class FlipSublistMove<Solution_> extends AbstractMove<Solution_> {
                         firstHalfIndex = fromIndexInclusive + i;
                         secondHalfIndex = secondHalfSize - i - 1;
                     } else {
-                        // firstIndex = i
-                        firstHalfIndex  = fromIndexInclusive + i;
-                        secondHalfIndex = firstHalfSize - i + secondHalfSize - 1;
+                        firstHalfIndex = fromIndexInclusive + i;
+                        secondHalfIndex = array.length - (i - secondHalfSize) - 1;
                     }
                 } else {
                     firstHalfIndex = i - firstHalfSize;
                     secondHalfIndex = secondHalfSize - i - 1;
                 }
+
                 int saved = array[firstHalfIndex];
                 array[firstHalfIndex] = array[secondHalfIndex];
                 array[secondHalfIndex] = saved;

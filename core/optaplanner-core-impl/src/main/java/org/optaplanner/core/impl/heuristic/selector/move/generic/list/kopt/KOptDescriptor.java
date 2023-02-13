@@ -8,12 +8,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntComparator;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
 import org.optaplanner.core.impl.util.Pair;
+
+import it.unimi.dsi.fastutil.ints.IntArrays;
+import it.unimi.dsi.fastutil.ints.IntComparator;
 
 // TODO consider making this generic in Edge_
 //  to get rid of all those anonymous Object references
@@ -479,6 +480,7 @@ public final class KOptDescriptor<Solution_> {
                         : originalSecondEdgeStartIndex;
 
         FlipSublistMove.flipSubarray(originalToCurrentIndexList, firstEndpoint, secondEndpoint);
+
         return new FlipSublistMove<>(listVariableDescriptor, entity,
                 firstEndpoint, secondEndpoint);
     }

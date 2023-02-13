@@ -73,14 +73,14 @@ class KOptListMoveTest {
         TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(List.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10)));
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 6);
         KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
-                                                                                   indexVariableSupply,
-                                                                                   e1,
-                                                                                   List.of(v10, v1,
-                                                                                           v3, v4,
-                                                                                           v8, v9),
-                                                                                   List.of(v1, v4,
-                                                                                           v3, v9,
-                                                                                           v8, v10));
+                indexVariableSupply,
+                e1,
+                List.of(v10, v1,
+                        v3, v4,
+                        v8, v9),
+                List.of(v1, v4,
+                        v3, v9,
+                        v8, v10));
 
         assertThat(kOptListMove.isMoveDoable(scoreDirector)).isTrue();
         AbstractMove<TestdataListSolution> undoMove = kOptListMove.doMove(scoreDirector);
@@ -133,17 +133,17 @@ class KOptListMoveTest {
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
         KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
-                                                                                   indexVariableSupply,
-                                                                                   e1,
-                                                                                   List.of(v1, v12,
-                                                                                           v2, v3,
-                                                                                           v5, v6,
-                                                                                           v9, v10),
-                                                                                   List.of(
-                                                                                           v1, v3,
-                                                                                           v2, v6,
-                                                                                           v5, v10,
-                                                                                           v9, v12));
+                indexVariableSupply,
+                e1,
+                List.of(v1, v12,
+                        v2, v3,
+                        v5, v6,
+                        v9, v10),
+                List.of(
+                        v1, v3,
+                        v2, v6,
+                        v5, v10,
+                        v9, v12));
 
         assertThat(kOptListMove.isMoveDoable(scoreDirector)).isTrue();
         AbstractMove<TestdataListSolution> undoMove = kOptListMove.doMove(scoreDirector);
@@ -167,24 +167,23 @@ class KOptListMoveTest {
 
         // Note: using only endpoints work (removing v4, v7, v8, v11) from the above list works
         KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
-                                                                                   indexVariableSupply,
-                                                                                   e1,
-                                                                                   List.of(
-                                                                                           v2, v3,
-                                                                                           v6, v5,
-                                                                                           v10, v9,
-                                                                                           v12, v1),
-                                                                                   List.of(
-                                                                                           v2, v5,
-                                                                                           v6, v10,
-                                                                                           v9, v1,
-                                                                                           v12, v3));
-
+                indexVariableSupply,
+                e1,
+                List.of(
+                        v2, v3,
+                        v6, v5,
+                        v10, v9,
+                        v12, v1),
+                List.of(
+                        v2, v5,
+                        v6, v10,
+                        v9, v1,
+                        v12, v3));
 
         assertThat(kOptListMove.isMoveDoable(scoreDirector)).isTrue();
         AbstractMove<TestdataListSolution> undoMove = kOptListMove.doMove(scoreDirector);
 
-        assertThat(e1.getValueList()).containsExactly(v1, v9, v8, v7, v6, v10, v11, v12, v3, v4, v5, v2);
+        assertThat(e1.getValueList()).containsExactly(v1, v2, v5, v4, v3, v12, v11, v10, v6, v7, v8, v9);
 
         undoMove.doMoveOnly(scoreDirector);
 
@@ -235,17 +234,17 @@ class KOptListMoveTest {
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 
         KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
-                                                                                   indexVariableSupply,
-                                                                                   e1,
-                                                                                   List.of(v12, v1,
-                                                                                           v5, v6,
-                                                                                           v2, v3,
-                                                                                           v8, v9),
-                                                                                   List.of(
-                                                                                           v1, v5,
-                                                                                           v8, v3,
-                                                                                           v6, v12,
-                                                                                           v9, v2));
+                indexVariableSupply,
+                e1,
+                List.of(v12, v1,
+                        v5, v6,
+                        v2, v3,
+                        v8, v9),
+                List.of(
+                        v1, v5,
+                        v8, v3,
+                        v6, v12,
+                        v9, v2));
 
         assertThat(kOptListMove.isMoveDoable(scoreDirector)).isTrue();
         AbstractMove<TestdataListSolution> undoMove = kOptListMove.doMove(scoreDirector);
