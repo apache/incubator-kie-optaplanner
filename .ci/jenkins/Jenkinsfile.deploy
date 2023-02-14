@@ -361,7 +361,7 @@ List getIntegrationTestProfiles() {
 }
 
 void updateQuickstartsVersions() {
-    maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand(), 'version.org.optaplanner', getProjectVersion())
+    maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand(), 'optaplanner.bom.version', getProjectVersion())
     maven.mvnVersionsUpdateParentAndChildModules(getOptaplannerQuickstartsMavenCommand(), getProjectVersion(), !isRelease())
     gradleVersionsUpdate(quickstartsRepository, getProjectVersion())
 

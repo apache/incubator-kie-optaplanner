@@ -450,7 +450,7 @@ void runMavenDeploy(MavenCommand mvnCmd) {
 }
 
 void updateQuickstartsVersions(String newVersion) {
-    maven.mvnSetVersionProperty('version.org.optaplanner', newVersion)
+    maven.mvnSetVersionProperty('optaplanner.bom.version', newVersion)
     maven.mvnVersionsUpdateParentAndChildModules(newVersion, true)
     gradleVersionsUpdate(newVersion)
 
