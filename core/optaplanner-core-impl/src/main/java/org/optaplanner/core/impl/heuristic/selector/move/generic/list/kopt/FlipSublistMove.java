@@ -11,12 +11,14 @@ import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
- * Flips a sublist of a list variable, (the same thing as a 2-opt, but no shift to restore the original origin).
- * For instance, given [0, 1, 2, 3, 4], fromIndexInclusive = 1, toIndexExclusive = 3, the list after the move
- * would be [0, 3, 2, 1, 4]. If toIndexExclusive is before fromIndexInclusive, the flip is performed on the combined
- * sublists [fromIndexInclusive, size) and [0, toIndexExclusive). For instance,
- * given [0, 1, 2, 3, 4, 5, 6], fromIndexInclusive = 5, toIndexExclusive = 2, the list after the move would be
- * [6, 5, 2, 3, 4, 1, 0] (and not [0, 6, 5, 2, 3, 4, 1]).
+ * Flips a sublist of a list variable, (the same thing as a {@link TwoOptListMove}, but no shift to restore the original
+ * origin).
+ * For instance, given [0, 1, 2, 3, 4], fromIndexInclusive = 1, toIndexExclusive = 3,
+ * the list after the move would be [0, 3, 2, 1, 4].
+ * If toIndexExclusive is before fromIndexInclusive,
+ * the flip is performed on the combined sublists [fromIndexInclusive, size) and [0, toIndexExclusive).
+ * For instance, given [0, 1, 2, 3, 4, 5, 6], fromIndexInclusive = 5, toIndexExclusive = 2,
+ * the list after the move would be [6, 5, 2, 3, 4, 1, 0] (and not [0, 6, 5, 2, 3, 4, 1]).
  *
  * @param <Solution_>
  */

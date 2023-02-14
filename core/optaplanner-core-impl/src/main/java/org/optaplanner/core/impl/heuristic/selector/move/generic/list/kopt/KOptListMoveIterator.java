@@ -15,21 +15,21 @@ import org.optaplanner.core.impl.heuristic.move.NoChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
+public class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIterator<Move<Solution_>> {
 
     private final Random workingRandom;
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final SingletonInverseVariableSupply inverseVariableSupply;
     private final IndexVariableSupply indexVariableSupply;
     private final EntitySelector<Solution_> entitySelector;
-    private final Function<Object, Object> successorFunction;
-    private final Function<Object, Object> predecessorFunction;
-    private final TriPredicate<Object, Object, Object> betweenFunction;
+    private final Function<Node_, Node_> successorFunction;
+    private final Function<Node_, Node_> predecessorFunction;
+    private final TriPredicate<Node_, Node_, Node_> betweenFunction;
     private final int minK;
     private final int maxK;
     private final int Patching_C;
 
-    private Iterator<Object> entityIterator;
+    private Iterator<Node_> entityIterator;
 
     public KOptListMoveIterator(Random workingRandom,
             ListVariableDescriptor<Solution_> listVariableDescriptor,
@@ -53,17 +53,19 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
         this.betweenFunction = KOptListMove.getBetweenPredicate(indexVariableSupply);
     }
 
-    private Iterator<Object> getValueIteratorForEntity(Object entity) {
+    @SuppressWarnings("unchecked")
+    private Iterator<Node_> getValueIteratorForEntity(Object entity) {
         // TODO: Find out why valueSelector.iterator(entity) return values with different entities
-        List<Object> entityListVariable = listVariableDescriptor.getListVariable(entity);
+        List<Node_> entityListVariable = (List<Node_>) listVariableDescriptor.getListVariable(entity);
         return workingRandom.ints(0, entityListVariable.size())
                 .mapToObj(entityListVariable::get).iterator();
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected Move<Solution_> createUpcomingSelection() {
         int k = workingRandom.nextInt(maxK - minK + 1) + minK;
-        Object entity = pickEntityWithMinimumRouteLength(2 * k);
+        Node_ entity = pickEntityWithMinimumRouteLength(2 * k);
         while (entity == null) {
             k--;
             if (k <= 1) {
@@ -74,7 +76,7 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
             entity = pickEntityWithMinimumRouteLength(2 * k);
         }
         if (k == 2) {
-            Iterator<Object> valueIterator = getValueIteratorForEntity(entity);
+            Iterator<Node_> valueIterator = getValueIteratorForEntity(entity);
             Object firstEndpoint = valueIterator.next();
             Object secondEndpoint = valueIterator.next();
             while (secondEndpoint == firstEndpoint) {
@@ -83,7 +85,7 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
             return new TwoOptListMove<>(listVariableDescriptor, indexVariableSupply, entity,
                     firstEndpoint, secondEndpoint);
         }
-        KOptDescriptor<Solution_> descriptor = pickKOptMove(entity, k);
+        KOptDescriptor<Solution_, Node_> descriptor = pickKOptMove(entity, k);
         if (descriptor == null) {
             // Was unable to find a K-Opt move
             return new NoChangeMove<>();
@@ -91,35 +93,38 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
         return descriptor.getKOptListMove(listVariableDescriptor, indexVariableSupply, entity);
     }
 
-    private Object pickEntityWithMinimumRouteLength(int minimumLength) {
+    @SuppressWarnings("unchecked")
+    private Node_ pickEntityWithMinimumRouteLength(int minimumLength) {
         if (entityIterator == null) {
-            entityIterator = entitySelector.endingIterator();
+            entityIterator = (Iterator<Node_>) entitySelector.endingIterator();
         }
         for (int i = 0; i < 2; i++) {
             while (entityIterator.hasNext()) {
-                Object entity = entityIterator.next();
+                Node_ entity = entityIterator.next();
                 if (listVariableDescriptor.getListSize(entity) >= minimumLength) {
                     return entity;
                 }
             }
-            entityIterator = entitySelector.endingIterator();
+            entityIterator = (Iterator<Node_>) entitySelector.endingIterator();
         }
         return null;
     }
 
-    private KOptDescriptor<Solution_> pickKOptMove(Object entity, int k) {
+    @SuppressWarnings("unchecked")
+    private KOptDescriptor<Solution_, Node_> pickKOptMove(Node_ entity, int k) {
         // The code in the paper used 1-index arrays
-        Object[] pickedValues = new Object[2 * k + 1];
-        Iterator<Object> valueIterator = getValueIteratorForEntity(entity);
+        Node_[] pickedValues = (Node_[]) new Object[2 * k + 1];
+        Iterator<Node_> valueIterator = getValueIteratorForEntity(entity);
         pickedValues[1] = valueIterator.next();
         pickedValues[2] = workingRandom.nextBoolean() ? getNodePredecessor(pickedValues[1]) : getNodeSuccessor(pickedValues[1]);
         return pickKOptMoveRec(valueIterator, pickedValues, 2, k);
     }
 
-    private KOptDescriptor<Solution_> pickKOptMoveRec(Iterator<Object> valueIterator, Object[] pickedValues, int pickedSoFar,
+    private KOptDescriptor<Solution_, Node_> pickKOptMoveRec(Iterator<Node_> valueIterator, Node_[] pickedValues,
+            int pickedSoFar,
             int K) {
-        Object previousRemovedEdgeEndpoint = pickedValues[2 * pickedSoFar - 2];
-        Object nextRemovedEdgePoint, nextRemovedEdgeOppositePoint;
+        Node_ previousRemovedEdgeEndpoint = pickedValues[2 * pickedSoFar - 2];
+        Node_ nextRemovedEdgePoint, nextRemovedEdgeOppositePoint;
 
         int remainingAttempts = (K - pickedSoFar + 3) * 2;
         while (remainingAttempts > 0) {
@@ -153,13 +158,13 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
             pickedValues[2 * pickedSoFar] = nextRemovedEdgeOppositePoint;
 
             if (pickedSoFar < K) {
-                KOptDescriptor<Solution_> descriptor = pickKOptMoveRec(valueIterator, pickedValues, pickedSoFar + 1, K);
+                KOptDescriptor<Solution_, Node_> descriptor = pickKOptMoveRec(valueIterator, pickedValues, pickedSoFar + 1, K);
                 if (descriptor != null && descriptor.isFeasible()) {
                     return descriptor;
                 }
             } else {
-                KOptDescriptor<Solution_> descriptor =
-                        new KOptDescriptor<>(pickedValues, this::getNodeSuccessor, this::isMiddleNodeBetween);
+                KOptDescriptor<Solution_, Node_> descriptor =
+                        new KOptDescriptor<>(pickedValues, successorFunction, betweenFunction);
                 if (descriptor.isFeasible()) {
                     return descriptor;
                 } else {
@@ -173,9 +178,9 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
         return null;
     }
 
-    KOptDescriptor<Solution_> patchCycles(Iterator<Object> valueIterator,
-            KOptDescriptor<Solution_> descriptor, Object[] oldRemovedEdges, int k) {
-        Object s1, s2;
+    KOptDescriptor<Solution_, Node_> patchCycles(Iterator<Node_> valueIterator,
+            KOptDescriptor<Solution_, Node_> descriptor, Node_[] oldRemovedEdges, int k) {
+        Node_ s1, s2;
         int[] removedEdgeIndexToTourOrder = descriptor.getRemovedEdgeIndexToTourOrder();
         KOptCycleInfo cycleInfo = descriptor.getCyclesForPermutation();
         int cycleCount = cycleInfo.cycleCount;
@@ -187,16 +192,16 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
         int currentCycle = getShortestCycleIdentifier(oldRemovedEdges, cycle, removedEdgeIndexToTourOrder, cycleCount, k);
         for (int i = 0; i < k; i++) {
             if (cycle[removedEdgeIndexToTourOrder[2 * i]] == currentCycle) {
-                Object sStart = oldRemovedEdges[removedEdgeIndexToTourOrder[2 * i]];
-                Object sStop = oldRemovedEdges[removedEdgeIndexToTourOrder[2 * i + 1]];
+                Node_ sStart = oldRemovedEdges[removedEdgeIndexToTourOrder[2 * i]];
+                Node_ sStop = oldRemovedEdges[removedEdgeIndexToTourOrder[2 * i + 1]];
                 for (s1 = sStart; s1 != sStop; s1 = s2) {
-                    Object[] removedEdges = Arrays.copyOf(oldRemovedEdges, oldRemovedEdges.length + 2);
+                    Node_[] removedEdges = Arrays.copyOf(oldRemovedEdges, oldRemovedEdges.length + 2);
 
                     removedEdges[2 * k + 1] = s1;
                     s2 = getNodeSuccessor(s1);
                     removedEdges[2 * k + 2] = s2;
                     int[] addedEdgeToOtherEndpoint = new int[removedEdges.length];
-                    KOptDescriptor<Solution_> newMove = patchCyclesRec(valueIterator, descriptor, removedEdges,
+                    KOptDescriptor<Solution_, Node_> newMove = patchCyclesRec(valueIterator, descriptor, removedEdges,
                             addedEdgeToOtherEndpoint, cycle, currentCycle,
                             k, 2, cycleCount);
                     if (newMove.isFeasible()) {
@@ -208,13 +213,14 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
         return descriptor;
     }
 
-    KOptDescriptor<Solution_> patchCyclesRec(Iterator<Object> valueIterator, KOptDescriptor<Solution_> originalMove,
-            Object[] oldRemovedEdges, int[] addedEdgeToOtherEndpoint, int[] cycle, int currentCycle,
+    KOptDescriptor<Solution_, Node_> patchCyclesRec(Iterator<Node_> valueIterator,
+            KOptDescriptor<Solution_, Node_> originalMove,
+            Node_[] oldRemovedEdges, int[] addedEdgeToOtherEndpoint, int[] cycle, int currentCycle,
             int k, int patchedCycleCount, int cycleCount) {
-        Object s1, s2, s3, s4;
+        Node_ s1, s2, s3, s4;
         int NewCycle, i;
         Integer[] cycleSaved = new Integer[1 + 2 * k];
-        Object[] removedEdges = Arrays.copyOf(oldRemovedEdges, oldRemovedEdges.length + 2);
+        Node_[] removedEdges = Arrays.copyOf(oldRemovedEdges, oldRemovedEdges.length + 2);
 
         s1 = removedEdges[2 * k + 1];
         s2 = removedEdges[i = 2 * (k + patchedCycleCount) - 2];
@@ -252,7 +258,7 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
                     cycle[i] = currentCycle;
                 }
             }
-            KOptDescriptor<Solution_> recursiveCall =
+            KOptDescriptor<Solution_, Node_> recursiveCall =
                     patchCyclesRec(valueIterator, originalMove, removedEdges, addedEdgeToOtherEndpoint, cycle, currentCycle,
                             k, patchedCycleCount + 1, cycleCount - 1);
             if (recursiveCall.isFeasible()) {
@@ -264,13 +270,12 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
         } else if (s4 != s1) {
             addedEdgeToOtherEndpoint[addedEdgeToOtherEndpoint[2 * k + 1] = 2 * (k + patchedCycleCount)] =
                     2 * k + 1;
-            return new KOptDescriptor<>(removedEdges, addedEdgeToOtherEndpoint, this::getNodeSuccessor,
-                    this::isMiddleNodeBetween);
+            return new KOptDescriptor<>(removedEdges, addedEdgeToOtherEndpoint, successorFunction, betweenFunction);
         }
         return originalMove;
     }
 
-    int findCycleIdentifierForNode(Object value, Object[] pickedValues, int[] permutation, int[] indexToCycle) {
+    int findCycleIdentifierForNode(Node_ value, Node_[] pickedValues, int[] permutation, int[] indexToCycle) {
         for (int i = 1; i < pickedValues.length; i++) {
             if (isMiddleNodeBetween(pickedValues[permutation[i]], value, pickedValues[permutation[i + 1]])) {
                 return indexToCycle[permutation[i]];
@@ -337,15 +342,15 @@ public class KOptListMoveIterator<Solution_> extends UpcomingSelectionIterator<M
         return false;
     }
 
-    private Object getNodeSuccessor(Object node) {
+    private Node_ getNodeSuccessor(Node_ node) {
         return successorFunction.apply(node);
     }
 
-    private Object getNodePredecessor(Object node) {
+    private Node_ getNodePredecessor(Node_ node) {
         return predecessorFunction.apply(node);
     }
 
-    private boolean isMiddleNodeBetween(Object start, Object middle, Object end) {
+    private boolean isMiddleNodeBetween(Node_ start, Node_ middle, Node_ end) {
         return betweenFunction.test(start, middle, end);
     }
 }

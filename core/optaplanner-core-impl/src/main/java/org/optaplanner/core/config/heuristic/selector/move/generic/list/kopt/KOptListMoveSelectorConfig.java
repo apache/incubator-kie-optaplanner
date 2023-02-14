@@ -34,6 +34,24 @@ public class KOptListMoveSelectorConfig extends MoveSelectorConfig<KOptListMoveS
         this.maximumK = maximumK;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public KOptListMoveSelectorConfig withMinimumK(Integer minimumK) {
+        this.minimumK = minimumK;
+        return this;
+    }
+
+    public KOptListMoveSelectorConfig withMaximumK(Integer maximumK) {
+        this.maximumK = maximumK;
+        return this;
+    }
+
+    // ************************************************************************
+    // Builder methods
+    // ************************************************************************
+
     @Override
     public KOptListMoveSelectorConfig inherit(KOptListMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);

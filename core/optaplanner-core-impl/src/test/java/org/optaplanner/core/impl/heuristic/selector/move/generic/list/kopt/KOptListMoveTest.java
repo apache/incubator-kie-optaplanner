@@ -48,7 +48,7 @@ class KOptListMoveTest {
         IndexVariableListener indexVariableListener = (IndexVariableListener) indexVariableSupply;
         TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(List.of(v1, v2, v3, v4, v5, v6)));
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 6);
-        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
+        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
                 indexVariableSupply,
                 e1,
                 List.of(v6, v1,
@@ -72,7 +72,7 @@ class KOptListMoveTest {
         IndexVariableListener indexVariableListener = (IndexVariableListener) indexVariableSupply;
         TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(List.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10)));
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 6);
-        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
+        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
                 indexVariableSupply,
                 e1,
                 List.of(v10, v1,
@@ -99,7 +99,7 @@ class KOptListMoveTest {
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 
-        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
+        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
                 indexVariableSupply,
                 e1,
                 List.of(
@@ -132,7 +132,7 @@ class KOptListMoveTest {
                 List.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12)));
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
-        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
+        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
                 indexVariableSupply,
                 e1,
                 List.of(v1, v12,
@@ -166,7 +166,7 @@ class KOptListMoveTest {
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 
         // Note: using only endpoints work (removing v4, v7, v8, v11) from the above list works
-        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
+        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
                 indexVariableSupply,
                 e1,
                 List.of(
@@ -200,7 +200,7 @@ class KOptListMoveTest {
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 
-        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
+        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
                 indexVariableSupply,
                 e1,
                 List.of(v8, v1,
@@ -233,7 +233,7 @@ class KOptListMoveTest {
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 
-        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
+        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
                 indexVariableSupply,
                 e1,
                 List.of(v12, v1,
@@ -266,7 +266,7 @@ class KOptListMoveTest {
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 
-        KOptListMove<TestdataListSolution> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
+        KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
                 indexVariableSupply,
                 e1,
                 List.of(
@@ -318,12 +318,12 @@ class KOptListMoveTest {
      * @return A new sequential or non-sequential k-opt move with the specified undirected edges removed and added.
      * @param <Solution_>
      */
-    private static <Solution_> KOptListMove<Solution_> fromRemovedAndAddedEdges(
+    private static <Solution_> KOptListMove<Solution_, TestdataListValue> fromRemovedAndAddedEdges(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             IndexVariableSupply indexVariableSupply,
             Object entity,
-            List<Object> removedEdgeList,
-            List<Object> addedEdgeList) {
+            List<TestdataListValue> removedEdgeList,
+            List<TestdataListValue> addedEdgeList) {
 
         if (addedEdgeList.size() != removedEdgeList.size()) {
             throw new IllegalArgumentException(
@@ -340,7 +340,7 @@ class KOptListMoveTest {
                     + "that are not included in the removedEdgeList (" + removedEdgeList + ").");
         }
 
-        Function<Object, Object> successorFunction =
+        Function<TestdataListValue, TestdataListValue> successorFunction =
                 getSuccessorFunction(listVariableDescriptor, ignored -> entity, indexVariableSupply);
 
         for (int i = 0; i < removedEdgeList.size(); i += 2) {
@@ -351,7 +351,7 @@ class KOptListMoveTest {
             }
         }
 
-        Object[] tourArray = new Object[removedEdgeList.size() + 1];
+        TestdataListValue[] tourArray = new TestdataListValue[removedEdgeList.size() + 1];
         int[] incl = new int[removedEdgeList.size() + 1];
         for (int i = 0; i < removedEdgeList.size(); i += 2) {
             tourArray[i + 1] = removedEdgeList.get(i);
@@ -372,7 +372,7 @@ class KOptListMoveTest {
             }
         }
 
-        KOptDescriptor<Solution_> descriptor = new KOptDescriptor<>(tourArray,
+        KOptDescriptor<Solution_, TestdataListValue> descriptor = new KOptDescriptor<>(tourArray,
                 incl,
                 getSuccessorFunction(listVariableDescriptor,
                         ignored -> entity,
@@ -381,7 +381,7 @@ class KOptListMoveTest {
         return descriptor.getKOptListMove(listVariableDescriptor, indexVariableSupply, entity);
     }
 
-    private static int identityIndexOf(List<Object> sourceList, Object query) {
+    private static int identityIndexOf(List<TestdataListValue> sourceList, TestdataListValue query) {
         for (int i = 0; i < sourceList.size(); i++) {
             if (sourceList.get(i) == query) {
                 return i;

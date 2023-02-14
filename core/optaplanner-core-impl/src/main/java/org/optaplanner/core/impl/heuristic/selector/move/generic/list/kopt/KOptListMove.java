@@ -20,18 +20,19 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 /**
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <Node_> The value type
  */
-public class KOptListMove<Solution_> extends AbstractMove<Solution_> {
+public class KOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final Object entity;
-    private final KOptDescriptor<Solution_> descriptor;
+    private final KOptDescriptor<Solution_, Node_> descriptor;
     private final List<FlipSublistMove<Solution_>> equivalent2Opts;
     private final int postShiftAmount;
 
     public KOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
             Object entity,
-            KOptDescriptor<Solution_> descriptor,
+            KOptDescriptor<Solution_, Node_> descriptor,
             List<FlipSublistMove<Solution_>> equivalent2Opts,
             int postShiftAmount) {
         this.listVariableDescriptor = listVariableDescriptor;
@@ -104,12 +105,14 @@ public class KOptListMove<Solution_> extends AbstractMove<Solution_> {
                 .collect(Collectors.toSet());
     }
 
-    public static <Solution_> Function<Object, Object> getSuccessorFunction(
+    @SuppressWarnings("unchecked")
+    public static <Solution_, Node_> Function<Node_, Node_> getSuccessorFunction(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply,
             IndexVariableSupply indexVariableSupply) {
         return (node) -> {
-            List<Object> valueList = listVariableDescriptor.getListVariable(inverseVariableSupply.getInverseSingleton(node));
+            List<Node_> valueList =
+                    (List<Node_>) listVariableDescriptor.getListVariable(inverseVariableSupply.getInverseSingleton(node));
             int index = indexVariableSupply.getIndex(node);
             if (index == valueList.size() - 1) {
                 return valueList.get(0);
@@ -119,12 +122,14 @@ public class KOptListMove<Solution_> extends AbstractMove<Solution_> {
         };
     }
 
-    public static <Solution_> Function<Object, Object> getPredecessorFunction(
+    @SuppressWarnings("unchecked")
+    public static <Solution_, Node_> Function<Node_, Node_> getPredecessorFunction(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply,
             IndexVariableSupply indexVariableSupply) {
         return (node) -> {
-            List<Object> valueList = listVariableDescriptor.getListVariable(inverseVariableSupply.getInverseSingleton(node));
+            List<Node_> valueList =
+                    (List<Node_>) listVariableDescriptor.getListVariable(inverseVariableSupply.getInverseSingleton(node));
             int index = indexVariableSupply.getIndex(node);
             if (index == 0) {
                 return valueList.get(valueList.size() - 1);
@@ -134,7 +139,7 @@ public class KOptListMove<Solution_> extends AbstractMove<Solution_> {
         };
     }
 
-    public static TriPredicate<Object, Object, Object> getBetweenPredicate(IndexVariableSupply indexVariableSupply) {
+    public static <Node_> TriPredicate<Node_, Node_, Node_> getBetweenPredicate(IndexVariableSupply indexVariableSupply) {
         return (start, middle, end) -> {
             int startIndex = indexVariableSupply.getIndex(start);
             int middleIndex = indexVariableSupply.getIndex(middle);
@@ -160,16 +165,16 @@ public class KOptListMove<Solution_> extends AbstractMove<Solution_> {
      *
      * @param <Solution_>
      */
-    private static final class UndoKOptListMove<Solution_> extends AbstractMove<Solution_> {
+    private static final class UndoKOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
         private final ListVariableDescriptor<Solution_> listVariableDescriptor;
         private final Object entity;
-        private final KOptDescriptor<Solution_> descriptor;
+        private final KOptDescriptor<Solution_, Node_> descriptor;
         private final List<FlipSublistMove<Solution_>> equivalent2Opts;
         private final int preShiftAmount;
 
         public UndoKOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
                 Object entity,
-                KOptDescriptor<Solution_> descriptor,
+                KOptDescriptor<Solution_, Node_> descriptor,
                 List<FlipSublistMove<Solution_>> equivalent2Opts,
                 int preShiftAmount) {
             this.listVariableDescriptor = listVariableDescriptor;

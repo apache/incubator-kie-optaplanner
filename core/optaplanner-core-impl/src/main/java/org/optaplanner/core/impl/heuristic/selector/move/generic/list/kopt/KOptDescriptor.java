@@ -3,10 +3,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
@@ -15,10 +12,10 @@ import org.optaplanner.core.impl.util.Pair;
 
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.ints.IntSets;
 
-// TODO consider making this generic in Edge_
-//  to get rid of all those anonymous Object references
-public final class KOptDescriptor<Solution_> {
+public final class KOptDescriptor<Solution_, Node_> {
 
     /**
      * The number of edges being added
@@ -28,7 +25,7 @@ public final class KOptDescriptor<Solution_> {
     /**
      * A sequence of 2K nodes that forms the sequence of edges being removed
      */
-    private final Object[] removedEdges;
+    private final Node_[] removedEdges;
 
     /**
      * The order each node is visited when the tour is travelled in the successor direction. This forms
@@ -56,7 +53,7 @@ public final class KOptDescriptor<Solution_> {
      */
     private final int[] addedEdgeToOtherEndpoint;
 
-    private static int[] computeInEdgesForSequentialMove(Object[] removedEdges) {
+    private static <Node_> int[] computeInEdgesForSequentialMove(Node_[] removedEdges) {
         int[] out = new int[removedEdges.length];
         int k = (removedEdges.length - 1) >> 1;
 
@@ -81,9 +78,9 @@ public final class KOptDescriptor<Solution_> {
      *        taken in the successor direction.
      */
     public KOptDescriptor(
-            Object[] removedEdges,
-            Function<Object, Object> endpointToSuccessorFunction,
-            TriPredicate<Object, Object, Object> betweenPredicate) {
+            Node_[] removedEdges,
+            Function<Node_, Node_> endpointToSuccessorFunction,
+            TriPredicate<Node_, Node_, Node_> betweenPredicate) {
         this(removedEdges, computeInEdgesForSequentialMove(removedEdges), endpointToSuccessorFunction, betweenPredicate);
     }
 
@@ -99,11 +96,10 @@ public final class KOptDescriptor<Solution_> {
      *        taken in the successor direction.
      */
     public KOptDescriptor(
-            Object[] removedEdges,
+            Node_[] removedEdges,
             int[] addedEdgeToOtherEndpoint,
-            Function<Object, Object> endpointToSuccessorFunction,
-            TriPredicate<Object, Object, Object> betweenPredicate) {
-        int i, j;
+            Function<Node_, Node_> endpointToSuccessorFunction,
+            TriPredicate<Node_, Node_, Node_> betweenPredicate) {
         this.k = (removedEdges.length - 1) >> 1;
         this.removedEdges = removedEdges;
         this.removedEdgeIndexToTourOrder = new int[removedEdges.length];
@@ -113,7 +109,7 @@ public final class KOptDescriptor<Solution_> {
         // Compute the permutation as described in FindPermutation
         // (Section 5.3 "Determination of the feasibility of a move",
         //  An Effective Implementation of K-opt Moves for the Lin-Kernighan TSP Heuristic)
-        for (i = j = 1; j <= k; i += 2, j++) {
+        for (int i = 1, j = 1; j <= k; i += 2, j++) {
             removedEdgeIndexToTourOrder[j] =
                     (endpointToSuccessorFunction.apply(removedEdges[i]) == removedEdges[i + 1]) ? i : i + 1;
         }
@@ -123,12 +119,12 @@ public final class KOptDescriptor<Solution_> {
                         : 1);
         IntArrays.stableSort(removedEdgeIndexToTourOrder, 2, k + 1, comparator);
 
-        for (j = 2 * k; j >= 2; j -= 2) {
+        for (int i, j = 2 * k; j >= 2; j -= 2) {
             removedEdgeIndexToTourOrder[j - 1] = i = removedEdgeIndexToTourOrder[j / 2];
             removedEdgeIndexToTourOrder[j] = ((i & 1) == 1) ? i + 1 : i - 1;
         }
 
-        for (i = 1; i <= 2 * k; i++) {
+        for (int i = 1; i <= 2 * k; i++) {
             inverseRemovedEdgeIndexToTourOrder[removedEdgeIndexToTourOrder[i]] = i;
         }
     }
@@ -165,14 +161,16 @@ public final class KOptDescriptor<Solution_> {
     public KOptCycleInfo getCyclesForPermutation() {
         int cycleCount = 0;
         int[] indexToCycle = new int[removedEdgeIndexToTourOrder.length];
-        Set<Integer> remaining = IntStream.range(1, removedEdgeIndexToTourOrder.length).boxed().collect(Collectors.toSet());
+        IntSet remaining = IntSets.fromTo(1, removedEdgeIndexToTourOrder.length);
         while (!remaining.isEmpty()) {
-            Integer current = remaining.iterator().next();
+            int current = remaining.intIterator().nextInt();
             remaining.remove(current);
 
             while (true) {
                 indexToCycle[current] = cycleCount;
-                current = inverseRemovedEdgeIndexToTourOrder[addedEdgeToOtherEndpoint[removedEdgeIndexToTourOrder[current]]];
+                int tourIndex = removedEdgeIndexToTourOrder[current];
+                int nextEndpointTourIndex = addedEdgeToOtherEndpoint[tourIndex];
+                current = inverseRemovedEdgeIndexToTourOrder[nextEndpointTourIndex];
                 if (!remaining.contains(current)) {
                     break;
                 }
@@ -184,22 +182,22 @@ public final class KOptDescriptor<Solution_> {
         return new KOptCycleInfo(cycleCount, indexToCycle);
     }
 
-    public List<Pair<Object, Object>> getAddedEdges() {
-        List<Pair<Object, Object>> out = new ArrayList<>(2 * k);
+    public List<Pair<Node_, Node_>> getAddedEdges() {
+        List<Pair<Node_, Node_>> out = new ArrayList<>(2 * k);
         int currentEndpoint = 2 * k;
 
         // This loop iterate through the new tour create
         while (currentEndpoint != 0) {
             out.add(Pair.of(removedEdges[currentEndpoint], removedEdges[addedEdgeToOtherEndpoint[currentEndpoint]]));
-            currentEndpoint =
-                    inverseRemovedEdgeIndexToTourOrder[addedEdgeToOtherEndpoint[removedEdgeIndexToTourOrder[currentEndpoint]]]
-                            ^ 1;
+            int tourIndex = removedEdgeIndexToTourOrder[currentEndpoint];
+            int nextEndpointTourIndex = addedEdgeToOtherEndpoint[tourIndex];
+            currentEndpoint = inverseRemovedEdgeIndexToTourOrder[nextEndpointTourIndex] ^ 1;
         }
         return out;
     }
 
-    public List<Pair<Object, Object>> getRemovedEdges() {
-        List<Pair<Object, Object>> out = new ArrayList<>(2 * k);
+    public List<Pair<Node_, Node_>> getRemovedEdges() {
+        List<Pair<Node_, Node_>> out = new ArrayList<>(2 * k);
         for (int i = 1; i <= k; i++) {
             out.add(Pair.of(removedEdges[2 * i - 1], removedEdges[2 * i]));
         }
@@ -248,7 +246,7 @@ public final class KOptDescriptor<Solution_> {
      * @param entity
      * @return
      */
-    public KOptListMove<Solution_> getKOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
+    public KOptListMove<Solution_, Node_> getKOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
             IndexVariableSupply indexVariableSupply,
             Object entity) {
         if (!isFeasible()) {
@@ -258,9 +256,6 @@ public final class KOptDescriptor<Solution_> {
 
         int entityListSize = listVariableDescriptor.getListSize(entity);
         List<FlipSublistMove<Solution_>> out = new ArrayList<>();
-        // TODO consider turning this to int[] as well;
-        //  I checked the operations on this list and doing it as an array shouldn't prevent them.
-        //  This is on the hot path, the benefits will be worth it.
         int[] originalToCurrentIndexList = new int[entityListSize];
         for (int index = 0; index < entityListSize; index++) {
             originalToCurrentIndexList[index] = index;
@@ -281,8 +276,10 @@ public final class KOptDescriptor<Solution_> {
         FindNextReversal: while (isMoveNotDone) {
             int maximumOrientedPairCountAfterReversal = -1;
             for (int firstEndpoint = 1; firstEndpoint <= 2 * k - 2; firstEndpoint++) {
-                int secondEndpoint =
-                        currentInverseRemovedEdgeIndexToTourOrder[addedEdgeToOtherEndpoint[currentRemovedEdgeIndexToTourOrder[firstEndpoint]]];
+                int firstEndpointCurrentTourIndex = currentRemovedEdgeIndexToTourOrder[firstEndpoint];
+                int nextEndpointTourIndex = addedEdgeToOtherEndpoint[firstEndpointCurrentTourIndex];
+                int secondEndpoint = currentInverseRemovedEdgeIndexToTourOrder[nextEndpointTourIndex];
+
                 if (secondEndpoint >= firstEndpoint + 2 && (firstEndpoint & 1) == (secondEndpoint & 1)) {
                     int orientedPairCountAfterReversal = ((firstEndpoint & 1) == 1)
                             ? countOrientedPairsForReversal(currentRemovedEdgeIndexToTourOrder,
@@ -301,38 +298,38 @@ public final class KOptDescriptor<Solution_> {
                 }
             }
             if (maximumOrientedPairCountAfterReversal >= 0) {
-                int firstEndpoint = bestOrientedPairFirstEndpoint;
-                int secondEndpoint = bestOrientedPairSecondEndpoint;
-                if ((firstEndpoint & 1) == 1) {
+                if ((bestOrientedPairFirstEndpoint & 1) == 1) {
                     out.add(getListReversalMoveForEdgePair(listVariableDescriptor, indexVariableSupply,
                             originalToCurrentIndexList, entity,
-                            removedEdges[currentRemovedEdgeIndexToTourOrder[firstEndpoint + 1]],
-                            removedEdges[currentRemovedEdgeIndexToTourOrder[firstEndpoint]],
-                            removedEdges[currentRemovedEdgeIndexToTourOrder[secondEndpoint]],
-                            removedEdges[currentRemovedEdgeIndexToTourOrder[secondEndpoint + 1]]));
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[bestOrientedPairFirstEndpoint + 1]],
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[bestOrientedPairFirstEndpoint]],
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[bestOrientedPairSecondEndpoint]],
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[bestOrientedPairSecondEndpoint + 1]]));
                     reversePermutationPart(currentRemovedEdgeIndexToTourOrder,
                             currentInverseRemovedEdgeIndexToTourOrder,
-                            firstEndpoint + 1,
-                            secondEndpoint);
+                            bestOrientedPairFirstEndpoint + 1,
+                            bestOrientedPairSecondEndpoint);
                 } else {
                     out.add(getListReversalMoveForEdgePair(listVariableDescriptor, indexVariableSupply,
                             originalToCurrentIndexList, entity,
-                            removedEdges[currentRemovedEdgeIndexToTourOrder[firstEndpoint - 1]],
-                            removedEdges[currentRemovedEdgeIndexToTourOrder[firstEndpoint]],
-                            removedEdges[currentRemovedEdgeIndexToTourOrder[secondEndpoint]],
-                            removedEdges[currentRemovedEdgeIndexToTourOrder[secondEndpoint - 1]]));
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[bestOrientedPairFirstEndpoint - 1]],
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[bestOrientedPairFirstEndpoint]],
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[bestOrientedPairSecondEndpoint]],
+                            removedEdges[currentRemovedEdgeIndexToTourOrder[bestOrientedPairSecondEndpoint - 1]]));
                     reversePermutationPart(currentRemovedEdgeIndexToTourOrder,
                             currentInverseRemovedEdgeIndexToTourOrder,
-                            firstEndpoint,
-                            secondEndpoint - 1);
+                            bestOrientedPairFirstEndpoint,
+                            bestOrientedPairSecondEndpoint - 1);
                 }
                 continue FindNextReversal;
             }
 
             // There are no oriented pairs; check for a hurdle
             for (int firstEndpoint = 1; firstEndpoint <= 2 * k - 1; firstEndpoint += 2) {
-                int secondEndpoint =
-                        currentInverseRemovedEdgeIndexToTourOrder[addedEdgeToOtherEndpoint[currentRemovedEdgeIndexToTourOrder[firstEndpoint]]];
+                int firstEndpointCurrentTourIndex = currentRemovedEdgeIndexToTourOrder[firstEndpoint];
+                int nextEndpointTourIndex = addedEdgeToOtherEndpoint[firstEndpointCurrentTourIndex];
+                int secondEndpoint = currentInverseRemovedEdgeIndexToTourOrder[nextEndpointTourIndex];
+
                 if (secondEndpoint >= firstEndpoint + 2) {
                     out.add(getListReversalMoveForEdgePair(listVariableDescriptor, indexVariableSupply,
                             originalToCurrentIndexList, entity,
@@ -368,9 +365,10 @@ public final class KOptDescriptor<Solution_> {
         // give us our terminating condition.
         while (currentEndpoint != 0) {
             count++;
-            currentEndpoint =
-                    inverseRemovedEdgeIndexToTourOrder[addedEdgeToOtherEndpoint[removedEdgeIndexToTourOrder[currentEndpoint]]]
-                            ^ 1;
+
+            int currentEndpointTourIndex = removedEdgeIndexToTourOrder[currentEndpoint];
+            int nextEndpointTourIndex = addedEdgeToOtherEndpoint[currentEndpointTourIndex];
+            currentEndpoint = inverseRemovedEdgeIndexToTourOrder[nextEndpointTourIndex] ^ 1;
         }
         return (count == k);
     }
@@ -386,10 +384,10 @@ public final class KOptDescriptor<Solution_> {
             int startInclusive, int endExclusive) {
         for (; startInclusive < endExclusive; startInclusive++, endExclusive--) {
             int savedFirstElement = currentRemovedEdgeIndexToTourOrder[startInclusive];
-            currentInverseRemovedEdgeIndexToTourOrder[currentRemovedEdgeIndexToTourOrder[startInclusive] =
-                    currentRemovedEdgeIndexToTourOrder[endExclusive]] = startInclusive;
-            currentInverseRemovedEdgeIndexToTourOrder[currentRemovedEdgeIndexToTourOrder[endExclusive] = savedFirstElement] =
-                    endExclusive;
+            currentRemovedEdgeIndexToTourOrder[startInclusive] = currentRemovedEdgeIndexToTourOrder[endExclusive];
+            currentInverseRemovedEdgeIndexToTourOrder[currentRemovedEdgeIndexToTourOrder[endExclusive]] = startInclusive;
+            currentRemovedEdgeIndexToTourOrder[endExclusive] = savedFirstElement;
+            currentInverseRemovedEdgeIndexToTourOrder[savedFirstElement] = endExclusive;
         }
     }
 
@@ -431,7 +429,9 @@ public final class KOptDescriptor<Solution_> {
                 currentInverseRemovedEdgeIndexToTourOrder,
                 left, right);
         for (i = 1; i <= 2 * k - 2; i++) {
-            j = currentInverseRemovedEdgeIndexToTourOrder[addedEdgeToOtherEndpoint[currentRemovedEdgeIndexToTourOrder[i]]];
+            int currentTourIndex = currentRemovedEdgeIndexToTourOrder[i];
+            int otherEndpointTourIndex = addedEdgeToOtherEndpoint[currentTourIndex];
+            j = currentInverseRemovedEdgeIndexToTourOrder[otherEndpointTourIndex];
             if (j >= i + 2 && (i & 1) == (j & 1)) {
                 count++;
             }
@@ -461,10 +461,10 @@ public final class KOptDescriptor<Solution_> {
             IndexVariableSupply indexVariableSupply,
             int[] originalToCurrentIndexList,
             Object entity,
-            Object firstEdgeStart,
-            Object firstEdgeEnd,
-            Object secondEdgeStart,
-            Object secondEdgeEnd) {
+            Node_ firstEdgeStart,
+            Node_ firstEdgeEnd,
+            Node_ secondEdgeStart,
+            Node_ secondEdgeEnd) {
         int originalFirstEdgeStartIndex = indexOf(originalToCurrentIndexList, indexVariableSupply.getIndex(firstEdgeStart));
         int originalFirstEdgeEndIndex = indexOf(originalToCurrentIndexList, indexVariableSupply.getIndex(firstEdgeEnd));
         int originalSecondEdgeStartIndex = indexOf(originalToCurrentIndexList, indexVariableSupply.getIndex(secondEdgeStart));

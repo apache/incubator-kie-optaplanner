@@ -53,7 +53,13 @@ public class KOptListMoveSelectorFactory<Solution_>
         ValueSelector<Solution_> valueSelector = buildEntityDependentValueSelector(configPolicy,
                 entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
         int minimumK = Objects.requireNonNullElse(config.getMinimumK(), DEFAULT_MINIMUM_K);
+        if (minimumK < 2) {
+            throw new IllegalArgumentException("minimumK (" + minimumK + ") must be at least 2.");
+        }
         int maximumK = Objects.requireNonNullElse(config.getMaximumK(), DEFAULT_MAXIMUM_K);
+        if (maximumK < minimumK) {
+            throw new IllegalArgumentException("maximumK (" + maximumK + ") must be at least minimumK (" + minimumK + ").");
+        }
         return new KOptListMoveSelector<>(((ListVariableDescriptor<Solution_>) variableDescriptor), entitySelector,
                 valueSelector,
                 minimumK, maximumK);
