@@ -33,12 +33,19 @@ As a consequence, implementations of the following interfaces are expected to be
 * `org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter`
 * `org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory`
 
-In general, if solver configuration asks the user to implement an interface, the expectation is that the implementation will be stateless or at the very least not try to include external state.
-With the aforementioned performance improvements, failing to follow this requirement will result in subtle bugs and score corruption as the solver will now reuse these instances as it sees fit.
+In general, if solver configuration asks the user to implement an interface,
+the expectation is that the implementation will be stateless
+or at the very least not try to include external state.
+With the aforementioned performance improvements,
+failing to follow this requirement will result in subtle bugs and score corruption
+as the solver will now reuse these instances as it sees fit.
 
 ==== OptaPlanner configuration becomes even more fluent
 
-Various configuration classes, such as `EntitySelectorConfig` and `ValueSelectorConfig`, received new builder methods which make it easier than ever to replace XML-based solver config with fluent Java code.
+Various configuration classes, such as `EntitySelectorConfig` and `ValueSelectorConfig`,
+received new builder methods which make it easier than ever
+to replace XML-based solver config with fluent Java code.
+
 
 [[releaseNotes-8.33.0.Final]]
 === OptaPlanner 8.33.0.Final
@@ -52,17 +59,19 @@ Likewise, planning variables no longer need to reference value range providers v
 No code changes or configuration changes are required.
 Users who prefer clarity over brevity may continue to explicitly reference their value range providers.
 
+
 [[releaseNotes-8.32.0.Final]]
 === OptaPlanner 8.32.0.Final
 
 ==== XStream support deprecated
 
-Given that XStream has multiple CVEs against it and no recent releases, we have decided to deprecate OptaPlanner's support for serializing into XML using XStream.
+Given that XStream has multiple CVEs against it and no recent releases,
+we have decided to deprecate OptaPlanner's support for serializing into XML using XStream.
 To continue serializing into XML, please switch to the `optaplanner-persistence-jaxb` module.
 
 All classes in the `optaplanner-persistence-xstream`, as well as the module itself, are now deprecated and will be removed in a future major version of OptaPlanner.
 
-All examples in the `optaplanner-examples` module have been refactored to JSON using the `optaplanner-persistance-jackson` module.
+All examples in the `optaplanner-examples` module have been refactored to  JSON using the `optaplanner-persistance-jackson` module.
 Quickstarts were not affected by these changes, as they already were serializing into JSON.
 
 [[releaseNotes-8.31.0.Final]]
@@ -84,7 +93,7 @@ No OptaPlanner feature was removed or deprecated in the process.
 
 ==== Multiple entity classes with chained planning variables
 
-Fixed a https://issues.redhat.com/browse/PLANNER-2798[bug] that prevented using two or more chained planning variables, each defined on a different planning entity class.
+Fixed a xref:https://issues.redhat.com/browse/PLANNER-2798[bug] that prevented using two or more chained planning variables, each defined on a different planning entity class.
 
 [[releaseNotes-8.30.0.Final]]
 === OptaPlanner 8.30.0.Final
@@ -118,15 +127,13 @@ With a new Constraint Streams API, it is now easy to define custom constraint ju
     }
 ----
 
-Note the new methods: `justifyWith(...)` and `indictWith(...)`.
-To find out more, see xref:constraint-streams/constraint-streams.adoc#constraintStreamsCustomizingJustificationsAndIndictments[customizing justifications and indictments].
+Note the new methods: `justifyWith(...)` and `indictWith(...)`. To find out more, see xref:constraint-streams/constraint-streams.adoc#constraintStreamsCustomizingJustificationsAndIndictments[customizing justifications and indictments].
 
 ==== Compatible with JDK 19
 
 https://jdk.java.net/19/[OpenJDK 19] was recently released and OptaPlanner is fully compatible with it.
 
-We always test our releases against the long-term supported versions of the JDK, currently 11 and 17, as well as against the latest release.
-We encourage you to upgrade your JDK regularly to benefit from the enhancements that come with the new releases.
+We always test our releases against the long-term supported versions of the JDK, currently 11 and 17, as well as against the latest release. We encourage you to upgrade your JDK regularly to benefit from the enhancements that come with the new releases.
 
 ==== New `@ShadowVariable` and `@PiggybackShadowVariable` annotations replace the `@CustomShadowVariable`
 
@@ -137,6 +144,7 @@ We encourage you to upgrade your JDK regularly to benefit from the enhancements 
 The `@CustomShadowVariable` has been deprecated.
 
 Read more about xref:shadow-variable/shadow-variable.adoc#customVariableListener[custom shadow variables] in the documentation.
+
 
 ==== Planning list variable
 
@@ -165,6 +173,7 @@ You can now use it as an alternative to Drools (which is still the default).
 Bavet will not be supported in Red Hat's support offering.
 Drools intends to catch up performance wise.
 
+
 [[releaseNotes-8.24.0.Final]]
 === OptaPlanner 8.24.0.Final
 
@@ -173,6 +182,7 @@ Drools intends to catch up performance wise.
 The codebase for OptaWeb Employee Rostering demo application has been frozen and will no longer receive any updates.
 
 We encourage users to check out the https://github.com/kiegroup/optaplanner-quickstarts/tree/stable/use-cases/employee-scheduling[OptaPlanner Employee Rostering Quickstart] for a simple and straight-forward way of integrating OptaPlanner in your application.
+
 
 [[releaseNotes-8.23.0.Final]]
 === OptaPlanner 8.23.0.Final
@@ -183,25 +193,30 @@ Support for Score DRL has been deprecated and users are encouraged to migrate to
 link:https://www.optaplanner.org/download/upgradeRecipe/[Read the migration guide from score DRL to Constraint Streams].
 Score DRL is not going away in OptaPlanner 8.
 
+
 [[releaseNotes-8.20.0.Final]]
 === OptaPlanner 8.20.0.Final
 
 ==== `SolverManager.addProblemChange()` now returns `CompletableFuture<Void>`
 
-`SolverManager.addProblemChange()` returns `CompletableFuture<Void>`, which completes when a new best solution containing the problem change has been passed to a user-defined `Consumer`.
+`SolverManager.addProblemChange()` returns `CompletableFuture<Void>`, which completes when a new best solution containing
+the problem change has been passed to a user-defined `Consumer`.
+
 
 [[releaseNotes-8.17.0.Final]]
 === OptaPlanner 8.17.0.Final
 
 ==== Real-time planning available on the `SolverManager`
 
-The `SolverManager` now accepts problem changes via the `addProblemChange()` method, allowing for xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning]
+The `SolverManager` now accepts problem changes via the `addProblemChange()` method,
+allowing for xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning]
 without much boilerplate code.
 
 ==== Faster `Solver` creation
 
 `SolverFactory` newly caches some internal data structures, leading to much faster `Solver` creation times.
 This is beneficial if you instantiate multiple `Solver` instances in quick succession.
+
 
 [[releaseNotes-8.12.0.Final]]
 === OptaPlanner 8.12.0.Final
@@ -216,12 +231,14 @@ The single-HTML and PDF documentation will continue to be published in the https
 
 OptaPlanner now uses Micrometer to monitor key metrics such as active solver count, solve durations, and error count.
 
+
 [[releaseNotes-8.10.0.Final]]
 === OptaPlanner 8.10.0.Final
 
 ==== Support for Quarkus 2.0
 
 OptaPlanner is now fully compatible with the recently released https://quarkus.io/quarkus2/[Quarkus 2.0].
+
 
 [[releaseNotes-8.7.0.Final]]
 === OptaPlanner 8.7.0.Final
@@ -231,6 +248,7 @@ OptaPlanner is now fully compatible with the recently released https://quarkus.i
 There is a new `quarkus-call-center` quickstart that shows xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning] of incoming calls in a call center.
 
 image:release-notes/quarkusCallCenter.png[Quarkus Call Center]
+
 
 [[releaseNotes-8.5.0.Final]]
 === OptaPlanner 8.5.0.Final
@@ -242,12 +260,14 @@ You can now modify your streams using xref:constraint-streams/constraint-streams
 
 ==== Ready for OpenJDK 16
 
-We have made some tweaks under the hood so that your experience with the recently released link:https://openjdk.java.net/projects/jdk/16/[OpenJDK 16] continues to be smooth.
+We have made some tweaks under the hood
+so that your experience with the recently released link:https://openjdk.java.net/projects/jdk/16/[OpenJDK 16] continues to be smooth.
 
 ==== Inject and Autowire ConstraintVerifier in Quarkus and Spring Boot
 
 You can now xref:constraint-streams/constraint-streams.adoc#constraintStreamsTestingQuarkus[inject the Constraint Verifier in Quarkus] and
-xref:constraint-streams/constraint-streams.adoc#constraintStreamsTestingSpringBoot[autowire the Constraint Verifier in Spring Boot], allowing you to xref:constraint-streams/constraint-streams.adoc#constraintStreamsTesting[test your constraint streams] more easily.
+xref:constraint-streams/constraint-streams.adoc#constraintStreamsTestingSpringBoot[autowire the Constraint Verifier in Spring Boot], allowing
+you to xref:constraint-streams/constraint-streams.adoc#constraintStreamsTesting[test your constraint streams] more easily.
 
 ==== OptaWebs on Quarkus
 
@@ -262,11 +282,13 @@ Client-server communication, that was previously done using WebSockets, now uses
 ==== Faster domain accessors and cloning with Gizmo
 
 We have added xref:planner-configuration/planner-configuration.adoc#domainAccess[Gizmo generated domain accessors and solution
-cloners], which offer better performance than the reflection based domain accessors and solution cloners.
+cloners], which offer better performance than the reflection based
+domain accessors and solution cloners.
 
 ==== OptaPlanner quickstarts repository
 
 There is a new `activemq-quarkus-school-timetabling` quickstart that shows how to integrate ActiveMQ with OptaPlanner to horizontally scale when solving multiple data sets.
+
 
 [[releaseNotes-8.3.0.Final]]
 === OptaPlanner 8.3.0.Final
@@ -294,6 +316,7 @@ return constraintFactory.from(ProductPrice.class)
     .penalize(..., SimpleScore.ONE, (minPrice, maxPrice, sumPrices) -> ...);
 ----
 
+
 [[releaseNotes-8.0.0.Final]]
 === OptaPlanner 8.0.0.Final
 
@@ -320,14 +343,18 @@ https://github.com/kiegroup/optaplanner-quickstarts[Clone the quickstarts repo n
 
 ==== Future Java compatibility
 
-The OptaPlanner 8 API has been groomed to maximize compatibility with the latest https://openjdk.java.net/[OpenJDK] and https://www.graalvm.org/[GraalVM] releases and game-changing platforms such as https://quarkus.io/[Quarkus].
+The OptaPlanner 8 API has been groomed to maximize compatibility
+with the latest https://openjdk.java.net/[OpenJDK] and https://www.graalvm.org/[GraalVM] releases
+and game-changing platforms such as https://quarkus.io/[Quarkus].
 Meanwhile, we still fully support OpenJDK 11 and platforms such as Spring Boot or plain Java.
 
-For example, when running OptaPlanner in Java 11 or higher with a classpath, OptaPlanner no longer triggers `WARNING: An illegal reflective access operation has occurred` for XStream.
+For example, when running OptaPlanner in Java 11 or higher with a classpath,
+OptaPlanner no longer triggers `WARNING: An illegal reflective access operation has occurred` for XStream.
 
 ==== Code completion for solverConfig.xml and benchmarkConfig.xml through XSD
 
-To validate XML configuration during development, add the new XML Schema Definition (XSD) on the solver or benchmark configuration:
+To validate XML configuration during development,
+add the new XML Schema Definition (XSD) on the solver or benchmark configuration:
 
 [source,xml]
 ----
@@ -343,7 +370,8 @@ image:release-notes/solverConfigCompletion.png[SolverConfigCodeCompletion]
 
 ==== Improved Quarkus extension
 
-The OptaPlanner Quarkus extension is now stable and displays no warnings when compiling Java to a native executable.
+The OptaPlanner Quarkus extension is now stable
+and displays no warnings when compiling Java to a native executable.
 
 ==== ScoreManager now supports score explanation
 
