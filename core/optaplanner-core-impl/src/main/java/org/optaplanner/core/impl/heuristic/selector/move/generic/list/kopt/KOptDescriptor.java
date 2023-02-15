@@ -8,12 +8,9 @@ import java.util.function.Function;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
-import org.optaplanner.core.impl.util.Pair;
 
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
-import it.unimi.dsi.fastutil.ints.IntSet;
-import it.unimi.dsi.fastutil.ints.IntSets;
 
 public final class KOptDescriptor<Solution_, Node_> {
 
@@ -129,80 +126,32 @@ public final class KOptDescriptor<Solution_, Node_> {
         }
     }
 
-    public int[] getRemovedEdgeIndexToTourOrder() {
+    // ****************************************************
+    // Simple Getters (only accessible from kopt package)
+    // ****************************************************
+    int getK() {
+        return k;
+    }
+
+    Node_[] getRemovedEdges() {
+        return removedEdges;
+    }
+
+    int[] getRemovedEdgeIndexToTourOrder() {
         return removedEdgeIndexToTourOrder;
     }
 
-    /**
-     * Calculate the disjoint k-cycles for {@link KOptDescriptor#removedEdgeIndexToTourOrder}. <br />
-     * <br />
-     * Any permutation can be expressed as combination of k-cycles. A k-cycle is a sequence of
-     * unique elements (p_1, p_2, ..., p_k) where
-     * <ul>
-     * <li>p_1 maps to p_2 in the permutation</li>
-     * <li>p_2 maps to p_3 in the permutation</li>
-     * <li>p_(k-1) maps to p_k in the permutation</li>
-     * <li>p_k maps to p_1 in the permutation</li>
-     * <li>In general: p_i maps to p_(i+1) in the permutation</li>
-     * </ul>
-     * For instance, the permutation
-     * <ul>
-     * <li>1 -> 2</li>
-     * <li>2 -> 3</li>
-     * <li>3 -> 1</li>
-     * <li>4 -> 5</li>
-     * <li>5 -> 4</li>
-     * </ul>
-     * can be expressed as `(1, 2, 3)(4, 5)`.
-     *
-     * @return The {@link KOptCycleInfo} corresponding to the permutation described by
-     *         {@link KOptDescriptor#removedEdgeIndexToTourOrder}.
-     */
-    public KOptCycleInfo getCyclesForPermutation() {
-        int cycleCount = 0;
-        int[] indexToCycle = new int[removedEdgeIndexToTourOrder.length];
-        IntSet remaining = IntSets.fromTo(1, removedEdgeIndexToTourOrder.length);
-        while (!remaining.isEmpty()) {
-            int current = remaining.intIterator().nextInt();
-            remaining.remove(current);
-
-            while (true) {
-                indexToCycle[current] = cycleCount;
-                int tourIndex = removedEdgeIndexToTourOrder[current];
-                int nextEndpointTourIndex = addedEdgeToOtherEndpoint[tourIndex];
-                current = inverseRemovedEdgeIndexToTourOrder[nextEndpointTourIndex];
-                if (!remaining.contains(current)) {
-                    break;
-                }
-                remaining.remove(current);
-            }
-            cycleCount++;
-        }
-
-        return new KOptCycleInfo(cycleCount, indexToCycle);
+    int[] getInverseRemovedEdgeIndexToTourOrder() {
+        return inverseRemovedEdgeIndexToTourOrder;
     }
 
-    public List<Pair<Node_, Node_>> getAddedEdges() {
-        List<Pair<Node_, Node_>> out = new ArrayList<>(2 * k);
-        int currentEndpoint = 2 * k;
-
-        // This loop iterate through the new tour create
-        while (currentEndpoint != 0) {
-            out.add(Pair.of(removedEdges[currentEndpoint], removedEdges[addedEdgeToOtherEndpoint[currentEndpoint]]));
-            int tourIndex = removedEdgeIndexToTourOrder[currentEndpoint];
-            int nextEndpointTourIndex = addedEdgeToOtherEndpoint[tourIndex];
-            currentEndpoint = inverseRemovedEdgeIndexToTourOrder[nextEndpointTourIndex] ^ 1;
-        }
-        return out;
+    int[] getAddedEdgeToOtherEndpoint() {
+        return addedEdgeToOtherEndpoint;
     }
 
-    public List<Pair<Node_, Node_>> getRemovedEdges() {
-        List<Pair<Node_, Node_>> out = new ArrayList<>(2 * k);
-        for (int i = 1; i <= k; i++) {
-            out.add(Pair.of(removedEdges[2 * i - 1], removedEdges[2 * i]));
-        }
-        return out;
-    }
+    // ****************************************************
+    // Complex Methods
+    // ****************************************************
 
     /**
      * This return a {@link KOptListMove} that corresponds to this {@link KOptDescriptor}. <br />
@@ -213,7 +162,7 @@ public final class KOptDescriptor<Solution_, Node_> {
      * <a href="http://webhotel4.ruc.dk/~keld/research/LKH/KoptReport.pdf">"An Effective Implementation of K-opt Moves
      * for the Lin-Kernighan TSP Heuristic"</a> (Section 5.4 "Execution of a feasible move") to perform a K-opt move
      * by performing the minimal number of list reversals to transform the current route into the new route after the
-     * K-opt. We use it here to calculate the {@link FlipSublistMove} list for the {@link KOptListMove} that is
+     * K-opt. We use it here to calculate the {@link FlipSublistAction} list for the {@link KOptListMove} that is
      * described by this {@link KOptDescriptor}.<br />
      * <br />
      * The algorithm goal is to convert a signed permutation (p_1, p_2, ..., p_(2k)) into the identify permutation
@@ -255,7 +204,7 @@ public final class KOptDescriptor<Solution_, Node_> {
         }
 
         int entityListSize = listVariableDescriptor.getListSize(entity);
-        List<FlipSublistMove<Solution_>> out = new ArrayList<>();
+        List<FlipSublistAction<Solution_>> out = new ArrayList<>();
         int[] originalToCurrentIndexList = new int[entityListSize];
         for (int index = 0; index < entityListSize; index++) {
             originalToCurrentIndexList[index] = index;
@@ -444,7 +393,7 @@ public final class KOptDescriptor<Solution_, Node_> {
     }
 
     /**
-     * Get a {@link FlipSublistMove} that reverses the sublist that consists of the path
+     * Get a {@link FlipSublistAction} that reverses the sublist that consists of the path
      * between the start and end of the given edges.
      *
      * @param listVariableDescriptor
@@ -457,7 +406,8 @@ public final class KOptDescriptor<Solution_, Node_> {
      * @param secondEdgeEnd
      * @return
      */
-    private FlipSublistMove<Solution_> getListReversalMoveForEdgePair(ListVariableDescriptor<Solution_> listVariableDescriptor,
+    private FlipSublistAction<Solution_> getListReversalMoveForEdgePair(
+            ListVariableDescriptor<Solution_> listVariableDescriptor,
             IndexVariableSupply indexVariableSupply,
             int[] originalToCurrentIndexList,
             Object entity,
@@ -479,9 +429,9 @@ public final class KOptDescriptor<Solution_, Node_> {
                         ? originalSecondEdgeEndIndex
                         : originalSecondEdgeStartIndex;
 
-        FlipSublistMove.flipSubarray(originalToCurrentIndexList, firstEndpoint, secondEndpoint);
+        FlipSublistAction.flipSubarray(originalToCurrentIndexList, firstEndpoint, secondEndpoint);
 
-        return new FlipSublistMove<>(listVariableDescriptor, entity,
+        return new FlipSublistAction<>(listVariableDescriptor, entity,
                 firstEndpoint, secondEndpoint);
     }
 
@@ -494,11 +444,7 @@ public final class KOptDescriptor<Solution_, Node_> {
         return -1;
     }
 
-    public int getK() {
-        return k;
-    }
-
     public String toString() {
-        return k + "-opt(removed=[" + getRemovedEdges() + "]\n, added=[" + getAddedEdges() + "])";
+        return k + "-opt(removed=" + KOptUtils.getRemovedEdgeList(this) + "\n, added=" + KOptUtils.getAddedEdgeList(this) + ")";
     }
 }

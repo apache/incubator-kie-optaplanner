@@ -1,14 +1,10 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.move.AbstractMove;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 /**
  * Flips a sublist of a list variable, (the same thing as a {@link TwoOptListMove}, but no shift to restore the original
@@ -22,13 +18,13 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  *
  * @param <Solution_>
  */
-public class FlipSublistMove<Solution_> extends AbstractMove<Solution_> {
+public class FlipSublistAction<Solution_> {
     private final ListVariableDescriptor<Solution_> variableDescriptor;
     private final Object entity;
     private final int fromIndexInclusive;
     private final int toIndexExclusive;
 
-    public FlipSublistMove(ListVariableDescriptor<Solution_> variableDescriptor,
+    public FlipSublistAction(ListVariableDescriptor<Solution_> variableDescriptor,
             Object entity,
             int fromIndexInclusive, int toIndexExclusive) {
         this.variableDescriptor = variableDescriptor;
@@ -37,82 +33,30 @@ public class FlipSublistMove<Solution_> extends AbstractMove<Solution_> {
         this.toIndexExclusive = toIndexExclusive;
     }
 
-    @Override
-    protected FlipSublistMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
-        return new FlipSublistMove<>(variableDescriptor, entity,
+    protected FlipSublistAction<Solution_> createUndoMove() {
+        return new FlipSublistAction<>(variableDescriptor, entity,
                 fromIndexInclusive,
                 toIndexExclusive);
     }
 
-    @Override
-    protected void doMoveOnGenuineVariables(ScoreDirector<Solution_> scoreDirector) {
-        InnerScoreDirector<Solution_, ?> innerScoreDirector = (InnerScoreDirector<Solution_, ?>) scoreDirector;
+    public KOptAffectedElementsInfo getAffectedElements() {
+        if (fromIndexInclusive < toIndexExclusive) {
+            return KOptAffectedElementsInfo.forMiddleRange(fromIndexInclusive, toIndexExclusive);
+        } else {
+            return KOptAffectedElementsInfo.forWrappedRange(fromIndexInclusive, toIndexExclusive);
+        }
+    }
+
+    protected void doMoveOnGenuineVariables() {
         List<Object> listVariable = variableDescriptor.getListVariable(entity);
-
-        if (fromIndexInclusive < toIndexExclusive) {
-            // If the first endpoint is 0, we also need to rotate the entire list
-            innerScoreDirector.beforeListVariableChanged(variableDescriptor, entity,
-                    fromIndexInclusive,
-                    toIndexExclusive);
-        } else {
-            innerScoreDirector.beforeListVariableChanged(variableDescriptor, entity,
-                    fromIndexInclusive,
-                    listVariable.size());
-            innerScoreDirector.beforeListVariableChanged(variableDescriptor, entity,
-                    0,
-                    toIndexExclusive);
-        }
-
         flipSublist(listVariable, fromIndexInclusive, toIndexExclusive);
-
-        if (fromIndexInclusive < toIndexExclusive) {
-            innerScoreDirector.afterListVariableChanged(variableDescriptor, entity,
-                    fromIndexInclusive,
-                    toIndexExclusive);
-        } else {
-            innerScoreDirector.afterListVariableChanged(variableDescriptor, entity,
-                    fromIndexInclusive,
-                    listVariable.size());
-            innerScoreDirector.afterListVariableChanged(variableDescriptor, entity,
-                    0,
-                    toIndexExclusive);
-        }
     }
 
-    @Override
-    public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
-        return true;
-    }
-
-    @Override
-    public FlipSublistMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
-        return new FlipSublistMove<>(variableDescriptor,
+    public FlipSublistAction<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
+        return new FlipSublistAction<>(variableDescriptor,
                 destinationScoreDirector.lookUpWorkingObject(entity),
                 fromIndexInclusive,
                 toIndexExclusive);
-    }
-
-    @Override
-    public String getSimpleMoveTypeDescription() {
-        return "FlipSublist(" + variableDescriptor.getSimpleEntityAndVariableName() + ")";
-    }
-
-    @Override
-    public Collection<?> getPlanningEntities() {
-        return List.of(entity);
-    }
-
-    @Override
-    public Collection<?> getPlanningValues() {
-        List<Object> listVariable = variableDescriptor.getListVariable(entity);
-
-        if (fromIndexInclusive < toIndexExclusive) {
-            return new ArrayList<>(listVariable.subList(fromIndexInclusive, toIndexExclusive));
-        } else {
-            List<Object> firstHalfReversedPath = listVariable.subList(fromIndexInclusive, listVariable.size());
-            List<Object> secondHalfReversedPath = listVariable.subList(0, toIndexExclusive);
-            return new ArrayList<>(firstHalfReversedPath.size() + secondHalfReversedPath.size());
-        }
     }
 
     public Object getEntity() {
@@ -157,7 +101,7 @@ public class FlipSublistMove<Solution_> extends AbstractMove<Solution_> {
         }
     }
 
-    public static <T> void flipSubarray(int[] array, int fromIndexInclusive, int toIndexExclusive) {
+    public static void flipSubarray(int[] array, int fromIndexInclusive, int toIndexExclusive) {
         if (fromIndexInclusive < toIndexExclusive) {
             int length = (toIndexExclusive - fromIndexInclusive) >> 1;
             for (int i = 0; i < length; i++) {
@@ -203,7 +147,7 @@ public class FlipSublistMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public String toString() {
-        return "FlipSublistMove(entity=" +
+        return "FlipSublistAction(entity=" +
                 entity +
                 ", from=" + fromIndexInclusive + ", to=" + toIndexExclusive + ")";
     }

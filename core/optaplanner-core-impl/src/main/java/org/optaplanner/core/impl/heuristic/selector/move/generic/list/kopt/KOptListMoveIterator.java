@@ -47,10 +47,10 @@ public class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIte
         this.maxK = maxK;
         this.Patching_C = maxK;
         this.successorFunction =
-                KOptListMove.getSuccessorFunction(listVariableDescriptor, inverseVariableSupply, indexVariableSupply);
+                KOptUtils.getSuccessorFunction(listVariableDescriptor, inverseVariableSupply, indexVariableSupply);
         this.predecessorFunction =
-                KOptListMove.getPredecessorFunction(listVariableDescriptor, inverseVariableSupply, indexVariableSupply);
-        this.betweenFunction = KOptListMove.getBetweenPredicate(indexVariableSupply);
+                KOptUtils.getPredecessorFunction(listVariableDescriptor, inverseVariableSupply, indexVariableSupply);
+        this.betweenFunction = KOptUtils.getBetweenPredicate(indexVariableSupply);
     }
 
     @SuppressWarnings("unchecked")
@@ -182,7 +182,7 @@ public class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIte
             KOptDescriptor<Solution_, Node_> descriptor, Node_[] oldRemovedEdges, int k) {
         Node_ s1, s2;
         int[] removedEdgeIndexToTourOrder = descriptor.getRemovedEdgeIndexToTourOrder();
-        KOptCycleInfo cycleInfo = descriptor.getCyclesForPermutation();
+        KOptCycleInfo cycleInfo = KOptUtils.getCyclesForPermutation(descriptor);
         int cycleCount = cycleInfo.cycleCount;
         int[] cycle = cycleInfo.indexToCycleIdentifier;
 

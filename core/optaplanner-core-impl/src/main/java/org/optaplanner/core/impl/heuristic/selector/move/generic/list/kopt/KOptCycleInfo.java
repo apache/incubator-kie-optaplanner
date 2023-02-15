@@ -1,5 +1,8 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 /**
  * Describes the minimal amount of cycles a permutation can be expressed as
  * and provide a mapping of removed edge endpoint index to cycle identifier
@@ -26,13 +29,14 @@ public class KOptCycleInfo {
 
     @Override
     public String toString() {
-        StringBuilder out = new StringBuilder();
-        out.append("Cycles(cycleCount=").append(cycleCount).append(",\n");
-        out.append("indexToCycleNum=[");
-        for (int i = 1; i < indexToCycleIdentifier.length; i++) {
-            out.append(indexToCycleIdentifier[i]).append(", ");
-        }
-        out.delete(out.length() - 2, out.length()).append("]\n");
-        return out.toString();
+        String arrayString = IntStream.of(indexToCycleIdentifier)
+                .sequential()
+                .skip(1)
+                .mapToObj(Integer::toString)
+                .collect(Collectors.joining(", ", "[", "]"));
+        return "KOptCycleInfo(" +
+                "cycleCount=" + cycleCount +
+                ", indexToCycleIdentifier=" + arrayString +
+                ')';
     }
 }
