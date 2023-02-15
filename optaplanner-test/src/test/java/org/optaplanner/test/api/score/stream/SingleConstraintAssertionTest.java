@@ -2,6 +2,8 @@ package org.optaplanner.test.api.score.stream;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
@@ -159,6 +161,20 @@ class SingleConstraintAssertionTest {
     }
 
     @Test
+    void penalizesByBigDecimal() {
+        TestdataSolution solution = TestdataSolution.generateSolution(2, 3);
+
+        assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::penalizeEveryEntity)
+                .given(solution.getEntityList().toArray())
+                .penalizesBy(BigDecimal.valueOf(3), "There should be penalties.")).doesNotThrowAnyException();
+        assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::penalizeEveryEntity)
+                .given(solution.getEntityList().toArray())
+                .penalizesBy(new BigDecimal("3.01"), "There should be penalties."))
+                .hasMessageContaining("There should be penalties")
+                .hasMessageContaining("Expected penalty");
+    }
+
+    @Test
     void rewardsByCountButDoesNotPenalize() {
         TestdataSolution solution = TestdataSolution.generateSolution(2, 3);
 
@@ -169,6 +185,19 @@ class SingleConstraintAssertionTest {
                 .given(solution.getEntityList().toArray())
                 .penalizes(1, "There should be penalties.")).hasMessageContaining("There should be penalties")
                 .hasMessageContaining("Expected penalty");
+    }
+
+    @Test
+    void rewardsByBigDecimal() {
+        TestdataSolution solution = TestdataSolution.generateSolution(2, 3);
+
+        assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::rewardEveryEntity)
+                .given(solution.getEntityList().toArray())
+                .rewardsWith(BigDecimal.valueOf(3), "There should be rewards")).doesNotThrowAnyException();
+        assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::rewardEveryEntity)
+                .given(solution.getEntityList().toArray())
+                .rewardsWith(new BigDecimal("3.01"), "There should be rewards.")).hasMessageContaining("There should be rewards")
+                .hasMessageContaining("Expected reward");
     }
 
     @Test

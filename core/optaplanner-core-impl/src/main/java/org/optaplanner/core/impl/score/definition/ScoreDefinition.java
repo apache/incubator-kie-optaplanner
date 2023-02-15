@@ -160,8 +160,8 @@ public interface ScoreDefinition<Score_ extends Score<Score_>> {
      * Return the type of number that the score implementation operates on.
      * Examples:
      * <ul>
-     *     <li>int.class for {@link SimpleScore}</li>
-     *     <li>BigDecimal.class for {@link SimpleBigDecimalScore}</li>
+     * <li>int.class for {@link SimpleScore}</li>
+     * <li>BigDecimal.class for {@link SimpleBigDecimalScore}</li>
      * </ul>
      *
      * @return never null
