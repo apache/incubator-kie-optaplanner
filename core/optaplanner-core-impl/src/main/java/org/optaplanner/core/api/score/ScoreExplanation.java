@@ -50,7 +50,7 @@ public interface ScoreExplanation<Solution_, Score_ extends Score<Score_>> {
      * @apiNote Do not parse the return value, its format may change without warning.
      *          Instead, to provide this information in a UI or a service,
      *          use {@link ScoreExplanation#getConstraintMatchTotalMap()} and {@link ScoreExplanation#getIndictmentMap()}
-     *          and convert those into a domain specific API.
+     *          and convert those into a domain-specific API.
      * @return never null
      */
     String getSummary();
