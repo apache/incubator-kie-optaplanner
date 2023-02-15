@@ -222,12 +222,12 @@ public final class VariableListenerSupport<Solution_> implements SupplyManager {
 
     /**
      * Triggers all variable listeners even though the notification queue is empty.
-     * corruption detection.
-     * <p>
-     * To ensure each listener is triggered, an artificial notification is created for each genuine variable without
-     * doing any change on the working solution. If everything works correctly, triggering listeners at this point must not
-     * change any shadow variables either.
      *
+     * @implNote To ensure each listener is triggered,
+     *           an artificial notification is created for each genuine variable without doing any change on the working
+     *           solution.
+     *           If everything works correctly,
+     *           triggering listeners at this point must not change any shadow variables either.
      * @param workingSolution working solution
      */
     public void forceTriggerAllVariableListeners(Solution_ workingSolution) {
