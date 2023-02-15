@@ -22,6 +22,7 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelec
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -37,6 +38,7 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 @XmlSeeAlso({
         CartesianProductMoveSelectorConfig.class,
         ChangeMoveSelectorConfig.class,
+        ListChangeMoveSelectorConfig.class,
         MoveIteratorFactoryConfig.class,
         MoveListFactoryConfig.class,
         PillarChangeMoveSelectorConfig.class,
@@ -253,7 +255,7 @@ public abstract class MoveSelectorConfig<Config_ extends MoveSelectorConfig<Conf
         classVisitor.accept(probabilityWeightFactoryClass);
     }
 
-    private void inheritCommon(MoveSelectorConfig<Config_> inheritedConfig) {
+    public void inheritCommon(MoveSelectorConfig<?> inheritedConfig) {
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         filterClass = ConfigUtils.inheritOverwritableProperty(filterClass, inheritedConfig.getFilterClass());

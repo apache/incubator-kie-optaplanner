@@ -14,7 +14,10 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.composite.UnionMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListChangeMoveSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
+import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.multientity.TestdataHerdEntity;
 import org.optaplanner.core.impl.testdata.domain.multientity.TestdataMultiEntitySolution;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarSolution;
@@ -91,4 +94,30 @@ class ChangeMoveSelectorFactoryTest {
         assertThat(((UnionMoveSelector) moveSelector).getChildMoveSelectorList()).hasSize(2);
     }
 
+    // ************************************************************************
+    // List variable compatibility section
+    // ************************************************************************
+
+    @Test
+    void failFastIfExplicitlyConfiguredForListVariable() {
+        SolutionDescriptor<TestdataListSolution> solutionDescriptor = TestdataListSolution.buildSolutionDescriptor();
+        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig()
+                .withEntitySelectorConfig(new EntitySelectorConfig(TestdataListEntity.class))
+                .withValueSelectorConfig(new ValueSelectorConfig("valueList"));
+        MoveSelectorFactory<TestdataListSolution> moveSelectorFactory = MoveSelectorFactory.create(moveSelectorConfig);
+        assertThatIllegalArgumentException().isThrownBy(() -> moveSelectorFactory.buildMoveSelector(
+                buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM))
+                .withMessageContaining("list variable");
+    }
+
+    @Test
+    void unfoldIntoListChangeMoveSelectorConfig() {
+        SolutionDescriptor<TestdataListSolution> solutionDescriptor = TestdataListSolution.buildSolutionDescriptor();
+        ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
+        MoveSelector<TestdataListSolution> moveSelector =
+                MoveSelectorFactory.<TestdataListSolution> create(moveSelectorConfig)
+                        .buildMoveSelector(buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME,
+                                SelectionOrder.RANDOM);
+        assertThat(moveSelector).isInstanceOf(ListChangeMoveSelector.class);
+    }
 }

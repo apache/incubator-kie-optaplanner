@@ -453,6 +453,8 @@
                         
             <xs:element name="changeMoveSelector" type="tns:changeMoveSelectorConfig"/>
                         
+            <xs:element name="listChangeMoveSelector" type="tns:listChangeMoveSelectorConfig"/>
+                        
             <xs:element name="moveIteratorFactory" type="tns:moveIteratorFactoryConfig"/>
                         
             <xs:element name="moveListFactory" type="tns:moveListFactoryConfig"/>
@@ -582,6 +584,26 @@
         <xs:attribute name="mimicSelectorRef" type="xs:string"/>
                 
         <xs:attribute name="variableName" type="xs:string"/>
+              
+      </xs:extension>
+          
+    </xs:complexContent>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="listChangeMoveSelectorConfig">
+        
+    <xs:complexContent>
+            
+      <xs:extension base="tns:moveSelectorConfig">
+                
+        <xs:sequence>
+                    
+          <xs:element minOccurs="0" name="valueSelector" type="tns:valueSelectorConfig"/>
+                    
+          <xs:element minOccurs="0" name="entitySelector" type="tns:entitySelectorConfig"/>
+                  
+        </xs:sequence>
               
       </xs:extension>
           
@@ -905,6 +927,8 @@
                         
             <xs:element name="changeMoveSelector" type="tns:changeMoveSelectorConfig"/>
                         
+            <xs:element name="listChangeMoveSelector" type="tns:listChangeMoveSelectorConfig"/>
+                        
             <xs:element name="moveIteratorFactory" type="tns:moveIteratorFactoryConfig"/>
                         
             <xs:element name="moveListFactory" type="tns:moveListFactoryConfig"/>
@@ -1133,6 +1157,8 @@
                         
             <xs:element name="changeMoveSelector" type="tns:changeMoveSelectorConfig"/>
                         
+            <xs:element name="listChangeMoveSelector" type="tns:listChangeMoveSelectorConfig"/>
+                        
             <xs:element name="moveIteratorFactory" type="tns:moveIteratorFactoryConfig"/>
                         
             <xs:element name="moveListFactory" type="tns:moveListFactoryConfig"/>
@@ -1144,6 +1170,10 @@
             <xs:element name="subChainChangeMoveSelector" type="tns:subChainChangeMoveSelectorConfig"/>
                         
             <xs:element name="subChainSwapMoveSelector" type="tns:subChainSwapMoveSelectorConfig"/>
+                        
+            <xs:element name="subListChangeMoveSelector" type="tns:subListChangeMoveSelectorConfig"/>
+                        
+            <xs:element name="subListSwapMoveSelector" type="tns:subListSwapMoveSelectorConfig"/>
                         
             <xs:element name="swapMoveSelector" type="tns:swapMoveSelectorConfig"/>
                         

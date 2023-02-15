@@ -144,7 +144,7 @@
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
-          <changeMoveSelector/>
+          <listChangeMoveSelector/>
           <swapMoveSelector/>
           <subListChangeMoveSelector>
             <selectReversingMoveToo>true</selectReversingMoveToo>
@@ -169,7 +169,7 @@
       </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
-          <changeMoveSelector/>
+          <listChangeMoveSelector/>
           <swapMoveSelector/>
           <subListChangeMoveSelector>
             <selectReversingMoveToo>true</selectReversingMoveToo>
