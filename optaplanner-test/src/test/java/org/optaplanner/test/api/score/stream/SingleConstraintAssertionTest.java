@@ -196,7 +196,8 @@ class SingleConstraintAssertionTest {
                 .rewardsWith(BigDecimal.valueOf(3), "There should be rewards")).doesNotThrowAnyException();
         assertThatCode(() -> constraintVerifier.verifyThat(TestdataConstraintProvider::rewardEveryEntity)
                 .given(solution.getEntityList().toArray())
-                .rewardsWith(new BigDecimal("3.01"), "There should be rewards.")).hasMessageContaining("There should be rewards")
+                .rewardsWith(new BigDecimal("3.01"), "There should be rewards."))
+                .hasMessageContaining("There should be rewards")
                 .hasMessageContaining("Expected reward");
     }
 
