@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraint;
@@ -103,24 +104,25 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
     }
 
     private void assertImpact(ScoreImpactType scoreImpactType, Number matchWeightTotal, String message) {
+        BiPredicate<Number, Number> equalityPredicate =
+                NumberEqualityUtil.getEqualityPredicate(scoreDefinition, matchWeightTotal);
         Number impact = deduceImpact();
-        long longImpact = impact.longValue(); // Impact is always int or long, so this is safe.
         ScoreImpactType actualScoreImpactType = constraint.getScoreImpactType();
         if (actualScoreImpactType == ScoreImpactType.MIXED) {
             // Impact means we need to check for expected impact type and actual impact match.
             switch (scoreImpactType) {
                 case REWARD:
-                    if (matchWeightTotal.longValue() == -longImpact) {
+                    if (equalityPredicate.test(matchWeightTotal, impact)) { // TODO negate impact
                         return;
                     }
                     break;
                 case PENALTY:
-                    if (matchWeightTotal.longValue() == longImpact) {
+                    if (equalityPredicate.test(matchWeightTotal, impact)) {
                         return;
                     }
                     break;
             }
-        } else if (actualScoreImpactType == scoreImpactType && matchWeightTotal.longValue() == longImpact) {
+        } else if (actualScoreImpactType == scoreImpactType && equalityPredicate.test(matchWeightTotal, impact)) {
             // Reward and positive or penalty and negative means all is OK.
             return;
         }
