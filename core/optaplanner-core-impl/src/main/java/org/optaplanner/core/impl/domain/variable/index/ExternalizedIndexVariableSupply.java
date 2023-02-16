@@ -1,8 +1,6 @@
 package org.optaplanner.core.impl.domain.variable.index;
 
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.variable.ListVariableListener;
@@ -10,6 +8,10 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.SourcedVariableListener;
+
+import it.unimi.dsi.fastutil.Hash;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 
 /**
  * Alternative to {@link IndexVariableListener}.
@@ -19,9 +21,12 @@ public class ExternalizedIndexVariableSupply<Solution_> implements
         ListVariableListener<Solution_, Object, Object>,
         IndexVariableSupply {
 
+    private static final int UNASSIGNED_VALUE = -1;
+
     protected final ListVariableDescriptor<Solution_> sourceVariableDescriptor;
 
-    protected Map<Object, Integer> indexMap = null;
+    // Specialized collection as Integer boxing overhead on the hot path was measured to be significant.
+    protected Object2IntMap<Object> indexMap = null;
 
     public ExternalizedIndexVariableSupply(ListVariableDescriptor<Solution_> sourceVariableDescriptor) {
         this.sourceVariableDescriptor = sourceVariableDescriptor;
@@ -34,7 +39,8 @@ public class ExternalizedIndexVariableSupply<Solution_> implements
 
     @Override
     public void resetWorkingSolution(ScoreDirector<Solution_> scoreDirector) {
-        indexMap = new IdentityHashMap<>();
+        indexMap = new Object2IntOpenCustomHashMap<>(new IdentityHashStrategy<>());
+        indexMap.defaultReturnValue(UNASSIGNED_VALUE);
         sourceVariableDescriptor.getEntityDescriptor().visitAllEntities(scoreDirector.getWorkingSolution(), this::insert);
     }
 
@@ -55,12 +61,12 @@ public class ExternalizedIndexVariableSupply<Solution_> implements
 
     @Override
     public void afterListVariableElementUnassigned(ScoreDirector<Solution_> scoreDirector, Object element) {
-        Integer oldIndex = indexMap.remove(element);
-        if (oldIndex == null) {
+        int oldIndex = indexMap.removeInt(element);
+        if (oldIndex == UNASSIGNED_VALUE) {
             throw new IllegalStateException("The supply (" + this + ") is corrupted,"
                     + " because the element (" + element
                     + ") has an oldIndex (" + oldIndex
-                    + ") which is null.");
+                    + ") which represents null.");
         }
     }
 
@@ -89,13 +95,13 @@ public class ExternalizedIndexVariableSupply<Solution_> implements
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
         int index = 0;
         for (Object element : listVariable) {
-            Integer oldIndex = indexMap.put(element, index);
-            if (oldIndex != null) {
+            int oldIndex = indexMap.put(element, index);
+            if (oldIndex != UNASSIGNED_VALUE) {
                 throw new IllegalStateException("The supply (" + this + ") is corrupted,"
                         + " because the element (" + element
                         + ") at index (" + index
                         + ") has an oldIndex (" + oldIndex
-                        + ") which is not null.");
+                        + ") which does not represent null.");
             }
             index++;
         }
@@ -105,7 +111,7 @@ public class ExternalizedIndexVariableSupply<Solution_> implements
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
         int index = 0;
         for (Object element : listVariable) {
-            Integer oldIndex = indexMap.remove(element);
+            int oldIndex = indexMap.removeInt(element);
             if (!Objects.equals(oldIndex, index)) {
                 throw new IllegalStateException("The supply (" + this + ") is corrupted,"
                         + " because the element (" + element
@@ -119,27 +125,46 @@ public class ExternalizedIndexVariableSupply<Solution_> implements
 
     private void updateIndexes(Object entity, int startIndex) {
         List<Object> listVariable = sourceVariableDescriptor.getListVariable(entity);
-        for (int index = startIndex; index < listVariable.size(); index++) {
+        int listVariableSize = listVariable.size();
+        for (int index = startIndex; index < listVariableSize; index++) {
             Object element = listVariable.get(index);
-            Integer oldIndex = indexMap.put(element, index);
+            int oldIndex = indexMap.put(element, index);
             // The first element is allowed to have a null oldIndex because it might have been just assigned.
-            if (oldIndex == null && index != startIndex) {
+            if (oldIndex == UNASSIGNED_VALUE && index != startIndex) {
                 throw new IllegalStateException("The supply (" + this + ") is corrupted,"
                         + " because the element (" + element
                         + ") at index (" + index
                         + ") has an oldIndex (" + oldIndex
-                        + ") which is null.");
+                        + ") which represents null.");
             }
         }
     }
 
     @Override
     public int getIndex(Object element) {
-        return Objects.requireNonNullElse(indexMap.get(element), -1);
+        return indexMap.getInt(element);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + sourceVariableDescriptor.getVariableName() + ")";
+    }
+
+    /**
+     * Treats two objects as equal iff they are, in fact, the same.
+     *
+     * @param <T>
+     */
+    private static final class IdentityHashStrategy<T> implements Hash.Strategy<T> {
+
+        @Override
+        public int hashCode(T o) {
+            return System.identityHashCode(o);
+        }
+
+        @Override
+        public boolean equals(T a, T b) {
+            return a == b;
+        }
     }
 }
