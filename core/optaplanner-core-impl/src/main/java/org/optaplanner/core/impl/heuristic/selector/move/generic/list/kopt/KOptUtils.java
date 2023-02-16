@@ -10,10 +10,11 @@ import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.util.Pair;
 
+import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSets;
 
-public final class KOptUtils {
+final class KOptUtils {
 
     private KOptUtils() {
     }
@@ -40,11 +41,11 @@ public final class KOptUtils {
      * </ul>
      * can be expressed as `(1, 2, 3)(4, 5)`.
      *
-     * @return The {@link KOptCycleInfo} corresponding to the permutation described by
+     * @return The {@link KOptCycle} corresponding to the permutation described by
      *         {@link KOptDescriptor#getRemovedEdgeIndexToTourOrder()}.
      * @param kOptDescriptor The descriptor to calculate cycles for
      */
-    static <Solution_, Node_> KOptCycleInfo getCyclesForPermutation(KOptDescriptor<Solution_, Node_> kOptDescriptor) {
+    static <Solution_, Node_> KOptCycle getCyclesForPermutation(KOptDescriptor<Solution_, Node_> kOptDescriptor) {
         int cycleCount = 0;
         int[] removedEdgeIndexToTourOrder = kOptDescriptor.getRemovedEdgeIndexToTourOrder();
         int[] addedEdgeToOtherEndpoint = kOptDescriptor.getAddedEdgeToOtherEndpoint();
@@ -72,7 +73,7 @@ public final class KOptUtils {
             }
             cycleCount++;
         }
-        return new KOptCycleInfo(cycleCount, indexToCycle);
+        return new KOptCycle(cycleCount, indexToCycle);
     }
 
     static <Solution_, Node_> List<Pair<Node_, Node_>> getAddedEdgeList(KOptDescriptor<Solution_, Node_> kOptDescriptor) {
@@ -154,4 +155,42 @@ public final class KOptUtils {
             }
         };
     }
+
+    public static void flipSubarray(int[] array, int fromIndexInclusive, int toIndexExclusive) {
+        if (fromIndexInclusive < toIndexExclusive) {
+            IntArrays.reverse(array, fromIndexInclusive, toIndexExclusive);
+        } else {
+            int firstHalfSize = array.length - fromIndexInclusive;
+            int secondHalfSize = toIndexExclusive;
+
+            // Reverse the combined list firstHalfReversedPath + secondHalfReversedPath
+            // For instance, (1, 2, 3)(4, 5, 6, 7, 8, 9) becomes
+            // (9, 8, 7)(6, 5, 4, 3, 2, 1)
+            int totalLength = firstHalfSize + secondHalfSize;
+
+            // Used to rotate the list to put the first element back in its original position
+            for (int i = 0; (i < totalLength >> 1); i++) {
+                int firstHalfIndex;
+                int secondHalfIndex;
+
+                if (i < firstHalfSize) {
+                    if (i < secondHalfSize) {
+                        firstHalfIndex = fromIndexInclusive + i;
+                        secondHalfIndex = secondHalfSize - i - 1;
+                    } else {
+                        firstHalfIndex = fromIndexInclusive + i;
+                        secondHalfIndex = array.length - (i - secondHalfSize) - 1;
+                    }
+                } else {
+                    firstHalfIndex = i - firstHalfSize;
+                    secondHalfIndex = secondHalfSize - i - 1;
+                }
+
+                int saved = array[firstHalfIndex];
+                array[firstHalfIndex] = array[secondHalfIndex];
+                array[secondHalfIndex] = saved;
+            }
+        }
+    }
+
 }

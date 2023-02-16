@@ -15,7 +15,7 @@ import org.optaplanner.core.impl.heuristic.move.NoChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-public class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIterator<Move<Solution_>> {
+final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIterator<Move<Solution_>> {
 
     private final Random workingRandom;
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
@@ -27,7 +27,7 @@ public class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIte
     private final TriPredicate<Node_, Node_, Node_> betweenFunction;
     private final int minK;
     private final int maxK;
-    private final int Patching_C;
+    private final int Patching_C; // TODO needs better name
 
     private Iterator<Node_> entityIterator;
 
@@ -182,7 +182,7 @@ public class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIte
             KOptDescriptor<Solution_, Node_> descriptor, Node_[] oldRemovedEdges, int k) {
         Node_ s1, s2;
         int[] removedEdgeIndexToTourOrder = descriptor.getRemovedEdgeIndexToTourOrder();
-        KOptCycleInfo cycleInfo = KOptUtils.getCyclesForPermutation(descriptor);
+        KOptCycle cycleInfo = KOptUtils.getCyclesForPermutation(descriptor);
         int cycleCount = cycleInfo.cycleCount;
         int[] cycle = cycleInfo.indexToCycleIdentifier;
 

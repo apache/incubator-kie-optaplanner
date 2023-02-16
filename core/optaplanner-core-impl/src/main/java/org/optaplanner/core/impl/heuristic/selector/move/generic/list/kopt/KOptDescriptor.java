@@ -12,7 +12,7 @@ import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 
-public final class KOptDescriptor<Solution_, Node_> {
+final class KOptDescriptor<Solution_, Node_> {
 
     /**
      * The number of edges being added
@@ -406,7 +406,7 @@ public final class KOptDescriptor<Solution_, Node_> {
      * @param secondEdgeEnd
      * @return
      */
-    private FlipSublistAction<Solution_> getListReversalMoveForEdgePair(
+    private static <Solution_, Node_> FlipSublistAction<Solution_> getListReversalMoveForEdgePair(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             IndexVariableSupply indexVariableSupply,
             int[] originalToCurrentIndexList,
@@ -429,7 +429,7 @@ public final class KOptDescriptor<Solution_, Node_> {
                         ? originalSecondEdgeEndIndex
                         : originalSecondEdgeStartIndex;
 
-        FlipSublistAction.flipSubarray(originalToCurrentIndexList, firstEndpoint, secondEndpoint);
+        KOptUtils.flipSubarray(originalToCurrentIndexList, firstEndpoint, secondEndpoint);
 
         return new FlipSublistAction<>(listVariableDescriptor, entity,
                 firstEndpoint, secondEndpoint);

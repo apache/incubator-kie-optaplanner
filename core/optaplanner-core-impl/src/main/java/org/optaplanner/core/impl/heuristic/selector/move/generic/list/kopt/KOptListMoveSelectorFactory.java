@@ -20,7 +20,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
-public class KOptListMoveSelectorFactory<Solution_>
+public final class KOptListMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, KOptListMoveSelectorConfig> {
 
     private static final int DEFAULT_MINIMUM_K = 2;

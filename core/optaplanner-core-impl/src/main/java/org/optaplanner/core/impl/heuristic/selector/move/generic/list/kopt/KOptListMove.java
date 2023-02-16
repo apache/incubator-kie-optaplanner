@@ -19,13 +19,13 @@ import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <Node_> The value type
  */
-public class KOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
+final class KOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final Object entity;
     private final KOptDescriptor<Solution_, Node_> descriptor;
     private final List<FlipSublistAction<Solution_>> equivalent2Opts;
-    private final KOptAffectedElementsInfo affectedElementsInfo;
+    private final KOptAffectedElements affectedElementsInfo;
     private final int postShiftAmount;
 
     public KOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
@@ -39,11 +39,11 @@ public class KOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
         this.equivalent2Opts = equivalent2Opts;
         this.postShiftAmount = postShiftAmount;
         if (equivalent2Opts.isEmpty()) {
-            affectedElementsInfo = KOptAffectedElementsInfo.forMiddleRange(0, 0);
+            affectedElementsInfo = KOptAffectedElements.forMiddleRange(0, 0);
         } else if (postShiftAmount != 0) {
-            affectedElementsInfo = KOptAffectedElementsInfo.forMiddleRange(0, listVariableDescriptor.getListSize(entity));
+            affectedElementsInfo = KOptAffectedElements.forMiddleRange(0, listVariableDescriptor.getListSize(entity));
         } else {
-            KOptAffectedElementsInfo currentAffectedElements = equivalent2Opts.get(0).getAffectedElements();
+            KOptAffectedElements currentAffectedElements = equivalent2Opts.get(0).getAffectedElements();
             for (int i = 1; i < equivalent2Opts.size(); i++) {
                 currentAffectedElements = currentAffectedElements.merge(equivalent2Opts.get(i).getAffectedElements());
             }
@@ -160,7 +160,7 @@ public class KOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
         private final Object entity;
         private final KOptDescriptor<Solution_, Node_> descriptor;
         private final List<FlipSublistAction<Solution_>> equivalent2Opts;
-        private final KOptAffectedElementsInfo affectedElementsInfo;
+        private final KOptAffectedElements affectedElementsInfo;
         private final int preShiftAmount;
 
         public UndoKOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
@@ -168,7 +168,7 @@ public class KOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
                 KOptDescriptor<Solution_, Node_> descriptor,
                 List<FlipSublistAction<Solution_>> equivalent2Opts,
                 int preShiftAmount,
-                KOptAffectedElementsInfo affectedElementsInfo) {
+                KOptAffectedElements affectedElementsInfo) {
             this.listVariableDescriptor = listVariableDescriptor;
             this.entity = entity;
             this.descriptor = descriptor;

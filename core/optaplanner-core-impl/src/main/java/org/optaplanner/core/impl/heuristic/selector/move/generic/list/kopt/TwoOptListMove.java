@@ -10,6 +10,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescript
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.util.CollectionUtils;
 
 /**
  * A 2-opt move for list variables, which takes two edges assigned to the same entity and swap their endpoints.
@@ -32,7 +33,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  *
  * @param <Solution_>
  */
-public class TwoOptListMove<Solution_> extends AbstractMove<Solution_> {
+final class TwoOptListMove<Solution_> extends AbstractMove<Solution_> {
     private final ListVariableDescriptor<Solution_> variableDescriptor;
     private final IndexVariableSupply indexVariableSupply;
     private final Object entity;
@@ -200,10 +201,7 @@ public class TwoOptListMove<Solution_> extends AbstractMove<Solution_> {
         } else {
             List<Object> firstHalfReversedPath = listVariable.subList(firstEdgeEndpointIndex, listVariable.size());
             List<Object> secondHalfReversedPath = listVariable.subList(0, secondEdgeEndpointIndex);
-            List<Object> out = new ArrayList<>(firstHalfReversedPath.size() + secondHalfReversedPath.size());
-            out.addAll(firstHalfReversedPath);
-            out.addAll(secondHalfReversedPath);
-            return out;
+            return CollectionUtils.concat(firstHalfReversedPath, secondHalfReversedPath);
         }
     }
 

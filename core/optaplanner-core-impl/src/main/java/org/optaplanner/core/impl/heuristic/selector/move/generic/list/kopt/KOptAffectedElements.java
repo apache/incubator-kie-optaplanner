@@ -1,28 +1,29 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import org.optaplanner.core.impl.util.CollectionUtils;
 
 import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
 
-public class KOptAffectedElementsInfo {
+final class KOptAffectedElements {
     private final int wrappedStartIndex;
     private final int wrappedEndIndex;
     private final List<IntIntImmutablePair> affectedMiddleRangeList;
 
-    private KOptAffectedElementsInfo(int wrappedStartIndex, int wrappedEndIndex,
+    private KOptAffectedElements(int wrappedStartIndex, int wrappedEndIndex,
             List<IntIntImmutablePair> affectedMiddleRangeList) {
         this.wrappedStartIndex = wrappedStartIndex;
         this.wrappedEndIndex = wrappedEndIndex;
         this.affectedMiddleRangeList = affectedMiddleRangeList;
     }
 
-    static KOptAffectedElementsInfo forMiddleRange(int startInclusive, int endExclusive) {
-        return new KOptAffectedElementsInfo(-1, -1, List.of(IntIntImmutablePair.of(startInclusive, endExclusive)));
+    static KOptAffectedElements forMiddleRange(int startInclusive, int endExclusive) {
+        return new KOptAffectedElements(-1, -1, List.of(IntIntImmutablePair.of(startInclusive, endExclusive)));
     }
 
-    static KOptAffectedElementsInfo forWrappedRange(int startInclusive, int endExclusive) {
-        return new KOptAffectedElementsInfo(startInclusive, endExclusive, List.of());
+    static KOptAffectedElements forWrappedRange(int startInclusive, int endExclusive) {
+        return new KOptAffectedElements(startInclusive, endExclusive, List.of());
     }
 
     // ***********************************************
@@ -44,7 +45,7 @@ public class KOptAffectedElementsInfo {
     // ***********************************************
     // Complex methods
     // ***********************************************
-    public KOptAffectedElementsInfo merge(KOptAffectedElementsInfo other) {
+    public KOptAffectedElements merge(KOptAffectedElements other) {
         int newWrappedStartIndex = this.wrappedStartIndex;
         int newWrappedEndIndex = this.wrappedEndIndex;
 
@@ -59,9 +60,7 @@ public class KOptAffectedElementsInfo {
         }
 
         List<IntIntImmutablePair> newAffectedMiddleRangeList =
-                new ArrayList<>(affectedMiddleRangeList.size() + other.affectedMiddleRangeList.size());
-        newAffectedMiddleRangeList.addAll(affectedMiddleRangeList);
-        newAffectedMiddleRangeList.addAll(other.affectedMiddleRangeList);
+                CollectionUtils.concat(affectedMiddleRangeList, other.affectedMiddleRangeList);
 
         boolean removedAny;
         SearchForIntersectingInterval: do {
@@ -86,7 +85,7 @@ public class KOptAffectedElementsInfo {
             }
         } while (removedAny);
 
-        return new KOptAffectedElementsInfo(newWrappedStartIndex, newWrappedEndIndex, newAffectedMiddleRangeList);
+        return new KOptAffectedElements(newWrappedStartIndex, newWrappedEndIndex, newAffectedMiddleRangeList);
     }
 
     @Override

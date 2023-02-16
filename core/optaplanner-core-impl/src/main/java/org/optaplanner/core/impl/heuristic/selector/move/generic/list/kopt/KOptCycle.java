@@ -8,11 +8,11 @@ import java.util.stream.IntStream;
  * and provide a mapping of removed edge endpoint index to cycle identifier
  * (where all indices that are in the same k-cycle have the same identifier).
  */
-public class KOptCycleInfo {
+final class KOptCycle {
 
     /**
      * The total number of k-cycles in the permutation. This is one more than the
-     * maximal value in {@link KOptCycleInfo#indexToCycleIdentifier}.
+     * maximal value in {@link KOptCycle#indexToCycleIdentifier}.
      */
     public final int cycleCount;
 
@@ -22,7 +22,7 @@ public class KOptCycleInfo {
      */
     public final int[] indexToCycleIdentifier;
 
-    public KOptCycleInfo(int cycleCount, int[] indexToCycleIdentifier) {
+    public KOptCycle(int cycleCount, int[] indexToCycleIdentifier) {
         this.cycleCount = cycleCount;
         this.indexToCycleIdentifier = indexToCycleIdentifier;
     }

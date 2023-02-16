@@ -14,7 +14,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSele
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class KOptListMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
+final class KOptListMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntitySelector<Solution_> entitySelector;

@@ -39,12 +39,12 @@ public class KOptDescriptorTest {
         KOptDescriptor<?, TestdataListValue> kOptDescriptor = fromRemovedAndAddedEdges(originalTour,
                 removedEdges,
                 addedEdges);
-        KOptCycleInfo cycleInfo = KOptUtils.getCyclesForPermutation(kOptDescriptor);
-        assertThat(cycleInfo.cycleCount).isEqualTo(1);
+        KOptCycle cycle = KOptUtils.getCyclesForPermutation(kOptDescriptor);
+        assertThat(cycle.cycleCount).isEqualTo(1);
 
         // Cycles:
         // v1 -> v4 -> v5 -> v3 -> v2 -> v7 -> v6 -> v8
-        assertThat(cycleInfo.indexToCycleIdentifier).containsExactly(0, 0, 0, 0, 0, 0, 0, 0, 0);
+        assertThat(cycle.indexToCycleIdentifier).containsExactly(0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class KOptDescriptorTest {
         KOptDescriptor<?, TestdataListValue> kOptDescriptor = fromRemovedAndAddedEdges(originalTour,
                 removedEdges,
                 addedEdges);
-        KOptCycleInfo cycleInfo = KOptUtils.getCyclesForPermutation(kOptDescriptor);
+        KOptCycle cycleInfo = KOptUtils.getCyclesForPermutation(kOptDescriptor);
         assertThat(cycleInfo.cycleCount).isEqualTo(2);
 
         // Cycles:
@@ -90,7 +90,7 @@ public class KOptDescriptorTest {
         KOptDescriptor<?, TestdataListValue> kOptDescriptor = fromRemovedAndAddedEdges(originalTour,
                 removedEdges,
                 addedEdges);
-        KOptCycleInfo cycleInfo = KOptUtils.getCyclesForPermutation(kOptDescriptor);
+        KOptCycle cycleInfo = KOptUtils.getCyclesForPermutation(kOptDescriptor);
         assertThat(cycleInfo.cycleCount).isEqualTo(3);
 
         // Cycles:
