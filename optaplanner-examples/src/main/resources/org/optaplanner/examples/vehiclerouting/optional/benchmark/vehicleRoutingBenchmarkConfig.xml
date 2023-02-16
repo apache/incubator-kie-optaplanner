@@ -145,7 +145,7 @@
       <localSearch>
         <unionMoveSelector>
           <listChangeMoveSelector/>
-          <swapMoveSelector/>
+          <listSwapMoveSelector/>
           <subListChangeMoveSelector>
             <selectReversingMoveToo>true</selectReversingMoveToo>
           </subListChangeMoveSelector>
@@ -170,7 +170,7 @@
       <localSearch>
         <unionMoveSelector>
           <listChangeMoveSelector/>
-          <swapMoveSelector/>
+          <listSwapMoveSelector/>
           <subListChangeMoveSelector>
             <selectReversingMoveToo>true</selectReversingMoveToo>
           </subListChangeMoveSelector>

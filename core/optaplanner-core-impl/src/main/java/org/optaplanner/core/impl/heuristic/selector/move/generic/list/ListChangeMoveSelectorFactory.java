@@ -141,6 +141,13 @@ public class ListChangeMoveSelectorFactory<Solution_>
                                 .filter(GenuineVariableDescriptor::isListVariable)
                                 .map(variableDescriptor -> ((ListVariableDescriptor<Solution_>) variableDescriptor))
                                 .collect(Collectors.toList()));
+
+                if (variableDescriptorList.isEmpty()) {
+                    throw new IllegalArgumentException("The listChangeMoveSelector (" + config
+                            + ") cannot unfold because there are no list planning variables for the entitySelector ("
+                            + config.getEntitySelectorConfig()
+                            + ") or no list planning variables at all.");
+                }
             }
         }
         return buildUnfoldedMoveSelectorConfig(variableDescriptorList);
@@ -152,13 +159,6 @@ public class ListChangeMoveSelectorFactory<Solution_>
                 .map(variableDescriptor -> buildChildMoveSelectorConfig(
                         variableDescriptor, config.getEntitySelectorConfig(), config.getValueSelectorConfig()))
                 .collect(Collectors.toList());
-
-        if (moveSelectorConfigList.isEmpty()) {
-            throw new IllegalArgumentException("The listChangeMoveSelector (" + config
-                    + ") failed to unfold because there are no list planning variables for the entitySelector ("
-                    + config.getEntitySelectorConfig()
-                    + ") or no list planning variables at all.");
-        }
 
         MoveSelectorConfig unfoldedMoveSelectorConfig;
         if (moveSelectorConfigList.size() == 1) {

@@ -77,7 +77,7 @@ public class ChangeMoveSelectorFactory<Solution_>
                 if (onlyEntityDescriptor != null) {
                     if (onlyVariableDescriptor.isListVariable()) {
                         // TODO decide whether we can make this potentially breaking change.
-                        throw new IllegalArgumentException("The config (" + config
+                        throw new IllegalArgumentException("The changeMoveSelector (" + config
                                 + ") cannot be used with a list variable (" + onlyVariableDescriptor + ").\n"
                                 + "Use a " + ListChangeMoveSelectorConfig.class.getSimpleName() + " instead.");
                         // return buildListChangeMoveSelectorConfig();

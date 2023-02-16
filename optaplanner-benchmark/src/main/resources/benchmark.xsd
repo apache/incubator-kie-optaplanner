@@ -968,6 +968,9 @@
             <xs:element name="listChangeMoveSelector" type="tns:listChangeMoveSelectorConfig"/>
                                     
             
+            <xs:element name="listSwapMoveSelector" type="tns:listSwapMoveSelectorConfig"/>
+                                    
+            
             <xs:element name="moveIteratorFactory" type="tns:moveIteratorFactoryConfig"/>
                                     
             
@@ -1188,6 +1191,36 @@
                               
           
           <xs:element minOccurs="0" name="entitySelector" type="tns:entitySelectorConfig"/>
+                            
+        
+        </xs:sequence>
+                      
+      
+      </xs:extension>
+                
+    
+    </xs:complexContent>
+          
+  
+  </xs:complexType>
+      
+  
+  <xs:complexType name="listSwapMoveSelectorConfig">
+            
+    
+    <xs:complexContent>
+                  
+      
+      <xs:extension base="tns:moveSelectorConfig">
+                        
+        
+        <xs:sequence>
+                              
+          
+          <xs:element minOccurs="0" name="valueSelector" type="tns:valueSelectorConfig"/>
+                              
+          
+          <xs:element minOccurs="0" name="secondaryValueSelector" type="tns:valueSelectorConfig"/>
                             
         
         </xs:sequence>
@@ -1679,6 +1712,9 @@
             <xs:element name="listChangeMoveSelector" type="tns:listChangeMoveSelectorConfig"/>
                                     
             
+            <xs:element name="listSwapMoveSelector" type="tns:listSwapMoveSelectorConfig"/>
+                                    
+            
             <xs:element name="moveIteratorFactory" type="tns:moveIteratorFactoryConfig"/>
                                     
             
@@ -2022,6 +2058,9 @@
                                     
             
             <xs:element name="listChangeMoveSelector" type="tns:listChangeMoveSelectorConfig"/>
+                                    
+            
+            <xs:element name="listSwapMoveSelector" type="tns:listSwapMoveSelectorConfig"/>
                                     
             
             <xs:element name="moveIteratorFactory" type="tns:moveIteratorFactoryConfig"/>
