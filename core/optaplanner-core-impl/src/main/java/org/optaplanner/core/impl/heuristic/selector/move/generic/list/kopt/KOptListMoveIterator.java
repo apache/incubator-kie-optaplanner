@@ -27,7 +27,7 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
     private final TriPredicate<Node_, Node_, Node_> betweenFunction;
     private final int minK;
     private final int maxK;
-    private final int Patching_C; // TODO needs better name
+    private final int maxCyclesPatchedInInfeasibleMove;
 
     private Iterator<Node_> entityIterator;
 
@@ -45,7 +45,7 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
         this.entitySelector = entitySelector;
         this.minK = minK;
         this.maxK = maxK;
-        this.Patching_C = maxK;
+        this.maxCyclesPatchedInInfeasibleMove = maxK;
         this.successorFunction =
                 KOptUtils.getSuccessorFunction(listVariableDescriptor, inverseVariableSupply, indexVariableSupply);
         this.predecessorFunction =
@@ -55,14 +55,15 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
 
     @SuppressWarnings("unchecked")
     private Iterator<Node_> getValueIteratorForEntity(Object entity) {
-        // TODO: Find out why valueSelector.iterator(entity) return values with different entities
+        // valueSelector.iterator(entity) can select values on different entities,
+        // so to only pick values on the selected entity, pick random elements from
+        // its list variable
         List<Node_> entityListVariable = (List<Node_>) listVariableDescriptor.getListVariable(entity);
         return workingRandom.ints(0, entityListVariable.size())
                 .mapToObj(entityListVariable::get).iterator();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Move<Solution_> createUpcomingSelection() {
         int k = workingRandom.nextInt(maxK - minK + 1) + minK;
         Node_ entity = pickEntityWithMinimumRouteLength(2 * k);
@@ -186,7 +187,7 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
         int cycleCount = cycleInfo.cycleCount;
         int[] cycle = cycleInfo.indexToCycleIdentifier;
 
-        if (cycleCount == 1 || cycleCount > Patching_C) {
+        if (cycleCount == 1 || cycleCount > maxCyclesPatchedInInfeasibleMove) {
             return descriptor;
         }
         int currentCycle = getShortestCycleIdentifier(oldRemovedEdges, cycle, removedEdgeIndexToTourOrder, cycleCount, k);

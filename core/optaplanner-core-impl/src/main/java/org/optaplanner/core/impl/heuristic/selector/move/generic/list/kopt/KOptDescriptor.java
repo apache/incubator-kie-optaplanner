@@ -331,12 +331,14 @@ final class KOptDescriptor<Solution_, Node_> {
     private void reversePermutationPart(int[] currentRemovedEdgeIndexToTourOrder,
             int[] currentInverseRemovedEdgeIndexToTourOrder,
             int startInclusive, int endExclusive) {
-        for (; startInclusive < endExclusive; startInclusive++, endExclusive--) {
+        while (startInclusive < endExclusive) {
             int savedFirstElement = currentRemovedEdgeIndexToTourOrder[startInclusive];
             currentRemovedEdgeIndexToTourOrder[startInclusive] = currentRemovedEdgeIndexToTourOrder[endExclusive];
             currentInverseRemovedEdgeIndexToTourOrder[currentRemovedEdgeIndexToTourOrder[endExclusive]] = startInclusive;
             currentRemovedEdgeIndexToTourOrder[endExclusive] = savedFirstElement;
             currentInverseRemovedEdgeIndexToTourOrder[savedFirstElement] = endExclusive;
+            startInclusive++;
+            endExclusive--;
         }
     }
 

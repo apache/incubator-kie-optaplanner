@@ -2,6 +2,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
 import java.util.Iterator;
 
+import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
@@ -11,14 +12,12 @@ import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 final class KOptListMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntitySelector<Solution_> entitySelector;
-    private final ValueSelector<Solution_> valueSelector;
     private final int minK;
     private final int maxK;
     private SingletonInverseVariableSupply inverseVariableSupply;
@@ -27,16 +26,13 @@ final class KOptListMoveSelector<Solution_> extends GenericMoveSelector<Solution
     public KOptListMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntitySelector<Solution_> entitySelector,
-            ValueSelector<Solution_> valueSelector,
             int minK,
             int maxK) {
         this.listVariableDescriptor = listVariableDescriptor;
         this.entitySelector = entitySelector;
-        this.valueSelector = valueSelector;
         this.minK = minK;
         this.maxK = maxK;
         phaseLifecycleSupport.addEventListener(entitySelector);
-        phaseLifecycleSupport.addEventListener(valueSelector);
     }
 
     @Override
@@ -60,10 +56,16 @@ final class KOptListMoveSelector<Solution_> extends GenericMoveSelector<Solution
         long total = 0;
         while (entityIterator.hasNext()) {
             Object entity = entityIterator.next();
-            long valueSelectorSize = valueSelector.getSize(entity);
-
+            int valueSelectorSize = listVariableDescriptor.getListSize(entity);
             for (int i = minK; i < Math.min(valueSelectorSize, maxK); i++) {
-                total += factorialUpToCount(valueSelectorSize, i);
+                if (valueSelectorSize > i) { // need more than k nodes in order to perform a k-opt
+                    long kOptMoveTypes = KOptUtils.getPureKOptMoveTypes(i);
+
+                    // A tour with n nodes have n - 1 edges
+                    // And we chose k of them to remove in a k-opt
+                    long edgeChoices = CombinatoricsUtils.binomialCoefficient(valueSelectorSize - 1, i);
+                    total += kOptMoveTypes * edgeChoices;
+                }
             }
         }
         return total;

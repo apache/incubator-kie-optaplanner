@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
@@ -79,7 +80,7 @@ final class KOptUtils {
     static <Solution_, Node_> List<Pair<Node_, Node_>> getAddedEdgeList(KOptDescriptor<Solution_, Node_> kOptDescriptor) {
         int k = kOptDescriptor.getK();
         List<Pair<Node_, Node_>> out = new ArrayList<>(2 * k);
-        int currentEndpoint = 2 * k;
+        int currentEndpoint = 1;
 
         Node_[] removedEdges = kOptDescriptor.getRemovedEdges();
         int[] addedEdgeToOtherEndpoint = kOptDescriptor.getAddedEdgeToOtherEndpoint();
@@ -87,7 +88,7 @@ final class KOptUtils {
         int[] inverseRemovedEdgeIndexToTourOrder = kOptDescriptor.getInverseRemovedEdgeIndexToTourOrder();
 
         // This loop iterates through the new tour created
-        while (currentEndpoint != 0) {
+        while (currentEndpoint != 2 * k + 1) {
             out.add(Pair.of(removedEdges[currentEndpoint], removedEdges[addedEdgeToOtherEndpoint[currentEndpoint]]));
             int tourIndex = removedEdgeIndexToTourOrder[currentEndpoint];
             int nextEndpointTourIndex = addedEdgeToOtherEndpoint[tourIndex];
@@ -193,4 +194,21 @@ final class KOptUtils {
         }
     }
 
+    /**
+     * Returns the number of unique ways a K-Opt can add K edges without reinserting a removed edge.
+     *
+     * @param k How many edges were removed/will be added
+     * @return the number of unique ways a K-Opt can add K edges without reinserting a removed edge.
+     */
+    public static long getPureKOptMoveTypes(int k) {
+        // This calculates the item at index k for the sequence https://oeis.org/A061714
+        long totalTypes = 0;
+        for (int i = 1; i < k; i++) {
+            for (int j = 0; j <= i; j++) {
+                int sign = ((k + j - 1) % 2 == 0) ? 1 : -1;
+                totalTypes += sign * CombinatoricsUtils.binomialCoefficient(i, j) * CombinatoricsUtils.factorial(j) * (1L << j);
+            }
+        }
+        return totalTypes;
+    }
 }

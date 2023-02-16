@@ -8,8 +8,9 @@ import java.util.function.Function;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
+import org.optaplanner.core.impl.util.Pair;
 
-public class KOptDescriptorTest {
+public class KOptUtilsTest {
 
     private final TestdataListValue v1 = new TestdataListValue("1");
     private final TestdataListValue v2 = new TestdataListValue("2");
@@ -25,7 +26,53 @@ public class KOptDescriptorTest {
     private final TestdataListValue v12 = new TestdataListValue("12");
 
     @Test
-    public void testGetCyclesForPermutationOneCycle() {
+    void testGetRemovedEdgesList() {
+        List<TestdataListValue> originalTour = List.of(v1, v2, v3, v4, v5, v6, v7, v8);
+        List<TestdataListValue> removedEdges = List.of(v1, v2,
+                v3, v4,
+                v5, v6,
+                v7, v8);
+        List<TestdataListValue> addedEdges = List.of(v1, v4,
+                v2, v7,
+                v5, v3,
+                v6, v8);
+
+        KOptDescriptor<?, TestdataListValue> kOptDescriptor = fromRemovedAndAddedEdges(originalTour,
+                removedEdges,
+                addedEdges);
+
+        assertThat(KOptUtils.getRemovedEdgeList(kOptDescriptor))
+                .containsExactlyInAnyOrder(Pair.of(v1, v2),
+                        Pair.of(v3, v4),
+                        Pair.of(v5, v6),
+                        Pair.of(v7, v8));
+    }
+
+    @Test
+    void testGetAddedEdgesList() {
+        List<TestdataListValue> originalTour = List.of(v1, v2, v3, v4, v5, v6, v7, v8);
+        List<TestdataListValue> removedEdges = List.of(v1, v2,
+                v3, v4,
+                v5, v6,
+                v7, v8);
+        List<TestdataListValue> addedEdges = List.of(v1, v4,
+                v2, v7,
+                v5, v3,
+                v6, v8);
+
+        KOptDescriptor<?, TestdataListValue> kOptDescriptor = fromRemovedAndAddedEdges(originalTour,
+                removedEdges,
+                addedEdges);
+
+        assertThat(KOptUtils.getAddedEdgeList(kOptDescriptor))
+                .containsExactlyInAnyOrder(Pair.of(v1, v4),
+                        Pair.of(v2, v7),
+                        Pair.of(v5, v3),
+                        Pair.of(v6, v8));
+    }
+
+    @Test
+    void testGetCyclesForPermutationOneCycle() {
         List<TestdataListValue> originalTour = List.of(v1, v2, v3, v4, v5, v6, v7, v8);
         List<TestdataListValue> removedEdges = List.of(v1, v2,
                 v3, v4,
@@ -48,7 +95,7 @@ public class KOptDescriptorTest {
     }
 
     @Test
-    public void testGetCyclesForPermutationTwoCycle() {
+    void testGetCyclesForPermutationTwoCycle() {
         List<TestdataListValue> originalTour = List.of(v1, v2, v3, v4, v5, v6, v7, v8);
         List<TestdataListValue> removedEdges = List.of(v1, v2,
                 v3, v4,
@@ -72,7 +119,7 @@ public class KOptDescriptorTest {
     }
 
     @Test
-    public void testGetCyclesForPermutationThreeCycle() {
+    void testGetCyclesForPermutationThreeCycle() {
         List<TestdataListValue> originalTour = List.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12);
         List<TestdataListValue> removedEdges = List.of(v1, v2,
                 v3, v4,
@@ -98,6 +145,61 @@ public class KOptDescriptorTest {
         // v2 -> v7 -> v6 -> v3
         // v8 -> v10 -> v11 -> v9
         assertThat(cycleInfo.indexToCycleIdentifier).containsExactly(0, 0, 1, 1, 0, 0, 1, 1, 2, 2, 2, 2, 0);
+    }
+
+    @Test
+    void flipSubarray() {
+        int[] array = new int[] { 1, 2, 5, 4, 3, 6, 7, 8 };
+
+        KOptUtils.flipSubarray(array, 2, 5);
+        assertThat(array).containsExactly(1, 2, 3, 4, 5, 6, 7, 8);
+
+        KOptUtils.flipSubarray(array, 2, 5);
+        assertThat(array).containsExactly(1, 2, 5, 4, 3, 6, 7, 8);
+    }
+
+    @Test
+    void flipSubarraySecondEndsBeforeFirst() {
+        int[] array = new int[] { 8, 7, 3, 4, 5, 6, 2, 1 };
+
+        KOptUtils.flipSubarray(array, 6, 2);
+        assertThat(array).containsExactly(1, 2, 3, 4, 5, 6, 7, 8);
+
+        KOptUtils.flipSubarray(array, 6, 2);
+        assertThat(array).containsExactly(8, 7, 3, 4, 5, 6, 2, 1);
+    }
+
+    @Test
+    void flipSubarraySecondEndsBeforeFirstUnbalanced() {
+        int[] array = new int[] { 6, 5, 3, 4, 2, 1, 8, 7 };
+
+        KOptUtils.flipSubarray(array, 4, 2);
+        assertThat(array).containsExactly(1, 2, 3, 4, 5, 6, 7, 8);
+
+        KOptUtils.flipSubarray(array, 4, 2);
+        assertThat(array).containsExactly(6, 5, 3, 4, 2, 1, 8, 7);
+    }
+
+    @Test
+    void flipSubarrayFirstEndsBeforeSecondUnbalanced() {
+        int[] array = new int[] { 2, 1, 8, 7, 5, 6, 4, 3 };
+
+        KOptUtils.flipSubarray(array, 6, 4);
+        assertThat(array).containsExactly(1, 2, 3, 4, 5, 6, 7, 8);
+
+        KOptUtils.flipSubarray(array, 6, 4);
+        assertThat(array).containsExactly(2, 1, 8, 7, 5, 6, 4, 3);
+    }
+
+    @Test
+    void testGetPureKOptMoveTypes() {
+        assertThat(KOptUtils.getPureKOptMoveTypes(2)).isEqualTo(1L);
+        assertThat(KOptUtils.getPureKOptMoveTypes(3)).isEqualTo(4L);
+        assertThat(KOptUtils.getPureKOptMoveTypes(4)).isEqualTo(25L);
+        assertThat(KOptUtils.getPureKOptMoveTypes(5)).isEqualTo(208L);
+        assertThat(KOptUtils.getPureKOptMoveTypes(6)).isEqualTo(2121L);
+        assertThat(KOptUtils.getPureKOptMoveTypes(7)).isEqualTo(25828L);
+        assertThat(KOptUtils.getPureKOptMoveTypes(8)).isEqualTo(365457L);
     }
 
     private static <Solution_> KOptDescriptor<Solution_, TestdataListValue> fromRemovedAndAddedEdges(
