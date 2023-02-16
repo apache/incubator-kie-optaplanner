@@ -6,9 +6,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 
 import org.optaplanner.constraint.streams.common.AbstractConstraint;
 import org.optaplanner.constraint.streams.common.AbstractConstraintStreamScoreDirectorFactory;
@@ -154,19 +156,29 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
                 .reduce(zeroScore, Score::add);
         // Each level of the resulting score now has to be the same number, the matchWeight.
         // Except for where the number is zero.
-        Number[] levelNumbers = totalMatchWeightedScore.toLevelNumbers();
-        long matchWeightCount = Arrays.stream(levelNumbers)
+        Number deducedImpact = retrieveImpact(totalMatchWeightedScore, zero);
+        if (deducedImpact.equals(zero)) {
+            return Pair.of(zero, zero);
+        }
+        Number negatedDeducedImpact = retrieveImpact(totalMatchWeightedScore.negate(), zero);
+        return Pair.of(deducedImpact, negatedDeducedImpact);
+    }
+
+    private Number retrieveImpact(Score_ score, Number zero) {
+        Number[] levelNumbers = score.toLevelNumbers();
+        List<Number> impacts = Arrays.stream(levelNumbers)
                 .distinct()
                 .filter(matchWeight -> !Objects.equals(matchWeight, zero))
-                .count();
-        if (matchWeightCount == 0) {
-            return Pair.of(zero, zero);
-        } else if (matchWeightCount != 1) {
-            throw new IllegalStateException("Impossible state: expecting at most one match weight (" +
-                    matchWeightCount + ") in matchWeightedScore level numbers (" + Arrays.toString(levelNumbers) + ").");
+                .collect(Collectors.toList());
+        switch (impacts.size()) {
+            case 0:
+                return zero;
+            case 1:
+                return impacts.get(0);
+            default:
+                throw new IllegalStateException("Impossible state: expecting at most one match weight (" +
+                        impacts.size() + ") in matchWeightedScore level numbers (" + Arrays.toString(levelNumbers) + ").");
         }
-        Score_ negatedTotalMatchWeightedScore = totalMatchWeightedScore.negate();
-        return Pair.of(levelNumbers[0], negatedTotalMatchWeightedScore.toLevelNumbers()[0]);
     }
 
     private void assertMatchCount(ScoreImpactType scoreImpactType, long expectedMatchCount, String message) {
