@@ -160,7 +160,7 @@ public class ListChangeMoveSelectorFactory<Solution_>
                         variableDescriptor, config.getEntitySelectorConfig(), config.getValueSelectorConfig()))
                 .collect(Collectors.toList());
 
-        MoveSelectorConfig unfoldedMoveSelectorConfig;
+        MoveSelectorConfig<?> unfoldedMoveSelectorConfig;
         if (moveSelectorConfigList.size() == 1) {
             unfoldedMoveSelectorConfig = moveSelectorConfigList.get(0);
         } else {

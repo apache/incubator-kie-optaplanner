@@ -76,11 +76,7 @@ public class ChangeMoveSelectorFactory<Solution_>
             if (onlyVariableDescriptor != null) {
                 if (onlyEntityDescriptor != null) {
                     if (onlyVariableDescriptor.isListVariable()) {
-                        // TODO decide whether we can make this potentially breaking change.
-                        throw new IllegalArgumentException("The changeMoveSelector (" + config
-                                + ") cannot be used with a list variable (" + onlyVariableDescriptor + ").\n"
-                                + "Use a " + ListChangeMoveSelectorConfig.class.getSimpleName() + " instead.");
-                        // return buildListChangeMoveSelectorConfig();
+                        return buildListChangeMoveSelectorConfig((ListVariableDescriptor<?>) onlyVariableDescriptor, true);
                     }
                     // No need for unfolding or deducing
                     return null;
@@ -93,30 +89,14 @@ public class ChangeMoveSelectorFactory<Solution_>
         return buildUnfoldedMoveSelectorConfig(variableDescriptorList);
     }
 
-    private ListChangeMoveSelectorConfig buildListChangeMoveSelectorConfig() {
-        // TODO message if this method is used.
-        LOGGER.warn("");
-        ListChangeMoveSelectorConfig listChangeMoveSelectorConfig = new ListChangeMoveSelectorConfig();
-        // TODO restore inheritCommon() private access if this method is deleted.
-        listChangeMoveSelectorConfig.inheritCommon(config);
-        listChangeMoveSelectorConfig.setValueSelectorConfig(config.getValueSelectorConfig());
-        listChangeMoveSelectorConfig.setEntitySelectorConfig(config.getEntitySelectorConfig());
-        return listChangeMoveSelectorConfig;
-    }
-
     protected MoveSelectorConfig<?> buildUnfoldedMoveSelectorConfig(
             List<GenuineVariableDescriptor<Solution_>> variableDescriptorList) {
         List<MoveSelectorConfig> moveSelectorConfigList = new ArrayList<>(variableDescriptorList.size());
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
             if (variableDescriptor.isListVariable()) {
-                LOGGER.warn("ChangeMoveSelectorConfig is being used for a list variable."
-                        + " This was the only available option when the list planning variable was introduced."
-                        + " We are keeping this option through the 8.x release stream for backward compatibility reasons"
-                        + " but it will be removed in the next major release.\n"
-                        + "Please update your solver config to use ListChangeMoveSelectorConfig now.");
-                ListChangeMoveSelectorConfig childMoveSelectorConfig = ListChangeMoveSelectorFactory
-                        .buildChildMoveSelectorConfig((ListVariableDescriptor<?>) variableDescriptor,
-                                config.getEntitySelectorConfig(), config.getValueSelectorConfig());
+                // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
+                ListChangeMoveSelectorConfig childMoveSelectorConfig =
+                        buildListChangeMoveSelectorConfig((ListVariableDescriptor<?>) variableDescriptor, false);
                 moveSelectorConfigList.add(childMoveSelectorConfig);
             } else {
                 // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
@@ -136,7 +116,7 @@ public class ChangeMoveSelectorFactory<Solution_>
             }
         }
 
-        MoveSelectorConfig unfoldedMoveSelectorConfig;
+        MoveSelectorConfig<?> unfoldedMoveSelectorConfig;
         if (moveSelectorConfigList.size() == 1) {
             unfoldedMoveSelectorConfig = moveSelectorConfigList.get(0);
         } else {
@@ -144,5 +124,20 @@ public class ChangeMoveSelectorFactory<Solution_>
         }
         unfoldedMoveSelectorConfig.inheritFolded(config);
         return unfoldedMoveSelectorConfig;
+    }
+
+    private ListChangeMoveSelectorConfig buildListChangeMoveSelectorConfig(ListVariableDescriptor<?> variableDescriptor,
+            boolean inheritFoldedConfig) {
+        LOGGER.warn("ChangeMoveSelectorConfig is being used for a list variable."
+                + " This was the only available option when the list planning variable was introduced."
+                + " We are keeping this option through the 8.x release stream for backward compatibility reasons"
+                + " but it will be removed in the next major release.\n"
+                + "Please update your solver config to use ListChangeMoveSelectorConfig now.");
+        ListChangeMoveSelectorConfig listChangeMoveSelectorConfig = ListChangeMoveSelectorFactory.buildChildMoveSelectorConfig(
+                variableDescriptor, config.getEntitySelectorConfig(), config.getValueSelectorConfig());
+        if (inheritFoldedConfig) {
+            listChangeMoveSelectorConfig.inheritFolded(config);
+        }
+        return listChangeMoveSelectorConfig;
     }
 }
