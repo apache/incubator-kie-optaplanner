@@ -15,7 +15,11 @@ public interface IndexVariableSupply extends Supply {
      * Get {@code planningValue}'s index in the {@link PlanningListVariable list variable} it is an element of.
      *
      * @param planningValue never null
-     * @return {@code planningValue}'s index in the list variable it is an element of or {@code null} if the value is unassigned
+     * @return {@code planningValue}'s index in the list variable it is an element of
+     *         or {@code -1} if the value is unassigned
+     * @apiNote Not using {@link Integer} as return type (and therefore {@code null} as unassigned value)
+     *          in order to not force the rest of the implementation into boxing and unboxing.
+     *          Negative index in a list is a sufficient sign that something's gone wrong.
      */
-    Integer getIndex(Object planningValue);
+    int getIndex(Object planningValue);
 }

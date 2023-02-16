@@ -88,7 +88,8 @@ public class IndexVariableListener<Solution_> implements ListVariableListener<So
     }
 
     @Override
-    public Integer getIndex(Object planningValue) {
-        return shadowVariableDescriptor.getValue(planningValue);
+    public int getIndex(Object planningValue) {
+        Integer value = shadowVariableDescriptor.getValue(planningValue);
+        return Objects.requireNonNullElse(value, -1);
     }
 }

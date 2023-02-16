@@ -25,7 +25,7 @@ public class OriginalListChangeIterator<Solution_> extends UpcomingSelectionIter
     private Iterator<ElementRef> destinationIterator;
 
     private Object upcomingSourceEntity;
-    private Integer upcomingSourceIndex;
+    private int upcomingSourceIndex;
     private Object upcomingValue;
 
     public OriginalListChangeIterator(
@@ -57,7 +57,7 @@ public class OriginalListChangeIterator<Solution_> extends UpcomingSelectionIter
 
         ElementRef destination = destinationIterator.next();
 
-        if (upcomingSourceEntity == null && upcomingSourceIndex == null) {
+        if (upcomingSourceEntity == null && upcomingSourceIndex < 0) {
             return new ListAssignMove<>(
                     listVariableDescriptor,
                     upcomingValue,

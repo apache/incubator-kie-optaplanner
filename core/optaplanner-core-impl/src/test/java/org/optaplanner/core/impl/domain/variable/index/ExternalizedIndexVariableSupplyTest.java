@@ -58,7 +58,7 @@ class ExternalizedIndexVariableSupplyTest {
         supply.afterListVariableElementUnassigned(scoreDirector, v1);
         supply.afterListVariableChanged(scoreDirector, e1, 0, 0);
 
-        assertThat(supply.getIndex(v1)).isNull();
+        assertThat(supply.getIndex(v1)).isEqualTo(-1);
         assertThat(supply.getIndex(v2)).isEqualTo(0);
         assertThat(supply.getIndex(v3)).isEqualTo(1);
 
@@ -67,8 +67,8 @@ class ExternalizedIndexVariableSupplyTest {
         solution.getEntityList().remove(e1);
         supply.afterEntityRemoved(scoreDirector, e1);
 
-        assertThat(supply.getIndex(v2)).isNull();
-        assertThat(supply.getIndex(v3)).isNull();
+        assertThat(supply.getIndex(v2)).isEqualTo(-1);
+        assertThat(supply.getIndex(v3)).isEqualTo(-1);
 
         // Assign v1 to e2.
         supply.beforeListVariableChanged(scoreDirector, e2, 0, 0);
