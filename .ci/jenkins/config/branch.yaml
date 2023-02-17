@@ -20,6 +20,7 @@ environments:
     ids:
     - quarkus
   quarkus-lts:
+    pull_request_default_check: true
     env_vars:
       BUILD_MVN_OPTS: -Dproductized
       QUARKUS_BRANCH: '2.13'
@@ -59,7 +60,7 @@ repositories:
 git:
   author:
     name: kiegroup
-    credentials_id: kie-ci
+    credentials_id: kie-ci5
     token_credentials_id: kie-ci5-token
   bot_author:
     name: bsig-gh-bot
