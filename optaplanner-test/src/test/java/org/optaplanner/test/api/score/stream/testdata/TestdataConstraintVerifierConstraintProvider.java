@@ -20,19 +20,19 @@ public final class TestdataConstraintVerifierConstraintProvider implements Const
     }
 
     public Constraint penalizeEveryEntity(ConstraintFactory constraintFactory) {
-        return constraintFactory.forEach(TestdataConstraintVerifierEntity.class)
+        return constraintFactory.forEach(TestdataConstraintVerifierFirstEntity.class)
                 .penalize(HardSoftScore.ONE_HARD)
                 .asConstraint("Penalize every standard entity");
     }
 
     public Constraint rewardEveryEntity(ConstraintFactory constraintFactory) {
-        return constraintFactory.forEach(TestdataConstraintVerifierEntity.class)
+        return constraintFactory.forEach(TestdataConstraintVerifierFirstEntity.class)
                 .reward(HardSoftScore.ofSoft(2))
                 .asConstraint("Reward every standard entity");
     }
 
     public Constraint impactEveryEntity(ConstraintFactory constraintFactory) {
-        return constraintFactory.forEach(TestdataConstraintVerifierEntity.class)
+        return constraintFactory.forEach(TestdataConstraintVerifierFirstEntity.class)
                 .impact(HardSoftScore.ofHard(4),
                         entity -> Objects.equals(entity.getCode(), "A") ? 1 : -1)
                 .asConstraint("Impact every standard entity");

@@ -23,10 +23,11 @@ public class TestdataConstraintVerifierSolution extends TestdataObject {
             valueList.add(value);
         }
         solution.setValueList(valueList);
-        List<TestdataConstraintVerifierEntity> entityList = new ArrayList<>(entityListSize);
+        List<TestdataConstraintVerifierFirstEntity> entityList = new ArrayList<>(entityListSize);
         for (int i = 0; i < entityListSize; i++) {
             TestdataValue value = valueList.get(i % valueListSize);
-            TestdataConstraintVerifierEntity entity = new TestdataConstraintVerifierEntity("Generated Entity " + i, value);
+            TestdataConstraintVerifierFirstEntity entity =
+                    new TestdataConstraintVerifierFirstEntity("Generated Entity " + i, value);
             entityList.add(entity);
         }
         solution.setEntityList(entityList);
@@ -34,7 +35,7 @@ public class TestdataConstraintVerifierSolution extends TestdataObject {
     }
 
     private List<TestdataValue> valueList;
-    private List<TestdataConstraintVerifierEntity> entityList;
+    private List<TestdataConstraintVerifierFirstEntity> entityList;
 
     private HardSoftScore score;
 
@@ -53,11 +54,11 @@ public class TestdataConstraintVerifierSolution extends TestdataObject {
     }
 
     @PlanningEntityCollectionProperty
-    public List<TestdataConstraintVerifierEntity> getEntityList() {
+    public List<TestdataConstraintVerifierFirstEntity> getEntityList() {
         return entityList;
     }
 
-    public void setEntityList(List<TestdataConstraintVerifierEntity> entityList) {
+    public void setEntityList(List<TestdataConstraintVerifierFirstEntity> entityList) {
         this.entityList = entityList;
     }
 

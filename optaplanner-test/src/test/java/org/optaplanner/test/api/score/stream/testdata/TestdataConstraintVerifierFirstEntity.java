@@ -6,15 +6,15 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity
-public final class TestdataConstraintVerifierEntity extends TestdataObject {
+public final class TestdataConstraintVerifierFirstEntity extends TestdataObject {
 
     private TestdataValue value;
 
-    public TestdataConstraintVerifierEntity(String code) {
+    public TestdataConstraintVerifierFirstEntity(String code) {
         super(code);
     }
 
-    public TestdataConstraintVerifierEntity(String code, TestdataValue value) {
+    public TestdataConstraintVerifierFirstEntity(String code, TestdataValue value) {
         this(code);
         this.value = value;
     }

@@ -24,12 +24,13 @@ public final class TestdataConstraintVerifierExtendedSolution extends TestdataCo
         }
         solution.setValueList(valueList);
         solution.setStringValueList(secondValueList);
-        List<TestdataConstraintVerifierEntity> entityList = new ArrayList<>();
+        List<TestdataConstraintVerifierFirstEntity> entityList = new ArrayList<>();
         List<TestdataConstraintVerifierSecondEntity> secondEntityList = new ArrayList<>();
         for (int i = 0; i < entityListSize; i++) {
             if (i % 2 == 0) {
                 TestdataValue value = valueList.get(i % valueListSize);
-                TestdataConstraintVerifierEntity entity = new TestdataConstraintVerifierEntity("Generated Entity " + i, value);
+                TestdataConstraintVerifierFirstEntity entity =
+                        new TestdataConstraintVerifierFirstEntity("Generated Entity " + i, value);
                 entityList.add(entity);
             } else {
                 String value = secondValueList.get(i / valueListSize);

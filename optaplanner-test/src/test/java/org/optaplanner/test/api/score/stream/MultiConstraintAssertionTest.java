@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.test.api.score.stream.testdata.TestdataConstraintVerifierConstraintProvider;
-import org.optaplanner.test.api.score.stream.testdata.TestdataConstraintVerifierEntity;
 import org.optaplanner.test.api.score.stream.testdata.TestdataConstraintVerifierExtendedSolution;
+import org.optaplanner.test.api.score.stream.testdata.TestdataConstraintVerifierFirstEntity;
 import org.optaplanner.test.api.score.stream.testdata.TestdataConstraintVerifierSecondEntity;
 
 class MultiConstraintAssertionTest {
@@ -14,7 +14,7 @@ class MultiConstraintAssertionTest {
     private final ConstraintVerifier<TestdataConstraintVerifierConstraintProvider, TestdataConstraintVerifierExtendedSolution> constraintVerifier =
             ConstraintVerifier.build(new TestdataConstraintVerifierConstraintProvider(),
                     TestdataConstraintVerifierExtendedSolution.class,
-                    TestdataConstraintVerifierEntity.class,
+                    TestdataConstraintVerifierFirstEntity.class,
                     TestdataConstraintVerifierSecondEntity.class);
 
     @Test
