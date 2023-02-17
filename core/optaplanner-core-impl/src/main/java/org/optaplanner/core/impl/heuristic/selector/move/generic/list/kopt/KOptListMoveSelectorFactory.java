@@ -31,7 +31,6 @@ public final class KOptListMoveSelectorFactory<Solution_>
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
         EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
-        entitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
         EntitySelector<Solution_> entitySelector =
                 EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
                         .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
