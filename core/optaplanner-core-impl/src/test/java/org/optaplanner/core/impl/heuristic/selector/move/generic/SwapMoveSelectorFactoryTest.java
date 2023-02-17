@@ -8,7 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListSwapMoveSelectorConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
@@ -17,6 +19,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListSwapMo
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
+import org.optaplanner.core.impl.testdata.domain.list.mixed.TestdataMixedVariablesEntity;
 import org.optaplanner.core.impl.testdata.domain.list.mixed.TestdataMixedVariablesSolution;
 import org.optaplanner.core.impl.testdata.domain.multientity.TestdataHerdEntity;
 import org.optaplanner.core.impl.testdata.domain.multientity.TestdataLeadEntity;
@@ -137,10 +140,20 @@ class SwapMoveSelectorFactoryTest {
     void mixingBasicAndListVariablesUnsupported() {
         SolutionDescriptor<TestdataMixedVariablesSolution> solutionDescriptor =
                 TestdataMixedVariablesSolution.buildSolutionDescriptor();
+
         SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig();
         assertThatIllegalArgumentException().isThrownBy(
                 () -> MoveSelectorFactory
                         .<TestdataMixedVariablesSolution> create(moveSelectorConfig)
+                        .buildMoveSelector(buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME,
+                                SelectionOrder.RANDOM))
+                .withMessageContaining("variableDescriptorList");
+
+        SwapMoveSelectorConfig moveSelectorConfigWithEntitySelector = new SwapMoveSelectorConfig()
+                .withEntitySelectorConfig(new EntitySelectorConfig(TestdataMixedVariablesEntity.class));
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> MoveSelectorFactory
+                        .<TestdataMixedVariablesSolution> create(moveSelectorConfigWithEntitySelector)
                         .buildMoveSelector(buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME,
                                 SelectionOrder.RANDOM))
                 .withMessageContaining("variableDescriptorList");
@@ -151,18 +164,7 @@ class SwapMoveSelectorFactoryTest {
     // ************************************************************************
 
     @Test
-    void failFastIfExplicitlyConfiguredForListVariable() {
-        SolutionDescriptor<TestdataListSolution> solutionDescriptor = TestdataListSolution.buildSolutionDescriptor();
-        SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig()
-                .withEntitySelectorConfig(new EntitySelectorConfig(TestdataListEntity.class));
-        MoveSelectorFactory<TestdataListSolution> moveSelectorFactory = MoveSelectorFactory.create(moveSelectorConfig);
-        assertThatIllegalArgumentException().isThrownBy(() -> moveSelectorFactory.buildMoveSelector(
-                buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM))
-                .withMessageContaining("list variable");
-    }
-
-    @Test
-    void unfoldIntoListSwapMoveSelectorConfig() {
+    void unfoldEmptyIntoListSwapMoveSelectorConfig() {
         SolutionDescriptor<TestdataListSolution> solutionDescriptor = TestdataListSolution.buildSolutionDescriptor();
         SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig();
         MoveSelector<TestdataListSolution> moveSelector =
@@ -170,5 +172,31 @@ class SwapMoveSelectorFactoryTest {
                         .buildMoveSelector(buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME,
                                 SelectionOrder.RANDOM);
         assertThat(moveSelector).isInstanceOf(ListSwapMoveSelector.class);
+    }
+
+    @Test
+    void unfoldConfiguredIntoListSwapMoveSelectorConfig() {
+        SolutionDescriptor<TestdataListSolution> solutionDescriptor = TestdataListSolution.buildSolutionDescriptor();
+
+        SelectionCacheType moveSelectorCacheType = SelectionCacheType.PHASE;
+        long selectedCountLimit = 200;
+        SwapMoveSelectorConfig moveSelectorConfig = new SwapMoveSelectorConfig()
+                .withEntitySelectorConfig(new EntitySelectorConfig(TestdataListEntity.class))
+                .withCacheType(moveSelectorCacheType)
+                .withSelectedCountLimit(selectedCountLimit);
+
+        SwapMoveSelectorFactory<TestdataListSolution> swapMoveSelectorFactory =
+                (SwapMoveSelectorFactory<TestdataListSolution>) MoveSelectorFactory
+                        .<TestdataListSolution> create(moveSelectorConfig);
+
+        MoveSelectorConfig<?> unfoldedMoveSelectorConfig =
+                swapMoveSelectorFactory.buildUnfoldedMoveSelectorConfig(buildHeuristicConfigPolicy(solutionDescriptor));
+
+        assertThat(unfoldedMoveSelectorConfig).isExactlyInstanceOf(ListSwapMoveSelectorConfig.class);
+        ListSwapMoveSelectorConfig listSwapMoveSelectorConfig = (ListSwapMoveSelectorConfig) unfoldedMoveSelectorConfig;
+
+        assertThat(listSwapMoveSelectorConfig.getValueSelectorConfig().getVariableName()).isEqualTo("valueList");
+        assertThat(listSwapMoveSelectorConfig.getCacheType()).isEqualTo(moveSelectorCacheType);
+        assertThat(listSwapMoveSelectorConfig.getSelectedCountLimit()).isEqualTo(selectedCountLimit);
     }
 }

@@ -16,6 +16,7 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListSwap
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
@@ -74,13 +75,14 @@ public class SwapMoveSelectorFactory<Solution_>
             }
         }
         if (onlyEntityDescriptor != null) {
-            if (onlyEntityDescriptor.hasAnyGenuineListVariables()) {
-                // TODO decide whether we can make this potentially breaking change.
-                throw new IllegalArgumentException("The swapMoveSelector (" + config
-                        + ") cannot be used with the entity (" + onlyEntityDescriptor
-                        + ") because it contains a list variable.\n"
-                        + "Use a " + ListSwapMoveSelectorConfig.class.getSimpleName() + " instead.");
+            List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
+                    onlyEntityDescriptor.getGenuineVariableDescriptorList();
+            // If there is a single list variable, unfold to list swap move selector config.
+            if (variableDescriptorList.size() == 1 && variableDescriptorList.get(0).isListVariable()) {
+                return buildListSwapMoveSelectorConfig(variableDescriptorList.get(0), true);
             }
+            // Otherwise, make sure there is no list variable, because SwapMove is not supposed to swap list variables.
+            failIfHasAnyGenuineListVariables(onlyEntityDescriptor);
             // No need for unfolding or deducing
             return null;
         }
@@ -99,26 +101,14 @@ public class SwapMoveSelectorFactory<Solution_>
         // Only unfold into list swap move selector for the basic scenario with 1 entity and 1 list variable.
         if (entityDescriptors.size() == 1 && variableDescriptorList.size() == 1
                 && variableDescriptorList.get(0).isListVariable()) {
-            LOGGER.warn("SwapMoveSelectorConfig is being used for a list variable."
-                    + " This was the only available option when the list planning variable was introduced."
-                    + " We are keeping this option through the 8.x release stream for backward compatibility reasons"
-                    + " but it will be removed in the next major release.\n"
-                    + "Please update your solver config to use ListSwapMoveSelectorConfig now.");
             // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
-            ListSwapMoveSelectorConfig childMoveSelectorConfig = new ListSwapMoveSelectorConfig();
-            ValueSelectorConfig childValueSelectorConfig = new ValueSelectorConfig(
-                    new ValueSelectorConfig(variableDescriptorList.get(0).getVariableName()));
-            childMoveSelectorConfig.setValueSelectorConfig(childValueSelectorConfig);
+            ListSwapMoveSelectorConfig childMoveSelectorConfig =
+                    buildListSwapMoveSelectorConfig(variableDescriptorList.get(0), false);
             moveSelectorConfigList.add(childMoveSelectorConfig);
         } else {
             // More complex scenarios do not support unfolding into list swap => fail fast if there is any list variable.
             for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptors) {
-                if (entityDescriptor.hasAnyGenuineListVariables()) {
-                    throw new IllegalArgumentException("The variableDescriptorList (" + variableDescriptorList
-                            + ") has multiple variables and one or more of them is a @"
-                            + PlanningListVariable.class.getSimpleName()
-                            + ", which is currently not supported.");
-                }
+                failIfHasAnyGenuineListVariables(entityDescriptor);
 
                 // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
                 SwapMoveSelectorConfig childMoveSelectorConfig = new SwapMoveSelectorConfig();
@@ -140,7 +130,7 @@ public class SwapMoveSelectorFactory<Solution_>
             }
         }
 
-        MoveSelectorConfig unfoldedMoveSelectorConfig;
+        MoveSelectorConfig<?> unfoldedMoveSelectorConfig;
         if (moveSelectorConfigList.size() == 1) {
             unfoldedMoveSelectorConfig = moveSelectorConfigList.get(0);
         } else {
@@ -148,5 +138,33 @@ public class SwapMoveSelectorFactory<Solution_>
         }
         unfoldedMoveSelectorConfig.inheritFolded(config);
         return unfoldedMoveSelectorConfig;
+    }
+
+    private static void failIfHasAnyGenuineListVariables(EntityDescriptor<?> entityDescriptor) {
+        if (entityDescriptor.hasAnyGenuineListVariables()) {
+            throw new IllegalArgumentException(
+                    "The variableDescriptorList (" + entityDescriptor.getGenuineVariableDescriptorList()
+                            + ") has multiple variables and one or more of them is a @"
+                            + PlanningListVariable.class.getSimpleName()
+                            + ", which is currently not supported.");
+        }
+
+    }
+
+    private ListSwapMoveSelectorConfig buildListSwapMoveSelectorConfig(VariableDescriptor<?> variableDescriptor,
+            boolean inheritFoldedConfig) {
+        LOGGER.warn("SwapMoveSelectorConfig is being used for a list variable."
+                + " This was the only available option when the list planning variable was introduced."
+                + " We are keeping this option through the 8.x release stream for backward compatibility reasons"
+                + " but it will be removed in the next major release.\n"
+                + "Please update your solver config to use ListSwapMoveSelectorConfig now.");
+        ListSwapMoveSelectorConfig listSwapMoveSelectorConfig = new ListSwapMoveSelectorConfig();
+        ValueSelectorConfig childValueSelectorConfig = new ValueSelectorConfig(
+                new ValueSelectorConfig(variableDescriptor.getVariableName()));
+        listSwapMoveSelectorConfig.setValueSelectorConfig(childValueSelectorConfig);
+        if (inheritFoldedConfig) {
+            listSwapMoveSelectorConfig.inheritFolded(config);
+        }
+        return listSwapMoveSelectorConfig;
     }
 }

@@ -144,7 +144,7 @@ public class ListSwapMoveSelectorFactory<Solution_>
             moveSelectorConfigList.add(childMoveSelectorConfig);
         }
 
-        MoveSelectorConfig unfoldedMoveSelectorConfig;
+        MoveSelectorConfig<?> unfoldedMoveSelectorConfig;
         if (moveSelectorConfigList.size() == 1) {
             unfoldedMoveSelectorConfig = moveSelectorConfigList.get(0);
         } else {
