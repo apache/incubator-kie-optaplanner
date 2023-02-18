@@ -9,9 +9,9 @@ final class Group1Mapping0CollectorUniNode<OldA, A>
 
     private final int outputStoreSize;
 
-    public Group1Mapping0CollectorUniNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex,
+    public Group1Mapping0CollectorUniNode(Function<OldA, A> groupKeyMapping, int groupStoreIndex, int undoStoreIndex,
             TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), null, nextNodesTupleLifecycle);
+        super(groupStoreIndex, undoStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 

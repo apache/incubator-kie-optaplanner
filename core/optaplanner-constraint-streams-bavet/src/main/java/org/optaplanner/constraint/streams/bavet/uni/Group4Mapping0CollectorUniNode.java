@@ -14,9 +14,9 @@ final class Group4Mapping0CollectorUniNode<OldA, A, B, C, D>
     private final int outputStoreSize;
 
     public Group4Mapping0CollectorUniNode(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
-            Function<OldA, C> groupKeyMappingC, Function<OldA, D> groupKeyMappingD, int groupStoreIndex,
+            Function<OldA, C> groupKeyMappingC, Function<OldA, D> groupKeyMappingD, int groupStoreIndex, int undoStoreIndex,
             TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex,
+        super(groupStoreIndex, undoStoreIndex,
                 tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, groupKeyMappingD, tuple),
                 null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;

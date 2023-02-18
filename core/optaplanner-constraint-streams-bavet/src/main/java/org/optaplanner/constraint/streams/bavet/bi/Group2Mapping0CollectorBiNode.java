@@ -11,9 +11,9 @@ final class Group2Mapping0CollectorBiNode<OldA, OldB, A, B>
     private final int outputStoreSize;
 
     public Group2Mapping0CollectorBiNode(BiFunction<OldA, OldB, A> groupKeyMappingA,
-            BiFunction<OldA, OldB, B> groupKeyMappingB, int groupStoreIndex,
+            BiFunction<OldA, OldB, B> groupKeyMappingB, int groupStoreIndex, int undoStoreIndex,
             TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, tuple),
+        super(groupStoreIndex, undoStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, tuple),
                 null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }

@@ -52,12 +52,13 @@ final class BavetBiGroupBridgeUniConstraintStream<Solution_, A, NewA, NewB>
             throw new IllegalStateException("Impossible state: the stream (" + this
                     + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
         }
-        int inputStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
+        int groupStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
+        int undoStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
         TupleLifecycle<BiTuple<NewA, NewB>> tupleLifecycle =
                 buildHelper.getAggregatedTupleLifecycle(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
         AbstractGroupNode<UniTuple<A>, BiTuple<NewA, NewB>, ?, ?, ?, ?> node =
-                nodeConstructor.apply(inputStoreIndex, tupleLifecycle, outputStoreSize);
+                nodeConstructor.apply(groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize);
         buildHelper.addNode(node, this);
     }
 

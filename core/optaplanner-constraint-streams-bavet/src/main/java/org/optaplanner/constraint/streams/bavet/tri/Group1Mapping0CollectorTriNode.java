@@ -11,8 +11,8 @@ final class Group1Mapping0CollectorTriNode<OldA, OldB, OldC, A>
     private final int outputStoreSize;
 
     public Group1Mapping0CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMapping, int groupStoreIndex,
-            TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), null, nextNodesTupleLifecycle);
+            int undoStoreIndex, TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
+        super(groupStoreIndex, undoStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 

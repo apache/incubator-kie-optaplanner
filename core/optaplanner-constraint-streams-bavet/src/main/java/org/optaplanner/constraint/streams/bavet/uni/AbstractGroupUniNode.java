@@ -13,11 +13,11 @@ abstract class AbstractGroupUniNode<OldA, OutTuple_ extends Tuple, MutableOutTup
 
     private final BiFunction<ResultContainer_, OldA, Runnable> accumulator;
 
-    protected AbstractGroupUniNode(int groupStoreIndex,
+    protected AbstractGroupUniNode(int groupStoreIndex, int undoStoreIndex,
             Function<UniTuple<OldA>, GroupKey_> groupKeyFunction,
             UniConstraintCollector<OldA, ResultContainer_, Result_> collector,
             TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
-        super(groupStoreIndex, groupKeyFunction,
+        super(groupStoreIndex, undoStoreIndex, groupKeyFunction,
                 collector == null ? null : collector.supplier(),
                 collector == null ? null : collector.finisher(),
                 nextNodesTupleLifecycle);

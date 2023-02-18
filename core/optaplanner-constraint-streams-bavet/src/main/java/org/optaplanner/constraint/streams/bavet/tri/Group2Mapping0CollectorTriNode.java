@@ -12,9 +12,9 @@ final class Group2Mapping0CollectorTriNode<OldA, OldB, OldC, A, B>
     private final int outputStoreSize;
 
     public Group2Mapping0CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA,
-            TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, int groupStoreIndex,
+            TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, int groupStoreIndex, int undoStoreIndex,
             TupleLifecycle<BiTuple<A, B>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, tuple),
+        super(groupStoreIndex, undoStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, tuple),
                 null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }

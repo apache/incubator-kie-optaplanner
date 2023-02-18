@@ -11,8 +11,8 @@ final class Group1Mapping0CollectorQuadNode<OldA, OldB, OldC, OldD, A>
     private final int outputStoreSize;
 
     public Group1Mapping0CollectorQuadNode(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping, int groupStoreIndex,
-            TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), null, nextNodesTupleLifecycle);
+            int undoStoreIndex, TupleLifecycle<UniTuple<A>> nextNodesTupleLifecycle, int outputStoreSize) {
+        super(groupStoreIndex, undoStoreIndex, tuple -> createGroupKey(groupKeyMapping, tuple), null, nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 

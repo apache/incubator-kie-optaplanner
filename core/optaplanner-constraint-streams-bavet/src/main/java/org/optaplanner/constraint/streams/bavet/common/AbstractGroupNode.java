@@ -13,6 +13,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         implements TupleLifecycle<InTuple_> {
 
     private final int groupStoreIndex;
+    private final int undoStoreIndex;
     private final Function<InTuple_, GroupKey_> groupKeyFunction;
     private final Supplier<ResultContainer_> supplier;
     private final Function<ResultContainer_, Result_> finisher;
@@ -43,10 +44,11 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     private Group<MutableOutTuple_, GroupKey_, ResultContainer_> singletonGroup;
     private final Queue<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> dirtyGroupQueue;
 
-    protected AbstractGroupNode(int groupStoreIndex, Function<InTuple_, GroupKey_> groupKeyFunction,
+    protected AbstractGroupNode(int groupStoreIndex, int undoStoreIndex, Function<InTuple_, GroupKey_> groupKeyFunction,
             Supplier<ResultContainer_> supplier, Function<ResultContainer_, Result_> finisher,
             TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
         this.groupStoreIndex = groupStoreIndex;
+        this.undoStoreIndex = undoStoreIndex;
         this.groupKeyFunction = groupKeyFunction;
         this.supplier = supplier;
         this.finisher = finisher;
@@ -99,9 +101,8 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
 
     private OutTuple_ accumulate(InTuple_ tuple, Group<MutableOutTuple_, GroupKey_, ResultContainer_> group) {
         Runnable undoAccumulator = hasCollector ? accumulate(group.resultContainer, tuple) : null;
-        GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> newGroupPart =
-                new GroupPart<>(group, undoAccumulator);
-        tuple.setStore(groupStoreIndex, newGroupPart);
+        tuple.setStore(groupStoreIndex, group);
+        tuple.setStore(undoStoreIndex, undoAccumulator);
         return group.outTuple;
     }
 
@@ -133,15 +134,17 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
 
     @Override
     public void update(InTuple_ tuple) {
-        GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> oldGroupPart = tuple.getStore(groupStoreIndex);
-        if (oldGroupPart == null) {
+        Group<MutableOutTuple_, GroupKey_, ResultContainer_> oldGroup = tuple.getStore(groupStoreIndex);
+        if (oldGroup == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             insert(tuple);
             return;
         }
+        Runnable undoAccumulator = tuple.getStore(undoStoreIndex);
+        if (undoAccumulator != null) {
+            undoAccumulator.run();
+        }
 
-        oldGroupPart.undoAccumulate();
-        Group<MutableOutTuple_, GroupKey_, ResultContainer_> oldGroup = oldGroupPart.group;
         GroupKey_ oldGroupKey = oldGroup.groupKey;
         GroupKey_ newGroupKey = hasMultipleGroups ? groupKeyFunction.apply(tuple) : null;
         if (Objects.equals(newGroupKey, oldGroupKey)) {
@@ -216,13 +219,15 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
 
     @Override
     public void retract(InTuple_ tuple) {
-        GroupPart<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> groupPart = tuple.removeStore(groupStoreIndex);
-        if (groupPart == null) {
+        Group<MutableOutTuple_, GroupKey_, ResultContainer_> group = tuple.removeStore(groupStoreIndex);
+        if (group == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        Group<MutableOutTuple_, GroupKey_, ResultContainer_> group = groupPart.group;
-        groupPart.undoAccumulate();
+        Runnable undoAccumulator = tuple.removeStore(undoStoreIndex);
+        if (undoAccumulator != null) {
+            undoAccumulator.run();
+        }
         killTuple(group);
     }
 

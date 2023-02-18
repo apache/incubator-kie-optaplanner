@@ -177,8 +177,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         UniGroupNodeConstructor<A, UniTuple<Result_>> nodeConstructor =
-                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping1CollectorUniNode<>(inputStoreIndex,
-                        collector, tupleLifecycle, outputStoreSize);
+                (groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping1CollectorUniNode<>(
+                        groupStoreIndex, undoStoreIndex, collector, tupleLifecycle, outputStoreSize);
         return buildUniGroupBy(nodeConstructor);
     }
 
@@ -195,8 +195,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
             UniConstraintCollector<A, ResultContainerA_, ResultA_> collectorA,
             UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB) {
         UniGroupNodeConstructor<A, BiTuple<ResultA_, ResultB_>> nodeConstructor =
-                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping2CollectorUniNode<>(inputStoreIndex,
-                        collectorA, collectorB, tupleLifecycle, outputStoreSize);
+                (groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping2CollectorUniNode<>(
+                        groupStoreIndex, undoStoreIndex, collectorA, collectorB, tupleLifecycle, outputStoreSize);
         return buildBiGroupBy(nodeConstructor);
     }
 
@@ -216,8 +216,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                     UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
                     UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC) {
         UniGroupNodeConstructor<A, TriTuple<ResultA_, ResultB_, ResultC_>> nodeConstructor =
-                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping3CollectorUniNode<>(inputStoreIndex,
-                        collectorA, collectorB, collectorC, tupleLifecycle, outputStoreSize);
+                (groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping3CollectorUniNode<>(
+                        groupStoreIndex, undoStoreIndex, collectorA, collectorB, collectorC, tupleLifecycle, outputStoreSize);
         return buildTriGroupBy(nodeConstructor);
     }
 
@@ -238,8 +238,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                     UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
         UniGroupNodeConstructor<A, QuadTuple<ResultA_, ResultB_, ResultC_, ResultD_>> nodeConstructor =
-                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping4CollectorUniNode<>(inputStoreIndex,
-                        collectorA, collectorB, collectorC, collectorD, tupleLifecycle, outputStoreSize);
+                (groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize) -> new Group0Mapping4CollectorUniNode<>(
+                        groupStoreIndex, undoStoreIndex, collectorA, collectorB, collectorC, collectorD, tupleLifecycle,
+                        outputStoreSize);
         return buildQuadGroupBy(nodeConstructor);
     }
 
@@ -255,8 +256,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     @Override
     public <GroupKey_> UniConstraintStream<GroupKey_> groupBy(Function<A, GroupKey_> groupKeyMapping) {
         UniGroupNodeConstructor<A, UniTuple<GroupKey_>> nodeConstructor =
-                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping0CollectorUniNode<>(groupKeyMapping,
-                        inputStoreIndex, tupleLifecycle, outputStoreSize);
+                (groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping0CollectorUniNode<>(
+                        groupKeyMapping,
+                        groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize);
         return buildUniGroupBy(nodeConstructor);
     }
 
@@ -266,8 +268,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                     UniConstraintCollector<A, ResultContainerB_, ResultB_> collectorB,
                     UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC) {
         UniGroupNodeConstructor<A, TriTuple<GroupKey_, ResultB_, ResultC_>> nodeConstructor =
-                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping2CollectorUniNode<>(groupKeyMapping,
-                        inputStoreIndex, collectorB, collectorC, tupleLifecycle, outputStoreSize);
+                (groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping2CollectorUniNode<>(
+                        groupKeyMapping, groupStoreIndex, undoStoreIndex, collectorB, collectorC, tupleLifecycle,
+                        outputStoreSize);
         return buildTriGroupBy(nodeConstructor);
     }
 
@@ -279,8 +282,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                     UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
         UniGroupNodeConstructor<A, QuadTuple<GroupKey_, ResultB_, ResultC_, ResultD_>> nodeConstructor =
-                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping3CollectorUniNode<>(groupKeyMapping,
-                        inputStoreIndex, collectorB, collectorC, collectorD, tupleLifecycle, outputStoreSize);
+                (groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping3CollectorUniNode<>(
+                        groupKeyMapping, groupStoreIndex, undoStoreIndex, collectorB, collectorC, collectorD, tupleLifecycle,
+                        outputStoreSize);
         return buildQuadGroupBy(nodeConstructor);
     }
 
@@ -289,8 +293,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
             Function<A, GroupKey_> groupKeyMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         UniGroupNodeConstructor<A, BiTuple<GroupKey_, Result_>> nodeConstructor =
-                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping1CollectorUniNode<>(groupKeyMapping,
-                        inputStoreIndex, collector, tupleLifecycle, outputStoreSize);
+                (groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize) -> new Group1Mapping1CollectorUniNode<>(
+                        groupKeyMapping, groupStoreIndex, undoStoreIndex, collector, tupleLifecycle, outputStoreSize);
         return buildBiGroupBy(nodeConstructor);
     }
 
@@ -298,8 +302,8 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     public <GroupKeyA_, GroupKeyB_> BiConstraintStream<GroupKeyA_, GroupKeyB_> groupBy(
             Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping) {
         UniGroupNodeConstructor<A, BiTuple<GroupKeyA_, GroupKeyB_>> nodeConstructor =
-                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group2Mapping0CollectorUniNode<>(groupKeyAMapping,
-                        groupKeyBMapping, inputStoreIndex, tupleLifecycle, outputStoreSize);
+                (groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize) -> new Group2Mapping0CollectorUniNode<>(
+                        groupKeyAMapping, groupKeyBMapping, groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize);
         return buildBiGroupBy(nodeConstructor);
     }
 
@@ -308,8 +312,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
             Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         UniGroupNodeConstructor<A, TriTuple<GroupKeyA_, GroupKeyB_, Result_>> nodeConstructor =
-                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group2Mapping1CollectorUniNode<>(groupKeyAMapping,
-                        groupKeyBMapping, inputStoreIndex, collector, tupleLifecycle, outputStoreSize);
+                (groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize) -> new Group2Mapping1CollectorUniNode<>(
+                        groupKeyAMapping, groupKeyBMapping, groupStoreIndex, undoStoreIndex, collector, tupleLifecycle,
+                        outputStoreSize);
         return buildTriGroupBy(nodeConstructor);
     }
 
@@ -320,8 +325,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                     UniConstraintCollector<A, ResultContainerC_, ResultC_> collectorC,
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
         UniGroupNodeConstructor<A, QuadTuple<GroupKeyA_, GroupKeyB_, ResultC_, ResultD_>> nodeConstructor =
-                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group2Mapping2CollectorUniNode<>(groupKeyAMapping,
-                        groupKeyBMapping, inputStoreIndex, collectorC, collectorD, tupleLifecycle, outputStoreSize);
+                (groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize) -> new Group2Mapping2CollectorUniNode<>(
+                        groupKeyAMapping, groupKeyBMapping, groupStoreIndex, undoStoreIndex, collectorC, collectorD,
+                        tupleLifecycle, outputStoreSize);
         return buildQuadGroupBy(nodeConstructor);
     }
 
@@ -330,8 +336,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
             Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
             Function<A, GroupKeyC_> groupKeyCMapping) {
         UniGroupNodeConstructor<A, TriTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_>> nodeConstructor =
-                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group3Mapping0CollectorUniNode<>(groupKeyAMapping,
-                        groupKeyBMapping, groupKeyCMapping, inputStoreIndex, tupleLifecycle, outputStoreSize);
+                (groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize) -> new Group3Mapping0CollectorUniNode<>(
+                        groupKeyAMapping, groupKeyBMapping, groupKeyCMapping, groupStoreIndex, undoStoreIndex, tupleLifecycle,
+                        outputStoreSize);
         return buildTriGroupBy(nodeConstructor);
     }
 
@@ -342,8 +349,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
                     Function<A, GroupKeyC_> groupKeyCMapping,
                     UniConstraintCollector<A, ResultContainerD_, ResultD_> collectorD) {
         UniGroupNodeConstructor<A, QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, ResultD_>> nodeConstructor =
-                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group3Mapping1CollectorUniNode<>(groupKeyAMapping,
-                        groupKeyBMapping, groupKeyCMapping, inputStoreIndex, collectorD, tupleLifecycle, outputStoreSize);
+                (groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize) -> new Group3Mapping1CollectorUniNode<>(
+                        groupKeyAMapping, groupKeyBMapping, groupKeyCMapping, groupStoreIndex, undoStoreIndex, collectorD,
+                        tupleLifecycle, outputStoreSize);
         return buildQuadGroupBy(nodeConstructor);
     }
 
@@ -352,8 +360,9 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
             groupBy(Function<A, GroupKeyA_> groupKeyAMapping, Function<A, GroupKeyB_> groupKeyBMapping,
                     Function<A, GroupKeyC_> groupKeyCMapping, Function<A, GroupKeyD_> groupKeyDMapping) {
         UniGroupNodeConstructor<A, QuadTuple<GroupKeyA_, GroupKeyB_, GroupKeyC_, GroupKeyD_>> nodeConstructor =
-                (inputStoreIndex, tupleLifecycle, outputStoreSize) -> new Group4Mapping0CollectorUniNode<>(groupKeyAMapping,
-                        groupKeyBMapping, groupKeyCMapping, groupKeyDMapping, inputStoreIndex, tupleLifecycle, outputStoreSize);
+                (groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize) -> new Group4Mapping0CollectorUniNode<>(
+                        groupKeyAMapping, groupKeyBMapping, groupKeyCMapping, groupKeyDMapping, groupStoreIndex, undoStoreIndex,
+                        tupleLifecycle, outputStoreSize);
         return buildQuadGroupBy(nodeConstructor);
     }
 
