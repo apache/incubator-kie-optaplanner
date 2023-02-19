@@ -24,6 +24,12 @@ abstract class AbstractGroupBiNode<OldA, OldB, OutTuple_ extends Tuple, MutableO
         accumulator = collector == null ? null : collector.accumulator();
     }
 
+    protected AbstractGroupBiNode(int groupStoreIndex, Function<BiTuple<OldA, OldB>, GroupKey_> groupKeyFunction,
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
+        super(groupStoreIndex, groupKeyFunction, nextNodesTupleLifecycle);
+        accumulator = null;
+    }
+
     @Override
     protected final Runnable accumulate(ResultContainer_ resultContainer, BiTuple<OldA, OldB> tuple) {
         return accumulator.apply(resultContainer, tuple.getFactA(), tuple.getFactB());

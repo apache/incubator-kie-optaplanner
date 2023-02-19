@@ -25,6 +25,12 @@ abstract class AbstractGroupTriNode<OldA, OldB, OldC, OutTuple_ extends Tuple, M
         accumulator = collector == null ? null : collector.accumulator();
     }
 
+    protected AbstractGroupTriNode(int groupStoreIndex, Function<TriTuple<OldA, OldB, OldC>, GroupKey_> groupKeyFunction,
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
+        super(groupStoreIndex, groupKeyFunction, nextNodesTupleLifecycle);
+        accumulator = null;
+    }
+
     @Override
     protected final Runnable accumulate(ResultContainer_ resultContainer, TriTuple<OldA, OldB, OldC> tuple) {
         return accumulator.apply(resultContainer, tuple.getFactA(), tuple.getFactB(), tuple.getFactC());

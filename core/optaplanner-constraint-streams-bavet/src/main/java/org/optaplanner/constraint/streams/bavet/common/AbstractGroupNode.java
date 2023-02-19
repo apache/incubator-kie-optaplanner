@@ -53,7 +53,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         this.supplier = supplier;
         this.finisher = finisher;
         this.hasMultipleGroups = groupKeyFunction != null;
-        this.hasCollector = supplier != null;
+        this.hasCollector = true;
         this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
         /*
          * Not using the default sizing to 1000.
@@ -62,6 +62,11 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
          */
         this.groupMap = hasMultipleGroups ? new HashMap<>() : null;
         this.dirtyGroupQueue = new ArrayDeque<>();
+    }
+
+    protected AbstractGroupNode(int groupStoreIndex, Function<InTuple_, GroupKey_> groupKeyFunction,
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
+        this(groupStoreIndex, -1, groupKeyFunction, null, null, nextNodesTupleLifecycle);
     }
 
     @Override
@@ -100,9 +105,11 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     }
 
     private OutTuple_ accumulate(InTuple_ tuple, Group<MutableOutTuple_, GroupKey_, ResultContainer_> group) {
-        Runnable undoAccumulator = hasCollector ? accumulate(group.resultContainer, tuple) : null;
+        if (hasCollector) {
+            Runnable undoAccumulator = accumulate(group.resultContainer, tuple);
+            tuple.setStore(undoStoreIndex, undoAccumulator);
+        }
         tuple.setStore(groupStoreIndex, group);
-        tuple.setStore(undoStoreIndex, undoAccumulator);
         return group.outTuple;
     }
 
@@ -140,8 +147,8 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
             insert(tuple);
             return;
         }
-        Runnable undoAccumulator = tuple.getStore(undoStoreIndex);
-        if (undoAccumulator != null) {
+        if (hasCollector) {
+            Runnable undoAccumulator = tuple.getStore(undoStoreIndex);
             undoAccumulator.run();
         }
 
@@ -224,8 +231,8 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        Runnable undoAccumulator = tuple.removeStore(undoStoreIndex);
-        if (undoAccumulator != null) {
+        if (hasCollector) {
+            Runnable undoAccumulator = tuple.removeStore(undoStoreIndex);
             undoAccumulator.run();
         }
         killTuple(group);

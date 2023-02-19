@@ -25,6 +25,13 @@ abstract class AbstractGroupQuadNode<OldA, OldB, OldC, OldD, OutTuple_ extends T
         accumulator = collector == null ? null : collector.accumulator();
     }
 
+    protected AbstractGroupQuadNode(int groupStoreIndex,
+            Function<QuadTuple<OldA, OldB, OldC, OldD>, GroupKey_> groupKeyFunction,
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
+        super(groupStoreIndex, groupKeyFunction, nextNodesTupleLifecycle);
+        accumulator = null;
+    }
+
     @Override
     protected final Runnable accumulate(ResultContainer_ resultContainer, QuadTuple<OldA, OldB, OldC, OldD> tuple) {
         return accumulator.apply(resultContainer, tuple.getFactA(), tuple.getFactB(), tuple.getFactC(), tuple.getFactD());
