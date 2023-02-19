@@ -46,15 +46,15 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     /**
      * Used when {@link #hasMultipleGroups} is true, otherwise {@link #singletonGroup} is used.
      */
-    private final Map<GroupKey_, Group<MutableOutTuple_, GroupKey_, ResultContainer_>> groupMap;
+    private final Map<GroupKey_, AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_>> groupMap;
     /**
      * Used when {@link #hasMultipleGroups} is false, otherwise {@link #groupMap} is used.
      *
      * The field is lazy initialized in order to maintain the same semantics as with the groupMap above.
      * When all tuples are removed, the field will be set to null, as if the group never existed.
      */
-    private Group<MutableOutTuple_, GroupKey_, ResultContainer_> singletonGroup;
-    private final Queue<Group<MutableOutTuple_, GroupKey_, ResultContainer_>> dirtyGroupQueue;
+    private AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> singletonGroup;
+    private final Queue<AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_>> dirtyGroupQueue;
 
     protected AbstractGroupNode(int groupStoreIndex, int undoStoreIndex, Function<InTuple_, GroupKey_> groupKeyFunction,
             Supplier<ResultContainer_> supplier, Function<ResultContainer_, Result_> finisher,
@@ -92,8 +92,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     }
 
     private void createTuple(InTuple_ tuple, GroupKey_ newGroupKey) {
-        Group<MutableOutTuple_, GroupKey_, ResultContainer_> newGroup = getOrCreateGroup(newGroupKey);
-        newGroup.parentCount++;
+        AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> newGroup = getOrCreateGroup(newGroupKey);
         OutTuple_ outTuple = accumulate(tuple, newGroup);
         switch (outTuple.getState()) {
             case CREATING:
@@ -116,36 +115,41 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         }
     }
 
-    private OutTuple_ accumulate(InTuple_ tuple, Group<MutableOutTuple_, GroupKey_, ResultContainer_> group) {
+    private OutTuple_ accumulate(InTuple_ tuple, AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> group) {
         if (hasCollector) {
-            Runnable undoAccumulator = accumulate(group.resultContainer, tuple);
+            Runnable undoAccumulator = accumulate(group.getResultContainer(), tuple);
             tuple.setStore(undoStoreIndex, undoAccumulator);
         }
         tuple.setStore(groupStoreIndex, group);
         return group.outTuple;
     }
 
-    private Group<MutableOutTuple_, GroupKey_, ResultContainer_> getOrCreateGroup(GroupKey_ key) {
+    private AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> getOrCreateGroup(GroupKey_ key) {
         if (hasMultipleGroups) {
             // Avoids computeIfAbsent in order to not create lambdas on the hot path.
-            Group<MutableOutTuple_, GroupKey_, ResultContainer_> group = groupMap.get(key);
+            AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> group = groupMap.get(key);
             if (group == null) {
                 group = createGroup(key);
                 groupMap.put(key, group);
+            } else {
+                group.parentCount++;
             }
             return group;
         } else {
             if (singletonGroup == null) {
                 singletonGroup = createGroup(key);
+            } else {
+                singletonGroup.parentCount++;
             }
             return singletonGroup;
         }
     }
 
-    private Group<MutableOutTuple_, GroupKey_, ResultContainer_> createGroup(GroupKey_ key) {
+    private AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> createGroup(GroupKey_ key) {
         MutableOutTuple_ outTuple = createOutTuple(key);
-        ResultContainer_ resultContainer = hasCollector ? supplier.get() : null;
-        Group<MutableOutTuple_, GroupKey_, ResultContainer_> group = new Group<>(key, resultContainer, outTuple);
+        AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> group =
+                hasCollector ? new GroupWithAccumulate<>(key, supplier.get(), outTuple)
+                        : new GroupWithoutAccumulate<>(key, outTuple);
         // Don't add it if (state == CREATING), but (newGroup != null), which is a 2nd insert of the same newGroupKey.
         dirtyGroupQueue.add(group);
         return group;
@@ -153,7 +157,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
 
     @Override
     public void update(InTuple_ tuple) {
-        Group<MutableOutTuple_, GroupKey_, ResultContainer_> oldGroup = tuple.getStore(groupStoreIndex);
+        AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> oldGroup = tuple.getStore(groupStoreIndex);
         if (oldGroup == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             insert(tuple);
@@ -190,12 +194,12 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         }
     }
 
-    private void killTuple(Group<MutableOutTuple_, GroupKey_, ResultContainer_> group) {
+    private void killTuple(AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> group) {
         int newParentCount = --group.parentCount;
         boolean killGroup = (newParentCount == 0);
         if (killGroup) {
             GroupKey_ groupKey = group.groupKey;
-            Group<MutableOutTuple_, GroupKey_, ResultContainer_> old = removeGroup(groupKey);
+            AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> old = removeGroup(groupKey);
             if (old == null) {
                 throw new IllegalStateException("Impossible state: the group for the groupKey ("
                         + groupKey + ") doesn't exist in the groupMap.");
@@ -226,11 +230,11 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         }
     }
 
-    private Group<MutableOutTuple_, GroupKey_, ResultContainer_> removeGroup(GroupKey_ groupKey) {
+    private AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> removeGroup(GroupKey_ groupKey) {
         if (hasMultipleGroups) {
             return groupMap.remove(groupKey);
         } else {
-            Group<MutableOutTuple_, GroupKey_, ResultContainer_> old = singletonGroup;
+            AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> old = singletonGroup;
             singletonGroup = null;
             return old;
         }
@@ -238,7 +242,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
 
     @Override
     public void retract(InTuple_ tuple) {
-        Group<MutableOutTuple_, GroupKey_, ResultContainer_> group = tuple.removeStore(groupStoreIndex);
+        AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> group = tuple.removeStore(groupStoreIndex);
         if (group == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
@@ -254,17 +258,21 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
 
     @Override
     public void calculateScore() {
-        for (Group<MutableOutTuple_, GroupKey_, ResultContainer_> group : dirtyGroupQueue) {
+        for (AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> group : dirtyGroupQueue) {
             MutableOutTuple_ outTuple = group.outTuple;
             // Delay calculating finisher right until the tuple propagates
             switch (outTuple.getState()) {
                 case CREATING:
-                    updateOutTupleToFinisher(outTuple, group.resultContainer);
+                    if (hasCollector) {
+                        updateOutTupleToFinisher(outTuple, group.getResultContainer());
+                    }
                     nextNodesTupleLifecycle.insert(outTuple);
                     outTuple.setState(BavetTupleState.OK);
                     break;
                 case UPDATING:
-                    updateOutTupleToFinisher(outTuple, group.resultContainer);
+                    if (hasCollector) {
+                        updateOutTupleToFinisher(outTuple, group.getResultContainer());
+                    }
                     nextNodesTupleLifecycle.update(outTuple);
                     outTuple.setState(BavetTupleState.OK);
                     break;
@@ -293,9 +301,6 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     protected abstract MutableOutTuple_ createOutTuple(GroupKey_ groupKey);
 
     private void updateOutTupleToFinisher(MutableOutTuple_ outTuple, ResultContainer_ resultContainer) {
-        if (finisher == null) {
-            return;
-        }
         Result_ result = finisher.apply(resultContainer);
         updateOutTupleToResult(outTuple, result);
     }
