@@ -24,7 +24,8 @@ abstract class AbstractGroupUniNode<OldA, OutTuple_ extends Tuple, MutableOutTup
         accumulator = collector == null ? null : collector.accumulator();
     }
 
-    protected AbstractGroupUniNode(int groupStoreIndex, Function<UniTuple<OldA>, GroupKey_> groupKeyFunction, TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
+    protected AbstractGroupUniNode(int groupStoreIndex, Function<UniTuple<OldA>, GroupKey_> groupKeyFunction,
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
         super(groupStoreIndex, groupKeyFunction, nextNodesTupleLifecycle);
         accumulator = null;
     }

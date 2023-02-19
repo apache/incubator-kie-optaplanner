@@ -12,8 +12,13 @@ final class Group4Mapping0CollectorTriNode<OldA, OldB, OldC, A, B, C, D>
 
     private final int outputStoreSize;
 
-    public Group4Mapping0CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA, TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, TriFunction<OldA, OldB, OldC, C> groupKeyMappingC, TriFunction<OldA, OldB, OldC, D> groupKeyMappingD, int groupStoreIndex, TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
-        super(groupStoreIndex, tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, groupKeyMappingD, tuple), nextNodesTupleLifecycle);
+    public Group4Mapping0CollectorTriNode(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA,
+            TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, TriFunction<OldA, OldB, OldC, C> groupKeyMappingC,
+            TriFunction<OldA, OldB, OldC, D> groupKeyMappingD, int groupStoreIndex,
+            TupleLifecycle<QuadTuple<A, B, C, D>> nextNodesTupleLifecycle, int outputStoreSize) {
+        super(groupStoreIndex,
+                tuple -> createGroupKey(groupKeyMappingA, groupKeyMappingB, groupKeyMappingC, groupKeyMappingD, tuple),
+                nextNodesTupleLifecycle);
         this.outputStoreSize = outputStoreSize;
     }
 

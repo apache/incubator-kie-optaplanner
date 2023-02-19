@@ -6,7 +6,6 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.GroupNodeConstructor;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
-import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.quad.BavetGroupQuadConstraintStream;
 import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
 import org.optaplanner.core.api.score.Score;
@@ -48,17 +47,8 @@ final class BavetQuadGroupBridgeBiConstraintStream<Solution_, A, B, NewA, NewB, 
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        if (!childStreamList.isEmpty()) {
-            throw new IllegalStateException("Impossible state: the stream (" + this
-                    + ") has an non-empty childStreamList (" + childStreamList + ") but it's a groupBy bridge.");
-        }
-        int groupStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
-        int undoStoreIndex = buildHelper.reserveTupleStoreIndex(parent.getTupleSource());
-        TupleLifecycle<QuadTuple<NewA, NewB, NewC, NewD>> tupleLifecycle =
-                buildHelper.getAggregatedTupleLifecycle(groupStream.getChildStreamList());
-        int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        var node = nodeConstructor.apply(groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize);
-        buildHelper.addNode(node, this);
+        GroupNodeConstructor.build(nodeConstructor, buildHelper, parent.getTupleSource(), groupStream,
+                groupStream.getChildStreamList(), this, childStreamList);
     }
 
     @Override

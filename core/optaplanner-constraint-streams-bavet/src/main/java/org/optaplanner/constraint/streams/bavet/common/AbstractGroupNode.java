@@ -53,7 +53,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         this.supplier = supplier;
         this.finisher = finisher;
         this.hasMultipleGroups = groupKeyFunction != null;
-        this.hasCollector = true;
+        this.hasCollector = supplier != null;
         this.nextNodesTupleLifecycle = nextNodesTupleLifecycle;
         /*
          * Not using the default sizing to 1000.
