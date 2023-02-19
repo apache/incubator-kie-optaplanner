@@ -1,5 +1,6 @@
 package org.optaplanner.constraint.streams.bavet.tri;
 
+import java.util.List;
 import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
@@ -46,8 +47,9 @@ final class BavetUniGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA>
 
     @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
-        GroupNodeConstructor.build(nodeConstructor, buildHelper, parent.getTupleSource(), groupStream,
-                groupStream.getChildStreamList(), this, childStreamList);
+        ConstraintStream parentTupleSource = parent.getTupleSource();
+        List<? extends ConstraintStream> groupStreamChildList = groupStream.getChildStreamList();
+        nodeConstructor.build(buildHelper, parentTupleSource, groupStream, groupStreamChildList, this, childStreamList);
     }
 
     @Override
