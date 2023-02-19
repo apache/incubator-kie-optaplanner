@@ -3,8 +3,8 @@ package org.optaplanner.constraint.streams.bavet.tri;
 import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.GroupNodeConstructor;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.score.Score;
@@ -15,11 +15,11 @@ final class BavetTriGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA, New
 
     private final BavetAbstractTriConstraintStream<Solution_, A, B, C> parent;
     private BavetGroupTriConstraintStream<Solution_, NewA, NewB, NewC> groupStream;
-    private final TriGroupNodeConstructor<A, B, C, TriTuple<NewA, NewB, NewC>> nodeConstructor;
+    private final GroupNodeConstructor<TriTuple<NewA, NewB, NewC>> nodeConstructor;
 
     public BavetTriGroupBridgeTriConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
             BavetAbstractTriConstraintStream<Solution_, A, B, C> parent,
-            TriGroupNodeConstructor<A, B, C, TriTuple<NewA, NewB, NewC>> nodeConstructor) {
+            GroupNodeConstructor<TriTuple<NewA, NewB, NewC>> nodeConstructor) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.nodeConstructor = nodeConstructor;
@@ -55,8 +55,7 @@ final class BavetTriGroupBridgeTriConstraintStream<Solution_, A, B, C, NewA, New
         TupleLifecycle<TriTuple<NewA, NewB, NewC>> tupleLifecycle =
                 buildHelper.getAggregatedTupleLifecycle(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupNode<TriTuple<A, B, C>, TriTuple<NewA, NewB, NewC>, ?, ?, ?, ?> node =
-                nodeConstructor.apply(groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize);
+        var node = nodeConstructor.apply(groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize);
         buildHelper.addNode(node, this);
     }
 

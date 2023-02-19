@@ -3,8 +3,8 @@ package org.optaplanner.constraint.streams.bavet.quad;
 import java.util.Set;
 
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
-import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.GroupNodeConstructor;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.uni.BavetGroupUniConstraintStream;
@@ -17,11 +17,9 @@ final class BavetUniGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, NewA>
 
     protected final BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent;
     protected BavetGroupUniConstraintStream<Solution_, NewA> groupStream;
-    private final QuadGroupNodeConstructor<A, B, C, D, UniTuple<NewA>> nodeConstructor;
+    private final GroupNodeConstructor<UniTuple<NewA>> nodeConstructor;
 
-    public BavetUniGroupBridgeQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
-            QuadGroupNodeConstructor<A, B, C, D, UniTuple<NewA>> nodeConstructor) {
+    public BavetUniGroupBridgeQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory, BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, GroupNodeConstructor<UniTuple<NewA>> nodeConstructor) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.nodeConstructor = nodeConstructor;
@@ -57,8 +55,7 @@ final class BavetUniGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, NewA>
         TupleLifecycle<UniTuple<NewA>> tupleLifecycle =
                 buildHelper.getAggregatedTupleLifecycle(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupNode<QuadTuple<A, B, C, D>, UniTuple<NewA>, ?, ?, ?, ?> node =
-                nodeConstructor.apply(groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize);
+        var node = nodeConstructor.apply(groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize);
         buildHelper.addNode(node, this);
     }
 

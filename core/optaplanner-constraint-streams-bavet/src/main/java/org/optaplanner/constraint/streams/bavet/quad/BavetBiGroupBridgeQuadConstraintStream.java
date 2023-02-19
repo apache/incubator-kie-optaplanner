@@ -5,8 +5,8 @@ import java.util.Set;
 import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.bi.BavetGroupBiConstraintStream;
 import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
-import org.optaplanner.constraint.streams.bavet.common.AbstractGroupNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
+import org.optaplanner.constraint.streams.bavet.common.GroupNodeConstructor;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.core.api.score.Score;
@@ -17,11 +17,9 @@ final class BavetBiGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, NewA, 
 
     private final BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent;
     private BavetGroupBiConstraintStream<Solution_, NewA, NewB> groupStream;
-    private final QuadGroupNodeConstructor<A, B, C, D, BiTuple<NewA, NewB>> nodeConstructor;
+    private final GroupNodeConstructor<BiTuple<NewA, NewB>> nodeConstructor;
 
-    public BavetBiGroupBridgeQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory,
-            BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent,
-            QuadGroupNodeConstructor<A, B, C, D, BiTuple<NewA, NewB>> nodeConstructor) {
+    public BavetBiGroupBridgeQuadConstraintStream(BavetConstraintFactory<Solution_> constraintFactory, BavetAbstractQuadConstraintStream<Solution_, A, B, C, D> parent, GroupNodeConstructor<BiTuple<NewA, NewB>> nodeConstructor) {
         super(constraintFactory, parent.getRetrievalSemantics());
         this.parent = parent;
         this.nodeConstructor = nodeConstructor;
@@ -57,8 +55,7 @@ final class BavetBiGroupBridgeQuadConstraintStream<Solution_, A, B, C, D, NewA, 
         TupleLifecycle<BiTuple<NewA, NewB>> tupleLifecycle =
                 buildHelper.getAggregatedTupleLifecycle(groupStream.getChildStreamList());
         int outputStoreSize = buildHelper.extractTupleStoreSize(groupStream);
-        AbstractGroupNode<QuadTuple<A, B, C, D>, BiTuple<NewA, NewB>, ?, ?, ?, ?> node =
-                nodeConstructor.apply(groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize);
+        var node = nodeConstructor.apply(groupStoreIndex, undoStoreIndex, tupleLifecycle, outputStoreSize);
         buildHelper.addNode(node, this);
     }
 
