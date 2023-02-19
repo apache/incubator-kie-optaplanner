@@ -31,13 +31,13 @@
           "ignore": true,
           "code": "java.method.removed",
           "old": "method boolean java.lang.Object::equals(java.lang.Object) @ org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy",
-          "justification": "equals/hashCode now overriden in order to support consistent pillar cache."
+          "justification": "equals/hashCode now overridden in order to support consistent pillar cache."
         },
         {
           "ignore": true,
           "code": "java.method.removed",
           "old": "method int java.lang.Object::hashCode() @ org.optaplanner.core.config.heuristic.selector.entity.pillar.SubPillarConfigPolicy",
-          "justification": "equals/hashCode now overriden in order to support consistent pillar cache."
+          "justification": "equals/hashCode now overridden in order to support consistent pillar cache."
         },
         {
           "ignore": true,
@@ -998,6 +998,15 @@
           "code": "java.method.addedToInterface",
           "new": "method Score_ org.optaplanner.core.api.score.ScoreManager<Solution_, Score_ extends org.optaplanner.core.api.score.Score<Score_>>::update(Solution_, org.optaplanner.core.api.solver.SolutionUpdatePolicy)",
           "justification": "To easy migration; ScoreManager is an interface we don't expect anyone to implement."
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.attributeValueChanged",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_ extends org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig<Config_>>",
+          "annotationType": "javax.xml.bind.annotation.XmlSeeAlso",
+          "attribute": "value",
+          "justification": "Introduce ListChangeMoveSelectorConfig and ListSwapMoveSelectorConfig."
         }
       ]
     }

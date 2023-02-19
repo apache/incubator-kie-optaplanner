@@ -22,6 +22,8 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelec
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.TailChainSwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -37,6 +39,8 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 @XmlSeeAlso({
         CartesianProductMoveSelectorConfig.class,
         ChangeMoveSelectorConfig.class,
+        ListChangeMoveSelectorConfig.class,
+        ListSwapMoveSelectorConfig.class,
         MoveIteratorFactoryConfig.class,
         MoveListFactoryConfig.class,
         PillarChangeMoveSelectorConfig.class,
@@ -168,56 +172,56 @@ public abstract class MoveSelectorConfig<Config_ extends MoveSelectorConfig<Conf
     // With methods
     // ************************************************************************
 
-    public MoveSelectorConfig<Config_> withCacheType(SelectionCacheType cacheType) {
+    public Config_ withCacheType(SelectionCacheType cacheType) {
         this.cacheType = cacheType;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withSelectionOrder(SelectionOrder selectionOrder) {
+    public Config_ withSelectionOrder(SelectionOrder selectionOrder) {
         this.selectionOrder = selectionOrder;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withFilterClass(Class<? extends SelectionFilter> filterClass) {
+    public Config_ withFilterClass(Class<? extends SelectionFilter> filterClass) {
         this.filterClass = filterClass;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withSorterComparatorClass(Class<? extends Comparator> sorterComparatorClass) {
+    public Config_ withSorterComparatorClass(Class<? extends Comparator> sorterComparatorClass) {
         this.sorterComparatorClass = sorterComparatorClass;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withSorterWeightFactoryClass(
+    public Config_ withSorterWeightFactoryClass(
             Class<? extends SelectionSorterWeightFactory> sorterWeightFactoryClass) {
         this.sorterWeightFactoryClass = sorterWeightFactoryClass;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withSorterOrder(SelectionSorterOrder sorterOrder) {
+    public Config_ withSorterOrder(SelectionSorterOrder sorterOrder) {
         this.sorterOrder = sorterOrder;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withSorterClass(Class<? extends SelectionSorter> sorterClass) {
+    public Config_ withSorterClass(Class<? extends SelectionSorter> sorterClass) {
         this.sorterClass = sorterClass;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withProbabilityWeightFactoryClass(
+    public Config_ withProbabilityWeightFactoryClass(
             Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
         this.probabilityWeightFactoryClass = probabilityWeightFactoryClass;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withSelectedCountLimit(Long selectedCountLimit) {
+    public Config_ withSelectedCountLimit(Long selectedCountLimit) {
         this.selectedCountLimit = selectedCountLimit;
-        return this;
+        return (Config_) this;
     }
 
-    public MoveSelectorConfig<Config_> withFixedProbabilityWeight(Double fixedProbabilityWeight) {
+    public Config_ withFixedProbabilityWeight(Double fixedProbabilityWeight) {
         this.fixedProbabilityWeight = fixedProbabilityWeight;
-        return this;
+        return (Config_) this;
     }
 
     /**
@@ -241,7 +245,7 @@ public abstract class MoveSelectorConfig<Config_ extends MoveSelectorConfig<Conf
      *
      * @param foldedConfig never null
      */
-    public void inheritFolded(MoveSelectorConfig<Config_> foldedConfig) {
+    public void inheritFolded(MoveSelectorConfig<?> foldedConfig) {
         inheritCommon(foldedConfig);
     }
 
@@ -253,7 +257,7 @@ public abstract class MoveSelectorConfig<Config_ extends MoveSelectorConfig<Conf
         classVisitor.accept(probabilityWeightFactoryClass);
     }
 
-    private void inheritCommon(MoveSelectorConfig<Config_> inheritedConfig) {
+    private void inheritCommon(MoveSelectorConfig<?> inheritedConfig) {
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         filterClass = ConfigUtils.inheritOverwritableProperty(filterClass, inheritedConfig.getFilterClass());
