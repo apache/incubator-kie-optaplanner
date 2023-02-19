@@ -13,9 +13,21 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         implements TupleLifecycle<InTuple_> {
 
     private final int groupStoreIndex;
+    /**
+     * Unused when {@link #hasCollector} is false.
+     */
     private final int undoStoreIndex;
+    /**
+     * Unused when {@link #hasMultipleGroups} is false.
+     */
     private final Function<InTuple_, GroupKey_> groupKeyFunction;
+    /**
+     * Unused when {@link #hasCollector} is false.
+     */
     private final Supplier<ResultContainer_> supplier;
+    /**
+     * Unused when {@link #hasCollector} is false.
+     */
     private final Function<ResultContainer_, Result_> finisher;
     /**
      * Some code paths may decide to not supply a grouping function.
