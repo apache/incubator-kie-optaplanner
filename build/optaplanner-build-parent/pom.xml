@@ -58,7 +58,7 @@
       Do not upgrade unless prepared to deal with JPMS issues.
       If upgrading, ensure build still passes with the full profile (-Dfull).
     -->
-    <version.javadoc.plugin>3.0.1</version.javadoc.plugin>
+    <version.javadoc.plugin>3.5.0</version.javadoc.plugin>
     <version.jaxb2.plugin>2.5.0</version.jaxb2.plugin>
     <version.pitest.plugin>1.11.0</version.pitest.plugin>
     <version.revapi.plugin>0.15.0</version.revapi.plugin>
