@@ -91,6 +91,6 @@ class IndexVariableListenerTest {
 
     void assertIndex(TestdataListValue element, Integer index) {
         assertThat(element.getIndex()).isEqualTo(index);
-        assertThat(indexVariableListener.getIndex(element)).isEqualTo(index == null ? -1 : index);
+        assertThat(indexVariableListener.getIndex(element)).isEqualTo(index);
     }
 }

@@ -25,7 +25,7 @@ public class OriginalListSwapIterator<Solution_> extends UpcomingSelectionIterat
     private Iterator<Object> rightValueIterator;
 
     private Object upcomingLeftEntity;
-    private int upcomingLeftIndex;
+    private Integer upcomingLeftIndex;
 
     public OriginalListSwapIterator(
             ListVariableDescriptor<Solution_> listVariableDescriptor,

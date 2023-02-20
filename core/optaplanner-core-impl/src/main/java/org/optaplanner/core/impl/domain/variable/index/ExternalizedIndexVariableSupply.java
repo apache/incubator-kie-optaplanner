@@ -134,8 +134,8 @@ public class ExternalizedIndexVariableSupply<Solution_> implements
     }
 
     @Override
-    public int getIndex(Object element) {
-        return Objects.requireNonNullElse(indexMap.get(element), -1);
+    public Integer getIndex(Object element) {
+        return indexMap.get(element);
     }
 
     @Override
