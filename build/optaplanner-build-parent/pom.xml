@@ -66,9 +66,6 @@
     <version.surefire.plugin>3.0.0-M8</version.surefire.plugin>
     <version.versions.plugin>2.14.2</version.versions.plugin>
 
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
     <!-- Plugin configuration properties -->
     <maven.min.version>3.8.1</maven.min.version>
     <maven.compiler.release>11</maven.compiler.release>
@@ -462,17 +459,12 @@
             <header combine.self="override" />
             <footer combine.self="override" />
             <quiet>true</quiet>
-            <!-- Enforce Windows compatibility. -->
-            <charset>${project.reporting.outputEncoding}</charset>
-            <docencoding>${project.reporting.outputEncoding}</docencoding>
-            <encoding>${project.build.sourceEncoding}</encoding>
           </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <configuration>
-            <encoding>${project.build.sourceEncoding}</encoding>
             <compilerArgs>
               <!-- Visit https://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html
                    to learn more about javac warnings -->
