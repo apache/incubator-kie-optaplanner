@@ -28,7 +28,6 @@
     <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
     <version.io.quarkiverse.operatorsdk>5.0.4</version.io.quarkiverse.operatorsdk>
     <version.io.quarkus>2.16.1.Final</version.io.quarkus>
-    <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
     <version.org.apache.commons.text>1.10.0</version.org.apache.commons.text>
     <version.org.apache.poi>5.2.3</version.org.apache.poi>
@@ -119,11 +118,6 @@
         <scope>import</scope>
       </dependency>
       <!-- Normal dependencies versions-->
-      <dependency>
-        <groupId>it.unimi.dsi</groupId>
-        <artifactId>fastutil-core</artifactId>
-        <version>${version.it.unimi.dsi.fastutil}</version>
-      </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>

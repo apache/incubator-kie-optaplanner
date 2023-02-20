@@ -46,10 +46,6 @@
     </dependency>
 
     <!-- External dependencies -->
-    <dependency>
-      <groupId>it.unimi.dsi</groupId>
-      <artifactId>fastutil-core</artifactId>
-    </dependency>
     <!-- Common utils -->
     <dependency>
       <groupId>org.apache.commons</groupId>
