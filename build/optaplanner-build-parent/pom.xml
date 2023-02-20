@@ -20,13 +20,13 @@
     <!-- Dependencies -->
     <!-- ************************************************************************ -->
     <!-- SNAPSHOT and KIE dependency versions -->
-    <version.org.drools>8.33.0.Final</version.org.drools>
+    <version.org.drools>8.34.0.Final</version.org.drools>
 
     <!-- Normal dependency versions -->
     <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
     <version.org.apache.logging.log4j>2.19.0</version.org.apache.logging.log4j>
     <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
-    <version.io.quarkiverse.operatorsdk>5.0.4</version.io.quarkiverse.operatorsdk>
+    <version.io.quarkiverse.operatorsdk>5.0.5</version.io.quarkiverse.operatorsdk>
     <version.io.quarkus>2.16.1.Final</version.io.quarkus>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
     <version.org.apache.commons.text>1.10.0</version.org.apache.commons.text>
