@@ -68,7 +68,6 @@ jobs:
         env:
           BUILD_MVN_OPTS: '-Dproductized'
         with:
-          definition-file: https://raw.githubusercontent.com/kiegroup/kogito-pipelines/%{process.env.GITHUB_BASE_REF.replace(/(\d*)\.(.*)\.(.*)/g, (m, n1, n2, n3) => `${+n1-7}.${n2}.${n3}`)}/.ci/pull-request-config.yaml
           annotations-prefix: ${{ runner.os }}-${{ matrix.java-version }}/${{ matrix.maven-version }}
           starting-project: kiegroup/optaplanner
           flow-type: ${{ env.FLOW_TYPE }}
