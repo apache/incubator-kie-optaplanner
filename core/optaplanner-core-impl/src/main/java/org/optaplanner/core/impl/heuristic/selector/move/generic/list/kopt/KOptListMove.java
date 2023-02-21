@@ -11,8 +11,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescript
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-
-import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
+import org.optaplanner.core.impl.util.Pair;
 
 /**
  *
@@ -75,9 +74,9 @@ final class KOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
             innerScoreDirector.beforeListVariableChanged(listVariableDescriptor, entity, 0,
                     affectedElementsInfo.getWrappedEndIndex());
         }
-        for (IntIntImmutablePair affectedInterval : affectedElementsInfo.getAffectedMiddleRangeList()) {
-            innerScoreDirector.beforeListVariableChanged(listVariableDescriptor, entity, affectedInterval.leftInt(),
-                    affectedInterval.rightInt());
+        for (Pair<Integer, Integer> affectedInterval : affectedElementsInfo.getAffectedMiddleRangeList()) {
+            innerScoreDirector.beforeListVariableChanged(listVariableDescriptor, entity, affectedInterval.getKey(),
+                    affectedInterval.getValue());
         }
 
         for (FlipSublistAction<Solution_> move : equivalent2Opts) {
@@ -92,9 +91,9 @@ final class KOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
             innerScoreDirector.afterListVariableChanged(listVariableDescriptor, entity, 0,
                     affectedElementsInfo.getWrappedEndIndex());
         }
-        for (IntIntImmutablePair affectedInterval : affectedElementsInfo.getAffectedMiddleRangeList()) {
-            innerScoreDirector.afterListVariableChanged(listVariableDescriptor, entity, affectedInterval.leftInt(),
-                    affectedInterval.rightInt());
+        for (Pair<Integer, Integer> affectedInterval : affectedElementsInfo.getAffectedMiddleRangeList()) {
+            innerScoreDirector.afterListVariableChanged(listVariableDescriptor, entity, affectedInterval.getKey(),
+                    affectedInterval.getValue());
         }
     }
 
@@ -138,8 +137,8 @@ final class KOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
             out.addAll(listVariable.subList(affectedElementsInfo.getWrappedStartIndex(), listVariable.size()));
             out.addAll(listVariable.subList(0, affectedElementsInfo.getWrappedEndIndex()));
         }
-        for (IntIntImmutablePair affectedInterval : affectedElementsInfo.getAffectedMiddleRangeList()) {
-            out.addAll(listVariable.subList(affectedInterval.leftInt(), affectedInterval.rightInt()));
+        for (Pair<Integer, Integer> affectedInterval : affectedElementsInfo.getAffectedMiddleRangeList()) {
+            out.addAll(listVariable.subList(affectedInterval.getKey(), affectedInterval.getValue()));
         }
 
         return out;
@@ -197,9 +196,9 @@ final class KOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
                 innerScoreDirector.beforeListVariableChanged(listVariableDescriptor, entity, 0,
                         affectedElementsInfo.getWrappedEndIndex());
             }
-            for (IntIntImmutablePair affectedInterval : affectedElementsInfo.getAffectedMiddleRangeList()) {
-                innerScoreDirector.beforeListVariableChanged(listVariableDescriptor, entity, affectedInterval.leftInt(),
-                        affectedInterval.rightInt());
+            for (Pair<Integer, Integer> affectedInterval : affectedElementsInfo.getAffectedMiddleRangeList()) {
+                innerScoreDirector.beforeListVariableChanged(listVariableDescriptor, entity, affectedInterval.getKey(),
+                        affectedInterval.getValue());
             }
 
             rotateToOriginalPositions(listVariableDescriptor, entity, preShiftAmount);
@@ -214,9 +213,9 @@ final class KOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
                 innerScoreDirector.afterListVariableChanged(listVariableDescriptor, entity, 0,
                         affectedElementsInfo.getWrappedEndIndex());
             }
-            for (IntIntImmutablePair affectedInterval : affectedElementsInfo.getAffectedMiddleRangeList()) {
-                innerScoreDirector.afterListVariableChanged(listVariableDescriptor, entity, affectedInterval.leftInt(),
-                        affectedInterval.rightInt());
+            for (Pair<Integer, Integer> affectedInterval : affectedElementsInfo.getAffectedMiddleRangeList()) {
+                innerScoreDirector.afterListVariableChanged(listVariableDescriptor, entity, affectedInterval.getKey(),
+                        affectedInterval.getValue());
             }
         }
 

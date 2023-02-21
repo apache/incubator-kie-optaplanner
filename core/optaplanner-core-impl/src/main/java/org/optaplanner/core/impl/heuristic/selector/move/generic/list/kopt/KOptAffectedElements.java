@@ -3,23 +3,22 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 import java.util.List;
 
 import org.optaplanner.core.impl.util.CollectionUtils;
-
-import it.unimi.dsi.fastutil.ints.IntIntImmutablePair;
+import org.optaplanner.core.impl.util.Pair;
 
 final class KOptAffectedElements {
     private final int wrappedStartIndex;
     private final int wrappedEndIndex;
-    private final List<IntIntImmutablePair> affectedMiddleRangeList;
+    private final List<Pair<Integer, Integer>> affectedMiddleRangeList;
 
     private KOptAffectedElements(int wrappedStartIndex, int wrappedEndIndex,
-            List<IntIntImmutablePair> affectedMiddleRangeList) {
+            List<Pair<Integer, Integer>> affectedMiddleRangeList) {
         this.wrappedStartIndex = wrappedStartIndex;
         this.wrappedEndIndex = wrappedEndIndex;
         this.affectedMiddleRangeList = affectedMiddleRangeList;
     }
 
     static KOptAffectedElements forMiddleRange(int startInclusive, int endExclusive) {
-        return new KOptAffectedElements(-1, -1, List.of(IntIntImmutablePair.of(startInclusive, endExclusive)));
+        return new KOptAffectedElements(-1, -1, List.of(Pair.of(startInclusive, endExclusive)));
     }
 
     static KOptAffectedElements forWrappedRange(int startInclusive, int endExclusive) {
@@ -38,7 +37,7 @@ final class KOptAffectedElements {
         return wrappedEndIndex;
     }
 
-    public List<IntIntImmutablePair> getAffectedMiddleRangeList() {
+    public List<Pair<Integer, Integer>> getAffectedMiddleRangeList() {
         return affectedMiddleRangeList;
     }
 
@@ -59,7 +58,7 @@ final class KOptAffectedElements {
             }
         }
 
-        List<IntIntImmutablePair> newAffectedMiddleRangeList =
+        List<Pair<Integer, Integer>> newAffectedMiddleRangeList =
                 CollectionUtils.concat(affectedMiddleRangeList, other.affectedMiddleRangeList);
 
         boolean removedAny;
@@ -68,14 +67,14 @@ final class KOptAffectedElements {
             final int listSize = newAffectedMiddleRangeList.size();
             for (int i = 0; i < listSize; i++) {
                 for (int j = i + 1; j < listSize; j++) {
-                    IntIntImmutablePair leftInterval = newAffectedMiddleRangeList.get(i);
-                    IntIntImmutablePair rightInterval = newAffectedMiddleRangeList.get(j);
+                    Pair<Integer, Integer> leftInterval = newAffectedMiddleRangeList.get(i);
+                    Pair<Integer, Integer> rightInterval = newAffectedMiddleRangeList.get(j);
 
-                    if (leftInterval.leftInt() <= rightInterval.rightInt() &&
-                            rightInterval.leftInt() <= leftInterval.rightInt()) {
-                        IntIntImmutablePair mergedInterval =
-                                new IntIntImmutablePair(Math.min(leftInterval.leftInt(), rightInterval.leftInt()),
-                                        Math.max(leftInterval.rightInt(), rightInterval.rightInt()));
+                    if (leftInterval.getKey() <= rightInterval.getValue() &&
+                            rightInterval.getKey() <= leftInterval.getValue()) {
+                        Pair<Integer, Integer> mergedInterval =
+                                Pair.of(Math.min(leftInterval.getKey(), rightInterval.getKey()),
+                                        Math.max(leftInterval.getValue(), rightInterval.getValue()));
                         newAffectedMiddleRangeList.set(i, mergedInterval);
                         newAffectedMiddleRangeList.remove(j);
                         removedAny = true;

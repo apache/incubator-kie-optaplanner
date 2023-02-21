@@ -2,15 +2,14 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
-
-import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntComparator;
 
 final class KOptDescriptor<Solution_, Node_> {
 
@@ -111,10 +110,16 @@ final class KOptDescriptor<Solution_, Node_> {
                     (endpointToSuccessorFunction.apply(removedEdges[i]) == removedEdges[i + 1]) ? i : i + 1;
         }
 
-        IntComparator comparator = (pa, pb) -> pa == pb ? 0
+        Comparator<Integer> comparator = (pa, pb) -> pa.equals(pb) ? 0
                 : (betweenPredicate.test(removedEdges[removedEdgeIndexToTourOrder[1]], removedEdges[pa], removedEdges[pb]) ? -1
                         : 1);
-        IntArrays.stableSort(removedEdgeIndexToTourOrder, 2, k + 1, comparator);
+
+        Integer[] wrappedRemovedEdgeIndexToTourOrder = IntStream.of(removedEdgeIndexToTourOrder).boxed()
+                .toArray(Integer[]::new);
+        Arrays.sort(wrappedRemovedEdgeIndexToTourOrder, 2, k + 1, comparator);
+        for (int i = 0; i < removedEdges.length; i++) {
+            removedEdgeIndexToTourOrder[i] = wrappedRemovedEdgeIndexToTourOrder[i];
+        }
 
         for (int i, j = 2 * k; j >= 2; j -= 2) {
             removedEdgeIndexToTourOrder[j - 1] = i = removedEdgeIndexToTourOrder[j / 2];

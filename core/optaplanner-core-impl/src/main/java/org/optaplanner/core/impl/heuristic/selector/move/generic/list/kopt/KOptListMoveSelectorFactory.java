@@ -20,7 +20,7 @@ public final class KOptListMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, KOptListMoveSelectorConfig> {
 
     private static final int DEFAULT_MINIMUM_K = 2;
-    private static final int DEFAULT_MAXIMUM_K = 4;
+    private static final int DEFAULT_MAXIMUM_K = 2;
 
     public KOptListMoveSelectorFactory(KOptListMoveSelectorConfig moveSelectorConfig) {
         super(moveSelectorConfig);

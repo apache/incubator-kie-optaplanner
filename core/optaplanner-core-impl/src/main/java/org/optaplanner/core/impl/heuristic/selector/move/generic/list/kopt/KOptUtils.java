@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 import java.util.function.Function;
 
@@ -10,10 +11,6 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescript
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.util.Pair;
-
-import it.unimi.dsi.fastutil.ints.IntArrays;
-import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSets;
 
 final class KOptUtils {
 
@@ -53,13 +50,14 @@ final class KOptUtils {
         int[] inverseRemovedEdgeIndexToTourOrder = kOptDescriptor.getInverseRemovedEdgeIndexToTourOrder();
 
         int[] indexToCycle = new int[removedEdgeIndexToTourOrder.length];
-        IntLinkedOpenHashSet remaining = new IntLinkedOpenHashSet(IntSets.fromTo(1, removedEdgeIndexToTourOrder.length));
+        BitSet remaining = new BitSet(removedEdgeIndexToTourOrder.length);
+        remaining.set(1, removedEdgeIndexToTourOrder.length, true);
 
         while (!remaining.isEmpty()) {
-            int currentEndpoint = remaining.firstInt();
-            while (remaining.contains(currentEndpoint)) {
+            int currentEndpoint = remaining.nextSetBit(0);
+            while (remaining.get(currentEndpoint)) {
                 indexToCycle[currentEndpoint] = cycleCount;
-                remaining.remove(currentEndpoint);
+                remaining.clear(currentEndpoint);
 
                 // Go to the endpoint connected to this one by an added edge
                 int currentEndpointTourIndex = removedEdgeIndexToTourOrder[currentEndpoint];
@@ -67,7 +65,7 @@ final class KOptUtils {
                 currentEndpoint = inverseRemovedEdgeIndexToTourOrder[nextEndpointTourIndex];
 
                 indexToCycle[currentEndpoint] = cycleCount;
-                remaining.remove(currentEndpoint);
+                remaining.clear(currentEndpoint);
 
                 // Go to the endpoint after the added edge
                 currentEndpoint = currentEndpoint ^ 1;
@@ -159,7 +157,12 @@ final class KOptUtils {
 
     public static void flipSubarray(int[] array, int fromIndexInclusive, int toIndexExclusive) {
         if (fromIndexInclusive < toIndexExclusive) {
-            IntArrays.reverse(array, fromIndexInclusive, toIndexExclusive);
+            final int halfwayPoint = (toIndexExclusive - fromIndexInclusive) >> 1;
+            for (int i = 0; i < halfwayPoint; i++) {
+                int saved = array[fromIndexInclusive + i];
+                array[fromIndexInclusive + i] = array[toIndexExclusive - i - 1];
+                array[toIndexExclusive - i - 1] = saved;
+            }
         } else {
             int firstHalfSize = array.length - fromIndexInclusive;
             int secondHalfSize = toIndexExclusive;
