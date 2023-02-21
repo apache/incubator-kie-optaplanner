@@ -26,7 +26,7 @@
     <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
     <version.org.apache.logging.log4j>2.19.0</version.org.apache.logging.log4j>
     <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
-    <version.io.quarkiverse.operatorsdk>5.0.4</version.io.quarkiverse.operatorsdk>
+    <version.io.quarkiverse.operatorsdk>5.0.5</version.io.quarkiverse.operatorsdk>
     <version.io.quarkus>2.16.1.Final</version.io.quarkus>
     <version.it.unimi.dsi.fastutil>8.5.11</version.it.unimi.dsi.fastutil>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
@@ -36,7 +36,7 @@
     <version.org.freemarker>2.3.31</version.org.freemarker>
     <version.org.jdom2>2.0.6.1</version.org.jdom2>
     <version.org.jfree.jfreechart>1.5.4</version.org.jfree.jfreechart>
-    <version.org.openrewrite.recipe>1.14.0</version.org.openrewrite.recipe>
+    <version.org.openrewrite.recipe>1.15.1</version.org.openrewrite.recipe>
     <version.org.slf4j>1.7.36</version.org.slf4j><!-- TODO keep in sync with quarkus-bom -->
     <version.org.springframework>5.3.25</version.org.springframework>
     <version.org.springframework.boot>2.7.8</version.org.springframework.boot>
@@ -59,7 +59,7 @@
       Do not upgrade unless prepared to deal with JPMS issues.
       If upgrading, ensure build still passes with the full profile (-Dfull).
     -->
-    <version.javadoc.plugin>3.0.1</version.javadoc.plugin>
+    <version.javadoc.plugin>3.5.0</version.javadoc.plugin>
     <version.jaxb2.plugin>2.5.0</version.jaxb2.plugin>
     <version.pitest.plugin>1.11.0</version.pitest.plugin>
     <version.revapi.plugin>0.15.0</version.revapi.plugin>
@@ -68,7 +68,6 @@
     <version.versions.plugin>2.14.2</version.versions.plugin>
 
     <!-- Plugin configuration properties -->
-
     <maven.min.version>3.8.1</maven.min.version>
     <maven.compiler.release>11</maven.compiler.release>
     <!-- A workaround for https://youtrack.jetbrains.com/issue/IDEA-276403. -->
@@ -461,12 +460,10 @@
           <configuration>
             <author>false</author>
             <failOnError>true</failOnError>
-            <!--
-                 Disabled to workaround the following issue on JDK 16+:
-                 Warning:  javadoc: warning - The -footer option is no longer supported and will be ignored.
-                 Since we do not add the footer ourselves, it must be the plugin itself.
-            -->
-            <!-- <failOnWarnings>true</failOnWarnings>-->
+            <failOnWarnings>true</failOnWarnings>
+            <!-- Override JBoss parent otherwise it fails on JDK 16+ -->
+            <header combine.self="override" />
+            <footer combine.self="override" />
             <quiet>true</quiet>
           </configuration>
         </plugin>
