@@ -117,7 +117,7 @@ final class KOptDescriptor<Solution_, Node_> {
         Integer[] wrappedRemovedEdgeIndexToTourOrder = IntStream.of(removedEdgeIndexToTourOrder).boxed()
                 .toArray(Integer[]::new);
         Arrays.sort(wrappedRemovedEdgeIndexToTourOrder, 2, k + 1, comparator);
-        for (int i = 0; i < removedEdges.length; i++) {
+        for (int i = 0; i < removedEdgeIndexToTourOrder.length; i++) {
             removedEdgeIndexToTourOrder[i] = wrappedRemovedEdgeIndexToTourOrder[i];
         }
 
