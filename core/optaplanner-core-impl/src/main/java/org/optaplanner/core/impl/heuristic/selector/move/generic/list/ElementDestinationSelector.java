@@ -13,7 +13,6 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInvers
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
-import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
@@ -34,7 +33,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class ElementDestinationSelector<Solution_> extends AbstractSelector<Solution_>
-        implements IterableSelector<Solution_, ElementRef> {
+        implements DestinationSelector<Solution_> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntitySelector<Solution_> entitySelector;

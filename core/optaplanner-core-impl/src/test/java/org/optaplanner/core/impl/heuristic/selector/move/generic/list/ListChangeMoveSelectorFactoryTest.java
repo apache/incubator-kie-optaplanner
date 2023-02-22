@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.DestinationSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -27,7 +28,9 @@ class ListChangeMoveSelectorFactoryTest {
         SolutionDescriptor<TestdataListSolution> solutionDescriptor = TestdataListSolution.buildSolutionDescriptor();
         ListChangeMoveSelectorConfig moveSelectorConfig = new ListChangeMoveSelectorConfig()
                 .withValueSelectorConfig(new ValueSelectorConfig("valueList"))
-                .withEntitySelectorConfig(new EntitySelectorConfig(TestdataListEntity.class));
+                .withDestinationSelectorConfig(new DestinationSelectorConfig()
+                        .withEntitySelectorConfig(new EntitySelectorConfig(TestdataListEntity.class))
+                        .withValueSelectorConfig(new ValueSelectorConfig("valueList")));
         MoveSelector<TestdataListSolution> moveSelector =
                 MoveSelectorFactory.<TestdataListSolution> create(moveSelectorConfig).buildMoveSelector(
                         buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
@@ -74,7 +77,9 @@ class ListChangeMoveSelectorFactoryTest {
     void explicitConfigMustUseListVariable() {
         ListChangeMoveSelectorConfig config = new ListChangeMoveSelectorConfig()
                 .withValueSelectorConfig(new ValueSelectorConfig("value"))
-                .withEntitySelectorConfig(new EntitySelectorConfig(TestdataMixedVariablesEntity.class));
+                .withDestinationSelectorConfig(new DestinationSelectorConfig()
+                        .withEntitySelectorConfig(new EntitySelectorConfig(TestdataMixedVariablesEntity.class))
+                        .withValueSelectorConfig(new ValueSelectorConfig("value")));
 
         ListChangeMoveSelectorFactory<TestdataMixedVariablesSolution> moveSelectorFactory =
                 new ListChangeMoveSelectorFactory<>(config);

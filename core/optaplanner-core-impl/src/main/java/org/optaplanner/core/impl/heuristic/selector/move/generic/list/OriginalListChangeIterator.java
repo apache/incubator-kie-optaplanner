@@ -21,7 +21,7 @@ public class OriginalListChangeIterator<Solution_> extends UpcomingSelectionIter
     private final SingletonInverseVariableSupply inverseVariableSupply;
     private final IndexVariableSupply indexVariableSupply;
     private final Iterator<Object> valueIterator;
-    private final ElementDestinationSelector<Solution_> destinationSelector;
+    private final DestinationSelector<Solution_> destinationSelector;
     private Iterator<ElementRef> destinationIterator;
 
     private Object upcomingSourceEntity;
@@ -33,7 +33,7 @@ public class OriginalListChangeIterator<Solution_> extends UpcomingSelectionIter
             SingletonInverseVariableSupply inverseVariableSupply,
             IndexVariableSupply indexVariableSupply,
             EntityIndependentValueSelector<Solution_> valueSelector,
-            ElementDestinationSelector<Solution_> destinationSelector) {
+            DestinationSelector<Solution_> destinationSelector) {
         this.listVariableDescriptor = listVariableDescriptor;
         this.inverseVariableSupply = inverseVariableSupply;
         this.indexVariableSupply = indexVariableSupply;

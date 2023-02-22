@@ -10,13 +10,13 @@ public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelec
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final RandomSubListSelector<Solution_> subListSelector;
-    private final ElementDestinationSelector<Solution_> destinationSelector;
+    private final DestinationSelector<Solution_> destinationSelector;
     private final boolean selectReversingMoveToo;
 
     public RandomSubListChangeMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             RandomSubListSelector<Solution_> subListSelector,
-            ElementDestinationSelector<Solution_> destinationSelector,
+            DestinationSelector<Solution_> destinationSelector,
             boolean selectReversingMoveToo) {
         this.listVariableDescriptor = listVariableDescriptor;
         this.subListSelector = subListSelector;
@@ -49,8 +49,8 @@ public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelec
 
     @Override
     public long getSize() {
-        long destinationCount = destinationSelector.getSize();
         long subListCount = subListSelector.getSize();
+        long destinationCount = destinationSelector.getSize();
         return subListCount * destinationCount * (selectReversingMoveToo ? 2 : 1);
     }
 

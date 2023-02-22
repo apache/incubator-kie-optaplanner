@@ -11,7 +11,7 @@ import java.util.List;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ElementDestinationSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.DestinationSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ElementRef;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -42,14 +42,14 @@ public class TestdataListUtils {
         return valueSelector;
     }
 
-    public static ElementDestinationSelector<TestdataListSolution> mockNeverEndingDestinationSelector(
+    public static DestinationSelector<TestdataListSolution> mockNeverEndingDestinationSelector(
             ElementRef... elementRefs) {
         return mockNeverEndingDestinationSelector(elementRefs.length, elementRefs);
     }
 
-    public static ElementDestinationSelector<TestdataListSolution> mockNeverEndingDestinationSelector(long size,
+    public static DestinationSelector<TestdataListSolution> mockNeverEndingDestinationSelector(long size,
             ElementRef... elementRefs) {
-        ElementDestinationSelector<TestdataListSolution> destinationSelector = mock(ElementDestinationSelector.class);
+        DestinationSelector<TestdataListSolution> destinationSelector = mock(DestinationSelector.class);
         when(destinationSelector.isCountable()).thenReturn(true);
         when(destinationSelector.isNeverEnding()).thenReturn(true);
         when(destinationSelector.getSize()).thenReturn(size);
@@ -57,8 +57,8 @@ public class TestdataListUtils {
         return destinationSelector;
     }
 
-    public static ElementDestinationSelector<TestdataListSolution> mockDestinationSelector(ElementRef... elementRefs) {
-        ElementDestinationSelector<TestdataListSolution> destinationSelector = mock(ElementDestinationSelector.class);
+    public static DestinationSelector<TestdataListSolution> mockDestinationSelector(ElementRef... elementRefs) {
+        DestinationSelector<TestdataListSolution> destinationSelector = mock(DestinationSelector.class);
         List<ElementRef> refList = Arrays.asList(elementRefs);
         when(destinationSelector.isCountable()).thenReturn(true);
         when(destinationSelector.isNeverEnding()).thenReturn(false);

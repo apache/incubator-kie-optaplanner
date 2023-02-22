@@ -1019,6 +1019,15 @@
           "annotationType": "javax.xml.bind.annotation.XmlSeeAlso",
           "attribute": "value",
           "justification": "Introduce ListChangeMoveSelectorConfig and ListSwapMoveSelectorConfig."
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.attributeValueChanged",
+          "old": "class org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "attribute": "propOrder",
+          "justification": "TODO: ADD YOUR EXPLANATION FOR THE NECESSITY OF THIS CHANGE"
         }
       ]
     }

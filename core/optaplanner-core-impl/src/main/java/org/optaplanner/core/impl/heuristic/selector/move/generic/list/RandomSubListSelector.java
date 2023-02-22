@@ -138,11 +138,11 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
         }
     }
 
-    public int getMinimumSubListSize() {
+    int getMinimumSubListSize() {
         return minimumSubListSize;
     }
 
-    public int getMaximumSubListSize() {
+    int getMaximumSubListSize() {
         return maximumSubListSize;
     }
 

@@ -26,7 +26,7 @@ public class RandomListChangeIterator<Solution_> extends UpcomingSelectionIterat
             SingletonInverseVariableSupply inverseVariableSupply,
             IndexVariableSupply indexVariableSupply,
             EntityIndependentValueSelector<Solution_> valueSelector,
-            ElementDestinationSelector<Solution_> destinationSelector) {
+            DestinationSelector<Solution_> destinationSelector) {
         this.listVariableDescriptor = listVariableDescriptor;
         this.inverseVariableSupply = inverseVariableSupply;
         this.indexVariableSupply = indexVariableSupply;

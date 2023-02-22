@@ -27,7 +27,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
     private final boolean discardNearbyIndexZero;
     private final NearbyDistanceMatrixDemand<Solution_, ?, ?> nearbyDistanceMatrixDemand;
 
-    private MemoizingSupply<NearbyDistanceMatrix> nearbyDistanceMatrixSupply = null;
+    private MemoizingSupply<NearbyDistanceMatrix<Object, Object>> nearbyDistanceMatrixSupply = null;
 
     public NearEntityNearbyValueSelector(ValueSelector<Solution_> childValueSelector,
             EntitySelector<Solution_> originEntitySelector, NearbyDistanceMeter<?, ?> nearbyDistanceMeter,

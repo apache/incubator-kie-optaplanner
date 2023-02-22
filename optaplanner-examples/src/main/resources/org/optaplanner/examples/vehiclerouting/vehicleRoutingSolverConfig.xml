@@ -25,7 +25,17 @@
   </constructionHeuristic>
   <localSearch>
     <unionMoveSelector>
-      <listChangeMoveSelector/>
+      <listChangeMoveSelector>
+        <valueSelector id="1"/>
+        <destinationSelector>
+          <nearbySelection>
+            <originValueSelector mimicSelectorRef="1"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </destinationSelector>
+      </listChangeMoveSelector>
       <listSwapMoveSelector/>
       <subListChangeMoveSelector>
         <selectReversingMoveToo>true</selectReversingMoveToo>

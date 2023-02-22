@@ -17,7 +17,7 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntityIndependentValueSelector<Solution_> sourceValueSelector;
-    private final ElementDestinationSelector<Solution_> destinationSelector;
+    private final DestinationSelector<Solution_> destinationSelector;
     private final boolean randomSelection;
 
     private SingletonInverseVariableSupply inverseVariableSupply;
@@ -26,7 +26,7 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
     public ListChangeMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntityIndependentValueSelector<Solution_> sourceValueSelector,
-            ElementDestinationSelector<Solution_> destinationSelector,
+            DestinationSelector<Solution_> destinationSelector,
             boolean randomSelection) {
         this.listVariableDescriptor = listVariableDescriptor;
         this.sourceValueSelector = sourceValueSelector;

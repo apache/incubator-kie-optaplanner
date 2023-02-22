@@ -1,6 +1,8 @@
 package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
@@ -59,11 +61,11 @@ public final class NearbyDistanceMatrixDemand<Solution_, Origin_, Destination_>
                         + ") has an entitySize (" + originSize
                         + ") which is higher than Integer.MAX_VALUE.");
             }
-            NearbyDistanceMatrix<Origin_, Destination_> nearbyDistanceMatrix = childSelector instanceof EntitySelector
-                    ? new NearbyDistanceMatrix<>(meter, (int) originSize, (EntitySelector<?>) childSelector,
-                            destinationSizeFunction)
-                    : new NearbyDistanceMatrix<>(meter, (int) originSize, (ValueSelector<?>) childSelector,
-                            destinationSizeFunction);
+            Function<Origin_, Iterator<Destination_>> destinationIteratorProvider = childSelector instanceof EntitySelector
+                    ? origin -> (Iterator<Destination_>) ((EntitySelector<Solution_>) childSelector).endingIterator()
+                    : origin -> (Iterator<Destination_>) ((ValueSelector<Solution_>) childSelector).endingIterator(origin);
+            NearbyDistanceMatrix<Origin_, Destination_> nearbyDistanceMatrix =
+                    new NearbyDistanceMatrix<>(meter, (int) originSize, destinationIteratorProvider, destinationSizeFunction);
             replayingOriginEntitySelector.endingIterator()
                     .forEachRemaining(origin -> nearbyDistanceMatrix.addAllDestinations((Origin_) origin));
             return nearbyDistanceMatrix;
