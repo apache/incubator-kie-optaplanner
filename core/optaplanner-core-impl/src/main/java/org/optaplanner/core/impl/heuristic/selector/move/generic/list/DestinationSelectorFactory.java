@@ -34,6 +34,19 @@ public final class DestinationSelectorFactory<Solution_> extends AbstractSelecto
             boolean randomSelection) {
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
 
+        ElementDestinationSelector<Solution_> baseDestinationSelector =
+                buildBaseDestinationSelector(configPolicy, minimumCacheType, selectionOrder);
+
+        DestinationSelector<Solution_> destinationSelector = applyNearbySelection(configPolicy,
+                config.getNearbySelectionConfig(), minimumCacheType, selectionOrder, baseDestinationSelector);
+
+        return destinationSelector;
+    }
+
+    private ElementDestinationSelector<Solution_> buildBaseDestinationSelector(
+            HeuristicConfigPolicy<Solution_> configPolicy,
+            SelectionCacheType minimumCacheType,
+            SelectionOrder selectionOrder) {
         EntitySelector<Solution_> entitySelector = EntitySelectorFactory
                 .<Solution_> create(config.getEntitySelectorConfig())
                 .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
@@ -58,30 +71,6 @@ public final class DestinationSelectorFactory<Solution_> extends AbstractSelecto
                          */
                         ValueSelectorFactory.ListValueFilteringType.ACCEPT_ASSIGNED);
 
-        if (config.getNearbySelectionConfig() != null) {
-            NearbySelectionConfig nearbySelectionConfig = config.getNearbySelectionConfig();
-
-            ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
-                    .withMimicSelectorRef(nearbySelectionConfig.getOriginValueSelectorConfig().getMimicSelectorRef());
-
-            ValueSelector<Solution_> originValueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig)
-                    .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
-
-            NearbyDistanceMeter<?, ?> nearbyDistanceMeter =
-                    configPolicy.getClassInstanceCache().newInstance(nearbySelectionConfig,
-                            "nearbyDistanceMeterClass", nearbySelectionConfig.getNearbyDistanceMeterClass());
-            // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
-            NearbyRandom nearbyRandom =
-                    NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(randomSelection);
-            return new NearValueNearbyDestinationSelector<>(
-                    entitySelector,
-                    ((EntityIndependentValueSelector<Solution_>) valueSelector),
-                    ((EntityIndependentValueSelector<Solution_>) originValueSelector),
-                    nearbyDistanceMeter,
-                    nearbyRandom,
-                    randomSelection);
-        }
-
         // TODO move this to constructor (all list move selectors)
         ListVariableDescriptor<Solution_> listVariableDescriptor =
                 (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor();
@@ -90,6 +79,38 @@ public final class DestinationSelectorFactory<Solution_> extends AbstractSelecto
                 listVariableDescriptor,
                 entitySelector,
                 ((EntityIndependentValueSelector<Solution_>) valueSelector),
+                selectionOrder.toRandomSelectionBoolean());
+    }
+
+    private DestinationSelector<Solution_> applyNearbySelection(
+            HeuristicConfigPolicy<Solution_> configPolicy, NearbySelectionConfig nearbySelectionConfig,
+            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder,
+            ElementDestinationSelector<Solution_> destinationSelector) {
+        if (config.getNearbySelectionConfig() == null) {
+            return destinationSelector;
+        }
+
+        boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
+
+        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
+                .withMimicSelectorRef(nearbySelectionConfig.getOriginValueSelectorConfig().getMimicSelectorRef());
+
+        ValueSelector<Solution_> originValueSelector = ValueSelectorFactory
+                .<Solution_> create(valueSelectorConfig)
+                .buildValueSelector(configPolicy, destinationSelector.getEntityDescriptor(), minimumCacheType,
+                        resolvedSelectionOrder);
+
+        NearbyDistanceMeter<?, ?> nearbyDistanceMeter =
+                configPolicy.getClassInstanceCache().newInstance(nearbySelectionConfig,
+                        "nearbyDistanceMeterClass", nearbySelectionConfig.getNearbyDistanceMeterClass());
+        // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
+        NearbyRandom nearbyRandom =
+                NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(randomSelection);
+        return new NearValueNearbyDestinationSelector<>(
+                destinationSelector,
+                ((EntityIndependentValueSelector<Solution_>) originValueSelector),
+                nearbyDistanceMeter,
+                nearbyRandom,
                 randomSelection);
     }
 }

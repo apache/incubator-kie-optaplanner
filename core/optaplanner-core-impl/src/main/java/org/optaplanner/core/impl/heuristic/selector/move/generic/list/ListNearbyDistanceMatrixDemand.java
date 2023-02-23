@@ -2,19 +2,14 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.Iterator;
 import java.util.Objects;
-import java.util.Spliterators;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.value.FromSolutionPropertyValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
 import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.util.MemoizingSupply;
@@ -37,53 +32,42 @@ public final class ListNearbyDistanceMatrixDemand<Solution_, Origin_, Destinatio
         implements Demand<MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>>> {
 
     private final NearbyDistanceMeter<Origin_, Destination_> meter;
+    private final ElementDestinationSelector<Solution_> childDestinationSelector;
     private final MimicReplayingValueSelector<Solution_> replayingOriginValueSelector;
-    private final EntitySelector<Solution_> childEntitySelector;
-    private final FromSolutionPropertyValueSelector<Solution_> childValueSelector;
     private final ToIntFunction<Origin_> destinationSizeFunction;
 
     public ListNearbyDistanceMatrixDemand(
             NearbyDistanceMeter<Origin_, Destination_> meter,
+            ElementDestinationSelector<Solution_> childDestinationSelector,
             MimicReplayingValueSelector<Solution_> replayingOriginValueSelector,
-            EntitySelector<Solution_> childEntitySelector,
-            FromSolutionPropertyValueSelector<Solution_> childValueSelector,
             ToIntFunction<Origin_> destinationSizeFunction) {
         this.meter = meter;
+        this.childDestinationSelector = childDestinationSelector;
         this.replayingOriginValueSelector = replayingOriginValueSelector;
-        this.childEntitySelector = childEntitySelector;
-        this.childValueSelector = childValueSelector;
         this.destinationSizeFunction = destinationSizeFunction;
     }
 
     @Override
     public MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>> createExternalizedSupply(SupplyManager supplyManager) {
         Supplier<NearbyDistanceMatrix<Origin_, Destination_>> supplier = () -> {
-            final long childSize = childEntitySelector.getSize() + childValueSelector.getSize();
+            final long childSize = childDestinationSelector.getSize();
             if (childSize > Integer.MAX_VALUE) {
-                throw new IllegalStateException("The childSize (" + childSize
-                        + ") which is the sum of the childEntitySelector (" + childEntitySelector
-                        + ") and the childValueSelector (" + childValueSelector
-                        + ") sizes is higher than Integer.MAX_VALUE.");
+                throw new IllegalStateException("The childSize (" + childSize + ") is higher than Integer.MAX_VALUE.");
             }
 
             long originSize = replayingOriginValueSelector.getSize();
             if (originSize > Integer.MAX_VALUE) {
-                throw new IllegalStateException("The originEntitySelector (" + replayingOriginValueSelector
-                        + ") has an entitySize (" + originSize
+                throw new IllegalStateException("The originValueSelector (" + replayingOriginValueSelector
+                        + ") has a valueSize (" + originSize
                         + ") which is higher than Integer.MAX_VALUE.");
             }
             // Destinations in the "matrix" need to be entities and values (not ElementRefs!) because that's what
             // the NearbyDistanceMeter is able to measure.
             Function<Origin_, Iterator<Destination_>> destinationIteratorProvider =
-                    origin -> (Iterator<Destination_>) Stream.concat(
-                            StreamSupport.stream(Spliterators.spliterator(childEntitySelector.endingIterator(),
-                                    childEntitySelector.getSize(), 0), false),
-                            StreamSupport.stream(Spliterators.spliterator(childValueSelector.endingIterator(),
-                                    childValueSelector.getSize(), 0), false))
-                            .iterator();
+                    origin -> (Iterator<Destination_>) childDestinationSelector.endingIterator();
             NearbyDistanceMatrix<Origin_, Destination_> nearbyDistanceMatrix =
                     new NearbyDistanceMatrix<>(meter, (int) originSize, destinationIteratorProvider, destinationSizeFunction);
-            // Replaying selector's ending iterator will use the recording selector's ending iterator. Since list variables
+            // Replaying selector's ending iterator uses the recording selector's ending iterator. Since list variables
             // use entity independent value selectors, we can pass null here.
             replayingOriginValueSelector.endingIterator(null)
                     .forEachRemaining(origin -> nearbyDistanceMatrix.addAllDestinations((Origin_) origin));
@@ -116,13 +100,12 @@ public final class ListNearbyDistanceMatrixDemand<Solution_, Origin_, Destinatio
         }
         ListNearbyDistanceMatrixDemand<?, ?, ?> that = (ListNearbyDistanceMatrixDemand<?, ?, ?>) o;
         return Objects.equals(meter, that.meter)
-                && Objects.equals(replayingOriginValueSelector, that.replayingOriginValueSelector)
-                && Objects.equals(childEntitySelector, that.childEntitySelector)
-                && Objects.equals(childValueSelector, that.childValueSelector);
+                && Objects.equals(childDestinationSelector, that.childDestinationSelector)
+                && Objects.equals(replayingOriginValueSelector, that.replayingOriginValueSelector);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(meter, replayingOriginValueSelector, childEntitySelector, childValueSelector);
+        return Objects.hash(meter, childDestinationSelector, replayingOriginValueSelector);
     }
 }

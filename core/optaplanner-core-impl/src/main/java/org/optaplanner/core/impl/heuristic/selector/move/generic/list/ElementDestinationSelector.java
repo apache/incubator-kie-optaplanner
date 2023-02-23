@@ -2,10 +2,13 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.Objects;
+import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
@@ -97,8 +100,8 @@ public class ElementDestinationSelector<Solution_> extends AbstractSelector<Solu
 
                 @Override
                 public ElementRef next() {
-                    long size = entitySelector.getSize();
-                    if (RandomUtils.nextLong(workingRandom, totalSize) < size) {
+                    long entitySize = entitySelector.getSize();
+                    if (RandomUtils.nextLong(workingRandom, totalSize) < entitySize) {
                         return ElementRef.of(entityIterator.next(), 0);
                     }
                     Object value = valueIterator.next();
@@ -130,6 +133,42 @@ public class ElementDestinationSelector<Solution_> extends AbstractSelector<Solu
     @Override
     public boolean isNeverEnding() {
         return randomSelection || entitySelector.isNeverEnding() || valueSelector.isNeverEnding();
+    }
+
+    public ListVariableDescriptor<Solution_> getVariableDescriptor() {
+        return listVariableDescriptor;
+    }
+
+    public EntityDescriptor<Solution_> getEntityDescriptor() {
+        return entitySelector.getEntityDescriptor();
+    }
+
+    public Iterator<Object> endingIterator() {
+        return Stream.concat(
+                StreamSupport.stream(Spliterators.spliterator(entitySelector.endingIterator(),
+                        entitySelector.getSize(), 0), false),
+                StreamSupport.stream(Spliterators.spliterator(valueSelector.endingIterator(null),
+                        valueSelector.getSize(), 0), false))
+                .iterator();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ElementDestinationSelector<?> that = (ElementDestinationSelector<?>) o;
+        return randomSelection == that.randomSelection
+                && Objects.equals(entitySelector, that.entitySelector)
+                && Objects.equals(valueSelector, that.valueSelector);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(entitySelector, valueSelector, randomSelection);
     }
 
     @Override
