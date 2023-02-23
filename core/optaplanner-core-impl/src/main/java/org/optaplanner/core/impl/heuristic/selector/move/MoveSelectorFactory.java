@@ -19,6 +19,7 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListChan
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.kopt.KOptListMoveSelectorConfig;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.composite.CartesianProductMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.composite.UnionMoveSelectorFactory;
@@ -36,6 +37,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListChange
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListSwapMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListChangeMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListSwapMoveSelectorFactory;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt.KOptListMoveSelectorFactory;
 
 public interface MoveSelectorFactory<Solution_> {
 
@@ -72,6 +74,8 @@ public interface MoveSelectorFactory<Solution_> {
             return new MoveListFactoryFactory<>((MoveListFactoryConfig) moveSelectorConfig);
         } else if (KOptMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
             return new KOptMoveSelectorFactory<>((KOptMoveSelectorConfig) moveSelectorConfig);
+        } else if (KOptListMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
+            return new KOptListMoveSelectorFactory<>((KOptListMoveSelectorConfig) moveSelectorConfig);
         } else {
             throw new IllegalArgumentException(String.format("Unknown %s type: (%s).",
                     MoveSelectorConfig.class.getSimpleName(), moveSelectorConfig.getClass().getName()));

@@ -22,6 +22,7 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListChan
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListSwapMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.kopt.KOptListMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
 @XmlType(propOrder = {
@@ -36,6 +37,7 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
             @XmlElement(name = CartesianProductMoveSelectorConfig.XML_ELEMENT_NAME,
                     type = CartesianProductMoveSelectorConfig.class),
             @XmlElement(name = ChangeMoveSelectorConfig.XML_ELEMENT_NAME, type = ChangeMoveSelectorConfig.class),
+            @XmlElement(name = KOptListMoveSelectorConfig.XML_ELEMENT_NAME, type = KOptListMoveSelectorConfig.class),
             @XmlElement(name = ListChangeMoveSelectorConfig.XML_ELEMENT_NAME, type = ListChangeMoveSelectorConfig.class),
             @XmlElement(name = ListSwapMoveSelectorConfig.XML_ELEMENT_NAME, type = ListSwapMoveSelectorConfig.class),
             @XmlElement(name = MoveIteratorFactoryConfig.XML_ELEMENT_NAME, type = MoveIteratorFactoryConfig.class),
