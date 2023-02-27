@@ -11,6 +11,7 @@ environments:
       QUARKUS_BRANCH: main
     ids:
     - quarkus
+    enabled: false
   quarkus-branch:
     env_vars:
       QUARKUS_BRANCH: '3.0'
@@ -18,7 +19,6 @@ environments:
     ids:
     - quarkus
   quarkus-lts:
-    # TODO: upgrade with Quarkus 3
     enabled: false
     env_vars:
       BUILD_MVN_OPTS: -Dproductized
@@ -44,19 +44,12 @@ environments:
     auto_generation: false
     ids:
     - ecosystem
-productized_branch: true
+productized_branch: false
 disable:
   triggers: false
 repositories:
 - name: optaplanner
-  branch: 9.x
-# TODO: enable after migrating the optaweb and quickstarts to OptaPlanner 9  
-#- name: optaweb-vehicle-routing
-#  branch: main
-#- name: optaplanner-quickstarts
-#  branch: development
-#- name: optaplanner-website
-#  branch: main
+  branch: 9.35.x
 git:
   author:
     name: kiegroup
