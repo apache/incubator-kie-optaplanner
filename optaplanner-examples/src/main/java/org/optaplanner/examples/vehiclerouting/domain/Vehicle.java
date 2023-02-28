@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @PlanningEntity
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class Vehicle extends AbstractPersistable implements CustomerOrVehicle {
+public class Vehicle extends AbstractPersistable implements LocationAware {
 
     protected int capacity;
     protected Depot depot;

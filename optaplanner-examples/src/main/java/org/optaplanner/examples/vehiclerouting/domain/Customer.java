@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = JacksonUniqueIdGenerator.class)
-public class Customer extends AbstractPersistable implements CustomerOrVehicle {
+public class Customer extends AbstractPersistable implements LocationAware {
 
     protected Location location;
     protected int demand;
