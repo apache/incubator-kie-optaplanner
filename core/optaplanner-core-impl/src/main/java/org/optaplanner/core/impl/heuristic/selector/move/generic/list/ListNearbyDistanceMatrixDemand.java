@@ -78,7 +78,7 @@ public final class ListNearbyDistanceMatrixDemand<Solution_, Origin_, Destinatio
     }
 
     /**
-     * Two instances of this class are consider equal if and only if:
+     * Two instances of this class are considered equal if and only if:
      *
      * <ul>
      * <li>Their meter instances are equal.</li>
