@@ -4,7 +4,6 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.DestinationSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelectorFactory;
@@ -37,8 +36,8 @@ public final class DestinationSelectorFactory<Solution_> extends AbstractSelecto
         ElementDestinationSelector<Solution_> baseDestinationSelector =
                 buildBaseDestinationSelector(configPolicy, minimumCacheType, selectionOrder);
 
-        DestinationSelector<Solution_> destinationSelector = applyNearbySelection(configPolicy,
-                config.getNearbySelectionConfig(), minimumCacheType, selectionOrder, baseDestinationSelector);
+        DestinationSelector<Solution_> destinationSelector =
+                applyNearbySelection(configPolicy, minimumCacheType, selectionOrder, baseDestinationSelector);
 
         return destinationSelector;
     }
@@ -83,20 +82,21 @@ public final class DestinationSelectorFactory<Solution_> extends AbstractSelecto
     }
 
     private DestinationSelector<Solution_> applyNearbySelection(
-            HeuristicConfigPolicy<Solution_> configPolicy, NearbySelectionConfig nearbySelectionConfig,
-            SelectionCacheType minimumCacheType, SelectionOrder resolvedSelectionOrder,
+            HeuristicConfigPolicy<Solution_> configPolicy,
+            SelectionCacheType minimumCacheType,
+            SelectionOrder resolvedSelectionOrder,
             ElementDestinationSelector<Solution_> destinationSelector) {
-        if (config.getNearbySelectionConfig() == null) {
+        NearbySelectionConfig nearbySelectionConfig = config.getNearbySelectionConfig();
+        if (nearbySelectionConfig == null) {
             return destinationSelector;
         }
 
+        nearbySelectionConfig.validateNearby(minimumCacheType, resolvedSelectionOrder);
+
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
 
-        ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig()
-                .withMimicSelectorRef(nearbySelectionConfig.getOriginValueSelectorConfig().getMimicSelectorRef());
-
         ValueSelector<Solution_> originValueSelector = ValueSelectorFactory
-                .<Solution_> create(valueSelectorConfig)
+                .<Solution_> create(nearbySelectionConfig.getOriginValueSelectorConfig())
                 .buildValueSelector(configPolicy, destinationSelector.getEntityDescriptor(), minimumCacheType,
                         resolvedSelectionOrder);
 
@@ -104,8 +104,7 @@ public final class DestinationSelectorFactory<Solution_> extends AbstractSelecto
                 configPolicy.getClassInstanceCache().newInstance(nearbySelectionConfig,
                         "nearbyDistanceMeterClass", nearbySelectionConfig.getNearbyDistanceMeterClass());
         // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
-        NearbyRandom nearbyRandom =
-                NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(randomSelection);
+        NearbyRandom nearbyRandom = NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(randomSelection);
         return new NearValueNearbyDestinationSelector<>(
                 destinationSelector,
                 ((EntityIndependentValueSelector<Solution_>) originValueSelector),
