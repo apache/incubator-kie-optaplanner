@@ -11,6 +11,7 @@ import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfi
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.DestinationSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -39,14 +40,8 @@ public class ChangeMoveSelectorFactory<Solution_>
     @Override
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        if (config.getEntitySelectorConfig() == null) {
-            throw new IllegalStateException("The entitySelectorConfig (" + config.getEntitySelectorConfig()
-                    + ") should haven been initialized during unfolding.");
-        }
-        if (config.getValueSelectorConfig() == null) {
-            throw new IllegalStateException("The valueSelectorConfig (" + config.getValueSelectorConfig()
-                    + ") should haven been initialized during unfolding.");
-        }
+        checkUnfolded("entitySelectorConfig", config.getEntitySelectorConfig());
+        checkUnfolded("valueSelectorConfig", config.getValueSelectorConfig());
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
         EntitySelector<Solution_> entitySelector = EntitySelectorFactory
                 .<Solution_> create(config.getEntitySelectorConfig())
@@ -134,7 +129,10 @@ public class ChangeMoveSelectorFactory<Solution_>
                 + " but it will be removed in the next major release.\n"
                 + "Please update your solver config to use ListChangeMoveSelectorConfig now.");
         ListChangeMoveSelectorConfig listChangeMoveSelectorConfig = ListChangeMoveSelectorFactory.buildChildMoveSelectorConfig(
-                variableDescriptor, config.getEntitySelectorConfig(), config.getValueSelectorConfig());
+                variableDescriptor, config.getValueSelectorConfig(),
+                new DestinationSelectorConfig()
+                        .withEntitySelectorConfig(config.getEntitySelectorConfig())
+                        .withValueSelectorConfig(config.getValueSelectorConfig()));
         if (inheritFoldedConfig) {
             listChangeMoveSelectorConfig.inheritFolded(config);
         }

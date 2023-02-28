@@ -902,6 +902,9 @@
           <xs:element minOccurs="0" name="originEntitySelector" type="tns:entitySelectorConfig"/>
                               
           
+          <xs:element minOccurs="0" name="originValueSelector" type="tns:valueSelectorConfig"/>
+                              
+          
           <xs:element minOccurs="0" name="nearbyDistanceMeterClass" type="xs:string"/>
                               
           
@@ -933,6 +936,75 @@
                             
         
         </xs:sequence>
+                      
+      
+      </xs:extension>
+                
+    
+    </xs:complexContent>
+          
+  
+  </xs:complexType>
+      
+  
+  <xs:complexType name="valueSelectorConfig">
+            
+    
+    <xs:complexContent>
+                  
+      
+      <xs:extension base="tns:selectorConfig">
+                        
+        
+        <xs:sequence>
+                              
+          
+          <xs:element minOccurs="0" name="downcastEntityClass" type="xs:string"/>
+                              
+          
+          <xs:element minOccurs="0" name="cacheType" type="tns:selectionCacheType"/>
+                              
+          
+          <xs:element minOccurs="0" name="selectionOrder" type="tns:selectionOrder"/>
+                              
+          
+          <xs:element minOccurs="0" name="nearbySelection" type="tns:nearbySelectionConfig"/>
+                              
+          
+          <xs:element minOccurs="0" name="filterClass" type="xs:string"/>
+                              
+          
+          <xs:element minOccurs="0" name="sorterManner" type="tns:valueSorterManner"/>
+                              
+          
+          <xs:element minOccurs="0" name="sorterComparatorClass" type="xs:string"/>
+                              
+          
+          <xs:element minOccurs="0" name="sorterWeightFactoryClass" type="xs:string"/>
+                              
+          
+          <xs:element minOccurs="0" name="sorterOrder" type="tns:selectionSorterOrder"/>
+                              
+          
+          <xs:element minOccurs="0" name="sorterClass" type="xs:string"/>
+                              
+          
+          <xs:element minOccurs="0" name="probabilityWeightFactoryClass" type="xs:string"/>
+                              
+          
+          <xs:element minOccurs="0" name="selectedCountLimit" type="xs:long"/>
+                            
+        
+        </xs:sequence>
+                        
+        
+        <xs:attribute name="id" type="xs:string"/>
+                        
+        
+        <xs:attribute name="mimicSelectorRef" type="xs:string"/>
+                        
+        
+        <xs:attribute name="variableName" type="xs:string"/>
                       
       
       </xs:extension>
@@ -1109,75 +1181,6 @@
   </xs:complexType>
       
   
-  <xs:complexType name="valueSelectorConfig">
-            
-    
-    <xs:complexContent>
-                  
-      
-      <xs:extension base="tns:selectorConfig">
-                        
-        
-        <xs:sequence>
-                              
-          
-          <xs:element minOccurs="0" name="downcastEntityClass" type="xs:string"/>
-                              
-          
-          <xs:element minOccurs="0" name="cacheType" type="tns:selectionCacheType"/>
-                              
-          
-          <xs:element minOccurs="0" name="selectionOrder" type="tns:selectionOrder"/>
-                              
-          
-          <xs:element minOccurs="0" name="nearbySelection" type="tns:nearbySelectionConfig"/>
-                              
-          
-          <xs:element minOccurs="0" name="filterClass" type="xs:string"/>
-                              
-          
-          <xs:element minOccurs="0" name="sorterManner" type="tns:valueSorterManner"/>
-                              
-          
-          <xs:element minOccurs="0" name="sorterComparatorClass" type="xs:string"/>
-                              
-          
-          <xs:element minOccurs="0" name="sorterWeightFactoryClass" type="xs:string"/>
-                              
-          
-          <xs:element minOccurs="0" name="sorterOrder" type="tns:selectionSorterOrder"/>
-                              
-          
-          <xs:element minOccurs="0" name="sorterClass" type="xs:string"/>
-                              
-          
-          <xs:element minOccurs="0" name="probabilityWeightFactoryClass" type="xs:string"/>
-                              
-          
-          <xs:element minOccurs="0" name="selectedCountLimit" type="xs:long"/>
-                            
-        
-        </xs:sequence>
-                        
-        
-        <xs:attribute name="id" type="xs:string"/>
-                        
-        
-        <xs:attribute name="mimicSelectorRef" type="xs:string"/>
-                        
-        
-        <xs:attribute name="variableName" type="xs:string"/>
-                      
-      
-      </xs:extension>
-                
-    
-    </xs:complexContent>
-          
-  
-  </xs:complexType>
-      
-  
   <xs:complexType name="kOptListMoveSelectorConfig">
             
     
@@ -1223,7 +1226,40 @@
           <xs:element minOccurs="0" name="valueSelector" type="tns:valueSelectorConfig"/>
                               
           
+          <xs:element minOccurs="0" name="destinationSelector" type="tns:destinationSelectorConfig"/>
+                            
+        
+        </xs:sequence>
+                      
+      
+      </xs:extension>
+                
+    
+    </xs:complexContent>
+          
+  
+  </xs:complexType>
+      
+  
+  <xs:complexType name="destinationSelectorConfig">
+            
+    
+    <xs:complexContent>
+                  
+      
+      <xs:extension base="tns:selectorConfig">
+                        
+        
+        <xs:sequence>
+                              
+          
           <xs:element minOccurs="0" name="entitySelector" type="tns:entitySelectorConfig"/>
+                              
+          
+          <xs:element minOccurs="0" name="valueSelector" type="tns:valueSelectorConfig"/>
+                              
+          
+          <xs:element minOccurs="0" name="nearbySelection" type="tns:nearbySelectionConfig"/>
                             
         
         </xs:sequence>
@@ -2657,6 +2693,24 @@
   </xs:simpleType>
       
   
+  <xs:simpleType name="selectionSorterOrder">
+            
+    
+    <xs:restriction base="xs:string">
+                  
+      
+      <xs:enumeration value="ASCENDING"/>
+                  
+      
+      <xs:enumeration value="DESCENDING"/>
+                
+    
+    </xs:restriction>
+          
+  
+  </xs:simpleType>
+      
+  
   <xs:simpleType name="nearbySelectionDistributionType">
             
     
@@ -2673,24 +2727,6 @@
                   
       
       <xs:enumeration value="BETA_DISTRIBUTION"/>
-                
-    
-    </xs:restriction>
-          
-  
-  </xs:simpleType>
-      
-  
-  <xs:simpleType name="selectionSorterOrder">
-            
-    
-    <xs:restriction base="xs:string">
-                  
-      
-      <xs:enumeration value="ASCENDING"/>
-                  
-      
-      <xs:enumeration value="DESCENDING"/>
                 
     
     </xs:restriction>

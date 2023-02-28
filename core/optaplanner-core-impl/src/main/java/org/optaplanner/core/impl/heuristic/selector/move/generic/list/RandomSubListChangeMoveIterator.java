@@ -18,7 +18,7 @@ class RandomSubListChangeMoveIterator<Solution_> extends UpcomingSelectionIterat
     RandomSubListChangeMoveIterator(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
             RandomSubListSelector<Solution_> subListSelector,
-            ElementDestinationSelector<Solution_> destinationSelector,
+            DestinationSelector<Solution_> destinationSelector,
             Random workingRandom,
             boolean selectReversingMoveToo) {
         this.listVariableDescriptor = listVariableDescriptor;

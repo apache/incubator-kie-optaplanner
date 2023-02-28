@@ -12,6 +12,7 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.DestinationSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -140,9 +141,12 @@ class ChangeMoveSelectorFactoryTest {
         assertThat(listChangeMoveSelectorConfig.getCacheType()).isEqualTo(moveSelectorCacheType);
         assertThat(listChangeMoveSelectorConfig.getSelectedCountLimit()).isEqualTo(selectedCountLimit);
 
-        EntitySelectorConfig entitySelectorConfig = listChangeMoveSelectorConfig.getEntitySelectorConfig();
+        DestinationSelectorConfig destinationSelectorConfig = listChangeMoveSelectorConfig.getDestinationSelectorConfig();
+        EntitySelectorConfig entitySelectorConfig = destinationSelectorConfig.getEntitySelectorConfig();
         assertThat(entitySelectorConfig.getEntityClass()).isEqualTo(TestdataListEntity.class);
         assertThat(entitySelectorConfig.getSorterComparatorClass()).isEqualTo(DummyEntityComparator.class);
+        ValueSelectorConfig valueSelectorConfig = destinationSelectorConfig.getValueSelectorConfig();
+        assertThat(valueSelectorConfig.getVariableName()).isEqualTo("valueList");
     }
 
     static class DummyEntityComparator implements Comparator<TestdataListEntity> {

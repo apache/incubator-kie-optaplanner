@@ -26,10 +26,11 @@ class NearbySelectionConfigTest {
     private static final String ENTITY_SELECTOR_ID = "entitySelector";
 
     @Test
-    void withNoOriginEntitySelectorConfig() {
+    void withNoOriginSelectorConfig() {
         NearbySelectionConfig nearbySelectionConfig = new NearbySelectionConfig();
         assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.validateNearby(JUST_IN_TIME, ORIGINAL))
-                .withMessageContaining("originEntitySelectorConfig");
+                .withMessageContaining("originEntitySelectorConfig")
+                .withMessageContaining("originValueSelectorConfig");
     }
 
     @Test
