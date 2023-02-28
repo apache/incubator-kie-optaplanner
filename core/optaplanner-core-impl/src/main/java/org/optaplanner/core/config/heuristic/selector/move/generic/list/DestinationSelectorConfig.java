@@ -96,6 +96,12 @@ public class DestinationSelectorConfig extends SelectorConfig<DestinationSelecto
 
     @Override
     public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        if (entitySelectorConfig != null) {
+            entitySelectorConfig.visitReferencedClasses(classVisitor);
+        }
+        if (valueSelectorConfig != null) {
+            valueSelectorConfig.visitReferencedClasses(classVisitor);
+        }
         if (nearbySelectionConfig != null) {
             nearbySelectionConfig.visitReferencedClasses(classVisitor);
         }
