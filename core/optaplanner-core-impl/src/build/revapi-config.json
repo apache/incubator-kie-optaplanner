@@ -1027,7 +1027,7 @@
           "new": "class org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig",
           "annotationType": "javax.xml.bind.annotation.XmlType",
           "attribute": "propOrder",
-          "justification": "TODO: ADD YOUR EXPLANATION FOR THE NECESSITY OF THIS CHANGE"
+          "justification": "Add new origin selector attributes to support nearby selection for list move selectors."
         }
       ]
     }
