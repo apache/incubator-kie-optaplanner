@@ -62,15 +62,24 @@ public class DestinationSelectorConfig extends SelectorConfig<DestinationSelecto
     // With methods
     // ************************************************************************
 
+    public DestinationSelectorConfig withEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
+        this.setEntitySelectorConfig(entitySelectorConfig);
+        return this;
+    }
+
     public DestinationSelectorConfig withValueSelectorConfig(ValueSelectorConfig valueSelectorConfig) {
         this.setValueSelectorConfig(valueSelectorConfig);
         return this;
     }
 
-    public DestinationSelectorConfig withEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
-        this.setEntitySelectorConfig(entitySelectorConfig);
+    public DestinationSelectorConfig withNearbySelectionConfig(NearbySelectionConfig nearbySelectionConfig) {
+        this.setNearbySelectionConfig(nearbySelectionConfig);
         return this;
     }
+
+    // ************************************************************************
+    // Builder methods
+    // ************************************************************************
 
     @Override
     public DestinationSelectorConfig inherit(DestinationSelectorConfig inheritedConfig) {
