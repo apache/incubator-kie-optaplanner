@@ -6,7 +6,6 @@ import static org.mockito.Mockito.verify;
 import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt.KOptUtils.getBetweenPredicate;
 import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt.KOptUtils.getSuccessorFunction;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -48,7 +47,7 @@ class KOptListMoveTest {
         IndexVariableSupply indexVariableSupply =
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor));
         IndexVariableListener indexVariableListener = (IndexVariableListener) indexVariableSupply;
-        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(List.of(v1, v2, v3, v4, v5, v6)));
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4, v5, v6);
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 6);
         KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
                 indexVariableSupply,
@@ -78,7 +77,7 @@ class KOptListMoveTest {
         IndexVariableSupply indexVariableSupply =
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor));
         IndexVariableListener indexVariableListener = (IndexVariableListener) indexVariableSupply;
-        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(List.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10)));
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 6);
         KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
                 indexVariableSupply,
@@ -108,8 +107,7 @@ class KOptListMoveTest {
         IndexVariableSupply indexVariableSupply =
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor));
         IndexVariableListener indexVariableListener = (IndexVariableListener) indexVariableSupply;
-        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(
-                List.of(v1, v2, v3, v4, v5, v6, v7, v8)));
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4, v5, v6, v7, v8);
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 
@@ -147,8 +145,7 @@ class KOptListMoveTest {
         IndexVariableSupply indexVariableSupply =
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor));
         IndexVariableListener indexVariableListener = (IndexVariableListener) indexVariableSupply;
-        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(
-                List.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12)));
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12);
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
         KOptListMove<TestdataListSolution, TestdataListValue> kOptListMove = fromRemovedAndAddedEdges(variableDescriptor,
@@ -184,8 +181,7 @@ class KOptListMoveTest {
         IndexVariableSupply indexVariableSupply =
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor));
         IndexVariableListener indexVariableListener = (IndexVariableListener) indexVariableSupply;
-        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(
-                List.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12)));
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12);
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 
@@ -232,8 +228,7 @@ class KOptListMoveTest {
         IndexVariableSupply indexVariableSupply =
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor));
         IndexVariableListener indexVariableListener = (IndexVariableListener) indexVariableSupply;
-        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(
-                List.of(v1, v2, v3, v4, v5, v6, v7, v8)));
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4, v5, v6, v7, v8);
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 
@@ -270,8 +265,7 @@ class KOptListMoveTest {
         IndexVariableSupply indexVariableSupply =
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor));
         IndexVariableListener indexVariableListener = (IndexVariableListener) indexVariableSupply;
-        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(
-                List.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12)));
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12);
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 
@@ -310,8 +304,7 @@ class KOptListMoveTest {
         IndexVariableSupply indexVariableSupply =
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(variableDescriptor));
         IndexVariableListener indexVariableListener = (IndexVariableListener) indexVariableSupply;
-        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(
-                List.of(v1, v2, v3, v4, v5, v6, v7, v8)));
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v3, v4, v5, v6, v7, v8);
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 
@@ -331,8 +324,7 @@ class KOptListMoveTest {
         // this move create 1 cycle (v1 -> v5 -> v4 -> v2 -> v3 -> v7 -> v6 -> v8 -> v1 -> ...)
         assertThat(kOptListMove.isMoveDoable(scoreDirector)).isTrue();
 
-        e1 = new TestdataListEntity("e1", new ArrayList<>(
-                List.of(v1, v2, v3, v4, v8, v7, v5, v6)));
+        e1 = new TestdataListEntity("e1", v1, v2, v3, v4, v8, v7, v5, v6);
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 

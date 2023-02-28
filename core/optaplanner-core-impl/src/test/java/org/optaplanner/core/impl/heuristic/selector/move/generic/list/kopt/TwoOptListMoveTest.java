@@ -5,9 +5,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -42,8 +39,7 @@ class TwoOptListMoveTest {
         TestdataListValue v6 = new TestdataListValue("6");
         TestdataListValue v7 = new TestdataListValue("7");
         TestdataListValue v8 = new TestdataListValue("8");
-        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(
-                List.of(v1, v2, v5, v4, v3, v6, v7, v8)));
+        TestdataListEntity e1 = new TestdataListEntity("e1", v1, v2, v5, v4, v3, v6, v7, v8);
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 
@@ -74,8 +70,7 @@ class TwoOptListMoveTest {
         TestdataListValue v6 = new TestdataListValue("6");
         TestdataListValue v7 = new TestdataListValue("7");
         TestdataListValue v8 = new TestdataListValue("8");
-        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(
-                List.of(v8, v7, v3, v4, v5, v6, v2, v1)));
+        TestdataListEntity e1 = new TestdataListEntity("e1", v8, v7, v3, v4, v5, v6, v2, v1);
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 
@@ -105,8 +100,7 @@ class TwoOptListMoveTest {
         TestdataListValue v5 = new TestdataListValue("5");
         TestdataListValue v6 = new TestdataListValue("6");
         TestdataListValue v7 = new TestdataListValue("7");
-        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(
-                List.of(v5, v2, v3, v4, v1, v7, v6)));
+        TestdataListEntity e1 = new TestdataListEntity("e1", v5, v2, v3, v4, v1, v7, v6);
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 
@@ -136,8 +130,7 @@ class TwoOptListMoveTest {
         TestdataListValue v5 = new TestdataListValue("5");
         TestdataListValue v6 = new TestdataListValue("6");
         TestdataListValue v7 = new TestdataListValue("7");
-        TestdataListEntity e1 = new TestdataListEntity("e1", new ArrayList<>(
-                List.of(v2, v1, v7, v4, v5, v6, v3)));
+        TestdataListEntity e1 = new TestdataListEntity("e1", v2, v1, v7, v4, v5, v6, v3);
 
         indexVariableListener.afterListVariableChanged(scoreDirector, e1, 0, 8);
 
