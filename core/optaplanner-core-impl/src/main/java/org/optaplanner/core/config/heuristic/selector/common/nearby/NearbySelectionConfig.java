@@ -1,6 +1,8 @@
 package org.optaplanner.core.config.heuristic.selector.common.nearby;
 
+import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
@@ -145,13 +147,87 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
         this.betaDistributionBeta = betaDistributionBeta;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public NearbySelectionConfig withOriginEntitySelectorConfig(EntitySelectorConfig originEntitySelectorConfig) {
+        this.setOriginEntitySelectorConfig(originEntitySelectorConfig);
+        return this;
+    }
+
+    public NearbySelectionConfig withOriginValueSelectorConfig(ValueSelectorConfig originValueSelectorConfig) {
+        this.setOriginValueSelectorConfig(originValueSelectorConfig);
+        return this;
+    }
+
+    public NearbySelectionConfig withNearbyDistanceMeterClass(Class<? extends NearbyDistanceMeter> nearbyDistanceMeterClass) {
+        this.setNearbyDistanceMeterClass(nearbyDistanceMeterClass);
+        return this;
+    }
+
+    public NearbySelectionConfig
+            withNearbySelectionDistributionType(NearbySelectionDistributionType nearbySelectionDistributionType) {
+        this.setNearbySelectionDistributionType(nearbySelectionDistributionType);
+        return this;
+    }
+
+    public NearbySelectionConfig withBlockDistributionSizeMinimum(Integer blockDistributionSizeMinimum) {
+        this.setBlockDistributionSizeMinimum(blockDistributionSizeMinimum);
+        return this;
+    }
+
+    public NearbySelectionConfig withBlockDistributionSizeMaximum(Integer blockDistributionSizeMaximum) {
+        this.setBlockDistributionSizeMaximum(blockDistributionSizeMaximum);
+        return this;
+    }
+
+    public NearbySelectionConfig withBlockDistributionSizeRatio(Double blockDistributionSizeRatio) {
+        this.setBlockDistributionSizeRatio(blockDistributionSizeRatio);
+        return this;
+    }
+
+    public NearbySelectionConfig
+            withBlockDistributionUniformDistributionProbability(Double blockDistributionUniformDistributionProbability) {
+        this.setBlockDistributionUniformDistributionProbability(blockDistributionUniformDistributionProbability);
+        return this;
+    }
+
+    public NearbySelectionConfig withLinearDistributionSizeMaximum(Integer linearDistributionSizeMaximum) {
+        this.setLinearDistributionSizeMaximum(linearDistributionSizeMaximum);
+        return this;
+    }
+
+    public NearbySelectionConfig withParabolicDistributionSizeMaximum(Integer parabolicDistributionSizeMaximum) {
+        this.setParabolicDistributionSizeMaximum(parabolicDistributionSizeMaximum);
+        return this;
+    }
+
+    public NearbySelectionConfig withBetaDistributionAlpha(Double betaDistributionAlpha) {
+        this.setBetaDistributionAlpha(betaDistributionAlpha);
+        return this;
+    }
+
+    public NearbySelectionConfig withBetaDistributionBeta(Double betaDistributionBeta) {
+        this.setBetaDistributionBeta(betaDistributionBeta);
+        return this;
+    }
+
+    // ************************************************************************
+    // Builder methods
+    // ************************************************************************
+
     public void validateNearby(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder) {
-        // TODO must use exactly one origin selector config
-        if (originEntitySelectorConfig == null && originValueSelectorConfig == null) {
+        long originSelectorCount = Stream.of(originEntitySelectorConfig, originValueSelectorConfig)
+                .filter(Objects::nonNull)
+                .count();
+        if (originSelectorCount == 0) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
-                    + ") is nearby selection"
-                    + " but lacks an originEntitySelectorConfig (" + originEntitySelectorConfig
-                    + ") or an originValueSelectorConfig (" + originValueSelectorConfig + ").");
+                    + ") is nearby selection but lacks an origin selector config."
+                    + " Set one of originEntitySelectorConfig or originValueSelectorConfig.");
+        } else if (originSelectorCount > 1) {
+            throw new IllegalArgumentException("The nearbySelectorConfig (" + this + ") has multiple origin selector configs"
+                    + " but exactly one of originEntitySelectorConfig or originValueSelectorConfig is expected.");
         }
         if (originEntitySelectorConfig != null &&
                 originEntitySelectorConfig.getMimicSelectorRef() == null) {
@@ -229,6 +305,9 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
     public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
         if (originEntitySelectorConfig != null) {
             originEntitySelectorConfig.visitReferencedClasses(classVisitor);
+        }
+        if (originValueSelectorConfig != null) {
+            originValueSelectorConfig.visitReferencedClasses(classVisitor);
         }
         classVisitor.accept(nearbyDistanceMeterClass);
     }
