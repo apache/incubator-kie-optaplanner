@@ -17,6 +17,8 @@ public class JakartaHibernateMigrationRecipe extends Recipe {
     private static final String HIBERNATE_GROUP_ID = "org.hibernate";
     private static final String HIBERNATE_ARTIFACT_ID = "hibernate-core";
 
+    private static final String HIBERNATE_6_GROUP_ID = "org.hibernate.orm";
+
     @Override
     public String getDisplayName() {
         return "Migrate hibernate artifacts to Jakarta";
@@ -24,7 +26,7 @@ public class JakartaHibernateMigrationRecipe extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Migrates 'org.hibernate:hibernate-core' to 'org.hibernate:hibernate-core-jakarta'.";
+        return "Migrates 'org.hibernate:hibernate-core' to jakarta by removing unnecessary exclusions.";
     }
 
     @Override
@@ -43,11 +45,9 @@ public class JakartaHibernateMigrationRecipe extends Recipe {
                             (exclusionGroupId, exclusionArtifactId) -> doNext(
                                     new RemoveExclusion(HIBERNATE_GROUP_ID, HIBERNATE_ARTIFACT_ID,
                                             exclusionGroupId, exclusionArtifactId, false)));
-
                     doNext(new ChangeDependencyGroupIdAndArtifactId(HIBERNATE_GROUP_ID, HIBERNATE_ARTIFACT_ID,
-                            HIBERNATE_GROUP_ID, HIBERNATE_ARTIFACT_ID + "-jakarta", null, null));
+                            HIBERNATE_6_GROUP_ID, HIBERNATE_ARTIFACT_ID, null, null));
                 }
-
                 return super.visitTag(tag, executionContext);
             }
 
