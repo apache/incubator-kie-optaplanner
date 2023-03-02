@@ -7,6 +7,7 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
+import org.optaplanner.core.impl.AbstractFromConfigFactory;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
@@ -18,20 +19,18 @@ import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValue
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
-public class SubListSelectorFactory<Solution_> {
+public final class SubListSelectorFactory<Solution_> extends AbstractFromConfigFactory<Solution_, SubListSelectorConfig> {
 
     private static final int DEFAULT_MINIMUM_SUB_LIST_SIZE = 1;
     private static final int DEFAULT_MAXIMUM_SUB_LIST_SIZE = Integer.MAX_VALUE;
 
-    public SubListSelectorFactory(SubListSelectorConfig config) {
-        this.config = config;
+    private SubListSelectorFactory(SubListSelectorConfig config) {
+        super(config);
     }
 
     public static <Solution_> SubListSelectorFactory<Solution_> create(SubListSelectorConfig subListSelectorConfig) {
         return new SubListSelectorFactory<>(subListSelectorConfig);
     }
-
-    private final SubListSelectorConfig config;
 
     public SubListSelector<Solution_> buildSubListSelector(
             HeuristicConfigPolicy<Solution_> configPolicy,
@@ -59,7 +58,7 @@ public class SubListSelectorFactory<Solution_> {
         return subListSelector;
     }
 
-    protected SubListSelector<Solution_> buildMimicReplaying(HeuristicConfigPolicy<Solution_> configPolicy) {
+    SubListSelector<Solution_> buildMimicReplaying(HeuristicConfigPolicy<Solution_> configPolicy) {
         if (config.getId() != null
                 || config.getMinimumSubListSize() != null
                 || config.getMaximumSubListSize() != null
