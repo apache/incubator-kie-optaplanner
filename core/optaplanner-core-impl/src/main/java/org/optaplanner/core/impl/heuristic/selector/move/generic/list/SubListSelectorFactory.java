@@ -98,7 +98,7 @@ public class SubListSelectorFactory<Solution_> {
             HeuristicConfigPolicy<Solution_> configPolicy, EntityDescriptor<Solution_> entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory
-                // TODO unfold?
+                // TODO remove else-get when SubListSwapMoveSelectorFactory unfolds
                 .<Solution_> create(Objects.requireNonNullElseGet(config.getValueSelectorConfig(), ValueSelectorConfig::new))
                 .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
