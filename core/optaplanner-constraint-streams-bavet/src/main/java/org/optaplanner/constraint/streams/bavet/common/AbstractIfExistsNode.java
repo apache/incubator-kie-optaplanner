@@ -176,7 +176,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         }
     }
 
-    private final void doRetractCounter(ExistsCounter<LeftTuple_> counter) {
+    private void doRetractCounter(ExistsCounter<LeftTuple_> counter) {
         switch (counter.state) {
             case CREATING:
                 // Kill it before it propagates
