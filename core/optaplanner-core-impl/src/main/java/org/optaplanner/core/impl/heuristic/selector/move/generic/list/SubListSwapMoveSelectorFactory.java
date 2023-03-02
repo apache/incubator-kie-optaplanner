@@ -7,6 +7,7 @@ import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
@@ -42,11 +43,13 @@ public class SubListSwapMoveSelectorFactory<Solution_>
 
         ListVariableDescriptor<Solution_> listVariableDescriptor = (ListVariableDescriptor<Solution_>) variableDescriptor;
 
-        SubListSelectorFactory<Solution_> subListSelectorFactory = SubListSelectorFactory.create(config);
-        RandomSubListSelector<Solution_> leftSubListSelector = subListSelectorFactory
-                .buildSubListSelector(configPolicy, listVariableDescriptor, entitySelector, minimumCacheType, selectionOrder);
-        RandomSubListSelector<Solution_> rightSubListSelector = subListSelectorFactory
-                .buildSubListSelector(configPolicy, listVariableDescriptor, entitySelector, minimumCacheType, selectionOrder);
+        SubListSelectorConfig subListSelectorConfig =
+                Objects.requireNonNullElseGet(config.getSubListSelectorConfig(), SubListSelectorConfig::new);
+        SubListSelectorFactory<Solution_> subListSelectorFactory = SubListSelectorFactory.create(subListSelectorConfig);
+        SubListSelector<Solution_> leftSubListSelector = subListSelectorFactory
+                .buildSubListSelector(configPolicy, entitySelector, minimumCacheType, selectionOrder);
+        SubListSelector<Solution_> rightSubListSelector = subListSelectorFactory
+                .buildSubListSelector(configPolicy, entitySelector, minimumCacheType, selectionOrder);
 
         boolean selectReversingMoveToo = Objects.requireNonNullElse(config.getSelectReversingMoveToo(), true);
 

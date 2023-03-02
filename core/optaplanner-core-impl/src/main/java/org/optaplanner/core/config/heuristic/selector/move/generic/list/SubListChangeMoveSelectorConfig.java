@@ -2,6 +2,7 @@ package org.optaplanner.core.config.heuristic.selector.move.generic.list;
 
 import java.util.function.Consumer;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
@@ -10,18 +11,23 @@ import org.optaplanner.core.config.util.ConfigUtils;
 @XmlType(propOrder = {
         "minimumSubListSize",
         "maximumSubListSize",
-        "selectReversingMoveToo"
+        "selectReversingMoveToo",
+        "subListSelectorConfig",
+        "destinationSelectorConfig"
 })
-public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListChangeMoveSelectorConfig>
-        implements SubListSelectorConfig {
+public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListChangeMoveSelectorConfig> {
 
     public static final String XML_ELEMENT_NAME = "subListChangeMoveSelector";
 
+    // TODO deprecate
     protected Integer minimumSubListSize = null;
     protected Integer maximumSubListSize = null;
     private Boolean selectReversingMoveToo = null;
+    @XmlElement(name = "subListSelector")
+    private SubListSelectorConfig subListSelectorConfig = null;
+    @XmlElement(name = "destinationSelector")
+    private DestinationSelectorConfig destinationSelectorConfig = null;
 
-    @Override
     public Integer getMinimumSubListSize() {
         return minimumSubListSize;
     }
@@ -30,7 +36,6 @@ public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListC
         this.minimumSubListSize = minimumSubListSize;
     }
 
-    @Override
     public Integer getMaximumSubListSize() {
         return maximumSubListSize;
     }
@@ -47,6 +52,40 @@ public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListC
         this.selectReversingMoveToo = selectReversingMoveToo;
     }
 
+    public SubListSelectorConfig getSubListSelectorConfig() {
+        return subListSelectorConfig;
+    }
+
+    public void setSubListSelectorConfig(SubListSelectorConfig subListSelectorConfig) {
+        this.subListSelectorConfig = subListSelectorConfig;
+    }
+
+    public DestinationSelectorConfig getDestinationSelectorConfig() {
+        return destinationSelectorConfig;
+    }
+
+    public void setDestinationSelectorConfig(DestinationSelectorConfig destinationSelectorConfig) {
+        this.destinationSelectorConfig = destinationSelectorConfig;
+    }
+
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public SubListChangeMoveSelectorConfig withSubListSelectorConfig(SubListSelectorConfig subListSelectorConfig) {
+        this.setSubListSelectorConfig(subListSelectorConfig);
+        return this;
+    }
+
+    public SubListChangeMoveSelectorConfig withDestinationSelectorConfig(DestinationSelectorConfig destinationSelectorConfig) {
+        this.setDestinationSelectorConfig(destinationSelectorConfig);
+        return this;
+    }
+
+    // ************************************************************************
+    // Builder methods
+    // ************************************************************************
+
     @Override
     public SubListChangeMoveSelectorConfig inherit(SubListChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
@@ -56,6 +95,10 @@ public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListC
                 ConfigUtils.inheritOverwritableProperty(maximumSubListSize, inheritedConfig.maximumSubListSize);
         this.selectReversingMoveToo =
                 ConfigUtils.inheritOverwritableProperty(selectReversingMoveToo, inheritedConfig.selectReversingMoveToo);
+        this.subListSelectorConfig =
+                ConfigUtils.inheritOverwritableProperty(subListSelectorConfig, inheritedConfig.subListSelectorConfig);
+        this.destinationSelectorConfig =
+                ConfigUtils.inheritOverwritableProperty(destinationSelectorConfig, inheritedConfig.destinationSelectorConfig);
         return this;
     }
 
@@ -67,10 +110,16 @@ public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListC
     @Override
     public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
         visitCommonReferencedClasses(classVisitor);
+        if (subListSelectorConfig != null) {
+            subListSelectorConfig.visitReferencedClasses(classVisitor);
+        }
+        if (destinationSelectorConfig != null) {
+            destinationSelectorConfig.visitReferencedClasses(classVisitor);
+        }
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "()";
+        return getClass().getSimpleName() + "(" + subListSelectorConfig + ", " + destinationSelectorConfig + ")";
     }
 }

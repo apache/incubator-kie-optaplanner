@@ -71,7 +71,6 @@ public final class ListNearbyDistanceMatrixDemand<Solution_, Origin_, Destinatio
             // use entity independent value selectors, we can pass null here.
             replayingOriginValueSelector.endingIterator(null)
                     .forEachRemaining(origin -> nearbyDistanceMatrix.addAllDestinations((Origin_) origin));
-
             return nearbyDistanceMatrix;
         };
         return new MemoizingSupply<>(supplier);

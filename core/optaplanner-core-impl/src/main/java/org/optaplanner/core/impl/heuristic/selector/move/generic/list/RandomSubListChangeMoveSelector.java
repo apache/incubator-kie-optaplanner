@@ -9,13 +9,13 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSele
 public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
-    private final RandomSubListSelector<Solution_> subListSelector;
+    private final SubListSelector<Solution_> subListSelector;
     private final DestinationSelector<Solution_> destinationSelector;
     private final boolean selectReversingMoveToo;
 
     public RandomSubListChangeMoveSelector(
             ListVariableDescriptor<Solution_> listVariableDescriptor,
-            RandomSubListSelector<Solution_> subListSelector,
+            SubListSelector<Solution_> subListSelector,
             DestinationSelector<Solution_> destinationSelector,
             boolean selectReversingMoveToo) {
         this.listVariableDescriptor = listVariableDescriptor;

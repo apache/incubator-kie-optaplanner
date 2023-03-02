@@ -11,6 +11,9 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.mimic.MimicRecordingSubListSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.mimic.MimicReplayingSubListSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.mimic.SubListMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
@@ -30,27 +33,76 @@ public class SubListSelectorFactory<Solution_> {
 
     private final SubListSelectorConfig config;
 
-    public RandomSubListSelector<Solution_> buildSubListSelector(
+    public SubListSelector<Solution_> buildSubListSelector(
             HeuristicConfigPolicy<Solution_> configPolicy,
-            ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntitySelector<Solution_> entitySelector,
             SelectionCacheType minimumCacheType,
             SelectionOrder inheritedSelectionOrder) {
+        if (config.getMimicSelectorRef() != null) {
+            return buildMimicReplaying(configPolicy);
+        }
         EntityIndependentValueSelector<Solution_> valueSelector = buildEntityIndependentValueSelector(configPolicy,
                 entitySelector.getEntityDescriptor(), minimumCacheType, inheritedSelectionOrder);
+
+        // TODO move this to constructor (all list move selectors)
+        ListVariableDescriptor<Solution_> listVariableDescriptor =
+                (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor();
+
         int minimumSubListSize = Objects.requireNonNullElse(config.getMinimumSubListSize(), DEFAULT_MINIMUM_SUB_LIST_SIZE);
         int maximumSubListSize = Objects.requireNonNullElse(config.getMaximumSubListSize(), DEFAULT_MAXIMUM_SUB_LIST_SIZE);
-        return new RandomSubListSelector<>(listVariableDescriptor, entitySelector, valueSelector,
-                minimumSubListSize, maximumSubListSize);
+        SubListSelector<Solution_> subListSelector =
+                new RandomSubListSelector<>(listVariableDescriptor, entitySelector, valueSelector,
+                        minimumSubListSize, maximumSubListSize);
+
+        subListSelector = applyMimicRecording(configPolicy, subListSelector);
+
+        return subListSelector;
+    }
+
+    protected SubListSelector<Solution_> buildMimicReplaying(HeuristicConfigPolicy<Solution_> configPolicy) {
+        if (config.getId() != null
+                || config.getMinimumSubListSize() != null
+                || config.getMaximumSubListSize() != null
+                || config.getValueSelectorConfig() != null
+                || config.getNearbySelectionConfig() != null) {
+            throw new IllegalArgumentException("The subListSelectorConfig (" + config
+                    + ") with mimicSelectorRef (" + config.getMimicSelectorRef()
+                    + ") has another property that is not null.");
+        }
+        SubListMimicRecorder<Solution_> subListMimicRecorder =
+                configPolicy.getSubListMimicRecorder(config.getMimicSelectorRef());
+        if (subListMimicRecorder == null) {
+            throw new IllegalArgumentException("The subListSelectorConfig (" + config
+                    + ") has a mimicSelectorRef (" + config.getMimicSelectorRef()
+                    + ") for which no subListSelector with that id exists (in its solver phase).");
+        }
+        return new MimicReplayingSubListSelector<>(subListMimicRecorder);
+    }
+
+    private SubListSelector<Solution_> applyMimicRecording(HeuristicConfigPolicy<Solution_> configPolicy,
+            SubListSelector<Solution_> subListSelector) {
+        if (config.getId() != null) {
+            if (config.getId().isEmpty()) {
+                throw new IllegalArgumentException("The subListSelectorConfig (" + config
+                        + ") has an empty id (" + config.getId() + ").");
+            }
+            MimicRecordingSubListSelector<Solution_> mimicRecordingSubListSelector =
+                    new MimicRecordingSubListSelector<>(subListSelector);
+            configPolicy.addSubListMimicRecorder(config.getId(), mimicRecordingSubListSelector);
+            subListSelector = mimicRecordingSubListSelector;
+        }
+        return subListSelector;
     }
 
     private EntityIndependentValueSelector<Solution_> buildEntityIndependentValueSelector(
             HeuristicConfigPolicy<Solution_> configPolicy, EntityDescriptor<Solution_> entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
-        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(new ValueSelectorConfig())
+        ValueSelector<Solution_> valueSelector = ValueSelectorFactory
+                // TODO unfold?
+                .<Solution_> create(Objects.requireNonNullElseGet(config.getValueSelectorConfig(), ValueSelectorConfig::new))
                 .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
-            throw new IllegalArgumentException("The subListChangeMoveSelector or subListSwapMoveSelector (" + config
+            throw new IllegalArgumentException("The subListSelector (" + config
                     + ") for a list variable needs to be based on an "
                     + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
                     + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
