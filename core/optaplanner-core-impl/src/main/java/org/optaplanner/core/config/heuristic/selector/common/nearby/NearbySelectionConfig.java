@@ -11,12 +11,14 @@ import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 
 @XmlType(propOrder = {
         "originEntitySelectorConfig",
+        "originSubListSelectorConfig",
         "originValueSelectorConfig",
         "nearbyDistanceMeterClass",
         "nearbySelectionDistributionType",
@@ -33,6 +35,8 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
 
     @XmlElement(name = "originEntitySelector")
     protected EntitySelectorConfig originEntitySelectorConfig = null;
+    @XmlElement(name = "originSubListSelector")
+    protected SubListSelectorConfig originSubListSelectorConfig = null;
     @XmlElement(name = "originValueSelector")
     protected ValueSelectorConfig originValueSelectorConfig = null;
     protected Class<? extends NearbyDistanceMeter> nearbyDistanceMeterClass = null;
@@ -57,6 +61,14 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
 
     public void setOriginEntitySelectorConfig(EntitySelectorConfig originEntitySelectorConfig) {
         this.originEntitySelectorConfig = originEntitySelectorConfig;
+    }
+
+    public SubListSelectorConfig getOriginSubListSelectorConfig() {
+        return originSubListSelectorConfig;
+    }
+
+    public void setOriginSubListSelectorConfig(SubListSelectorConfig originSubListSelectorConfig) {
+        this.originSubListSelectorConfig = originSubListSelectorConfig;
     }
 
     public ValueSelectorConfig getOriginValueSelectorConfig() {
@@ -156,6 +168,11 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
         return this;
     }
 
+    public NearbySelectionConfig withOriginSubListSelectorConfig(SubListSelectorConfig originSubListSelectorConfig) {
+        this.setOriginSubListSelectorConfig(originSubListSelectorConfig);
+        return this;
+    }
+
     public NearbySelectionConfig withOriginValueSelectorConfig(ValueSelectorConfig originValueSelectorConfig) {
         this.setOriginValueSelectorConfig(originValueSelectorConfig);
         return this;
@@ -218,16 +235,17 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
     // ************************************************************************
 
     public void validateNearby(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder) {
-        long originSelectorCount = Stream.of(originEntitySelectorConfig, originValueSelectorConfig)
+        long originSelectorCount = Stream.of(originEntitySelectorConfig, originSubListSelectorConfig, originValueSelectorConfig)
                 .filter(Objects::nonNull)
                 .count();
         if (originSelectorCount == 0) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
                     + ") is nearby selection but lacks an origin selector config."
-                    + " Set one of originEntitySelectorConfig or originValueSelectorConfig.");
+                    + " Set one of originEntitySelectorConfig, originSubListSelectorConfig or originValueSelectorConfig.");
         } else if (originSelectorCount > 1) {
-            throw new IllegalArgumentException("The nearbySelectorConfig (" + this + ") has multiple origin selector configs"
-                    + " but exactly one of originEntitySelectorConfig or originValueSelectorConfig is expected.");
+            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
+                    + ") has multiple origin selector configs but exactly one is expected."
+                    + " Set one of originEntitySelectorConfig, originSubListSelectorConfig or originValueSelectorConfig.");
         }
         if (originEntitySelectorConfig != null &&
                 originEntitySelectorConfig.getMimicSelectorRef() == null) {
@@ -235,6 +253,13 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
                     + ") has an originEntitySelectorConfig (" + originEntitySelectorConfig
                     + ") which has no MimicSelectorRef (" + originEntitySelectorConfig.getMimicSelectorRef() + "). "
                     + "A nearby's original entity should always be the same as an entity selected earlier in the move.");
+        }
+        if (originSubListSelectorConfig != null &&
+                originSubListSelectorConfig.getMimicSelectorRef() == null) {
+            throw new IllegalArgumentException("The nearbySelectorConfig (" + this
+                    + ") has an originSubListSelectorConfig (" + originSubListSelectorConfig
+                    + ") which has no MimicSelectorRef (" + originSubListSelectorConfig.getMimicSelectorRef() + "). "
+                    + "A nearby's original subList should always be the same as a subList selected earlier in the move.");
         }
         if (originValueSelectorConfig != null &&
                 originValueSelectorConfig.getMimicSelectorRef() == null) {
@@ -270,6 +295,8 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
     public NearbySelectionConfig inherit(NearbySelectionConfig inheritedConfig) {
         originEntitySelectorConfig = ConfigUtils.inheritConfig(originEntitySelectorConfig,
                 inheritedConfig.getOriginEntitySelectorConfig());
+        originSubListSelectorConfig = ConfigUtils.inheritConfig(originSubListSelectorConfig,
+                inheritedConfig.getOriginSubListSelectorConfig());
         originValueSelectorConfig = ConfigUtils.inheritConfig(originValueSelectorConfig,
                 inheritedConfig.getOriginValueSelectorConfig());
         nearbyDistanceMeterClass = ConfigUtils.inheritOverwritableProperty(nearbyDistanceMeterClass,
@@ -305,6 +332,9 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
     public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
         if (originEntitySelectorConfig != null) {
             originEntitySelectorConfig.visitReferencedClasses(classVisitor);
+        }
+        if (originSubListSelectorConfig != null) {
+            originSubListSelectorConfig.visitReferencedClasses(classVisitor);
         }
         if (originValueSelectorConfig != null) {
             originValueSelectorConfig.visitReferencedClasses(classVisitor);

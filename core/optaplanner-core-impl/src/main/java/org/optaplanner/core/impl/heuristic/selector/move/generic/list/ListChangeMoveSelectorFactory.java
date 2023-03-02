@@ -85,8 +85,6 @@ public class ListChangeMoveSelectorFactory<Solution_>
         } else {
             entityDescriptors = configPolicy.getSolutionDescriptor().getGenuineEntityDescriptors();
         }
-        List<ListVariableDescriptor<Solution_>> variableDescriptorList = new ArrayList<>();
-
         if (entityDescriptors.size() > 1) {
             throw new IllegalArgumentException("The listChangeMoveSelector (" + config
                     + ") cannot unfold when there are multiple entities (" + entityDescriptors + ")."
@@ -94,6 +92,7 @@ public class ListChangeMoveSelectorFactory<Solution_>
         }
         EntityDescriptor<Solution_> entityDescriptor = entityDescriptors.iterator().next();
 
+        List<ListVariableDescriptor<Solution_>> variableDescriptorList = new ArrayList<>();
         GenuineVariableDescriptor<Solution_> onlyVariableDescriptor = config.getValueSelectorConfig() == null ? null
                 : ValueSelectorFactory.<Solution_> create(config.getValueSelectorConfig())
                         .extractVariableDescriptor(configPolicy, entityDescriptor);
@@ -120,7 +119,8 @@ public class ListChangeMoveSelectorFactory<Solution_>
             if (onlyVariableDescriptor != onlyDestinationVariableDescriptor) {
                 throw new IllegalArgumentException("The listChangeMoveSelector's valueSelector ("
                         + config.getValueSelectorConfig()
-                        + ") and destinationValueSelector (" + config.getDestinationSelectorConfig().getValueSelectorConfig()
+                        + ") and destinationSelector's valueSelector ("
+                        + config.getDestinationSelectorConfig().getValueSelectorConfig()
                         + ") must be configured for the same planning variable.");
             }
             if (onlyEntityDescriptor != null) {

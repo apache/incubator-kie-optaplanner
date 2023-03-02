@@ -1,9 +1,11 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.DestinationSelectorConfig;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelectorFactory;
@@ -50,9 +52,26 @@ public final class DestinationSelectorFactory<Solution_> extends AbstractSelecto
                 .<Solution_> create(config.getEntitySelectorConfig())
                 .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
 
+        EntityIndependentValueSelector<Solution_> valueSelector = buildEntityIndependentValueSelector(configPolicy,
+                entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
+
+        // TODO move this to constructor (all list move selectors)
+        ListVariableDescriptor<Solution_> listVariableDescriptor =
+                (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor();
+
+        return new ElementDestinationSelector<>(
+                listVariableDescriptor,
+                entitySelector,
+                valueSelector,
+                selectionOrder.toRandomSelectionBoolean());
+    }
+
+    private EntityIndependentValueSelector<Solution_> buildEntityIndependentValueSelector(
+            HeuristicConfigPolicy<Solution_> configPolicy, EntityDescriptor<Solution_> entityDescriptor,
+            SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory
                 .<Solution_> create(config.getValueSelectorConfig())
-                .buildValueSelector(configPolicy, entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder,
+                .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder,
                         // Do not override reinitializeVariableFilterEnabled.
                         configPolicy.isReinitializeVariableFilterEnabled(),
                         /*
@@ -69,16 +88,14 @@ public final class DestinationSelectorFactory<Solution_> extends AbstractSelecto
                          * the configPolicy that only allows this filtering type in the CH phase.
                          */
                         ValueSelectorFactory.ListValueFilteringType.ACCEPT_ASSIGNED);
+        if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+            throw new IllegalArgumentException("The destinationSelector (" + config
+                    + ") for a list variable needs to be based on an "
+                    + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
+                    + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
 
-        // TODO move this to constructor (all list move selectors)
-        ListVariableDescriptor<Solution_> listVariableDescriptor =
-                (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor();
-
-        return new ElementDestinationSelector<>(
-                listVariableDescriptor,
-                entitySelector,
-                ((EntityIndependentValueSelector<Solution_>) valueSelector),
-                selectionOrder.toRandomSelectionBoolean());
+        }
+        return (EntityIndependentValueSelector<Solution_>) valueSelector;
     }
 
     private DestinationSelector<Solution_> applyNearbySelection(
@@ -95,21 +112,37 @@ public final class DestinationSelectorFactory<Solution_> extends AbstractSelecto
 
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
 
-        ValueSelector<Solution_> originValueSelector = ValueSelectorFactory
-                .<Solution_> create(nearbySelectionConfig.getOriginValueSelectorConfig())
-                .buildValueSelector(configPolicy, destinationSelector.getEntityDescriptor(), minimumCacheType,
-                        resolvedSelectionOrder);
-
         NearbyDistanceMeter<?, ?> nearbyDistanceMeter =
                 configPolicy.getClassInstanceCache().newInstance(nearbySelectionConfig,
                         "nearbyDistanceMeterClass", nearbySelectionConfig.getNearbyDistanceMeterClass());
         // TODO Check nearbyDistanceMeterClass.getGenericInterfaces() to confirm generic type S is an entityClass
         NearbyRandom nearbyRandom = NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(randomSelection);
-        return new NearValueNearbyDestinationSelector<>(
-                destinationSelector,
-                ((EntityIndependentValueSelector<Solution_>) originValueSelector),
-                nearbyDistanceMeter,
-                nearbyRandom,
-                randomSelection);
+
+        if (nearbySelectionConfig.getOriginValueSelectorConfig() != null) {
+            ValueSelector<Solution_> originValueSelector = ValueSelectorFactory
+                    .<Solution_> create(nearbySelectionConfig.getOriginValueSelectorConfig())
+                    .buildValueSelector(configPolicy, destinationSelector.getEntityDescriptor(), minimumCacheType,
+                            resolvedSelectionOrder);
+            return new NearValueNearbyDestinationSelector<>(
+                    destinationSelector,
+                    ((EntityIndependentValueSelector<Solution_>) originValueSelector),
+                    nearbyDistanceMeter,
+                    nearbyRandom,
+                    randomSelection);
+        } else if (nearbySelectionConfig.getOriginSubListSelectorConfig() != null) {
+            SubListSelector<Solution_> subListSelector = SubListSelectorFactory
+                    .<Solution_> create(nearbySelectionConfig.getOriginSubListSelectorConfig())
+                    // Entity selector not needed for replaying selector.
+                    .buildSubListSelector(configPolicy, null, minimumCacheType, resolvedSelectionOrder);
+            return new NearSubListNearbyDestinationSelector<>(
+                    destinationSelector,
+                    subListSelector,
+                    nearbyDistanceMeter,
+                    nearbyRandom,
+                    randomSelection);
+        } else {
+            throw new IllegalStateException("Impossible because nearby config validation should have ensured there is exactly"
+                    + " one origin selector property.");
+        }
     }
 }

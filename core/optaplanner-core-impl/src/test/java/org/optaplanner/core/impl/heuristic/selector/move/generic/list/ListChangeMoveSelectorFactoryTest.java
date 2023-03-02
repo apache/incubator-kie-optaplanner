@@ -68,8 +68,8 @@ class ListChangeMoveSelectorFactoryTest {
                 buildHeuristicConfigPolicy(TestdataSolution.buildSolutionDescriptor());
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> moveSelectorFactory.buildMoveSelector(heuristicConfigPolicy,
-                        SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM))
+                .isThrownBy(() -> moveSelectorFactory.buildMoveSelector(heuristicConfigPolicy, SelectionCacheType.JUST_IN_TIME,
+                        SelectionOrder.RANDOM))
                 .withMessageContaining("cannot unfold");
     }
 

@@ -1028,6 +1028,23 @@
           "annotationType": "javax.xml.bind.annotation.XmlType",
           "attribute": "propOrder",
           "justification": "Add new origin selector attributes to support nearby selection for list move selectors."
+        }, {
+          "ignore": true,
+          "code": "java.annotation.attributeValueChanged",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "attribute": "propOrder",
+          "justification": "Added new configuration elements to enable nearby selection."
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.attributeValueChanged",
+          "old": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig",
+          "new": "class org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig",
+          "annotationType": "javax.xml.bind.annotation.XmlType",
+          "attribute": "propOrder",
+          "justification": "Added new configuration elements to enable nearby selection."
         }
       ]
     }

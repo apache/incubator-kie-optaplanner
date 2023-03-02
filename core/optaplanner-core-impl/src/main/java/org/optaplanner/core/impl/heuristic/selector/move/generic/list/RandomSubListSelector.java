@@ -6,14 +6,12 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescript
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
-import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_>
-        implements IterableSelector<Solution_, SubList> {
+public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_> implements SubListSelector<Solution_> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntitySelector<Solution_> entitySelector;
@@ -62,6 +60,11 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
     }
 
     @Override
+    public ListVariableDescriptor<Solution_> getVariableDescriptor() {
+        return listVariableDescriptor;
+    }
+
+    @Override
     public boolean isCountable() {
         return true;
     }
@@ -86,6 +89,12 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
             }
         }
         return subListCount;
+    }
+
+    @Override
+    public Iterator<Object> endingValueIterator() {
+        // Child value selector is entity independent, so passing null entity is OK.
+        return valueSelector.endingIterator(null);
     }
 
     @Override
