@@ -1,9 +1,11 @@
 package org.optaplanner.examples.machinereassignment.score;
 
+import static org.optaplanner.core.api.score.stream.ConstraintCollectors.count;
 import static org.optaplanner.core.api.score.stream.ConstraintCollectors.sumLong;
 import static org.optaplanner.core.api.score.stream.Joiners.equal;
 import static org.optaplanner.core.api.score.stream.Joiners.filtering;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
@@ -62,10 +64,10 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
     }
 
     protected Constraint serviceConflict(ConstraintFactory factory) {
-        return factory.forEachUniquePair(MrProcessAssignment.class,
-                equal(MrProcessAssignment::getMachine, MrProcessAssignment::getMachine),
-                equal(MrProcessAssignment::getService, MrProcessAssignment::getService))
-                .penalize(HardSoftLongScore.ONE_HARD)
+        return factory.forEach(MrProcessAssignment.class)
+                .groupBy(MrProcessAssignment::getMachine, MrProcessAssignment::getService, count())
+                .filter((machine, service, count) -> count > 1)
+                .penalize(HardSoftLongScore.ONE_HARD, (machine, service, count) -> count)
                 .asConstraint(MrConstraints.SERVICE_CONFLICT);
     }
 
@@ -93,8 +95,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
                 .ifExists(MrProcessAssignment.class,
                         equal((serviceDependency, processFrom) -> serviceDependency.getToService(),
                                 MrProcessAssignment::getService),
-                        filtering((serviceDependency, processFrom,
-                                processTo) -> !processFrom.getNeighborhood().equals(processTo.getNeighborhood())))
+                        filtering((serviceDependency, processFrom, processTo) -> !Objects.equals(processFrom.getNeighborhood(), processTo.getNeighborhood())))
                 .penalize(HardSoftLongScore.ONE_HARD)
                 .asConstraint(MrConstraints.SERVICE_DEPENDENCY);
     }
@@ -185,7 +186,7 @@ public class MachineReassignmentConstraintProvider implements ConstraintProvider
     protected Constraint serviceMoveCost(ConstraintFactory factory) {
         return factory.forEach(MrProcessAssignment.class)
                 .filter(MrProcessAssignment::isMoved)
-                .groupBy(MrProcessAssignment::getService, ConstraintCollectors.count())
+                .groupBy(MrProcessAssignment::getService, count())
                 .groupBy(ConstraintCollectors.max((BiFunction<MrService, Integer, Integer>) (service, count) -> count))
                 .join(MrGlobalPenaltyInfo.class)
                 .penalize(HardSoftLongScore.ONE_SOFT,
