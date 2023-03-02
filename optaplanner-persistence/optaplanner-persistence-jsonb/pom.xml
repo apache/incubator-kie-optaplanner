@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-persistence</artifactId>
-    <version>9.35.0.Beta2</version>
+    <version>9.35.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-persistence-jsonb</artifactId>
