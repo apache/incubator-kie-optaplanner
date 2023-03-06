@@ -23,6 +23,7 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,7 +32,6 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -72,14 +72,13 @@ public final class DeepCloningUtils {
             HardSoftScore.class, HardSoftLongScore.class, HardSoftBigDecimalScore.class,
             HardMediumSoftScore.class, HardMediumSoftLongScore.class, HardMediumSoftBigDecimalScore.class,
             BendableScore.class, BendableLongScore.class, BendableBigDecimalScore.class);
+
+    private final Map<Pair<Field, Class<?>>, Boolean> fieldDeepClonedMemoization = new IdentityHashMap<>();
+    private final Map<Class<?>, Boolean> actualValueClassDeepClonedMemoization = new IdentityHashMap<>();
     private final SolutionDescriptor<?> solutionDescriptor;
-    private final ConcurrentMap<Pair<Field, Class<?>>, Boolean> fieldDeepClonedMemoization;
-    private final ConcurrentMap<Class<?>, Boolean> actualValueClassDeepClonedMemoization;
 
     public DeepCloningUtils(SolutionDescriptor<?> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
-        fieldDeepClonedMemoization = new ConcurrentMemoization<>();
-        actualValueClassDeepClonedMemoization = new ConcurrentMemoization<>();
     }
 
     // owningClass != declaringClass
@@ -104,22 +103,20 @@ public final class DeepCloningUtils {
         }
         Pair<Field, Class<?>> pair = Pair.of(field, owningClass);
         // Using computeIfAbsent would create a capturing lambda on every invocation, and this is the hottest of hot paths.
-        Boolean deepCloneDecision = fieldDeepClonedMemoization.get(pair);
-        if (deepCloneDecision == null) {
-            deepCloneDecision = isFieldDeepCloned(field, owningClass);
-            fieldDeepClonedMemoization.put(pair, deepCloneDecision);
+        synchronized (fieldDeepClonedMemoization) {
+            Boolean deepCloneDecision = fieldDeepClonedMemoization.get(pair);
+            if (deepCloneDecision == null) {
+                deepCloneDecision = isFieldDeepCloned(field, owningClass);
+                fieldDeepClonedMemoization.put(pair, deepCloneDecision);
+            }
+            return deepCloneDecision;
         }
-        return deepCloneDecision;
     }
 
-    /**
-     * This method is thread-safe.
-     *
-     * @param actualValueClass never null
-     * @return never null
-     */
     public boolean retrieveDeepCloneDecisionForActualValueClass(Class<?> actualValueClass) {
-        return actualValueClassDeepClonedMemoization.computeIfAbsent(actualValueClass, this::isClassDeepCloned);
+        synchronized (actualValueClassDeepClonedMemoization) {
+            return actualValueClassDeepClonedMemoization.computeIfAbsent(actualValueClass, this::isClassDeepCloned);
+        }
     }
 
     /**
@@ -144,7 +141,8 @@ public final class DeepCloningUtils {
     static boolean isImmutable(Class<?> clz) {
         if (clz.isPrimitive() || clz.isEnum()) {
             return false;
-        } else return IMMUTABLE_CLASSES.contains(clz);
+        } else
+            return IMMUTABLE_CLASSES.contains(clz);
     }
 
     /**

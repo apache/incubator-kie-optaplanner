@@ -2,7 +2,7 @@ package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.lang.reflect.Field;
 
-final class IntFieldCloner  extends AbstractFieldCloner {
+final class IntFieldCloner extends AbstractFieldCloner {
 
     public IntFieldCloner(Field field) {
         super(field);

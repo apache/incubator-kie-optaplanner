@@ -41,7 +41,7 @@ abstract class AbstractFieldCloner {
      * Reads field value from original and store it in clone.
      *
      * @param original never null
-     * @param clone    never null
+     * @param clone never null
      * @return not null if the cloner decided not to clone
      * @throws RuntimeException if reflective field read or write fails
      */
