@@ -2,12 +2,14 @@ package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.lang.reflect.Field;
 
-final class DoubleFieldCloner implements FieldCloner {
+final class DoubleFieldCloner extends AbstractFieldCloner {
 
-    static final FieldCloner INSTANCE = new DoubleFieldCloner();
+    public DoubleFieldCloner(Field field) {
+        super(field);
+    }
 
     @Override
-    public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass, C original, C clone) {
+    public <C> Unprocessed clone(C original, C clone) {
         double originalValue = getFieldValue(original, field);
         setFieldValue(clone, field, originalValue);
         return null;
@@ -17,7 +19,7 @@ final class DoubleFieldCloner implements FieldCloner {
         try {
             return field.getDouble(bean);
         } catch (IllegalAccessException e) {
-            throw FieldCloner.createExceptionOnRead(bean, field, e);
+            throw AbstractFieldCloner.createExceptionOnRead(bean, field, e);
         }
     }
 
@@ -25,12 +27,8 @@ final class DoubleFieldCloner implements FieldCloner {
         try {
             field.setDouble(bean, value);
         } catch (IllegalAccessException e) {
-            throw FieldCloner.createExceptionOnWrite(bean, field, value, e);
+            throw AbstractFieldCloner.createExceptionOnWrite(bean, field, value, e);
         }
-    }
-
-    private DoubleFieldCloner() {
-
     }
 
 }

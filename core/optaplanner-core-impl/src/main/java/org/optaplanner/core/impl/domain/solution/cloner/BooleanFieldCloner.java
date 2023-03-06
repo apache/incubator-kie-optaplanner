@@ -2,12 +2,14 @@ package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.lang.reflect.Field;
 
-final class BooleanFieldCloner implements FieldCloner {
+final class BooleanFieldCloner extends AbstractFieldCloner {
 
-    static final FieldCloner INSTANCE = new BooleanFieldCloner();
+    public BooleanFieldCloner(Field field) {
+        super(field);
+    }
 
     @Override
-    public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass, C original, C clone) {
+    public <C> Unprocessed clone(C original, C clone) {
         boolean originalValue = getFieldValue(original, field);
         setFieldValue(clone, field, originalValue);
         return null;
@@ -17,7 +19,7 @@ final class BooleanFieldCloner implements FieldCloner {
         try {
             return field.getBoolean(bean);
         } catch (IllegalAccessException e) {
-            throw FieldCloner.createExceptionOnRead(bean, field, e);
+            throw AbstractFieldCloner.createExceptionOnRead(bean, field, e);
         }
     }
 
@@ -25,12 +27,8 @@ final class BooleanFieldCloner implements FieldCloner {
         try {
             field.setBoolean(bean, value);
         } catch (IllegalAccessException e) {
-            throw FieldCloner.createExceptionOnWrite(bean, field, value, e);
+            throw AbstractFieldCloner.createExceptionOnWrite(bean, field, value, e);
         }
-    }
-
-    private BooleanFieldCloner() {
-
     }
 
 }

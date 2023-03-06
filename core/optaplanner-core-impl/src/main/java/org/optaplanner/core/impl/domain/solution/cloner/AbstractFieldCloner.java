@@ -1,11 +1,17 @@
 package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 
-@FunctionalInterface
-interface FieldCloner {
+abstract class AbstractFieldCloner {
 
-    static Object getFieldValue(Object bean, Field field) {
+    protected Field field;
+
+    protected AbstractFieldCloner(Field field) {
+        this.field = Objects.requireNonNull(field);
+    }
+
+    protected static Object getGenericFieldValue(Object bean, Field field) {
         try {
             return field.get(bean);
         } catch (IllegalAccessException e) {
@@ -13,12 +19,12 @@ interface FieldCloner {
         }
     }
 
-    static RuntimeException createExceptionOnRead(Object bean, Field field, Exception rootCause) {
+    protected static RuntimeException createExceptionOnRead(Object bean, Field field, Exception rootCause) {
         return new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
                 + ") which cannot be read to create a planning clone.", rootCause);
     }
 
-    static void setFieldValue(Object bean, Field field, Object value) {
+    protected static void setGenericFieldValue(Object bean, Field field, Object value) {
         try {
             field.set(bean, value);
         } catch (IllegalAccessException e) {
@@ -26,7 +32,7 @@ interface FieldCloner {
         }
     }
 
-    static RuntimeException createExceptionOnWrite(Object bean, Field field, Object value, Exception rootCause) {
+    protected static RuntimeException createExceptionOnWrite(Object bean, Field field, Object value, Exception rootCause) {
         return new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
                 + ") which cannot be written with the value (" + value + ") to create a planning clone.", rootCause);
     }
@@ -34,14 +40,11 @@ interface FieldCloner {
     /**
      * Reads field value from original and store it in clone.
      *
-     * @param deepCloningUtils never null
-     * @param field never null
-     * @param instanceClass never null
      * @param original never null
-     * @param clone never null
+     * @param clone    never null
      * @return not null if the cloner decided not to clone
      * @throws RuntimeException if reflective field read or write fails
      */
-    <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass, C original, C clone);
+    abstract <C> Unprocessed clone(C original, C clone);
 
 }

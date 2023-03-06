@@ -2,31 +2,32 @@ package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.lang.reflect.Field;
 
-final class DeepCloningFieldCloner implements FieldCloner {
+final class DeepCloningFieldCloner extends AbstractFieldCloner {
 
-    static final FieldCloner INSTANCE = new DeepCloningFieldCloner();
+    private final DeepCloningUtils deepCloningUtils;
+
+    public DeepCloningFieldCloner(Field field, DeepCloningUtils deepCloningUtils) {
+        super(field);
+        this.deepCloningUtils = deepCloningUtils;
+    }
 
     @Override
-    public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass, C original,
-            C clone) {
-        Object originalValue = FieldCloner.getFieldValue(original, field);
-        if (isDeepCloneField(deepCloningUtils, field, instanceClass, originalValue)) { // Deffer filling in the field.
+    public <C> Unprocessed clone(C original, C clone) {
+        Object originalValue = AbstractFieldCloner.getGenericFieldValue(original, field);
+        if (isDeepCloneField(original.getClass(), originalValue)) {
+            // Deffer filling in the field.
             return new Unprocessed(clone, field, originalValue);
         } else { // Shallow copy.
-            FieldCloner.setFieldValue(clone, field, originalValue);
+            AbstractFieldCloner.setGenericFieldValue(clone, field, originalValue);
             return null;
         }
     }
 
-    private static boolean isDeepCloneField(DeepCloningUtils deepCloningUtils, Field field, Class<?> fieldInstanceClass,
-            Object originalValue) {
+    private boolean isDeepCloneField(Class<?> fieldInstanceClass, Object originalValue) {
         if (originalValue == null) {
             return false;
         }
         return deepCloningUtils.getDeepCloneDecision(field, fieldInstanceClass, originalValue.getClass());
     }
 
-    private DeepCloningFieldCloner() {
-
-    }
 }

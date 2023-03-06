@@ -37,7 +37,8 @@ import org.optaplanner.core.impl.util.Pair;
 public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<Solution_> {
 
     private final ConcurrentMap<Class<?>, Constructor<?>> constructorMemoization = new ConcurrentMemoization<>();
-    private final ConcurrentMap<Class<?>, List<Pair<Field, FieldCloner>>> fieldListMemoization = new ConcurrentMemoization<>();
+    private final ConcurrentMap<Class<?>, List<Pair<Field, AbstractFieldCloner>>> fieldListMemoization =
+            new ConcurrentMemoization<>();
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final DeepCloningUtils deepCloningUtils;
 
@@ -59,7 +60,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         while (!unprocessedQueue.isEmpty()) {
             Unprocessed unprocessed = unprocessedQueue.remove();
             Object cloneValue = process(unprocessed, originalToCloneMap, unprocessedQueue);
-            FieldCloner.setFieldValue(unprocessed.bean, unprocessed.field, cloneValue);
+            AbstractFieldCloner.setGenericFieldValue(unprocessed.bean, unprocessed.field, cloneValue);
         }
         validateCloneSolution(originalSolution, cloneSolution);
         return cloneSolution;
@@ -93,10 +94,10 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
      * @param clazz never null
      * @return never null
      */
-    private List<Pair<Field, FieldCloner>> retrieveCachedFields(Class<?> clazz) {
+    private List<Pair<Field, AbstractFieldCloner>> retrieveCachedFields(Class<?> clazz) {
         return fieldListMemoization.computeIfAbsent(clazz, key -> {
             Field[] fields = key.getDeclaredFields();
-            List<Pair<Field, FieldCloner>> fieldList = new ArrayList<>(fields.length);
+            List<Pair<Field, AbstractFieldCloner>> fieldList = new ArrayList<>(fields.length);
             for (Field field : fields) {
                 if (!Modifier.isStatic(field.getModifiers())) {
                     field.setAccessible(true);
@@ -107,33 +108,33 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         });
     }
 
-    private static FieldCloner getCloner(Class<?> clazz, Field field) {
+    private AbstractFieldCloner getCloner(Class<?> clazz, Field field) {
         Class<?> fieldType = field.getType();
         if (fieldType.isPrimitive()) {
             if (fieldType == boolean.class) {
-                return BooleanFieldCloner.INSTANCE;
+                return new BooleanFieldCloner(field);
             } else if (fieldType == byte.class) {
-                return ByteFieldCloner.INSTANCE;
+                return new ByteFieldCloner(field);
             } else if (fieldType == char.class) {
-                return CharFieldCloner.INSTANCE;
+                return new CharFieldCloner(field);
             } else if (fieldType == short.class) {
-                return ShortFieldCloner.INSTANCE;
+                return new ShortFieldCloner(field);
             } else if (fieldType == int.class) {
-                return IntFieldCloner.INSTANCE;
+                return new IntFieldCloner(field);
             } else if (fieldType == long.class) {
-                return LongFieldCloner.INSTANCE;
+                return new LongFieldCloner(field);
             } else if (fieldType == float.class) {
-                return FloatFieldCloner.INSTANCE;
+                return new FloatFieldCloner(field);
             } else if (fieldType == double.class) {
-                return DoubleFieldCloner.INSTANCE;
+                return new DoubleFieldCloner(field);
             } else {
                 throw new IllegalStateException("Impossible state: The class (" + clazz + ") has a field (" + field
                         + ") of an unknown primitive type (" + fieldType + ").");
             }
         } else if (DeepCloningUtils.isImmutable(fieldType)) {
-            return ShallowCloningFieldCloner.INSTANCE;
+            return new ShallowCloningFieldCloner(field);
         } else {
-            return DeepCloningFieldCloner.INSTANCE;
+            return new DeepCloningFieldCloner(field, deepCloningUtils);
         }
     }
 
@@ -164,7 +165,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         Class<C> instanceClass = (Class<C>) original.getClass();
         C clone = constructClone(instanceClass);
         originalToCloneMap.put(original, clone);
-        copyFields(instanceClass, instanceClass, original, clone, unprocessedQueue);
+        copyFields(instanceClass, original, clone, unprocessedQueue);
         return clone;
     }
 
@@ -178,19 +179,17 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         }
     }
 
-    private <C> void copyFields(Class<C> clazz, Class<? extends C> instanceClass, C original, C clone,
-            Queue<Unprocessed> unprocessedQueue) {
-        for (Pair<Field, FieldCloner> entry : retrieveCachedFields(clazz)) {
-            Field field = entry.getKey();
-            FieldCloner fieldCloner = entry.getValue();
-            Unprocessed unprocessed = fieldCloner.clone(deepCloningUtils, field, instanceClass, original, clone);
+    private <C> void copyFields(Class<C> clazz, C original, C clone, Queue<Unprocessed> unprocessedQueue) {
+        for (Pair<Field, AbstractFieldCloner> entry : retrieveCachedFields(clazz)) {
+            AbstractFieldCloner fieldCloner = entry.getValue();
+            Unprocessed unprocessed = fieldCloner.clone(original, clone);
             if (unprocessed != null) {
                 unprocessedQueue.add(unprocessed);
             }
         }
         Class<? super C> superclass = clazz.getSuperclass();
         if (superclass != null) {
-            copyFields(superclass, instanceClass, original, clone, unprocessedQueue);
+            copyFields(superclass, original, clone, unprocessedQueue);
         }
     }
 

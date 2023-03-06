@@ -2,19 +2,17 @@ package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.lang.reflect.Field;
 
-final class ShallowCloningFieldCloner implements FieldCloner {
+final class ShallowCloningFieldCloner extends AbstractFieldCloner {
 
-    static final FieldCloner INSTANCE = new ShallowCloningFieldCloner();
-
-    @Override
-    public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass, C original, C clone) {
-        Object originalValue = FieldCloner.getFieldValue(original, field);
-        FieldCloner.setFieldValue(clone, field, originalValue);
-        return null;
+    public ShallowCloningFieldCloner(Field field) {
+        super(field);
     }
 
-    private ShallowCloningFieldCloner() {
-
+    @Override
+    public <C> Unprocessed clone(C original, C clone) {
+        Object originalValue = AbstractFieldCloner.getGenericFieldValue(original, field);
+        AbstractFieldCloner.setGenericFieldValue(clone, field, originalValue);
+        return null;
     }
 
 }
