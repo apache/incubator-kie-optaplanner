@@ -100,10 +100,16 @@ public final class DeepCloningUtils {
      */
     public boolean getDeepCloneDecision(Field field, Class<?> owningClass, Class<?> actualValueClass) {
         Pair<Field, Class<?>> pair = Pair.of(field, owningClass);
-        Boolean deepCloneDecision = fieldDeepClonedMemoization.computeIfAbsent(pair,
-                key -> isFieldDeepCloned(field, owningClass));
-        return deepCloneDecision || actualValueClassDeepClonedMemoization.computeIfAbsent(actualValueClass,
-                key -> isClassDeepCloned(actualValueClass));
+        // Using computeIfAbsent would create a capturing lambda on every invocation, and this is the hottest of hot paths.
+        Boolean deepCloneDecision = fieldDeepClonedMemoization.get(pair);
+        if (deepCloneDecision == null) {
+            deepCloneDecision = isFieldDeepCloned(field, owningClass);
+            fieldDeepClonedMemoization.put(pair, deepCloneDecision);
+        }
+        if (deepCloneDecision) {
+            return true;
+        }
+        return retrieveDeepCloneDecisionForActualValueClass(actualValueClass);
     }
 
     /**
@@ -113,8 +119,7 @@ public final class DeepCloningUtils {
      * @return never null
      */
     public boolean retrieveDeepCloneDecisionForActualValueClass(Class<?> actualValueClass) {
-        return actualValueClassDeepClonedMemoization.computeIfAbsent(actualValueClass,
-                key -> isClassDeepCloned(actualValueClass));
+        return actualValueClassDeepClonedMemoization.computeIfAbsent(actualValueClass, this::isClassDeepCloned);
     }
 
     /**

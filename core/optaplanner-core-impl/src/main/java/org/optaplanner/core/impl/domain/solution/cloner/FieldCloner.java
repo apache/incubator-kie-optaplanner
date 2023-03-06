@@ -1,7 +1,6 @@
 package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.lang.reflect.Field;
-import java.util.function.Consumer;
 
 @FunctionalInterface
 interface FieldCloner {
@@ -40,17 +39,9 @@ interface FieldCloner {
      * @param instanceClass never null
      * @param original never null
      * @param clone never null
-     * @param deferredValueConsumer null if {@link #mayDeferClone()} is false
+     * @return not null if the cloner decided not to clone
      * @throws RuntimeException if reflective field read or write fails
      */
-    <C> void clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass, C original, C clone,
-            Consumer<Object> deferredValueConsumer);
-
-    /**
-     * @return true if the cloner can decide to not clone the value
-     */
-    default boolean mayDeferClone() {
-        return false;
-    }
+    <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass, C original, C clone);
 
 }

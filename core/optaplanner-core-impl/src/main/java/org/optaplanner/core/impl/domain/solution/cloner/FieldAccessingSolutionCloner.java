@@ -24,7 +24,6 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentMap;
-import java.util.function.Consumer;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
@@ -183,10 +182,10 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         for (Map.Entry<Field, FieldCloner> entry : retrieveCachedFields(clazz).entrySet()) {
             Field field = entry.getKey();
             FieldCloner fieldCloner = entry.getValue();
-            Consumer<Object> unprocessedValueConsumer = fieldCloner.mayDeferClone()
-                    ? originalValue -> unprocessedQueue.add(new Unprocessed(clone, field, originalValue))
-                    : null;
-            fieldCloner.clone(deepCloningUtils, field, instanceClass, original, clone, unprocessedValueConsumer);
+            Unprocessed unprocessed = fieldCloner.clone(deepCloningUtils, field, instanceClass, original, clone);
+            if (unprocessed != null) {
+                unprocessedQueue.add(unprocessed);
+            }
         }
         Class<? super C> superclass = clazz.getSuperclass();
         if (superclass != null) {
@@ -338,20 +337,6 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
                                 + " that property's field, probably because its field name is different.");
             }
         }
-    }
-
-    private final static class Unprocessed {
-
-        final Object bean;
-        final Field field;
-        final Object originalValue;
-
-        public Unprocessed(Object bean, Field field, Object originalValue) {
-            this.bean = bean;
-            this.field = field;
-            this.originalValue = originalValue;
-        }
-
     }
 
 }

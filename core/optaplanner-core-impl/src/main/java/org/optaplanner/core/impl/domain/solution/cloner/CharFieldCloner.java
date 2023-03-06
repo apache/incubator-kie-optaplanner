@@ -1,17 +1,16 @@
 package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.lang.reflect.Field;
-import java.util.function.Consumer;
 
 final class CharFieldCloner implements FieldCloner {
 
     static final FieldCloner INSTANCE = new CharFieldCloner();
 
     @Override
-    public <C> void clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass,
-            C original, C clone, Consumer<Object> deferredValueConsumer) {
+    public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, Field field, Class<? extends C> instanceClass, C original, C clone) {
         char originalValue = getFieldValue(original, field);
         setFieldValue(clone, field, originalValue);
+        return null;
     }
 
     private static char getFieldValue(Object bean, Field field) {
