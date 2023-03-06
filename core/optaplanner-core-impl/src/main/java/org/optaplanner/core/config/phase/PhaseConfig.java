@@ -44,10 +44,19 @@ public abstract class PhaseConfig<Config_ extends PhaseConfig<Config_>> extends 
         this.terminationConfig = terminationConfig;
     }
 
+    // ************************************************************************
+    // With methods
+    // ************************************************************************
+
+    public Config_ withTerminationConfig(TerminationConfig terminationConfig) {
+        this.setTerminationConfig(terminationConfig);
+        return self();
+    }
+
     @Override
     public Config_ inherit(Config_ inheritedConfig) {
         terminationConfig = ConfigUtils.inheritConfig(terminationConfig, inheritedConfig.getTerminationConfig());
-        return (Config_) this;
+        return self();
     }
 
     @Override
