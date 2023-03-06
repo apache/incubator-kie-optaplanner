@@ -29,6 +29,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.util.Pair;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -36,7 +37,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<Solution_> {
 
     private final ConcurrentMap<Class<?>, Constructor<?>> constructorMemoization = new ConcurrentMemoization<>();
-    private final ConcurrentMap<Class<?>, Map<Field, FieldCloner>> fieldListMemoization = new ConcurrentMemoization<>();
+    private final ConcurrentMap<Class<?>, List<Pair<Field, FieldCloner>>> fieldListMemoization = new ConcurrentMemoization<>();
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final DeepCloningUtils deepCloningUtils;
 
@@ -92,17 +93,17 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
      * @param clazz never null
      * @return never null
      */
-    private Map<Field, FieldCloner> retrieveCachedFields(Class<?> clazz) {
+    private List<Pair<Field, FieldCloner>> retrieveCachedFields(Class<?> clazz) {
         return fieldListMemoization.computeIfAbsent(clazz, key -> {
             Field[] fields = key.getDeclaredFields();
-            Map<Field, FieldCloner> fieldMap = new IdentityHashMap<>(fields.length);
+            List<Pair<Field, FieldCloner>> fieldList = new ArrayList<>(fields.length);
             for (Field field : fields) {
                 if (!Modifier.isStatic(field.getModifiers())) {
                     field.setAccessible(true);
-                    fieldMap.put(field, getCloner(key, field));
+                    fieldList.add(Pair.of(field, getCloner(key, field)));
                 }
             }
-            return fieldMap;
+            return fieldList;
         });
     }
 
@@ -179,7 +180,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
 
     private <C> void copyFields(Class<C> clazz, Class<? extends C> instanceClass, C original, C clone,
             Queue<Unprocessed> unprocessedQueue) {
-        for (Map.Entry<Field, FieldCloner> entry : retrieveCachedFields(clazz).entrySet()) {
+        for (Pair<Field, FieldCloner> entry : retrieveCachedFields(clazz)) {
             Field field = entry.getKey();
             FieldCloner fieldCloner = entry.getValue();
             Unprocessed unprocessed = fieldCloner.clone(deepCloningUtils, field, instanceClass, original, clone);
