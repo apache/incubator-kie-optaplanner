@@ -800,7 +800,7 @@ public class GizmoSolutionClonerImplementor {
             SortedSet<Class<?>> deepClonedClassesSortedSet, boolean forceDeepClone) {
         List<Class<?>> deepClonedSubclasses = deepClonedClassesSortedSet.stream()
                 .filter(deeplyClonedFieldClass::isAssignableFrom)
-                .filter(type -> solutionDescriptor.getDeepCloningUtils().isClassDeepCloned(type))
+                .filter(type -> solutionDescriptor.getDeepCloningUtils().retrieveDeepCloneDecisionForActualValueClass(type))
                 .collect(Collectors.toList());
         BytecodeCreator currentBranch = bytecodeCreator;
         // If the field holds an instance of one of the field's declared type's subtypes, clone the subtype instead.

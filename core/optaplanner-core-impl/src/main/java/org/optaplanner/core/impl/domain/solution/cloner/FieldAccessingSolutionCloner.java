@@ -76,9 +76,9 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         return (Constructor<C>) constructorMemoization.computeIfAbsent(clazz, key -> {
             Constructor<C> constructor;
             try {
-                constructor = clazz.getDeclaredConstructor();
+                constructor = (Constructor<C>) key.getDeclaredConstructor();
             } catch (ReflectiveOperationException e) {
-                throw new IllegalStateException("The class (" + clazz
+                throw new IllegalStateException("The class (" + key
                         + ") should have a no-arg constructor to create a planning clone.", e);
             }
             constructor.setAccessible(true);
@@ -99,7 +99,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
             for (Field field : fields) {
                 if (!Modifier.isStatic(field.getModifiers())) {
                     field.setAccessible(true);
-                    fieldMap.put(field, getCloner(clazz, field));
+                    fieldMap.put(field, getCloner(key, field));
                 }
             }
             return fieldMap;
@@ -129,7 +129,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
                 throw new IllegalStateException("Impossible state: The class (" + clazz + ") has a field (" + field
                         + ") of an unknown primitive type (" + fieldType + ").");
             }
-        } else if (fieldType.isEnum() || DeepCloningUtils.IMMUTABLE_CLASSES.contains(fieldType)) {
+        } else if (DeepCloningUtils.isImmutable(fieldType)) {
             return ShallowCloningFieldCloner.INSTANCE;
         } else {
             return DeepCloningFieldCloner.INSTANCE;

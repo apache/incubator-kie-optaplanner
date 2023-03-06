@@ -99,6 +99,9 @@ public final class DeepCloningUtils {
      * @return true iff the field should be deep cloned with a particular value.
      */
     public boolean getDeepCloneDecision(Field field, Class<?> owningClass, Class<?> actualValueClass) {
+        if (retrieveDeepCloneDecisionForActualValueClass(actualValueClass)) {
+            return true;
+        }
         Pair<Field, Class<?>> pair = Pair.of(field, owningClass);
         // Using computeIfAbsent would create a capturing lambda on every invocation, and this is the hottest of hot paths.
         Boolean deepCloneDecision = fieldDeepClonedMemoization.get(pair);
@@ -106,10 +109,7 @@ public final class DeepCloningUtils {
             deepCloneDecision = isFieldDeepCloned(field, owningClass);
             fieldDeepClonedMemoization.put(pair, deepCloneDecision);
         }
-        if (deepCloneDecision) {
-            return true;
-        }
-        return retrieveDeepCloneDecisionForActualValueClass(actualValueClass);
+        return deepCloneDecision;
     }
 
     /**
@@ -132,15 +132,19 @@ public final class DeepCloningUtils {
      */
     public boolean isFieldDeepCloned(Field field, Class<?> owningClass) {
         Class<?> fieldType = field.getType();
-        if (fieldType.isPrimitive() || fieldType.isEnum()) {
-            return false;
-        } else if (IMMUTABLE_CLASSES.contains(fieldType)) {
+        if (isImmutable(fieldType)) {
             return false;
         }
         return isFieldAnEntityPropertyOnSolution(field, owningClass)
                 || isFieldAnEntityOrSolution(field)
                 || isFieldAPlanningListVariable(field, owningClass)
                 || isFieldADeepCloneProperty(field, owningClass);
+    }
+
+    static boolean isImmutable(Class<?> clz) {
+        if (clz.isPrimitive() || clz.isEnum()) {
+            return false;
+        } else return IMMUTABLE_CLASSES.contains(clz);
     }
 
     /**
@@ -181,23 +185,19 @@ public final class DeepCloningUtils {
      */
     public boolean isFieldAnEntityOrSolution(Field field) {
         Class<?> type = field.getType();
-        if (isClassDeepCloned(type)) {
+        if (retrieveDeepCloneDecisionForActualValueClass(type)) {
             return true;
         }
         if (Collection.class.isAssignableFrom(type) || Map.class.isAssignableFrom(type)) {
-            if (isTypeArgumentDeepCloned(field.getGenericType())) {
-                return true;
-            }
+            return isTypeArgumentDeepCloned(field.getGenericType());
         } else if (type.isArray()) {
-            if (isClassDeepCloned(type.getComponentType())) {
-                return true;
-            }
+            return retrieveDeepCloneDecisionForActualValueClass(type.getComponentType());
         }
         return false;
     }
 
-    public boolean isClassDeepCloned(Class<?> type) {
-        if (IMMUTABLE_CLASSES.contains(type)) {
+    private boolean isClassDeepCloned(Class<?> type) {
+        if (isImmutable(type)) {
             return false;
         }
         return solutionDescriptor.hasEntityDescriptor(type)
@@ -212,7 +212,7 @@ public final class DeepCloningUtils {
             ParameterizedType parameterizedType = (ParameterizedType) genericType;
             for (Type actualTypeArgument : parameterizedType.getActualTypeArguments()) {
                 if (actualTypeArgument instanceof Class
-                        && isClassDeepCloned((Class) actualTypeArgument)) {
+                        && retrieveDeepCloneDecisionForActualValueClass((Class) actualTypeArgument)) {
                     return true;
                 }
                 if (isTypeArgumentDeepCloned(actualTypeArgument)) {
