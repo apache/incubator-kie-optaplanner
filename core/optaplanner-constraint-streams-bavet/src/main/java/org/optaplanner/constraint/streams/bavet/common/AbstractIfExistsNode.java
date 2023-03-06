@@ -225,13 +225,13 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         dirtyCounterQueue.clear();
     }
 
-    protected static final class FilteringTracker<LeftTuple_ extends Tuple> {
-        final ExistsCounter<LeftTuple_> counter;
-        private final TupleListEntry<FilteringTracker<LeftTuple_>> leftTrackerEntry;
-        private final TupleListEntry<FilteringTracker<LeftTuple_>> rightTrackerEntry;
+    protected class FilteringTracker {
+        protected final ExistsCounter<LeftTuple_> counter;
+        protected final TupleListEntry<FilteringTracker> leftTrackerEntry;
+        protected final TupleListEntry<FilteringTracker> rightTrackerEntry;
 
-        FilteringTracker(ExistsCounter<LeftTuple_> counter, TupleList<FilteringTracker<LeftTuple_>> leftTrackerList,
-                TupleList<FilteringTracker<LeftTuple_>> rightTrackerList) {
+        protected FilteringTracker(ExistsCounter<LeftTuple_> counter,
+                TupleList<FilteringTracker> leftTrackerList, TupleList<FilteringTracker> rightTrackerList) {
             this.counter = counter;
             leftTrackerEntry = leftTrackerList.add(this);
             rightTrackerEntry = rightTrackerList.add(this);
