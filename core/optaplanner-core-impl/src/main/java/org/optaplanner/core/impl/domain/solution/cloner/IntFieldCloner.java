@@ -9,7 +9,7 @@ final class IntFieldCloner extends AbstractFieldCloner {
     }
 
     @Override
-    public <C> Unprocessed clone(C original, C clone) {
+    public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, C original, C clone) {
         int originalValue = getFieldValue(original, field);
         setFieldValue(clone, field, originalValue);
         return null;

@@ -4,34 +4,44 @@ import java.lang.reflect.Field;
 
 final class DeepCloningFieldCloner extends AbstractFieldCloner {
 
-    private final DeepCloningUtils deepCloningUtils;
+    private final ThreadLocal<InnerDeepCloningFieldCloner> innerCloner;
 
-    private Class<?> parentType;
-    private Class<?> childType;
-    private boolean deepCloneDecision;
-
-    public DeepCloningFieldCloner(Field field, DeepCloningUtils deepCloningUtils) {
+    public DeepCloningFieldCloner(Field field) {
         super(field);
-        this.deepCloningUtils = deepCloningUtils;
+        this.innerCloner = ThreadLocal.withInitial(() -> new InnerDeepCloningFieldCloner(field));
     }
 
     @Override
-    public <C> Unprocessed clone(C original, C clone) {
-        Object originalValue = AbstractFieldCloner.getGenericFieldValue(original, field);
-        if (isDeepCloneField(original.getClass(), originalValue)) { // Defer filling in the field.
-            return new Unprocessed(clone, field, originalValue);
-        } else { // Shallow copy.
-            AbstractFieldCloner.setGenericFieldValue(clone, field, originalValue);
-            return null;
-        }
+    public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, C original, C clone) {
+        return innerCloner.get().clone(deepCloningUtils, original, clone);
     }
 
-    private boolean isDeepCloneField(Class<?> fieldTypeClass, Object originalValue) {
-        if (originalValue == null) {
-            return false;
+    private static final class InnerDeepCloningFieldCloner extends AbstractFieldCloner {
+
+        private Class<?> parentType;
+        private Class<?> childType;
+        private boolean deepCloneDecision;
+
+        public InnerDeepCloningFieldCloner(Field field) {
+            super(field);
         }
-        Class<?> originalValueType = originalValue.getClass();
-        synchronized (this) {
+
+        @Override
+        public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, C original, C clone) {
+            Object originalValue = AbstractFieldCloner.getGenericFieldValue(original, field);
+            if (isDeepCloneField(deepCloningUtils, original.getClass(), originalValue)) { // Defer filling in the field.
+                return new Unprocessed(clone, field, originalValue);
+            } else { // Shallow copy.
+                AbstractFieldCloner.setGenericFieldValue(clone, field, originalValue);
+                return null;
+            }
+        }
+
+        private boolean isDeepCloneField(DeepCloningUtils deepCloningUtils, Class<?> fieldTypeClass, Object originalValue) {
+            if (originalValue == null) {
+                return false;
+            }
+            Class<?> originalValueType = originalValue.getClass();
             /*
              * Obtaining the deep clone decision is possibly very expensive, as it involves one or more map lookups.
              * This code sits on the hot path of the lowest level of the solver,
@@ -47,8 +57,9 @@ final class DeepCloningFieldCloner extends AbstractFieldCloner {
                 childType = originalValueType;
                 deepCloneDecision = deepCloningUtils.getDeepCloneDecision(field, fieldTypeClass, originalValueType);
             }
+            return deepCloneDecision;
         }
-        return deepCloneDecision;
+
     }
 
 }

@@ -9,7 +9,7 @@ final class ShallowCloningFieldCloner extends AbstractFieldCloner {
     }
 
     @Override
-    public <C> Unprocessed clone(C original, C clone) {
+    public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, C original, C clone) {
         Object originalValue = AbstractFieldCloner.getGenericFieldValue(original, field);
         AbstractFieldCloner.setGenericFieldValue(clone, field, originalValue);
         return null;

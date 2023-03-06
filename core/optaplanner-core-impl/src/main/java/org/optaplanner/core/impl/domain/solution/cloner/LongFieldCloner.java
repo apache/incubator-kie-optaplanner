@@ -9,7 +9,7 @@ final class LongFieldCloner extends AbstractFieldCloner {
     }
 
     @Override
-    public <C> Unprocessed clone(C original, C clone) {
+    public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, C original, C clone) {
         long originalValue = getFieldValue(original, field);
         setFieldValue(clone, field, originalValue);
         return null;
