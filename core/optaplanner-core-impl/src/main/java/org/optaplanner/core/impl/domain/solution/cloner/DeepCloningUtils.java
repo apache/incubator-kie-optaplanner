@@ -77,8 +77,10 @@ public final class DeepCloningUtils {
             HardMediumSoftScore.class, HardMediumSoftLongScore.class, HardMediumSoftBigDecimalScore.class,
             BendableScore.class, BendableLongScore.class, BendableBigDecimalScore.class);
 
-    private final Map<Pair<Field, Class<?>>, Boolean> fieldDeepClonedMemoization = Collections.synchronizedMap(new IdentityHashMap<>());
-    private final Map<Class<?>, Boolean> actualValueClassDeepClonedMemoization = Collections.synchronizedMap(new IdentityHashMap<>());
+    private final Map<Pair<Field, Class<?>>, Boolean> fieldDeepClonedMemoization =
+            Collections.synchronizedMap(new IdentityHashMap<>());
+    private final Map<Class<?>, Boolean> actualValueClassDeepClonedMemoization =
+            Collections.synchronizedMap(new IdentityHashMap<>());
     private final SolutionDescriptor<?> solutionDescriptor;
 
     public DeepCloningUtils(SolutionDescriptor<?> solutionDescriptor) {
@@ -259,7 +261,7 @@ public final class DeepCloningUtils {
         Set<Class<?>> classesToProcess = new LinkedHashSet<>(solutionDescriptor.getEntityClassSet());
         classesToProcess.add(solutionDescriptor.getSolutionClass());
         classesToProcess.addAll(entitySubclasses);
-        for (Class<?> clazz: classesToProcess) {
+        for (Class<?> clazz : classesToProcess) {
             deepClonedClassSet.add(clazz);
             for (Field field : getAllFields(clazz)) {
                 deepClonedClassSet.addAll(getDeepClonedTypeArguments(field.getGenericType()));
