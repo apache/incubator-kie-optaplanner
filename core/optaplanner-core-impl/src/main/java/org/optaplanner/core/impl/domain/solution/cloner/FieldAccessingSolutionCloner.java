@@ -23,6 +23,7 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentMap;
 
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
@@ -34,12 +35,12 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
-    private final Map<Class<?>, Constructor<?>> constructorMemoization = new IdentityHashMap<>();
+    private final ConcurrentMap<Class<?>, Constructor<?>> constructorMemoization = new ConcurrentMemoization<>();
     /**
      * Contains one cloner for every field that needs to be cloned.
      * The field in question can be accessed via {@link AbstractFieldCloner#field}.
      */
-    private final Map<Class<?>, List<AbstractFieldCloner>> fieldListMemoization = new IdentityHashMap<>();
+    private final ConcurrentMap<Class<?>, List<AbstractFieldCloner>> fieldListMemoization = new ConcurrentMemoization<>();
     private final DeepCloningUtils deepCloningUtils;
 
     public FieldAccessingSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
@@ -68,35 +69,31 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
 
     @SuppressWarnings("unchecked")
     private <C> Constructor<C> retrieveCachedConstructor(Class<C> clazz) {
-        synchronized (constructorMemoization) {
-            return (Constructor<C>) constructorMemoization.computeIfAbsent(clazz, key -> {
-                Constructor<C> constructor;
-                try {
-                    constructor = (Constructor<C>) key.getDeclaredConstructor();
-                } catch (ReflectiveOperationException e) {
-                    throw new IllegalStateException("The class (" + key
-                            + ") should have a no-arg constructor to create a planning clone.", e);
-                }
-                constructor.setAccessible(true);
-                return constructor;
-            });
-        }
+        return (Constructor<C>) constructorMemoization.computeIfAbsent(clazz, key -> {
+            Constructor<C> constructor;
+            try {
+                constructor = (Constructor<C>) key.getDeclaredConstructor();
+            } catch (ReflectiveOperationException e) {
+                throw new IllegalStateException("The class (" + key
+                        + ") should have a no-arg constructor to create a planning clone.", e);
+            }
+            constructor.setAccessible(true);
+            return constructor;
+        });
     }
 
     private List<AbstractFieldCloner> retrieveClonersForFields(Class<?> clazz) {
-        synchronized (fieldListMemoization) {
-            return fieldListMemoization.computeIfAbsent(clazz, clz -> {
-                Field[] fields = clz.getDeclaredFields();
-                List<AbstractFieldCloner> fieldList = new ArrayList<>(fields.length);
-                for (Field field : fields) {
-                    if (!Modifier.isStatic(field.getModifiers())) {
-                        field.setAccessible(true);
-                        fieldList.add(getCloner(clz, field));
-                    }
+        return fieldListMemoization.computeIfAbsent(clazz, clz -> {
+            Field[] fields = clz.getDeclaredFields();
+            List<AbstractFieldCloner> fieldList = new ArrayList<>(fields.length);
+            for (Field field : fields) {
+                if (!Modifier.isStatic(field.getModifiers())) {
+                    field.setAccessible(true);
+                    fieldList.add(getCloner(clz, field));
                 }
-                return fieldList;
-            });
-        }
+            }
+            return fieldList;
+        });
     }
 
     private static AbstractFieldCloner getCloner(Class<?> clazz, Field field) {

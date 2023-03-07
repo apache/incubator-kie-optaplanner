@@ -23,7 +23,6 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -78,8 +77,8 @@ public final class DeepCloningUtils {
             HardMediumSoftScore.class, HardMediumSoftLongScore.class, HardMediumSoftBigDecimalScore.class,
             BendableScore.class, BendableLongScore.class, BendableBigDecimalScore.class);
 
-    private final Map<Pair<Field, Class<?>>, Boolean> fieldDeepClonedMemoization = new ConcurrentHashMap<>();
-    private final Map<Class<?>, Boolean> actualValueClassDeepClonedMemoization = new IdentityHashMap<>();
+    private final ConcurrentMap<Pair<Field, Class<?>>, Boolean> fieldDeepClonedMemoization = new ConcurrentMemoization<>();
+    private final ConcurrentMap<Class<?>, Boolean> actualValueClassDeepClonedMemoization = new ConcurrentMemoization<>();
     private final SolutionDescriptor<?> solutionDescriptor;
 
     public DeepCloningUtils(SolutionDescriptor<?> solutionDescriptor) {
@@ -111,9 +110,7 @@ public final class DeepCloningUtils {
     }
 
     boolean retrieveDeepCloneDecisionForActualValueClass(Class<?> actualValueClass) {
-        synchronized (actualValueClassDeepClonedMemoization) {
-            return actualValueClassDeepClonedMemoization.computeIfAbsent(actualValueClass, this::isClassDeepCloned);
-        }
+        return actualValueClassDeepClonedMemoization.computeIfAbsent(actualValueClass, this::isClassDeepCloned);
     }
 
     /**
