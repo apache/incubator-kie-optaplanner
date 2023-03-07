@@ -46,7 +46,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
     /**
      * Contains one cloner for every field that needs to be cloned.
      * The field in question can be accessed via {@link AbstractFieldCloner#field}.
-     * 
+     *
      * @implNote {@link ThreadLocal} used because {@link DeepCloningFieldCloner} is not thread-safe
      *           and it is better to pay this penalty once here
      *           than every time the cloner is run.
