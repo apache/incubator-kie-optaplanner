@@ -1,11 +1,14 @@
 package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 
-final class IntFieldCloner extends AbstractFieldCloner {
+final class IntFieldCloner implements FieldCloner {
+
+    private final Field field;
 
     public IntFieldCloner(Field field) {
-        super(field);
+        this.field = Objects.requireNonNull(field);
     }
 
     @Override
@@ -19,7 +22,7 @@ final class IntFieldCloner extends AbstractFieldCloner {
         try {
             return field.getInt(bean);
         } catch (IllegalAccessException e) {
-            throw AbstractFieldCloner.createExceptionOnRead(bean, field, e);
+            throw FieldCloner.createExceptionOnRead(bean, field, e);
         }
     }
 
@@ -27,7 +30,7 @@ final class IntFieldCloner extends AbstractFieldCloner {
         try {
             field.setInt(bean, value);
         } catch (IllegalAccessException e) {
-            throw AbstractFieldCloner.createExceptionOnWrite(bean, field, value, e);
+            throw FieldCloner.createExceptionOnWrite(bean, field, value, e);
         }
     }
 

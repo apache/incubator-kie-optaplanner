@@ -38,9 +38,9 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
     private final ConcurrentMap<Class<?>, Constructor<?>> constructorMemoization = new ConcurrentMemoization<>();
     /**
      * Contains one cloner for every field that needs to be cloned.
-     * The field in question can be accessed via {@link AbstractFieldCloner#field}.
+     * The field in question can be accessed via {@link FieldCloner#field}.
      */
-    private final ConcurrentMap<Class<?>, List<AbstractFieldCloner>> fieldListMemoization = new ConcurrentMemoization<>();
+    private final ConcurrentMap<Class<?>, List<FieldCloner>> fieldListMemoization = new ConcurrentMemoization<>();
     private final DeepCloningUtils deepCloningUtils;
 
     public FieldAccessingSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
@@ -61,7 +61,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         while (!unprocessedQueue.isEmpty()) {
             Unprocessed unprocessed = unprocessedQueue.remove();
             Object cloneValue = process(unprocessed, originalToCloneMap, unprocessedQueue);
-            AbstractFieldCloner.setGenericFieldValue(unprocessed.bean, unprocessed.field, cloneValue);
+            FieldCloner.setGenericFieldValue(unprocessed.bean, unprocessed.field, cloneValue);
         }
         validateCloneSolution(originalSolution, cloneSolution);
         return cloneSolution;
@@ -82,10 +82,10 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         });
     }
 
-    private List<AbstractFieldCloner> retrieveClonersForFields(Class<?> clazz) {
+    private List<FieldCloner> retrieveClonersForFields(Class<?> clazz) {
         return fieldListMemoization.computeIfAbsent(clazz, clz -> {
             Field[] fields = clz.getDeclaredFields();
-            List<AbstractFieldCloner> fieldList = new ArrayList<>(fields.length);
+            List<FieldCloner> fieldList = new ArrayList<>(fields.length);
             for (Field field : fields) {
                 if (!Modifier.isStatic(field.getModifiers())) {
                     field.setAccessible(true);
@@ -96,7 +96,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         });
     }
 
-    private static AbstractFieldCloner getCloner(Class<?> clazz, Field field) {
+    private static FieldCloner getCloner(Class<?> clazz, Field field) {
         Class<?> fieldType = field.getType();
         if (fieldType.isPrimitive()) {
             if (fieldType == boolean.class) {
@@ -168,7 +168,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
     }
 
     private <C> void copyFields(Class<C> clazz, C original, C clone, Queue<Unprocessed> unprocessedQueue) {
-        for (AbstractFieldCloner fieldCloner : retrieveClonersForFields(clazz)) {
+        for (FieldCloner fieldCloner : retrieveClonersForFields(clazz)) {
             Unprocessed unprocessed = fieldCloner.clone(deepCloningUtils, original, clone);
             if (unprocessed != null) {
                 unprocessedQueue.add(unprocessed);

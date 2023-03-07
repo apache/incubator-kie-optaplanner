@@ -1,28 +1,30 @@
 package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @implNote This class is thread-safe.
  */
-final class DeepCloningFieldCloner extends AbstractFieldCloner {
+final class DeepCloningFieldCloner implements FieldCloner {
 
     private final AtomicReference<Metadata> valueDeepCloneDecision = new AtomicReference<>();
     private final AtomicInteger fieldDeepCloneDecision = new AtomicInteger(-1);
+    private final Field field;
 
     public DeepCloningFieldCloner(Field field) {
-        super(field);
+        this.field = Objects.requireNonNull(field);
     }
 
     @Override
     public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, C original, C clone) {
-        Object originalValue = AbstractFieldCloner.getGenericFieldValue(original, field);
+        Object originalValue = FieldCloner.getGenericFieldValue(original, field);
         if (deepClone(deepCloningUtils, original.getClass(), originalValue)) { // Defer filling in the field.
             return new Unprocessed(clone, field, originalValue);
         } else { // Shallow copy.
-            AbstractFieldCloner.setGenericFieldValue(clone, field, originalValue);
+            FieldCloner.setGenericFieldValue(clone, field, originalValue);
             return null;
         }
     }

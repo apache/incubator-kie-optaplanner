@@ -1,17 +1,10 @@
 package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.lang.reflect.Field;
-import java.util.Objects;
 
-abstract class AbstractFieldCloner {
+interface FieldCloner {
 
-    protected Field field;
-
-    protected AbstractFieldCloner(Field field) {
-        this.field = Objects.requireNonNull(field);
-    }
-
-    protected static Object getGenericFieldValue(Object bean, Field field) {
+    static Object getGenericFieldValue(Object bean, Field field) {
         try {
             return field.get(bean);
         } catch (IllegalAccessException e) {
@@ -19,12 +12,12 @@ abstract class AbstractFieldCloner {
         }
     }
 
-    protected static RuntimeException createExceptionOnRead(Object bean, Field field, Exception rootCause) {
+    static RuntimeException createExceptionOnRead(Object bean, Field field, Exception rootCause) {
         return new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
                 + ") which cannot be read to create a planning clone.", rootCause);
     }
 
-    protected static void setGenericFieldValue(Object bean, Field field, Object value) {
+    static void setGenericFieldValue(Object bean, Field field, Object value) {
         try {
             field.set(bean, value);
         } catch (IllegalAccessException e) {
@@ -32,7 +25,7 @@ abstract class AbstractFieldCloner {
         }
     }
 
-    protected static RuntimeException createExceptionOnWrite(Object bean, Field field, Object value, Exception rootCause) {
+    static RuntimeException createExceptionOnWrite(Object bean, Field field, Object value, Exception rootCause) {
         return new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
                 + ") which cannot be written with the value (" + value + ") to create a planning clone.", rootCause);
     }
@@ -46,6 +39,6 @@ abstract class AbstractFieldCloner {
      * @return null if the cloner performed the clone
      * @throws RuntimeException if reflective field read or write fails
      */
-    abstract <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, C original, C clone);
+    <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, C original, C clone);
 
 }
