@@ -110,7 +110,7 @@ public final class DeepCloningUtils {
         return fieldDeepClonedMemoization.computeIfAbsent(pair, k -> isFieldDeepCloned(k.getKey(), k.getValue()));
     }
 
-    public boolean retrieveDeepCloneDecisionForActualValueClass(Class<?> actualValueClass) {
+    boolean retrieveDeepCloneDecisionForActualValueClass(Class<?> actualValueClass) {
         synchronized (actualValueClassDeepClonedMemoization) {
             return actualValueClassDeepClonedMemoization.computeIfAbsent(actualValueClass, this::isClassDeepCloned);
         }
