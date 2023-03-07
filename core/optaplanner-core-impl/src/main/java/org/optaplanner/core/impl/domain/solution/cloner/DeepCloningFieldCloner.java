@@ -1,15 +1,16 @@
 package org.optaplanner.core.impl.domain.solution.cloner;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * @implNote This class is not thread-safe.
+ * @implNote This class is thread-safe.
  */
 final class DeepCloningFieldCloner extends AbstractFieldCloner {
 
-    private Class<?> parentType;
-    private Class<?> childType;
-    private boolean deepCloneDecision;
+    private final AtomicReference<Metadata> valueDeepCloneDecision = new AtomicReference<>();
+    private final AtomicInteger fieldDeepCloneDecision = new AtomicInteger(-1);
 
     public DeepCloningFieldCloner(Field field) {
         super(field);
@@ -18,7 +19,7 @@ final class DeepCloningFieldCloner extends AbstractFieldCloner {
     @Override
     public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, C original, C clone) {
         Object originalValue = AbstractFieldCloner.getGenericFieldValue(original, field);
-        if (isDeepCloneField(deepCloningUtils, original.getClass(), originalValue)) { // Defer filling in the field.
+        if (deepClone(deepCloningUtils, original.getClass(), originalValue)) { // Defer filling in the field.
             return new Unprocessed(clone, field, originalValue);
         } else { // Shallow copy.
             AbstractFieldCloner.setGenericFieldValue(clone, field, originalValue);
@@ -26,26 +27,55 @@ final class DeepCloningFieldCloner extends AbstractFieldCloner {
         }
     }
 
-    private boolean isDeepCloneField(DeepCloningUtils deepCloningUtils, Class<?> fieldTypeClass, Object originalValue) {
+    /**
+     * Obtaining the decision on whether or not to deep-clone is expensive.
+     * This method exists to cache those computations as much as possible,
+     * while maintaining thread-safety.
+     *
+     * @param deepCloningUtils never null
+     * @param fieldTypeClass never null
+     * @param originalValue never null
+     * @return true if the value needs to be deep-cloned
+     */
+    private boolean deepClone(DeepCloningUtils deepCloningUtils, Class<?> fieldTypeClass, Object originalValue) {
         if (originalValue == null) {
             return false;
         }
-        Class<?> originalValueType = originalValue.getClass();
         /*
-         * Obtaining the deep clone decision is possibly very expensive, as it involves one or more map lookups.
-         * This code sits on the hot path of the lowest level of the solver,
-         * and in cases with low acceptedCountLimit (such as simulated annealing) it is called very often,
-         * especially on large datasets.
-         *
          * This caching mechanism takes advantage of the fact that, for a particular field on a particular class,
          * the types of values contained are unlikely to change and therefore it is safe to cache the calculation.
          * In the unlikely event of a cache miss, we recompute.
          */
-        if (parentType != fieldTypeClass || childType != originalValueType) {
-            parentType = fieldTypeClass;
-            childType = originalValueType;
-            deepCloneDecision = deepCloningUtils.getDeepCloneDecision(field, fieldTypeClass, originalValueType);
+        boolean isValueDeepCloned = valueDeepCloneDecision.updateAndGet(old -> {
+            Class<?> originalClass = originalValue.getClass();
+            if (old == null || old.clz != originalClass) {
+                return new Metadata(originalClass, deepCloningUtils.isClassDeepCloned(originalClass));
+            } else {
+                return old;
+            }
+        }).decision;
+        if (isValueDeepCloned) { // The value has to be deep-cloned. Does not matter what the field says.
+            return true;
         }
-        return deepCloneDecision;
+        /*
+         * The decision to clone a field is constant once it has been made.
+         * The fieldTypeClass is guaranteed to not change for the particular field.
+         */
+        if (fieldDeepCloneDecision.get() < 0) {
+            fieldDeepCloneDecision.set(deepCloningUtils.isFieldDeepCloned(field, fieldTypeClass) ? 1 : 0);
+        }
+        return fieldDeepCloneDecision.get() == 1;
+    }
+
+    private static final class Metadata {
+
+        private final Class<?> clz;
+        private final boolean decision;
+
+        public Metadata(Class<?> clz, boolean decision) {
+            this.clz = clz;
+            this.decision = decision;
+        }
+
     }
 }

@@ -1,13 +1,16 @@
 package org.optaplanner.examples.machinereassignment.app;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.Set;
 
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentExporter;
+import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentImporter;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentSolutionFileIO;
 import org.optaplanner.examples.machinereassignment.swingui.MachineReassignmentPanel;
@@ -21,8 +24,12 @@ public class MachineReassignmentApp extends CommonApp<MachineReassignment> {
     public static final String DATA_DIR_NAME = "machinereassignment";
 
     public static void main(String[] args) {
-        prepareSwingEnvironment();
-        new MachineReassignmentApp().init();
+        MachineReassignment solution = new MachineReassignmentFileIO()
+                .read(new File(
+                        "/var/home/triceo/IdeaProjects/optaplanner/optaplanner-examples/data/machinereassignment/import/model_b_7.txt"));
+        SolverFactory.createFromXmlResource(SOLVER_CONFIG)
+                .buildSolver()
+                .solve(solution);
     }
 
     public MachineReassignmentApp() {

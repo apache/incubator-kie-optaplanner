@@ -11,6 +11,7 @@
 
   <scoreDirectorFactory>
     <constraintProviderClass>org.optaplanner.examples.machinereassignment.score.MachineReassignmentConstraintProvider</constraintProviderClass>
+    <constraintStreamImplType>BAVET</constraintStreamImplType>
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.optional.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <!--<assertionScoreDirectorFactory>-->
       <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.optional.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
@@ -32,11 +33,10 @@
       <swapMoveSelector/>
     </unionMoveSelector>
     <acceptor>
-      <entityTabuSize>7</entityTabuSize>
-      <!--<lateAcceptanceSize>2000</lateAcceptanceSize>-->
+      <simulatedAnnealingStartingTemperature>0hard/100000soft</simulatedAnnealingStartingTemperature>
     </acceptor>
     <forager>
-      <acceptedCountLimit>2000</acceptedCountLimit>
+      <acceptedCountLimit>1</acceptedCountLimit>
       <!--<acceptedCountLimit>500</acceptedCountLimit>-->
     </forager>
   </localSearch>

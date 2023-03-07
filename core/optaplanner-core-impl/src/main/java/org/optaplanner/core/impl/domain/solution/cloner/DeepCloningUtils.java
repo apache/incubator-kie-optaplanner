@@ -33,6 +33,7 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -77,10 +78,8 @@ public final class DeepCloningUtils {
             HardMediumSoftScore.class, HardMediumSoftLongScore.class, HardMediumSoftBigDecimalScore.class,
             BendableScore.class, BendableLongScore.class, BendableBigDecimalScore.class);
 
-    private final Map<Pair<Field, Class<?>>, Boolean> fieldDeepClonedMemoization =
-            Collections.synchronizedMap(new IdentityHashMap<>());
-    private final Map<Class<?>, Boolean> actualValueClassDeepClonedMemoization =
-            Collections.synchronizedMap(new IdentityHashMap<>());
+    private final Map<Pair<Field, Class<?>>, Boolean> fieldDeepClonedMemoization = new ConcurrentHashMap<>();
+    private final Map<Class<?>, Boolean> actualValueClassDeepClonedMemoization = new IdentityHashMap<>();
     private final SolutionDescriptor<?> solutionDescriptor;
 
     public DeepCloningUtils(SolutionDescriptor<?> solutionDescriptor) {
@@ -112,7 +111,9 @@ public final class DeepCloningUtils {
     }
 
     public boolean retrieveDeepCloneDecisionForActualValueClass(Class<?> actualValueClass) {
-        return actualValueClassDeepClonedMemoization.computeIfAbsent(actualValueClass, this::isClassDeepCloned);
+        synchronized (actualValueClassDeepClonedMemoization) {
+            return actualValueClassDeepClonedMemoization.computeIfAbsent(actualValueClass, this::isClassDeepCloned);
+        }
     }
 
     /**
@@ -189,7 +190,7 @@ public final class DeepCloningUtils {
         return false;
     }
 
-    private boolean isClassDeepCloned(Class<?> type) {
+    public boolean isClassDeepCloned(Class<?> type) {
         if (isImmutable(type)) {
             return false;
         }

@@ -7,7 +7,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
@@ -24,7 +23,6 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
@@ -36,23 +34,12 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<Solution_> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
-    /**
-     * @implNote A synchronized {@link IdentityHashMap} used over {@link ConcurrentHashMap}
-     *           on account of its superior single-thread speed;
-     *           Multi-threaded performance is a secondary concern here.
-     */
-    private final Map<Class<?>, Constructor<?>> constructorMemoization =
-            Collections.synchronizedMap(new IdentityHashMap<>());
+    private final Map<Class<?>, Constructor<?>> constructorMemoization = new IdentityHashMap<>();
     /**
      * Contains one cloner for every field that needs to be cloned.
      * The field in question can be accessed via {@link AbstractFieldCloner#field}.
-     *
-     * @implNote {@link ThreadLocal} used because {@link DeepCloningFieldCloner} is not thread-safe
-     *           and it is better to pay this penalty once here
-     *           than every time the cloner is run.
      */
-    private final ThreadLocal<Map<Class<?>, List<AbstractFieldCloner>>> fieldListMemoization =
-            ThreadLocal.withInitial(IdentityHashMap::new);
+    private final Map<Class<?>, List<AbstractFieldCloner>> fieldListMemoization = new IdentityHashMap<>();
     private final DeepCloningUtils deepCloningUtils;
 
     public FieldAccessingSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
@@ -81,31 +68,35 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
 
     @SuppressWarnings("unchecked")
     private <C> Constructor<C> retrieveCachedConstructor(Class<C> clazz) {
-        return (Constructor<C>) constructorMemoization.computeIfAbsent(clazz, key -> {
-            Constructor<C> constructor;
-            try {
-                constructor = (Constructor<C>) key.getDeclaredConstructor();
-            } catch (ReflectiveOperationException e) {
-                throw new IllegalStateException("The class (" + key
-                        + ") should have a no-arg constructor to create a planning clone.", e);
-            }
-            constructor.setAccessible(true);
-            return constructor;
-        });
+        synchronized (constructorMemoization) {
+            return (Constructor<C>) constructorMemoization.computeIfAbsent(clazz, key -> {
+                Constructor<C> constructor;
+                try {
+                    constructor = (Constructor<C>) key.getDeclaredConstructor();
+                } catch (ReflectiveOperationException e) {
+                    throw new IllegalStateException("The class (" + key
+                            + ") should have a no-arg constructor to create a planning clone.", e);
+                }
+                constructor.setAccessible(true);
+                return constructor;
+            });
+        }
     }
 
     private List<AbstractFieldCloner> retrieveClonersForFields(Class<?> clazz) {
-        return fieldListMemoization.get().computeIfAbsent(clazz, clz -> {
-            Field[] fields = clz.getDeclaredFields();
-            List<AbstractFieldCloner> fieldList = new ArrayList<>(fields.length);
-            for (Field field : fields) {
-                if (!Modifier.isStatic(field.getModifiers())) {
-                    field.setAccessible(true);
-                    fieldList.add(getCloner(clz, field));
+        synchronized (fieldListMemoization) {
+            return fieldListMemoization.computeIfAbsent(clazz, clz -> {
+                Field[] fields = clz.getDeclaredFields();
+                List<AbstractFieldCloner> fieldList = new ArrayList<>(fields.length);
+                for (Field field : fields) {
+                    if (!Modifier.isStatic(field.getModifiers())) {
+                        field.setAccessible(true);
+                        fieldList.add(getCloner(clz, field));
+                    }
                 }
-            }
-            return fieldList;
-        });
+                return fieldList;
+            });
+        }
     }
 
     private static AbstractFieldCloner getCloner(Class<?> clazz, Field field) {
@@ -187,7 +178,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
             }
         }
         Class<? super C> superclass = clazz.getSuperclass();
-        if (superclass != null) {
+        if (superclass != null && superclass != Object.class) {
             copyFields(superclass, original, clone, unprocessedQueue);
         }
     }
