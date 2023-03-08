@@ -354,7 +354,8 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
 
         @Override
         public int hashCode() {
-            return getKey().hashCode();
+            GroupKey_ key = getKey();
+            return key == null ? 0 : key.hashCode();
         }
     }
 
