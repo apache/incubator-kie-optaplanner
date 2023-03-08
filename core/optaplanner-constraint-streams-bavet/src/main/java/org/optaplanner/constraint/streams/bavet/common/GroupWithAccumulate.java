@@ -1,6 +1,6 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
-final class GroupWithAccumulate<OutTuple_ extends Tuple, GroupKey_, ResultContainer_>
+final class GroupWithAccumulate<OutTuple_ extends Tuple, ResultContainer_>
         extends AbstractGroup<OutTuple_, ResultContainer_> {
 
     private final ResultContainer_ resultContainer;
