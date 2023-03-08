@@ -172,54 +172,54 @@ public abstract class MoveSelectorConfig<Config_ extends MoveSelectorConfig<Conf
 
     public Config_ withCacheType(SelectionCacheType cacheType) {
         this.cacheType = cacheType;
-        return self();
+        return (Config_) this;
     }
 
     public Config_ withSelectionOrder(SelectionOrder selectionOrder) {
         this.selectionOrder = selectionOrder;
-        return self();
+        return (Config_) this;
     }
 
     public Config_ withFilterClass(Class<? extends SelectionFilter> filterClass) {
         this.filterClass = filterClass;
-        return self();
+        return (Config_) this;
     }
 
     public Config_ withSorterComparatorClass(Class<? extends Comparator> sorterComparatorClass) {
         this.sorterComparatorClass = sorterComparatorClass;
-        return self();
+        return (Config_) this;
     }
 
     public Config_ withSorterWeightFactoryClass(
             Class<? extends SelectionSorterWeightFactory> sorterWeightFactoryClass) {
         this.sorterWeightFactoryClass = sorterWeightFactoryClass;
-        return self();
+        return (Config_) this;
     }
 
     public Config_ withSorterOrder(SelectionSorterOrder sorterOrder) {
         this.sorterOrder = sorterOrder;
-        return self();
+        return (Config_) this;
     }
 
     public Config_ withSorterClass(Class<? extends SelectionSorter> sorterClass) {
         this.sorterClass = sorterClass;
-        return self();
+        return (Config_) this;
     }
 
     public Config_ withProbabilityWeightFactoryClass(
             Class<? extends SelectionProbabilityWeightFactory> probabilityWeightFactoryClass) {
         this.probabilityWeightFactoryClass = probabilityWeightFactoryClass;
-        return self();
+        return (Config_) this;
     }
 
     public Config_ withSelectedCountLimit(Long selectedCountLimit) {
         this.selectedCountLimit = selectedCountLimit;
-        return self();
+        return (Config_) this;
     }
 
     public Config_ withFixedProbabilityWeight(Double fixedProbabilityWeight) {
         this.fixedProbabilityWeight = fixedProbabilityWeight;
-        return self();
+        return (Config_) this;
     }
 
     /**
@@ -235,7 +235,7 @@ public abstract class MoveSelectorConfig<Config_ extends MoveSelectorConfig<Conf
     @Override
     public Config_ inherit(Config_ inheritedConfig) {
         inheritCommon(inheritedConfig);
-        return self();
+        return (Config_) this;
     }
 
     /**

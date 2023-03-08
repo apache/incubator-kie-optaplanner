@@ -50,12 +50,4 @@ public abstract class AbstractConfig<Config_ extends AbstractConfig<Config_>> {
     public String toString() {
         return getClass().getSimpleName() + "()";
     }
-
-    /**
-     * Used as a return value of the with() methods on Config classes to ensure the correct type
-     * in the hierarchical builder pattern.
-     */
-    protected Config_ self() {
-        return (Config_) this;
-    }
 }
