@@ -140,6 +140,8 @@ public final class DestinationSelectorFactory<Solution_> extends AbstractSelecto
                     nearbyDistanceMeter,
                     nearbyRandom,
                     randomSelection);
+        } else if (nearbySelectionConfig.getOriginEntitySelectorConfig() != null) {
+            throw new IllegalArgumentException("TODO");
         } else {
             throw new IllegalStateException("Impossible because nearby config validation should have ensured there is exactly"
                     + " one origin selector property.");

@@ -38,6 +38,10 @@ public class SubListChangeMoveSelectorFactory<Solution_>
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         checkUnfolded("subListSelectorConfig", config.getSubListSelectorConfig());
         checkUnfolded("destinationSelectorConfig", config.getDestinationSelectorConfig());
+        if (!randomSelection) {
+            throw new IllegalArgumentException("The subListChangeMoveSelector (" + config
+                    + ") only supports random selection order.");
+        }
 
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
 

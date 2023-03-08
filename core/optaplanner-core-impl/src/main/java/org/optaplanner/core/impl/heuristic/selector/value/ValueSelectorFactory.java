@@ -489,6 +489,8 @@ public class ValueSelectorFactory<Solution_>
                     (EntityIndependentValueSelector<Solution_>) valueSelector,
                     (EntityIndependentValueSelector<Solution_>) originValueSelector,
                     nearbyDistanceMeter, nearbyRandom, randomSelection);
+        } else if (nearbySelectionConfig.getOriginSubListSelectorConfig() != null) {
+            throw new IllegalArgumentException("TODO");
         } else {
             throw new IllegalStateException("Impossible because nearby config validation should have ensured there is exactly"
                     + " one origin selector property.");
