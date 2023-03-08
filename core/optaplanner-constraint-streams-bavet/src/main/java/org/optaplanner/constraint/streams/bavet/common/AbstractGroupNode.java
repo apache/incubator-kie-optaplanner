@@ -57,7 +57,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
      */
     private AbstractGroup<MutableOutTuple_, ResultContainer_> singletonGroup;
     private final Queue<AbstractGroup<MutableOutTuple_, ResultContainer_>> dirtyGroupQueue;
-    private final EnvironmentMode environmentMode;
+    private final boolean useAssertingGroupKey;
 
     protected AbstractGroupNode(int groupStoreIndex, int undoStoreIndex, Function<InTuple_, GroupKey_> groupKeyFunction,
             Supplier<ResultContainer_> supplier, Function<ResultContainer_, Result_> finisher,
@@ -77,7 +77,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
          */
         this.groupMap = hasMultipleGroups ? new HashMap<>() : null;
         this.dirtyGroupQueue = new ArrayDeque<>();
-        this.environmentMode = Objects.requireNonNull(environmentMode);
+        this.useAssertingGroupKey = environmentMode.isAsserted();
     }
 
     protected AbstractGroupNode(int groupStoreIndex, Function<InTuple_, GroupKey_> groupKeyFunction,
@@ -129,7 +129,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     }
 
     private AbstractGroup<MutableOutTuple_, ResultContainer_> getOrCreateGroup(GroupKey_ userSuppliedKey) {
-        Object groupMapKey = environmentMode.isAsserted() ? new AssertingGroupKey(userSuppliedKey) : userSuppliedKey;
+        Object groupMapKey = useAssertingGroupKey ? new AssertingGroupKey(userSuppliedKey) : userSuppliedKey;
         if (hasMultipleGroups) {
             // Avoids computeIfAbsent in order to not create lambdas on the hot path.
             AbstractGroup<MutableOutTuple_, ResultContainer_> group = groupMap.get(groupMapKey);
@@ -162,7 +162,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     }
 
     private GroupKey_ extractUserSuppliedKey(Object groupMapKey) {
-        return environmentMode.isAsserted() ? ((AssertingGroupKey) groupMapKey).getKey() : (GroupKey_) groupMapKey;
+        return useAssertingGroupKey ? ((AssertingGroupKey) groupMapKey).getKey() : (GroupKey_) groupMapKey;
     }
 
     @Override
