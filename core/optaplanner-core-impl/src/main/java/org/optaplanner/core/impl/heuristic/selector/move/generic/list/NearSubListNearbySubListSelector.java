@@ -19,47 +19,46 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.util.MemoizingSupply;
 
-// TODO extends abstract destination selector!
-public final class NearSubListNearbyDestinationSelector<Solution_> extends AbstractSelector<Solution_>
-        implements DestinationSelector<Solution_> {
+public final class NearSubListNearbySubListSelector<Solution_> extends AbstractSelector<Solution_>
+        implements SubListSelector<Solution_> {
 
-    private final ElementDestinationSelector<Solution_> childDestinationSelector;
+    private final RandomSubListSelector<Solution_> childSubListSelector;
     private final MimicReplayingSubListSelector<Solution_> replayingOriginSubListSelector;
     private final NearbyDistanceMeter<?, ?> nearbyDistanceMeter;
     private final NearbyRandom nearbyRandom;
     private final boolean randomSelection;
-    private final SubListNearbyDistanceMatrixDemand<Solution_, ?, ?> nearbyDistanceMatrixDemand;
+    private final SubListNearbySubListMatrixDemand<Solution_, ?, ?> nearbyDistanceMatrixDemand;
 
     private MemoizingSupply<NearbyDistanceMatrix<Object, Object>> nearbyDistanceMatrixSupply = null;
     private SingletonInverseVariableSupply inverseVariableSupply;
     private IndexVariableSupply indexVariableSupply;
 
-    public NearSubListNearbyDestinationSelector(
-            ElementDestinationSelector<Solution_> childDestinationSelector,
+    public NearSubListNearbySubListSelector(
+            RandomSubListSelector<Solution_> childSubListSelector,
             SubListSelector<Solution_> originSubListSelector,
             NearbyDistanceMeter<?, ?> nearbyDistanceMeter,
-            NearbyRandom nearbyRandom, boolean randomSelection) {
-        this.childDestinationSelector = childDestinationSelector;
+            NearbyRandom nearbyRandom) {
+        this.childSubListSelector = childSubListSelector;
         if (!(originSubListSelector instanceof MimicReplayingSubListSelector)) {
-            // In order to select a nearby destination, we must first have something to be near by.
-            throw new IllegalStateException("Impossible state: Nearby destination selector (" + this +
+            // In order to select a nearby subList, we must first have something to be near by.
+            throw new IllegalStateException("Impossible state: Nearby subList selector (" + this +
                     ") did not receive a replaying subList selector (" + originSubListSelector + ").");
         }
         this.replayingOriginSubListSelector = (MimicReplayingSubListSelector<Solution_>) originSubListSelector;
         this.nearbyDistanceMeter = nearbyDistanceMeter;
         this.nearbyRandom = nearbyRandom;
-        this.randomSelection = randomSelection;
+        this.randomSelection = true;
         if (randomSelection && nearbyRandom == null) {
-            throw new IllegalArgumentException("The destinationSelector (" + this
+            throw new IllegalArgumentException("The subListSelector (" + this
                     + ") with randomSelection (" + randomSelection + ") has no nearbyRandom (" + nearbyRandom + ").");
         }
-        this.nearbyDistanceMatrixDemand = new SubListNearbyDistanceMatrixDemand<>(
+        this.nearbyDistanceMatrixDemand = new SubListNearbySubListMatrixDemand<>(
                 nearbyDistanceMeter,
-                childDestinationSelector,
+                childSubListSelector,
                 replayingOriginSubListSelector,
                 this::computeDestinationSize);
 
-        phaseLifecycleSupport.addEventListener(childDestinationSelector);
+        phaseLifecycleSupport.addEventListener(childSubListSelector);
         phaseLifecycleSupport.addEventListener(originSubListSelector);
     }
 
@@ -67,7 +66,7 @@ public final class NearSubListNearbyDestinationSelector<Solution_> extends Abstr
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
         SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
-        ListVariableDescriptor<Solution_> listVariableDescriptor = childDestinationSelector.getVariableDescriptor();
+        ListVariableDescriptor<Solution_> listVariableDescriptor = childSubListSelector.getVariableDescriptor();
         /*
          * Supply will ask questions of the child selector.
          * However, child selector will only be initialized during phase start.
@@ -87,10 +86,10 @@ public final class NearSubListNearbyDestinationSelector<Solution_> extends Abstr
     }
 
     private int computeDestinationSize(Object origin) {
-        long childSize = childDestinationSelector.getSize();
+        long childSize = childSubListSelector.getValueCount();
         if (childSize > Integer.MAX_VALUE) {
-            throw new IllegalStateException("The childDestinationSelector (" + childDestinationSelector
-                    + ") has a destinationSize (" + childSize
+            throw new IllegalStateException("The childSubListSelector (" + childSubListSelector
+                    + ") has a valueSize (" + childSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
 
@@ -120,7 +119,7 @@ public final class NearSubListNearbyDestinationSelector<Solution_> extends Abstr
 
     @Override
     public boolean isCountable() {
-        return childDestinationSelector.isCountable();
+        return childSubListSelector.isCountable();
     }
 
     @Override
@@ -130,78 +129,26 @@ public final class NearSubListNearbyDestinationSelector<Solution_> extends Abstr
 
     @Override
     public long getSize() {
-        return childDestinationSelector.getSize();
+        return childSubListSelector.getSize();
     }
 
     @Override
-    public Iterator<ElementRef> iterator() {
+    public Iterator<SubList> iterator() {
         Iterator<SubList> replayingOriginSubListIterator = replayingOriginSubListSelector.iterator();
         if (!randomSelection) {
-            return new OriginalSubListNearbyDestinationIterator(replayingOriginSubListIterator,
-                    childDestinationSelector.getSize());
+            throw new IllegalStateException("This selector only supports random selection.");
         } else {
-            return new RandomSubListNearbyDestinationIterator(replayingOriginSubListIterator,
-                    childDestinationSelector.getSize());
+            return new RandomSubListNearbySubListIterator(replayingOriginSubListIterator,
+                    childSubListSelector.getValueCount());
         }
     }
 
-    private final class OriginalSubListNearbyDestinationIterator extends SelectionIterator<ElementRef> {
-
-        private final Iterator<SubList> replayingOriginSubListIterator;
-        private final long childSize;
-
-        private boolean originSelected = false;
-        private boolean originIsNotEmpty;
-        private Object origin;
-
-        private int nextNearbyIndex;
-
-        public OriginalSubListNearbyDestinationIterator(Iterator<SubList> replayingOriginSubListIterator, long childSize) {
-            this.replayingOriginSubListIterator = replayingOriginSubListIterator;
-            this.childSize = childSize;
-            nextNearbyIndex = 0;
-        }
-
-        private void selectOrigin() {
-            if (originSelected) {
-                return;
-            }
-            /*
-             * The origin iterator is guaranteed to be a replaying iterator.
-             * Therefore next() will point to whatever that the related recording iterator was pointing to at the time
-             * when its next() was called.
-             * As a result, origin here will be constant unless next() on the original recording iterator is called
-             * first.
-             */
-            originIsNotEmpty = replayingOriginSubListIterator.hasNext();
-            SubList subList = replayingOriginSubListIterator.next();
-            // Origin is the subList's first element.
-            origin = firstElement(subList);
-            originSelected = true;
-        }
-
-        @Override
-        public boolean hasNext() {
-            selectOrigin();
-            return originIsNotEmpty && nextNearbyIndex < childSize;
-        }
-
-        @Override
-        public ElementRef next() {
-            selectOrigin();
-            Object next = nearbyDistanceMatrixSupply.read().getDestination(origin, nextNearbyIndex);
-            nextNearbyIndex++;
-            return elementRef(next);
-        }
-
-    }
-
-    private final class RandomSubListNearbyDestinationIterator extends SelectionIterator<ElementRef> {
+    private final class RandomSubListNearbySubListIterator extends SelectionIterator<SubList> {
 
         private final Iterator<SubList> replayingOriginSubListIterator;
         private final int nearbySize;
 
-        public RandomSubListNearbyDestinationIterator(Iterator<SubList> replayingOriginSubListIterator, long childSize) {
+        public RandomSubListNearbySubListIterator(Iterator<SubList> replayingOriginSubListIterator, long childSize) {
             this.replayingOriginSubListIterator = replayingOriginSubListIterator;
             if (childSize > Integer.MAX_VALUE) {
                 throw new IllegalStateException("The destinationSelector (" + this
@@ -213,11 +160,12 @@ public final class NearSubListNearbyDestinationSelector<Solution_> extends Abstr
 
         @Override
         public boolean hasNext() {
+            // TODO && child has next!!!!
             return replayingOriginSubListIterator.hasNext() && nearbySize > 0;
         }
 
         @Override
-        public ElementRef next() {
+        public SubList next() {
             /*
              * The subList iterator is guaranteed to be a replaying iterator.
              * Therefore next() will point to whatever that the related recording iterator was pointing to at the time
@@ -228,9 +176,36 @@ public final class NearSubListNearbyDestinationSelector<Solution_> extends Abstr
             SubList subList = replayingOriginSubListIterator.next();
             // Origin is the subList's first element.
             Object origin = firstElement(subList);
-            int nearbyIndex = nearbyRandom.nextInt(workingRandom, nearbySize);
-            Object next = nearbyDistanceMatrixSupply.read().getDestination(origin, nearbyIndex);
-            return elementRef(next);
+
+            // Return a random subList of nextNearby's containing list variable beginning with nextNearby.
+
+            Object nearbySourceEntity = null;
+            Integer nearbyListIndex = -1;
+            int listSize = 0;
+
+            // TODO What if MIN is 500? We could burn thousands of cycles before we hit a listSize >= 500!
+            // TODO What if none of the "destinations" within the *DistributionSizeMaximum results in a right subList with size > minSize?
+            //  In other words, it can happen that certain combination of distributionSizeMaximum and minimumSubListSize
+            //  makes this iterator unable to return anything (for the given "origin").
+            //  Can we detect that in hasNext()?
+            //  Do we have to forbid using one of the restrictions for the nearby subList selector?
+            while (listSize < childSubListSelector.getMinimumSubListSize()) {
+                int nearbyIndex = nearbyRandom.nextInt(workingRandom, nearbySize);
+                Object nextNearby = nearbyDistanceMatrixSupply.read().getDestination(origin, nearbyIndex);
+                nearbySourceEntity = inverseVariableSupply.getInverseSingleton(nextNearby);
+                nearbyListIndex = indexVariableSupply.getIndex(nextNearby);
+                listSize = childSubListSelector.getVariableDescriptor().getListSize(nearbySourceEntity)
+                        - nearbyListIndex;
+            }
+            if (nearbyListIndex < 0) {
+                throw new IllegalStateException("TODO msg");
+            }
+
+            TriangleElementFactory.TriangleElement triangleElement = childSubListSelector.nextTriangleElement(listSize);
+            int subListLength = listSize - triangleElement.getLevel() + 1;
+            int sourceIndex = triangleElement.getIndexOnLevel() - 1 + nearbyListIndex;
+
+            return new SubList(nearbySourceEntity, sourceIndex, subListLength);
         }
 
     }
@@ -239,13 +214,14 @@ public final class NearSubListNearbyDestinationSelector<Solution_> extends Abstr
         return replayingOriginSubListSelector.getVariableDescriptor().getElement(subList.getEntity(), subList.getFromIndex());
     }
 
-    private ElementRef elementRef(Object next) {
-        if (childDestinationSelector.getEntityDescriptor().matchesEntity(next)) {
-            return ElementRef.of(next, 0);
-        }
-        return ElementRef.of(
-                inverseVariableSupply.getInverseSingleton(next),
-                indexVariableSupply.getIndex(next) + 1);
+    @Override
+    public ListVariableDescriptor<Solution_> getVariableDescriptor() {
+        throw new UnsupportedOperationException("Not used.");
+    }
+
+    @Override
+    public Iterator<Object> endingValueIterator() {
+        throw new UnsupportedOperationException("Not used.");
     }
 
     @Override
@@ -256,9 +232,9 @@ public final class NearSubListNearbyDestinationSelector<Solution_> extends Abstr
         if (other == null || getClass() != other.getClass()) {
             return false;
         }
-        NearSubListNearbyDestinationSelector<?> that = (NearSubListNearbyDestinationSelector<?>) other;
+        NearSubListNearbySubListSelector<?> that = (NearSubListNearbySubListSelector<?>) other;
         return randomSelection == that.randomSelection
-                && Objects.equals(childDestinationSelector, that.childDestinationSelector)
+                && Objects.equals(childSubListSelector, that.childSubListSelector)
                 && Objects.equals(replayingOriginSubListSelector, that.replayingOriginSubListSelector)
                 && Objects.equals(nearbyDistanceMeter, that.nearbyDistanceMeter)
                 && Objects.equals(nearbyRandom, that.nearbyRandom);
@@ -266,12 +242,12 @@ public final class NearSubListNearbyDestinationSelector<Solution_> extends Abstr
 
     @Override
     public int hashCode() {
-        return Objects.hash(childDestinationSelector, replayingOriginSubListSelector, nearbyDistanceMeter, nearbyRandom,
+        return Objects.hash(childSubListSelector, replayingOriginSubListSelector, nearbyDistanceMeter, nearbyRandom,
                 randomSelection);
     }
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + replayingOriginSubListSelector + ", " + childDestinationSelector + ")";
+        return getClass().getSimpleName() + "(" + replayingOriginSubListSelector + ", " + childSubListSelector + ")";
     }
 }

@@ -97,6 +97,10 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
         return valueSelector.endingIterator(null);
     }
 
+    public long getValueCount() {
+        return valueSelector.getSize();
+    }
+
     @Override
     public Iterator<SubList> iterator() {
         // TODO make this incremental https://issues.redhat.com/browse/PLANNER-2507
@@ -113,6 +117,10 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
             };
         }
         return new RandomSubListIterator(valueSelector.iterator());
+    }
+
+    public TriangleElementFactory.TriangleElement nextTriangleElement(int listSize) {
+        return triangleElementFactory.nextElement(listSize);
     }
 
     private final class RandomSubListIterator extends UpcomingSelectionIterator<SubList> {

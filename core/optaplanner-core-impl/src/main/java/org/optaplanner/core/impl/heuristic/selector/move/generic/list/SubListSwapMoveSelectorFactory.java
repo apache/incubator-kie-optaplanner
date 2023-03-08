@@ -27,7 +27,13 @@ public class SubListSwapMoveSelectorFactory<Solution_>
     @Override
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
+        if (!randomSelection) {
+            throw new IllegalArgumentException("The subListSwapMoveSelector (" + config
+                    + ") only supports random selection order.");
+        }
+
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
+
         EntitySelector<Solution_> entitySelector =
                 EntitySelectorFactory.<Solution_> create(new EntitySelectorConfig())
                         .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
@@ -45,10 +51,13 @@ public class SubListSwapMoveSelectorFactory<Solution_>
 
         SubListSelectorConfig subListSelectorConfig =
                 Objects.requireNonNullElseGet(config.getSubListSelectorConfig(), SubListSelectorConfig::new);
-        SubListSelectorFactory<Solution_> subListSelectorFactory = SubListSelectorFactory.create(subListSelectorConfig);
-        SubListSelector<Solution_> leftSubListSelector = subListSelectorFactory
+        SubListSelectorConfig secondarySubListSelectorConfig =
+                Objects.requireNonNullElse(config.getSecondarySubListSelectorConfig(), subListSelectorConfig);
+        SubListSelector<Solution_> leftSubListSelector = SubListSelectorFactory
+                .<Solution_> create(subListSelectorConfig)
                 .buildSubListSelector(configPolicy, entitySelector, minimumCacheType, selectionOrder);
-        SubListSelector<Solution_> rightSubListSelector = subListSelectorFactory
+        SubListSelector<Solution_> rightSubListSelector = SubListSelectorFactory
+                .<Solution_> create(secondarySubListSelectorConfig)
                 .buildSubListSelector(configPolicy, entitySelector, minimumCacheType, selectionOrder);
 
         boolean selectReversingMoveToo = Objects.requireNonNullElse(config.getSelectReversingMoveToo(), true);

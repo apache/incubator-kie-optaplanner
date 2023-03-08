@@ -61,9 +61,17 @@
       </subListChangeMoveSelector>
       <subListSwapMoveSelector>
         <selectReversingMoveToo>true</selectReversingMoveToo>
+        <subListSelector id="4"/>
+        <secondarySubListSelector>
+          <nearbySelection>
+            <originSubListSelector mimicSelectorRef="4"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </secondarySubListSelector>
       </subListSwapMoveSelector>
       <kOptListMoveSelector/>
-      <!-- TODO use nearby selection to scale out -->
     </unionMoveSelector>
     <acceptor>
       <lateAcceptanceSize>200</lateAcceptanceSize>
