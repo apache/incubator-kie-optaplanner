@@ -53,11 +53,6 @@ public final class BavetJoinBiConstraintStream<Solution_, A, B> extends BavetAbs
     }
 
     @Override
-    public BavetAbstractConstraintStream<Solution_> getTupleSource() {
-        return this;
-    }
-
-    @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         TupleLifecycle<BiTuple<A, B>> downstream = buildHelper.getAggregatedTupleLifecycle(childStreamList);

@@ -34,11 +34,6 @@ public final class BavetGroupQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    public BavetAbstractConstraintStream<Solution_> getTupleSource() {
-        return this;
-    }
-
-    @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         // Do nothing. BavetGroupBridgeUniConstraintStream, etc build everything.
     }

@@ -55,7 +55,9 @@ public abstract class BavetAbstractConstraintStream<Solution_> extends AbstractC
 
     public abstract void collectActiveConstraintStreams(Set<BavetAbstractConstraintStream<Solution_>> constraintStreamSet);
 
-    public abstract BavetAbstractConstraintStream<Solution_> getTupleSource();
+    public BavetAbstractConstraintStream<Solution_> getTupleSource() {
+        return this;
+    }
 
     public abstract <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper);
 

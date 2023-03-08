@@ -37,11 +37,6 @@ public final class BavetForEachUniConstraintStream<Solution_, A> extends BavetAb
     }
 
     @Override
-    public BavetAbstractConstraintStream<Solution_> getTupleSource() {
-        return this;
-    }
-
-    @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         TupleLifecycle<UniTuple<A>> tupleLifecycle = buildHelper.getAggregatedTupleLifecycle(childStreamList);
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);

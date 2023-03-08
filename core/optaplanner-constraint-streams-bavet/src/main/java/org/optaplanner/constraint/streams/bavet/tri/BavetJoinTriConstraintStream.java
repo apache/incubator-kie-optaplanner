@@ -56,11 +56,6 @@ public final class BavetJoinTriConstraintStream<Solution_, A, B, C>
     }
 
     @Override
-    public BavetAbstractConstraintStream<Solution_> getTupleSource() {
-        return this;
-    }
-
-    @Override
     public <Score_ extends Score<Score_>> void buildNode(NodeBuildHelper<Score_> buildHelper) {
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         TupleLifecycle<TriTuple<A, B, C>> downstream = buildHelper.getAggregatedTupleLifecycle(childStreamList);
