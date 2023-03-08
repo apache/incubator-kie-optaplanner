@@ -17,7 +17,6 @@ import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraint
 import org.optaplanner.constraint.streams.common.quad.DefaultQuadJoiner;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.ConstraintStream;
 
 public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
         extends BavetAbstractQuadConstraintStream<Solution_, A, B, C, D>
@@ -57,7 +56,7 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
     }
 
     @Override
-    public ConstraintStream getTupleSource() {
+    public BavetAbstractConstraintStream<Solution_> getTupleSource() {
         return this;
     }
 

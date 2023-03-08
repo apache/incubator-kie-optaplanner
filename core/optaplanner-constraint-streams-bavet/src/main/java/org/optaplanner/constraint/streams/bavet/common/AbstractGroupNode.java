@@ -8,6 +8,8 @@ import java.util.Queue;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.optaplanner.core.config.solver.EnvironmentMode;
+
 public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extends Tuple, MutableOutTuple_ extends OutTuple_, GroupKey_, ResultContainer_, Result_>
         extends AbstractNode
         implements TupleLifecycle<InTuple_> {
@@ -46,7 +48,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     /**
      * Used when {@link #hasMultipleGroups} is true, otherwise {@link #singletonGroup} is used.
      */
-    private final Map<GroupKey_, AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_>> groupMap;
+    private final Map<GroupKey<GroupKey_>, AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_>> groupMap;
     /**
      * Used when {@link #hasMultipleGroups} is false, otherwise {@link #groupMap} is used.
      *
@@ -55,10 +57,11 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
      */
     private AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> singletonGroup;
     private final Queue<AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_>> dirtyGroupQueue;
+    private final EnvironmentMode environmentMode;
 
     protected AbstractGroupNode(int groupStoreIndex, int undoStoreIndex, Function<InTuple_, GroupKey_> groupKeyFunction,
             Supplier<ResultContainer_> supplier, Function<ResultContainer_, Result_> finisher,
-            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle, EnvironmentMode environmentMode) {
         this.groupStoreIndex = groupStoreIndex;
         this.undoStoreIndex = undoStoreIndex;
         this.groupKeyFunction = groupKeyFunction;
@@ -74,11 +77,12 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
          */
         this.groupMap = hasMultipleGroups ? new HashMap<>() : null;
         this.dirtyGroupQueue = new ArrayDeque<>();
+        this.environmentMode = Objects.requireNonNull(environmentMode);
     }
 
     protected AbstractGroupNode(int groupStoreIndex, Function<InTuple_, GroupKey_> groupKeyFunction,
-            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle) {
-        this(groupStoreIndex, -1, groupKeyFunction, null, null, nextNodesTupleLifecycle);
+            TupleLifecycle<OutTuple_> nextNodesTupleLifecycle, EnvironmentMode environmentMode) {
+        this(groupStoreIndex, -1, groupKeyFunction, null, null, nextNodesTupleLifecycle, environmentMode);
     }
 
     @Override
@@ -125,19 +129,20 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     }
 
     private AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> getOrCreateGroup(GroupKey_ key) {
+        GroupKey<GroupKey_> groupKey = new GroupKey<>(key, environmentMode);
         if (hasMultipleGroups) {
             // Avoids computeIfAbsent in order to not create lambdas on the hot path.
-            AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> group = groupMap.get(key);
+            AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> group = groupMap.get(groupKey);
             if (group == null) {
-                group = createGroup(key);
-                groupMap.put(key, group);
+                group = createGroup(groupKey);
+                groupMap.put(groupKey, group);
             } else {
                 group.parentCount++;
             }
             return group;
         } else {
             if (singletonGroup == null) {
-                singletonGroup = createGroup(key);
+                singletonGroup = createGroup(groupKey);
             } else {
                 singletonGroup.parentCount++;
             }
@@ -145,8 +150,8 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         }
     }
 
-    private AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> createGroup(GroupKey_ key) {
-        MutableOutTuple_ outTuple = createOutTuple(key);
+    private AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> createGroup(GroupKey<GroupKey_> key) {
+        MutableOutTuple_ outTuple = createOutTuple(key.key);
         AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> group =
                 hasCollector ? new GroupWithAccumulate<>(key, supplier.get(), outTuple)
                         : new GroupWithoutAccumulate<>(key, outTuple);
@@ -168,7 +173,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
             undoAccumulator.run();
         }
 
-        GroupKey_ oldGroupKey = oldGroup.groupKey;
+        GroupKey_ oldGroupKey = oldGroup.groupKey.key;
         GroupKey_ newGroupKey = hasMultipleGroups ? groupKeyFunction.apply(tuple) : null;
         if (Objects.equals(newGroupKey, oldGroupKey)) {
             // No need to change parentCount because it is the same group
@@ -198,7 +203,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         int newParentCount = --group.parentCount;
         boolean killGroup = (newParentCount == 0);
         if (killGroup) {
-            GroupKey_ groupKey = group.groupKey;
+            GroupKey<GroupKey_> groupKey = group.groupKey;
             AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> old = removeGroup(groupKey);
             if (old == null) {
                 throw new IllegalStateException("Impossible state: the group for the groupKey ("
@@ -230,7 +235,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         }
     }
 
-    private AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> removeGroup(GroupKey_ groupKey) {
+    private AbstractGroup<MutableOutTuple_, GroupKey_, ResultContainer_> removeGroup(GroupKey<GroupKey_> groupKey) {
         if (hasMultipleGroups) {
             return groupMap.remove(groupKey);
         } else {
@@ -306,5 +311,50 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
     }
 
     protected abstract void updateOutTupleToResult(MutableOutTuple_ outTuple, Result_ result);
+
+    /**
+     * Group key hashcode must never change once introduced to the group map.
+     * If it does, unpredictable behavior will occur.
+     * Since this situation is far too frequent and users run into this,
+     * we have this helper class that will optionally throw an exception when it detects this.
+     *
+     * @param <GroupKey_>
+     */
+    static final class GroupKey<GroupKey_> {
+
+        final GroupKey_ key;
+        private final int firstHashCode;
+        private final EnvironmentMode environmentMode;
+
+        public GroupKey(GroupKey_ key, EnvironmentMode environmentMode) {
+            this.key = key;
+            this.firstHashCode = key == null ? 0 : key.hashCode();
+            this.environmentMode = environmentMode;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (this == other)
+                return true;
+            if (other == null || getClass() != other.getClass())
+                return false;
+            assertHashCodeSame();
+            return key.equals(((GroupKey<?>) other).key);
+        }
+
+        private void assertHashCodeSame() {
+            if (environmentMode.isAsserted() && key != null && key.hashCode() != firstHashCode) {
+                throw new IllegalStateException("hashCode of group key (" + key + ") of type (" + key.getClass()
+                        + ") has changed while it was used during groupBy().");
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            assertHashCodeSame();
+            // Attempt to fix the user problem; if it fails anyway because equals() is now not consistent, so be it.
+            return firstHashCode;
+        }
+    }
 
 }

@@ -4,16 +4,16 @@ import java.util.Objects;
 
 abstract class AbstractGroup<OutTuple_ extends Tuple, GroupKey_, ResultContainer_> {
 
-    public final GroupKey_ groupKey;
+    public final AbstractGroupNode.GroupKey<GroupKey_> groupKey;
     public final OutTuple_ outTuple;
     public int parentCount = 1;
 
-    public AbstractGroup(GroupKey_ groupKey, OutTuple_ outTuple) {
+    public AbstractGroup(AbstractGroupNode.GroupKey<GroupKey_> groupKey, OutTuple_ outTuple) {
         this.groupKey = groupKey;
         this.outTuple = outTuple;
     }
 
-    public final GroupKey_ getGroupKey() {
+    public final AbstractGroupNode.GroupKey<GroupKey_> getGroupKey() {
         return groupKey;
     }
 

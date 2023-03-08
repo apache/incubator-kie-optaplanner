@@ -5,7 +5,8 @@ final class GroupWithAccumulate<OutTuple_ extends Tuple, GroupKey_, ResultContai
 
     private final ResultContainer_ resultContainer;
 
-    public GroupWithAccumulate(GroupKey_ groupKey, ResultContainer_ resultContainer, OutTuple_ outTuple) {
+    public GroupWithAccumulate(AbstractGroupNode.GroupKey<GroupKey_> groupKey, ResultContainer_ resultContainer,
+            OutTuple_ outTuple) {
         super(groupKey, outTuple);
         this.resultContainer = resultContainer;
     }
