@@ -13,7 +13,7 @@
   <groupId>org.optaplanner</groupId>
   <artifactId>optaplanner-parent</artifactId>
   <packaging>pom</packaging>
-  <version>8.35.0-SNAPSHOT</version>
+  <version>8.36.0-SNAPSHOT</version>
 
   <name>OptaPlanner multiproject parent</name>
   <description>
@@ -38,7 +38,7 @@
          the default GroupId:ArtifactId to map both main branch and 7.x branches to the same SonarCloud project.
          As the sonar.moduleKey inherits the value of sonar.projectKey by default, we have to override it too. -->
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
-    <version.rewrite.plugin>4.40.0</version.rewrite.plugin>
+    <version.rewrite.plugin>4.41.1</version.rewrite.plugin>
   </properties>
 
   <distributionManagement>

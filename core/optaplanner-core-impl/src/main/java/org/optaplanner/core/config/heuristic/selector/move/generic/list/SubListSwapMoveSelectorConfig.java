@@ -72,6 +72,11 @@ public class SubListSwapMoveSelectorConfig extends MoveSelectorConfig<SubListSwa
     // With methods
     // ************************************************************************
 
+    public SubListSwapMoveSelectorConfig withSelectReversingMoveToo(Boolean selectReversingMoveToo) {
+        this.setSelectReversingMoveToo(selectReversingMoveToo);
+        return this;
+    }
+
     public SubListSwapMoveSelectorConfig withSubListSelectorConfig(SubListSelectorConfig subListSelectorConfig) {
         this.setSubListSelectorConfig(subListSelectorConfig);
         return this;
