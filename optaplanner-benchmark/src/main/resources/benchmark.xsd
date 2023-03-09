@@ -902,6 +902,9 @@
           <xs:element minOccurs="0" name="originEntitySelector" type="tns:entitySelectorConfig"/>
                               
           
+          <xs:element minOccurs="0" name="originSubListSelector" type="tns:subListSelectorConfig"/>
+                              
+          
           <xs:element minOccurs="0" name="originValueSelector" type="tns:valueSelectorConfig"/>
                               
           
@@ -936,6 +939,48 @@
                             
         
         </xs:sequence>
+                      
+      
+      </xs:extension>
+                
+    
+    </xs:complexContent>
+          
+  
+  </xs:complexType>
+      
+  
+  <xs:complexType name="subListSelectorConfig">
+            
+    
+    <xs:complexContent>
+                  
+      
+      <xs:extension base="tns:selectorConfig">
+                        
+        
+        <xs:sequence>
+                              
+          
+          <xs:element minOccurs="0" name="valueSelector" type="tns:valueSelectorConfig"/>
+                              
+          
+          <xs:element minOccurs="0" name="nearbySelection" type="tns:nearbySelectionConfig"/>
+                              
+          
+          <xs:element minOccurs="0" name="minimumSubListSize" type="xs:int"/>
+                              
+          
+          <xs:element minOccurs="0" name="maximumSubListSize" type="xs:int"/>
+                            
+        
+        </xs:sequence>
+                        
+        
+        <xs:attribute name="id" type="xs:string"/>
+                        
+        
+        <xs:attribute name="mimicSelectorRef" type="xs:string"/>
                       
       
       </xs:extension>
@@ -1629,6 +1674,12 @@
                               
           
           <xs:element minOccurs="0" name="selectReversingMoveToo" type="xs:boolean"/>
+                              
+          
+          <xs:element minOccurs="0" name="subListSelector" type="tns:subListSelectorConfig"/>
+                              
+          
+          <xs:element minOccurs="0" name="destinationSelector" type="tns:destinationSelectorConfig"/>
                             
         
         </xs:sequence>
@@ -1662,6 +1713,12 @@
                               
           
           <xs:element minOccurs="0" name="selectReversingMoveToo" type="xs:boolean"/>
+                              
+          
+          <xs:element minOccurs="0" name="subListSelector" type="tns:subListSelectorConfig"/>
+                              
+          
+          <xs:element minOccurs="0" name="secondarySubListSelector" type="tns:subListSelectorConfig"/>
                             
         
         </xs:sequence>
