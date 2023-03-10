@@ -30,13 +30,19 @@ public class TestdataListUtils {
     }
 
     public static EntityIndependentValueSelector<TestdataListSolution> mockEntityIndependentValueSelector(Object... values) {
-        return SelectorTestUtils.mockEntityIndependentValueSelector(TestdataListEntity.class, "valueList", values);
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor =
+                TestdataListEntity.buildVariableDescriptorForValueList();
+        return SelectorTestUtils.mockEntityIndependentValueSelector(listVariableDescriptor, values);
+    }
+
+    public static EntityIndependentValueSelector<TestdataListSolution> mockEntityIndependentValueSelector(
+            InnerScoreDirector<TestdataListSolution, ?> scoreDirector, Object... values) {
+        return SelectorTestUtils.mockEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), values);
     }
 
     public static EntityIndependentValueSelector<TestdataListSolution>
             mockNeverEndingEntityIndependentValueSelector(Object... values) {
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
-                SelectorTestUtils.mockEntityIndependentValueSelector(TestdataListEntity.class, "valueList", values);
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockEntityIndependentValueSelector(values);
         when(valueSelector.isNeverEnding()).thenReturn(true);
         when(valueSelector.iterator()).thenAnswer(invocation -> cyclicIterator(Arrays.asList(values)));
         return valueSelector;
