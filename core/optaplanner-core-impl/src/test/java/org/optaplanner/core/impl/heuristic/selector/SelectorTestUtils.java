@@ -23,6 +23,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
@@ -143,6 +144,16 @@ public class SelectorTestUtils {
         when(valueSelector.isNeverEnding()).thenReturn(false);
         when(valueSelector.getSize(any())).thenReturn((long) valueList.size());
         when(valueSelector.getSize()).thenReturn((long) valueList.size());
+        return valueSelector;
+    }
+
+    public static <Solution_> MimicReplayingValueSelector<Solution_> mockReplayingValueSelector(
+            GenuineVariableDescriptor<Solution_> variableDescriptor, Object... values) {
+        MimicReplayingValueSelector<Solution_> valueSelector = mock(MimicReplayingValueSelector.class);
+        when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
+        final List<Object> valueList = Arrays.asList(values);
+        when(valueSelector.endingIterator(any())).thenAnswer(invocation -> valueList.iterator());
+        when(valueSelector.iterator()).thenAnswer(invocation -> valueList.iterator());
         return valueSelector;
     }
 
