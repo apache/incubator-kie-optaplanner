@@ -40,32 +40,16 @@ class NearSubListNearbySubListSelectorTest {
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
-        // Enumerates all values. Does not affect nearby subList selection.
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
-                mockEntityIndependentValueSelector(scoreDirector, v1, v2, v3, v4, v5);
-
-        // Enumerates all entities. Does not affect nearby subList selection.
-        EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(e1, e2);
-        when(entitySelector.getEntityDescriptor()).thenReturn(TestdataListEntity.buildEntityDescriptor());
-
-        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor =
-                (ListVariableDescriptor<TestdataListSolution>) valueSelector.getVariableDescriptor();
-
-        int minimumSubListSize = 1;
-        int maximumSubListSize = Integer.MAX_VALUE;
-
         // Used to populate the distance matrix with destinations.
-        RandomSubListSelector<TestdataListSolution> childSubListSelector = new RandomSubListSelector<>(
-                listVariableDescriptor,
-                entitySelector,
-                valueSelector,
-                minimumSubListSize,
-                maximumSubListSize);
+        RandomSubListSelector<TestdataListSolution> childSubListSelector = new Builder(scoreDirector)
+                .withEntities(e1, e2)
+                .withValues(v1, v2, v3, v4, v5)
+                .build();
 
         // The replaying selector determines the destination matrix origin.
         // In this case, the origin is v5 (because B[0]=v5) in each iteration.
         MimicReplayingSubListSelector<TestdataListSolution> mockReplayingSubListSelector =
-                mockReplayingSubListSelector(listVariableDescriptor,
+                mockReplayingSubListSelector(childSubListSelector.getVariableDescriptor(),
                         subList(e2, 0), // => v5
                         subList(e2, 0),
                         subList(e2, 0));
@@ -111,32 +95,21 @@ class NearSubListNearbySubListSelectorTest {
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
-        // Enumerates all values. Does not affect nearby subList selection.
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
-                mockEntityIndependentValueSelector(scoreDirector, v1, v2, v3, v4, v5);
-
-        // Enumerates all entities. Does not affect nearby subList selection.
-        EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(e1, e2);
-        when(entitySelector.getEntityDescriptor()).thenReturn(TestdataListEntity.buildEntityDescriptor());
-
-        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor =
-                (ListVariableDescriptor<TestdataListSolution>) valueSelector.getVariableDescriptor();
-
         int minimumSubListSize = 2;
         int maximumSubListSize = 3;
 
         // Used to populate the distance matrix with destinations.
-        RandomSubListSelector<TestdataListSolution> childSubListSelector = new RandomSubListSelector<>(
-                listVariableDescriptor,
-                entitySelector,
-                valueSelector,
-                minimumSubListSize,
-                maximumSubListSize);
+        RandomSubListSelector<TestdataListSolution> childSubListSelector = new Builder(scoreDirector)
+                .withMinimumSubListSize(minimumSubListSize)
+                .withMaximumSubListSize(maximumSubListSize)
+                .withEntities(e1, e2)
+                .withValues(v1, v2, v3, v4, v5)
+                .build();
 
         // The origin selector determines the destination matrix origin.
         // In this case, the origin is v5 (because B[0]=v5) in each iteration.
         MimicReplayingSubListSelector<TestdataListSolution> mockReplayingSubListSelector =
-                mockReplayingSubListSelector(listVariableDescriptor,
+                mockReplayingSubListSelector(childSubListSelector.getVariableDescriptor(),
                         subList(e2, 0), // => v5
                         subList(e2, 0),
                         subList(e2, 0),
@@ -184,32 +157,19 @@ class NearSubListNearbySubListSelectorTest {
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
-        // Enumerates all values. Does not affect nearby subList selection.
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
-                mockEntityIndependentValueSelector(scoreDirector, v1, v2, v3);
-
-        // Enumerates all entities. Does not affect nearby subList selection.
-        EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(e1, e2);
-        when(entitySelector.getEntityDescriptor()).thenReturn(TestdataListEntity.buildEntityDescriptor());
-
-        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor =
-                (ListVariableDescriptor<TestdataListSolution>) valueSelector.getVariableDescriptor();
-
         int minimumSubListSize = 2;
-        int maximumSubListSize = Integer.MAX_VALUE;
 
         // Used to populate the distance matrix with destinations.
-        RandomSubListSelector<TestdataListSolution> childSubListSelector = new RandomSubListSelector<>(
-                listVariableDescriptor,
-                entitySelector,
-                valueSelector,
-                minimumSubListSize,
-                maximumSubListSize);
+        RandomSubListSelector<TestdataListSolution> childSubListSelector = new Builder(scoreDirector)
+                .withMinimumSubListSize(minimumSubListSize)
+                .withValues(v1, v2, v3)
+                .withEntities(e1, e2)
+                .build();
 
         // The origin selector determines the destination matrix origin.
         // In this case, the origin is v3 (because B[0]=v3).
         MimicReplayingSubListSelector<TestdataListSolution> mockReplayingSubListSelector =
-                mockReplayingSubListSelector(listVariableDescriptor, subList(e2, 0));
+                mockReplayingSubListSelector(childSubListSelector.getVariableDescriptor(), subList(e2, 0));
 
         NearSubListNearbySubListSelector<TestdataListSolution> nearbySubListSelector =
                 new NearSubListNearbySubListSelector<>(childSubListSelector, mockReplayingSubListSelector,
@@ -239,5 +199,58 @@ class NearSubListNearbySubListSelectorTest {
 
     static SubList subList(TestdataListEntity entity, int index) {
         return new SubList(entity, index, 1);
+    }
+
+    static class Builder {
+        private final InnerScoreDirector<TestdataListSolution, ?> scoreDirector;
+        private int minimumSubListSize = 1;
+        private int maximumSubListSize = Integer.MAX_VALUE;
+        private Object[] entities = new Object[] {};
+        private Object[] values = new Object[] {};
+
+        Builder(InnerScoreDirector<TestdataListSolution, ?> scoreDirector) {
+            this.scoreDirector = scoreDirector;
+        }
+
+        Builder withMinimumSubListSize(int minimumSubListSize) {
+            this.minimumSubListSize = minimumSubListSize;
+            return this;
+        }
+
+        Builder withMaximumSubListSize(int maximumSubListSize) {
+            this.maximumSubListSize = maximumSubListSize;
+            return this;
+        }
+
+        Builder withEntities(Object... entities) {
+            this.entities = entities;
+            return this;
+        }
+
+        Builder withValues(Object... values) {
+            this.values = values;
+            return this;
+        }
+
+        RandomSubListSelector<TestdataListSolution> build() {
+            // Enumerates all values. Does not affect nearby subList selection.
+            EntityIndependentValueSelector<TestdataListSolution> valueSelector =
+                    mockEntityIndependentValueSelector(scoreDirector, values);
+
+            // Enumerates all entities. Does not affect nearby subList selection.
+            EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(entities);
+            when(entitySelector.getEntityDescriptor()).thenReturn(TestdataListEntity.buildEntityDescriptor());
+
+            ListVariableDescriptor<TestdataListSolution> listVariableDescriptor =
+                    (ListVariableDescriptor<TestdataListSolution>) valueSelector.getVariableDescriptor();
+
+            // Used to populate the distance matrix with destinations.
+            return new RandomSubListSelector<>(
+                    listVariableDescriptor,
+                    entitySelector,
+                    valueSelector,
+                    minimumSubListSize,
+                    maximumSubListSize);
+        }
     }
 }
