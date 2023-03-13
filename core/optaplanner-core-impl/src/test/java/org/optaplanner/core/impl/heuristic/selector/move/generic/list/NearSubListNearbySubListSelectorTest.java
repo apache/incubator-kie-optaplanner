@@ -98,6 +98,81 @@ class NearSubListNearbySubListSelectorTest {
         nearbySubListSelector.solvingEnded(solverScope);
     }
 
+    @Test
+    void randomSelectionWithMinMaxSubListSize() {
+        TestdataListValue v1 = new TestdataListValue("10");
+        TestdataListValue v2 = new TestdataListValue("45");
+        TestdataListValue v3 = new TestdataListValue("50");
+        TestdataListValue v4 = new TestdataListValue("60");
+        TestdataListValue v5 = new TestdataListValue("75");
+        TestdataListEntity e1 = TestdataListEntity.createWithValues("A", v1, v2, v3, v4);
+        TestdataListEntity e2 = TestdataListEntity.createWithValues("B", v5);
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+
+        // Enumerates all values. Does not affect nearby subList selection.
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
+                mockEntityIndependentValueSelector(scoreDirector, v1, v2, v3, v4, v5);
+
+        // Enumerates all entities. Does not affect nearby subList selection.
+        EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(e1, e2);
+        when(entitySelector.getEntityDescriptor()).thenReturn(TestdataListEntity.buildEntityDescriptor());
+
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor =
+                (ListVariableDescriptor<TestdataListSolution>) valueSelector.getVariableDescriptor();
+
+        int minimumSubListSize = 2;
+        int maximumSubListSize = 3;
+
+        // Used to populate the distance matrix with destinations.
+        RandomSubListSelector<TestdataListSolution> childSubListSelector = new RandomSubListSelector<>(
+                listVariableDescriptor,
+                entitySelector,
+                valueSelector,
+                minimumSubListSize,
+                maximumSubListSize);
+
+        // The origin selector determines the destination matrix origin.
+        // In this case, the origin is v5 (because B[0]=v5) in each iteration.
+        MimicReplayingSubListSelector<TestdataListSolution> mockReplayingSubListSelector =
+                mockReplayingSubListSelector(listVariableDescriptor,
+                        subList(e2, 0), // => v5
+                        subList(e2, 0),
+                        subList(e2, 0),
+                        subList(e2, 0));
+
+        NearSubListNearbySubListSelector<TestdataListSolution> nearbySubListSelector =
+                new NearSubListNearbySubListSelector<>(childSubListSelector, mockReplayingSubListSelector,
+                        new TestDistanceMeter(), new TestNearbyRandom());
+
+        // Each row is consumed by 1 next() call of the RandomSubListNearbySubListIterator.
+        // The first number in each row becomes the index of a destination in the nearby matrix.
+        // So, in this case, we always select the given origin's (v5) 4th nearest destination (v1).
+        TestRandom testRandom = new TestRandom(
+                4, 0,
+                4, 1,
+                4, 1,
+                4, 0);
+
+        // A[0]=v1(10) <= destination
+        // A[1]=v2(45)
+        // A[2]=v3(50)
+        // A[3]=v4(60)
+        // B[0]=v5(75) <= origin
+
+        SolverScope<TestdataListSolution> solverScope = solvingStarted(nearbySubListSelector, scoreDirector, testRandom);
+        AbstractPhaseScope<TestdataListSolution> phaseScopeA = phaseStarted(nearbySubListSelector, solverScope);
+        AbstractStepScope<TestdataListSolution> stepScopeA1 = stepStarted(nearbySubListSelector, phaseScopeA);
+        // The SubList's assertable code means Entity[fromIndex+subListLength].
+        assertAllCodesOfIterator(nearbySubListSelector.iterator(), "A[0+2]", "A[0+3]", "A[0+3]", "A[0+2]");
+        nearbySubListSelector.stepEnded(stepScopeA1);
+        nearbySubListSelector.phaseEnded(phaseScopeA);
+        nearbySubListSelector.solvingEnded(solverScope);
+
+        testRandom.assertIntBoundJustRequested(maximumSubListSize - minimumSubListSize);
+    }
+
     static SubList subList(TestdataListEntity entity, int index) {
         return new SubList(entity, index, 1);
     }

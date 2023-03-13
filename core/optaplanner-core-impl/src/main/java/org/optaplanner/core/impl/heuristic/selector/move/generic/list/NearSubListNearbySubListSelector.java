@@ -202,9 +202,12 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
                 availableListSize = listSize(nearbyElementEntity) - nearbyElementListIndex;
             }
 
-            int subListLength = workingRandom.nextInt(availableListSize) + 1;
+            int maxSubListSize = Math.min(childSubListSelector.getMaximumSubListSize(), availableListSize);
+            int subListSizeRange = maxSubListSize - childSubListSelector.getMinimumSubListSize();
 
-            return new SubList(nearbyElementEntity, nearbyElementListIndex, subListLength);
+            int subListSize = workingRandom.nextInt(subListSizeRange) + childSubListSelector.getMinimumSubListSize();
+
+            return new SubList(nearbyElementEntity, nearbyElementListIndex, subListSize);
         }
 
     }
