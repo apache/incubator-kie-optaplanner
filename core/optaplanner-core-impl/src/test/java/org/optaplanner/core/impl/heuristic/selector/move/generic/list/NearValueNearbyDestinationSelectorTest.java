@@ -10,13 +10,9 @@ import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.m
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
 
-import java.util.Random;
-
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.ManualValueMimicRecorder;
@@ -25,7 +21,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
-import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListValue;
@@ -145,38 +140,4 @@ class NearValueNearbyDestinationSelectorTest {
         nearbyDestinationSelector.solvingEnded(solverScope);
     }
 
-    private static class TestDistanceMeter implements NearbyDistanceMeter<TestdataListValue, TestdataObject> {
-
-        /**
-         * For the sake of test readability, planning values (list variable elements) are placed in a 1-dimensional space.
-         * An element's coordinate is represented by its ({@link TestdataObject#getCode() code}. If the code is not a number,
-         * it is interpreted as zero.
-         */
-        @Override
-        public double getNearbyDistance(TestdataListValue origin, TestdataObject destination) {
-            return Math.abs(coordinate(destination) - coordinate(origin));
-        }
-
-        static int coordinate(TestdataObject o) {
-            try {
-                return Integer.parseInt(o.getCode());
-            } catch (NumberFormatException e) {
-                return 0;
-            }
-        }
-    }
-
-    private static class TestNearbyRandom implements NearbyRandom {
-
-        @Override
-        public int nextInt(Random random, int nearbySize) {
-            return random.nextInt();
-        }
-
-        @Override
-        public int getOverallSizeMaximum() {
-            // Not yet needed.
-            return Integer.MAX_VALUE;
-        }
-    }
 }

@@ -160,14 +160,15 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
 
         @Override
         public boolean hasNext() {
-            // TODO && child has next!!!!
+            // As long as the origin selector has next and the nearby index is non-empty, we have next. Nearby index size
+            // is the child selector size. Child selector's iterator is not used.
             return replayingOriginSubListIterator.hasNext() && nearbySize > 0;
         }
 
         @Override
         public SubList next() {
             /*
-             * The subList iterator is guaranteed to be a replaying iterator.
+             * The origin iterator is guaranteed to be a replaying iterator.
              * Therefore next() will point to whatever that the related recording iterator was pointing to at the time
              * when its next() was called.
              * As a result, subList here will be constant unless next() on the original recording iterator is called
@@ -177,41 +178,43 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
             // Origin is the subList's first element.
             Object origin = firstElement(subList);
 
-            // Return a random subList of nextNearby's containing list variable beginning with nextNearby.
+            // Next steps:
+            // 1. Select a destination near to the origin based on a random nearby index.
+            // 2. Select a random subList with destination being its first element.
 
-            Object nearbySourceEntity = null;
-            Integer nearbyListIndex = -1;
-            int listSize = 0;
+            Object nearbyElementEntity = null;
+            Integer nearbyElementListIndex = -1;
+            int availableListSize = -1;
 
-            // TODO What if MIN is 500? We could burn thousands of cycles before we hit a listSize >= 500!
+            // TODO What if MIN is 500? We could burn thousands of cycles before we hit a availableListSize >= 500!
             // TODO What if none of the "destinations" within the *DistributionSizeMaximum results in a right subList with size > minSize?
             //  In other words, it can happen that certain combination of distributionSizeMaximum and minimumSubListSize
             //  makes this iterator unable to return anything (for the given "origin").
             //  Can we detect that in hasNext()?
             //  Do we have to forbid using one of the restrictions for the nearby subList selector?
-            while (listSize < childSubListSelector.getMinimumSubListSize()) {
+            while (availableListSize < childSubListSelector.getMinimumSubListSize()) {
                 int nearbyIndex = nearbyRandom.nextInt(workingRandom, nearbySize);
-                Object nextNearby = nearbyDistanceMatrixSupply.read().getDestination(origin, nearbyIndex);
-                nearbySourceEntity = inverseVariableSupply.getInverseSingleton(nextNearby);
-                nearbyListIndex = indexVariableSupply.getIndex(nextNearby);
-                listSize = childSubListSelector.getVariableDescriptor().getListSize(nearbySourceEntity)
-                        - nearbyListIndex;
-            }
-            if (nearbyListIndex < 0) {
-                throw new IllegalStateException("TODO msg");
+                Object nearbyElement = nearbyDistanceMatrixSupply.read().getDestination(origin, nearbyIndex);
+                nearbyElementEntity = inverseVariableSupply.getInverseSingleton(nearbyElement);
+                nearbyElementListIndex = indexVariableSupply.getIndex(nearbyElement);
+                // Reduce the list variable size by the nearby element index because we're only going to select subLists
+                // starting with the nearby element.
+                availableListSize = listSize(nearbyElementEntity) - nearbyElementListIndex;
             }
 
-            TriangleElementFactory.TriangleElement triangleElement = childSubListSelector.nextTriangleElement(listSize);
-            int subListLength = listSize - triangleElement.getLevel() + 1;
-            int sourceIndex = triangleElement.getIndexOnLevel() - 1 + nearbyListIndex;
+            int subListLength = workingRandom.nextInt(availableListSize) + 1;
 
-            return new SubList(nearbySourceEntity, sourceIndex, subListLength);
+            return new SubList(nearbyElementEntity, nearbyElementListIndex, subListLength);
         }
 
     }
 
     private Object firstElement(SubList subList) {
         return replayingOriginSubListSelector.getVariableDescriptor().getElement(subList.getEntity(), subList.getFromIndex());
+    }
+
+    private int listSize(Object entity) {
+        return childSubListSelector.getVariableDescriptor().getListSize(entity);
     }
 
     @Override

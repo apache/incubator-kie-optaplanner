@@ -119,10 +119,6 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
         return new RandomSubListIterator(valueSelector.iterator());
     }
 
-    public TriangleElementFactory.TriangleElement nextTriangleElement(int listSize) {
-        return triangleElementFactory.nextElement(listSize);
-    }
-
     private final class RandomSubListIterator extends UpcomingSelectionIterator<SubList> {
 
         private final Iterator<Object> valueIterator;

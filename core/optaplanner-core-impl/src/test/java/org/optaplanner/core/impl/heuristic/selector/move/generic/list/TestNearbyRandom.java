@@ -1,0 +1,24 @@
+package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
+
+import java.util.Random;
+
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
+import org.optaplanner.core.impl.testutil.TestRandom;
+
+/**
+ * Simply returns next integer produced by the given "working" random, which is expected to be a {@link TestRandom} under
+ * control of the test.
+ */
+class TestNearbyRandom implements NearbyRandom {
+
+    @Override
+    public int nextInt(Random random, int nearbySize) {
+        return random.nextInt();
+    }
+
+    @Override
+    public int getOverallSizeMaximum() {
+        // Not yet needed.
+        return Integer.MAX_VALUE;
+    }
+}

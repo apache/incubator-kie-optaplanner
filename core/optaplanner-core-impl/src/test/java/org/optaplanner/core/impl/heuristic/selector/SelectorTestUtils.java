@@ -12,15 +12,19 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubList;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.mimic.MimicReplayingSubListSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
@@ -155,6 +159,20 @@ public class SelectorTestUtils {
         when(valueSelector.endingIterator(any())).thenAnswer(invocation -> valueList.iterator());
         when(valueSelector.iterator()).thenAnswer(invocation -> valueList.iterator());
         return valueSelector;
+    }
+
+    public static <Solution_> MimicReplayingSubListSelector<Solution_> mockReplayingSubListSelector(
+            ListVariableDescriptor<Solution_> variableDescriptor, SubList... subLists) {
+        MimicReplayingSubListSelector<Solution_> subListSelector = mock(MimicReplayingSubListSelector.class);
+        when(subListSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
+        final List<SubList> subListList = Arrays.asList(subLists);
+        when(subListSelector.iterator()).thenAnswer(invocation -> subListList.iterator());
+        List<Object> distinctValueList = subListList.stream()
+                .map(subList -> variableDescriptor.getElement(subList.getEntity(), subList.getFromIndex()))
+                .distinct()
+                .collect(Collectors.toList());
+        when(subListSelector.endingValueIterator()).thenAnswer(invocation -> distinctValueList.iterator());
+        return subListSelector;
     }
 
     @SafeVarargs
