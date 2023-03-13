@@ -173,6 +173,70 @@ class NearSubListNearbySubListSelectorTest {
         testRandom.assertIntBoundJustRequested(maximumSubListSize - minimumSubListSize);
     }
 
+    @Test
+    void avoidUsingRandomWhenOnlySingleSubListIsPossible() {
+        TestdataListValue v1 = new TestdataListValue("10");
+        TestdataListValue v2 = new TestdataListValue("45");
+        TestdataListValue v3 = new TestdataListValue("50");
+        TestdataListEntity e1 = TestdataListEntity.createWithValues("A", v1, v2);
+        TestdataListEntity e2 = TestdataListEntity.createWithValues("B", v3);
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+
+        // Enumerates all values. Does not affect nearby subList selection.
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
+                mockEntityIndependentValueSelector(scoreDirector, v1, v2, v3);
+
+        // Enumerates all entities. Does not affect nearby subList selection.
+        EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(e1, e2);
+        when(entitySelector.getEntityDescriptor()).thenReturn(TestdataListEntity.buildEntityDescriptor());
+
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor =
+                (ListVariableDescriptor<TestdataListSolution>) valueSelector.getVariableDescriptor();
+
+        int minimumSubListSize = 2;
+        int maximumSubListSize = Integer.MAX_VALUE;
+
+        // Used to populate the distance matrix with destinations.
+        RandomSubListSelector<TestdataListSolution> childSubListSelector = new RandomSubListSelector<>(
+                listVariableDescriptor,
+                entitySelector,
+                valueSelector,
+                minimumSubListSize,
+                maximumSubListSize);
+
+        // The origin selector determines the destination matrix origin.
+        // In this case, the origin is v3 (because B[0]=v3).
+        MimicReplayingSubListSelector<TestdataListSolution> mockReplayingSubListSelector =
+                mockReplayingSubListSelector(listVariableDescriptor, subList(e2, 0));
+
+        NearSubListNearbySubListSelector<TestdataListSolution> nearbySubListSelector =
+                new NearSubListNearbySubListSelector<>(childSubListSelector, mockReplayingSubListSelector,
+                        new TestDistanceMeter(), new TestNearbyRandom());
+
+        // 2 is the nearbyIndex and selects v1 from the distance matrix. No other random numbers are needed because:
+        //   1. minimumSubListSize = 2,
+        //   2. there is only one subList of length 2 beginning with v1 in A[v1, v2].
+        // Using random to select the only possible subList in this situation is not only redundant; it would fail because
+        // the bound in `random.nextInt(bound)` must be greater than zero.
+        TestRandom testRandom = new TestRandom(2); // => v1
+
+        // A[0]=v1(10) <= destination
+        // A[1]=v2(45)
+        // B[0]=v3(50) <= origin
+
+        SolverScope<TestdataListSolution> solverScope = solvingStarted(nearbySubListSelector, scoreDirector, testRandom);
+        AbstractPhaseScope<TestdataListSolution> phaseScopeA = phaseStarted(nearbySubListSelector, solverScope);
+        AbstractStepScope<TestdataListSolution> stepScopeA1 = stepStarted(nearbySubListSelector, phaseScopeA);
+        assertAllCodesOfIterator(nearbySubListSelector.iterator(), "A[0+2]");
+        nearbySubListSelector.stepEnded(stepScopeA1);
+        nearbySubListSelector.phaseEnded(phaseScopeA);
+        nearbySubListSelector.solvingEnded(solverScope);
+
+        testRandom.assertIntBoundJustRequested(3);
+    }
+
     static SubList subList(TestdataListEntity entity, int index) {
         return new SubList(entity, index, 1);
     }

@@ -13,7 +13,7 @@ class TestNearbyRandom implements NearbyRandom {
 
     @Override
     public int nextInt(Random random, int nearbySize) {
-        return random.nextInt();
+        return random.nextInt(nearbySize);
     }
 
     @Override
