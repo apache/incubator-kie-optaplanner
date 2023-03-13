@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -22,6 +23,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.list.mimic.SubL
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
+import org.optaplanner.core.impl.util.Pair;
 
 public final class SubListSelectorFactory<Solution_> extends AbstractFromConfigFactory<Solution_, SubListSelectorConfig> {
 
@@ -116,6 +118,17 @@ public final class SubListSelectorFactory<Solution_> extends AbstractFromConfigF
             return subListSelector;
         }
 
+        randomDistributionNearbyLimitation(nearbySelectionConfig).ifPresent(configPropertyNameAndValue -> {
+            if (config.getMinimumSubListSize() != null && config.getMinimumSubListSize() > 1) {
+                throw new IllegalArgumentException("Using minimumSubListSize (" + config.getMinimumSubListSize()
+                        + ") is not allowed because the nearby selection distribution uses a "
+                        + configPropertyNameAndValue.getKey() + " (" + configPropertyNameAndValue.getValue()
+                        + ") which may limit the ability to select all nearby values."
+                        + " As a consequence, it may be impossible to select a subList with the required minimumSubListSize."
+                        + " Therefore, this combination is prohibited.");
+            }
+        });
+
         nearbySelectionConfig.validateNearby(minimumCacheType, resolvedSelectionOrder);
 
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
@@ -138,6 +151,28 @@ public final class SubListSelectorFactory<Solution_> extends AbstractFromConfigF
                 replayingOriginSubListSelector,
                 nearbyDistanceMeter,
                 nearbyRandom);
+    }
+
+    private static Optional<Pair<String, Object>>
+            randomDistributionNearbyLimitation(NearbySelectionConfig nearbySelectionConfig) {
+        if (nearbySelectionConfig.getBlockDistributionSizeRatio() != null
+                && nearbySelectionConfig.getBlockDistributionSizeRatio() < 1) {
+            return Optional.of(
+                    Pair.of("blockDistributionSizeRatio", nearbySelectionConfig.getBlockDistributionSizeRatio()));
+        }
+        if (nearbySelectionConfig.getBlockDistributionSizeMaximum() != null) {
+            return Optional.of(
+                    Pair.of("blockDistributionSizeMaximum", nearbySelectionConfig.getBlockDistributionSizeMaximum()));
+        }
+        if (nearbySelectionConfig.getLinearDistributionSizeMaximum() != null) {
+            return Optional.of(
+                    Pair.of("linearDistributionSizeMaximum", nearbySelectionConfig.getLinearDistributionSizeMaximum()));
+        }
+        if (nearbySelectionConfig.getParabolicDistributionSizeMaximum() != null) {
+            return Optional.of(
+                    Pair.of("parabolicDistributionSizeMaximum", nearbySelectionConfig.getParabolicDistributionSizeMaximum()));
+        }
+        return Optional.empty();
     }
 
     private EntityIndependentValueSelector<Solution_> buildEntityIndependentValueSelector(

@@ -187,11 +187,6 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
             int availableListSize = -1;
 
             // TODO What if MIN is 500? We could burn thousands of cycles before we hit a availableListSize >= 500!
-            // TODO What if none of the "destinations" within the *DistributionSizeMaximum results in a right subList with size > minSize?
-            //  In other words, it can happen that certain combination of distributionSizeMaximum and minimumSubListSize
-            //  makes this iterator unable to return anything (for the given "origin").
-            //  Can we detect that in hasNext()?
-            //  Do we have to forbid using one of the restrictions for the nearby subList selector?
             while (availableListSize < childSubListSelector.getMinimumSubListSize()) {
                 int nearbyIndex = nearbyRandom.nextInt(workingRandom, nearbySize);
                 Object nearbyElement = nearbyDistanceMatrixSupply.read().getDestination(origin, nearbyIndex);
