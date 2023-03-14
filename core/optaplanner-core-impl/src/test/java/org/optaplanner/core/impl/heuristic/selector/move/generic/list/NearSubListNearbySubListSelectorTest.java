@@ -8,6 +8,7 @@ import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.ste
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertEmptyNeverEndingIterableSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
 
 import org.junit.jupiter.api.Test;
@@ -195,6 +196,42 @@ class NearSubListNearbySubListSelectorTest {
         nearbySubListSelector.solvingEnded(solverScope);
 
         testRandom.assertIntBoundJustRequested(3);
+    }
+
+    @Test
+    void iteratorShouldBeEmptyIfChildSubListSelectorIsEmpty() {
+        TestdataListValue v1 = new TestdataListValue("10");
+        TestdataListValue v2 = new TestdataListValue("45");
+        TestdataListValue v3 = new TestdataListValue("50");
+        TestdataListEntity e1 = TestdataListEntity.createWithValues("A", v1, v2);
+        TestdataListEntity e2 = TestdataListEntity.createWithValues("B", v3);
+
+        InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
+                mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
+
+        // Used to populate the distance matrix with destinations.
+        RandomSubListSelector<TestdataListSolution> childSubListSelector = new Builder(scoreDirector)
+                .withMinimumSubListSize(3)
+                .withValues(v1, v2, v3)
+                .withEntities(e1, e2)
+                .build();
+
+        // The origin selector determines the destination matrix origin.
+        // In this case, the origin is v3 (because B[0]=v3).
+        MimicReplayingSubListSelector<TestdataListSolution> mockReplayingSubListSelector =
+                mockReplayingSubListSelector(childSubListSelector.getVariableDescriptor(), subList(e2, 0));
+
+        NearSubListNearbySubListSelector<TestdataListSolution> nearbySubListSelector =
+                new NearSubListNearbySubListSelector<>(childSubListSelector, mockReplayingSubListSelector,
+                        new TestDistanceMeter(), new TestNearbyRandom());
+
+        SolverScope<TestdataListSolution> solverScope = solvingStarted(nearbySubListSelector, scoreDirector);
+        AbstractPhaseScope<TestdataListSolution> phaseScopeA = phaseStarted(nearbySubListSelector, solverScope);
+        AbstractStepScope<TestdataListSolution> stepScopeA1 = stepStarted(nearbySubListSelector, phaseScopeA);
+        assertEmptyNeverEndingIterableSelector(nearbySubListSelector, 0);
+        nearbySubListSelector.stepEnded(stepScopeA1);
+        nearbySubListSelector.phaseEnded(phaseScopeA);
+        nearbySubListSelector.solvingEnded(solverScope);
     }
 
     static SubList subList(TestdataListEntity entity, int index) {
