@@ -132,7 +132,6 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
             Object sourceEntity = null;
             int listSize = 0;
 
-            // TODO What if MIN is 500? We could burn thousands of cycles before we hit a listSize >= 500!
             while (listSize < minimumSubListSize) {
                 if (!valueIterator.hasNext()) {
                     throw new IllegalStateException("The valueIterator (" + valueIterator + ") should never end.");

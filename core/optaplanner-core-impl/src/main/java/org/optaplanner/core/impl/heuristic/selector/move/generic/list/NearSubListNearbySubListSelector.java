@@ -86,14 +86,14 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
     }
 
     private int computeDestinationSize(Object origin) {
-        long childSize = childSubListSelector.getValueCount();
-        if (childSize > Integer.MAX_VALUE) {
+        long valueCount = childSubListSelector.getValueCount();
+        if (valueCount > Integer.MAX_VALUE) {
             throw new IllegalStateException("The childSubListSelector (" + childSubListSelector
-                    + ") has a valueSize (" + childSize
+                    + ") has a valueCount (" + valueCount
                     + ") which is higher than Integer.MAX_VALUE.");
         }
 
-        int destinationSize = (int) childSize;
+        int destinationSize = (int) valueCount;
         if (randomSelection) {
             // Reduce RAM memory usage by reducing destinationSize if nearbyRandom will never select a higher value
             int overallSizeMaximum = nearbyRandom.getOverallSizeMaximum();
@@ -160,9 +160,13 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
 
         @Override
         public boolean hasNext() {
-            // As long as the origin selector has next and the nearby index is non-empty, we have next. Nearby index size
-            // is the child selector size. Child selector's iterator is not used.
-            return replayingOriginSubListIterator.hasNext() && nearbySize > 0;
+            // All three conditions must be met for this selector to be non-empty:
+            // 1. The replaying origin selector must have next.
+            // 2. The nearby index must be non-empty (otherwise there are no nearby elements).
+            // 3. The child subList selector must be non-empty. It can happen that its minimumSubListSize is higher than
+            //    any list variable size at this step, in which case it would be impossible to find a nearby subList
+            //    with the required size.
+            return replayingOriginSubListIterator.hasNext() && nearbySize > 0 && childSubListSelector.getSize() > 0;
         }
 
         @Override
@@ -186,7 +190,19 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
             Integer nearbyElementListIndex = -1;
             int availableListSize = -1;
 
-            // TODO What if MIN is 500? We could burn thousands of cycles before we hit a availableListSize >= 500!
+            /*
+             * Can this loop forever? No.
+             * A) If minimumSubListSize > 1
+             *   i) If there is no list variable with size greater or equal to minimumSubListSize at this step, then this
+             *     block is unreachable because childSubListSelector’s size is 0 and so this iterator’s hasNext() is false.
+             *   ii) Nearby config prohibits setting distribution size maximum if minimumSubListSize > 1, therefore,
+             *     every nearby value may be selected and so, even if there is only one list variable longer than
+             *     minimumSubListSize, its first element will be eventually selected, allowing to return a subList longer
+             *     than minimumSubListSize.
+             * B) If minimumSubListSize is 1 or 0, then any selected nearby value can constitute a subList of length 1,
+             *   and some nearby value is guaranteed to be selected because nearbySize is greater than 0, otherwise this
+             *   iterator’s hasNext() is false and this block is unreachable.
+             */
             while (availableListSize < childSubListSelector.getMinimumSubListSize()) {
                 int nearbyIndex = nearbyRandom.nextInt(workingRandom, nearbySize);
                 Object nearbyElement = nearbyDistanceMatrixSupply.read().getDestination(origin, nearbyIndex);
