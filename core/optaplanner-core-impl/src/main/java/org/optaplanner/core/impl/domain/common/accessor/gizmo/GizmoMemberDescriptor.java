@@ -16,38 +16,33 @@ import io.quarkus.gizmo.MethodDescriptor;
 import io.quarkus.gizmo.ResultHandle;
 
 /**
- * Describe and provide simplified/unified access for a Member
+ * Describe and provide simplified/unified access for {@link Member}.
  */
-public class GizmoMemberDescriptor {
+public final class GizmoMemberDescriptor {
 
     /**
-     * The name of a member. For a field, it the field name.
-     * For a method, if it is a getter, the method name without "get"/"is"
-     * and the first letter lowercase; otherwise, the method name.
+     * The name of a member.
+     * For a field, it is the field name.
+     * For a method,
+     * if it is a getter, the method name without "get"/"is" and the first letter lowercase;
+     * otherwise, the method name.
      */
     private final String name;
 
-    /**
-     * If the member is a field, the FieldDescriptor of the member accessor
-     * If the member is a method, the MethodDescriptor of the member accessor
-     */
     private final GizmoMemberHandler memberHandler;
 
     /**
-     * If the member is a field, the FieldDescriptor of the member
-     * If the member is a method, the MethodDescriptor of the member
-     *
      * Should only be used for metadata (i.e. Generic Type and Annotated Element).
      */
     private final GizmoMemberHandler metadataHandler;
 
     /**
-     * The class that declared this member
+     * The class that declared this member.
      */
     private final Class<?> declaringClass;
 
     /**
-     * The MethodDescriptor of the corresponding setter. Is empty if not present.
+     * The MethodDescriptor of the corresponding setter. Empty if not present.
      */
     private final MethodDescriptor setter;
 
@@ -76,13 +71,6 @@ public class GizmoMemberDescriptor {
         this.metadataHandler = this.memberHandler;
     }
 
-    /**
-     * Called when the member is a field and that field has already been made final.
-     *
-     * @param name
-     * @param memberDescriptor
-     * @param declaringClass
-     */
     public GizmoMemberDescriptor(String name, Object memberDescriptor, Class<?> declaringClass) {
         this(name, memberDescriptor, memberDescriptor, declaringClass, null);
     }
