@@ -37,7 +37,7 @@ final class GizmoMethodHandler implements GizmoMemberHandler {
     public boolean writeMemberValue(MethodDescriptor setter, BytecodeCreator bytecodeCreator, ResultHandle thisObj,
             ResultHandle newValue) {
         if (setter == null) {
-            throw new UnsupportedOperationException();
+            return false;
         } else {
             invokeMemberMethod(declaringClass, bytecodeCreator, setter, thisObj, newValue);
             return true;

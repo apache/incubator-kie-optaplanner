@@ -41,13 +41,15 @@ final class GizmoFieldHandler implements GizmoMemberHandler {
     @Override
     public boolean writeMemberValue(MethodDescriptor setter, BytecodeCreator bytecodeCreator, ResultHandle thisObj,
             ResultHandle newValue) {
-        if (canBeWritten) {
+        try {
             bytecodeCreator.writeInstanceField(fieldDescriptor, thisObj, newValue);
             return true;
-        } else {
-            throw new IllegalStateException(
-                    "Impossible state: field (" + field.getName() + ") of class (" + declaringClass + ") cannot be modified.\n"
-                            + "Maybe it's private or final.");
+        } catch (Exception ex) {
+            if (canBeWritten) {
+                throw new IllegalStateException("Cannot write field (" + field + ") of class (" + declaringClass + ").", ex);
+            } else {
+                return false;
+            }
         }
     }
 
