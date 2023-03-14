@@ -37,17 +37,12 @@ public final class GizmoMemberDescriptor {
     private final GizmoMemberHandler metadataHandler;
 
     /**
-     * The class that declared this member.
-     */
-    private final Class<?> declaringClass;
-
-    /**
      * The MethodDescriptor of the corresponding setter. Empty if not present.
      */
     private final MethodDescriptor setter;
 
     public GizmoMemberDescriptor(Member member) {
-        this.declaringClass = member.getDeclaringClass();
+        Class<?> declaringClass = member.getDeclaringClass();
         if (!Modifier.isPublic(member.getModifiers())) {
             throw new IllegalStateException("Member (" + member.getName() + ") of class (" +
                     member.getDeclaringClass().getName() + ") is not public and domainAccessType is GIZMO.\n" +
@@ -81,7 +76,6 @@ public final class GizmoMemberDescriptor {
         this.memberHandler = GizmoMemberHandler.of(declaringClass, name, memberDescriptor);
         this.metadataHandler = memberDescriptor == metadataDescriptor ? this.memberHandler
                 : GizmoMemberHandler.of(declaringClass, name, metadataDescriptor);
-        this.declaringClass = declaringClass;
         this.setter = setterDescriptor;
     }
 
