@@ -10,9 +10,11 @@ import io.quarkus.gizmo.ResultHandle;
 
 final class GizmoMethodHandler implements GizmoMemberHandler {
 
+    private final Class<?> declaringClass;
     private final MethodDescriptor methodDescriptor;
 
-    GizmoMethodHandler(MethodDescriptor methodDescriptor) {
+    GizmoMethodHandler(Class<?> declaringClass, MethodDescriptor methodDescriptor) {
+        this.declaringClass = declaringClass;
         this.methodDescriptor = methodDescriptor;
     }
 
@@ -27,15 +29,15 @@ final class GizmoMethodHandler implements GizmoMemberHandler {
     }
 
     @Override
-    public ResultHandle readMemberValue(Class<?> declaringClass, BytecodeCreator bytecodeCreator, ResultHandle thisObj) {
+    public ResultHandle readMemberValue(BytecodeCreator bytecodeCreator, ResultHandle thisObj) {
         return invokeMemberMethod(declaringClass, bytecodeCreator, methodDescriptor, thisObj);
     }
 
     @Override
-    public boolean writeMemberValue(Class<?> declaringClass, String name, MethodDescriptor setter,
-            BytecodeCreator bytecodeCreator, ResultHandle thisObj, ResultHandle newValue, boolean ignoreFinalChecks) {
+    public boolean writeMemberValue(MethodDescriptor setter, BytecodeCreator bytecodeCreator, ResultHandle thisObj,
+            ResultHandle newValue) {
         if (setter == null) {
-            return false;
+            throw new UnsupportedOperationException();
         } else {
             invokeMemberMethod(declaringClass, bytecodeCreator, setter, thisObj, newValue);
             return true;
@@ -62,7 +64,7 @@ final class GizmoMethodHandler implements GizmoMemberHandler {
     }
 
     @Override
-    public Type getType(Class<?> declaringClass) {
+    public Type getType() {
         try {
             return declaringClass.getDeclaredMethod(methodDescriptor.getName()).getGenericReturnType();
         } catch (NoSuchMethodException e) {

@@ -1,5 +1,7 @@
 package org.optaplanner.core.impl.domain.common.accessor.gizmo;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.function.Consumer;
 
@@ -8,13 +10,19 @@ import io.quarkus.gizmo.FieldDescriptor;
 import io.quarkus.gizmo.MethodDescriptor;
 import io.quarkus.gizmo.ResultHandle;
 
-public interface GizmoMemberHandler {
+interface GizmoMemberHandler {
 
-    static GizmoMemberHandler of(Object memberDescriptor) {
+    static GizmoMemberHandler of(Class<?> declaringClass, String name, Object memberDescriptor) {
         if (memberDescriptor instanceof FieldDescriptor) {
-            return new GizmoFieldHandler((FieldDescriptor) memberDescriptor);
+            try {
+                Field field = declaringClass.getField(name);
+                return new GizmoFieldHandler(declaringClass, field, (FieldDescriptor) memberDescriptor,
+                        !Modifier.isFinal(field.getModifiers()));
+            } catch (NoSuchFieldException e) { // The field is only used for its metadata and never actually called.
+                return new GizmoFieldHandler(declaringClass, null, (FieldDescriptor) memberDescriptor, false);
+            }
         } else if (memberDescriptor instanceof MethodDescriptor) {
-            return new GizmoMethodHandler((MethodDescriptor) memberDescriptor);
+            return new GizmoMethodHandler(declaringClass, (MethodDescriptor) memberDescriptor);
         } else {
             throw new IllegalStateException("Impossible state: memberDescriptor not " + FieldDescriptor.class.getSimpleName()
                     + " or " + MethodDescriptor.class.getSimpleName() + ".");
@@ -25,15 +33,15 @@ public interface GizmoMemberHandler {
 
     void whenIsMethod(Consumer<MethodDescriptor> methodDescriptorConsumer);
 
-    ResultHandle readMemberValue(Class<?> declaringClass, BytecodeCreator bytecodeCreator, ResultHandle thisObj);
+    ResultHandle readMemberValue(BytecodeCreator bytecodeCreator, ResultHandle thisObj);
 
-    boolean writeMemberValue(Class<?> declaringClass, String name, MethodDescriptor setter, BytecodeCreator bytecodeCreator,
-            ResultHandle thisObj, ResultHandle newValue, boolean ignoreFinalChecks);
+    boolean writeMemberValue(MethodDescriptor setter, BytecodeCreator bytecodeCreator, ResultHandle thisObj,
+            ResultHandle newValue);
 
     String getDeclaringClassName();
 
     String getTypeName();
 
-    Type getType(Class<?> declaringClass);
+    Type getType();
 
 }

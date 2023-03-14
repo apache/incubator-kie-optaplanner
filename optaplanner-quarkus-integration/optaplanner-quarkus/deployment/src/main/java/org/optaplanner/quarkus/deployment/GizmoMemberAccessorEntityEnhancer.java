@@ -114,7 +114,7 @@ final class GizmoMemberAccessorEntityEnhancer {
         }
 
         if (Modifier.isPublic(fieldInfo.flags())) {
-            member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
+            member = new GizmoMemberDescriptor(name, memberDescriptor, declaringClass);
         } else {
             addVirtualFieldGetter(classInfo, fieldInfo, transformers);
             String methodName = getVirtualGetterName(true, fieldInfo.name());
@@ -364,7 +364,7 @@ final class GizmoMemberAccessorEntityEnhancer {
 
                     // Not being recorded, so can use Type and annotated element directly
                     if (Modifier.isPublic(field.getModifiers())) {
-                        member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
+                        member = new GizmoMemberDescriptor(name, memberDescriptor, declaringClass);
                     } else {
                         addVirtualFieldGetter(declaringClass, field, transformers);
                         String methodName = getVirtualGetterName(true, field.getName());

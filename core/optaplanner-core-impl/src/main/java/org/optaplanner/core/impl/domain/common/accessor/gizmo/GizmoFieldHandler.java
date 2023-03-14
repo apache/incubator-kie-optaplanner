@@ -1,7 +1,6 @@
 package org.optaplanner.core.impl.domain.common.accessor.gizmo;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.function.Consumer;
 
@@ -12,10 +11,16 @@ import io.quarkus.gizmo.ResultHandle;
 
 final class GizmoFieldHandler implements GizmoMemberHandler {
 
+    private final Class<?> declaringClass;
+    private final Field field;
     private final FieldDescriptor fieldDescriptor;
+    private final boolean canBeWritten;
 
-    GizmoFieldHandler(FieldDescriptor fieldDescriptor) {
+    GizmoFieldHandler(Class<?> declaringClass, Field field, FieldDescriptor fieldDescriptor, boolean canBeWritten) {
+        this.declaringClass = declaringClass;
+        this.field = field;
         this.fieldDescriptor = fieldDescriptor;
+        this.canBeWritten = canBeWritten;
     }
 
     @Override
@@ -29,24 +34,20 @@ final class GizmoFieldHandler implements GizmoMemberHandler {
     }
 
     @Override
-    public ResultHandle readMemberValue(Class<?> declaringClass, BytecodeCreator bytecodeCreator, ResultHandle thisObj) {
+    public ResultHandle readMemberValue(BytecodeCreator bytecodeCreator, ResultHandle thisObj) {
         return bytecodeCreator.readInstanceField(fieldDescriptor, thisObj);
     }
 
     @Override
-    public boolean writeMemberValue(Class<?> declaringClass, String name, MethodDescriptor setter,
-            BytecodeCreator bytecodeCreator, ResultHandle thisObj, ResultHandle newValue, boolean ignoreFinalChecks) {
-        try {
-            Field field = declaringClass.getField(name);
-            if (!ignoreFinalChecks && Modifier.isFinal(field.getModifiers())) {
-                throw new IllegalStateException(
-                        "Field (" + name + ") of class (" + declaringClass + ") is final and cannot be modified.");
-            } else {
-                bytecodeCreator.writeInstanceField(fieldDescriptor, thisObj, newValue);
-                return true;
-            }
-        } catch (NoSuchFieldException e) {
-            throw new IllegalStateException("Field (" + name + ") of class (" + declaringClass + ") does not exist.", e);
+    public boolean writeMemberValue(MethodDescriptor setter, BytecodeCreator bytecodeCreator, ResultHandle thisObj,
+            ResultHandle newValue) {
+        if (canBeWritten) {
+            bytecodeCreator.writeInstanceField(fieldDescriptor, thisObj, newValue);
+            return true;
+        } else {
+            throw new IllegalStateException(
+                    "Impossible state: field (" + field.getName() + ") of class (" + declaringClass + ") cannot be modified.\n"
+                            + "Maybe it's private or final.");
         }
     }
 
@@ -61,7 +62,7 @@ final class GizmoFieldHandler implements GizmoMemberHandler {
     }
 
     @Override
-    public Type getType(Class<?> declaringClass) {
+    public Type getType() {
         try {
             return declaringClass.getDeclaredField(fieldDescriptor.getName()).getGenericType();
         } catch (NoSuchFieldException e) {

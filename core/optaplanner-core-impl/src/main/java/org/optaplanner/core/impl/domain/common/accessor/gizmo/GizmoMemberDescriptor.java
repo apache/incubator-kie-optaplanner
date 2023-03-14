@@ -51,11 +51,6 @@ public class GizmoMemberDescriptor {
      */
     private final MethodDescriptor setter;
 
-    /**
-     * If final checks should be ignored due to Quarkus transformations
-     */
-    private final boolean ignoreFinalChecks;
-
     public GizmoMemberDescriptor(Member member) {
         this.declaringClass = member.getDeclaringClass();
         if (!Modifier.isPublic(member.getModifiers())) {
@@ -66,44 +61,40 @@ public class GizmoMemberDescriptor {
         }
         if (member instanceof Field) {
             FieldDescriptor fieldDescriptor = FieldDescriptor.of((Field) member);
-            this.memberHandler = GizmoMemberHandler.of(fieldDescriptor);
             this.name = member.getName();
+            this.memberHandler = GizmoMemberHandler.of(declaringClass, name, fieldDescriptor);
             this.setter = null;
         } else if (member instanceof Method) {
             MethodDescriptor methodDescriptor = MethodDescriptor.ofMethod((Method) member);
-            this.memberHandler = GizmoMemberHandler.of(methodDescriptor);
             this.name = ReflectionHelper.isGetterMethod((Method) member) ? ReflectionHelper.getGetterPropertyName(member)
                     : member.getName();
+            this.memberHandler = GizmoMemberHandler.of(declaringClass, name, methodDescriptor);
             this.setter = lookupSetter(methodDescriptor, declaringClass, name).orElse(null);
         } else {
             throw new IllegalArgumentException(member + " is not a Method or a Field.");
         }
         this.metadataHandler = this.memberHandler;
-        this.ignoreFinalChecks = false;
     }
 
-    // For Quarkus
-    // (Cannot move to Quarkus module; get runtime
-    //  exception since objects created here use classes
-    //  from another ClassLoader).
-    public GizmoMemberDescriptor(String name, Object memberDescriptor, Object metadataDescriptor, Class<?> declaringClass) {
-        this(name, memberDescriptor, metadataDescriptor, declaringClass,
-                lookupSetter(memberDescriptor, declaringClass, name).orElse(null), true);
+    /**
+     * Called when the member is a field and that field has already been made final.
+     *
+     * @param name
+     * @param memberDescriptor
+     * @param declaringClass
+     */
+    public GizmoMemberDescriptor(String name, Object memberDescriptor, Class<?> declaringClass) {
+        this(name, memberDescriptor, memberDescriptor, declaringClass, null);
     }
 
     public GizmoMemberDescriptor(String name, Object memberDescriptor, Object metadataDescriptor, Class<?> declaringClass,
             MethodDescriptor setterDescriptor) {
-        this(name, memberDescriptor, metadataDescriptor, declaringClass, setterDescriptor, false);
-    }
-
-    public GizmoMemberDescriptor(String name, Object memberDescriptor, Object metadataDescriptor, Class<?> declaringClass,
-            MethodDescriptor setterDescriptor, boolean ignoreFinalChecks) {
         this.name = name;
-        this.memberHandler = GizmoMemberHandler.of(memberDescriptor);
-        this.metadataHandler = GizmoMemberHandler.of(metadataDescriptor);
+        this.memberHandler = GizmoMemberHandler.of(declaringClass, name, memberDescriptor);
+        this.metadataHandler = memberDescriptor == metadataDescriptor ? this.memberHandler
+                : GizmoMemberHandler.of(declaringClass, name, metadataDescriptor);
         this.declaringClass = declaringClass;
         this.setter = setterDescriptor;
-        this.ignoreFinalChecks = ignoreFinalChecks;
     }
 
     /**
@@ -131,7 +122,7 @@ public class GizmoMemberDescriptor {
     }
 
     public ResultHandle readMemberValue(BytecodeCreator bytecodeCreator, ResultHandle thisObj) {
-        return memberHandler.readMemberValue(declaringClass, bytecodeCreator, thisObj);
+        return memberHandler.readMemberValue(bytecodeCreator, thisObj);
     }
 
     /**
@@ -145,8 +136,7 @@ public class GizmoMemberDescriptor {
      * @return True if it was able to write the member value, false otherwise
      */
     public boolean writeMemberValue(BytecodeCreator bytecodeCreator, ResultHandle thisObj, ResultHandle newValue) {
-        return memberHandler.writeMemberValue(declaringClass, name, setter, bytecodeCreator, thisObj, newValue,
-                ignoreFinalChecks);
+        return memberHandler.writeMemberValue(setter, bytecodeCreator, thisObj, newValue);
     }
 
     /**
@@ -210,7 +200,7 @@ public class GizmoMemberDescriptor {
     }
 
     public Type getType() {
-        return metadataHandler.getType(declaringClass);
+        return metadataHandler.getType();
     }
 
     @Override
