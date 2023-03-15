@@ -51,11 +51,11 @@ public interface QuadTuple<A, B, C, D> extends Tuple {
         setC(pair.getKey());
         setD(pair.getValue());
     }
+
     default void fillTailFrom(Triple<B, C, D> triple) {
         setB(triple.getA());
         setC(triple.getB());
         setD(triple.getC());
     }
-
 
 }
