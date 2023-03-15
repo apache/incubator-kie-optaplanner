@@ -52,13 +52,13 @@ public final class GizmoMemberDescriptor {
         if (member instanceof Field) {
             FieldDescriptor fieldDescriptor = FieldDescriptor.of((Field) member);
             this.name = member.getName();
-            this.memberHandler = GizmoMemberHandler.of(declaringClass, name, fieldDescriptor);
+            this.memberHandler = GizmoMemberHandler.of(declaringClass, name, fieldDescriptor, false);
             this.setter = null;
         } else if (member instanceof Method) {
             MethodDescriptor methodDescriptor = MethodDescriptor.ofMethod((Method) member);
             this.name = ReflectionHelper.isGetterMethod((Method) member) ? ReflectionHelper.getGetterPropertyName(member)
                     : member.getName();
-            this.memberHandler = GizmoMemberHandler.of(declaringClass, name, methodDescriptor);
+            this.memberHandler = GizmoMemberHandler.of(declaringClass, methodDescriptor);
             this.setter = lookupSetter(methodDescriptor, declaringClass, name).orElse(null);
         } else {
             throw new IllegalArgumentException(member + " is not a Method or a Field.");
@@ -66,16 +66,35 @@ public final class GizmoMemberDescriptor {
         this.metadataHandler = this.memberHandler;
     }
 
-    public GizmoMemberDescriptor(String name, Object memberDescriptor, Class<?> declaringClass) {
-        this(name, memberDescriptor, memberDescriptor, declaringClass, null);
+    public GizmoMemberDescriptor(String name, FieldDescriptor fieldDescriptor, Class<?> declaringClass) {
+        this.name = name;
+        this.memberHandler = GizmoMemberHandler.of(declaringClass, name, fieldDescriptor, true);
+        this.metadataHandler = this.memberHandler;
+        this.setter = null;
     }
 
-    public GizmoMemberDescriptor(String name, Object memberDescriptor, Object metadataDescriptor, Class<?> declaringClass,
+    public GizmoMemberDescriptor(String name, MethodDescriptor memberDescriptor, MethodDescriptor metadataDescriptor,
+            Class<?> declaringClass, MethodDescriptor setterDescriptor) {
+        this.name = name;
+        this.memberHandler = GizmoMemberHandler.of(declaringClass, memberDescriptor);
+        this.metadataHandler = memberDescriptor == metadataDescriptor ? this.memberHandler
+                : GizmoMemberHandler.of(declaringClass, metadataDescriptor);
+        this.setter = setterDescriptor;
+    }
+
+    public GizmoMemberDescriptor(String name, MethodDescriptor memberDescriptor, Class<?> declaringClass,
             MethodDescriptor setterDescriptor) {
         this.name = name;
-        this.memberHandler = GizmoMemberHandler.of(declaringClass, name, memberDescriptor);
-        this.metadataHandler = memberDescriptor == metadataDescriptor ? this.memberHandler
-                : GizmoMemberHandler.of(declaringClass, name, metadataDescriptor);
+        this.memberHandler = GizmoMemberHandler.of(declaringClass, memberDescriptor);
+        this.metadataHandler = this.memberHandler;
+        this.setter = setterDescriptor;
+    }
+
+    public GizmoMemberDescriptor(String name, MethodDescriptor memberDescriptor, FieldDescriptor metadataDescriptor,
+            Class<?> declaringClass, MethodDescriptor setterDescriptor) {
+        this.name = name;
+        this.memberHandler = GizmoMemberHandler.of(declaringClass, memberDescriptor);
+        this.metadataHandler = GizmoMemberHandler.of(declaringClass, name, metadataDescriptor, true);
         this.setter = setterDescriptor;
     }
 

@@ -206,8 +206,7 @@ final class GizmoMemberAccessorEntityEnhancer {
         MethodDescriptor memberDescriptor = MethodDescriptor.of(methodInfo);
 
         if (Modifier.isPublic(methodInfo.flags())) {
-            member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass,
-                    setterDescriptor.orElse(null));
+            member = new GizmoMemberDescriptor(name, memberDescriptor, declaringClass, setterDescriptor.orElse(null));
         } else {
             setterDescriptor = addVirtualMethodGetter(classInfo, methodInfo, name, setterDescriptor, transformers);
             String methodName = getVirtualGetterName(false, name);

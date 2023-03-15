@@ -1,6 +1,5 @@
 package org.optaplanner.core.impl.domain.common.accessor.gizmo;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.function.Consumer;
 
@@ -12,13 +11,11 @@ import io.quarkus.gizmo.ResultHandle;
 final class GizmoFieldHandler implements GizmoMemberHandler {
 
     private final Class<?> declaringClass;
-    private final Field field;
     private final FieldDescriptor fieldDescriptor;
     private final boolean canBeWritten;
 
-    GizmoFieldHandler(Class<?> declaringClass, Field field, FieldDescriptor fieldDescriptor, boolean canBeWritten) {
+    GizmoFieldHandler(Class<?> declaringClass, FieldDescriptor fieldDescriptor, boolean canBeWritten) {
         this.declaringClass = declaringClass;
-        this.field = field;
         this.fieldDescriptor = fieldDescriptor;
         this.canBeWritten = canBeWritten;
     }
@@ -41,15 +38,11 @@ final class GizmoFieldHandler implements GizmoMemberHandler {
     @Override
     public boolean writeMemberValue(MethodDescriptor setter, BytecodeCreator bytecodeCreator, ResultHandle thisObj,
             ResultHandle newValue) {
-        try {
+        if (canBeWritten) {
             bytecodeCreator.writeInstanceField(fieldDescriptor, thisObj, newValue);
             return true;
-        } catch (Exception ex) {
-            if (canBeWritten) {
-                throw new IllegalStateException("Cannot write field (" + field + ") of class (" + declaringClass + ").", ex);
-            } else {
-                return false;
-            }
+        } else {
+            return false;
         }
     }
 

@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.domain.common.accessor.gizmo;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.function.Consumer;
@@ -12,21 +13,35 @@ import io.quarkus.gizmo.ResultHandle;
 
 interface GizmoMemberHandler {
 
-    static GizmoMemberHandler of(Class<?> declaringClass, String name, Object memberDescriptor) {
-        if (memberDescriptor instanceof FieldDescriptor) {
-            try {
-                Field field = declaringClass.getField(name);
-                return new GizmoFieldHandler(declaringClass, field, (FieldDescriptor) memberDescriptor,
-                        !Modifier.isFinal(field.getModifiers()));
-            } catch (NoSuchFieldException e) { // The field is only used for its metadata and never actually called.
-                return new GizmoFieldHandler(declaringClass, null, (FieldDescriptor) memberDescriptor, false);
-            }
-        } else if (memberDescriptor instanceof MethodDescriptor) {
-            return new GizmoMethodHandler(declaringClass, (MethodDescriptor) memberDescriptor);
-        } else {
-            throw new IllegalStateException("Impossible state: memberDescriptor not " + FieldDescriptor.class.getSimpleName()
-                    + " or " + MethodDescriptor.class.getSimpleName() + ".");
+    /**
+     * Creates handler for a {@link Field}.
+     *
+     * @param declaringClass never null, class that declares the {@link Field} in question
+     * @param name never null, name of the field
+     * @param memberDescriptor never null, descriptor of the {@link Field} in question
+     * @param ignoreFinalChecks true if Quarkus will make the field non-final for us
+     * @return never null
+     */
+    static GizmoMemberHandler of(Class<?> declaringClass, String name, FieldDescriptor memberDescriptor,
+            boolean ignoreFinalChecks) {
+        try {
+            Field field = declaringClass.getField(name);
+            return new GizmoFieldHandler(declaringClass, memberDescriptor,
+                    ignoreFinalChecks || !Modifier.isFinal(field.getModifiers()));
+        } catch (NoSuchFieldException e) { // The field is only used for its metadata and never actually called.
+            return new GizmoFieldHandler(declaringClass, memberDescriptor, false);
         }
+    }
+
+    /**
+     * Creates handler for a {@link Method}.
+     *
+     * @param declaringClass never null, class that declares the {@link Method} in question
+     * @param memberDescriptor never null, descriptor of the {@link Method} in question
+     * @return never null
+     */
+    static GizmoMemberHandler of(Class<?> declaringClass, MethodDescriptor memberDescriptor) {
+        return new GizmoMethodHandler(declaringClass, memberDescriptor);
     }
 
     void whenIsField(Consumer<FieldDescriptor> fieldDescriptorConsumer);
