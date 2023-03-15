@@ -5,12 +5,11 @@ import java.util.function.BiFunction;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.tuple.BiTuple;
 import org.optaplanner.constraint.streams.bavet.common.tuple.TriTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.TriTupleImpl;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.util.Triple;
 
 final class Group3Mapping0CollectorBiNode<OldA, OldB, A, B, C>
-        extends AbstractGroupBiNode<OldA, OldB, TriTuple<A, B, C>, TriTupleImpl<A, B, C>, Triple<A, B, C>, Void, Void> {
+        extends AbstractGroupBiNode<OldA, OldB, TriTuple<A, B, C>, Triple<A, B, C>, Void, Void> {
 
     private final int outputStoreSize;
 
@@ -34,12 +33,12 @@ final class Group3Mapping0CollectorBiNode<OldA, OldB, A, B, C>
     }
 
     @Override
-    protected TriTupleImpl<A, B, C> createOutTuple(Triple<A, B, C> groupKey) {
+    protected TriTuple<A, B, C> createOutTuple(Triple<A, B, C> groupKey) {
         return TriTuple.of(groupKey.getA(), groupKey.getB(), groupKey.getC(), outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(TriTupleImpl<A, B, C> outTuple, Void unused) {
+    protected void updateOutTupleToResult(TriTuple<A, B, C> outTuple, Void unused) {
         throw new IllegalStateException("Impossible state: collector is null.");
     }
 

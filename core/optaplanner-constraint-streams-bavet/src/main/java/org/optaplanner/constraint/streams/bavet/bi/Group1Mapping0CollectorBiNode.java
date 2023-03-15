@@ -5,11 +5,10 @@ import java.util.function.BiFunction;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.tuple.BiTuple;
 import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.UniTupleImpl;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 
 final class Group1Mapping0CollectorBiNode<OldA, OldB, A>
-        extends AbstractGroupBiNode<OldA, OldB, UniTuple<A>, UniTupleImpl<A>, A, Void, Void> {
+        extends AbstractGroupBiNode<OldA, OldB, UniTuple<A>, A, Void, Void> {
 
     private final int outputStoreSize;
 
@@ -24,12 +23,12 @@ final class Group1Mapping0CollectorBiNode<OldA, OldB, A>
     }
 
     @Override
-    protected UniTupleImpl<A> createOutTuple(A a) {
+    protected UniTuple<A> createOutTuple(A a) {
         return UniTuple.of(a, outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(UniTupleImpl<A> aUniTuple, Void unused) {
+    protected void updateOutTupleToResult(UniTuple<A> aUniTuple, Void unused) {
         throw new IllegalStateException("Impossible state: collector is null.");
     }
 

@@ -6,7 +6,6 @@ import java.util.Queue;
 import org.optaplanner.constraint.streams.bavet.common.tuple.Tuple;
 import org.optaplanner.constraint.streams.bavet.common.tuple.TupleState;
 import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.UniTupleImpl;
 
 public abstract class AbstractMapNode<InTuple_ extends Tuple, Right_>
         extends AbstractNode
@@ -44,7 +43,7 @@ public abstract class AbstractMapNode<InTuple_ extends Tuple, Right_>
 
     @Override
     public void update(InTuple_ tuple) {
-        UniTupleImpl<Right_> outTuple = tuple.getStore(inputStoreIndex);
+        UniTuple<Right_> outTuple = tuple.getStore(inputStoreIndex);
         if (outTuple == null) {
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             insert(tuple);
@@ -55,7 +54,7 @@ public abstract class AbstractMapNode<InTuple_ extends Tuple, Right_>
         // We check for identity, not equality, to not introduce dependency on user equals().
         if (mapped != oldMapped) {
             outTuple.setA(mapped);
-            outTuple.state = TupleState.UPDATING;
+            outTuple.setState(TupleState.UPDATING);
             dirtyTupleQueue.add(outTuple);
         }
     }

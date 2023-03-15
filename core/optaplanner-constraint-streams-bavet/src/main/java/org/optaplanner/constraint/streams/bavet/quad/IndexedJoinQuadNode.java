@@ -7,14 +7,13 @@ import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTupleImpl;
 import org.optaplanner.constraint.streams.bavet.common.tuple.TriTuple;
 import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.TriFunction;
 
 final class IndexedJoinQuadNode<A, B, C, D>
-        extends AbstractIndexedJoinNode<TriTuple<A, B, C>, D, QuadTuple<A, B, C, D>, QuadTupleImpl<A, B, C, D>> {
+        extends AbstractIndexedJoinNode<TriTuple<A, B, C>, D, QuadTuple<A, B, C, D>> {
 
     private final TriFunction<A, B, C, IndexProperties> mappingABC;
     private final QuadPredicate<A, B, C, D> filtering;
@@ -45,19 +44,19 @@ final class IndexedJoinQuadNode<A, B, C, D>
     }
 
     @Override
-    protected QuadTupleImpl<A, B, C, D> createOutTuple(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
+    protected QuadTuple<A, B, C, D> createOutTuple(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
         return QuadTuple.of(leftTuple.getA(), leftTuple.getB(), leftTuple.getC(), rightTuple.getA(), outputStoreSize);
     }
 
     @Override
-    protected void setOutTupleLeftFacts(QuadTupleImpl<A, B, C, D> outTuple, TriTuple<A, B, C> leftTuple) {
+    protected void setOutTupleLeftFacts(QuadTuple<A, B, C, D> outTuple, TriTuple<A, B, C> leftTuple) {
         outTuple.setA(leftTuple.getA());
         outTuple.setB(leftTuple.getB());
         outTuple.setC(leftTuple.getC());
     }
 
     @Override
-    protected void setOutTupleRightFact(QuadTupleImpl<A, B, C, D> outTuple, UniTuple<D> rightTuple) {
+    protected void setOutTupleRightFact(QuadTuple<A, B, C, D> outTuple, UniTuple<D> rightTuple) {
         outTuple.setD(rightTuple.getA());
     }
 

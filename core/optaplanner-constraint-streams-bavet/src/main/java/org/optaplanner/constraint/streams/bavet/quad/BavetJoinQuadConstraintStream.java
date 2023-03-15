@@ -12,7 +12,6 @@ import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexerFactory;
 import org.optaplanner.constraint.streams.bavet.common.index.JoinerUtils;
 import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTupleImpl;
 import org.optaplanner.constraint.streams.bavet.common.tuple.TriTuple;
 import org.optaplanner.constraint.streams.bavet.tri.BavetJoinBridgeTriConstraintStream;
 import org.optaplanner.constraint.streams.bavet.uni.BavetJoinBridgeUniConstraintStream;
@@ -62,7 +61,7 @@ public final class BavetJoinQuadConstraintStream<Solution_, A, B, C, D>
         int outputStoreSize = buildHelper.extractTupleStoreSize(this);
         TupleLifecycle<QuadTuple<A, B, C, D>> downstream = buildHelper.getAggregatedTupleLifecycle(childStreamList);
         IndexerFactory indexerFactory = new IndexerFactory(joiner);
-        AbstractJoinNode<TriTuple<A, B, C>, D, QuadTuple<A, B, C, D>, QuadTupleImpl<A, B, C, D>> node =
+        AbstractJoinNode<TriTuple<A, B, C>, D, QuadTuple<A, B, C, D>> node =
                 indexerFactory.hasJoiners()
                         ? new IndexedJoinQuadNode<>(
                                 JoinerUtils.combineLeftMappings(joiner), JoinerUtils.combineRightMappings(joiner),

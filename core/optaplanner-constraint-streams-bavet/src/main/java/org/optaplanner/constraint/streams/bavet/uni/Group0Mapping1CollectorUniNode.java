@@ -2,12 +2,11 @@ package org.optaplanner.constraint.streams.bavet.uni;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.UniTupleImpl;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 
 final class Group0Mapping1CollectorUniNode<OldA, A, ResultContainer_>
-        extends AbstractGroupUniNode<OldA, UniTuple<A>, UniTupleImpl<A>, Void, ResultContainer_, A> {
+        extends AbstractGroupUniNode<OldA, UniTuple<A>, Void, ResultContainer_, A> {
 
     private final int outputStoreSize;
 
@@ -19,12 +18,12 @@ final class Group0Mapping1CollectorUniNode<OldA, A, ResultContainer_>
     }
 
     @Override
-    protected UniTupleImpl<A> createOutTuple(Void groupKey) {
+    protected UniTuple<A> createOutTuple(Void groupKey) {
         return UniTuple.of(null, outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(UniTupleImpl<A> outTuple, A a) {
+    protected void updateOutTupleToResult(UniTuple<A> outTuple, A a) {
         outTuple.setA(a);
     }
 

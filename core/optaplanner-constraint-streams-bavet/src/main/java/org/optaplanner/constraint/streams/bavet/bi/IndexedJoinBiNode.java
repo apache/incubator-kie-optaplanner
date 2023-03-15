@@ -8,10 +8,9 @@ import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
 import org.optaplanner.constraint.streams.bavet.common.tuple.BiTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.BiTupleImpl;
 import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 
-final class IndexedJoinBiNode<A, B> extends AbstractIndexedJoinNode<UniTuple<A>, B, BiTuple<A, B>, BiTupleImpl<A, B>> {
+final class IndexedJoinBiNode<A, B> extends AbstractIndexedJoinNode<UniTuple<A>, B, BiTuple<A, B>> {
 
     private final Function<A, IndexProperties> mappingA;
     private final BiPredicate<A, B> filtering;
@@ -42,17 +41,17 @@ final class IndexedJoinBiNode<A, B> extends AbstractIndexedJoinNode<UniTuple<A>,
     }
 
     @Override
-    protected BiTupleImpl<A, B> createOutTuple(UniTuple<A> leftTuple, UniTuple<B> rightTuple) {
+    protected BiTuple<A, B> createOutTuple(UniTuple<A> leftTuple, UniTuple<B> rightTuple) {
         return BiTuple.of(leftTuple.getA(), rightTuple.getA(), outputStoreSize);
     }
 
     @Override
-    protected void setOutTupleLeftFacts(BiTupleImpl<A, B> outTuple, UniTuple<A> leftTuple) {
+    protected void setOutTupleLeftFacts(BiTuple<A, B> outTuple, UniTuple<A> leftTuple) {
         outTuple.setA(leftTuple.getA());
     }
 
     @Override
-    protected void setOutTupleRightFact(BiTupleImpl<A, B> outTuple, UniTuple<B> rightTuple) {
+    protected void setOutTupleRightFact(BiTuple<A, B> outTuple, UniTuple<B> rightTuple) {
         outTuple.setB(rightTuple.getA());
     }
 

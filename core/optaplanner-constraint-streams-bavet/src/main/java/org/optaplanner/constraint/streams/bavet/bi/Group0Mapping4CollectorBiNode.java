@@ -2,7 +2,6 @@ package org.optaplanner.constraint.streams.bavet.bi;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTupleImpl;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -10,7 +9,7 @@ import org.optaplanner.core.impl.util.Quadruple;
 
 final class Group0Mapping4CollectorBiNode<OldA, OldB, A, B, C, D, ResultContainerA_, ResultContainerB_, ResultContainerC_, ResultContainerD_>
         extends
-        AbstractGroupBiNode<OldA, OldB, QuadTuple<A, B, C, D>, QuadTupleImpl<A, B, C, D>, Void, Object, Quadruple<A, B, C, D>> {
+        AbstractGroupBiNode<OldA, OldB, QuadTuple<A, B, C, D>, Void, Object, Quadruple<A, B, C, D>> {
 
     private final int outputStoreSize;
 
@@ -37,12 +36,12 @@ final class Group0Mapping4CollectorBiNode<OldA, OldB, A, B, C, D, ResultContaine
     }
 
     @Override
-    protected QuadTupleImpl<A, B, C, D> createOutTuple(Void groupKey) {
+    protected QuadTuple<A, B, C, D> createOutTuple(Void groupKey) {
         return QuadTuple.of(null, null, null, null, outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(QuadTupleImpl<A, B, C, D> outTuple, Quadruple<A, B, C, D> result) {
+    protected void updateOutTupleToResult(QuadTuple<A, B, C, D> outTuple, Quadruple<A, B, C, D> result) {
         outTuple.setA(result.getA());
         outTuple.setB(result.getB());
         outTuple.setC(result.getC());

@@ -2,7 +2,7 @@ package org.optaplanner.constraint.streams.bavet.common.tuple;
 
 public interface UniTuple<A> extends Tuple {
 
-    static <A> UniTupleImpl<A> of(A a, int storeSize) {
+    static <A> UniTuple<A> of(A a, int storeSize) {
         return new UniTupleImpl<>(a, storeSize);
     }
 

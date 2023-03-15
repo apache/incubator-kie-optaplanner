@@ -4,14 +4,13 @@ import static org.optaplanner.constraint.streams.bavet.quad.Group1Mapping0Collec
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.tuple.TriTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.TriTupleImpl;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group1Mapping2CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, ResultContainerB_, ResultContainerC_>
-        extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, TriTuple<A, B, C>, TriTupleImpl<A, B, C>, A, Object, Pair<B, C>> {
+        extends AbstractGroupQuadNode<OldA, OldB, OldC, OldD, TriTuple<A, B, C>, A, Object, Pair<B, C>> {
 
     private final int outputStoreSize;
 
@@ -26,12 +25,12 @@ final class Group1Mapping2CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, Res
     }
 
     @Override
-    protected TriTupleImpl<A, B, C> createOutTuple(A a) {
+    protected TriTuple<A, B, C> createOutTuple(A a) {
         return TriTuple.of(a, null, null, outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(TriTupleImpl<A, B, C> outTuple, Pair<B, C> result) {
+    protected void updateOutTupleToResult(TriTuple<A, B, C> outTuple, Pair<B, C> result) {
         outTuple.setB(result.getKey());
         outTuple.setC(result.getValue());
     }

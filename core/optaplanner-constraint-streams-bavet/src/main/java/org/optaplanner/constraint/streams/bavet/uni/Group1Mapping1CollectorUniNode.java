@@ -6,12 +6,11 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.tuple.BiTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.BiTupleImpl;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 
 final class Group1Mapping1CollectorUniNode<OldA, A, B, ResultContainer_>
-        extends AbstractGroupUniNode<OldA, BiTuple<A, B>, BiTupleImpl<A, B>, A, ResultContainer_, B> {
+        extends AbstractGroupUniNode<OldA, BiTuple<A, B>, A, ResultContainer_, B> {
 
     private final int outputStoreSize;
 
@@ -24,12 +23,12 @@ final class Group1Mapping1CollectorUniNode<OldA, A, B, ResultContainer_>
     }
 
     @Override
-    protected BiTupleImpl<A, B> createOutTuple(A a) {
+    protected BiTuple<A, B> createOutTuple(A a) {
         return BiTuple.of(a, null, outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(BiTupleImpl<A, B> outTuple, B b) {
+    protected void updateOutTupleToResult(BiTuple<A, B> outTuple, B b) {
         outTuple.setB(b);
     }
 

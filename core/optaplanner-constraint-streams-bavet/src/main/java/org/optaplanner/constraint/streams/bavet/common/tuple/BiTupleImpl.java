@@ -1,6 +1,6 @@
 package org.optaplanner.constraint.streams.bavet.common.tuple;
 
-public final class BiTupleImpl<A, B> extends AbstractTuple implements BiTuple<A, B> {
+final class BiTupleImpl<A, B> extends AbstractTuple implements BiTuple<A, B> {
 
     private A a;
     private B b;

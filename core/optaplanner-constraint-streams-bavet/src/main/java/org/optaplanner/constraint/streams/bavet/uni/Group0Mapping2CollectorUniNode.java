@@ -2,14 +2,13 @@ package org.optaplanner.constraint.streams.bavet.uni;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.tuple.BiTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.BiTupleImpl;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group0Mapping2CollectorUniNode<OldA, A, B, ResultContainerA_, ResultContainerB_>
-        extends AbstractGroupUniNode<OldA, BiTuple<A, B>, BiTupleImpl<A, B>, Void, Object, Pair<A, B>> {
+        extends AbstractGroupUniNode<OldA, BiTuple<A, B>, Void, Object, Pair<A, B>> {
 
     private final int outputStoreSize;
 
@@ -31,12 +30,12 @@ final class Group0Mapping2CollectorUniNode<OldA, A, B, ResultContainerA_, Result
     }
 
     @Override
-    protected BiTupleImpl<A, B> createOutTuple(Void groupKey) {
+    protected BiTuple<A, B> createOutTuple(Void groupKey) {
         return BiTuple.of(null, null, outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(BiTupleImpl<A, B> outTuple, Pair<A, B> result) {
+    protected void updateOutTupleToResult(BiTuple<A, B> outTuple, Pair<A, B> result) {
         outTuple.setA(result.getKey());
         outTuple.setB(result.getValue());
     }

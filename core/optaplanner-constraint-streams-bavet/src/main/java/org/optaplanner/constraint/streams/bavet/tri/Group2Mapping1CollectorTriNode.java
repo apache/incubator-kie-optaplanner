@@ -4,7 +4,6 @@ import static org.optaplanner.constraint.streams.bavet.tri.Group2Mapping0Collect
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.tuple.TriTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.TriTupleImpl;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -12,7 +11,7 @@ import org.optaplanner.core.impl.util.Pair;
 
 final class Group2Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, C, ResultContainer_>
         extends
-        AbstractGroupTriNode<OldA, OldB, OldC, TriTuple<A, B, C>, TriTupleImpl<A, B, C>, Pair<A, B>, ResultContainer_, C> {
+        AbstractGroupTriNode<OldA, OldB, OldC, TriTuple<A, B, C>, Pair<A, B>, ResultContainer_, C> {
 
     private final int outputStoreSize;
 
@@ -26,12 +25,12 @@ final class Group2Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, C, ResultCont
     }
 
     @Override
-    protected TriTupleImpl<A, B, C> createOutTuple(Pair<A, B> groupKey) {
+    protected TriTuple<A, B, C> createOutTuple(Pair<A, B> groupKey) {
         return TriTuple.of(groupKey.getKey(), groupKey.getValue(), null, outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(TriTupleImpl<A, B, C> outTuple, C c) {
+    protected void updateOutTupleToResult(TriTuple<A, B, C> outTuple, C c) {
         outTuple.setC(c);
     }
 

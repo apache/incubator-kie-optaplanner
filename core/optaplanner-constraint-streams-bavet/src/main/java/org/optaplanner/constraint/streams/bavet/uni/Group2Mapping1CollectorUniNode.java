@@ -6,13 +6,12 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.tuple.TriTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.TriTupleImpl;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.util.Pair;
 
 final class Group2Mapping1CollectorUniNode<OldA, A, B, C, ResultContainer_>
-        extends AbstractGroupUniNode<OldA, TriTuple<A, B, C>, TriTupleImpl<A, B, C>, Pair<A, B>, ResultContainer_, C> {
+        extends AbstractGroupUniNode<OldA, TriTuple<A, B, C>, Pair<A, B>, ResultContainer_, C> {
 
     private final int outputStoreSize;
 
@@ -25,12 +24,12 @@ final class Group2Mapping1CollectorUniNode<OldA, A, B, C, ResultContainer_>
     }
 
     @Override
-    protected TriTupleImpl<A, B, C> createOutTuple(Pair<A, B> groupKey) {
+    protected TriTuple<A, B, C> createOutTuple(Pair<A, B> groupKey) {
         return TriTuple.of(groupKey.getKey(), groupKey.getValue(), null, outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(TriTupleImpl<A, B, C> outTuple, C c) {
+    protected void updateOutTupleToResult(TriTuple<A, B, C> outTuple, C c) {
         outTuple.setC(c);
     }
 

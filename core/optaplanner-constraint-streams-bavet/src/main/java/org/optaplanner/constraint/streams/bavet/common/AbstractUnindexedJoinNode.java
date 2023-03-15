@@ -12,8 +12,8 @@ import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
  * @param <LeftTuple_>
  * @param <Right_>
  */
-public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_, OutTuple_ extends Tuple, MutableOutTuple_ extends OutTuple_>
-        extends AbstractJoinNode<LeftTuple_, Right_, OutTuple_, MutableOutTuple_>
+public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_, OutTuple_ extends Tuple>
+        extends AbstractJoinNode<LeftTuple_, Right_, OutTuple_>
         implements LeftTupleLifecycle<LeftTuple_>, RightTupleLifecycle<UniTuple<Right_>> {
 
     private final int inputStoreIndexLeftEntry;
@@ -39,7 +39,7 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         }
         TupleListEntry<LeftTuple_> leftEntry = leftTupleList.add(leftTuple);
         leftTuple.setStore(inputStoreIndexLeftEntry, leftEntry);
-        TupleList<MutableOutTuple_> outTupleListLeft = new TupleList<>();
+        TupleList<OutTuple_> outTupleListLeft = new TupleList<>();
         leftTuple.setStore(inputStoreIndexLeftOutTupleList, outTupleListLeft);
         rightTupleList.forEach(rightTuple -> insertOutTupleFiltered(leftTuple, rightTuple));
     }
@@ -62,7 +62,7 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        TupleList<MutableOutTuple_> outTupleListLeft = leftTuple.removeStore(inputStoreIndexLeftOutTupleList);
+        TupleList<OutTuple_> outTupleListLeft = leftTuple.removeStore(inputStoreIndexLeftOutTupleList);
         leftEntry.remove();
         outTupleListLeft.forEach(this::retractOutTuple);
     }
@@ -75,7 +75,7 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
         }
         TupleListEntry<UniTuple<Right_>> rightEntry = rightTupleList.add(rightTuple);
         rightTuple.setStore(inputStoreIndexRightEntry, rightEntry);
-        TupleList<MutableOutTuple_> outTupleListRight = new TupleList<>();
+        TupleList<OutTuple_> outTupleListRight = new TupleList<>();
         rightTuple.setStore(inputStoreIndexRightOutTupleList, outTupleListRight);
         leftTupleList.forEach(leftTuple -> insertOutTupleFiltered(leftTuple, rightTuple));
     }
@@ -98,7 +98,7 @@ public abstract class AbstractUnindexedJoinNode<LeftTuple_ extends Tuple, Right_
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        TupleList<MutableOutTuple_> outTupleListRight = rightTuple.removeStore(inputStoreIndexRightOutTupleList);
+        TupleList<OutTuple_> outTupleListRight = rightTuple.removeStore(inputStoreIndexRightOutTupleList);
         rightEntry.remove();
         outTupleListRight.forEach(this::retractOutTuple);
     }

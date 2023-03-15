@@ -3,12 +3,11 @@ package org.optaplanner.constraint.streams.bavet.tri;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.tuple.TriTuple;
 import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.UniTupleImpl;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 
 final class Group1Mapping0CollectorTriNode<OldA, OldB, OldC, A>
-        extends AbstractGroupTriNode<OldA, OldB, OldC, UniTuple<A>, UniTupleImpl<A>, A, Void, Void> {
+        extends AbstractGroupTriNode<OldA, OldB, OldC, UniTuple<A>, A, Void, Void> {
 
     private final int outputStoreSize;
 
@@ -24,12 +23,12 @@ final class Group1Mapping0CollectorTriNode<OldA, OldB, OldC, A>
     }
 
     @Override
-    protected UniTupleImpl<A> createOutTuple(A a) {
+    protected UniTuple<A> createOutTuple(A a) {
         return UniTuple.of(a, outputStoreSize);
     }
 
     @Override
-    protected void updateOutTupleToResult(UniTupleImpl<A> aUniTuple, Void unused) {
+    protected void updateOutTupleToResult(UniTuple<A> aUniTuple, Void unused) {
         throw new IllegalStateException("Impossible state: collector is null.");
     }
 
