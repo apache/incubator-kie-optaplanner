@@ -7,6 +7,7 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.AbstractMapNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 import org.optaplanner.core.api.score.Score;
 
 public final class BavetMapBridgeUniConstraintStream<Solution_, A, NewA>

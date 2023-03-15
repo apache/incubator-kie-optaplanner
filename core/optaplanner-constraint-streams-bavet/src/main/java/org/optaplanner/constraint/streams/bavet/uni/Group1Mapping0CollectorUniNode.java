@@ -3,6 +3,8 @@ package org.optaplanner.constraint.streams.bavet.uni;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTupleImpl;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 
 final class Group1Mapping0CollectorUniNode<OldA, A>

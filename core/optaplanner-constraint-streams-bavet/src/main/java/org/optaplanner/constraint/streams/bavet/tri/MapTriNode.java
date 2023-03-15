@@ -4,7 +4,8 @@ import java.util.Objects;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractMapNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.TriTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 import org.optaplanner.core.api.function.TriFunction;
 
 final class MapTriNode<A, B, C, NewA> extends AbstractMapNode<TriTuple<A, B, C>, NewA> {

@@ -2,6 +2,8 @@ package org.optaplanner.constraint.streams.bavet.common;
 
 import java.util.Objects;
 
+import org.optaplanner.constraint.streams.bavet.common.tuple.Tuple;
+
 final class RightTupleLifecycleImpl<Tuple_ extends Tuple>
         implements TupleLifecycle<Tuple_> {
 

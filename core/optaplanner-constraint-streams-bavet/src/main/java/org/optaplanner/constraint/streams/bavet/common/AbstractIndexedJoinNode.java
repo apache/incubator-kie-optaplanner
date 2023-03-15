@@ -6,7 +6,8 @@ import org.optaplanner.constraint.streams.bavet.common.collection.TupleList;
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
 import org.optaplanner.constraint.streams.bavet.common.index.IndexProperties;
 import org.optaplanner.constraint.streams.bavet.common.index.Indexer;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.Tuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 
 /**
  * There is a strong likelihood that any change to this class, which is not related to indexing,

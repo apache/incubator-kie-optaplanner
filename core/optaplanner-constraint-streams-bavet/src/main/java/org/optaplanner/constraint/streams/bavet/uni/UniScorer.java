@@ -3,6 +3,7 @@ package org.optaplanner.constraint.streams.bavet.uni;
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractScorer;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.core.api.score.Score;
 

@@ -1,4 +1,4 @@
-package org.optaplanner.constraint.streams.bavet.common;
+package org.optaplanner.constraint.streams.bavet.common.tuple;
 
 import java.util.function.Function;
 
@@ -14,9 +14,9 @@ import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
  */
 public interface Tuple {
 
-    BavetTupleState getState();
+    TupleState getState();
 
-    void setState(BavetTupleState state);
+    void setState(TupleState state);
 
     <Value_> Value_ getStore(int index);
 

@@ -3,8 +3,9 @@ package org.optaplanner.constraint.streams.bavet.bi;
 import java.util.function.BiFunction;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
-import org.optaplanner.constraint.streams.bavet.tri.TriTupleImpl;
+import org.optaplanner.constraint.streams.bavet.common.tuple.BiTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.TriTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.TriTupleImpl;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.util.Triple;
 

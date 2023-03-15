@@ -1,7 +1,5 @@
 
-package org.optaplanner.constraint.streams.bavet.quad;
-
-import org.optaplanner.constraint.streams.bavet.common.Tuple;
+package org.optaplanner.constraint.streams.bavet.common.tuple;
 
 public interface QuadTuple<A, B, C, D> extends Tuple {
 

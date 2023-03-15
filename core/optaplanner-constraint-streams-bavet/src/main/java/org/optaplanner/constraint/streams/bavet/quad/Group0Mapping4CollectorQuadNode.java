@@ -1,6 +1,8 @@
 package org.optaplanner.constraint.streams.bavet.quad;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
+import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTupleImpl;
 import org.optaplanner.core.api.score.stream.ConstraintCollectors;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.config.solver.EnvironmentMode;

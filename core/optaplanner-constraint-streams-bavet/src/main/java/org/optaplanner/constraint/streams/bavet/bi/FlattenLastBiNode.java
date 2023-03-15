@@ -4,6 +4,8 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractFlattenLastNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
+import org.optaplanner.constraint.streams.bavet.common.tuple.BiTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.BiTupleImpl;
 
 final class FlattenLastBiNode<A, B, NewB> extends AbstractFlattenLastNode<BiTuple<A, B>, BiTuple<A, NewB>, B, NewB> {
 

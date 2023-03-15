@@ -1,6 +1,7 @@
 package org.optaplanner.constraint.streams.bavet.tri;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractScorer;
+import org.optaplanner.constraint.streams.bavet.common.tuple.TriTuple;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.Score;

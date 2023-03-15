@@ -7,6 +7,7 @@ import org.optaplanner.constraint.streams.bavet.BavetConstraintFactory;
 import org.optaplanner.constraint.streams.bavet.common.AbstractFlattenLastNode;
 import org.optaplanner.constraint.streams.bavet.common.BavetAbstractConstraintStream;
 import org.optaplanner.constraint.streams.bavet.common.NodeBuildHelper;
+import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTuple;
 import org.optaplanner.core.api.score.Score;
 
 public final class BavetFlattenLastBridgeQuadConstraintStream<Solution_, A, B, C, D, NewD>

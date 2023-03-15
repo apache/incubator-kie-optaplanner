@@ -4,6 +4,7 @@ import java.util.function.BiPredicate;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractConditionalTupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
+import org.optaplanner.constraint.streams.bavet.common.tuple.BiTuple;
 
 final class ConditionalBiTupleLifecycle<A, B> extends AbstractConditionalTupleLifecycle<BiTuple<A, B>> {
     private final BiPredicate<A, B> predicate;

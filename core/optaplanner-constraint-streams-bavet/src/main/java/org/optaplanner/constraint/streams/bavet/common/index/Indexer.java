@@ -2,8 +2,8 @@ package org.optaplanner.constraint.streams.bavet.common.index;
 
 import java.util.function.Consumer;
 
-import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
+import org.optaplanner.constraint.streams.bavet.common.tuple.TupleState;
 
 /**
  * An indexer for entity or fact {@code X},
@@ -13,7 +13,7 @@ import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry
  * For example for {@code {Lesson(id=1, room=A), Lesson(id=2, room=B), Lesson(id=3, room=A)}},
  * calling {@code visit(room=A)} would visit lesson 1 and 3.
  * <p>
- * The fact X is wrapped in a Tuple, because the {@link BavetTupleState} is needed by clients of
+ * The fact X is wrapped in a Tuple, because the {@link TupleState} is needed by clients of
  * {@link #forEach(IndexProperties, Consumer)}.
  *
  * @param <T> The element type. Often a tuple.

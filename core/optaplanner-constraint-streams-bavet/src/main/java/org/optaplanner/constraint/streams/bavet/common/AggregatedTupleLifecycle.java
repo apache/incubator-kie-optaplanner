@@ -1,5 +1,7 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
+import org.optaplanner.constraint.streams.bavet.common.tuple.Tuple;
+
 final class AggregatedTupleLifecycle<Tuple_ extends Tuple> implements TupleLifecycle<Tuple_> {
     private final TupleLifecycle<Tuple_>[] lifecycles;
 

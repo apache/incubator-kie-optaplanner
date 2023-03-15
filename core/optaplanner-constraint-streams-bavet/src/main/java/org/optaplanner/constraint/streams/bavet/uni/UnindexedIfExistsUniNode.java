@@ -4,6 +4,7 @@ import java.util.function.BiPredicate;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractUnindexedIfExistsNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 
 final class UnindexedIfExistsUniNode<A, B> extends AbstractUnindexedIfExistsNode<UniTuple<A>, B> {
 

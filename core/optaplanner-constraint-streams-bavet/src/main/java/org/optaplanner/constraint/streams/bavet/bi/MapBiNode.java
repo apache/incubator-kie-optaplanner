@@ -5,7 +5,8 @@ import java.util.function.BiFunction;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractMapNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.BiTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 
 final class MapBiNode<A, B, NewA> extends AbstractMapNode<BiTuple<A, B>, NewA> {
 

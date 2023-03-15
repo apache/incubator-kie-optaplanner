@@ -2,9 +2,9 @@ package org.optaplanner.constraint.streams.bavet.quad;
 
 import static org.optaplanner.constraint.streams.bavet.quad.Group1Mapping0CollectorQuadNode.createGroupKey;
 
-import org.optaplanner.constraint.streams.bavet.bi.BiTuple;
-import org.optaplanner.constraint.streams.bavet.bi.BiTupleImpl;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
+import org.optaplanner.constraint.streams.bavet.common.tuple.BiTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.BiTupleImpl;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.config.solver.EnvironmentMode;

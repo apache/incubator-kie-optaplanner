@@ -1,5 +1,6 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
+import org.optaplanner.constraint.streams.bavet.common.tuple.Tuple;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;

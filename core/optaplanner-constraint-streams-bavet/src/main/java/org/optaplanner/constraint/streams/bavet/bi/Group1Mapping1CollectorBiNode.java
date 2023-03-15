@@ -5,6 +5,8 @@ import static org.optaplanner.constraint.streams.bavet.bi.Group1Mapping0Collecto
 import java.util.function.BiFunction;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
+import org.optaplanner.constraint.streams.bavet.common.tuple.BiTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.BiTupleImpl;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 

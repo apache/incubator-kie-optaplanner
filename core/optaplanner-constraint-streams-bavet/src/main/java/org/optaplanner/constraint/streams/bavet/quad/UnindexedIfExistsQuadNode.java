@@ -2,7 +2,8 @@ package org.optaplanner.constraint.streams.bavet.quad;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractUnindexedIfExistsNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 import org.optaplanner.core.api.function.PentaPredicate;
 
 final class UnindexedIfExistsQuadNode<A, B, C, D, E> extends AbstractUnindexedIfExistsNode<QuadTuple<A, B, C, D>, E> {

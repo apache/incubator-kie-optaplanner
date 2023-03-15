@@ -3,8 +3,8 @@ package org.optaplanner.constraint.streams.bavet.common.collection;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.constraint.streams.bavet.uni.UniTupleImpl;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTupleImpl;
 
 class TupleListTest {
 

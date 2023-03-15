@@ -1,13 +1,15 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
-import static org.optaplanner.constraint.streams.bavet.common.BavetTupleState.DEAD;
+import static org.optaplanner.constraint.streams.bavet.common.tuple.TupleState.DEAD;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleList;
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.Tuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.TupleState;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 
 /**
  * This class has two direct children: {@link AbstractIndexedIfExistsNode} and {@link AbstractUnindexedIfExistsNode}.
@@ -52,7 +54,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
     protected void initCounterLeft(ExistsCounter<LeftTuple_> counter) {
         if (shouldExist ? counter.countRight > 0 : counter.countRight == 0) {
             // Counters start out dead
-            counter.state = BavetTupleState.CREATING;
+            counter.state = TupleState.CREATING;
             dirtyCounterQueue.add(counter);
         }
     }
@@ -68,7 +70,7 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
                 break;
             case OK:
                 // Still needed to propagate the update for downstream filters, matchWeighers, ...
-                counter.state = BavetTupleState.UPDATING;
+                counter.state = TupleState.UPDATING;
                 dirtyCounterQueue.add(counter);
                 break;
             default:
@@ -86,18 +88,18 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
                     // Don't add the tuple to the dirtyTupleQueue twice
                     break;
                 case OK:
-                    counter.state = BavetTupleState.UPDATING;
+                    counter.state = TupleState.UPDATING;
                     dirtyCounterQueue.add(counter);
                     break;
                 case DYING:
-                    counter.state = BavetTupleState.UPDATING;
+                    counter.state = TupleState.UPDATING;
                     break;
                 case DEAD:
-                    counter.state = BavetTupleState.CREATING;
+                    counter.state = TupleState.CREATING;
                     dirtyCounterQueue.add(counter);
                     break;
                 case ABORTING:
-                    counter.state = BavetTupleState.CREATING;
+                    counter.state = TupleState.CREATING;
                     break;
                 default:
                     throw new IllegalStateException("Impossible state: the counter (" + counter
@@ -108,14 +110,14 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             switch (counter.state) {
                 case CREATING:
                     // Kill it before it propagates
-                    counter.state = BavetTupleState.ABORTING;
+                    counter.state = TupleState.ABORTING;
                     break;
                 case UPDATING:
                     // Kill the original propagation
-                    counter.state = BavetTupleState.DYING;
+                    counter.state = TupleState.DYING;
                     break;
                 case OK:
-                    counter.state = BavetTupleState.DYING;
+                    counter.state = TupleState.DYING;
                     dirtyCounterQueue.add(counter);
                     break;
                 case DYING:
@@ -189,14 +191,14 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
     private void doInsertCounter(ExistsCounter<LeftTuple_> counter) {
         switch (counter.state) {
             case DYING:
-                counter.state = BavetTupleState.UPDATING;
+                counter.state = TupleState.UPDATING;
                 break;
             case DEAD:
-                counter.state = BavetTupleState.CREATING;
+                counter.state = TupleState.CREATING;
                 dirtyCounterQueue.add(counter);
                 break;
             case ABORTING:
-                counter.state = BavetTupleState.CREATING;
+                counter.state = TupleState.CREATING;
                 break;
             default:
                 throw new IllegalStateException("Impossible state: the counter (" + counter
@@ -208,14 +210,14 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
         switch (counter.state) {
             case CREATING:
                 // Kill it before it propagates
-                counter.state = BavetTupleState.ABORTING;
+                counter.state = TupleState.ABORTING;
                 break;
             case UPDATING:
                 // Kill the original propagation
-                counter.state = BavetTupleState.DYING;
+                counter.state = TupleState.DYING;
                 break;
             case OK:
-                counter.state = BavetTupleState.DYING;
+                counter.state = TupleState.DYING;
                 dirtyCounterQueue.add(counter);
                 break;
             default:
@@ -230,11 +232,11 @@ public abstract class AbstractIfExistsNode<LeftTuple_ extends Tuple, Right_>
             switch (counter.state) {
                 case CREATING:
                     nextNodesTupleLifecycle.insert(counter.leftTuple);
-                    counter.state = BavetTupleState.OK;
+                    counter.state = TupleState.OK;
                     break;
                 case UPDATING:
                     nextNodesTupleLifecycle.update(counter.leftTuple);
-                    counter.state = BavetTupleState.OK;
+                    counter.state = TupleState.OK;
                     break;
                 case DYING:
                     nextNodesTupleLifecycle.retract(counter.leftTuple);

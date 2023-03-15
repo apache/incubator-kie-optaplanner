@@ -1,6 +1,7 @@
 package org.optaplanner.constraint.streams.bavet.quad;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractScorer;
+import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTuple;
 import org.optaplanner.constraint.streams.common.inliner.UndoScoreImpacter;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.api.score.Score;

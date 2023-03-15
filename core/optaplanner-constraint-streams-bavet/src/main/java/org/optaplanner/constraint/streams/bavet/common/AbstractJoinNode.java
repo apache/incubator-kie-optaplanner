@@ -8,7 +8,9 @@ import java.util.function.Consumer;
 
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleList;
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.Tuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.TupleState;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 
 /**
  * This class has two direct children: {@link AbstractIndexedJoinNode} and {@link AbstractUnindexedJoinNode}.
@@ -104,7 +106,7 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
                 // Don't add the tuple to the dirtyTupleQueue twice
                 break;
             case OK:
-                outTuple.setState(BavetTupleState.UPDATING);
+                outTuple.setState(TupleState.UPDATING);
                 dirtyTupleQueue.add(outTuple);
                 break;
             // Impossible because they shouldn't linger in the indexes
@@ -165,16 +167,16 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
             case CREATING:
                 // Don't add the tuple to the dirtyTupleQueue twice
                 // Kill it before it propagates
-                outTuple.setState(BavetTupleState.ABORTING);
+                outTuple.setState(TupleState.ABORTING);
                 break;
             case OK:
-                outTuple.setState(BavetTupleState.DYING);
+                outTuple.setState(TupleState.DYING);
                 dirtyTupleQueue.add(outTuple);
                 break;
             case UPDATING:
                 // Don't add the tuple to the dirtyTupleQueue twice
                 // Kill the original propagation
-                outTuple.setState(BavetTupleState.DYING);
+                outTuple.setState(TupleState.DYING);
                 break;
             // Impossible because they shouldn't linger in the indexes
             case DYING:
@@ -192,18 +194,18 @@ public abstract class AbstractJoinNode<LeftTuple_ extends Tuple, Right_, OutTupl
             switch (tuple.getState()) {
                 case CREATING:
                     nextNodesTupleLifecycle.insert(tuple);
-                    tuple.setState(BavetTupleState.OK);
+                    tuple.setState(TupleState.OK);
                     break;
                 case UPDATING:
                     nextNodesTupleLifecycle.update(tuple);
-                    tuple.setState(BavetTupleState.OK);
+                    tuple.setState(TupleState.OK);
                     break;
                 case DYING:
                     nextNodesTupleLifecycle.retract(tuple);
-                    tuple.setState(BavetTupleState.DEAD);
+                    tuple.setState(TupleState.DEAD);
                     break;
                 case ABORTING:
-                    tuple.setState(BavetTupleState.DEAD);
+                    tuple.setState(TupleState.DEAD);
                     break;
                 case OK:
                 case DEAD:

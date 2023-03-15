@@ -2,8 +2,10 @@ package org.optaplanner.constraint.streams.bavet.quad;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractUnindexedJoinNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.tri.TriTuple;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTupleImpl;
+import org.optaplanner.constraint.streams.bavet.common.tuple.TriTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 import org.optaplanner.core.api.function.QuadPredicate;
 
 final class UnindexedJoinQuadNode<A, B, C, D>

@@ -6,8 +6,8 @@ import static org.optaplanner.constraint.streams.bavet.uni.Group2Mapping0Collect
 import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
-import org.optaplanner.constraint.streams.bavet.quad.QuadTupleImpl;
+import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTupleImpl;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.util.Pair;

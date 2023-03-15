@@ -8,6 +8,9 @@ import java.util.Objects;
 import java.util.Queue;
 import java.util.function.Function;
 
+import org.optaplanner.constraint.streams.bavet.common.tuple.Tuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.TupleState;
+
 public abstract class AbstractFlattenLastNode<InTuple_ extends Tuple, OutTuple_ extends Tuple, EffectiveItem_, FlattenedItem_>
         extends AbstractNode
         implements TupleLifecycle<InTuple_> {
@@ -89,7 +92,7 @@ public abstract class AbstractFlattenLastNode<InTuple_ extends Tuple, OutTuple_ 
                 outTupleIterator.remove();
                 removeTuple(outTuple);
             } else {
-                outTuple.setState(BavetTupleState.UPDATING);
+                outTuple.setState(TupleState.UPDATING);
                 dirtyTupleQueue.add(outTuple);
             }
         }
@@ -118,11 +121,11 @@ public abstract class AbstractFlattenLastNode<InTuple_ extends Tuple, OutTuple_ 
     private void removeTuple(OutTuple_ outTuple) {
         switch (outTuple.getState()) {
             case CREATING:
-                outTuple.setState(BavetTupleState.ABORTING);
+                outTuple.setState(TupleState.ABORTING);
                 break;
             case UPDATING:
             case OK:
-                outTuple.setState(BavetTupleState.DYING);
+                outTuple.setState(TupleState.DYING);
                 break;
             default:
                 throw new IllegalStateException("Impossible state: The tuple (" + outTuple +
@@ -137,18 +140,18 @@ public abstract class AbstractFlattenLastNode<InTuple_ extends Tuple, OutTuple_ 
             switch (outTuple.getState()) {
                 case CREATING:
                     nextNodesTupleLifecycle.insert(outTuple);
-                    outTuple.setState(BavetTupleState.OK);
+                    outTuple.setState(TupleState.OK);
                     break;
                 case UPDATING:
                     nextNodesTupleLifecycle.update(outTuple);
-                    outTuple.setState(BavetTupleState.OK);
+                    outTuple.setState(TupleState.OK);
                     break;
                 case DYING:
                     nextNodesTupleLifecycle.retract(outTuple);
-                    outTuple.setState(BavetTupleState.DEAD);
+                    outTuple.setState(TupleState.DEAD);
                     break;
                 case ABORTING:
-                    outTuple.setState(BavetTupleState.DEAD);
+                    outTuple.setState(TupleState.DEAD);
                     break;
                 default:
                     throw new IllegalStateException("Impossible state: The tuple (" + outTuple + ") in node (" +

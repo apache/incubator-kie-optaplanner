@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractConditionalTupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 
 final class ConditionalUniTupleLifecycle<A> extends AbstractConditionalTupleLifecycle<UniTuple<A>> {
     private final Predicate<A> predicate;

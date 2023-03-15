@@ -1,5 +1,7 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
+import org.optaplanner.constraint.streams.bavet.common.tuple.Tuple;
+
 public interface TupleLifecycle<Tuple_ extends Tuple> {
 
     static <Tuple_ extends Tuple> TupleLifecycle<Tuple_> ofLeft(LeftTupleLifecycle<Tuple_> leftTupleLifecycle) {

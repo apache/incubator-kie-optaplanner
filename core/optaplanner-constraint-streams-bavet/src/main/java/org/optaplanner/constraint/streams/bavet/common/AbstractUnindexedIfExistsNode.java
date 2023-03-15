@@ -2,7 +2,8 @@ package org.optaplanner.constraint.streams.bavet.common;
 
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleList;
 import org.optaplanner.constraint.streams.bavet.common.collection.TupleListEntry;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.Tuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 
 /**
  * There is a strong likelihood that any change made to this class

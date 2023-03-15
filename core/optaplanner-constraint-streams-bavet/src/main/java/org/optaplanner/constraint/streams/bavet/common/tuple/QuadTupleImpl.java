@@ -1,6 +1,4 @@
-package org.optaplanner.constraint.streams.bavet.quad;
-
-import org.optaplanner.constraint.streams.bavet.common.AbstractTuple;
+package org.optaplanner.constraint.streams.bavet.common.tuple;
 
 public final class QuadTupleImpl<A, B, C, D> extends AbstractTuple implements QuadTuple<A, B, C, D> {
 

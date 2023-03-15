@@ -1,8 +1,9 @@
 package org.optaplanner.constraint.streams.bavet.quad;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.constraint.streams.bavet.uni.UniTupleImpl;
+import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTupleImpl;
 import org.optaplanner.core.api.function.QuadFunction;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 

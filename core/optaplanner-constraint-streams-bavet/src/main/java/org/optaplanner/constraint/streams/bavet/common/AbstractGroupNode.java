@@ -8,6 +8,8 @@ import java.util.Queue;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.optaplanner.constraint.streams.bavet.common.tuple.Tuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.TupleState;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 
 public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extends Tuple, MutableOutTuple_ extends OutTuple_, GroupKey_, ResultContainer_, Result_>
@@ -103,14 +105,14 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
             case UPDATING:
                 break;
             case OK:
-                outTuple.setState(BavetTupleState.UPDATING);
+                outTuple.setState(TupleState.UPDATING);
                 dirtyGroupQueue.add(newGroup);
                 break;
             case DYING:
-                outTuple.setState(BavetTupleState.UPDATING);
+                outTuple.setState(TupleState.UPDATING);
                 break;
             case ABORTING:
-                outTuple.setState(BavetTupleState.CREATING);
+                outTuple.setState(TupleState.CREATING);
                 break;
             case DEAD:
             default:
@@ -188,7 +190,7 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
                 case UPDATING:
                     break;
                 case OK:
-                    outTuple.setState(BavetTupleState.UPDATING);
+                    outTuple.setState(TupleState.UPDATING);
                     dirtyGroupQueue.add(oldGroup);
                     break;
                 case DYING:
@@ -220,16 +222,16 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
         switch (outTuple.getState()) {
             case CREATING:
                 if (killGroup) {
-                    outTuple.setState(BavetTupleState.ABORTING);
+                    outTuple.setState(TupleState.ABORTING);
                 }
                 break;
             case UPDATING:
                 if (killGroup) {
-                    outTuple.setState(BavetTupleState.DYING);
+                    outTuple.setState(TupleState.DYING);
                 }
                 break;
             case OK:
-                outTuple.setState(killGroup ? BavetTupleState.DYING : BavetTupleState.UPDATING);
+                outTuple.setState(killGroup ? TupleState.DYING : TupleState.UPDATING);
                 dirtyGroupQueue.add(group);
                 break;
             case DYING:
@@ -278,21 +280,21 @@ public abstract class AbstractGroupNode<InTuple_ extends Tuple, OutTuple_ extend
                         updateOutTupleToFinisher(outTuple, group.getResultContainer());
                     }
                     nextNodesTupleLifecycle.insert(outTuple);
-                    outTuple.setState(BavetTupleState.OK);
+                    outTuple.setState(TupleState.OK);
                     break;
                 case UPDATING:
                     if (hasCollector) {
                         updateOutTupleToFinisher(outTuple, group.getResultContainer());
                     }
                     nextNodesTupleLifecycle.update(outTuple);
-                    outTuple.setState(BavetTupleState.OK);
+                    outTuple.setState(TupleState.OK);
                     break;
                 case DYING:
                     nextNodesTupleLifecycle.retract(outTuple);
-                    outTuple.setState(BavetTupleState.DEAD);
+                    outTuple.setState(TupleState.DEAD);
                     break;
                 case ABORTING:
-                    outTuple.setState(BavetTupleState.DEAD);
+                    outTuple.setState(TupleState.DEAD);
                     break;
                 case OK:
                 case DEAD:

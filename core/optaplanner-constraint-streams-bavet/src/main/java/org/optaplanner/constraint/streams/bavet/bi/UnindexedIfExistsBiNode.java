@@ -2,7 +2,8 @@ package org.optaplanner.constraint.streams.bavet.bi;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractUnindexedIfExistsNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.BiTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 import org.optaplanner.core.api.function.TriPredicate;
 
 final class UnindexedIfExistsBiNode<A, B, C> extends AbstractUnindexedIfExistsNode<BiTuple<A, B>, C> {

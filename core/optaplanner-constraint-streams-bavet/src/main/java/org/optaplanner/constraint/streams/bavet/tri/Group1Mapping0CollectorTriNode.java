@@ -1,8 +1,9 @@
 package org.optaplanner.constraint.streams.bavet.tri;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.constraint.streams.bavet.uni.UniTupleImpl;
+import org.optaplanner.constraint.streams.bavet.common.tuple.TriTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTupleImpl;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 

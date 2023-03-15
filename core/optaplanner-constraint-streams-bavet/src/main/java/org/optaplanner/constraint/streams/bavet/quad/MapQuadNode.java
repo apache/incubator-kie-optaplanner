@@ -4,7 +4,8 @@ import java.util.Objects;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractMapNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 import org.optaplanner.core.api.function.QuadFunction;
 
 final class MapQuadNode<A, B, C, D, NewA> extends AbstractMapNode<QuadTuple<A, B, C, D>, NewA> {

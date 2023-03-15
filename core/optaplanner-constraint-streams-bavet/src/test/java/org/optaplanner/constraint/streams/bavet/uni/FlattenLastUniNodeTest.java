@@ -18,6 +18,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.optaplanner.constraint.streams.bavet.common.AbstractFlattenLastNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTupleImpl;
 
 @ExtendWith(MockitoExtension.class)
 class FlattenLastUniNodeTest {

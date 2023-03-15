@@ -3,8 +3,8 @@ package org.optaplanner.constraint.streams.bavet.tri;
 import static org.optaplanner.constraint.streams.bavet.tri.Group3Mapping0CollectorTriNode.createGroupKey;
 
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.quad.QuadTuple;
-import org.optaplanner.constraint.streams.bavet.quad.QuadTupleImpl;
+import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.QuadTupleImpl;
 import org.optaplanner.core.api.function.TriFunction;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.config.solver.EnvironmentMode;

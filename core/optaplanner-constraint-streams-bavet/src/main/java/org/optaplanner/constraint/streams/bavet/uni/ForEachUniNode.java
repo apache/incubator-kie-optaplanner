@@ -6,8 +6,10 @@ import java.util.Map;
 import java.util.Queue;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractNode;
-import org.optaplanner.constraint.streams.bavet.common.BavetTupleState;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
+import org.optaplanner.constraint.streams.bavet.common.tuple.TupleState;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTupleImpl;
 
 public final class ForEachUniNode<A> extends AbstractNode {
 
@@ -43,11 +45,11 @@ public final class ForEachUniNode<A> extends AbstractNode {
             throw new IllegalStateException("The fact (" + a + ") was never inserted, so it cannot update.");
         }
         if (tuple.state.isDirty()) {
-            if (tuple.state == BavetTupleState.DYING || tuple.state == BavetTupleState.ABORTING) {
+            if (tuple.state == TupleState.DYING || tuple.state == TupleState.ABORTING) {
                 throw new IllegalStateException("The fact (" + a + ") was retracted, so it cannot update.");
             }
         } else {
-            tuple.state = BavetTupleState.UPDATING;
+            tuple.state = TupleState.UPDATING;
             dirtyTupleQueue.add(tuple);
         }
     }
@@ -58,12 +60,12 @@ public final class ForEachUniNode<A> extends AbstractNode {
             throw new IllegalStateException("The fact (" + a + ") was never inserted, so it cannot retract.");
         }
         if (tuple.state.isDirty()) {
-            if (tuple.state == BavetTupleState.DYING || tuple.state == BavetTupleState.ABORTING) {
+            if (tuple.state == TupleState.DYING || tuple.state == TupleState.ABORTING) {
                 throw new IllegalStateException("The fact (" + a + ") was already retracted, so it cannot retract.");
             }
-            tuple.state = BavetTupleState.ABORTING;
+            tuple.state = TupleState.ABORTING;
         } else {
-            tuple.state = BavetTupleState.DYING;
+            tuple.state = TupleState.DYING;
             dirtyTupleQueue.add(tuple);
         }
     }
@@ -74,18 +76,18 @@ public final class ForEachUniNode<A> extends AbstractNode {
             switch (tuple.state) {
                 case CREATING:
                     nextNodesTupleLifecycle.insert(tuple);
-                    tuple.state = BavetTupleState.OK;
+                    tuple.state = TupleState.OK;
                     break;
                 case UPDATING:
                     nextNodesTupleLifecycle.update(tuple);
-                    tuple.state = BavetTupleState.OK;
+                    tuple.state = TupleState.OK;
                     break;
                 case DYING:
                     nextNodesTupleLifecycle.retract(tuple);
-                    tuple.state = BavetTupleState.DEAD;
+                    tuple.state = TupleState.DEAD;
                     break;
                 case ABORTING:
-                    tuple.state = BavetTupleState.DEAD;
+                    tuple.state = TupleState.DEAD;
                     break;
                 case OK:
                 case DEAD:

@@ -2,6 +2,7 @@ package org.optaplanner.constraint.streams.bavet.common;
 
 import java.util.List;
 
+import org.optaplanner.constraint.streams.bavet.common.tuple.Tuple;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.ConstraintStream;
 import org.optaplanner.core.config.solver.EnvironmentMode;

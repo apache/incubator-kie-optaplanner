@@ -1,6 +1,6 @@
-package org.optaplanner.constraint.streams.bavet.common;
+package org.optaplanner.constraint.streams.bavet.common.tuple;
 
-public abstract class AbstractTuple implements Tuple {
+abstract class AbstractTuple implements Tuple {
 
     /*
      * We create a lot of tuples, many of them having store size of 1.
@@ -10,7 +10,7 @@ public abstract class AbstractTuple implements Tuple {
     private final boolean storeIsArray;
 
     private Object store;
-    public BavetTupleState state = BavetTupleState.CREATING;
+    public TupleState state = TupleState.CREATING;
 
     protected AbstractTuple(int storeSize) {
         this.store = (storeSize < 2) ? null : new Object[storeSize];
@@ -18,12 +18,12 @@ public abstract class AbstractTuple implements Tuple {
     }
 
     @Override
-    public final BavetTupleState getState() {
+    public final TupleState getState() {
         return state;
     }
 
     @Override
-    public final void setState(BavetTupleState state) {
+    public final void setState(TupleState state) {
         this.state = state;
     }
 

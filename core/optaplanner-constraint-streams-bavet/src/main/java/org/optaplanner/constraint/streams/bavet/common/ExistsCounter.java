@@ -1,11 +1,14 @@
 package org.optaplanner.constraint.streams.bavet.common;
 
-import static org.optaplanner.constraint.streams.bavet.common.BavetTupleState.DEAD;
+import static org.optaplanner.constraint.streams.bavet.common.tuple.TupleState.DEAD;
+
+import org.optaplanner.constraint.streams.bavet.common.tuple.Tuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.TupleState;
 
 public final class ExistsCounter<Tuple_ extends Tuple> {
 
     final Tuple_ leftTuple;
-    BavetTupleState state = DEAD;
+    TupleState state = DEAD;
     int countRight = 0;
 
     ExistsCounter(Tuple_ leftTuple) {

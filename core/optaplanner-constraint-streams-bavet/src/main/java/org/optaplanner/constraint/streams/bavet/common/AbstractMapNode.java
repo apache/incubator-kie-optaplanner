@@ -3,8 +3,10 @@ package org.optaplanner.constraint.streams.bavet.common;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
-import org.optaplanner.constraint.streams.bavet.uni.UniTupleImpl;
+import org.optaplanner.constraint.streams.bavet.common.tuple.Tuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.TupleState;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTupleImpl;
 
 public abstract class AbstractMapNode<InTuple_ extends Tuple, Right_>
         extends AbstractNode
@@ -53,7 +55,7 @@ public abstract class AbstractMapNode<InTuple_ extends Tuple, Right_>
         // We check for identity, not equality, to not introduce dependency on user equals().
         if (mapped != oldMapped) {
             outTuple.factA = mapped;
-            outTuple.state = BavetTupleState.UPDATING;
+            outTuple.state = TupleState.UPDATING;
             dirtyTupleQueue.add(outTuple);
         }
     }
@@ -65,7 +67,7 @@ public abstract class AbstractMapNode<InTuple_ extends Tuple, Right_>
             // No fail fast if null because we don't track which tuples made it through the filter predicate(s)
             return;
         }
-        outTuple.setState(BavetTupleState.DYING);
+        outTuple.setState(TupleState.DYING);
         dirtyTupleQueue.add(outTuple);
     }
 
@@ -75,18 +77,18 @@ public abstract class AbstractMapNode<InTuple_ extends Tuple, Right_>
             switch (tuple.getState()) {
                 case CREATING:
                     nextNodesTupleLifecycle.insert(tuple);
-                    tuple.setState(BavetTupleState.OK);
+                    tuple.setState(TupleState.OK);
                     break;
                 case UPDATING:
                     nextNodesTupleLifecycle.update(tuple);
-                    tuple.setState(BavetTupleState.OK);
+                    tuple.setState(TupleState.OK);
                     break;
                 case DYING:
                     nextNodesTupleLifecycle.retract(tuple);
-                    tuple.setState(BavetTupleState.DEAD);
+                    tuple.setState(TupleState.DEAD);
                     break;
                 case ABORTING:
-                    tuple.setState(BavetTupleState.DEAD);
+                    tuple.setState(TupleState.DEAD);
                     break;
                 case OK:
                 case DEAD:

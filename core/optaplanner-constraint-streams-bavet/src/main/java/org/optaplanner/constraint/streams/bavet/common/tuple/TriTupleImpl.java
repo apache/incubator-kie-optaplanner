@@ -1,6 +1,4 @@
-package org.optaplanner.constraint.streams.bavet.tri;
-
-import org.optaplanner.constraint.streams.bavet.common.AbstractTuple;
+package org.optaplanner.constraint.streams.bavet.common.tuple;
 
 public final class TriTupleImpl<A, B, C> extends AbstractTuple implements TriTuple<A, B, C> {
 

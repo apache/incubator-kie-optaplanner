@@ -5,6 +5,7 @@ import java.util.function.Function;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractMapNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 
 final class MapUniNode<A, NewA> extends AbstractMapNode<UniTuple<A>, NewA> {
 

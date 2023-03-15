@@ -1,6 +1,6 @@
-package org.optaplanner.constraint.streams.bavet.common;
+package org.optaplanner.constraint.streams.bavet.common.tuple;
 
-public enum BavetTupleState {
+public enum TupleState {
     CREATING(true, true),
     UPDATING(true, true),
     /**
@@ -20,7 +20,7 @@ public enum BavetTupleState {
     private final boolean dirty;
     private final boolean active;
 
-    BavetTupleState(boolean dirty, boolean active) {
+    TupleState(boolean dirty, boolean active) {
         this.dirty = dirty;
         this.active = active;
     }

@@ -4,7 +4,9 @@ import java.util.function.BiPredicate;
 
 import org.optaplanner.constraint.streams.bavet.common.AbstractUnindexedJoinNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
-import org.optaplanner.constraint.streams.bavet.uni.UniTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.BiTuple;
+import org.optaplanner.constraint.streams.bavet.common.tuple.BiTupleImpl;
+import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
 
 final class UnindexedJoinBiNode<A, B>
         extends AbstractUnindexedJoinNode<UniTuple<A>, B, BiTuple<A, B>, BiTupleImpl<A, B>> {

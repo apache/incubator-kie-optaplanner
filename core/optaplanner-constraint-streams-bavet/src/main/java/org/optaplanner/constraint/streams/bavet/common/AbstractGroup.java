@@ -2,6 +2,8 @@ package org.optaplanner.constraint.streams.bavet.common;
 
 import java.util.Objects;
 
+import org.optaplanner.constraint.streams.bavet.common.tuple.Tuple;
+
 abstract class AbstractGroup<OutTuple_ extends Tuple, ResultContainer_> {
 
     public final Object groupKey;

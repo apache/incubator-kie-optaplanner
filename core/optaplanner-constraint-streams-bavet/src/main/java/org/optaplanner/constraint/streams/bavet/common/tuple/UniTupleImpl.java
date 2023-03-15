@@ -1,6 +1,4 @@
-package org.optaplanner.constraint.streams.bavet.uni;
-
-import org.optaplanner.constraint.streams.bavet.common.AbstractTuple;
+package org.optaplanner.constraint.streams.bavet.common.tuple;
 
 public final class UniTupleImpl<A> extends AbstractTuple implements UniTuple<A> {
 
