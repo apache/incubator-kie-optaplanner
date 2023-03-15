@@ -18,18 +18,18 @@ interface GizmoMemberHandler {
      *
      * @param declaringClass never null, class that declares the {@link Field} in question
      * @param name never null, name of the field
-     * @param memberDescriptor never null, descriptor of the {@link Field} in question
+     * @param fieldDescriptor never null, descriptor of the {@link Field} in question
      * @param ignoreFinalChecks true if Quarkus will make the field non-final for us
      * @return never null
      */
-    static GizmoMemberHandler of(Class<?> declaringClass, String name, FieldDescriptor memberDescriptor,
+    static GizmoMemberHandler of(Class<?> declaringClass, String name, FieldDescriptor fieldDescriptor,
             boolean ignoreFinalChecks) {
         try {
             Field field = declaringClass.getField(name);
-            return new GizmoFieldHandler(declaringClass, memberDescriptor,
+            return new GizmoFieldHandler(declaringClass, fieldDescriptor,
                     ignoreFinalChecks || !Modifier.isFinal(field.getModifiers()));
         } catch (NoSuchFieldException e) { // The field is only used for its metadata and never actually called.
-            return new GizmoFieldHandler(declaringClass, memberDescriptor, false);
+            return new GizmoFieldHandler(declaringClass, fieldDescriptor, false);
         }
     }
 
@@ -37,11 +37,11 @@ interface GizmoMemberHandler {
      * Creates handler for a {@link Method}.
      *
      * @param declaringClass never null, class that declares the {@link Method} in question
-     * @param memberDescriptor never null, descriptor of the {@link Method} in question
+     * @param methodDescriptor never null, descriptor of the {@link Method} in question
      * @return never null
      */
-    static GizmoMemberHandler of(Class<?> declaringClass, MethodDescriptor memberDescriptor) {
-        return new GizmoMethodHandler(declaringClass, memberDescriptor);
+    static GizmoMemberHandler of(Class<?> declaringClass, MethodDescriptor methodDescriptor) {
+        return new GizmoMethodHandler(declaringClass, methodDescriptor);
     }
 
     void whenIsField(Consumer<FieldDescriptor> fieldDescriptorConsumer);
