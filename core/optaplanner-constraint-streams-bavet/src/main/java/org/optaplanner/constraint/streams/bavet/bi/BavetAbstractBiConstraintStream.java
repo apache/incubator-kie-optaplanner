@@ -199,7 +199,7 @@ public abstract class BavetAbstractBiConstraintStream<Solution_, A, B> extends B
             BiConstraintCollector<A, B, ResultContainerA_, ResultA_> collectorA,
             BiConstraintCollector<A, B, ResultContainerB_, ResultB_> collectorB) {
         GroupNodeConstructor<BiTuple<ResultA_, ResultB_>> nodeConstructor = of((groupStoreIndex, undoStoreIndex, tupleLifecycle,
-                                                                                outputStoreSize, environmentMode) -> new Group0Mapping2CollectorBiNode<>(groupStoreIndex, undoStoreIndex,
+                outputStoreSize, environmentMode) -> new Group0Mapping2CollectorBiNode<>(groupStoreIndex, undoStoreIndex,
                         collectorA, collectorB, tupleLifecycle, outputStoreSize, environmentMode));
         return buildBiGroupBy(nodeConstructor);
     }

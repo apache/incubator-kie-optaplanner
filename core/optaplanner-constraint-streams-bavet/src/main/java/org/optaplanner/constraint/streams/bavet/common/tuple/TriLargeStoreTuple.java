@@ -1,12 +1,12 @@
 package org.optaplanner.constraint.streams.bavet.common.tuple;
 
-final class TriTupleImpl<A, B, C> extends AbstractTuple implements TriTuple<A, B, C> {
+final class TriLargeStoreTuple<A, B, C> extends AbstractLargeStoreTuple implements TriTuple<A, B, C> {
 
     private A a;
     private B b;
     private C c;
 
-    TriTupleImpl(A a, B b, C c, int storeSize) {
+    TriLargeStoreTuple(A a, B b, C c, int storeSize) {
         super(storeSize);
         this.a = a;
         this.b = b;

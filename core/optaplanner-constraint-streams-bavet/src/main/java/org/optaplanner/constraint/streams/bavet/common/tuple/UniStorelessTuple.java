@@ -1,11 +1,10 @@
 package org.optaplanner.constraint.streams.bavet.common.tuple;
 
-final class UniTupleImpl<A> extends AbstractTuple implements UniTuple<A> {
+final class UniStorelessTuple<A> extends AbstractStorelessTuple implements UniTuple<A> {
 
     private A a;
 
-    UniTupleImpl(A a, int storeSize) {
-        super(storeSize);
+    UniStorelessTuple(A a) {
         this.a = a;
     }
 

@@ -1,13 +1,13 @@
 package org.optaplanner.constraint.streams.bavet.common.tuple;
 
-final class QuadTupleImpl<A, B, C, D> extends AbstractTuple implements QuadTuple<A, B, C, D> {
+final class QuadLargeStoreTuple<A, B, C, D> extends AbstractLargeStoreTuple implements QuadTuple<A, B, C, D> {
 
     private A a;
     private B b;
     private C c;
     private D d;
 
-    QuadTupleImpl(A a, B b, C c, D d, int storeSize) {
+    QuadLargeStoreTuple(A a, B b, C c, D d, int storeSize) {
         super(storeSize);
         this.a = a;
         this.b = b;

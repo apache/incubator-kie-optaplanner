@@ -181,7 +181,7 @@ public abstract class BavetAbstractUniConstraintStream<Solution_, A> extends Bav
     public <ResultContainer_, Result_> UniConstraintStream<Result_> groupBy(
             UniConstraintCollector<A, ResultContainer_, Result_> collector) {
         GroupNodeConstructor<UniTuple<Result_>> nodeConstructor = of((groupStoreIndex, undoStoreIndex, tupleLifecycle,
-                                                                      outputStoreSize, environmentMode) -> new Group0Mapping1CollectorUniNode<>(groupStoreIndex, undoStoreIndex,
+                outputStoreSize, environmentMode) -> new Group0Mapping1CollectorUniNode<>(groupStoreIndex, undoStoreIndex,
                         collector, tupleLifecycle, outputStoreSize, environmentMode));
         return buildUniGroupBy(nodeConstructor);
     }
