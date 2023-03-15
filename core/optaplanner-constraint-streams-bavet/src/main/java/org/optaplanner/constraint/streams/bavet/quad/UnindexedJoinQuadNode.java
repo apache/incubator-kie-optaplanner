@@ -30,25 +30,25 @@ final class UnindexedJoinQuadNode<A, B, C, D>
 
     @Override
     protected QuadTupleImpl<A, B, C, D> createOutTuple(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
-        return new QuadTupleImpl<>(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), rightTuple.getFactA(),
+        return new QuadTupleImpl<>(leftTuple.getA(), leftTuple.getB(), leftTuple.getC(), rightTuple.getA(),
                 outputStoreSize);
     }
 
     @Override
     protected void setOutTupleLeftFacts(QuadTupleImpl<A, B, C, D> outTuple, TriTuple<A, B, C> leftTuple) {
-        outTuple.factA = leftTuple.getFactA();
-        outTuple.factB = leftTuple.getFactB();
-        outTuple.factC = leftTuple.getFactC();
+        outTuple.setA(leftTuple.getA());
+        outTuple.setB(leftTuple.getB());
+        outTuple.setC(leftTuple.getC());
     }
 
     @Override
     protected void setOutTupleRightFact(QuadTupleImpl<A, B, C, D> outTuple, UniTuple<D> rightTuple) {
-        outTuple.factD = rightTuple.getFactA();
+        outTuple.setD(rightTuple.getA());
     }
 
     @Override
     protected boolean testFiltering(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
-        return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), rightTuple.getFactA());
+        return filtering.test(leftTuple.getA(), leftTuple.getB(), leftTuple.getC(), rightTuple.getA());
     }
 
 }

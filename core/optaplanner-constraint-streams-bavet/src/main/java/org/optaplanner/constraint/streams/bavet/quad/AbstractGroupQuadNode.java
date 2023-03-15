@@ -36,7 +36,7 @@ abstract class AbstractGroupQuadNode<OldA, OldB, OldC, OldD, OutTuple_ extends T
 
     @Override
     protected final Runnable accumulate(ResultContainer_ resultContainer, QuadTuple<OldA, OldB, OldC, OldD> tuple) {
-        return accumulator.apply(resultContainer, tuple.getFactA(), tuple.getFactB(), tuple.getFactC(), tuple.getFactD());
+        return accumulator.apply(resultContainer, tuple.getA(), tuple.getB(), tuple.getC(), tuple.getD());
     }
 
 }

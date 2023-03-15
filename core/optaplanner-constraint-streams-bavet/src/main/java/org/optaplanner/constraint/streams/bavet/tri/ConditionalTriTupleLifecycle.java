@@ -15,7 +15,7 @@ final class ConditionalTriTupleLifecycle<A, B, C> extends AbstractConditionalTup
 
     @Override
     protected boolean test(TriTuple<A, B, C> tuple) {
-        return predicate.test(tuple.getFactA(), tuple.getFactB(), tuple.getFactC());
+        return predicate.test(tuple.getA(), tuple.getB(), tuple.getC());
     }
 
 }

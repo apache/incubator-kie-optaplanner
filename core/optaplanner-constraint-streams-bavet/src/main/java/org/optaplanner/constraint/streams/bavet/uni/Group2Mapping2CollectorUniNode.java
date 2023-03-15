@@ -35,8 +35,8 @@ final class Group2Mapping2CollectorUniNode<OldA, A, B, C, D, ResultContainerC_, 
 
     @Override
     protected void updateOutTupleToResult(QuadTupleImpl<A, B, C, D> outTuple, Pair<C, D> result) {
-        outTuple.factC = result.getKey();
-        outTuple.factD = result.getValue();
+        outTuple.setC(result.getKey());
+        outTuple.setD(result.getValue());
     }
 
 }

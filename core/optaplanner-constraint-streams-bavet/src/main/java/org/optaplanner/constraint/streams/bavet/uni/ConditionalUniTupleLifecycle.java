@@ -16,6 +16,6 @@ final class ConditionalUniTupleLifecycle<A> extends AbstractConditionalTupleLife
 
     @Override
     protected boolean test(UniTuple<A> tuple) {
-        return predicate.test(tuple.getFactA());
+        return predicate.test(tuple.getA());
     }
 }

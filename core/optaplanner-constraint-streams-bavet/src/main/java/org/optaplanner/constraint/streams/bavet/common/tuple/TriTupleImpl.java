@@ -2,36 +2,50 @@ package org.optaplanner.constraint.streams.bavet.common.tuple;
 
 public final class TriTupleImpl<A, B, C> extends AbstractTuple implements TriTuple<A, B, C> {
 
-    // Only a tuple's origin node may modify a fact.
-    public A factA;
-    public B factB;
-    public C factC;
+    private A a;
+    private B b;
+    private C c;
 
-    public TriTupleImpl(A factA, B factB, C factC, int storeSize) {
+    public TriTupleImpl(A a, B b, C c, int storeSize) {
         super(storeSize);
-        this.factA = factA;
-        this.factB = factB;
-        this.factC = factC;
+        this.a = a;
+        this.b = b;
+        this.c = c;
     }
 
     @Override
-    public A getFactA() {
-        return factA;
+    public A getA() {
+        return a;
     }
 
     @Override
-    public B getFactB() {
-        return factB;
+    public void setA(A a) {
+        this.a = a;
     }
 
     @Override
-    public C getFactC() {
-        return factC;
+    public B getB() {
+        return b;
+    }
+
+    @Override
+    public void setB(B b) {
+        this.b = b;
+    }
+
+    @Override
+    public C getC() {
+        return c;
+    }
+
+    @Override
+    public void setC(C c) {
+        this.c = c;
     }
 
     @Override
     public String toString() {
-        return "{" + factA + ", " + factB + ", " + factC + "}";
+        return "{" + a + ", " + b + ", " + c + "}";
     }
 
 }

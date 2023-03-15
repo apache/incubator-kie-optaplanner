@@ -35,7 +35,7 @@ abstract class AbstractGroupTriNode<OldA, OldB, OldC, OutTuple_ extends Tuple, M
 
     @Override
     protected final Runnable accumulate(ResultContainer_ resultContainer, TriTuple<OldA, OldB, OldC> tuple) {
-        return accumulator.apply(resultContainer, tuple.getFactA(), tuple.getFactB(), tuple.getFactC());
+        return accumulator.apply(resultContainer, tuple.getA(), tuple.getB(), tuple.getC());
     }
 
 }

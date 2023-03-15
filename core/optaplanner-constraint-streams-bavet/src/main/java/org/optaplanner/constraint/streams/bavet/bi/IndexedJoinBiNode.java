@@ -38,27 +38,27 @@ final class IndexedJoinBiNode<A, B> extends AbstractIndexedJoinNode<UniTuple<A>,
 
     @Override
     protected IndexProperties createIndexPropertiesLeft(UniTuple<A> leftTuple) {
-        return mappingA.apply(leftTuple.getFactA());
+        return mappingA.apply(leftTuple.getA());
     }
 
     @Override
     protected BiTupleImpl<A, B> createOutTuple(UniTuple<A> leftTuple, UniTuple<B> rightTuple) {
-        return new BiTupleImpl<>(leftTuple.getFactA(), rightTuple.getFactA(), outputStoreSize);
+        return new BiTupleImpl<>(leftTuple.getA(), rightTuple.getA(), outputStoreSize);
     }
 
     @Override
     protected void setOutTupleLeftFacts(BiTupleImpl<A, B> outTuple, UniTuple<A> leftTuple) {
-        outTuple.factA = leftTuple.getFactA();
+        outTuple.setA(leftTuple.getA());
     }
 
     @Override
     protected void setOutTupleRightFact(BiTupleImpl<A, B> outTuple, UniTuple<B> rightTuple) {
-        outTuple.factB = rightTuple.getFactA();
+        outTuple.setB(rightTuple.getA());
     }
 
     @Override
     protected boolean testFiltering(UniTuple<A> leftTuple, UniTuple<B> rightTuple) {
-        return filtering.test(leftTuple.getFactA(), rightTuple.getFactA());
+        return filtering.test(leftTuple.getA(), rightTuple.getA());
     }
 
 }

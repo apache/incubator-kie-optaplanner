@@ -24,7 +24,7 @@ final class Group3Mapping0CollectorUniNode<OldA, A, B, C>
 
     static <A, B, C, OldA> Triple<A, B, C> createGroupKey(Function<OldA, A> groupKeyMappingA,
             Function<OldA, B> groupKeyMappingB, Function<OldA, C> groupKeyMappingC, UniTuple<OldA> tuple) {
-        OldA oldA = tuple.getFactA();
+        OldA oldA = tuple.getA();
         A a = groupKeyMappingA.apply(oldA);
         B b = groupKeyMappingB.apply(oldA);
         C c = groupKeyMappingC.apply(oldA);

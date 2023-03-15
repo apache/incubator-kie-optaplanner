@@ -20,7 +20,7 @@ final class BiScorer<A, B> extends AbstractScorer<BiTuple<A, B>> {
     @Override
     protected UndoScoreImpacter impact(BiTuple<A, B> tuple) {
         try {
-            return scoreImpacter.apply(tuple.getFactA(), tuple.getFactB());
+            return scoreImpacter.apply(tuple.getA(), tuple.getB());
         } catch (Exception e) {
             throw createExceptionOnImpact(tuple, e);
         }

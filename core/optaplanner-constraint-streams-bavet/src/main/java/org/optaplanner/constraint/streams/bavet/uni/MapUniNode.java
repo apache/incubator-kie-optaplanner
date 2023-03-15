@@ -19,7 +19,7 @@ final class MapUniNode<A, NewA> extends AbstractMapNode<UniTuple<A>, NewA> {
 
     @Override
     protected NewA map(UniTuple<A> tuple) {
-        return mappingFunction.apply(tuple.getFactA());
+        return mappingFunction.apply(tuple.getA());
     }
 
 }

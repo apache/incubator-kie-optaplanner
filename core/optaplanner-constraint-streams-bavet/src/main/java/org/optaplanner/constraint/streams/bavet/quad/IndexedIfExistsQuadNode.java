@@ -48,13 +48,13 @@ final class IndexedIfExistsQuadNode<A, B, C, D, E> extends AbstractIndexedIfExis
 
     @Override
     protected IndexProperties createIndexProperties(QuadTuple<A, B, C, D> leftTuple) {
-        return mappingABCD.apply(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), leftTuple.getFactD());
+        return mappingABCD.apply(leftTuple.getA(), leftTuple.getB(), leftTuple.getC(), leftTuple.getD());
     }
 
     @Override
     protected boolean testFiltering(QuadTuple<A, B, C, D> leftTuple, UniTuple<E> rightTuple) {
-        return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), leftTuple.getFactD(),
-                rightTuple.getFactA());
+        return filtering.test(leftTuple.getA(), leftTuple.getB(), leftTuple.getC(), leftTuple.getD(),
+                rightTuple.getA());
     }
 
 }

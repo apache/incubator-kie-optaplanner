@@ -29,7 +29,7 @@ final class Group1Mapping1CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, Result
 
     @Override
     protected void updateOutTupleToResult(BiTupleImpl<A, B> outTuple, B b) {
-        outTuple.factB = b;
+        outTuple.setB(b);
     }
 
 }

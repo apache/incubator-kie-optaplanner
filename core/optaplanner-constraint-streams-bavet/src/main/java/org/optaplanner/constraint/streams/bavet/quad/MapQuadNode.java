@@ -20,7 +20,7 @@ final class MapQuadNode<A, B, C, D, NewA> extends AbstractMapNode<QuadTuple<A, B
 
     @Override
     protected NewA map(QuadTuple<A, B, C, D> tuple) {
-        return mappingFunction.apply(tuple.getFactA(), tuple.getFactB(), tuple.getFactC(), tuple.getFactD());
+        return mappingFunction.apply(tuple.getA(), tuple.getB(), tuple.getC(), tuple.getD());
     }
 
 }

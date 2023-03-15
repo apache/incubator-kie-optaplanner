@@ -2,10 +2,16 @@ package org.optaplanner.constraint.streams.bavet.common.tuple;
 
 public interface TriTuple<A, B, C> extends Tuple {
 
-    A getFactA();
+    A getA();
 
-    B getFactB();
+    void setA(A a);
 
-    C getFactC();
+    B getB();
+
+    void setB(B b);
+
+    C getC();
+
+    void setC(C c);
 
 }

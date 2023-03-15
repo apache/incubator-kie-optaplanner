@@ -28,7 +28,7 @@ final class Group4Mapping0CollectorUniNode<OldA, A, B, C, D>
     private static <A, B, C, D, OldA> Quadruple<A, B, C, D> createGroupKey(Function<OldA, A> groupKeyMappingA,
             Function<OldA, B> groupKeyMappingB, Function<OldA, C> groupKeyMappingC, Function<OldA, D> groupKeyMappingD,
             UniTuple<OldA> tuple) {
-        OldA oldA = tuple.getFactA();
+        OldA oldA = tuple.getA();
         A a = groupKeyMappingA.apply(oldA);
         B b = groupKeyMappingB.apply(oldA);
         C c = groupKeyMappingC.apply(oldA);

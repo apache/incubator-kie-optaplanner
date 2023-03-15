@@ -34,6 +34,6 @@ abstract class AbstractGroupUniNode<OldA, OutTuple_ extends Tuple, MutableOutTup
 
     @Override
     protected final Runnable accumulate(ResultContainer_ resultContainer, UniTuple<OldA> tuple) {
-        return accumulator.apply(resultContainer, tuple.getFactA());
+        return accumulator.apply(resultContainer, tuple.getA());
     }
 }

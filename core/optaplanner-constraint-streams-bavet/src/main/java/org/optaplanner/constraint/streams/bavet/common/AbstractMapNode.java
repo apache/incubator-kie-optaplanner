@@ -50,11 +50,11 @@ public abstract class AbstractMapNode<InTuple_ extends Tuple, Right_>
             insert(tuple);
             return;
         }
-        Right_ oldMapped = outTuple.factA;
+        Right_ oldMapped = outTuple.getA();
         Right_ mapped = map(tuple);
         // We check for identity, not equality, to not introduce dependency on user equals().
         if (mapped != oldMapped) {
-            outTuple.factA = mapped;
+            outTuple.setA(mapped);
             outTuple.state = TupleState.UPDATING;
             dirtyTupleQueue.add(outTuple);
         }

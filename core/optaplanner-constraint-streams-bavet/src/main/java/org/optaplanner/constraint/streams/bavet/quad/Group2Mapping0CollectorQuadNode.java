@@ -23,10 +23,10 @@ final class Group2Mapping0CollectorQuadNode<OldA, OldB, OldC, OldD, A, B>
 
     static <A, B, OldA, OldB, OldC, OldD> Pair<A, B> createGroupKey(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMappingA,
             QuadFunction<OldA, OldB, OldC, OldD, B> groupKeyMappingB, QuadTuple<OldA, OldB, OldC, OldD> tuple) {
-        OldA oldA = tuple.getFactA();
-        OldB oldB = tuple.getFactB();
-        OldC oldC = tuple.getFactC();
-        OldD oldD = tuple.getFactD();
+        OldA oldA = tuple.getA();
+        OldB oldB = tuple.getB();
+        OldC oldC = tuple.getC();
+        OldD oldD = tuple.getD();
         A a = groupKeyMappingA.apply(oldA, oldB, oldC, oldD);
         B b = groupKeyMappingB.apply(oldA, oldB, oldC, oldD);
         return Pair.of(a, b);

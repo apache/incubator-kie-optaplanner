@@ -2,22 +2,26 @@ package org.optaplanner.constraint.streams.bavet.common.tuple;
 
 public final class UniTupleImpl<A> extends AbstractTuple implements UniTuple<A> {
 
-    // Only a tuple's origin node may modify a fact.
-    public A factA;
+    private A a;
 
-    public UniTupleImpl(A factA, int storeSize) {
+    public UniTupleImpl(A a, int storeSize) {
         super(storeSize);
-        this.factA = factA;
+        this.a = a;
     }
 
     @Override
-    public A getFactA() {
-        return factA;
+    public A getA() {
+        return a;
+    }
+
+    @Override
+    public void setA(A a) {
+        this.a = a;
     }
 
     @Override
     public String toString() {
-        return "{" + factA + "}";
+        return "{" + a + "}";
     }
 
 }

@@ -25,8 +25,8 @@ final class Group3Mapping0CollectorBiNode<OldA, OldB, A, B, C>
     static <A, B, C, OldA, OldB> Triple<A, B, C> createGroupKey(BiFunction<OldA, OldB, A> groupKeyMappingA,
             BiFunction<OldA, OldB, B> groupKeyMappingB, BiFunction<OldA, OldB, C> groupKeyMappingC,
             BiTuple<OldA, OldB> tuple) {
-        OldA oldA = tuple.getFactA();
-        OldB oldB = tuple.getFactB();
+        OldA oldA = tuple.getA();
+        OldB oldB = tuple.getB();
         A a = groupKeyMappingA.apply(oldA, oldB);
         B b = groupKeyMappingB.apply(oldA, oldB);
         C c = groupKeyMappingC.apply(oldA, oldB);

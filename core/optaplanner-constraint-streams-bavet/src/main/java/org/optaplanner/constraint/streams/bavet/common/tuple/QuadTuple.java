@@ -3,12 +3,20 @@ package org.optaplanner.constraint.streams.bavet.common.tuple;
 
 public interface QuadTuple<A, B, C, D> extends Tuple {
 
-    A getFactA();
+    A getA();
 
-    B getFactB();
+    void setA(A a);
 
-    C getFactC();
+    B getB();
 
-    D getFactD();
+    void setB(B b);
+
+    C getC();
+
+    void setC(C c);
+
+    D getD();
+
+    void setD(D d);
 
 }

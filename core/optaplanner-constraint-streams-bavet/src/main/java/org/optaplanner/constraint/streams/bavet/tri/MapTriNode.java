@@ -20,7 +20,7 @@ final class MapTriNode<A, B, C, NewA> extends AbstractMapNode<TriTuple<A, B, C>,
 
     @Override
     protected NewA map(TriTuple<A, B, C> tuple) {
-        return mappingFunction.apply(tuple.getFactA(), tuple.getFactB(), tuple.getFactC());
+        return mappingFunction.apply(tuple.getA(), tuple.getB(), tuple.getC());
     }
 
 }

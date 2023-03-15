@@ -48,12 +48,12 @@ final class IndexedIfExistsTriNode<A, B, C, D> extends AbstractIndexedIfExistsNo
 
     @Override
     protected IndexProperties createIndexProperties(TriTuple<A, B, C> leftTuple) {
-        return mappingABC.apply(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC());
+        return mappingABC.apply(leftTuple.getA(), leftTuple.getB(), leftTuple.getC());
     }
 
     @Override
     protected boolean testFiltering(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
-        return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), rightTuple.getFactA());
+        return filtering.test(leftTuple.getA(), leftTuple.getB(), leftTuple.getC(), rightTuple.getA());
     }
 
 }

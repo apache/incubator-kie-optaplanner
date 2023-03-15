@@ -20,7 +20,7 @@ final class Group1Mapping0CollectorQuadNode<OldA, OldB, OldC, OldD, A>
 
     static <A, OldA, OldB, OldC, OldD> A createGroupKey(QuadFunction<OldA, OldB, OldC, OldD, A> groupKeyMapping,
             QuadTuple<OldA, OldB, OldC, OldD> tuple) {
-        return groupKeyMapping.apply(tuple.getFactA(), tuple.getFactB(), tuple.getFactC(), tuple.getFactD());
+        return groupKeyMapping.apply(tuple.getA(), tuple.getB(), tuple.getC(), tuple.getD());
     }
 
     @Override

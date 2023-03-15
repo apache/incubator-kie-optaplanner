@@ -37,8 +37,8 @@ final class Group0Mapping2CollectorBiNode<OldA, OldB, A, B, ResultContainerA_, R
 
     @Override
     protected void updateOutTupleToResult(BiTupleImpl<A, B> outTuple, Pair<A, B> result) {
-        outTuple.factA = result.getKey();
-        outTuple.factB = result.getValue();
+        outTuple.setA(result.getKey());
+        outTuple.setB(result.getValue());
     }
 
 }

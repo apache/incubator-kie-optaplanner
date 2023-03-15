@@ -31,9 +31,9 @@ final class Group4Mapping0CollectorTriNode<OldA, OldB, OldC, A, B, C, D>
             TriFunction<OldA, OldB, OldC, C> groupKeyMappingC,
             TriFunction<OldA, OldB, OldC, D> groupKeyMappingD,
             TriTuple<OldA, OldB, OldC> tuple) {
-        OldA oldA = tuple.getFactA();
-        OldB oldB = tuple.getFactB();
-        OldC oldC = tuple.getFactC();
+        OldA oldA = tuple.getA();
+        OldB oldB = tuple.getB();
+        OldC oldC = tuple.getC();
         A a = groupKeyMappingA.apply(oldA, oldB, oldC);
         B b = groupKeyMappingB.apply(oldA, oldB, oldC);
         C c = groupKeyMappingC.apply(oldA, oldB, oldC);

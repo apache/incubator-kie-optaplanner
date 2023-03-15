@@ -43,10 +43,10 @@ final class Group0Mapping4CollectorBiNode<OldA, OldB, A, B, C, D, ResultContaine
 
     @Override
     protected void updateOutTupleToResult(QuadTupleImpl<A, B, C, D> outTuple, Quadruple<A, B, C, D> result) {
-        outTuple.factA = result.getA();
-        outTuple.factB = result.getB();
-        outTuple.factC = result.getC();
-        outTuple.factD = result.getD();
+        outTuple.setA(result.getA());
+        outTuple.setB(result.getB());
+        outTuple.setC(result.getC());
+        outTuple.setD(result.getD());
     }
 
 }

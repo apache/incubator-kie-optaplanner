@@ -25,7 +25,7 @@ final class Group0Mapping1CollectorTriNode<OldA, OldB, OldC, A, ResultContainer_
 
     @Override
     protected void updateOutTupleToResult(UniTupleImpl<A> outTuple, A a) {
-        outTuple.factA = a;
+        outTuple.setA(a);
     }
 
 }

@@ -33,8 +33,8 @@ final class UnindexedIfExistsQuadNode<A, B, C, D, E> extends AbstractUnindexedIf
 
     @Override
     protected boolean testFiltering(QuadTuple<A, B, C, D> leftTuple, UniTuple<E> rightTuple) {
-        return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), leftTuple.getFactC(), leftTuple.getFactD(),
-                rightTuple.getFactA());
+        return filtering.test(leftTuple.getA(), leftTuple.getB(), leftTuple.getC(), leftTuple.getD(),
+                rightTuple.getA());
     }
 
 }

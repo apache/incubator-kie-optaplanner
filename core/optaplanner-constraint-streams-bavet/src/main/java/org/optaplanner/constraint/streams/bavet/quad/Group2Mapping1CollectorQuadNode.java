@@ -32,7 +32,7 @@ final class Group2Mapping1CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, Res
 
     @Override
     protected void updateOutTupleToResult(TriTupleImpl<A, B, C> outTuple, C c) {
-        outTuple.factC = c;
+        outTuple.setC(c);
     }
 
 }

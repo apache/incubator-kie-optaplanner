@@ -23,9 +23,9 @@ final class Group2Mapping0CollectorTriNode<OldA, OldB, OldC, A, B>
 
     static <A, B, OldA, OldB, OldC> Pair<A, B> createGroupKey(TriFunction<OldA, OldB, OldC, A> groupKeyMappingA,
             TriFunction<OldA, OldB, OldC, B> groupKeyMappingB, TriTuple<OldA, OldB, OldC> tuple) {
-        OldA oldA = tuple.getFactA();
-        OldB oldB = tuple.getFactB();
-        OldC oldC = tuple.getFactC();
+        OldA oldA = tuple.getA();
+        OldB oldB = tuple.getB();
+        OldC oldC = tuple.getC();
         A a = groupKeyMappingA.apply(oldA, oldB, oldC);
         B b = groupKeyMappingB.apply(oldA, oldB, oldC);
         return Pair.of(a, b);

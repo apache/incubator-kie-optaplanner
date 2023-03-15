@@ -31,7 +31,7 @@ final class Group2Mapping1CollectorUniNode<OldA, A, B, C, ResultContainer_>
 
     @Override
     protected void updateOutTupleToResult(TriTupleImpl<A, B, C> outTuple, C c) {
-        outTuple.factC = c;
+        outTuple.setC(c);
     }
 
 }

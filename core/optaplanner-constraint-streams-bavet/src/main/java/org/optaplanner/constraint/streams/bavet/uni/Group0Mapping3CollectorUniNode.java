@@ -39,9 +39,9 @@ final class Group0Mapping3CollectorUniNode<OldA, A, B, C, ResultContainerA_, Res
 
     @Override
     protected void updateOutTupleToResult(TriTupleImpl<A, B, C> outTuple, Triple<A, B, C> result) {
-        outTuple.factA = result.getA();
-        outTuple.factB = result.getB();
-        outTuple.factC = result.getC();
+        outTuple.setA(result.getA());
+        outTuple.setB(result.getB());
+        outTuple.setC(result.getC());
     }
 
 }

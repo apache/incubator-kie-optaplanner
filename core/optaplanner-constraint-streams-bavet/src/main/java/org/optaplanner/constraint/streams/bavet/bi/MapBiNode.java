@@ -20,7 +20,7 @@ final class MapBiNode<A, B, NewA> extends AbstractMapNode<BiTuple<A, B>, NewA> {
 
     @Override
     protected NewA map(BiTuple<A, B> tuple) {
-        return mappingFunction.apply(tuple.getFactA(), tuple.getFactB());
+        return mappingFunction.apply(tuple.getA(), tuple.getB());
     }
 
 }

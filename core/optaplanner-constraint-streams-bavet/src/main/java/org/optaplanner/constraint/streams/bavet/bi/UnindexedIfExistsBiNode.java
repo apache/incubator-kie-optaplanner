@@ -33,7 +33,7 @@ final class UnindexedIfExistsBiNode<A, B, C> extends AbstractUnindexedIfExistsNo
 
     @Override
     protected boolean testFiltering(BiTuple<A, B> leftTuple, UniTuple<C> rightTuple) {
-        return filtering.test(leftTuple.getFactA(), leftTuple.getFactB(), rightTuple.getFactA());
+        return filtering.test(leftTuple.getA(), leftTuple.getB(), rightTuple.getA());
     }
 
 }

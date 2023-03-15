@@ -29,7 +29,7 @@ final class Group1Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, ResultContain
 
     @Override
     protected void updateOutTupleToResult(BiTupleImpl<A, B> outTuple, B b) {
-        outTuple.factB = b;
+        outTuple.setB(b);
     }
 
 }

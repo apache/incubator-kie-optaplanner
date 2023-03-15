@@ -110,7 +110,7 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
             throw new IllegalStateException("Impossible state: the input for the tuple (" + rightTuple
                     + ") was already added in the tupleStore.");
         }
-        IndexProperties indexProperties = mappingRight.apply(rightTuple.getFactA());
+        IndexProperties indexProperties = mappingRight.apply(rightTuple.getA());
 
         TupleList<MutableOutTuple_> outTupleListRight = new TupleList<>();
         rightTuple.setStore(inputStoreIndexRightOutTupleList, outTupleListRight);
@@ -125,7 +125,7 @@ public abstract class AbstractIndexedJoinNode<LeftTuple_ extends Tuple, Right_, 
             insertRight(rightTuple);
             return;
         }
-        IndexProperties newIndexProperties = mappingRight.apply(rightTuple.getFactA());
+        IndexProperties newIndexProperties = mappingRight.apply(rightTuple.getA());
         if (oldIndexProperties.equals(newIndexProperties)) {
             // No need for re-indexing because the index properties didn't change
             // Prefer an update over retract-insert if possible

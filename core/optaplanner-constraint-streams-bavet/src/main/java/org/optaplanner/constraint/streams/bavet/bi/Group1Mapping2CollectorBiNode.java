@@ -33,8 +33,8 @@ final class Group1Mapping2CollectorBiNode<OldA, OldB, A, B, C, ResultContainerB_
 
     @Override
     protected void updateOutTupleToResult(TriTupleImpl<A, B, C> outTuple, Pair<B, C> result) {
-        outTuple.factB = result.getKey();
-        outTuple.factC = result.getValue();
+        outTuple.setB(result.getKey());
+        outTuple.setC(result.getValue());
     }
 
 }

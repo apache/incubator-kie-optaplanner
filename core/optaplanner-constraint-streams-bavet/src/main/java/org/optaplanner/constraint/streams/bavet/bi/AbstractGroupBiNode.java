@@ -34,7 +34,7 @@ abstract class AbstractGroupBiNode<OldA, OldB, OutTuple_ extends Tuple, MutableO
 
     @Override
     protected final Runnable accumulate(ResultContainer_ resultContainer, BiTuple<OldA, OldB> tuple) {
-        return accumulator.apply(resultContainer, tuple.getFactA(), tuple.getFactB());
+        return accumulator.apply(resultContainer, tuple.getA(), tuple.getB());
     }
 
 }

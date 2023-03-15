@@ -30,10 +30,10 @@ final class Group4Mapping0CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D>
             QuadFunction<OldA, OldB, OldC, OldD, C> groupKeyMappingC,
             QuadFunction<OldA, OldB, OldC, OldD, D> groupKeyMappingD,
             QuadTuple<OldA, OldB, OldC, OldD> tuple) {
-        OldA oldA = tuple.getFactA();
-        OldB oldB = tuple.getFactB();
-        OldC oldC = tuple.getFactC();
-        OldD oldD = tuple.getFactD();
+        OldA oldA = tuple.getA();
+        OldB oldB = tuple.getB();
+        OldC oldC = tuple.getC();
+        OldD oldD = tuple.getD();
         A a = groupKeyMappingA.apply(oldA, oldB, oldC, oldD);
         B b = groupKeyMappingB.apply(oldA, oldB, oldC, oldD);
         C c = groupKeyMappingC.apply(oldA, oldB, oldC, oldD);

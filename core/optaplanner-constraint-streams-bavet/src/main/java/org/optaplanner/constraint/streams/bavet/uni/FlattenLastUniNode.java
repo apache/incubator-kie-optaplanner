@@ -24,12 +24,12 @@ final class FlattenLastUniNode<A, NewA> extends AbstractFlattenLastNode<UniTuple
 
     @Override
     protected A getEffectiveFactIn(UniTuple<A> tuple) {
-        return tuple.getFactA();
+        return tuple.getA();
     }
 
     @Override
     protected NewA getEffectiveFactOut(UniTuple<NewA> outTuple) {
-        return outTuple.getFactA();
+        return outTuple.getA();
     }
 
 }

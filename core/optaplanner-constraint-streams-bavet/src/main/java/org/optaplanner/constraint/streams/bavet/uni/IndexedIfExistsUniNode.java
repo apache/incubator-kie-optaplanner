@@ -46,12 +46,12 @@ final class IndexedIfExistsUniNode<A, B> extends AbstractIndexedIfExistsNode<Uni
 
     @Override
     protected IndexProperties createIndexProperties(UniTuple<A> leftTuple) {
-        return mappingA.apply(leftTuple.getFactA());
+        return mappingA.apply(leftTuple.getA());
     }
 
     @Override
     protected boolean testFiltering(UniTuple<A> leftTuple, UniTuple<B> rightTuple) {
-        return filtering.test(leftTuple.getFactA(), rightTuple.getFactA());
+        return filtering.test(leftTuple.getA(), rightTuple.getA());
     }
 
 }

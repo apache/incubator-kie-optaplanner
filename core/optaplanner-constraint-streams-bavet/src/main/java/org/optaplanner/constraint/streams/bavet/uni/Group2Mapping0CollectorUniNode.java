@@ -24,7 +24,7 @@ final class Group2Mapping0CollectorUniNode<OldA, A, B>
 
     static <A, B, OldA> Pair<A, B> createGroupKey(Function<OldA, A> groupKeyMappingA, Function<OldA, B> groupKeyMappingB,
             UniTuple<OldA> tuple) {
-        OldA oldA = tuple.getFactA();
+        OldA oldA = tuple.getA();
         A a = groupKeyMappingA.apply(oldA);
         B b = groupKeyMappingB.apply(oldA);
         return Pair.of(a, b);

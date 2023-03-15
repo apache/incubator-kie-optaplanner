@@ -32,7 +32,7 @@ final class Group2Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, C, ResultCont
 
     @Override
     protected void updateOutTupleToResult(TriTupleImpl<A, B, C> outTuple, C c) {
-        outTuple.factC = c;
+        outTuple.setC(c);
     }
 
 }

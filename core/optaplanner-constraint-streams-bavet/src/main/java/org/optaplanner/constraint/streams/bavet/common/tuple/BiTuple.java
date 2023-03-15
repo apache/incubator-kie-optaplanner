@@ -2,8 +2,12 @@ package org.optaplanner.constraint.streams.bavet.common.tuple;
 
 public interface BiTuple<A, B> extends Tuple {
 
-    A getFactA();
+    A getA();
 
-    B getFactB();
+    void setA(A a);
+
+    B getB();
+
+    void setB(B b);
 
 }
