@@ -41,7 +41,7 @@ abstract class AbstractSingletonStoreTuple implements Tuple {
     }
 
     @Override
-    public <Value_> Value_ removeStore(int index) {
+    public final <Value_> Value_ removeStore(int index) {
         Value_ old = getStore(index);
         this.store = null;
         return old;

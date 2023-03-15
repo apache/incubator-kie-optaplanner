@@ -32,7 +32,7 @@ abstract class AbstractStorelessTuple implements Tuple {
     }
 
     @Override
-    public <Value_> Value_ removeStore(int index) {
+    public final <Value_> Value_ removeStore(int index) {
         throw new UnsupportedOperationException("Impossible state: Storeless tuple has no store index (" + index + ").");
     }
 

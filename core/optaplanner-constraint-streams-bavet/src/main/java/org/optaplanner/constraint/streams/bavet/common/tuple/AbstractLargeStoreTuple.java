@@ -28,22 +28,16 @@ abstract class AbstractLargeStoreTuple implements Tuple {
 
     @Override
     public final <Value_> Value_ getStore(int index) {
-        if (index >= this.store.length) {
-            throw new IllegalArgumentException("Impossible state: invalid tuple store index (" + index + ") requested.");
-        }
         return (Value_) this.store[index];
     }
 
     @Override
     public final void setStore(int index, Object value) {
-        if (index >= this.store.length) {
-            throw new IllegalArgumentException("Impossible state: invalid tuple store index (" + index + ") requested.");
-        }
         this.store[index] = value;
     }
 
     @Override
-    public <Value_> Value_ removeStore(int index) {
+    public final <Value_> Value_ removeStore(int index) {
         Value_ old = getStore(index);
         this.store[index] = null;
         return old;
