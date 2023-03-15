@@ -7,7 +7,7 @@ package org.optaplanner.constraint.streams.bavet.common.tuple;
 abstract class AbstractLargeStoreTuple implements Tuple {
 
     private final Object[] store;
-    public TupleState state = TupleState.CREATING;
+    private TupleState state = TupleState.CREATING;
 
     protected AbstractLargeStoreTuple(int storeSize) {
         if (storeSize < 2) {
