@@ -1,5 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -49,7 +51,7 @@ public final class DestinationSelectorFactory<Solution_> extends AbstractSelecto
             SelectionCacheType minimumCacheType,
             SelectionOrder selectionOrder) {
         EntitySelector<Solution_> entitySelector = EntitySelectorFactory
-                .<Solution_> create(config.getEntitySelectorConfig())
+                .<Solution_> create(Objects.requireNonNull(config.getEntitySelectorConfig()))
                 .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
 
         EntityIndependentValueSelector<Solution_> valueSelector = buildEntityIndependentValueSelector(configPolicy,
@@ -70,7 +72,7 @@ public final class DestinationSelectorFactory<Solution_> extends AbstractSelecto
             HeuristicConfigPolicy<Solution_> configPolicy, EntityDescriptor<Solution_> entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory
-                .<Solution_> create(config.getValueSelectorConfig())
+                .<Solution_> create(Objects.requireNonNull(config.getValueSelectorConfig()))
                 .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder,
                         // Do not override reinitializeVariableFilterEnabled.
                         configPolicy.isReinitializeVariableFilterEnabled(),
@@ -140,11 +142,10 @@ public final class DestinationSelectorFactory<Solution_> extends AbstractSelecto
                     nearbyDistanceMeter,
                     nearbyRandom,
                     randomSelection);
-        } else if (nearbySelectionConfig.getOriginEntitySelectorConfig() != null) {
-            throw new IllegalArgumentException("TODO");
         } else {
-            throw new IllegalStateException("Impossible because nearby config validation should have ensured there is exactly"
-                    + " one origin selector property.");
+            throw new IllegalArgumentException("The destinationSelector (" + config
+                    + ")'s nearbySelectionConfig (" + nearbySelectionConfig
+                    + ") requires an originSubListSelector or an originValueSelector.");
         }
     }
 }

@@ -16,10 +16,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig;
+import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.mimic.MimicRecordingSubListSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.mimic.MimicReplayingSubListSelector;
@@ -145,5 +147,21 @@ class SubListSelectorFactoryTest {
                 () -> selectorFactory.buildSubListSelector(heuristicConfigPolicy, entitySelector,
                         SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM))
                 .withMessageContaining(violatingPropertyName);
+    }
+
+    @Test
+    void failFast_ifNearbyDoesNotHaveOriginSubListSelector() {
+        SubListSelectorConfig subListSelectorConfig = new SubListSelectorConfig()
+                .withNearbySelectionConfig(new NearbySelectionConfig()
+                        .withOriginEntitySelectorConfig(new EntitySelectorConfig().withMimicSelectorRef("x"))
+                        .withNearbyDistanceMeterClass(mock(NearbyDistanceMeter.class).getClass()));
+
+        EntitySelector<TestdataListSolution> entitySelector = TestdataListUtils.mockEntitySelector();
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> SubListSelectorFactory.<TestdataListSolution> create(subListSelectorConfig)
+                        .buildSubListSelector(buildHeuristicConfigPolicy(TestdataListSolution.buildSolutionDescriptor()),
+                                entitySelector, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM))
+                .withMessageContaining("requires an originSubListSelector");
     }
 }

@@ -480,7 +480,7 @@ public class ValueSelectorFactory<Solution_>
             }
             if (!(originValueSelector instanceof EntityIndependentValueSelector)) {
                 throw new IllegalArgumentException(
-                        "The originalValueSelectorConfig (" + nearbySelectionConfig.getOriginValueSelectorConfig()
+                        "The originValueSelectorConfig (" + nearbySelectionConfig.getOriginValueSelectorConfig()
                                 + ") needs to be based on an "
                                 + EntityIndependentValueSelector.class.getSimpleName() + " (" + originValueSelector + ")."
                                 + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
@@ -489,11 +489,10 @@ public class ValueSelectorFactory<Solution_>
                     (EntityIndependentValueSelector<Solution_>) valueSelector,
                     (EntityIndependentValueSelector<Solution_>) originValueSelector,
                     nearbyDistanceMeter, nearbyRandom, randomSelection);
-        } else if (nearbySelectionConfig.getOriginSubListSelectorConfig() != null) {
-            throw new IllegalArgumentException("TODO");
         } else {
-            throw new IllegalStateException("Impossible because nearby config validation should have ensured there is exactly"
-                    + " one origin selector property.");
+            throw new IllegalArgumentException("The valueSelector (" + config
+                    + ")'s nearbySelectionConfig (" + nearbySelectionConfig
+                    + ") requires an originEntitySelector or an originValueSelector.");
         }
     }
 

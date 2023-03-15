@@ -140,7 +140,9 @@ public final class SubListSelectorFactory<Solution_> extends AbstractFromConfigF
         NearbyRandom nearbyRandom = NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(randomSelection);
 
         if (nearbySelectionConfig.getOriginSubListSelectorConfig() == null) {
-            throw new IllegalStateException("TODO");
+            throw new IllegalArgumentException("The subListSelector (" + config
+                    + ")'s nearbySelectionConfig (" + nearbySelectionConfig
+                    + ") requires an originSubListSelector.");
         }
         SubListSelector<Solution_> replayingOriginSubListSelector = SubListSelectorFactory
                 .<Solution_> create(nearbySelectionConfig.getOriginSubListSelectorConfig())

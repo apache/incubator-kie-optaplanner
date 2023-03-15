@@ -181,7 +181,8 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
             SelectionOrder resolvedSelectionOrder, EntitySelector<Solution_> entitySelector) {
         boolean randomSelection = resolvedSelectionOrder.toRandomSelectionBoolean();
         if (nearbySelectionConfig.getOriginEntitySelectorConfig() == null) {
-            throw new IllegalArgumentException("TODO");
+            throw new IllegalArgumentException("The entitySelector (" + config
+                    + ")'s nearbySelectionConfig (" + nearbySelectionConfig + ") requires an originEntitySelector.");
         }
         EntitySelectorFactory<Solution_> entitySelectorFactory =
                 EntitySelectorFactory.create(nearbySelectionConfig.getOriginEntitySelectorConfig());

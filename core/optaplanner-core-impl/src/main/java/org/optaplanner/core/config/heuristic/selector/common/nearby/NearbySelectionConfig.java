@@ -270,21 +270,22 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
         }
         if (nearbyDistanceMeterClass == null) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
-                    + ") is nearby selection"
-                    + " but lacks a nearbyDistanceMeterClass (" + nearbyDistanceMeterClass + ").");
+                    + ") is nearby selection but lacks a nearbyDistanceMeterClass (" + nearbyDistanceMeterClass + ").");
         }
         if (resolvedSelectionOrder != SelectionOrder.ORIGINAL && resolvedSelectionOrder != SelectionOrder.RANDOM) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
-                    + ") with nearbyOriginEntitySelector (" + originEntitySelectorConfig
-                    + ") and nearbyOriginValueSelector (" + originValueSelectorConfig
+                    + ") with originEntitySelector (" + originEntitySelectorConfig
+                    + ") and originSubListSelector (" + originSubListSelectorConfig
+                    + ") and originValueSelector (" + originValueSelectorConfig
                     + ") and nearbyDistanceMeterClass (" + nearbyDistanceMeterClass
                     + ") has a resolvedSelectionOrder (" + resolvedSelectionOrder
                     + ") that is not " + SelectionOrder.ORIGINAL + " or " + SelectionOrder.RANDOM + ".");
         }
         if (resolvedCacheType.isCached()) {
             throw new IllegalArgumentException("The nearbySelectorConfig (" + this
-                    + ") with nearbyOriginEntitySelector (" + originEntitySelectorConfig
-                    + ") and nearbyOriginValueSelector (" + originValueSelectorConfig
+                    + ") with originEntitySelector (" + originEntitySelectorConfig
+                    + ") and originSubListSelector (" + originSubListSelectorConfig
+                    + ") and originValueSelector (" + originValueSelectorConfig
                     + ") and nearbyDistanceMeterClass (" + nearbyDistanceMeterClass
                     + ") has a resolvedCacheType (" + resolvedCacheType
                     + ") that is cached.");

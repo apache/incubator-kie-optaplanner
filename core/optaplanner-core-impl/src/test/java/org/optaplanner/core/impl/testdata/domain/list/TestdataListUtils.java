@@ -26,7 +26,7 @@ public class TestdataListUtils {
     }
 
     public static EntitySelector<TestdataListSolution> mockEntitySelector(Object... entities) {
-        return SelectorTestUtils.mockEntitySelector(TestdataListEntity.class, entities);
+        return SelectorTestUtils.mockEntitySelector(TestdataListEntity.buildEntityDescriptor(), entities);
     }
 
     public static EntityIndependentValueSelector<TestdataListSolution> mockEntityIndependentValueSelector(Object... values) {
