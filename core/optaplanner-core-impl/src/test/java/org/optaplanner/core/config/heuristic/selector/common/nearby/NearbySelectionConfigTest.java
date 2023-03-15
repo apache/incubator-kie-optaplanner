@@ -10,6 +10,8 @@ import static org.optaplanner.core.config.heuristic.selector.common.SelectionOrd
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.BetaDistributionNearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.BlockDistributionNearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.LinearDistributionNearbyRandom;
@@ -29,14 +31,47 @@ class NearbySelectionConfigTest {
     void withNoOriginSelectorConfig() {
         NearbySelectionConfig nearbySelectionConfig = new NearbySelectionConfig();
         assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.validateNearby(JUST_IN_TIME, ORIGINAL))
-                .withMessageContaining("originEntitySelectorConfig")
-                .withMessageContaining("originValueSelectorConfig");
+                .withMessageContainingAll(
+                        "lacks an origin selector config",
+                        "originEntitySelectorConfig",
+                        "originSubListSelectorConfig",
+                        "originValueSelectorConfig");
     }
 
     @Test
-    void withNoMimicSelector() {
+    void withMultipleOriginSelectorConfigs() {
+        NearbySelectionConfig nearbySelectionConfig = new NearbySelectionConfig()
+                .withOriginEntitySelectorConfig(new EntitySelectorConfig())
+                .withOriginSubListSelectorConfig(new SubListSelectorConfig())
+                .withOriginValueSelectorConfig(new ValueSelectorConfig());
+        assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.validateNearby(JUST_IN_TIME, ORIGINAL))
+                .withMessageContainingAll(
+                        "has multiple origin selector configs",
+                        "originEntitySelectorConfig",
+                        "originSubListSelectorConfig",
+                        "originValueSelectorConfig");
+    }
+
+    @Test
+    void originEntitySelectorWithoutMimicSelectorRef() {
         NearbySelectionConfig nearbySelectionConfig = new NearbySelectionConfig();
         nearbySelectionConfig.setOriginEntitySelectorConfig(new EntitySelectorConfig());
+        assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.validateNearby(JUST_IN_TIME, ORIGINAL))
+                .withMessageContaining("MimicSelectorRef");
+    }
+
+    @Test
+    void originSubListSelectorWithoutMimicSelectorRef() {
+        NearbySelectionConfig nearbySelectionConfig = new NearbySelectionConfig();
+        nearbySelectionConfig.setOriginSubListSelectorConfig(new SubListSelectorConfig());
+        assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.validateNearby(JUST_IN_TIME, ORIGINAL))
+                .withMessageContaining("MimicSelectorRef");
+    }
+
+    @Test
+    void originValueSelectorWithoutMimicSelectorRef() {
+        NearbySelectionConfig nearbySelectionConfig = new NearbySelectionConfig();
+        nearbySelectionConfig.setOriginValueSelectorConfig(new ValueSelectorConfig());
         assertThatIllegalArgumentException().isThrownBy(() -> nearbySelectionConfig.validateNearby(JUST_IN_TIME, ORIGINAL))
                 .withMessageContaining("MimicSelectorRef");
     }
@@ -102,7 +137,7 @@ class NearbySelectionConfigTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(false))
-                .withMessageContaining("randomSelection").withMessageContaining("distribution");
+                .withMessageContainingAll("randomSelection", "distribution");
     }
 
     @Test
@@ -113,7 +148,7 @@ class NearbySelectionConfigTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
-                .withMessageContaining(BLOCK).withMessageContaining(LINEAR);
+                .withMessageContainingAll(BLOCK, LINEAR);
     }
 
     @Test
@@ -124,7 +159,7 @@ class NearbySelectionConfigTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
-                .withMessageContaining(BLOCK).withMessageContaining(PARABOLIC);
+                .withMessageContainingAll(BLOCK, PARABOLIC);
     }
 
     @Test
@@ -135,7 +170,7 @@ class NearbySelectionConfigTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
-                .withMessageContaining(BLOCK).withMessageContaining(BETA);
+                .withMessageContainingAll(BLOCK, BETA);
     }
 
     @Test
@@ -146,7 +181,7 @@ class NearbySelectionConfigTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
-                .withMessageContaining(LINEAR).withMessageContaining(PARABOLIC);
+                .withMessageContainingAll(LINEAR, PARABOLIC);
     }
 
     @Test
@@ -157,7 +192,7 @@ class NearbySelectionConfigTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
-                .withMessageContaining(LINEAR).withMessageContaining(BETA);
+                .withMessageContainingAll(LINEAR, BETA);
     }
 
     @Test
@@ -168,7 +203,7 @@ class NearbySelectionConfigTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> NearbyRandomFactory.create(nearbySelectionConfig).buildNearbyRandom(true))
-                .withMessageContaining(PARABOLIC).withMessageContaining(BETA);
+                .withMessageContainingAll(PARABOLIC, BETA);
     }
 
     @Test
