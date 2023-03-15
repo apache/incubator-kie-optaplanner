@@ -4,7 +4,7 @@ public final class UniTupleImpl<A> extends AbstractTuple implements UniTuple<A> 
 
     private A a;
 
-    public UniTupleImpl(A a, int storeSize) {
+    UniTupleImpl(A a, int storeSize) {
         super(storeSize);
         this.a = a;
     }

@@ -7,7 +7,7 @@ public final class QuadTupleImpl<A, B, C, D> extends AbstractTuple implements Qu
     private C c;
     private D d;
 
-    public QuadTupleImpl(A a, B b, C c, D d, int storeSize) {
+    QuadTupleImpl(A a, B b, C c, D d, int storeSize) {
         super(storeSize);
         this.a = a;
         this.b = b;

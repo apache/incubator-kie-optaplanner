@@ -33,7 +33,7 @@ final class Group2Mapping0CollectorTriNode<OldA, OldB, OldC, A, B>
 
     @Override
     protected BiTupleImpl<A, B> createOutTuple(Pair<A, B> groupKey) {
-        return new BiTupleImpl<>(groupKey.getKey(), groupKey.getValue(), outputStoreSize);
+        return BiTuple.of(groupKey.getKey(), groupKey.getValue(), outputStoreSize);
     }
 
     @Override

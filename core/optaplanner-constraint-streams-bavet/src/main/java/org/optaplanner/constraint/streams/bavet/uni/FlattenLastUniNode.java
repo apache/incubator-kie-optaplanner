@@ -5,7 +5,6 @@ import java.util.function.Function;
 import org.optaplanner.constraint.streams.bavet.common.AbstractFlattenLastNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.UniTupleImpl;
 
 final class FlattenLastUniNode<A, NewA> extends AbstractFlattenLastNode<UniTuple<A>, UniTuple<NewA>, A, NewA> {
 
@@ -19,7 +18,7 @@ final class FlattenLastUniNode<A, NewA> extends AbstractFlattenLastNode<UniTuple
 
     @Override
     protected UniTuple<NewA> createTuple(UniTuple<A> originalTuple, NewA item) {
-        return new UniTupleImpl<>(item, outputStoreSize);
+        return UniTuple.of(item, outputStoreSize);
     }
 
     @Override

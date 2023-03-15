@@ -24,7 +24,7 @@ final class Group1Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, ResultContain
 
     @Override
     protected BiTupleImpl<A, B> createOutTuple(A a) {
-        return new BiTupleImpl<>(a, null, outputStoreSize);
+        return BiTuple.of(a, null, outputStoreSize);
     }
 
     @Override

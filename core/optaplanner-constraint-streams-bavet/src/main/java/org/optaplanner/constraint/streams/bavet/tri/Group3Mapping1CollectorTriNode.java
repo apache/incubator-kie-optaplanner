@@ -29,7 +29,7 @@ final class Group3Mapping1CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultC
 
     @Override
     protected QuadTupleImpl<A, B, C, D> createOutTuple(Triple<A, B, C> groupKey) {
-        return new QuadTupleImpl<>(groupKey.getA(), groupKey.getB(), groupKey.getC(), null, outputStoreSize);
+        return QuadTuple.of(groupKey.getA(), groupKey.getB(), groupKey.getC(), null, outputStoreSize);
     }
 
     @Override

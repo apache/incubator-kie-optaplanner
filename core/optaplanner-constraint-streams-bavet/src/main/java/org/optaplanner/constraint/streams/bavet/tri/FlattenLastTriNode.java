@@ -5,7 +5,6 @@ import java.util.function.Function;
 import org.optaplanner.constraint.streams.bavet.common.AbstractFlattenLastNode;
 import org.optaplanner.constraint.streams.bavet.common.TupleLifecycle;
 import org.optaplanner.constraint.streams.bavet.common.tuple.TriTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.TriTupleImpl;
 
 final class FlattenLastTriNode<A, B, C, NewC>
         extends AbstractFlattenLastNode<TriTuple<A, B, C>, TriTuple<A, B, NewC>, C, NewC> {
@@ -20,7 +19,7 @@ final class FlattenLastTriNode<A, B, C, NewC>
 
     @Override
     protected TriTuple<A, B, NewC> createTuple(TriTuple<A, B, C> originalTuple, NewC newC) {
-        return new TriTupleImpl<>(originalTuple.getA(), originalTuple.getB(), newC, outputStoreSize);
+        return TriTuple.of(originalTuple.getA(), originalTuple.getB(), newC, outputStoreSize);
     }
 
     @Override

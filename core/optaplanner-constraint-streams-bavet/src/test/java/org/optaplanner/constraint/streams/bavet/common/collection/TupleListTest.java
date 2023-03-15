@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.constraint.streams.bavet.common.tuple.UniTuple;
-import org.optaplanner.constraint.streams.bavet.common.tuple.UniTupleImpl;
 
 class TupleListTest {
 
@@ -15,7 +14,7 @@ class TupleListTest {
         assertThat(tupleList.first()).isNull();
         assertThat(tupleList.last()).isNull();
 
-        TupleListEntry<UniTuple<String>> entryA = tupleList.add(new UniTupleImpl<>("A", 0));
+        TupleListEntry<UniTuple<String>> entryA = tupleList.add(UniTuple.of("A", 0));
         assertThat(entryA.getElement().getA()).isEqualTo("A");
         assertThat(tupleList.size()).isEqualTo(1);
         assertThat(tupleList.first()).isEqualTo(entryA);
@@ -23,7 +22,7 @@ class TupleListTest {
         assertThat(entryA.next).isNull();
         assertThat(tupleList.last()).isEqualTo(entryA);
 
-        TupleListEntry<UniTuple<String>> entryB = tupleList.add(new UniTupleImpl<>("B", 0));
+        TupleListEntry<UniTuple<String>> entryB = tupleList.add(UniTuple.of("B", 0));
         assertThat(entryB.getElement().getA()).isEqualTo("B");
         assertThat(tupleList.size()).isEqualTo(2);
         assertThat(tupleList.first()).isEqualTo(entryA);

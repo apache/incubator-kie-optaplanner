@@ -35,7 +35,7 @@ public abstract class AbstractMapNode<InTuple_ extends Tuple, Right_>
                     + ") was already added in the tupleStore.");
         }
         Right_ mapped = map(tuple);
-        UniTuple<Right_> outTuple = new UniTupleImpl<>(mapped, outputStoreSize);
+        UniTuple<Right_> outTuple = UniTuple.of(mapped, outputStoreSize);
         tuple.setStore(inputStoreIndex, outTuple);
         dirtyTupleQueue.add(outTuple);
     }

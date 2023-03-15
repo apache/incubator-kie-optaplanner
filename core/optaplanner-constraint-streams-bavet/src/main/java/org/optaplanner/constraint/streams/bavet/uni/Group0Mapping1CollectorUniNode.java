@@ -20,7 +20,7 @@ final class Group0Mapping1CollectorUniNode<OldA, A, ResultContainer_>
 
     @Override
     protected UniTupleImpl<A> createOutTuple(Void groupKey) {
-        return new UniTupleImpl<>(null, outputStoreSize);
+        return UniTuple.of(null, outputStoreSize);
     }
 
     @Override

@@ -31,7 +31,7 @@ public final class ForEachUniNode<A> extends AbstractNode {
     }
 
     public void insert(A a) {
-        UniTupleImpl<A> tuple = new UniTupleImpl<>(a, outputStoreSize);
+        UniTupleImpl<A> tuple = UniTuple.of(a, outputStoreSize);
         UniTupleImpl<A> old = tupleMap.put(a, tuple);
         if (old != null) {
             throw new IllegalStateException("The fact (" + a + ") was already inserted, so it cannot insert again.");

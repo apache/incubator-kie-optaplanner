@@ -43,7 +43,7 @@ final class IndexedJoinBiNode<A, B> extends AbstractIndexedJoinNode<UniTuple<A>,
 
     @Override
     protected BiTupleImpl<A, B> createOutTuple(UniTuple<A> leftTuple, UniTuple<B> rightTuple) {
-        return new BiTupleImpl<>(leftTuple.getA(), rightTuple.getA(), outputStoreSize);
+        return BiTuple.of(leftTuple.getA(), rightTuple.getA(), outputStoreSize);
     }
 
     @Override

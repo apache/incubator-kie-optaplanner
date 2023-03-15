@@ -38,7 +38,7 @@ final class Group0Mapping4CollectorBiNode<OldA, OldB, A, B, C, D, ResultContaine
 
     @Override
     protected QuadTupleImpl<A, B, C, D> createOutTuple(Void groupKey) {
-        return new QuadTupleImpl<>(null, null, null, null, outputStoreSize);
+        return QuadTuple.of(null, null, null, null, outputStoreSize);
     }
 
     @Override

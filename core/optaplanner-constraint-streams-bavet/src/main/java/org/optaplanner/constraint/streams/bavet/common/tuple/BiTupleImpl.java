@@ -5,7 +5,7 @@ public final class BiTupleImpl<A, B> extends AbstractTuple implements BiTuple<A,
     private A a;
     private B b;
 
-    public BiTupleImpl(A a, B b, int storeSize) {
+    BiTupleImpl(A a, B b, int storeSize) {
         super(storeSize);
         this.a = a;
         this.b = b;

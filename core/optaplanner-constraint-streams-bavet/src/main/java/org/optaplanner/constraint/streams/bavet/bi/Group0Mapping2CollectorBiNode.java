@@ -32,7 +32,7 @@ final class Group0Mapping2CollectorBiNode<OldA, OldB, A, B, ResultContainerA_, R
 
     @Override
     protected BiTupleImpl<A, B> createOutTuple(Void groupKey) {
-        return new BiTupleImpl<>(null, null, outputStoreSize);
+        return BiTuple.of(null, null, outputStoreSize);
     }
 
     @Override

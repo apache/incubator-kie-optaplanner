@@ -30,7 +30,7 @@ final class Group1Mapping3CollectorUniNode<OldA, A, B, C, D, ResultContainerB_, 
 
     @Override
     protected QuadTupleImpl<A, B, C, D> createOutTuple(A a) {
-        return new QuadTupleImpl<>(a, null, null, null, outputStoreSize);
+        return QuadTuple.of(a, null, null, null, outputStoreSize);
     }
 
     @Override

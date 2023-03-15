@@ -30,7 +30,7 @@ final class UnindexedJoinTriNode<A, B, C>
 
     @Override
     protected TriTupleImpl<A, B, C> createOutTuple(BiTuple<A, B> leftTuple, UniTuple<C> rightTuple) {
-        return new TriTupleImpl<>(leftTuple.getA(), leftTuple.getB(), rightTuple.getA(), outputStoreSize);
+        return TriTuple.of(leftTuple.getA(), leftTuple.getB(), rightTuple.getA(), outputStoreSize);
     }
 
     @Override

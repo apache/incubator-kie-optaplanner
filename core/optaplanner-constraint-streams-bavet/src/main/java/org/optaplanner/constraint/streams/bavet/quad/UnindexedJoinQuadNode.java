@@ -30,8 +30,7 @@ final class UnindexedJoinQuadNode<A, B, C, D>
 
     @Override
     protected QuadTupleImpl<A, B, C, D> createOutTuple(TriTuple<A, B, C> leftTuple, UniTuple<D> rightTuple) {
-        return new QuadTupleImpl<>(leftTuple.getA(), leftTuple.getB(), leftTuple.getC(), rightTuple.getA(),
-                outputStoreSize);
+        return QuadTuple.of(leftTuple.getA(), leftTuple.getB(), leftTuple.getC(), rightTuple.getA(), outputStoreSize);
     }
 
     @Override

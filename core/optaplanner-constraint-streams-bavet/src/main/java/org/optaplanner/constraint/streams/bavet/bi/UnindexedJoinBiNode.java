@@ -30,7 +30,7 @@ final class UnindexedJoinBiNode<A, B>
 
     @Override
     protected BiTupleImpl<A, B> createOutTuple(UniTuple<A> leftTuple, UniTuple<B> rightTuple) {
-        return new BiTupleImpl<>(leftTuple.getA(), rightTuple.getA(), outputStoreSize);
+        return BiTuple.of(leftTuple.getA(), rightTuple.getA(), outputStoreSize);
     }
 
     @Override

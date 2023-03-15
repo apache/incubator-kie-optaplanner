@@ -35,7 +35,7 @@ final class Group0Mapping3CollectorTriNode<OldA, OldB, OldC, A, B, C, ResultCont
 
     @Override
     protected TriTupleImpl<A, B, C> createOutTuple(Void groupKey) {
-        return new TriTupleImpl<>(null, null, null, outputStoreSize);
+        return TriTuple.of(null, null, null, outputStoreSize);
     }
 
     @Override

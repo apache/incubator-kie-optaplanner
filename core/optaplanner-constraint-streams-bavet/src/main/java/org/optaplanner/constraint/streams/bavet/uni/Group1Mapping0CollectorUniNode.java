@@ -24,7 +24,7 @@ final class Group1Mapping0CollectorUniNode<OldA, A>
 
     @Override
     protected UniTupleImpl<A> createOutTuple(A a) {
-        return new UniTupleImpl<>(a, outputStoreSize);
+        return UniTuple.of(a, outputStoreSize);
     }
 
     @Override

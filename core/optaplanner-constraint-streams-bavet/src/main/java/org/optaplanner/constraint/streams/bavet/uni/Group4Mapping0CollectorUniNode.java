@@ -38,7 +38,7 @@ final class Group4Mapping0CollectorUniNode<OldA, A, B, C, D>
 
     @Override
     protected QuadTupleImpl<A, B, C, D> createOutTuple(Quadruple<A, B, C, D> groupKey) {
-        return new QuadTupleImpl<>(groupKey.getA(), groupKey.getB(), groupKey.getC(), groupKey.getD(), outputStoreSize);
+        return QuadTuple.of(groupKey.getA(), groupKey.getB(), groupKey.getC(), groupKey.getD(), outputStoreSize);
     }
 
     @Override

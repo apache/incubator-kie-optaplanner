@@ -6,7 +6,7 @@ public final class TriTupleImpl<A, B, C> extends AbstractTuple implements TriTup
     private B b;
     private C c;
 
-    public TriTupleImpl(A a, B b, C c, int storeSize) {
+    TriTupleImpl(A a, B b, C c, int storeSize) {
         super(storeSize);
         this.a = a;
         this.b = b;
