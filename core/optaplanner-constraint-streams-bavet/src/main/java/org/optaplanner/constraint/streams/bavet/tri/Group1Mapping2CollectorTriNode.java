@@ -31,8 +31,7 @@ final class Group1Mapping2CollectorTriNode<OldA, OldB, OldC, A, B, C, ResultCont
 
     @Override
     protected void updateOutTupleToResult(TriTuple<A, B, C> outTuple, Pair<B, C> result) {
-        outTuple.setB(result.getKey());
-        outTuple.setC(result.getValue());
+        outTuple.fillTailFrom(result);
     }
 
 }

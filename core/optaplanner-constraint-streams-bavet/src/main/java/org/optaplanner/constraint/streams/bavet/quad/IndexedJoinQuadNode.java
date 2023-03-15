@@ -50,9 +50,7 @@ final class IndexedJoinQuadNode<A, B, C, D>
 
     @Override
     protected void setOutTupleLeftFacts(QuadTuple<A, B, C, D> outTuple, TriTuple<A, B, C> leftTuple) {
-        outTuple.setA(leftTuple.getA());
-        outTuple.setB(leftTuple.getB());
-        outTuple.setC(leftTuple.getC());
+        outTuple.fillHeadFrom(leftTuple);
     }
 
     @Override

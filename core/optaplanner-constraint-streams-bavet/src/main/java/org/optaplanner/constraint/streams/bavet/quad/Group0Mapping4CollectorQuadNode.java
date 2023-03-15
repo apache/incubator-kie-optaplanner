@@ -42,10 +42,7 @@ final class Group0Mapping4CollectorQuadNode<OldA, OldB, OldC, OldD, A, B, C, D, 
 
     @Override
     protected void updateOutTupleToResult(QuadTuple<A, B, C, D> outTuple, Quadruple<A, B, C, D> result) {
-        outTuple.setA(result.getA());
-        outTuple.setB(result.getB());
-        outTuple.setC(result.getC());
-        outTuple.setD(result.getD());
+        outTuple.fillFrom(result);
     }
 
 }

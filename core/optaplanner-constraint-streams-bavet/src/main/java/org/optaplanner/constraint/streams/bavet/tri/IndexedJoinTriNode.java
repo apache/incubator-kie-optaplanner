@@ -50,8 +50,7 @@ final class IndexedJoinTriNode<A, B, C>
 
     @Override
     protected void setOutTupleLeftFacts(TriTuple<A, B, C> outTuple, BiTuple<A, B> leftTuple) {
-        outTuple.setA(leftTuple.getA());
-        outTuple.setB(leftTuple.getB());
+        outTuple.fillHeadFrom(leftTuple);
     }
 
     @Override

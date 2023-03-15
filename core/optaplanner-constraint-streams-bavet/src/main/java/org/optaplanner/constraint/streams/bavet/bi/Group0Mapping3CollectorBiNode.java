@@ -38,9 +38,7 @@ final class Group0Mapping3CollectorBiNode<OldA, OldB, A, B, C, ResultContainerA_
 
     @Override
     protected void updateOutTupleToResult(TriTuple<A, B, C> outTuple, Triple<A, B, C> result) {
-        outTuple.setA(result.getA());
-        outTuple.setB(result.getB());
-        outTuple.setC(result.getC());
+        outTuple.fillFrom(result);
     }
 
 }

@@ -34,8 +34,7 @@ final class Group2Mapping2CollectorTriNode<OldA, OldB, OldC, A, B, C, D, ResultC
 
     @Override
     protected void updateOutTupleToResult(QuadTuple<A, B, C, D> outTuple, Pair<C, D> result) {
-        outTuple.setC(result.getKey());
-        outTuple.setD(result.getValue());
+        outTuple.fillTailFrom(result);
     }
 
 }
