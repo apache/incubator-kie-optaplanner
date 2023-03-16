@@ -272,7 +272,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         } else if (original.getClass().isArray()) {
             return (C) cloneArray(original.getClass(), original, originalToCloneMap, unprocessedQueue);
         }
-        if (deepCloningUtils.retrieveDeepCloneDecisionForActualValueClass(original.getClass())) {
+        if (DeepCloningUtils.isClassDeepCloned(solutionDescriptor, original.getClass())) {
             return clone(original, originalToCloneMap, unprocessedQueue);
         } else {
             return original;

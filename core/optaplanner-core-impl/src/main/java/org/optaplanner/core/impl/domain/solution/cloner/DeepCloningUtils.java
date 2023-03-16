@@ -28,7 +28,6 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentMap;
 
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
@@ -46,7 +45,6 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.util.Pair;
 
 /**
  * @implNote This class is thread-safe.
@@ -71,8 +69,6 @@ public final class DeepCloningUtils {
             HardMediumSoftScore.class, HardMediumSoftLongScore.class, HardMediumSoftBigDecimalScore.class,
             BendableScore.class, BendableLongScore.class, BendableBigDecimalScore.class);
 
-    private final ConcurrentMap<Pair<Field, Class<?>>, Boolean> fieldDeepClonedMemoization = new ConcurrentMemoization<>();
-    private final ConcurrentMap<Class<?>, Boolean> actualValueClassDeepClonedMemoization = new ConcurrentMemoization<>();
     private final SolutionDescriptor<?> solutionDescriptor;
 
     public DeepCloningUtils(SolutionDescriptor<?> solutionDescriptor) {
@@ -96,17 +92,9 @@ public final class DeepCloningUtils {
      *        class might be ArrayList).
      * @return true iff the field should be deep cloned with a particular value.
      */
-    public boolean getDeepCloneDecision(Field field, Class<?> owningClass, Class<?> actualValueClass) {
-        if (retrieveDeepCloneDecisionForActualValueClass(actualValueClass)) {
-            return true;
-        }
-        Pair<Field, Class<?>> pair = Pair.of(field, owningClass);
-        return fieldDeepClonedMemoization.computeIfAbsent(pair,
-                k -> isFieldDeepCloned(solutionDescriptor, k.getKey(), k.getValue()));
-    }
-
-    boolean retrieveDeepCloneDecisionForActualValueClass(Class<?> actualValueClass) {
-        return actualValueClassDeepClonedMemoization.computeIfAbsent(actualValueClass, k -> isClassDeepCloned(solutionDescriptor, k));
+    public boolean isDeepCloned(Field field, Class<?> owningClass, Class<?> actualValueClass) {
+        return isClassDeepCloned(solutionDescriptor, actualValueClass)
+                || isFieldDeepCloned(solutionDescriptor, field, owningClass);
     }
 
     /**
