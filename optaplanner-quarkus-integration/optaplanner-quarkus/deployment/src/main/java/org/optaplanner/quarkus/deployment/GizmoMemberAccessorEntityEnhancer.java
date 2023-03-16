@@ -47,6 +47,7 @@ import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberAccesso
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberDescriptor;
 import org.optaplanner.core.impl.domain.common.accessor.gizmo.GizmoMemberInfo;
 import org.optaplanner.core.impl.domain.solution.cloner.DeepCloningUtils;
+import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoCloningUtils;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerFactory;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerImplementor;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionOrEntityDescriptor;
@@ -274,7 +275,7 @@ final class GizmoMemberAccessorEntityEnhancer {
                     }
                 }).forEach(solutionAndEntitySubclassSet::add);
             }
-            Set<Class<?>> deepClonedClassSet = deepCloningUtils.getDeepClonedClasses(solutionAndEntitySubclassSet);
+            Set<Class<?>> deepClonedClassSet = GizmoCloningUtils.getDeepClonedClasses(solutionDescriptor, solutionAndEntitySubclassSet);
 
             for (Class<?> deepCloningClass : deepClonedClassSet) {
                 makeConstructorAccessible(deepCloningClass, transformers);
