@@ -87,15 +87,10 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         });
     }
 
-    private static boolean isPrimitiveOrImmutable(Field field) {
-        Class<?> fieldType = field.getType();
-        return fieldType.isPrimitive() || DeepCloningUtils.isImmutable(fieldType);
-    }
-
     private ShallowCloningFieldCloner[] retrieveShallowCloners(Class<?> clazz) {
         return copiedFieldListMemoization.computeIfAbsent(clazz, clz -> Arrays.stream(clz.getDeclaredFields())
                 .filter(f -> !Modifier.isStatic(f.getModifiers()))
-                .filter(FieldAccessingSolutionCloner::isPrimitiveOrImmutable)
+                .filter(field -> DeepCloningUtils.isImmutable(field.getType()))
                 .peek(f -> f.setAccessible(true))
                 .map(ShallowCloningFieldCloner::of)
                 .toArray(ShallowCloningFieldCloner[]::new));
@@ -104,7 +99,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
     private DeepCloningFieldCloner[] retrieveDeepCloners(Class<?> clazz) {
         return clonedFieldListMemoization.computeIfAbsent(clazz, clz -> Arrays.stream(clz.getDeclaredFields())
                 .filter(f -> !Modifier.isStatic(f.getModifiers()))
-                .filter(f -> !isPrimitiveOrImmutable(f))
+                .filter(f -> !DeepCloningUtils.isImmutable(f.getType()))
                 .peek(f -> f.setAccessible(true))
                 .map(DeepCloningFieldCloner::new)
                 .toArray(DeepCloningFieldCloner[]::new));
