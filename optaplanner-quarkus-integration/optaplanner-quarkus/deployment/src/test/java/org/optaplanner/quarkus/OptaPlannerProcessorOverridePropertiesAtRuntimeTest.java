@@ -3,8 +3,8 @@ package org.optaplanner.quarkus;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -31,7 +31,6 @@ import io.restassured.RestAssured;
 class OptaPlannerProcessorOverridePropertiesAtRuntimeTest {
 
     private static final String QUARKUS_VERSION = getRequiredProperty("version.io.quarkus");
-    private static final String PROJECT_VERSION = getRequiredProperty("project.version");
 
     private static String getRequiredProperty(String name) {
         final String v = System.getProperty(name);
