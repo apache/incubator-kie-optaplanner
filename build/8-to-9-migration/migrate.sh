@@ -9,6 +9,12 @@ optaplanner_file="${script_dir_path}/optaplanner-quarkus3.yaml"
 ${mvn_cmd} clean install -Dquickly
 project_version=$(${mvn_cmd} help:evaluate -Dexpression=project.version -q -DforceStdout)
 
+# Apply patches
+for patch_file in "$script_dir_path"/patches/*
+do
+  git apply --index "$patch_file" || exit;
+done
+
 # Run the recipe.
 ${mvn_cmd} rewrite:run \
   -Drewrite.configLocation="${optaplanner_file}" \
@@ -21,13 +27,6 @@ ${mvn_cmd} rewrite:run \
 
 # Remove obsolete spring.factories
 find "${script_dir_path}/../../optaplanner-spring-integration" -type f -name "spring.factories" -exec rm {} \;
-
-# Apply patches
-for FILE in "$script_dir_path"/patches
-do
-  git apply --index "$FILE" || exit;
-done
-
 
 if [[ ! "$1" == "test" ]]; then
   # The formatter and impsort goals override validation activated by the CI environment variable.
