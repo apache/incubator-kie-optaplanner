@@ -14,7 +14,6 @@ import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScore
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.mimic.MimicReplayingSubListSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
@@ -279,12 +278,8 @@ class NearSubListNearbySubListSelectorTest {
             EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(entities);
             when(entitySelector.getEntityDescriptor()).thenReturn(TestdataListEntity.buildEntityDescriptor());
 
-            ListVariableDescriptor<TestdataListSolution> listVariableDescriptor =
-                    (ListVariableDescriptor<TestdataListSolution>) valueSelector.getVariableDescriptor();
-
             // Used to populate the distance matrix with destinations.
             return new RandomSubListSelector<>(
-                    listVariableDescriptor,
                     entitySelector,
                     valueSelector,
                     minimumSubListSize,

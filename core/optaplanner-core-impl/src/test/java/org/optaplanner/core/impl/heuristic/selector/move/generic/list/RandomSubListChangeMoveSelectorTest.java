@@ -55,9 +55,8 @@ class RandomSubListChangeMoveSelectorTest {
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 listVariableDescriptor,
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         mockEntitySelector(a, b),
-                        mockNeverEndingEntityIndependentValueSelector(v1),
+                        mockNeverEndingEntityIndependentValueSelector(listVariableDescriptor, v1),
                         minimumSubListSize,
                         maximumSubListSize),
                 mockNeverEndingDestinationSelector(destinationSize, ElementRef.of(b, 0)),
@@ -106,9 +105,8 @@ class RandomSubListChangeMoveSelectorTest {
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 listVariableDescriptor,
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         mockEntitySelector(a, b),
-                        mockNeverEndingEntityIndependentValueSelector(v1),
+                        mockNeverEndingEntityIndependentValueSelector(listVariableDescriptor, v1),
                         minimumSubListSize,
                         maximumSubListSize),
                 mockNeverEndingDestinationSelector(destinationSize, ElementRef.of(b, 0)),
@@ -166,9 +164,8 @@ class RandomSubListChangeMoveSelectorTest {
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 listVariableDescriptor,
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         mockEntitySelector(a, b),
-                        mockNeverEndingEntityIndependentValueSelector(v1),
+                        mockNeverEndingEntityIndependentValueSelector(listVariableDescriptor, v1),
                         minimumSubListSize,
                         maximumSubListSize),
                 mockNeverEndingDestinationSelector(destinationSize, ElementRef.of(b, 0)),
@@ -206,9 +203,8 @@ class RandomSubListChangeMoveSelectorTest {
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 listVariableDescriptor,
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         mockEntitySelector(a),
-                        mockNeverEndingEntityIndependentValueSelector(v1),
+                        mockNeverEndingEntityIndependentValueSelector(listVariableDescriptor, v1),
                         minimumSubListSize,
                         maximumSubListSize),
                 mockNeverEndingDestinationSelector(),
@@ -241,9 +237,8 @@ class RandomSubListChangeMoveSelectorTest {
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 listVariableDescriptor,
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         mockEntitySelector(a, b, c),
-                        mockNeverEndingEntityIndependentValueSelector(v4, v1),
+                        mockNeverEndingEntityIndependentValueSelector(listVariableDescriptor, v4, v1),
                         minimumSubListSize,
                         maximumSubListSize),
                 mockNeverEndingDestinationSelector(destinationSize, ElementRef.of(b, 0)),
@@ -286,9 +281,8 @@ class RandomSubListChangeMoveSelectorTest {
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 listVariableDescriptor,
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         mockEntitySelector(a, b, c), // affects subList calculation and the move selector size
-                        mockNeverEndingEntityIndependentValueSelector(v1, v2, v3, v4, v5),
+                        mockNeverEndingEntityIndependentValueSelector(listVariableDescriptor, v1, v2, v3, v4, v5),
                         minimumSubListSize,
                         maximumSubListSize),
                 mockNeverEndingDestinationSelector(destinationSize, ElementRef.of(b, -1)),
@@ -334,9 +328,8 @@ class RandomSubListChangeMoveSelectorTest {
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 listVariableDescriptor,
                 new RandomSubListSelector<>(
-                        listVariableDescriptor,
                         mockEntitySelector(a, b, c, d), // affects subList calculation and the move selector size
-                        mockNeverEndingEntityIndependentValueSelector(v1),
+                        mockNeverEndingEntityIndependentValueSelector(listVariableDescriptor, v1),
                         minimumSubListSize,
                         maximumSubListSize),
                 mockNeverEndingDestinationSelector(destinationSize, ElementRef.of(b, 0)),
@@ -354,15 +347,17 @@ class RandomSubListChangeMoveSelectorTest {
         InnerScoreDirector<TestdataListSolution, SimpleScore> scoreDirector =
                 PlannerTestUtils.mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
+        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
+
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector();
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockNeverEndingEntityIndependentValueSelector();
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
+                mockNeverEndingEntityIndependentValueSelector(listVariableDescriptor);
         int minimumSubListSize = 1;
         int maximumSubListSize = Integer.MAX_VALUE;
 
-        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector = new RandomSubListChangeMoveSelector<>(
                 listVariableDescriptor,
-                new RandomSubListSelector<>(listVariableDescriptor,
+                new RandomSubListSelector<>(
                         entitySelector,
                         valueSelector,
                         minimumSubListSize,

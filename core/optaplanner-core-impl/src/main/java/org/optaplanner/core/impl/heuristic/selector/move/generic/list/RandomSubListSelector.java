@@ -13,9 +13,9 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_> implements SubListSelector<Solution_> {
 
-    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntitySelector<Solution_> entitySelector;
     private final EntityIndependentValueSelector<Solution_> valueSelector;
+    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final int minimumSubListSize;
     private final int maximumSubListSize;
 
@@ -23,13 +23,12 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
     private SingletonInverseVariableSupply inverseVariableSupply;
 
     public RandomSubListSelector(
-            ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntitySelector<Solution_> entitySelector,
             EntityIndependentValueSelector<Solution_> valueSelector,
             int minimumSubListSize, int maximumSubListSize) {
-        this.listVariableDescriptor = listVariableDescriptor;
         this.entitySelector = entitySelector;
         this.valueSelector = valueSelector;
+        this.listVariableDescriptor = (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor();
         if (minimumSubListSize < 1) {
             throw new IllegalArgumentException(
                     "The minimumSubListSize (" + minimumSubListSize + ") must be greater than 0.");
