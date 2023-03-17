@@ -22,6 +22,13 @@ ${mvn_cmd} rewrite:run \
 # Remove obsolete spring.factories
 find "${script_dir_path}/../../optaplanner-spring-integration" -type f -name "spring.factories" -exec rm {} \;
 
+# Apply patches
+for FILE in "$script_dir_path"/patches
+do
+  git apply --index "$FILE" || exit;
+done
+
+
 if [[ ! "$1" == "test" ]]; then
   # The formatter and impsort goals override validation activated by the CI environment variable.
   ${mvn_cmd} process-test-sources -Dformatter.goal=format -Dimpsort.goal=sort -Denforcer.skip
