@@ -2,23 +2,19 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import java.util.Iterator;
 
-import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
 
 public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
-    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final SubListSelector<Solution_> subListSelector;
     private final DestinationSelector<Solution_> destinationSelector;
     private final boolean selectReversingMoveToo;
 
     public RandomSubListChangeMoveSelector(
-            ListVariableDescriptor<Solution_> listVariableDescriptor,
             SubListSelector<Solution_> subListSelector,
             DestinationSelector<Solution_> destinationSelector,
             boolean selectReversingMoveToo) {
-        this.listVariableDescriptor = listVariableDescriptor;
         this.subListSelector = subListSelector;
         this.destinationSelector = destinationSelector;
         this.selectReversingMoveToo = selectReversingMoveToo;
@@ -30,7 +26,6 @@ public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelec
     @Override
     public Iterator<Move<Solution_>> iterator() {
         return new RandomSubListChangeMoveIterator<>(
-                listVariableDescriptor,
                 subListSelector,
                 destinationSelector,
                 workingRandom,

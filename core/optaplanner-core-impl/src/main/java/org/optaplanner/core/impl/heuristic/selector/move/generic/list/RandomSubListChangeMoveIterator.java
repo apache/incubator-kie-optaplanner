@@ -9,21 +9,20 @@ import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSele
 
 class RandomSubListChangeMoveIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
 
-    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final Iterator<SubList> subListIterator;
     private final Iterator<ElementRef> destinationIterator;
+    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final Random workingRandom;
     private final boolean selectReversingMoveToo;
 
     RandomSubListChangeMoveIterator(
-            ListVariableDescriptor<Solution_> listVariableDescriptor,
             SubListSelector<Solution_> subListSelector,
             DestinationSelector<Solution_> destinationSelector,
             Random workingRandom,
             boolean selectReversingMoveToo) {
-        this.listVariableDescriptor = listVariableDescriptor;
         this.subListIterator = subListSelector.iterator();
         this.destinationIterator = destinationSelector.iterator();
+        this.listVariableDescriptor = subListSelector.getVariableDescriptor();
         this.workingRandom = workingRandom;
         this.selectReversingMoveToo = selectReversingMoveToo;
     }
