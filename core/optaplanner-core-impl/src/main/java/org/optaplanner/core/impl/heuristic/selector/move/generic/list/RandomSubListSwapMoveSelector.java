@@ -9,19 +9,25 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSele
 
 public class RandomSubListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
-    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final SubListSelector<Solution_> leftSubListSelector;
     private final SubListSelector<Solution_> rightSubListSelector;
+    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final boolean selectReversingMoveToo;
 
     public RandomSubListSwapMoveSelector(
-            ListVariableDescriptor<Solution_> listVariableDescriptor,
             SubListSelector<Solution_> leftSubListSelector,
             SubListSelector<Solution_> rightSubListSelector,
             boolean selectReversingMoveToo) {
-        this.listVariableDescriptor = listVariableDescriptor;
         this.leftSubListSelector = leftSubListSelector;
         this.rightSubListSelector = rightSubListSelector;
+        this.listVariableDescriptor = leftSubListSelector.getVariableDescriptor();
+        if (leftSubListSelector.getVariableDescriptor() != rightSubListSelector.getVariableDescriptor()) {
+            throw new IllegalStateException("The selector (" + this
+                    + ") has a leftSubListSelector's variableDescriptor ("
+                    + leftSubListSelector.getVariableDescriptor()
+                    + ") which is not equal to the rightSubListSelector's variableDescriptor ("
+                    + rightSubListSelector.getVariableDescriptor() + ").");
+        }
         this.selectReversingMoveToo = selectReversingMoveToo;
 
         phaseLifecycleSupport.addEventListener(leftSubListSelector);

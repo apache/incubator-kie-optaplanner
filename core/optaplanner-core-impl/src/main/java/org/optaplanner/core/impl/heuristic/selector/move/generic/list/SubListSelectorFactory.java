@@ -3,7 +3,9 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig;
@@ -179,6 +181,12 @@ public final class SubListSelectorFactory<Solution_> extends AbstractFromConfigF
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory
                 .<Solution_> create(valueSelectorConfig)
                 .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder);
+        if (!valueSelector.getVariableDescriptor().isListVariable()) {
+            throw new IllegalArgumentException("The subListSelector (" + config
+                    + ") can only be used when the domain model has a list variable."
+                    + " Check your @" + PlanningEntity.class.getSimpleName()
+                    + " and make sure it has a @" + PlanningListVariable.class.getSimpleName() + ".");
+        }
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The subListSelector (" + config
                     + ") for a list variable needs to be based on an "

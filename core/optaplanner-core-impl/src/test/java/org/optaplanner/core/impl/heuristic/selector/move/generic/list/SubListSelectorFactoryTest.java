@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig;
@@ -21,11 +22,14 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListS
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
+import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.mimic.MimicRecordingSubListSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.mimic.MimicReplayingSubListSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.list.mimic.SubListMimicRecorder;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListEntity;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListSolution;
 import org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils;
@@ -163,5 +167,19 @@ class SubListSelectorFactoryTest {
                         .buildSubListSelector(buildHeuristicConfigPolicy(TestdataListSolution.buildSolutionDescriptor()),
                                 entitySelector, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM))
                 .withMessageContaining("requires an originSubListSelector");
+    }
+
+    @Test
+    void requiresListVariable() {
+        SubListSelectorConfig subListSelectorConfig = new SubListSelectorConfig();
+
+        EntitySelector<TestdataSolution> entitySelector =
+                SelectorTestUtils.mockEntitySelector(TestdataEntity.buildEntityDescriptor());
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> SubListSelectorFactory.<TestdataSolution> create(subListSelectorConfig)
+                        .buildSubListSelector(buildHeuristicConfigPolicy(TestdataSolution.buildSolutionDescriptor()),
+                                entitySelector, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM))
+                .withMessageContaining("@" + PlanningListVariable.class.getSimpleName());
     }
 }
