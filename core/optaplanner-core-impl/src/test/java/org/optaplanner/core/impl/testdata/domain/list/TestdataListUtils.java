@@ -16,7 +16,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ElementRef
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class TestdataListUtils {
+public final class TestdataListUtils {
 
     private TestdataListUtils() {
     }
@@ -27,10 +27,6 @@ public class TestdataListUtils {
 
     public static EntitySelector<TestdataListSolution> mockEntitySelector(Object... entities) {
         return SelectorTestUtils.mockEntitySelector(TestdataListEntity.buildEntityDescriptor(), entities);
-    }
-
-    public static EntityIndependentValueSelector<TestdataListSolution> mockEntityIndependentValueSelector(Object... values) {
-        return mockEntityIndependentValueSelector(TestdataListEntity.buildVariableDescriptorForValueList(), values);
     }
 
     public static EntityIndependentValueSelector<TestdataListSolution> mockEntityIndependentValueSelector(
@@ -45,11 +41,6 @@ public class TestdataListUtils {
         when(valueSelector.isNeverEnding()).thenReturn(true);
         when(valueSelector.iterator()).thenAnswer(invocation -> cyclicIterator(Arrays.asList(values)));
         return valueSelector;
-    }
-
-    public static EntityIndependentValueSelector<TestdataListSolution> mockNeverEndingEntityIndependentValueSelector(
-            Object... values) {
-        return mockNeverEndingEntityIndependentValueSelector(TestdataListEntity.buildVariableDescriptorForValueList(), values);
     }
 
     public static DestinationSelector<TestdataListSolution> mockNeverEndingDestinationSelector(

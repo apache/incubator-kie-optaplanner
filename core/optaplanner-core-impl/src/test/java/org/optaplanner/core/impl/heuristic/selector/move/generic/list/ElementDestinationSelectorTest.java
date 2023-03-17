@@ -123,7 +123,9 @@ class ElementDestinationSelectorTest {
         TestdataListValue v3 = new TestdataListValue("3");
 
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector();
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockEntityIndependentValueSelector(v1, v2, v3);
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockEntityIndependentValueSelector(
+                TestdataListEntity.buildVariableDescriptorForValueList(),
+                v1, v2, v3);
 
         ElementDestinationSelector<TestdataListSolution> randomSelector = new ElementDestinationSelector<>(
                 entitySelector, valueSelector, true);

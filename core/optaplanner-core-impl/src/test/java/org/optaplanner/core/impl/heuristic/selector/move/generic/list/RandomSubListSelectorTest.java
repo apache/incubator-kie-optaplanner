@@ -164,7 +164,8 @@ class RandomSubListSelectorTest {
     @Test
     void validateConstructorArguments() {
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector();
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockNeverEndingEntityIndependentValueSelector();
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector =
+                mockNeverEndingEntityIndependentValueSelector(TestdataListEntity.buildVariableDescriptorForValueList());
 
         assertThatIllegalArgumentException().isThrownBy(() -> new RandomSubListSelector<>(
                 entitySelector, valueSelector, 0, 5))
