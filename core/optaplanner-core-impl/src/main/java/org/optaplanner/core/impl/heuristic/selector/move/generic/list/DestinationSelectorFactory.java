@@ -8,7 +8,6 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.DestinationSelectorConfig;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
@@ -57,12 +56,7 @@ public final class DestinationSelectorFactory<Solution_> extends AbstractSelecto
         EntityIndependentValueSelector<Solution_> valueSelector = buildEntityIndependentValueSelector(configPolicy,
                 entitySelector.getEntityDescriptor(), minimumCacheType, selectionOrder);
 
-        // TODO move this to constructor (all list move selectors)
-        ListVariableDescriptor<Solution_> listVariableDescriptor =
-                (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor();
-
         return new ElementDestinationSelector<>(
-                listVariableDescriptor,
                 entitySelector,
                 valueSelector,
                 selectionOrder.toRandomSelectionBoolean());

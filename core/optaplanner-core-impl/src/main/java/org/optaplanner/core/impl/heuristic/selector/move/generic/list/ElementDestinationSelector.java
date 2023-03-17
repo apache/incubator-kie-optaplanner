@@ -38,7 +38,6 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 public class ElementDestinationSelector<Solution_> extends AbstractSelector<Solution_>
         implements DestinationSelector<Solution_> {
 
-    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntitySelector<Solution_> entitySelector;
     private final EntityIndependentValueSelector<Solution_> valueSelector;
     private final boolean randomSelection;
@@ -47,11 +46,9 @@ public class ElementDestinationSelector<Solution_> extends AbstractSelector<Solu
     private IndexVariableSupply indexVariableSupply;
 
     public ElementDestinationSelector(
-            ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntitySelector<Solution_> entitySelector,
             EntityIndependentValueSelector<Solution_> valueSelector,
             boolean randomSelection) {
-        this.listVariableDescriptor = listVariableDescriptor;
         this.entitySelector = entitySelector;
         this.valueSelector = valueSelector;
         this.randomSelection = randomSelection;
@@ -64,6 +61,7 @@ public class ElementDestinationSelector<Solution_> extends AbstractSelector<Solu
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
         SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
+        ListVariableDescriptor<?> listVariableDescriptor = (ListVariableDescriptor<?>) valueSelector.getVariableDescriptor();
         inverseVariableSupply = supplyManager.demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor));
         indexVariableSupply = supplyManager.demand(new IndexVariableDemand<>(listVariableDescriptor));
     }
@@ -136,7 +134,7 @@ public class ElementDestinationSelector<Solution_> extends AbstractSelector<Solu
     }
 
     public ListVariableDescriptor<Solution_> getVariableDescriptor() {
-        return listVariableDescriptor;
+        return (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor();
     }
 
     public EntityDescriptor<Solution_> getEntityDescriptor() {

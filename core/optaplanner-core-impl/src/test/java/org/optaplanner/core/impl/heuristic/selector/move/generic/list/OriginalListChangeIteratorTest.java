@@ -45,7 +45,6 @@ class OriginalListChangeIteratorTest {
                 scoreDirector.getSupplyManager().demand(new IndexVariableDemand<>(listVariableDescriptor)),
                 valueSelector,
                 new ElementDestinationSelector<>(
-                        listVariableDescriptor,
                         mockEntitySelector(entities.toArray()),
                         valueSelector,
                         false));

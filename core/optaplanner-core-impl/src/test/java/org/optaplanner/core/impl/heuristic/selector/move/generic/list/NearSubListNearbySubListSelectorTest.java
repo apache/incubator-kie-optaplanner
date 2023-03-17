@@ -5,6 +5,7 @@ import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.moc
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.phaseStarted;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.solvingStarted;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.stepStarted;
+import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
@@ -272,7 +273,7 @@ class NearSubListNearbySubListSelectorTest {
         RandomSubListSelector<TestdataListSolution> build() {
             // Enumerates all values. Does not affect nearby subList selection.
             EntityIndependentValueSelector<TestdataListSolution> valueSelector =
-                    mockEntityIndependentValueSelector(scoreDirector, values);
+                    mockEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), values);
 
             // Enumerates all entities. Does not affect nearby subList selection.
             EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(entities);

@@ -36,12 +36,12 @@ class RandomListChangeIteratorTest {
         ListVariableDescriptor<TestdataListSolution> listVariableDescriptor = getListVariableDescriptor(scoreDirector);
         // Iterates over values in this given order.
         EntityIndependentValueSelector<TestdataListSolution> sourceValueSelector =
-                mockEntityIndependentValueSelector(v1, v2, v3);
+                mockEntityIndependentValueSelector(listVariableDescriptor, v1, v2, v3);
         EntityIndependentValueSelector<TestdataListSolution> destinationValueSelector =
-                mockEntityIndependentValueSelector(v2, v3);
+                mockEntityIndependentValueSelector(listVariableDescriptor, v2, v3);
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(b, a, c);
         ElementDestinationSelector<TestdataListSolution> destinationSelector =
-                new ElementDestinationSelector<>(listVariableDescriptor, entitySelector, destinationValueSelector, true);
+                new ElementDestinationSelector<>(entitySelector, destinationValueSelector, true);
         RandomListChangeIterator<TestdataListSolution> randomListChangeIterator = new RandomListChangeIterator<>(
                 listVariableDescriptor,
                 scoreDirector.getSupplyManager().demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor)),
@@ -64,5 +64,4 @@ class RandomListChangeIteratorTest {
 
         random.assertIntBoundJustRequested((int) destinationRange);
     }
-
 }
