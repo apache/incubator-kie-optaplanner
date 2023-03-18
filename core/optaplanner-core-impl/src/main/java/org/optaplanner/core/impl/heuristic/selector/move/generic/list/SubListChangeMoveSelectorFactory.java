@@ -59,9 +59,7 @@ public class SubListChangeMoveSelectorFactory<Solution_>
 
         boolean selectReversingMoveToo = Objects.requireNonNullElse(config.getSelectReversingMoveToo(), true);
 
-        return new RandomSubListChangeMoveSelector<>(subListSelector.getVariableDescriptor(), subListSelector,
-                destinationSelector,
-                selectReversingMoveToo);
+        return new RandomSubListChangeMoveSelector<>(subListSelector, destinationSelector, selectReversingMoveToo);
     }
 
     @Override

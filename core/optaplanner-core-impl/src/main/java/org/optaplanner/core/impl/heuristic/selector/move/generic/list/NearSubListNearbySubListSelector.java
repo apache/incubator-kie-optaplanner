@@ -234,7 +234,7 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
 
     @Override
     public ListVariableDescriptor<Solution_> getVariableDescriptor() {
-        throw new UnsupportedOperationException("Not used.");
+        return childSubListSelector.getVariableDescriptor();
     }
 
     @Override

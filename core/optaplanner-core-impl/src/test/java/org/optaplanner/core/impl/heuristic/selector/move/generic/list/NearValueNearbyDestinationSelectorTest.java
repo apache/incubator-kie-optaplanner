@@ -5,6 +5,7 @@ import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.moc
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.phaseStarted;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.solvingStarted;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.stepStarted;
+import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
@@ -12,7 +13,6 @@ import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScore
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.ManualValueMimicRecorder;
@@ -42,15 +42,13 @@ class NearValueNearbyDestinationSelectorTest {
                 mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         EntityIndependentValueSelector<TestdataListSolution> valueSelector =
-                mockEntityIndependentValueSelector(scoreDirector, v1, v2, v3, v4, v5);
+                mockEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), v1, v2, v3, v4, v5);
 
         EntitySelector<TestdataListSolution> entitySelector = mockEntitySelector(e1, e2);
         when(entitySelector.getEntityDescriptor()).thenReturn(TestdataListEntity.buildEntityDescriptor());
 
         ElementDestinationSelector<TestdataListSolution> childDestinationSelector = new ElementDestinationSelector<>(
-                ((ListVariableDescriptor<TestdataListSolution>) valueSelector.getVariableDescriptor()),
-                entitySelector,
-                valueSelector, true);
+                entitySelector, valueSelector, true);
 
         TestNearbyRandom nearbyRandom = new TestNearbyRandom();
 
@@ -96,7 +94,7 @@ class NearValueNearbyDestinationSelectorTest {
                 mockScoreDirector(TestdataListSolution.buildSolutionDescriptor());
 
         EntityIndependentValueSelector<TestdataListSolution> valueSelector =
-                mockEntityIndependentValueSelector(scoreDirector, v1, v2, v3, v4, v5);
+                mockEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), v1, v2, v3, v4, v5);
 
         ManualValueMimicRecorder<TestdataListSolution> valueMimicRecorder = new ManualValueMimicRecorder<>(valueSelector);
 
@@ -104,9 +102,7 @@ class NearValueNearbyDestinationSelectorTest {
         when(entitySelector.getEntityDescriptor()).thenReturn(TestdataListEntity.buildEntityDescriptor());
 
         ElementDestinationSelector<TestdataListSolution> childDestinationSelector = new ElementDestinationSelector<>(
-                ((ListVariableDescriptor<TestdataListSolution>) valueSelector.getVariableDescriptor()),
-                entitySelector,
-                valueSelector, true);
+                entitySelector, valueSelector, false);
 
         NearValueNearbyDestinationSelector<TestdataListSolution> nearbyDestinationSelector =
                 new NearValueNearbyDestinationSelector<>(childDestinationSelector,

@@ -16,7 +16,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ElementRef
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class TestdataListUtils {
+public final class TestdataListUtils {
 
     private TestdataListUtils() {
     }
@@ -29,20 +29,15 @@ public class TestdataListUtils {
         return SelectorTestUtils.mockEntitySelector(TestdataListEntity.buildEntityDescriptor(), entities);
     }
 
-    public static EntityIndependentValueSelector<TestdataListSolution> mockEntityIndependentValueSelector(Object... values) {
-        ListVariableDescriptor<TestdataListSolution> listVariableDescriptor =
-                TestdataListEntity.buildVariableDescriptorForValueList();
+    public static EntityIndependentValueSelector<TestdataListSolution> mockEntityIndependentValueSelector(
+            ListVariableDescriptor<TestdataListSolution> listVariableDescriptor, Object... values) {
         return SelectorTestUtils.mockEntityIndependentValueSelector(listVariableDescriptor, values);
     }
 
-    public static EntityIndependentValueSelector<TestdataListSolution> mockEntityIndependentValueSelector(
-            InnerScoreDirector<TestdataListSolution, ?> scoreDirector, Object... values) {
-        return SelectorTestUtils.mockEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), values);
-    }
-
-    public static EntityIndependentValueSelector<TestdataListSolution>
-            mockNeverEndingEntityIndependentValueSelector(Object... values) {
-        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockEntityIndependentValueSelector(values);
+    public static EntityIndependentValueSelector<TestdataListSolution> mockNeverEndingEntityIndependentValueSelector(
+            ListVariableDescriptor<TestdataListSolution> listVariableDescriptor, Object... values) {
+        EntityIndependentValueSelector<TestdataListSolution> valueSelector = mockEntityIndependentValueSelector(
+                listVariableDescriptor, values);
         when(valueSelector.isNeverEnding()).thenReturn(true);
         when(valueSelector.iterator()).thenAnswer(invocation -> cyclicIterator(Arrays.asList(values)));
         return valueSelector;

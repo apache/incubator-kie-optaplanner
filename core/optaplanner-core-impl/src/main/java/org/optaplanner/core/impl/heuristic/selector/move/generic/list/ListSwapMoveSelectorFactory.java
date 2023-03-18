@@ -53,7 +53,6 @@ public class ListSwapMoveSelectorFactory<Solution_>
         }
 
         return new ListSwapMoveSelector<>(
-                (ListVariableDescriptor<Solution_>) variableDescriptor,
                 leftValueSelector,
                 rightValueSelector,
                 randomSelection);

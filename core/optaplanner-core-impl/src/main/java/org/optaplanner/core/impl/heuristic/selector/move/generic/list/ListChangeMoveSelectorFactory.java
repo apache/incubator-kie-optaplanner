@@ -62,11 +62,7 @@ public class ListChangeMoveSelectorFactory<Solution_>
                 .<Solution_> create(config.getDestinationSelectorConfig())
                 .buildDestinationSelector(configPolicy, minimumCacheType, randomSelection);
 
-        ListVariableDescriptor<Solution_> listVariableDescriptor =
-                (ListVariableDescriptor<Solution_>) sourceValueSelector.getVariableDescriptor();
-
         return new ListChangeMoveSelector<>(
-                listVariableDescriptor,
                 (EntityIndependentValueSelector<Solution_>) sourceValueSelector,
                 destinationSelector,
                 randomSelection);

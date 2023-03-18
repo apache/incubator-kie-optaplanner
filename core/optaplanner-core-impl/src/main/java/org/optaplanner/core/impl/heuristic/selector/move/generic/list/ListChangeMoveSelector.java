@@ -15,7 +15,6 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
-    private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final EntityIndependentValueSelector<Solution_> sourceValueSelector;
     private final DestinationSelector<Solution_> destinationSelector;
     private final boolean randomSelection;
@@ -24,11 +23,9 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
     private IndexVariableSupply indexVariableSupply;
 
     public ListChangeMoveSelector(
-            ListVariableDescriptor<Solution_> listVariableDescriptor,
             EntityIndependentValueSelector<Solution_> sourceValueSelector,
             DestinationSelector<Solution_> destinationSelector,
             boolean randomSelection) {
-        this.listVariableDescriptor = listVariableDescriptor;
         this.sourceValueSelector = sourceValueSelector;
         this.destinationSelector = destinationSelector;
         this.randomSelection = randomSelection;
@@ -40,6 +37,8 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
     @Override
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
+        ListVariableDescriptor<Solution_> listVariableDescriptor =
+                (ListVariableDescriptor<Solution_>) sourceValueSelector.getVariableDescriptor();
         SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
         inverseVariableSupply = supplyManager.demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor));
         indexVariableSupply = supplyManager.demand(new IndexVariableDemand<>(listVariableDescriptor));
@@ -61,14 +60,12 @@ public class ListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solut
     public Iterator<Move<Solution_>> iterator() {
         if (randomSelection) {
             return new RandomListChangeIterator<>(
-                    listVariableDescriptor,
                     inverseVariableSupply,
                     indexVariableSupply,
                     sourceValueSelector,
                     destinationSelector);
         } else {
             return new OriginalListChangeIterator<>(
-                    listVariableDescriptor,
                     inverseVariableSupply,
                     indexVariableSupply,
                     sourceValueSelector,

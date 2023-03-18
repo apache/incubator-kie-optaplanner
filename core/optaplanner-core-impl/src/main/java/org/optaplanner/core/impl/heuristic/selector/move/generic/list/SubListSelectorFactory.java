@@ -3,7 +3,9 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig;
@@ -11,7 +13,6 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListS
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.AbstractFromConfigFactory;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
@@ -55,15 +56,10 @@ public final class SubListSelectorFactory<Solution_> extends AbstractFromConfigF
         EntityIndependentValueSelector<Solution_> valueSelector = buildEntityIndependentValueSelector(configPolicy,
                 entitySelector.getEntityDescriptor(), minimumCacheType, inheritedSelectionOrder);
 
-        // TODO move this to constructor (all list move selectors)
-        ListVariableDescriptor<Solution_> listVariableDescriptor =
-                (ListVariableDescriptor<Solution_>) valueSelector.getVariableDescriptor();
-
         int minimumSubListSize = Objects.requireNonNullElse(config.getMinimumSubListSize(), DEFAULT_MINIMUM_SUB_LIST_SIZE);
         int maximumSubListSize = Objects.requireNonNullElse(config.getMaximumSubListSize(), DEFAULT_MAXIMUM_SUB_LIST_SIZE);
         RandomSubListSelector<Solution_> baseSubListSelector =
-                new RandomSubListSelector<>(listVariableDescriptor, entitySelector, valueSelector,
-                        minimumSubListSize, maximumSubListSize);
+                new RandomSubListSelector<>(entitySelector, valueSelector, minimumSubListSize, maximumSubListSize);
 
         SubListSelector<Solution_> subListSelector =
                 applyNearbySelection(configPolicy, minimumCacheType, inheritedSelectionOrder, baseSubListSelector);
@@ -185,6 +181,12 @@ public final class SubListSelectorFactory<Solution_> extends AbstractFromConfigF
         ValueSelector<Solution_> valueSelector = ValueSelectorFactory
                 .<Solution_> create(valueSelectorConfig)
                 .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder);
+        if (!valueSelector.getVariableDescriptor().isListVariable()) {
+            throw new IllegalArgumentException("The subListSelector (" + config
+                    + ") can only be used when the domain model has a list variable."
+                    + " Check your @" + PlanningEntity.class.getSimpleName()
+                    + " and make sure it has a @" + PlanningListVariable.class.getSimpleName() + ".");
+        }
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The subListSelector (" + config
                     + ") for a list variable needs to be based on an "
