@@ -46,11 +46,9 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
      * Contains one cloner for every field that needs to be deep-cloned.
      */
     private final ConcurrentMap<Class<?>, DeepCloningFieldCloner[]> clonedFieldListMemoization = new ConcurrentMemoization<>();
-    private final DeepCloningUtils deepCloningUtils;
 
     public FieldAccessingSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
-        this.deepCloningUtils = new DeepCloningUtils(solutionDescriptor);
     }
 
     // ************************************************************************
@@ -151,7 +149,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
             fieldCloner.clone(original, clone);
         }
         for (DeepCloningFieldCloner fieldCloner : retrieveDeepCloners(clazz)) {
-            Unprocessed unprocessed = fieldCloner.clone(deepCloningUtils, original, clone);
+            Unprocessed unprocessed = fieldCloner.clone(solutionDescriptor, original, clone);
             if (unprocessed != null) {
                 unprocessedQueue.add(unprocessed);
             }

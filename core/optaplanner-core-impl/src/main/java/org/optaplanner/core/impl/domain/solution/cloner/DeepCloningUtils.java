@@ -69,16 +69,6 @@ public final class DeepCloningUtils {
             HardMediumSoftScore.class, HardMediumSoftLongScore.class, HardMediumSoftBigDecimalScore.class,
             BendableScore.class, BendableLongScore.class, BendableBigDecimalScore.class);
 
-    private final SolutionDescriptor<?> solutionDescriptor;
-
-    public DeepCloningUtils(SolutionDescriptor<?> solutionDescriptor) {
-        this.solutionDescriptor = solutionDescriptor;
-    }
-
-    public SolutionDescriptor<?> getSolutionDescriptor() {
-        return solutionDescriptor;
-    }
-
     /**
      * Gets the deep cloning decision for a particular value assigned to a field,
      * memoizing the result.
@@ -92,7 +82,7 @@ public final class DeepCloningUtils {
      *        class might be ArrayList).
      * @return true iff the field should be deep cloned with a particular value.
      */
-    public boolean isDeepCloned(Field field, Class<?> owningClass, Class<?> actualValueClass) {
+    public static boolean isDeepCloned(SolutionDescriptor<?> solutionDescriptor, Field field, Class<?> owningClass, Class<?> actualValueClass) {
         return isClassDeepCloned(solutionDescriptor, actualValueClass)
                 || isFieldDeepCloned(solutionDescriptor, field, owningClass);
     }
@@ -213,6 +203,10 @@ public final class DeepCloningUtils {
         } else {
             return true;
         }
+    }
+
+    private DeepCloningUtils() {
+        // No external instances.
     }
 
 }

@@ -20,9 +20,9 @@ final class DeepCloningFieldCloner {
         this.field = Objects.requireNonNull(field);
     }
 
-    public <C> Unprocessed clone(DeepCloningUtils deepCloningUtils, C original, C clone) {
+    public <C> Unprocessed clone(SolutionDescriptor<?> solutionDescriptor, C original, C clone) {
         Object originalValue = FieldCloningUtils.getObjectFieldValue(original, field);
-        if (deepClone(deepCloningUtils.getSolutionDescriptor(), original.getClass(), originalValue)) { // Defer filling in the field.
+        if (deepClone(solutionDescriptor, original.getClass(), originalValue)) { // Defer filling in the field.
             return new Unprocessed(clone, field, originalValue);
         } else { // Shallow copy.
             FieldCloningUtils.setObjectFieldValue(clone, field, originalValue);
