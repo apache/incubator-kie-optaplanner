@@ -149,9 +149,9 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
             fieldCloner.clone(original, clone);
         }
         for (DeepCloningFieldCloner fieldCloner : retrieveDeepCloners(clazz)) {
-            Unprocessed unprocessed = fieldCloner.clone(solutionDescriptor, original, clone);
-            if (unprocessed != null) {
-                unprocessedQueue.add(unprocessed);
+            Object unprocessedValue = fieldCloner.clone(solutionDescriptor, original, clone);
+            if (unprocessedValue != null) {
+                unprocessedQueue.add(new Unprocessed(clone, fieldCloner.getField(), unprocessedValue));
             }
         }
         Class<? super C> superclass = clazz.getSuperclass();
@@ -306,4 +306,17 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         }
     }
 
+    private static final class Unprocessed {
+
+        final Object bean;
+        final Field field;
+        final Object originalValue;
+
+        public Unprocessed(Object bean, Field field, Object originalValue) {
+            this.bean = bean;
+            this.field = field;
+            this.originalValue = originalValue;
+        }
+
+    }
 }
