@@ -37,15 +37,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final ConcurrentMap<Class<?>, Constructor<?>> constructorMemoization = new ConcurrentMemoization<>();
-    /**
-     * Contains one cloner for every field that needs to be shallow cloned (= copied).
-     */
-    private final ConcurrentMap<Class<?>, ShallowCloningFieldCloner[]> copiedFieldListMemoization =
-            new ConcurrentMemoization<>();
-    /**
-     * Contains one cloner for every field that needs to be deep-cloned.
-     */
-    private final ConcurrentMap<Class<?>, DeepCloningFieldCloner[]> clonedFieldListMemoization = new ConcurrentMemoization<>();
+    private final ConcurrentMap<Class<?>, ClassMetadata> classMetadataMemoization = new ConcurrentMemoization<>();
 
     public FieldAccessingSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
@@ -68,39 +60,6 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         }
         validateCloneSolution(originalSolution, cloneSolution);
         return cloneSolution;
-    }
-
-    @SuppressWarnings("unchecked")
-    private <C> Constructor<C> retrieveCachedConstructor(Class<C> clazz) {
-        return (Constructor<C>) constructorMemoization.computeIfAbsent(clazz, key -> {
-            Constructor<C> constructor;
-            try {
-                constructor = (Constructor<C>) key.getDeclaredConstructor();
-            } catch (ReflectiveOperationException e) {
-                throw new IllegalStateException("The class (" + key
-                        + ") should have a no-arg constructor to create a planning clone.", e);
-            }
-            constructor.setAccessible(true);
-            return constructor;
-        });
-    }
-
-    private ShallowCloningFieldCloner[] retrieveShallowCloners(Class<?> clazz) {
-        return copiedFieldListMemoization.computeIfAbsent(clazz, clz -> Arrays.stream(clz.getDeclaredFields())
-                .filter(f -> !Modifier.isStatic(f.getModifiers()))
-                .filter(field -> DeepCloningUtils.isImmutable(field.getType()))
-                .peek(f -> f.setAccessible(true))
-                .map(ShallowCloningFieldCloner::of)
-                .toArray(ShallowCloningFieldCloner[]::new));
-    }
-
-    private DeepCloningFieldCloner[] retrieveDeepCloners(Class<?> clazz) {
-        return clonedFieldListMemoization.computeIfAbsent(clazz, clz -> Arrays.stream(clz.getDeclaredFields())
-                .filter(f -> !Modifier.isStatic(f.getModifiers()))
-                .filter(f -> !DeepCloningUtils.isImmutable(f.getType()))
-                .peek(f -> f.setAccessible(true))
-                .map(DeepCloningFieldCloner::new)
-                .toArray(DeepCloningFieldCloner[]::new));
     }
 
     private Object process(Unprocessed unprocessed, Map<Object, Object> originalToCloneMap,
@@ -136,8 +95,16 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
 
     private <C> C constructClone(Class<C> clazz) {
         try {
-            Constructor<C> constructor = retrieveCachedConstructor(clazz);
-            return constructor.newInstance();
+            return (C) constructorMemoization.computeIfAbsent(clazz, key -> {
+                try {
+                    Constructor<C> constructor = (Constructor<C>) key.getDeclaredConstructor();
+                    constructor.setAccessible(true);
+                    return constructor;
+                } catch (ReflectiveOperationException e) {
+                    throw new IllegalStateException("The class (" + key
+                            + ") should have a no-arg constructor to create a planning clone.", e);
+                }
+            }).newInstance();
         } catch (ReflectiveOperationException e) {
             throw new IllegalStateException("The class (" + clazz
                     + ") should have a no-arg constructor to create a planning clone.", e);
@@ -145,10 +112,11 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
     }
 
     private <C> void copyFields(Class<C> clazz, C original, C clone, Queue<Unprocessed> unprocessedQueue) {
-        for (ShallowCloningFieldCloner fieldCloner : retrieveShallowCloners(clazz)) {
+        ClassMetadata classMetadata = classMetadataMemoization.computeIfAbsent(clazz, ClassMetadata::new);
+        for (ShallowCloningFieldCloner fieldCloner : classMetadata.copiedFieldArray) {
             fieldCloner.clone(original, clone);
         }
-        for (DeepCloningFieldCloner fieldCloner : retrieveDeepCloners(clazz)) {
+        for (DeepCloningFieldCloner fieldCloner : classMetadata.clonedFieldArray) {
             Object unprocessedValue = fieldCloner.clone(solutionDescriptor, original, clone);
             if (unprocessedValue != null) {
                 unprocessedQueue.add(new Unprocessed(clone, fieldCloner.getField(), unprocessedValue));
@@ -304,6 +272,39 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
                                 + " that property's field, probably because its field name is different.");
             }
         }
+    }
+
+    private static final class ClassMetadata {
+
+        private final Class<?> declaringClass;
+
+        /**
+         * Contains one cloner for every field that needs to be shallow cloned (= copied).
+         */
+        private final ShallowCloningFieldCloner[] copiedFieldArray;
+        /**
+         * Contains one cloner for every field that needs to be deep-cloned.
+         */
+        private final DeepCloningFieldCloner[] clonedFieldArray;
+
+        public ClassMetadata(Class<?> declaringClass) {
+            this.declaringClass = declaringClass;
+            Field[] declaredFields = declaringClass.getDeclaredFields();
+            this.copiedFieldArray = Arrays.stream(declaredFields)
+                    .filter(f -> !Modifier.isStatic(f.getModifiers()))
+                    .filter(field -> DeepCloningUtils.isImmutable(field.getType()))
+                    .peek(f -> f.setAccessible(true))
+                    .map(ShallowCloningFieldCloner::of)
+                    .toArray(ShallowCloningFieldCloner[]::new);
+            this.clonedFieldArray = Arrays.stream(declaredFields)
+                    .filter(f -> !Modifier.isStatic(f.getModifiers()))
+                    .filter(field -> !DeepCloningUtils.isImmutable(field.getType()))
+                    .peek(f -> f.setAccessible(true))
+                    .map(DeepCloningFieldCloner::new)
+                    .toArray(DeepCloningFieldCloner[]::new);
+
+        }
+
     }
 
     private static final class Unprocessed {
