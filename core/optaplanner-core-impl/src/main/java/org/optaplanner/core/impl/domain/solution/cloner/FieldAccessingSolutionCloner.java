@@ -52,7 +52,8 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         int entityCount = solutionDescriptor.getEntityCount(originalSolution);
         Map<Object, Object> originalToCloneMap = new IdentityHashMap<>(entityCount + 1);
         Queue<Unprocessed> unprocessedQueue = new ArrayDeque<>(entityCount + 1);
-        Solution_ cloneSolution = clone(originalSolution, originalToCloneMap, unprocessedQueue);
+        Solution_ cloneSolution = clone(originalSolution, originalToCloneMap, unprocessedQueue,
+                retrieveClassMetadata(originalSolution.getClass()));
         while (!unprocessedQueue.isEmpty()) {
             Unprocessed unprocessed = unprocessedQueue.remove();
             Object cloneValue = process(unprocessed, originalToCloneMap, unprocessedQueue);
@@ -74,11 +75,13 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         } else if (originalValue.getClass().isArray()) {
             return cloneArray(fieldType, originalValue, originalToCloneMap, unprocessedQueue);
         } else {
-            return clone(originalValue, originalToCloneMap, unprocessedQueue);
+            return clone(originalValue, originalToCloneMap, unprocessedQueue,
+                    retrieveClassMetadata(originalValue.getClass()));
         }
     }
 
-    private <C> C clone(C original, Map<Object, Object> originalToCloneMap, Queue<Unprocessed> unprocessedQueue) {
+    private <C> C clone(C original, Map<Object, Object> originalToCloneMap, Queue<Unprocessed> unprocessedQueue,
+            ClassMetadata declaringClassMetadata) {
         if (original == null) {
             return null;
         }
@@ -86,10 +89,10 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         if (existingClone != null) {
             return existingClone;
         }
-        Class<C> instanceClass = (Class<C>) original.getClass();
-        C clone = constructClone(instanceClass);
+        Class<C> declaringClass = (Class<C>) original.getClass();
+        C clone = constructClone(declaringClass);
         originalToCloneMap.put(original, clone);
-        copyFields(instanceClass, original, clone, unprocessedQueue);
+        copyFields(declaringClass, original, clone, unprocessedQueue, declaringClassMetadata);
         return clone;
     }
 
@@ -111,12 +114,12 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         }
     }
 
-    private <C> void copyFields(Class<C> clazz, C original, C clone, Queue<Unprocessed> unprocessedQueue) {
-        ClassMetadata classMetadata = classMetadataMemoization.computeIfAbsent(clazz, ClassMetadata::new);
-        for (ShallowCloningFieldCloner fieldCloner : classMetadata.copiedFieldArray) {
+    private <C> void copyFields(Class<C> clazz, C original, C clone, Queue<Unprocessed> unprocessedQueue,
+            ClassMetadata declaringClassMetadata) {
+        for (ShallowCloningFieldCloner fieldCloner : declaringClassMetadata.getCopiedFieldArray()) {
             fieldCloner.clone(original, clone);
         }
-        for (DeepCloningFieldCloner fieldCloner : classMetadata.clonedFieldArray) {
+        for (DeepCloningFieldCloner fieldCloner : declaringClassMetadata.getClonedFieldArray()) {
             Object unprocessedValue = fieldCloner.clone(solutionDescriptor, original, clone);
             if (unprocessedValue != null) {
                 unprocessedQueue.add(new Unprocessed(clone, fieldCloner.getField(), unprocessedValue));
@@ -124,7 +127,7 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         }
         Class<? super C> superclass = clazz.getSuperclass();
         if (superclass != null && superclass != Object.class) {
-            copyFields(superclass, original, clone, unprocessedQueue);
+            copyFields(superclass, original, clone, unprocessedQueue, retrieveClassMetadata(superclass));
         }
     }
 
@@ -223,6 +226,10 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         }
     }
 
+    private ClassMetadata retrieveClassMetadata(Class<?> declaringClass) {
+        return classMetadataMemoization.computeIfAbsent(declaringClass, ClassMetadata::new);
+    }
+
     private <C> C cloneCollectionsElementIfNeeded(C original, Map<Object, Object> originalToCloneMap,
             Queue<Unprocessed> unprocessedQueue) {
         if (original == null) {
@@ -238,8 +245,9 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         } else if (original.getClass().isArray()) {
             return (C) cloneArray(original.getClass(), original, originalToCloneMap, unprocessedQueue);
         }
-        if (DeepCloningUtils.isClassDeepCloned(solutionDescriptor, original.getClass())) {
-            return clone(original, originalToCloneMap, unprocessedQueue);
+        ClassMetadata classMetadata = retrieveClassMetadata(original.getClass());
+        if (classMetadata.isDeepCloned) {
+            return clone(original, originalToCloneMap, unprocessedQueue, classMetadata);
         } else {
             return original;
         }
@@ -274,35 +282,47 @@ public final class FieldAccessingSolutionCloner<Solution_> implements SolutionCl
         }
     }
 
-    private static final class ClassMetadata {
+    private final class ClassMetadata {
 
         private final Class<?> declaringClass;
+        private final boolean isDeepCloned;
 
         /**
          * Contains one cloner for every field that needs to be shallow cloned (= copied).
          */
-        private final ShallowCloningFieldCloner[] copiedFieldArray;
+        private ShallowCloningFieldCloner[] copiedFieldArray;
         /**
          * Contains one cloner for every field that needs to be deep-cloned.
          */
-        private final DeepCloningFieldCloner[] clonedFieldArray;
+        private DeepCloningFieldCloner[] clonedFieldArray;
 
         public ClassMetadata(Class<?> declaringClass) {
             this.declaringClass = declaringClass;
-            Field[] declaredFields = declaringClass.getDeclaredFields();
-            this.copiedFieldArray = Arrays.stream(declaredFields)
-                    .filter(f -> !Modifier.isStatic(f.getModifiers()))
-                    .filter(field -> DeepCloningUtils.isImmutable(field.getType()))
-                    .peek(f -> f.setAccessible(true))
-                    .map(ShallowCloningFieldCloner::of)
-                    .toArray(ShallowCloningFieldCloner[]::new);
-            this.clonedFieldArray = Arrays.stream(declaredFields)
-                    .filter(f -> !Modifier.isStatic(f.getModifiers()))
-                    .filter(field -> !DeepCloningUtils.isImmutable(field.getType()))
-                    .peek(f -> f.setAccessible(true))
-                    .map(DeepCloningFieldCloner::new)
-                    .toArray(DeepCloningFieldCloner[]::new);
+            this.isDeepCloned = DeepCloningUtils.isClassDeepCloned(solutionDescriptor, declaringClass);
+        }
 
+        public ShallowCloningFieldCloner[] getCopiedFieldArray() {
+            if (copiedFieldArray == null) { // Lazy-loaded; some types (such as String) will never get here.
+                copiedFieldArray = Arrays.stream(declaringClass.getDeclaredFields())
+                        .filter(f -> !Modifier.isStatic(f.getModifiers()))
+                        .filter(field -> DeepCloningUtils.isImmutable(field.getType()))
+                        .peek(f -> f.setAccessible(true))
+                        .map(ShallowCloningFieldCloner::of)
+                        .toArray(ShallowCloningFieldCloner[]::new);
+            }
+            return copiedFieldArray;
+        }
+
+        public DeepCloningFieldCloner[] getClonedFieldArray() {
+            if (clonedFieldArray == null) { // Lazy-loaded; some types (such as String) will never get here.
+                clonedFieldArray = Arrays.stream(declaringClass.getDeclaredFields())
+                        .filter(f -> !Modifier.isStatic(f.getModifiers()))
+                        .filter(field -> !DeepCloningUtils.isImmutable(field.getType()))
+                        .peek(f -> f.setAccessible(true))
+                        .map(DeepCloningFieldCloner::new)
+                        .toArray(DeepCloningFieldCloner[]::new);
+            }
+            return clonedFieldArray;
         }
 
     }
