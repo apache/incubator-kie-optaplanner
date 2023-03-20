@@ -3,17 +3,25 @@
 script_dir_path=$(cd "$(dirname "${BASH_SOURCE[0]}")" || exit; pwd -P)
 
 mvn_cmd="mvn -B ${BUILD_MVN_OPTS:-}"
-optaplanner_file="${script_dir_path}/optaplanner-quarkus3.yaml"
+optaplanner_file="$script_dir_path/optaplanner-quarkus3.yaml"
+optaplanner_root="$script_dir_path/../.."
 
-# Install artifacts locally.
-${mvn_cmd} clean install -Dquickly
-project_version=$(${mvn_cmd} help:evaluate -Dexpression=project.version -q -DforceStdout)
+# Apply scripts
+for script_file in "$script_dir_path"/scripts/*
+do
+  source "$script_file" "$optaplanner_root" || exit;
+done
 
 # Apply patches
 for patch_file in "$script_dir_path"/patches/*
 do
   git apply --index "$patch_file" || exit;
 done
+
+# Install artifacts locally.
+${mvn_cmd} clean install -Dquickly
+project_version=$(${mvn_cmd} help:evaluate -Dexpression=project.version -q -DforceStdout)
+
 
 # Run the recipe.
 ${mvn_cmd} rewrite:run \
