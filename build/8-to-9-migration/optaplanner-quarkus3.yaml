@@ -15,7 +15,7 @@ recipeList:
       configuration: <skip>true</skip>
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.io.quarkus
-      newValue: 3.0.0.Alpha5
+      newValue: 3.0.0.Alpha6
   - io.quarkus.openrewrite.Quarkus3
   # Remove the direct dependency on Hibernate
   - org.openrewrite.maven.RemoveDependency:
@@ -46,10 +46,10 @@ tags:
 recipeList:
   - org.openrewrite.maven.ChangePropertyValue:
       key: quarkus.platform.version
-      newValue: 3.0.0.Alpha5
+      newValue: 3.0.0.Alpha6
   - org.openrewrite.maven.ChangePropertyValue:
       key: quarkus.version
-      newValue: 3.0.0.Alpha5
+      newValue: 3.0.0.Alpha6
   - org.openrewrite.java.migrate.JavaxMigrationToJakarta
 ---
 type: specs.openrewrite.org/v1beta/recipe

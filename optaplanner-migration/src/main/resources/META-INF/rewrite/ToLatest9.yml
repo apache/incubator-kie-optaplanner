@@ -32,15 +32,15 @@ recipeList:
   - org.openrewrite.maven.ChangePropertyValue:
       key: quarkus.platform.version
       # TODO: update with every new Quarkus release
-      newValue: 3.0.0.Alpha5
+      newValue: 3.0.0.Alpha6
   - org.openrewrite.maven.ChangePropertyValue:
       key: quarkus.version
       # TODO: update with every new Quarkus release
-      newValue: 3.0.0.Alpha5
+      newValue: 3.0.0.Alpha6
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.io.quarkus
       # TODO: update with every new Quarkus release
-      newValue: 3.0.0.Alpha5
+      newValue: 3.0.0.Alpha6
   - org.openrewrite.java.migrate.jakarta.JavaxActivationMigrationToJakartaActivation
   - org.openrewrite.java.migrate.jakarta.JavaxAnnotationMigrationToJakartaAnnotation
   - org.openrewrite.java.migrate.jakarta.ChangeJavaxAnnotationToJakarta
