@@ -11,7 +11,7 @@ releases are going to introduce Hibernate 6, which unfortunately breaks backward
 of the `CompositeUserType` that the `AbstractScoreHibernateType` depends on.
 
 The `AbstractScoreHibernateType` and its subtypes remain available in the OptaPlanner 8 releases to provide
-integration with Hibernate 5 but will be removed in the OptaPlanner 9.37.0.Beta release.
+integration with Hibernate 5 but have been removed from the equivalent OptaPlanner 9.x release.
 
 To integrate the `PlanningScore` of your choice with Hibernate 6, either use the score converters available in the
 `org.optaplanner.persistence.jpa.api.score.buildin` package or https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#embeddable-mapping-custom[implement the `CompositeUserType`] yourself.
