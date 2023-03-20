@@ -17,7 +17,6 @@ recipeList:
       key: version.io.quarkus
       newValue: 3.0.0.Alpha5
   - io.quarkus.openrewrite.Quarkus3
-  - org.optaplanner.migration.jakarta.JakartaHibernateMigrationRecipe
   - org.optaplanner.migration.jakarta.JakartaJsonMigrationRecipe
   - org.optaplanner.migration.jakarta.GraalVmMigrationRecipe
   - org.openrewrite.maven.ChangePropertyValue:
