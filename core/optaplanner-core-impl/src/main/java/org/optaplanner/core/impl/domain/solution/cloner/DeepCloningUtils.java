@@ -63,7 +63,8 @@ public final class DeepCloningUtils {
      *        class might be ArrayList).
      * @return true iff the field should be deep cloned with a particular value.
      */
-    public static boolean isDeepCloned(SolutionDescriptor<?> solutionDescriptor, Field field, Class<?> owningClass, Class<?> actualValueClass) {
+    public static boolean isDeepCloned(SolutionDescriptor<?> solutionDescriptor, Field field, Class<?> owningClass,
+            Class<?> actualValueClass) {
         return isClassDeepCloned(solutionDescriptor, actualValueClass)
                 || isFieldDeepCloned(solutionDescriptor, field, owningClass);
     }
@@ -105,7 +106,8 @@ public final class DeepCloningUtils {
      * @return True only if the field is an entity property on the solution class.
      *         May return false if the field getter/setter is complex.
      */
-    static boolean isFieldAnEntityPropertyOnSolution(SolutionDescriptor<?> solutionDescriptor, Field field, Class<?> owningClass) {
+    static boolean isFieldAnEntityPropertyOnSolution(SolutionDescriptor<?> solutionDescriptor, Field field,
+            Class<?> owningClass) {
         if (!solutionDescriptor.getSolutionClass().isAssignableFrom(owningClass)) {
             return false;
         }

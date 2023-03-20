@@ -272,7 +272,8 @@ final class GizmoMemberAccessorEntityEnhancer {
                     }
                 }).forEach(solutionAndEntitySubclassSet::add);
             }
-            Set<Class<?>> deepClonedClassSet = GizmoCloningUtils.getDeepClonedClasses(solutionDescriptor, solutionAndEntitySubclassSet);
+            Set<Class<?>> deepClonedClassSet =
+                    GizmoCloningUtils.getDeepClonedClasses(solutionDescriptor, solutionAndEntitySubclassSet);
 
             for (Class<?> deepCloningClass : deepClonedClassSet) {
                 makeConstructorAccessible(deepCloningClass, transformers);
