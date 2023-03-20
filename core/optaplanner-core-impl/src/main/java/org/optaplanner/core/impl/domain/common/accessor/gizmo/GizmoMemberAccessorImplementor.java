@@ -39,10 +39,9 @@ public final class GizmoMemberAccessorImplementor {
      * @param memberInfo never null, member to generate MemberAccessor methods implementation for
      */
     public static void defineAccessorFor(String className, ClassOutput classOutput, GizmoMemberInfo memberInfo) {
-        Class<? extends AbstractGizmoMemberAccessor> superClass = getCorrectSuperclass(memberInfo);
         try (ClassCreator classCreator = ClassCreator.builder()
                 .className(className)
-                .superClass(superClass)
+                .superClass(AbstractGizmoMemberAccessor.class)
                 .classOutput(classOutput)
                 .setFinal(true)
                 .build()) {
@@ -60,7 +59,8 @@ public final class GizmoMemberAccessorImplementor {
             createGetGenericType(classCreator);
             createGetName(classCreator, memberInfo);
             createExecuteGetter(classCreator, memberInfo);
-            if (superClass == AbstractReadWriteGizmoMemberAccessor.class) {
+            if (supportsSetter(memberInfo)) {
+                createSupportSetter(classCreator, memberInfo);
                 createExecuteSetter(classCreator, memberInfo);
             }
             createGetAnnotation(classCreator);
@@ -68,7 +68,7 @@ public final class GizmoMemberAccessorImplementor {
         }
     }
 
-    private static Class<? extends AbstractGizmoMemberAccessor> getCorrectSuperclass(GizmoMemberInfo memberInfo) {
+    private static boolean supportsSetter(GizmoMemberInfo memberInfo) {
         AtomicBoolean supportsSetter = new AtomicBoolean();
         memberInfo.getDescriptor().whenIsMethod(method -> {
             supportsSetter.set(memberInfo.getDescriptor().getSetter().isPresent());
@@ -76,11 +76,7 @@ public final class GizmoMemberAccessorImplementor {
         memberInfo.getDescriptor().whenIsField(field -> {
             supportsSetter.set(true);
         });
-        if (supportsSetter.get()) {
-            return AbstractReadWriteGizmoMemberAccessor.class;
-        } else {
-            return AbstractReadOnlyGizmoMemberAccessor.class;
-        }
+        return supportsSetter.get();
     }
 
     /**
@@ -334,6 +330,38 @@ public final class GizmoMemberAccessorImplementor {
         MethodCreator methodCreator = getMethodCreator(classCreator, "executeGetter", Object.class);
         ResultHandle bean = methodCreator.getMethodParam(0);
         methodCreator.returnValue(memberInfo.getDescriptor().readMemberValue(methodCreator, bean));
+    }
+
+    /**
+     * Generates the following code:
+     *
+     * For a field or a getter method that also have a corresponding setter
+     *
+     * <pre>
+     * boolean supportSetter() {
+     *     return true;
+     * }
+     * </pre>
+     *
+     * For a read method or a getter method without a setter
+     *
+     * <pre>
+     * boolean supportSetter() {
+     *     return false;
+     * }
+     * </pre>
+     */
+    private static void createSupportSetter(ClassCreator classCreator, GizmoMemberInfo memberInfo) {
+        MethodCreator methodCreator = getMethodCreator(classCreator, "supportSetter");
+        memberInfo.getDescriptor().whenIsMethod(method -> {
+            boolean supportSetter = memberInfo.getDescriptor().getSetter().isPresent();
+            ResultHandle out = methodCreator.load(supportSetter);
+            methodCreator.returnValue(out);
+        });
+        memberInfo.getDescriptor().whenIsField(field -> {
+            ResultHandle out = methodCreator.load(true);
+            methodCreator.returnValue(out);
+        });
     }
 
     /**
