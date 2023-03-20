@@ -17,6 +17,10 @@ recipeList:
       key: version.io.quarkus
       newValue: 3.0.0.Alpha5
   - io.quarkus.openrewrite.Quarkus3
+  # Remove the direct dependency on Hibernate
+  - org.openrewrite.maven.RemoveDependency:
+      groupId: org.hibernate
+      artifactId: hibernate-core
   - org.optaplanner.migration.jakarta.JakartaJsonMigrationRecipe
   - org.optaplanner.migration.jakarta.GraalVmMigrationRecipe
   - org.openrewrite.maven.ChangePropertyValue:
