@@ -1,15 +1,16 @@
 package org.optaplanner.constraint.streams.bavet.common.tuple;
 
-final class TriStorelessTuple<A, B, C> extends AbstractStorelessTuple implements TriTuple<A, B, C> {
+import org.optaplanner.core.impl.util.Pair;
+
+final class BiTupleImpl<A, B> extends AbstractTuple implements BiTuple<A, B> {
 
     private A a;
     private B b;
-    private C c;
 
-    TriStorelessTuple(A a, B b, C c) {
+    BiTupleImpl(A a, B b, int storeSize) {
+        super(storeSize);
         this.a = a;
         this.b = b;
-        this.c = c;
     }
 
     @Override
@@ -33,18 +34,14 @@ final class TriStorelessTuple<A, B, C> extends AbstractStorelessTuple implements
     }
 
     @Override
-    public C getC() {
-        return c;
-    }
-
-    @Override
-    public void setC(C c) {
-        this.c = c;
+    public void fillFrom(Pair<A, B> pair) {
+        this.a = pair.getKey();
+        this.b = pair.getValue();
     }
 
     @Override
     public String toString() {
-        return "{" + a + ", " + b + ", " + c + "}";
+        return "{" + a + ", " + b + "}";
     }
 
 }

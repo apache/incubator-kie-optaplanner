@@ -1,18 +1,19 @@
 package org.optaplanner.constraint.streams.bavet.common.tuple;
 
-final class QuadLargeStoreTuple<A, B, C, D> extends AbstractLargeStoreTuple implements QuadTuple<A, B, C, D> {
+import org.optaplanner.core.impl.util.Pair;
+import org.optaplanner.core.impl.util.Triple;
+
+final class TriTupleImpl<A, B, C> extends AbstractTuple implements TriTuple<A, B, C> {
 
     private A a;
     private B b;
     private C c;
-    private D d;
 
-    QuadLargeStoreTuple(A a, B b, C c, D d, int storeSize) {
+    TriTupleImpl(A a, B b, C c, int storeSize) {
         super(storeSize);
         this.a = a;
         this.b = b;
         this.c = c;
-        this.d = d;
     }
 
     @Override
@@ -46,18 +47,27 @@ final class QuadLargeStoreTuple<A, B, C, D> extends AbstractLargeStoreTuple impl
     }
 
     @Override
-    public D getD() {
-        return d;
+    public void fillFrom(Triple<A, B, C> triple) {
+        this.a = triple.getA();
+        this.b = triple.getB();
+        this.c = triple.getC();
     }
 
     @Override
-    public void setD(D d) {
-        this.d = d;
+    public void fillHeadFrom(BiTuple<A, B> tuple) {
+        this.a = tuple.getA();
+        this.b = tuple.getB();
+    }
+
+    @Override
+    public void fillTailFrom(Pair<B, C> pair) {
+        this.b = pair.getKey();
+        this.c = pair.getValue();
     }
 
     @Override
     public String toString() {
-        return "{" + a + ", " + b + ", " + c + ", " + d + "}";
+        return "{" + a + ", " + b + ", " + c + "}";
     }
 
 }

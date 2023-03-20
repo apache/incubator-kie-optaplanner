@@ -3,17 +3,19 @@ package org.optaplanner.constraint.streams.bavet.common.tuple;
 import org.optaplanner.core.impl.util.Pair;
 import org.optaplanner.core.impl.util.Triple;
 
+/**
+ *
+ * @param <A>
+ * @param <B>
+ * @param <C>
+ * @implNote It is recommended for this interface to only ever have one implementation.
+ *           In extensive benchmarks, we have seen significant performance drops coming from polymorphism here.
+ *           Most notably as much as ~20 % drops in the Nurse Rostering example.
+ */
 public interface TriTuple<A, B, C> extends Tuple {
 
     static <A, B, C> TriTuple<A, B, C> of(A a, B b, C c, int storeSize) {
-        switch (storeSize) {
-            case 0:
-                return new TriStorelessTuple<>(a, b, c);
-            case 1:
-                return new TriSingletonStoreTuple<>(a, b, c);
-            default:
-                return new TriLargeStoreTuple<>(a, b, c, storeSize);
-        }
+        return new TriTupleImpl<>(a, b, c, storeSize);
     }
 
     A getA();
@@ -28,20 +30,10 @@ public interface TriTuple<A, B, C> extends Tuple {
 
     void setC(C c);
 
-    default void fillFrom(Triple<A, B, C> triple) {
-        setA(triple.getA());
-        setB(triple.getB());
-        setC(triple.getC());
-    }
+    void fillFrom(Triple<A, B, C> triple);
 
-    default void fillHeadFrom(BiTuple<A, B> tuple) {
-        setA(tuple.getA());
-        setB(tuple.getB());
-    }
+    void fillHeadFrom(BiTuple<A, B> tuple);
 
-    default void fillTailFrom(Pair<B, C> pair) {
-        setB(pair.getKey());
-        setC(pair.getValue());
-    }
+    void fillTailFrom(Pair<B, C> pair);
 
 }
