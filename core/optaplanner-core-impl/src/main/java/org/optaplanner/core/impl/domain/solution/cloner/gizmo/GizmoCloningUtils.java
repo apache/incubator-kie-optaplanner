@@ -15,9 +15,6 @@ import java.util.stream.Stream;
 import org.optaplanner.core.impl.domain.solution.cloner.DeepCloningUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
-/**
- * @implNote This class is thread-safe.
- */
 public final class GizmoCloningUtils {
 
     public static Set<Class<?>> getDeepClonedClasses(SolutionDescriptor<?> solutionDescriptor,
@@ -70,4 +67,9 @@ public final class GizmoCloningUtils {
         }
         return memberStream.collect(Collectors.toList());
     }
+
+    private GizmoCloningUtils() {
+        // No external instances.
+    }
+
 }

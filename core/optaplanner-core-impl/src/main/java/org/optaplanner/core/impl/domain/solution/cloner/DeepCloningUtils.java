@@ -31,28 +31,14 @@ import java.util.UUID;
 
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
-import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
-import org.optaplanner.core.api.score.buildin.hardmediumsoftbigdecimal.HardMediumSoftBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
-import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
-/**
- * @implNote This class is thread-safe.
- */
 public final class DeepCloningUtils {
 
-    // Instances of these classes will never be deep-cloned.
-    public static final Set<Class<?>> IMMUTABLE_CLASSES = Set.of(
+    // Instances of these JDK classes will never be deep-cloned.
+    private static final Set<Class<?>> IMMUTABLE_CLASSES = Set.of(
             // Numbers
             Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, BigInteger.class, BigDecimal.class,
             // Optional
@@ -62,12 +48,7 @@ public final class DeepCloningUtils {
             OffsetDateTime.class, OffsetTime.class, Period.class, Year.class, YearMonth.class, ZonedDateTime.class,
             ZoneId.class, ZoneOffset.class,
             // Others
-            Boolean.class, Character.class, String.class, UUID.class,
-            // Score
-            SimpleScore.class, SimpleLongScore.class, SimpleBigDecimalScore.class,
-            HardSoftScore.class, HardSoftLongScore.class, HardSoftBigDecimalScore.class,
-            HardMediumSoftScore.class, HardMediumSoftLongScore.class, HardMediumSoftBigDecimalScore.class,
-            BendableScore.class, BendableLongScore.class, BendableBigDecimalScore.class);
+            Boolean.class, Character.class, String.class, UUID.class);
 
     /**
      * Gets the deep cloning decision for a particular value assigned to a field,
@@ -107,10 +88,10 @@ public final class DeepCloningUtils {
     }
 
     static boolean isImmutable(Class<?> clz) {
-        if (clz.isPrimitive() || clz.isEnum()) {
+        if (clz.isPrimitive() || clz.isEnum() || Score.class.isAssignableFrom(clz)) {
             return true;
-        } else
-            return IMMUTABLE_CLASSES.contains(clz);
+        }
+        return IMMUTABLE_CLASSES.contains(clz);
     }
 
     /**
