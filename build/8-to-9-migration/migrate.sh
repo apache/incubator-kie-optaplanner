@@ -12,16 +12,9 @@ do
   source "$script_file" "$optaplanner_root" || exit;
 done
 
-# Apply patches
-for patch_file in "$script_dir_path"/patches/*
-do
-  git apply --index "$patch_file" || exit;
-done
-
 # Install artifacts locally.
 ${mvn_cmd} clean install -Dquickly
 project_version=$(${mvn_cmd} help:evaluate -Dexpression=project.version -q -DforceStdout)
-
 
 # Run the recipe.
 ${mvn_cmd} rewrite:run \
