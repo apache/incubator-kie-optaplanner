@@ -20,7 +20,7 @@ project_version=$(${mvn_cmd} help:evaluate -Dexpression=project.version -q -Dfor
 ${mvn_cmd} rewrite:run \
   -Drewrite.configLocation="${optaplanner_file}" \
   -Drewrite.recipeArtifactCoordinates=org.optaplanner:optaplanner-migration:"$project_version" \
-  -Drewrite.exclusions=optaplanner-operator/**,optaplanner-examples/data/** \
+  -Drewrite.exclusions=optaplanner-operator/**,optaplanner-examples/data/**,optaplanner-migration/** \
   -Drewrite.activeRecipes=org.optaplanner.openrewrite.Quarkus3 \
   -Dfull \
   -Dquickly \

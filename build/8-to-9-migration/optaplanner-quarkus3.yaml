@@ -8,7 +8,6 @@ tags:
   - quarkus
   - jakarta
 recipeList:
-  # TODO: maybe replace by changing the revapi.oldOptaplannerVersion property to the 9.x version
   - org.openrewrite.maven.ChangePluginConfiguration:
       groupId: org.revapi
       artifactId: revapi-maven-plugin
@@ -16,11 +15,10 @@ recipeList:
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.io.quarkus
       newValue: 3.0.0.Alpha6
-  - io.quarkus.openrewrite.Quarkus3
-  # Remove the direct dependency on Hibernate
   - org.openrewrite.maven.RemoveDependency:
       groupId: org.hibernate
       artifactId: hibernate-core
+  - io.quarkus.openrewrite.Quarkus3
   - org.optaplanner.migration.jakarta.JakartaJsonMigrationRecipe
   - org.optaplanner.migration.jakarta.GraalVmMigrationRecipe
   - org.openrewrite.maven.ChangePropertyValue:
