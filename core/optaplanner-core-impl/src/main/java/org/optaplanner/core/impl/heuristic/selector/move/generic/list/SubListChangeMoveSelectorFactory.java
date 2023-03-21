@@ -159,9 +159,24 @@ public class SubListChangeMoveSelectorFactory<Solution_>
                                         // override variable name (destination value selector is never replaying)
                                         .withVariableName(variableDescriptor.getVariableName())));
 
-        if (subListChangeMoveSelectorConfig.getSubListSelectorConfig().getMimicSelectorRef() == null) {
-            subListChangeMoveSelectorConfig.getSubListSelectorConfig().getValueSelectorConfig()
-                    .setVariableName(variableDescriptor.getVariableName());
+        SubListSelectorConfig subListSelectorConfig = subListChangeMoveSelectorConfig.getSubListSelectorConfig();
+        SubListConfigUtil.transferDeprecatedProperty(
+                "minimumSubListSize",
+                subListChangeMoveSelectorConfig,
+                SubListChangeMoveSelectorConfig::getMinimumSubListSize,
+                subListSelectorConfig,
+                SubListSelectorConfig::getMinimumSubListSize,
+                SubListSelectorConfig::setMinimumSubListSize);
+        SubListConfigUtil.transferDeprecatedProperty(
+                "maximumSubListSize",
+                subListChangeMoveSelectorConfig,
+                SubListChangeMoveSelectorConfig::getMaximumSubListSize,
+                subListSelectorConfig,
+                SubListSelectorConfig::getMaximumSubListSize,
+                SubListSelectorConfig::setMaximumSubListSize);
+
+        if (subListSelectorConfig.getMimicSelectorRef() == null) {
+            subListSelectorConfig.getValueSelectorConfig().setVariableName(variableDescriptor.getVariableName());
         }
 
         return subListChangeMoveSelectorConfig;
