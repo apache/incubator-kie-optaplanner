@@ -22,14 +22,14 @@ final class KOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final Object entity;
-    private final KOptDescriptor<Solution_, Node_> descriptor;
+    private final KOptDescriptor<Node_> descriptor;
     private final List<FlipSublistAction> equivalent2Opts;
     private final KOptAffectedElements affectedElementsInfo;
     private final int postShiftAmount;
 
     public KOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
             Object entity,
-            KOptDescriptor<Solution_, Node_> descriptor,
+            KOptDescriptor<Node_> descriptor,
             List<FlipSublistAction> equivalent2Opts,
             int postShiftAmount) {
         this.listVariableDescriptor = listVariableDescriptor;
@@ -157,14 +157,14 @@ final class KOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
     private static final class UndoKOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
         private final ListVariableDescriptor<Solution_> listVariableDescriptor;
         private final Object entity;
-        private final KOptDescriptor<Solution_, Node_> descriptor;
+        private final KOptDescriptor<Node_> descriptor;
         private final List<FlipSublistAction> equivalent2Opts;
         private final KOptAffectedElements affectedElementsInfo;
         private final int preShiftAmount;
 
         public UndoKOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
                 Object entity,
-                KOptDescriptor<Solution_, Node_> descriptor,
+                KOptDescriptor<Node_> descriptor,
                 List<FlipSublistAction> equivalent2Opts,
                 int preShiftAmount,
                 KOptAffectedElements affectedElementsInfo) {

@@ -11,7 +11,7 @@ import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
 
-final class KOptDescriptor<Solution_, Node_> {
+final class KOptDescriptor<Node_> {
 
     /**
      * The number of edges being added
@@ -200,7 +200,7 @@ final class KOptDescriptor<Solution_, Node_> {
      * @param entity
      * @return
      */
-    public KOptListMove<Solution_, Node_> getKOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
+    public <Solution_> KOptListMove<Solution_, Node_> getKOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
             IndexVariableSupply indexVariableSupply,
             Object entity) {
         if (!isFeasible()) {

@@ -43,7 +43,7 @@ final class KOptUtils {
      *         {@link KOptDescriptor#getRemovedEdgeIndexToTourOrder()}.
      * @param kOptDescriptor The descriptor to calculate cycles for
      */
-    static <Solution_, Node_> KOptCycle getCyclesForPermutation(KOptDescriptor<Solution_, Node_> kOptDescriptor) {
+    static <Node_> KOptCycle getCyclesForPermutation(KOptDescriptor<Node_> kOptDescriptor) {
         int cycleCount = 0;
         int[] removedEdgeIndexToTourOrder = kOptDescriptor.getRemovedEdgeIndexToTourOrder();
         int[] addedEdgeToOtherEndpoint = kOptDescriptor.getAddedEdgeToOtherEndpoint();
@@ -75,7 +75,7 @@ final class KOptUtils {
         return new KOptCycle(cycleCount, indexToCycle);
     }
 
-    static <Solution_, Node_> List<Pair<Node_, Node_>> getAddedEdgeList(KOptDescriptor<Solution_, Node_> kOptDescriptor) {
+    static <Node_> List<Pair<Node_, Node_>> getAddedEdgeList(KOptDescriptor<Node_> kOptDescriptor) {
         int k = kOptDescriptor.getK();
         List<Pair<Node_, Node_>> out = new ArrayList<>(2 * k);
         int currentEndpoint = 1;
@@ -95,7 +95,7 @@ final class KOptUtils {
         return out;
     }
 
-    static <Solution_, Node_> List<Pair<Node_, Node_>> getRemovedEdgeList(KOptDescriptor<Solution_, Node_> kOptDescriptor) {
+    static <Node_> List<Pair<Node_, Node_>> getRemovedEdgeList(KOptDescriptor<Node_> kOptDescriptor) {
         int k = kOptDescriptor.getK();
         Node_[] removedEdges = kOptDescriptor.getRemovedEdges();
         List<Pair<Node_, Node_>> out = new ArrayList<>(2 * k);

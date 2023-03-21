@@ -377,7 +377,7 @@ class KOptListMoveTest {
             }
         }
 
-        KOptDescriptor<Solution_, TestdataListValue> descriptor = new KOptDescriptor<>(tourArray,
+        KOptDescriptor<TestdataListValue> descriptor = new KOptDescriptor<>(tourArray,
                 incl,
                 getSuccessorFunction(listVariableDescriptor,
                         ignored -> entity,
