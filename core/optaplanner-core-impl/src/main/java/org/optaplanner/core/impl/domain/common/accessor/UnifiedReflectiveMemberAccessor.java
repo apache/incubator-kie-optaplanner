@@ -123,7 +123,7 @@ public final class UnifiedReflectiveMemberAccessor extends AbstractMemberAccesso
             if (isLambdaSupported(setterMethod)) {
                 return wrapSetter(unreflected, setterMethod.getParameterTypes()[0], setterMethod.getDeclaringClass(), lookup);
             } else {
-                return (x,y) -> {
+                return (x, y) -> {
                     try {
                         unreflected.invoke(x, y);
                     } catch (Throwable e) {
@@ -132,7 +132,7 @@ public final class UnifiedReflectiveMemberAccessor extends AbstractMemberAccesso
                 };
             }
         } catch (Throwable e) {
-            throw new IllegalStateException("Lambda creation failed for getterMethod (" + setterMethod + ").\n" +
+            throw new IllegalStateException("Lambda creation failed for setterMethod (" + setterMethod + ").\n" +
                     MemberAccessorFactory.CLASSLOADER_NUDGE_MESSAGE, e);
         }
     }
@@ -151,38 +151,34 @@ public final class UnifiedReflectiveMemberAccessor extends AbstractMemberAccesso
 
     public static <T extends Annotation> MemberAccessor of(Method method, boolean getterOnly, MethodHandles.Lookup lookup) {
         method.setAccessible(true);
-        if (isLambdaSupported(method)) {
-            return new LambdaBeanPropertyMemberAccessor(method, getterOnly);
-        } else {
-            Class<?> declaringClass = method.getDeclaringClass();
-            String methodName = ReflectionHelper.getGetterPropertyName(method);
-            Class<?> returnType = method.getReturnType();
-            Type genericReturnType = method.getGenericReturnType();
-            String speedNote = "slow access with reflection";
-            Function<Class<T>, T> annotationFunction = method::getAnnotation;
-            Function<Class<T>, T[]> annotationsByTypeFunction = method::getDeclaredAnnotationsByType;
-            String toString = "bean property " + methodName + " on " + method.getDeclaringClass();
-            try {
-                Function getter = unreflectGetterMethod(method, lookup);
-                if (getterOnly) {
+        Class<?> declaringClass = method.getDeclaringClass();
+        String methodName = ReflectionHelper.getGetterPropertyName(method);
+        Class<?> returnType = method.getReturnType();
+        Type genericReturnType = method.getGenericReturnType();
+        String speedNote = "slow access with reflection";
+        Function<Class<T>, T> annotationFunction = method::getAnnotation;
+        Function<Class<T>, T[]> annotationsByTypeFunction = method::getDeclaredAnnotationsByType;
+        String toString = "bean property " + methodName + " on " + method.getDeclaringClass();
+        try {
+            Function getter = unreflectGetterMethod(method, lookup);
+            if (getterOnly) {
+                return new UnifiedReflectiveMemberAccessor(declaringClass, methodName, returnType, genericReturnType,
+                        speedNote, annotationFunction, annotationsByTypeFunction, toString, getter, null);
+            } else {
+                Method setterMethod = ReflectionHelper.getSetterMethod(declaringClass, returnType, methodName);
+                if (setterMethod != null) {
+                    setterMethod.setAccessible(true);
+                    BiConsumer setter = unreflectSetterMethod(setterMethod, lookup);
+                    return new UnifiedReflectiveMemberAccessor(declaringClass, methodName, returnType, genericReturnType,
+                            speedNote, annotationFunction, annotationsByTypeFunction, toString, getter, setter);
+                } else {
                     return new UnifiedReflectiveMemberAccessor(declaringClass, methodName, returnType, genericReturnType,
                             speedNote, annotationFunction, annotationsByTypeFunction, toString, getter, null);
-                } else {
-                    Method setterMethod = ReflectionHelper.getSetterMethod(declaringClass, returnType, methodName);
-                    if (setterMethod != null) {
-                        setterMethod.setAccessible(true);
-                        BiConsumer setter = unreflectSetterMethod(setterMethod, lookup);
-                        return new UnifiedReflectiveMemberAccessor(declaringClass, methodName, returnType, genericReturnType,
-                                speedNote, annotationFunction, annotationsByTypeFunction, toString, getter, setter);
-                    } else {
-                        return new UnifiedReflectiveMemberAccessor(declaringClass, methodName, returnType, genericReturnType,
-                                speedNote, annotationFunction, annotationsByTypeFunction, toString, getter, null);
-                    }
                 }
-            } catch (Throwable e) {
-                throw new IllegalStateException("Lambda creation failed for (" + toString + ").\n" +
-                        MemberAccessorFactory.CLASSLOADER_NUDGE_MESSAGE, e);
             }
+        } catch (Throwable e) {
+            throw new IllegalStateException("Lambda creation failed for (" + toString + ").\n" +
+                    MemberAccessorFactory.CLASSLOADER_NUDGE_MESSAGE, e);
         }
     }
 
