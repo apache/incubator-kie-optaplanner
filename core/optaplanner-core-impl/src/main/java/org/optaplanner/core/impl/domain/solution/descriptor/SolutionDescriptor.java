@@ -369,7 +369,7 @@ public class SolutionDescriptor<Solution_> {
                 FIELD_OR_READ_METHOD, annotationClass, descriptorPolicy.getDomainAccessType());
         if (constraintConfigurationMemberAccessor != null) {
             if (!constraintConfigurationMemberAccessor.getName().equals(memberAccessor.getName())
-                    || !constraintConfigurationMemberAccessor.getClass().equals(memberAccessor.getClass())) {
+                    || constraintConfigurationMemberAccessor != memberAccessor) {
                 throw new IllegalStateException("The solutionClass (" + solutionClass
                         + ") has a @" + ConstraintConfigurationProvider.class.getSimpleName()
                         + " annotated member (" + memberAccessor

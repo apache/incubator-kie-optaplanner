@@ -209,7 +209,7 @@ public class ScoreDescriptor {
         // A solution class cannot have more than one score field or bean property (name check), and the @PlanningScore
         // annotation cannot appear on both the score field and its getter (member accessor class check).
         if (!scoreMemberAccessor.getName().equals(memberAccessor.getName())
-                || !scoreMemberAccessor.getClass().equals(memberAccessor.getClass())) {
+                || scoreMemberAccessor != memberAccessor) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
                     + ") has a @" + PlanningScore.class.getSimpleName()
                     + " annotated member (" + memberAccessor
