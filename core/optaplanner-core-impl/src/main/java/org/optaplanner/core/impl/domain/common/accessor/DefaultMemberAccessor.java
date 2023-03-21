@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 
-public final class UnifiedReflectiveMemberAccessor extends AbstractMemberAccessor {
+public final class DefaultMemberAccessor implements MemberAccessor {
 
     public static <T extends Annotation> MemberAccessor of(Field field, MethodHandles.Lookup lookup) {
         field.setAccessible(true);
@@ -29,7 +29,7 @@ public final class UnifiedReflectiveMemberAccessor extends AbstractMemberAccesso
         try {
             MethodHandle getter = unreflectGetter(field, lookup);
             MethodHandle setter = unreflectSetter(field, lookup);
-            return new UnifiedReflectiveMemberAccessor(declaringClass, fieldName, fieldType, fieldGenericType, speedNote,
+            return new DefaultMemberAccessor(declaringClass, fieldName, fieldType, fieldGenericType, speedNote,
                     annotationFunction, annotationsByTypeFunction, toString, x -> {
                         try {
                             return getter.invoke(x);
@@ -47,6 +47,10 @@ public final class UnifiedReflectiveMemberAccessor extends AbstractMemberAccesso
             throw new IllegalStateException("Lambda creation failed for (" + toString + ").\n" +
                     MemberAccessorFactory.CLASSLOADER_NUDGE_MESSAGE, e);
         }
+    }
+
+    private static String getSpeedNote(Method method) {
+        return isLambdaSupported(method) ? "pretty fast access with LambdaMetafactory" : "slow access with reflection";
     }
 
     private static MethodHandle unreflectGetter(Field field, MethodHandles.Lookup lookup) {
@@ -71,12 +75,12 @@ public final class UnifiedReflectiveMemberAccessor extends AbstractMemberAccesso
         String methodName = method.getName();
         Class<?> returnType = method.getReturnType();
         Type genericReturnType = method.getGenericReturnType();
-        String speedNote = "slow access with reflection";
+        String speedNote = getSpeedNote(method);
         Function<Class<T>, T> annotationFunction = method::getAnnotation;
         Function<Class<T>, T[]> annotationsByTypeFunction = method::getDeclaredAnnotationsByType;
         String toString = "method " + methodName + " on " + declaringClass;
         Function getter = unreflectGetterMethod(method, lookup);
-        return new UnifiedReflectiveMemberAccessor(declaringClass, methodName, returnType, genericReturnType, speedNote,
+        return new DefaultMemberAccessor(declaringClass, methodName, returnType, genericReturnType, speedNote,
                 annotationFunction, annotationsByTypeFunction, toString, getter, null);
     }
 
@@ -155,24 +159,24 @@ public final class UnifiedReflectiveMemberAccessor extends AbstractMemberAccesso
         String methodName = ReflectionHelper.getGetterPropertyName(method);
         Class<?> returnType = method.getReturnType();
         Type genericReturnType = method.getGenericReturnType();
-        String speedNote = "slow access with reflection";
+        String speedNote = getSpeedNote(method);
         Function<Class<T>, T> annotationFunction = method::getAnnotation;
         Function<Class<T>, T[]> annotationsByTypeFunction = method::getDeclaredAnnotationsByType;
         String toString = "bean property " + methodName + " on " + method.getDeclaringClass();
         try {
             Function getter = unreflectGetterMethod(method, lookup);
             if (getterOnly) {
-                return new UnifiedReflectiveMemberAccessor(declaringClass, methodName, returnType, genericReturnType,
+                return new DefaultMemberAccessor(declaringClass, methodName, returnType, genericReturnType,
                         speedNote, annotationFunction, annotationsByTypeFunction, toString, getter, null);
             } else {
                 Method setterMethod = ReflectionHelper.getSetterMethod(declaringClass, returnType, methodName);
                 if (setterMethod != null) {
                     setterMethod.setAccessible(true);
                     BiConsumer setter = unreflectSetterMethod(setterMethod, lookup);
-                    return new UnifiedReflectiveMemberAccessor(declaringClass, methodName, returnType, genericReturnType,
+                    return new DefaultMemberAccessor(declaringClass, methodName, returnType, genericReturnType,
                             speedNote, annotationFunction, annotationsByTypeFunction, toString, getter, setter);
                 } else {
-                    return new UnifiedReflectiveMemberAccessor(declaringClass, methodName, returnType, genericReturnType,
+                    return new DefaultMemberAccessor(declaringClass, methodName, returnType, genericReturnType,
                             speedNote, annotationFunction, annotationsByTypeFunction, toString, getter, null);
                 }
             }
@@ -193,9 +197,9 @@ public final class UnifiedReflectiveMemberAccessor extends AbstractMemberAccesso
     private final Function getter;
     private final BiConsumer setter;
 
-    private <T extends Annotation> UnifiedReflectiveMemberAccessor(Class<?> declaringClass, String name,
-            Class<?> type, Type genericType, String speedNote, Function<Class<T>, T> annotationFunction,
-            Function<Class<T>, T[]> annotationsByTypeFunction, String toString, Function getter, BiConsumer setter) {
+    private <T extends Annotation> DefaultMemberAccessor(Class<?> declaringClass, String name, Class<?> type, Type genericType,
+            String speedNote, Function<Class<T>, T> annotationFunction, Function<Class<T>, T[]> annotationsByTypeFunction,
+            String toString, Function getter, BiConsumer setter) {
         this.declaringClass = declaringClass;
         this.name = name;
         this.type = type;
@@ -269,6 +273,11 @@ public final class UnifiedReflectiveMemberAccessor extends AbstractMemberAccesso
     @Override
     public <T extends Annotation> T[] getDeclaredAnnotationsByType(Class<T> annotationClass) {
         return (T[]) annotationsByTypeFunction.apply(annotationClass);
+    }
+
+    @Override
+    public <Fact_, Result_> Function<Fact_, Result_> getGetterFunction() {
+        return getter;
     }
 
     @Override

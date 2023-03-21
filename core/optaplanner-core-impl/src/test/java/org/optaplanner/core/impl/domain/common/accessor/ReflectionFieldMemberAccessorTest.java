@@ -13,7 +13,7 @@ class ReflectionFieldMemberAccessorTest {
 
     @Test
     void fieldAnnotatedEntity() throws NoSuchFieldException {
-        MemberAccessor memberAccessor = UnifiedReflectiveMemberAccessor
+        MemberAccessor memberAccessor = DefaultMemberAccessor
                 .of(TestdataFieldAnnotatedEntity.class.getDeclaredField("value"), MethodHandles.lookup());
         assertThat(memberAccessor.getName()).isEqualTo("value");
         assertThat(memberAccessor.getType()).isEqualTo(TestdataValue.class);

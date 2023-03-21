@@ -14,7 +14,7 @@ class ReflectionBeanPropertyMemberAccessorTest {
     @Test
     void methodAnnotatedEntity() throws NoSuchMethodException {
         MemberAccessor memberAccessor =
-                UnifiedReflectiveMemberAccessor.of(TestdataEntity.class.getMethod("getValue"), false, MethodHandles.lookup());
+                DefaultMemberAccessor.of(TestdataEntity.class.getMethod("getValue"), false, MethodHandles.lookup());
         assertThat(memberAccessor.getName()).isEqualTo("value");
         assertThat(memberAccessor.getType()).isEqualTo(TestdataValue.class);
         assertThat(memberAccessor.getAnnotation(PlanningVariable.class)).isNotNull();

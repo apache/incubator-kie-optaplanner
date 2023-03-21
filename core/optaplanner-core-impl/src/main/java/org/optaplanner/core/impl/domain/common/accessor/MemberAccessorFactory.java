@@ -50,7 +50,7 @@ public final class MemberAccessorFactory {
         MethodHandles.Lookup lookup = MethodHandles.lookup();
         if (member instanceof Field) {
             Field field = (Field) member;
-            return UnifiedReflectiveMemberAccessor.of(field, lookup);
+            return DefaultMemberAccessor.of(field, lookup);
         } else if (member instanceof Method) {
             Method method = (Method) member;
             MemberAccessor memberAccessor;
@@ -58,7 +58,7 @@ public final class MemberAccessorFactory {
                 case FIELD_OR_READ_METHOD:
                     if (!ReflectionHelper.isGetterMethod(method)) {
                         ReflectionHelper.assertReadMethod(method, annotationClass);
-                        memberAccessor = UnifiedReflectiveMemberAccessor.of(method, lookup);
+                        memberAccessor = DefaultMemberAccessor.of(method, lookup);
                         break;
                     }
                     // Intentionally fall through (no break)
@@ -66,7 +66,7 @@ public final class MemberAccessorFactory {
                 case FIELD_OR_GETTER_METHOD_WITH_SETTER:
                     boolean getterOnly = memberAccessorType != MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER;
                     ReflectionHelper.assertGetterMethod(method, annotationClass);
-                    memberAccessor = UnifiedReflectiveMemberAccessor.of(method, getterOnly, lookup);
+                    memberAccessor = DefaultMemberAccessor.of(method, getterOnly, lookup);
                     break;
                 default:
                     throw new IllegalStateException("The memberAccessorType (" + memberAccessorType
