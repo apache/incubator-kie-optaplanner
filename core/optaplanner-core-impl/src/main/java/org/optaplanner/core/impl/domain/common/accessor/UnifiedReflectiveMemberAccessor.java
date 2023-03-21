@@ -82,12 +82,28 @@ public final class UnifiedReflectiveMemberAccessor extends AbstractMemberAccesso
 
     private static Function unreflectGetterMethod(Method getterMethod, MethodHandles.Lookup lookup) {
         try {
-            return wrapGetter(lookup.unreflect(getterMethod), getterMethod.getReturnType(), getterMethod.getDeclaringClass(),
-                    lookup);
+            MethodHandle unreflected = lookup.unreflect(getterMethod);
+            if (isLambdaSupported(getterMethod)) {
+                return wrapGetter(unreflected, getterMethod.getReturnType(), getterMethod.getDeclaringClass(), lookup);
+            } else {
+                return x -> {
+                    try {
+                        return unreflected.invoke(x);
+                    } catch (Throwable e) {
+                        throw new IllegalStateException(e);
+                    }
+                };
+            }
         } catch (Throwable e) {
             throw new IllegalStateException("Lambda creation failed for getterMethod (" + getterMethod + ").\n" +
                     MemberAccessorFactory.CLASSLOADER_NUDGE_MESSAGE, e);
         }
+    }
+
+    private static boolean isLambdaSupported(Method method) {
+        // HACK The lambda approach doesn't support classes from another classloader (such as loaded by KieContainer) in JDK 8
+        return Modifier.isPublic(method.getModifiers())
+                && method.getDeclaringClass().getClassLoader().equals(MemberAccessor.class.getClassLoader());
     }
 
     private static Function wrapGetter(MethodHandle methodHandle, Class<?> returnType, Class<?> declaringClass,
@@ -99,6 +115,26 @@ public final class UnifiedReflectiveMemberAccessor extends AbstractMemberAccesso
                 methodHandle,
                 MethodType.methodType(returnType, declaringClass))
                 .getTarget().invokeExact();
+    }
+
+    private static BiConsumer unreflectSetterMethod(Method setterMethod, MethodHandles.Lookup lookup) {
+        try {
+            MethodHandle unreflected = lookup.unreflect(setterMethod);
+            if (isLambdaSupported(setterMethod)) {
+                return wrapSetter(unreflected, setterMethod.getParameterTypes()[0], setterMethod.getDeclaringClass(), lookup);
+            } else {
+                return (x,y) -> {
+                    try {
+                        unreflected.invoke(x, y);
+                    } catch (Throwable e) {
+                        throw new IllegalStateException(e);
+                    }
+                };
+            }
+        } catch (Throwable e) {
+            throw new IllegalStateException("Lambda creation failed for getterMethod (" + setterMethod + ").\n" +
+                    MemberAccessorFactory.CLASSLOADER_NUDGE_MESSAGE, e);
+        }
     }
 
     private static BiConsumer wrapSetter(MethodHandle methodHandle, Class<?> propertyType, Class<?> declaringClass,
@@ -114,12 +150,10 @@ public final class UnifiedReflectiveMemberAccessor extends AbstractMemberAccesso
     }
 
     public static <T extends Annotation> MemberAccessor of(Method method, boolean getterOnly, MethodHandles.Lookup lookup) {
-        if (Modifier.isPublic(method.getModifiers())
-                // HACK The lambda approach doesn't support classes from another classloader (such as loaded by KieContainer) in JDK 8
-                && method.getDeclaringClass().getClassLoader().equals(MemberAccessor.class.getClassLoader())) {
+        method.setAccessible(true);
+        if (isLambdaSupported(method)) {
             return new LambdaBeanPropertyMemberAccessor(method, getterOnly);
         } else {
-            method.setAccessible(true);
             Class<?> declaringClass = method.getDeclaringClass();
             String methodName = ReflectionHelper.getGetterPropertyName(method);
             Class<?> returnType = method.getReturnType();
@@ -129,45 +163,20 @@ public final class UnifiedReflectiveMemberAccessor extends AbstractMemberAccesso
             Function<Class<T>, T[]> annotationsByTypeFunction = method::getDeclaredAnnotationsByType;
             String toString = "bean property " + methodName + " on " + method.getDeclaringClass();
             try {
-                MethodHandle getter = lookup.unreflect(method);
+                Function getter = unreflectGetterMethod(method, lookup);
                 if (getterOnly) {
                     return new UnifiedReflectiveMemberAccessor(declaringClass, methodName, returnType, genericReturnType,
-                            speedNote, annotationFunction, annotationsByTypeFunction, toString, x -> {
-                                try {
-                                    return getter.invoke(x);
-                                } catch (Throwable e) {
-                                    throw new IllegalStateException(e);
-                                }
-                            }, null);
+                            speedNote, annotationFunction, annotationsByTypeFunction, toString, getter, null);
                 } else {
                     Method setterMethod = ReflectionHelper.getSetterMethod(declaringClass, returnType, methodName);
                     if (setterMethod != null) {
                         setterMethod.setAccessible(true);
-                        MethodHandle setter = lookup.unreflect(setterMethod);
+                        BiConsumer setter = unreflectSetterMethod(setterMethod, lookup);
                         return new UnifiedReflectiveMemberAccessor(declaringClass, methodName, returnType, genericReturnType,
-                                speedNote, annotationFunction, annotationsByTypeFunction, toString, x -> {
-                                    try {
-                                        return getter.invoke(x);
-                                    } catch (Throwable e) {
-                                        throw new IllegalStateException(e);
-                                    }
-                                }, (x, y) -> {
-                                    try {
-                                        setter.invoke(x, y);
-                                    } catch (Throwable e) {
-                                        throw new IllegalStateException(e);
-                                    }
-                                });
+                                speedNote, annotationFunction, annotationsByTypeFunction, toString, getter, setter);
                     } else {
                         return new UnifiedReflectiveMemberAccessor(declaringClass, methodName, returnType, genericReturnType,
-                                speedNote,
-                                annotationFunction, annotationsByTypeFunction, toString, x -> {
-                                    try {
-                                        return getter.invoke(x);
-                                    } catch (Throwable e) {
-                                        throw new IllegalStateException(e);
-                                    }
-                                }, null);
+                                speedNote, annotationFunction, annotationsByTypeFunction, toString, getter, null);
                     }
                 }
             } catch (Throwable e) {
