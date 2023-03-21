@@ -2,6 +2,8 @@ package org.optaplanner.core.impl.domain.common.accessor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.invoke.MethodHandles;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -11,8 +13,8 @@ class ReflectionBeanPropertyMemberAccessorTest {
 
     @Test
     void methodAnnotatedEntity() throws NoSuchMethodException {
-        ReflectionBeanPropertyMemberAccessor memberAccessor = new ReflectionBeanPropertyMemberAccessor(
-                TestdataEntity.class.getMethod("getValue"));
+        MemberAccessor memberAccessor =
+                UnifiedReflectiveMemberAccessor.of(TestdataEntity.class.getMethod("getValue"), false, MethodHandles.lookup());
         assertThat(memberAccessor.getName()).isEqualTo("value");
         assertThat(memberAccessor.getType()).isEqualTo(TestdataValue.class);
         assertThat(memberAccessor.getAnnotation(PlanningVariable.class)).isNotNull();
