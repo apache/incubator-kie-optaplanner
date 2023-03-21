@@ -1,10 +1,10 @@
 package org.optaplanner.core.impl.domain.common.accessor;
 
 import java.lang.annotation.Annotation;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,9 +46,11 @@ public final class MemberAccessorFactory {
 
     private static MemberAccessor buildReflectiveMemberAccessor(Member member, MemberAccessorType memberAccessorType,
             Class<? extends Annotation> annotationClass) {
+        // TODO In JDK 9 use MethodHandles.privateLookupIn(Class, MethodHandles.lookup())
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
         if (member instanceof Field) {
             Field field = (Field) member;
-            return new ReflectionFieldMemberAccessor(field);
+            return UnifiedReflectiveMemberAccessor.of(field, lookup);
         } else if (member instanceof Method) {
             Method method = (Method) member;
             MemberAccessor memberAccessor;
@@ -56,7 +58,7 @@ public final class MemberAccessorFactory {
                 case FIELD_OR_READ_METHOD:
                     if (!ReflectionHelper.isGetterMethod(method)) {
                         ReflectionHelper.assertReadMethod(method, annotationClass);
-                        memberAccessor = new ReflectionMethodMemberAccessor(method);
+                        memberAccessor = UnifiedReflectiveMemberAccessor.of(method, lookup);
                         break;
                     }
                     // Intentionally fall through (no break)
@@ -64,14 +66,7 @@ public final class MemberAccessorFactory {
                 case FIELD_OR_GETTER_METHOD_WITH_SETTER:
                     boolean getterOnly = memberAccessorType != MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER;
                     ReflectionHelper.assertGetterMethod(method, annotationClass);
-                    if (Modifier.isPublic(method.getModifiers())
-                            // HACK The lambda approach doesn't support classes from another classloader (such as loaded by KieContainer) in JDK 8
-                            // TODO In JDK 9 use MethodHandles.privateLookupIn(Class, MethodHandles.lookup())
-                            && method.getDeclaringClass().getClassLoader().equals(MemberAccessor.class.getClassLoader())) {
-                        memberAccessor = new LambdaBeanPropertyMemberAccessor(method, getterOnly);
-                    } else {
-                        memberAccessor = new ReflectionBeanPropertyMemberAccessor(method, getterOnly);
-                    }
+                    memberAccessor = UnifiedReflectiveMemberAccessor.of(method, getterOnly, lookup);
                     break;
                 default:
                     throw new IllegalStateException("The memberAccessorType (" + memberAccessorType

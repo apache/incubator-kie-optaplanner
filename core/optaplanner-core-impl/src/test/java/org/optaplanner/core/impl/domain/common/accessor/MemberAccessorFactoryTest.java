@@ -24,8 +24,6 @@ class MemberAccessorFactoryTest {
                 MemberAccessorFactory.buildMemberAccessor(TestdataFieldAnnotatedEntity.class.getDeclaredField("value"),
                         MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, PlanningVariable.class,
                         DomainAccessType.REFLECTION, null);
-        assertThat(memberAccessor)
-                .isInstanceOf(ReflectionFieldMemberAccessor.class);
         assertThat(memberAccessor.getName()).isEqualTo("value");
         assertThat(memberAccessor.getType()).isEqualTo(TestdataValue.class);
 
@@ -43,8 +41,6 @@ class MemberAccessorFactoryTest {
                 TestdataVisibilityModifierSolution.class.getDeclaredField("privateField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
                 DomainAccessType.REFLECTION, null);
-        assertThat(memberAccessor)
-                .isInstanceOf(ReflectionFieldMemberAccessor.class);
         assertThat(memberAccessor.getName()).isEqualTo("privateField");
         assertThat(memberAccessor.getType()).isEqualTo(String.class);
 
@@ -62,8 +58,6 @@ class MemberAccessorFactoryTest {
                 TestdataVisibilityModifierSolution.class.getDeclaredField("publicField"),
                 MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER, ProblemFactProperty.class,
                 DomainAccessType.REFLECTION, null);
-        assertThat(memberAccessor)
-                .isInstanceOf(ReflectionFieldMemberAccessor.class);
         assertThat(memberAccessor.getName()).isEqualTo("publicField");
         assertThat(memberAccessor.getType()).isEqualTo(String.class);
 

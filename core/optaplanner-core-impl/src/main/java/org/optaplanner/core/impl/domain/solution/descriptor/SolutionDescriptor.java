@@ -49,7 +49,6 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessorFactory;
-import org.optaplanner.core.impl.domain.common.accessor.ReflectionFieldMemberAccessor;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.lookup.ClassAndPlanningIdComparator;
@@ -1073,8 +1072,7 @@ public class SolutionDescriptor<Solution_> {
             throw new IllegalArgumentException("The solutionClass (" + solutionClass
                     + ")'s " + (isFact ? "factCollectionProperty" : "entityCollectionProperty") + " ("
                     + memberAccessor + ") should never return null.\n"
-                    + (memberAccessor instanceof ReflectionFieldMemberAccessor ? ""
-                            : "Maybe the getter/method always returns null instead of the actual data.\n")
+                    + "Maybe the getter/method always returns null instead of the actual data.\n"
                     + "Maybe that property (" + memberAccessor.getName()
                     + ") was set with null instead of an empty collection/array when the class ("
                     + solutionClass.getSimpleName() + ") instance was created.");

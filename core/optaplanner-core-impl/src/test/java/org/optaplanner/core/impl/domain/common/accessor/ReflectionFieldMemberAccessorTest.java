@@ -2,6 +2,8 @@ package org.optaplanner.core.impl.domain.common.accessor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.lang.invoke.MethodHandles;
+
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -11,8 +13,8 @@ class ReflectionFieldMemberAccessorTest {
 
     @Test
     void fieldAnnotatedEntity() throws NoSuchFieldException {
-        ReflectionFieldMemberAccessor memberAccessor = new ReflectionFieldMemberAccessor(
-                TestdataFieldAnnotatedEntity.class.getDeclaredField("value"));
+        MemberAccessor memberAccessor = UnifiedReflectiveMemberAccessor
+                .of(TestdataFieldAnnotatedEntity.class.getDeclaredField("value"), MethodHandles.lookup());
         assertThat(memberAccessor.getName()).isEqualTo("value");
         assertThat(memberAccessor.getType()).isEqualTo(TestdataValue.class);
         assertThat(memberAccessor.getAnnotation(PlanningVariable.class)).isNotNull();
