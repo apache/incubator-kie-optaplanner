@@ -43,7 +43,7 @@ final class KOptUtils {
      *         {@link KOptDescriptor#getRemovedEdgeIndexToTourOrder()}.
      * @param kOptDescriptor The descriptor to calculate cycles for
      */
-    static <Node_> KOptCycle getCyclesForPermutation(KOptDescriptor<Node_> kOptDescriptor) {
+    static KOptCycle getCyclesForPermutation(KOptDescriptor<?> kOptDescriptor) {
         int cycleCount = 0;
         int[] removedEdgeIndexToTourOrder = kOptDescriptor.getRemovedEdgeIndexToTourOrder();
         int[] addedEdgeToOtherEndpoint = kOptDescriptor.getAddedEdgeToOtherEndpoint();
@@ -106,8 +106,8 @@ final class KOptUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <Solution_, Node_> Function<Node_, Node_> getSuccessorFunction(
-            ListVariableDescriptor<Solution_> listVariableDescriptor,
+    public static <Node_> Function<Node_, Node_> getSuccessorFunction(
+            ListVariableDescriptor<?> listVariableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply,
             IndexVariableSupply indexVariableSupply) {
         return (node) -> {
@@ -123,8 +123,8 @@ final class KOptUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <Solution_, Node_> Function<Node_, Node_> getPredecessorFunction(
-            ListVariableDescriptor<Solution_> listVariableDescriptor,
+    public static <Node_> Function<Node_, Node_> getPredecessorFunction(
+            ListVariableDescriptor<?> listVariableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply,
             IndexVariableSupply indexVariableSupply) {
         return (node) -> {
