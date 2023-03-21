@@ -14,7 +14,7 @@ import java.util.function.Function;
 
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 
-public final class DefaultMemberAccessor implements MemberAccessor {
+final class DefaultMemberAccessor implements MemberAccessor {
 
     public static <T extends Annotation> MemberAccessor of(Field field, MethodHandles.Lookup lookup) {
         field.setAccessible(true);

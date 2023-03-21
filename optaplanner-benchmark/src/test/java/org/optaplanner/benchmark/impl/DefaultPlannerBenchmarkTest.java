@@ -83,6 +83,7 @@ class DefaultPlannerBenchmarkTest {
 
         DefaultPlannerBenchmark benchmark = (DefaultPlannerBenchmark) benchmarkFactory.buildPlannerBenchmark(solution);
 
-        assertThatExceptionOfType(PlannerBenchmarkException.class).isThrownBy(benchmark::benchmark).withCause(exception);
+        assertThatExceptionOfType(PlannerBenchmarkException.class).isThrownBy(benchmark::benchmark)
+                .withRootCauseExactlyInstanceOf(exception.getClass());
     }
 }
