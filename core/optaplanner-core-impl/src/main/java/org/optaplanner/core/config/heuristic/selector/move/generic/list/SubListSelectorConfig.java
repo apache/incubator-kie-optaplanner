@@ -22,17 +22,17 @@ import org.optaplanner.core.config.util.ConfigUtils;
 public class SubListSelectorConfig extends SelectorConfig<SubListSelectorConfig> {
 
     @XmlAttribute
-    protected String id = null;
+    private String id = null;
     @XmlAttribute
-    protected String mimicSelectorRef = null;
+    private String mimicSelectorRef = null;
 
     @XmlElement(name = "valueSelector")
     private ValueSelectorConfig valueSelectorConfig = null;
     @XmlElement(name = "nearbySelection")
     private NearbySelectionConfig nearbySelectionConfig = null;
 
-    protected Integer minimumSubListSize = null;
-    protected Integer maximumSubListSize = null;
+    private Integer minimumSubListSize = null;
+    private Integer maximumSubListSize = null;
 
     public SubListSelectorConfig() {
     }
