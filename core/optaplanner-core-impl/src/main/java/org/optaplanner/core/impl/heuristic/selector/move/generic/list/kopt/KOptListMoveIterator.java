@@ -15,7 +15,7 @@ import org.optaplanner.core.impl.heuristic.move.NoChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
-final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIterator<Move<Solution_>> {
+final class KOptListMoveIterator<Solution_, Node_, Entity_> extends UpcomingSelectionIterator<Move<Solution_>> {
 
     private final Random workingRandom;
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
@@ -29,7 +29,7 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
     private final int maxK;
     private final int maxCyclesPatchedInInfeasibleMove;
 
-    private Iterator<Node_> entityIterator;
+    private Iterator<Entity_> entityIterator;
 
     public KOptListMoveIterator(Random workingRandom,
             ListVariableDescriptor<Solution_> listVariableDescriptor,
@@ -54,7 +54,7 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
     }
 
     @SuppressWarnings("unchecked")
-    private Iterator<Node_> getValueIteratorForEntity(Object entity) {
+    private Iterator<Node_> getValueIteratorForEntity(Entity_ entity) {
         // valueSelector.iterator(entity) can select values on different entities,
         // so to only pick values on the selected entity, pick random elements from
         // its list variable
@@ -66,7 +66,7 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
     @Override
     protected Move<Solution_> createUpcomingSelection() {
         int k = workingRandom.nextInt(maxK - minK + 1) + minK;
-        Node_ entity = pickEntityWithMinimumRouteLength(2 * k);
+        Entity_ entity = pickEntityWithMinimumRouteLength(2 * k);
         while (entity == null) {
             k--;
             if (k <= 1) {
@@ -78,8 +78,8 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
         }
         if (k == 2) {
             Iterator<Node_> valueIterator = getValueIteratorForEntity(entity);
-            Object firstEndpoint = valueIterator.next();
-            Object secondEndpoint = valueIterator.next();
+            Node_ firstEndpoint = valueIterator.next();
+            Node_ secondEndpoint = valueIterator.next();
             while (secondEndpoint == firstEndpoint) {
                 secondEndpoint = valueIterator.next();
             }
@@ -95,24 +95,24 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
     }
 
     @SuppressWarnings("unchecked")
-    private Node_ pickEntityWithMinimumRouteLength(int minimumLength) {
+    private Entity_ pickEntityWithMinimumRouteLength(int minimumLength) {
         if (entityIterator == null) {
-            entityIterator = (Iterator<Node_>) entitySelector.endingIterator();
+            entityIterator = (Iterator<Entity_>) entitySelector.endingIterator();
         }
         for (int i = 0; i < 2; i++) {
             while (entityIterator.hasNext()) {
-                Node_ entity = entityIterator.next();
+                Entity_ entity = entityIterator.next();
                 if (listVariableDescriptor.getListSize(entity) >= minimumLength) {
                     return entity;
                 }
             }
-            entityIterator = (Iterator<Node_>) entitySelector.endingIterator();
+            entityIterator = (Iterator<Entity_>) entitySelector.endingIterator();
         }
         return null;
     }
 
     @SuppressWarnings("unchecked")
-    private KOptDescriptor<Node_> pickKOptMove(Node_ entity, int k) {
+    private KOptDescriptor<Node_> pickKOptMove(Entity_ entity, int k) {
         // The code in the paper used 1-index arrays
         Node_[] pickedValues = (Node_[]) new Object[2 * k + 1];
         Iterator<Node_> valueIterator = getValueIteratorForEntity(entity);
