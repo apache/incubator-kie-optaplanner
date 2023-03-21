@@ -200,7 +200,7 @@ final class KOptDescriptor<Node_> {
      * @param entity
      * @return
      */
-    public <Solution_> KOptListMove<Solution_, Node_> getKOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
+    public <Solution_> KOptListMove<Solution_> getKOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
             IndexVariableSupply indexVariableSupply,
             Object entity) {
         if (!isFeasible()) {

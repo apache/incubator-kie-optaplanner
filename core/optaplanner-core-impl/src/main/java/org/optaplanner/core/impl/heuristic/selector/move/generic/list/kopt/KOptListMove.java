@@ -16,20 +16,19 @@ import org.optaplanner.core.impl.util.Pair;
 /**
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
- * @param <Node_> The value type
  */
-final class KOptListMove<Solution_, Node_> extends AbstractMove<Solution_> {
+final class KOptListMove<Solution_> extends AbstractMove<Solution_> {
 
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final Object entity;
-    private final KOptDescriptor<Node_> descriptor;
+    private final KOptDescriptor<?> descriptor;
     private final List<FlipSublistAction> equivalent2Opts;
     private final KOptAffectedElements affectedElementsInfo;
     private final int postShiftAmount;
 
     public KOptListMove(ListVariableDescriptor<Solution_> listVariableDescriptor,
             Object entity,
-            KOptDescriptor<Node_> descriptor,
+            KOptDescriptor<?> descriptor,
             List<FlipSublistAction> equivalent2Opts,
             int postShiftAmount) {
         this.listVariableDescriptor = listVariableDescriptor;
