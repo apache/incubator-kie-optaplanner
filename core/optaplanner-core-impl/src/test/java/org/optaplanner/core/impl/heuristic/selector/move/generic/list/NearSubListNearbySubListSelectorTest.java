@@ -59,9 +59,10 @@ class NearSubListNearbySubListSelectorTest {
                 new NearSubListNearbySubListSelector<>(childSubListSelector, mockReplayingSubListSelector,
                         new TestDistanceMeter(), new TestNearbyRandom());
 
-        // Each row is consumed by 1 next() call of the RandomSubListNearbySubListIterator.
+        // Each row is consumed by one next() call of the RandomSubListNearbySubListIterator.
         // The first number in each row becomes the index of a destination in the nearby matrix.
         // So, in this case, we always select the given origin's (v5) 3rd nearest destination (v2).
+        // The second number determines the "right" subList size.
         TestRandom testRandom = new TestRandom(
                 3, 0,
                 3, 1,
@@ -120,9 +121,10 @@ class NearSubListNearbySubListSelectorTest {
                 new NearSubListNearbySubListSelector<>(childSubListSelector, mockReplayingSubListSelector,
                         new TestDistanceMeter(), new TestNearbyRandom());
 
-        // Each row is consumed by 1 next() call of the RandomSubListNearbySubListIterator.
+        // Each row is consumed by one next() call of the RandomSubListNearbySubListIterator.
         // The first number in each row becomes the index of a destination in the nearby matrix.
         // So, in this case, we always select the given origin's (v5) 4th nearest destination (v1).
+        // The second number determines the "right" subList size.
         TestRandom testRandom = new TestRandom(
                 4, 0,
                 4, 1,
