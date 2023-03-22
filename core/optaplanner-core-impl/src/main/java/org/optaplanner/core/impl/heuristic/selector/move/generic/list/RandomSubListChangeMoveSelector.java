@@ -53,6 +53,10 @@ public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelec
         return selectReversingMoveToo;
     }
 
+    SubListSelector<Solution_> getSubListSelector() {
+        return subListSelector;
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + subListSelector + ", " + destinationSelector + ")";

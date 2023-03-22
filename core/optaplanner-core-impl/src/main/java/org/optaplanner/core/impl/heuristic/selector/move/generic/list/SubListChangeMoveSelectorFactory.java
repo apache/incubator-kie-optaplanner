@@ -160,20 +160,16 @@ public class SubListChangeMoveSelectorFactory<Solution_>
                                         .withVariableName(variableDescriptor.getVariableName())));
 
         SubListSelectorConfig subListSelectorConfig = subListChangeMoveSelectorConfig.getSubListSelectorConfig();
-        SubListConfigUtil.transferDeprecatedProperty(
-                "minimumSubListSize",
+        SubListConfigUtil.transferDeprecatedMinimumSubListSize(
                 subListChangeMoveSelectorConfig,
                 SubListChangeMoveSelectorConfig::getMinimumSubListSize,
-                subListSelectorConfig,
-                SubListSelectorConfig::getMinimumSubListSize,
-                SubListSelectorConfig::setMinimumSubListSize);
-        SubListConfigUtil.transferDeprecatedProperty(
-                "maximumSubListSize",
+                "subListSelector",
+                subListSelectorConfig);
+        SubListConfigUtil.transferDeprecatedMaximumSubListSize(
                 subListChangeMoveSelectorConfig,
                 SubListChangeMoveSelectorConfig::getMaximumSubListSize,
-                subListSelectorConfig,
-                SubListSelectorConfig::getMaximumSubListSize,
-                SubListSelectorConfig::setMaximumSubListSize);
+                "subListSelector",
+                subListSelectorConfig);
 
         if (subListSelectorConfig.getMimicSelectorRef() == null) {
             subListSelectorConfig.getValueSelectorConfig().setVariableName(variableDescriptor.getVariableName());
