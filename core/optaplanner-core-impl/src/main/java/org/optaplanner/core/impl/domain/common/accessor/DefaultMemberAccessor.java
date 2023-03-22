@@ -122,7 +122,8 @@ public final class DefaultMemberAccessor implements MemberAccessor {
                 MethodType.methodType(Object.class, Object.class),
                 methodHandle,
                 MethodType.methodType(returnType, declaringClass))
-                .getTarget().invokeExact();
+                .getTarget()
+                .invokeExact();
     }
 
     private static BiConsumer unreflectSetterMethod(Method setterMethod, MethodHandles.Lookup lookup) {
@@ -154,7 +155,7 @@ public final class DefaultMemberAccessor implements MemberAccessor {
                 methodHandle,
                 MethodType.methodType(void.class, declaringClass, propertyType))
                 .getTarget()
-                .invoke();
+                .invokeExact();
     }
 
     public static <T extends Annotation> MemberAccessor of(Method method, boolean getterOnly, MethodHandles.Lookup lookup) {
