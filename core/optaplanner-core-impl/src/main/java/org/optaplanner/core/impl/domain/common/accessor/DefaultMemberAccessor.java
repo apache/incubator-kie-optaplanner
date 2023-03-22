@@ -14,7 +14,11 @@ import java.util.function.Function;
 
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 
-final class DefaultMemberAccessor implements MemberAccessor {
+/**
+ * This is the sole implementation of {@link MemberAccessor},
+ * so that the JVM can use monomorphic access and maximize performance.
+ */
+public final class DefaultMemberAccessor implements MemberAccessor {
 
     public static <T extends Annotation> MemberAccessor of(Field field, MethodHandles.Lookup lookup) {
         field.setAccessible(true);
@@ -275,8 +279,7 @@ final class DefaultMemberAccessor implements MemberAccessor {
         return (T[]) annotationsByTypeFunction.apply(annotationClass);
     }
 
-    @Override
-    public <Fact_, Result_> Function<Fact_, Result_> getGetterFunction() {
+    public Function getGetter() {
         return getter;
     }
 

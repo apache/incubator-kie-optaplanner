@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import static org.optaplanner.core.api.score.stream.Joiners.lessThan;
 
 import java.util.Arrays;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,11 +25,14 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintStream;
 import org.optaplanner.core.api.score.stream.bi.BiJoiner;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintStream;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.common.accessor.DefaultMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Constraint> implements ConstraintFactory {
+
+    private final Map<MemberAccessor, Function> planningIdGetterFunctionMap = new IdentityHashMap<>();
 
     @Override
     public <A> UniConstraintStream<A> forEach(Class<A> sourceClass) {
@@ -63,7 +67,15 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
                     + PlanningId.class.getSimpleName() + " annotation,"
                     + " so the pairs cannot be made unique ([A,B] vs [B,A]).");
         }
-        Function<A, Comparable> planningIdGetter = planningIdMemberAccessor.getGetterFunction();
+        // Facilitates node-sharing by keeping the same accessor function instance for each accessor.
+        Function<A, Comparable> planningIdGetter =
+                planningIdGetterFunctionMap.computeIfAbsent(planningIdMemberAccessor, accessor -> {
+                    if (accessor instanceof DefaultMemberAccessor) {
+                        return ((DefaultMemberAccessor) accessor).getGetter();
+                    } else {
+                        return accessor::executeGetter;
+                    }
+                });
         return (DefaultBiJoiner<A, A>) lessThan(planningIdGetter);
     }
 
