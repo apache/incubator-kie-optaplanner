@@ -22,8 +22,16 @@ public class ListUnassignMove<Solution_> extends AbstractMove<Solution_> {
         this.sourceIndex = sourceIndex;
     }
 
-    private Object getMovedValue() {
+    public int getSourceIndex() {
+        return sourceIndex;
+    }
+
+    public Object getMovedValue() {
         return variableDescriptor.getElement(sourceEntity, sourceIndex);
+    }
+
+    public Object getSourceEntity() {
+        return sourceEntity;
     }
 
     // ************************************************************************

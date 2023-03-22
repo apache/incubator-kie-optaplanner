@@ -7,10 +7,7 @@ import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianPr
 import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.factory.MoveIteratorFactoryConfig;
 import org.optaplanner.core.config.heuristic.selector.move.factory.MoveListFactoryConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.PillarChangeMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.PillarSwapMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.*;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.KOptMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorConfig;
@@ -25,10 +22,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.composite.CartesianProd
 import org.optaplanner.core.impl.heuristic.selector.move.composite.UnionMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactoryFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactoryFactory;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelectorFactory;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarChangeMoveSelectorFactory;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarSwapMoveSelectorFactory;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMoveSelectorFactory;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.*;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.KOptMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainChangeMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainSwapMoveSelectorFactory;
@@ -76,6 +70,8 @@ public interface MoveSelectorFactory<Solution_> {
             return new KOptMoveSelectorFactory<>((KOptMoveSelectorConfig) moveSelectorConfig);
         } else if (KOptListMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
             return new KOptListMoveSelectorFactory<>((KOptListMoveSelectorConfig) moveSelectorConfig);
+        } else if (RuinMoveSelectorConfig.class.isAssignableFrom(moveSelectorConfig.getClass())) {
+            return new RuinMoveSelectorFactory<>((RuinMoveSelectorConfig) moveSelectorConfig);
         } else {
             throw new IllegalArgumentException(String.format("Unknown %s type: (%s).",
                     MoveSelectorConfig.class.getSimpleName(), moveSelectorConfig.getClass().getName()));

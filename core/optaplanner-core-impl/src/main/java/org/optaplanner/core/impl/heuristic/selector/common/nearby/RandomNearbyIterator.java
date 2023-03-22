@@ -14,6 +14,8 @@ public final class RandomNearbyIterator extends SelectionIterator<Object> {
     private final int nearbySize;
     private final boolean discardNearbyIndexZero;
 
+    private Object origin;
+
     public RandomNearbyIterator(NearbyDistanceMatrix<Object, Object> nearbyDistanceMatrix, NearbyRandom nearbyRandom,
             Random workingRandom, Iterator<Object> replayingIterator, long childSize, boolean discardNearbyIndexZero) {
         this.nearbyDistanceMatrix = nearbyDistanceMatrix;
@@ -31,7 +33,7 @@ public final class RandomNearbyIterator extends SelectionIterator<Object> {
 
     @Override
     public boolean hasNext() {
-        return replayingIterator.hasNext() && nearbySize > 0;
+        return (origin != null || replayingIterator.hasNext()) && nearbySize > 0;
     }
 
     @Override
@@ -43,7 +45,9 @@ public final class RandomNearbyIterator extends SelectionIterator<Object> {
          * As a result, origin here will be constant unless next() on the original recording iterator is called
          * first.
          */
-        Object origin = replayingIterator.next();
+        if (replayingIterator.hasNext()) {
+            origin = replayingIterator.next();
+        }
         int nearbyIndex = nearbyRandom.nextInt(workingRandom, nearbySize);
         if (discardNearbyIndexZero) {
             nearbyIndex++;

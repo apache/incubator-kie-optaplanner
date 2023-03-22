@@ -13,6 +13,8 @@ import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfi
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 
 public abstract class AbstractFromConfigFactory<Solution_, Config_ extends AbstractConfig<Config_>> {
@@ -103,11 +105,8 @@ public abstract class AbstractFromConfigFactory<Solution_, Config_ extends Abstr
         return variableDescriptorList.iterator().next();
     }
 
-    protected List<GenuineVariableDescriptor<Solution_>> deduceVariableDescriptorList(
-            EntityDescriptor<Solution_> entityDescriptor, List<String> variableNameIncludeList) {
-        Objects.requireNonNull(entityDescriptor);
-        List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
-                entityDescriptor.getGenuineVariableDescriptorList();
+    private Collection<? extends VariableDescriptor<Solution_>> deduceDescriptors(EntityDescriptor<Solution_> entityDescriptor,
+            List<String> variableNameIncludeList, Collection<? extends VariableDescriptor<Solution_>> variableDescriptorList) {
         if (variableNameIncludeList == null) {
             return variableDescriptorList;
         }
@@ -121,5 +120,23 @@ public abstract class AbstractFromConfigFactory<Solution_, Config_ extends Abstr
                                 + ") which does not exist in the entity (" + entityDescriptor.getEntityClass()
                                 + ")'s variableDescriptorList (" + variableDescriptorList + ").")))
                 .collect(Collectors.toList());
+    }
+
+    protected List<GenuineVariableDescriptor<Solution_>> deduceVariableDescriptorList(
+            EntityDescriptor<Solution_> entityDescriptor, List<String> variableNameIncludeList) {
+        Objects.requireNonNull(entityDescriptor);
+        List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
+                entityDescriptor.getGenuineVariableDescriptorList();
+        return (List<GenuineVariableDescriptor<Solution_>>) deduceDescriptors(entityDescriptor, variableNameIncludeList,
+                variableDescriptorList);
+    }
+
+    protected Collection<ShadowVariableDescriptor<Solution_>> deduceShadowVariableDescriptorList(
+            EntityDescriptor<Solution_> entityDescriptor, List<String> variableNameIncludeList) {
+        Objects.requireNonNull(entityDescriptor);
+        Collection<ShadowVariableDescriptor<Solution_>> variableDescriptorList =
+                entityDescriptor.getShadowVariableDescriptors();
+        return (Collection<ShadowVariableDescriptor<Solution_>>) deduceDescriptors(entityDescriptor, variableNameIncludeList,
+                variableDescriptorList);
     }
 }

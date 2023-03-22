@@ -1,7 +1,6 @@
 package org.optaplanner.core.impl.testdata.util;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.optaplanner.core.impl.heuristic.move.CompositeMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -9,11 +8,8 @@ import org.optaplanner.core.impl.heuristic.selector.list.ElementRef;
 import org.optaplanner.core.impl.heuristic.selector.list.SubList;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListAssignMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListChangeMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListSwapMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListChangeMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListSwapMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainRuinMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.*;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 
 public interface CodeAssertable {
@@ -21,7 +17,9 @@ public interface CodeAssertable {
     String getCode();
 
     static CodeAssertable convert(Object o) {
-        Objects.requireNonNull(o);
+        if (o == null) {
+            return () -> "null";
+        }
         if (o instanceof CodeAssertable) {
             return (CodeAssertable) o;
         } else if (o instanceof ChangeMove) {
@@ -48,6 +46,16 @@ public interface CodeAssertable {
                     + " {null->"
                     + convert(listAssignMove.getDestinationEntity())
                     + "[" + listAssignMove.getDestinationIndex() + "]}";
+        } else if (o instanceof ListUnassignMove) {
+            ListUnassignMove<?> listUnassignMove = (ListUnassignMove<?>) o;
+            return () -> convert(listUnassignMove.getMovedValue())
+                    + " {"
+                    + convert(listUnassignMove.getSourceEntity())
+                    + "[" + listUnassignMove.getSourceIndex() + "]"
+                    + " -> null}";
+        } else if (o instanceof SubChainRuinMove) {
+            SubChainRuinMove<?> subChainRuinMove = (SubChainRuinMove<?>) o;
+            return subChainRuinMove::toString;
         } else if (o instanceof ListChangeMove) {
             ListChangeMove<?> listChangeMove = (ListChangeMove<?>) o;
             return () -> convert(listChangeMove.getMovedValue())

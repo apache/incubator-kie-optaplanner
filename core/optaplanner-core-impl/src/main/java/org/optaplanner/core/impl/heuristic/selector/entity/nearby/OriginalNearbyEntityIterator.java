@@ -12,6 +12,8 @@ final class OriginalNearbyEntityIterator extends SelectionIterator<Object> {
     private final NearbyDistanceMatrix<Object, Object> nearbyDistanceMatrix;
     private int nextNearbyIndex;
 
+    private Object origin;
+
     public OriginalNearbyEntityIterator(NearbyDistanceMatrix<Object, Object> nearbyDistanceMatrix,
             Iterator<Object> replayingOriginEntityIterator, long childSize, boolean discardNearbyIndexZero) {
         this.nearbyDistanceMatrix = nearbyDistanceMatrix;
@@ -22,7 +24,7 @@ final class OriginalNearbyEntityIterator extends SelectionIterator<Object> {
 
     @Override
     public boolean hasNext() {
-        return replayingOriginEntityIterator.hasNext() && nextNearbyIndex < childSize;
+        return (origin != null || replayingOriginEntityIterator.hasNext()) && nextNearbyIndex < childSize;
     }
 
     @Override
@@ -34,7 +36,9 @@ final class OriginalNearbyEntityIterator extends SelectionIterator<Object> {
          * As a result, origin here will be constant unless next() on the original recording iterator is called
          * first.
          */
-        Object origin = replayingOriginEntityIterator.next();
+        if (replayingOriginEntityIterator.hasNext()) {
+            origin = replayingOriginEntityIterator.next();
+        }
         Object next = nearbyDistanceMatrix.getDestination(origin, nextNearbyIndex);
         nextNearbyIndex++;
         return next;

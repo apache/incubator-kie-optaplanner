@@ -886,14 +886,15 @@ public class SolutionDescriptor<Solution_> {
         }
     }
 
-    public void visitEntitiesByEntityClass(Solution_ solution, Class<?> entityClass, Consumer<Object> visitor) {
-        for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
+    private void visitByClass(Solution_ solution, Class<?> entityClass, Consumer<Object> visitor,
+            Map<String, MemberAccessor> memberAccessorMap, Map<String, MemberAccessor> collectionMemberAccessorMap) {
+        for (MemberAccessor entityMemberAccessor : memberAccessorMap.values()) {
             Object entity = extractMemberObject(entityMemberAccessor, solution);
             if (entityClass.isInstance(entity)) {
                 visitor.accept(entity);
             }
         }
-        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
+        for (MemberAccessor entityCollectionMemberAccessor : collectionMemberAccessorMap.values()) {
             Optional<Class<?>> optionalTypeParameter = ConfigUtils.extractCollectionGenericTypeParameterLeniently(
                     "solutionClass", entityCollectionMemberAccessor.getDeclaringClass(),
                     entityCollectionMemberAccessor.getType(),
@@ -932,6 +933,14 @@ public class SolutionDescriptor<Solution_> {
         }
     }
 
+    private void visitEntitiesByEntityClass(Solution_ solution, Class<?> entityClass, Consumer<Object> visitor) {
+        visitByClass(solution, entityClass, visitor, entityMemberAccessorMap, entityCollectionMemberAccessorMap);
+    }
+
+    private void visitAllProblemFactsByClass(Solution_ solution, Class<?> entityClass, Consumer<Object> visitor) {
+        visitByClass(solution, entityClass, visitor, problemFactMemberAccessorMap, problemFactCollectionMemberAccessorMap);
+    }
+
     public void visitAllProblemFacts(Solution_ solution, Consumer<Object> visitor) {
         // Visits facts.
         for (MemberAccessor accessor : problemFactMemberAccessorMap.values()) {
@@ -952,6 +961,11 @@ public class SolutionDescriptor<Solution_> {
     public void visitAll(Solution_ solution, Consumer<Object> visitor) {
         visitAllProblemFacts(solution, visitor);
         visitAllEntities(solution, visitor);
+    }
+
+    public void visitAll(Solution_ solution, Class<?> entityClass, Consumer<Object> visitor) {
+        visitAllProblemFactsByClass(solution, entityClass, visitor);
+        visitEntitiesByEntityClass(solution, entityClass, visitor);
     }
 
     /**

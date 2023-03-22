@@ -103,6 +103,11 @@ public class CompositeMove<Solution_> implements Move<Solution_> {
     }
 
     @Override
+    public void doMoveOnly(ScoreDirector<Solution_> scoreDirector) {
+        Arrays.stream(moves).filter(move -> move.isMoveDoable(scoreDirector)).forEach(move -> move.doMoveOnly(scoreDirector));
+    }
+
+    @Override
     public CompositeMove<Solution_> rebase(ScoreDirector<Solution_> destinationScoreDirector) {
         Move<Solution_>[] rebasedMoves = new Move[moves.length];
         for (int i = 0; i < moves.length; i++) {

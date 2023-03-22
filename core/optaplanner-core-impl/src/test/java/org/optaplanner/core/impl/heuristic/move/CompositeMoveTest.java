@@ -81,6 +81,23 @@ class CompositeMoveTest {
     }
 
     @Test
+    void doMoveOnly() {
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
+                PlannerTestUtils.mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
+        DummyMove a = mock(DummyMove.class);
+        when(a.isMoveDoable(any())).thenReturn(true);
+        DummyMove b = mock(DummyMove.class);
+        when(b.isMoveDoable(any())).thenReturn(true);
+        DummyMove c = mock(DummyMove.class);
+        when(c.isMoveDoable(any())).thenReturn(true);
+        CompositeMove<TestdataSolution> move = new CompositeMove<>(a, b, c);
+        move.doMoveOnly(scoreDirector);
+        verify(a, times(1)).doMoveOnly(scoreDirector);
+        verify(b, times(1)).doMoveOnly(scoreDirector);
+        verify(c, times(1)).doMoveOnly(scoreDirector);
+    }
+
+    @Test
     void rebase() {
         GenuineVariableDescriptor<TestdataSolution> variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
 

@@ -107,12 +107,17 @@ public class PlannerTestUtils {
 
     public static <Solution_> InnerScoreDirector<Solution_, SimpleScore> mockScoreDirector(
             SolutionDescriptor<Solution_> solutionDescriptor) {
+        return mock(InnerScoreDirector.class,
+                AdditionalAnswers.delegatesTo(scoreDirector(solutionDescriptor)));
+    }
+
+    public static <Solution_> InnerScoreDirector<Solution_, SimpleScore> scoreDirector(
+            SolutionDescriptor<Solution_> solutionDescriptor) {
         EasyScoreDirectorFactory<Solution_, SimpleScore> scoreDirectorFactory =
                 new EasyScoreDirectorFactory<>(solutionDescriptor, (solution_) -> SimpleScore.of(0));
         scoreDirectorFactory.setInitializingScoreTrend(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1));
-        return mock(InnerScoreDirector.class,
-                AdditionalAnswers.delegatesTo(scoreDirectorFactory.buildScoreDirector(false, false)));
+        return scoreDirectorFactory.buildScoreDirector(false, false);
     }
 
     public static <Solution_, Score_ extends Score<Score_>> InnerScoreDirector<Solution_, Score_>

@@ -228,6 +228,32 @@ public class SelectorTestUtils {
         }
     }
 
+    public static void assertChain(List<? extends TestdataChainedObject> chainedObjects) {
+        TestdataChainedObject chainedObject = chainedObjects.get(0);
+        for (int i = 1; i < chainedObjects.size(); i++) {
+            TestdataChainedEntity chainedEntity = (TestdataChainedEntity) chainedObjects.get(i);
+            if (!Objects.equals(chainedObject, chainedEntity.getChainedObject())) {
+                fail("Chain assertion failed for chainedEntity (" + chainedEntity + ").\n"
+                        + "Expected: " + chainedObject + "\n"
+                        + "Actual:   " + chainedEntity.getChainedObject() + "\n"
+                        + "Expected chain: " + Arrays.toString(chainedObjects.toArray()) + "\n"
+                        + "Actual chain:   " + Arrays.toString(Arrays.copyOf(chainedObjects.toArray(), i)) + " ... ["
+                        + chainedEntity.getChainedObject() + ", " + chainedEntity + "] ...");
+            }
+            chainedObject = chainedEntity;
+        }
+    }
+
+    public static void assertRuined(List<TestdataChainedEntity> chainedObjects) {
+        for (TestdataChainedEntity chainedEntity : chainedObjects) {
+            if (!Objects.equals(chainedEntity.getChainedObject(), null)) {
+                fail("Chain ruined assertion failed for chainedEntity (" + chainedEntity + ").\n"
+                        + "Expected: " + null + "\n"
+                        + "Actual:   " + chainedEntity.getChainedObject() + "\n");
+            }
+        }
+    }
+
     // ************************************************************************
     // Lifecycle
     // ************************************************************************

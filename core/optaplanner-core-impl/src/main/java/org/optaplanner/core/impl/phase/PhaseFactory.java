@@ -10,6 +10,7 @@ import org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfi
 import org.optaplanner.core.config.phase.NoChangePhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
+import org.optaplanner.core.config.ruin.RuinPhaseConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.constructionheuristic.DefaultConstructionHeuristicPhaseFactory;
 import org.optaplanner.core.impl.exhaustivesearch.DefaultExhaustiveSearchPhaseFactory;
@@ -17,6 +18,7 @@ import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.localsearch.DefaultLocalSearchPhaseFactory;
 import org.optaplanner.core.impl.partitionedsearch.DefaultPartitionedSearchPhaseFactory;
 import org.optaplanner.core.impl.phase.custom.DefaultCustomPhaseFactory;
+import org.optaplanner.core.impl.ruin.RuinPhaseFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -35,6 +37,9 @@ public interface PhaseFactory<Solution_> {
             return new DefaultExhaustiveSearchPhaseFactory<>((ExhaustiveSearchPhaseConfig) phaseConfig);
         } else if (NoChangePhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
             return new NoChangePhaseFactory<>((NoChangePhaseConfig) phaseConfig);
+        }
+        if (RuinPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
+            return new RuinPhaseFactory<>((RuinPhaseConfig) phaseConfig);
         } else {
             throw new IllegalArgumentException(String.format("Unknown %s type: (%s).",
                     PhaseConfig.class.getSimpleName(), phaseConfig.getClass().getName()));
