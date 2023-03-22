@@ -2,9 +2,15 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.optaplanner.core.impl.heuristic.HeuristicConfigPolicyTestUtils.buildHeuristicConfigPolicy;
 
+import java.util.stream.Stream;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
@@ -88,5 +94,63 @@ class SubListChangeMoveSelectorFactoryTest {
                 .isThrownBy(() -> moveSelectorFactory.buildMoveSelector(heuristicConfigPolicy, SelectionCacheType.JUST_IN_TIME,
                         SelectionOrder.RANDOM))
                 .withMessageContaining("not a list planning variable");
+    }
+
+    static SubListChangeMoveSelectorConfig minimumSize_SubListSelector() {
+        SubListChangeMoveSelectorConfig config = new SubListChangeMoveSelectorConfig()
+                .withSubListSelectorConfig(new SubListSelectorConfig().withMinimumSubListSize(10));
+        config.setMinimumSubListSize(10);
+        return config;
+    }
+
+    static SubListChangeMoveSelectorConfig maximumSize_SubListSelector() {
+        SubListChangeMoveSelectorConfig config = new SubListChangeMoveSelectorConfig()
+                .withSubListSelectorConfig(new SubListSelectorConfig().withMaximumSubListSize(10));
+        config.setMaximumSubListSize(10);
+        return config;
+    }
+
+    static Stream<Arguments> wrongConfigurations() {
+        return Stream.of(
+                arguments(minimumSize_SubListSelector(), "minimumSubListSize", "subListSelector"),
+                arguments(maximumSize_SubListSelector(), "maximumSubListSize", "subListSelector"));
+    }
+
+    @ParameterizedTest(name = "{1} + {2}")
+    @MethodSource("wrongConfigurations")
+    void failFast_ifSubListSizeOnBothMoveSelectorAndSubListSelector(
+            SubListChangeMoveSelectorConfig config, String propertyName, String childConfigName) {
+        SubListChangeMoveSelectorFactory<TestdataListSolution> factory = new SubListChangeMoveSelectorFactory<>(config);
+
+        HeuristicConfigPolicy<TestdataListSolution> heuristicConfigPolicy =
+                buildHeuristicConfigPolicy(TestdataListSolution.buildSolutionDescriptor());
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> factory.buildMoveSelector(heuristicConfigPolicy, SelectionCacheType.JUST_IN_TIME,
+                        SelectionOrder.RANDOM))
+                .withMessageContainingAll(propertyName, childConfigName);
+    }
+
+    @Test
+    void transferDeprecatedSubListSizeToChildSelector() {
+        int minimumSubListSize = 21;
+        int maximumSubListSize = 445;
+        SubListChangeMoveSelectorConfig config = new SubListChangeMoveSelectorConfig();
+        config.setMinimumSubListSize(minimumSubListSize);
+        config.setMaximumSubListSize(maximumSubListSize);
+
+        SubListChangeMoveSelectorFactory<TestdataListSolution> factory = new SubListChangeMoveSelectorFactory<>(config);
+
+        HeuristicConfigPolicy<TestdataListSolution> heuristicConfigPolicy =
+                buildHeuristicConfigPolicy(TestdataListSolution.buildSolutionDescriptor());
+
+        RandomSubListChangeMoveSelector<TestdataListSolution> moveSelector =
+                (RandomSubListChangeMoveSelector<TestdataListSolution>) factory
+                        .buildMoveSelector(heuristicConfigPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
+
+        assertThat(((RandomSubListSelector<?>) moveSelector.getSubListSelector()).getMinimumSubListSize())
+                .isEqualTo(minimumSubListSize);
+        assertThat(((RandomSubListSelector<?>) moveSelector.getSubListSelector()).getMaximumSubListSize())
+                .isEqualTo(maximumSubListSize);
     }
 }
