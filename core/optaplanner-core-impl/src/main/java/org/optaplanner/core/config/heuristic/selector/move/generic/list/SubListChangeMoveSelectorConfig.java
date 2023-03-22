@@ -21,13 +21,13 @@ public class SubListChangeMoveSelectorConfig extends MoveSelectorConfig<SubListC
 
     /**
      * @deprecated The minimumSubListSize on the SubListChangeMoveSelectorConfig is deprecated and will be removed in a future
-     *             major version of OptaPlanner. Use {@link SubListSelectorConfig#minimumSubListSize} instead.
+     *             major version of OptaPlanner. Use {@link SubListSelectorConfig#getMinimumSubListSize()} instead.
      */
     @Deprecated(forRemoval = true)
     protected Integer minimumSubListSize = null;
     /**
      * @deprecated The maximumSubListSize on the SubListChangeMoveSelectorConfig is deprecated and will be removed in a future
-     *             major version of OptaPlanner. Use {@link SubListSelectorConfig#maximumSubListSize} instead.
+     *             major version of OptaPlanner. Use {@link SubListSelectorConfig#getMaximumSubListSize()} instead.
      */
     @Deprecated(forRemoval = true)
     protected Integer maximumSubListSize = null;
