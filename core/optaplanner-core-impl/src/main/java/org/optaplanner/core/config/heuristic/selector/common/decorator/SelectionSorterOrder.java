@@ -1,6 +1,6 @@
 package org.optaplanner.core.config.heuristic.selector.common.decorator;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 

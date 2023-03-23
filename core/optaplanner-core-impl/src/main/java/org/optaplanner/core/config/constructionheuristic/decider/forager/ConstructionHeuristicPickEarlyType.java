@@ -1,6 +1,6 @@
 package org.optaplanner.core.config.constructionheuristic.decider.forager;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 @XmlEnum
 public enum ConstructionHeuristicPickEarlyType {

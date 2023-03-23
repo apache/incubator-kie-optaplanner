@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-persistence</artifactId>
-    <version>8.36.0-SNAPSHOT</version>
+    <version>9.36.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-persistence-jpa</artifactId>
@@ -44,26 +44,9 @@
       <artifactId>jakarta.persistence-api</artifactId>
     </dependency>
     <!-- Hibernate -->
-    <dependency>
+    <!--~~(No version provided)~~>--><dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <exclusions>
-        <!-- Duplicates classes of jakarta.activation:jakarta.activation-api -->
-        <exclusion>
-          <groupId>javax.activation</groupId>
-          <artifactId>javax.activation-api</artifactId>
-        </exclusion>
-        <!-- Duplicates classes of jakarta.xml.bind:jakarta.xml.bind-api -->
-        <exclusion>
-          <groupId>javax.xml.bind</groupId>
-          <artifactId>jaxb-api</artifactId>
-        </exclusion>
-        <!-- TODO: remove once the hibernate-core switches to jakarta.transaction:jakarta.transaction-api. -->
-        <exclusion>
-          <groupId>org.jboss.spec.javax.transaction</groupId>
-          <artifactId>jboss-transaction-api_1.2_spec</artifactId>
-        </exclusion>
-      </exclusions>
+      <artifactId>hibernate-core-jakarta</artifactId>
       <!-- Used at compile time by *ScoreHibernateType -->
       <optional>true</optional>
     </dependency>

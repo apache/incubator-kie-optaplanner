@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-build-parent</artifactId>
-    <version>8.36.0-SNAPSHOT</version>
+    <version>9.36.0-SNAPSHOT</version>
     <relativePath>../build/optaplanner-build-parent/pom.xml</relativePath>
   </parent>
 
@@ -72,6 +72,9 @@
       <plugin>
         <groupId>org.revapi</groupId>
         <artifactId>revapi-maven-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
