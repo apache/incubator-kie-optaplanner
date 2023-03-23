@@ -15,7 +15,6 @@ environments:
   quarkus-branch:
     env_vars:
       QUARKUS_BRANCH: '2.16'
-      # Due to https://github.com/quarkusio/quarkus/pull/30860
       QUARKUS_VERSION: 2.16.999-SNAPSHOT
     ids:
     - quarkus
@@ -28,6 +27,7 @@ environments:
     - quarkus
     - lts
     - prod
+    enabled: false
   native-lts:
     env_vars:
       NATIVE: true
@@ -44,17 +44,17 @@ environments:
     auto_generation: false
     ids:
     - ecosystem
-
-productized_branch: true
+productized_branch: false
 disable:
   triggers: false
 repositories:
 - name: optaplanner
-  branch: main
+  branch: 8.36.x
+  is_branch_config_repo: true
 - name: optaplanner-quickstarts
-  branch: development
+  branch: 8.36.x
 - name: optaplanner-website
-  branch: main
+  branch: 8.36.x
 git:
   author:
     name: kiegroup
