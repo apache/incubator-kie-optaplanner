@@ -24,7 +24,7 @@ build:
     build-command:
       upstream: |
         ${{ env.PME_CMD }} ${{ env.PME_ALIGNMENT_PARAMS_kiegroup_drools }}
-        ${{ env.PME_BUILD_SCRIPT_kiegroup_drools }} ${{ env.BUILD_MVN_OPTS }}
+        bash -c "${{ env.PME_BUILD_SCRIPT_kiegroup_drools }} ${{ env.BUILD_MVN_OPTS }} | tee ${{ env.WORKSPACE }}/drools.maven.log"
       after:
         upstream: |
           export DROOLS_VERSION=`${{ env.EXTRACT_VERSION }}`
@@ -33,7 +33,7 @@ build:
     build-command:
       current: |
         ${{ env.PME_CMD }} ${{ env.PME_ALIGNMENT_PARAMS_kiegroup_optaplanner }}
-        ${{ env.PME_BUILD_SCRIPT_kiegroup_optaplanner }} ${{ env.BUILD_MVN_OPTS }}
+        bash -c "${{ env.PME_BUILD_SCRIPT_kiegroup_optaplanner }} ${{ env.BUILD_MVN_OPTS }} | tee ${{ env.WORKSPACE }}/optaplanner.maven.log"
       after:
         current: |
           export OPTAPLANNER_VERSION=`${{ env.EXTRACT_VERSION }}`
@@ -44,9 +44,9 @@ build:
     build-command:
       downstream: |
         ${{ env.PME_CMD }} ${{ env.PME_ALIGNMENT_PARAMS_kiegroup_optaplanner_quickstarts }}
-        ${{ env.PME_BUILD_SCRIPT_kiegroup_optaplanner_quickstarts }} ${{ env.BUILD_MVN_OPTS }}
+        bash -c "${{ env.PME_BUILD_SCRIPT_kiegroup_optaplanner_quickstarts }} ${{ env.BUILD_MVN_OPTS }} | tee ${{ env.WORKSPACE }}/optaplanner_quickstarts.maven.log"
   - project: jboss-integration/rhbop-optaplanner
     build-command:
       downstream: |
         ${{ env.PME_CMD }} ${{ env.PME_ALIGNMENT_PARAMS_jboss_integration_rhbop_optaplanner }}
-        ${{ env.PME_BUILD_SCRIPT_jboss_integration_rhbop_optaplanner }} ${{ env.BUILD_MVN_OPTS }}
+        bash -c "${{ env.PME_BUILD_SCRIPT_jboss_integration_rhbop_optaplanner }} ${{ env.BUILD_MVN_OPTS }} | tee ${{ env.WORKSPACE }}/rhbop_optaplanner.maven.log"
