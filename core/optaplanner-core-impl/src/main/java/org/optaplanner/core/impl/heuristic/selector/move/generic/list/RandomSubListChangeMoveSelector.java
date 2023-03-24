@@ -3,6 +3,8 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 import java.util.Iterator;
 
 import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.heuristic.selector.list.DestinationSelector;
+import org.optaplanner.core.impl.heuristic.selector.list.SubListSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
 
 public class RandomSubListChangeMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {

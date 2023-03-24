@@ -29,7 +29,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandomFactory;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.NearValueNearbyValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.AssignedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.DowncastingValueSelector;
@@ -46,6 +45,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicRecordingVa
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.ValueMimicRecorder;
 import org.optaplanner.core.impl.heuristic.selector.value.nearby.NearEntityNearbyValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.nearby.NearValueNearbyValueSelector;
 import org.optaplanner.core.impl.solver.ClassInstanceCache;
 
 public class ValueSelectorFactory<Solution_>
