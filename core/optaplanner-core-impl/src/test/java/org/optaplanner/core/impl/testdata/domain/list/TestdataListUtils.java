@@ -11,8 +11,8 @@ import java.util.List;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.DestinationSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ElementRef;
+import org.optaplanner.core.impl.heuristic.selector.list.DestinationSelector;
+import org.optaplanner.core.impl.heuristic.selector.list.ElementRef;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 

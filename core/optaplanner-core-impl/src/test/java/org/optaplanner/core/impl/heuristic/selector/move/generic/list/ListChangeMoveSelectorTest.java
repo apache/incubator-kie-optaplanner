@@ -1,7 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.solvingStarted;
-import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.ElementRef.elementRef;
+import static org.optaplanner.core.impl.heuristic.selector.list.ElementRef.elementRef;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockDestinationSelector;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;

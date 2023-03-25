@@ -10,7 +10,7 @@ import static org.optaplanner.core.config.heuristic.selector.common.SelectionOrd
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.list.SubListSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.BetaDistributionNearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.BlockDistributionNearbyRandom;

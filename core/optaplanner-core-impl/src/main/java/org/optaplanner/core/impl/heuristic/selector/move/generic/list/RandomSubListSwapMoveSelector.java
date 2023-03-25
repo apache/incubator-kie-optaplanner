@@ -5,6 +5,8 @@ import java.util.Iterator;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.AbstractRandomSwapIterator;
+import org.optaplanner.core.impl.heuristic.selector.list.SubList;
+import org.optaplanner.core.impl.heuristic.selector.list.SubListSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.GenericMoveSelector;
 
 public class RandomSubListSwapMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {

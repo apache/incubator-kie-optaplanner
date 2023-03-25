@@ -6,6 +6,10 @@ import java.util.Random;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
+import org.optaplanner.core.impl.heuristic.selector.list.DestinationSelector;
+import org.optaplanner.core.impl.heuristic.selector.list.ElementRef;
+import org.optaplanner.core.impl.heuristic.selector.list.SubList;
+import org.optaplanner.core.impl.heuristic.selector.list.SubListSelector;
 
 class RandomSubListChangeMoveIterator<Solution_> extends UpcomingSelectionIterator<Move<Solution_>> {
 

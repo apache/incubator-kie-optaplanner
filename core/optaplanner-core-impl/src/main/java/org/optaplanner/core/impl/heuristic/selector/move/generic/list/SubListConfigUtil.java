@@ -3,8 +3,8 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import org.optaplanner.core.config.heuristic.selector.list.SubListSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListChangeMoveSelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.SubListSwapMoveSelectorConfig;
 import org.slf4j.LoggerFactory;
 
