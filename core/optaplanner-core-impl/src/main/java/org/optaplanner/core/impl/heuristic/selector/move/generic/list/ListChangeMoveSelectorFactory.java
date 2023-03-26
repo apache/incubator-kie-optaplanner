@@ -86,7 +86,7 @@ public class ListChangeMoveSelectorFactory<Solution_>
         if (entityDescriptors.size() > 1) {
             throw new IllegalArgumentException("The listChangeMoveSelector (" + config
                     + ") cannot unfold when there are multiple entities (" + entityDescriptors + ")."
-                    + " Please use one listChangeMoveSelector per each list planning variable.");
+                    + " Please use one listChangeMoveSelector per each planning list variable.");
         }
         EntityDescriptor<Solution_> entityDescriptor = entityDescriptors.iterator().next();
 
@@ -104,7 +104,7 @@ public class ListChangeMoveSelectorFactory<Solution_>
             if (!onlyVariableDescriptor.isListVariable()) {
                 throw new IllegalArgumentException("The listChangeMoveSelector (" + config
                         + ") is configured to use a planning variable (" + onlyVariableDescriptor
-                        + "), which is not a list planning variable."
+                        + "), which is not a planning list variable."
                         + " Either fix your annotations and use a @" + PlanningListVariable.class.getSimpleName()
                         + " on the variable to make it work with listChangeMoveSelector"
                         + " or use a changeMoveSelector instead.");
@@ -112,7 +112,7 @@ public class ListChangeMoveSelectorFactory<Solution_>
             if (!onlyDestinationVariableDescriptor.isListVariable()) {
                 throw new IllegalArgumentException("The destinationSelector (" + config.getDestinationSelectorConfig()
                         + ") is configured to use a planning variable (" + onlyDestinationVariableDescriptor
-                        + "), which is not a list planning variable.");
+                        + "), which is not a planning list variable.");
             }
             if (onlyVariableDescriptor != onlyDestinationVariableDescriptor) {
                 throw new IllegalArgumentException("The listChangeMoveSelector's valueSelector ("
@@ -135,11 +135,11 @@ public class ListChangeMoveSelectorFactory<Solution_>
         }
         if (variableDescriptorList.isEmpty()) {
             throw new IllegalArgumentException("The listChangeMoveSelector (" + config
-                    + ") cannot unfold because there are no list planning variables.");
+                    + ") cannot unfold because there are no planning list variables.");
         }
         if (variableDescriptorList.size() > 1) {
             throw new IllegalArgumentException("The listChangeMoveSelector (" + config
-                    + ") cannot unfold because there are multiple list planning variables.");
+                    + ") cannot unfold because there are multiple planning list variables.");
         }
         return buildChildMoveSelectorConfig(variableDescriptorList.get(0), config.getValueSelectorConfig(),
                 config.getDestinationSelectorConfig());
