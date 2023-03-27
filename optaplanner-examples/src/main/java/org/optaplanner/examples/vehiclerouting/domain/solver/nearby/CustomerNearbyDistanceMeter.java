@@ -8,12 +8,12 @@ public class CustomerNearbyDistanceMeter implements NearbyDistanceMeter<Customer
 
     @Override
     public double getNearbyDistance(Customer origin, LocationAware destination) {
-        long distance = origin.getLocation().getDistanceTo(destination.getLocation());
+        return origin.getLocation().getDistanceTo(destination.getLocation());
         // If arriving early also inflicts a cost (more than just not using the vehicle more), such as the driver's wage, use this:
         //        if (origin instanceof TimeWindowedCustomer && destination instanceof TimeWindowedCustomer) {
         //            distance += ((TimeWindowedCustomer) origin).getTimeWindowGapTo((TimeWindowedCustomer) destination);
         //        }
-        return distance;
+        // return distance;
     }
 
 }

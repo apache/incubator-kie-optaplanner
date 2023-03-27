@@ -41,10 +41,7 @@ public final class DestinationSelectorFactory<Solution_> extends AbstractSelecto
         ElementDestinationSelector<Solution_> baseDestinationSelector =
                 buildBaseDestinationSelector(configPolicy, minimumCacheType, selectionOrder);
 
-        DestinationSelector<Solution_> destinationSelector =
-                applyNearbySelection(configPolicy, minimumCacheType, selectionOrder, baseDestinationSelector);
-
-        return destinationSelector;
+        return applyNearbySelection(configPolicy, minimumCacheType, selectionOrder, baseDestinationSelector);
     }
 
     private ElementDestinationSelector<Solution_> buildBaseDestinationSelector(

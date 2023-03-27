@@ -225,14 +225,14 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
             return new SubList(nearbyElementEntity, nearbyElementListIndex, subListSize);
         }
 
-    }
+        private Object firstElement(SubList subList) {
+            return replayingOriginSubListSelector.getVariableDescriptor().getElement(subList.getEntity(),
+                    subList.getFromIndex());
+        }
 
-    private Object firstElement(SubList subList) {
-        return replayingOriginSubListSelector.getVariableDescriptor().getElement(subList.getEntity(), subList.getFromIndex());
-    }
-
-    private int listSize(Object entity) {
-        return childSubListSelector.getVariableDescriptor().getListSize(entity);
+        private int listSize(Object entity) {
+            return childSubListSelector.getVariableDescriptor().getListSize(entity);
+        }
     }
 
     @Override
