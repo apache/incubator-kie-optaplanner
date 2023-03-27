@@ -1,6 +1,13 @@
 [[releaseNotes-8.x]]
 == OptaPlanner 8.x Release Notes
 
+[[releaseNotes-8.37.0.Final]]
+=== OptaPlanner 8.37.0.Final
+
+==== `PlanningListVariable` supports nearby selection
+
+xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#nearbySelection[Nearby selection] is now available for planning domains using a planning list variable.
+
 [[releaseNotes-8.36.0.Final]]
 === OptaPlanner 8.36.0.Final
 
