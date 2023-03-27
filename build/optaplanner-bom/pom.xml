@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-parent</artifactId>
-    <version>8.36.0-SNAPSHOT</version>
+    <version>8.37.0-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -478,19 +478,6 @@
         <artifactId>optaplanner-spring-boot-starter</artifactId>
         <type>test-jar</type>
         <version>${version.org.optaplanner}</version>
-      </dependency>
-      <!-- distribution -->
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-docs</artifactId>
-        <type>zip</type>
-        <version>${version.org.optaplanner}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-distribution-internal</artifactId>
-        <version>${version.org.optaplanner}</version>
-        <type>zip</type>
       </dependency>
       <!-- OptaPlanner operator -->
       <dependency>

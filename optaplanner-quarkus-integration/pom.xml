@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-build-parent</artifactId>
-    <version>8.36.0-SNAPSHOT</version>
+    <version>8.37.0-SNAPSHOT</version>
     <relativePath>../build/optaplanner-build-parent/pom.xml</relativePath>
   </parent>
 
@@ -71,20 +71,6 @@
               </configuration>
             </execution>
           </executions>
-        </plugin>
-        <plugin>
-          <!--
-            Quarkus is not prepared for JPMS, yet Javadoc expects it, complaining about invalid module names.
-            This is not a problem, as our Quarkus integration doesn't expose new API
-            and therefore need not have Javadoc published.
-
-            Only enable once you've made sure that `mvn -Dfull -Dproductized` passes for Quarkus main and Quarkus LTS.
-          -->
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-            <skip>true</skip>
-          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
