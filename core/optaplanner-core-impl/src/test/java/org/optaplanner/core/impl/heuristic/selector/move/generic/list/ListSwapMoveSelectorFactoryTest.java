@@ -79,7 +79,7 @@ class ListSwapMoveSelectorFactoryTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> moveSelectorFactory.buildMoveSelector(heuristicConfigPolicy,
                         SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM))
-                .withMessageContaining("not a list planning variable");
+                .withMessageContaining("not a planning list variable");
     }
 
     // TODO test or remove secondary value selector config

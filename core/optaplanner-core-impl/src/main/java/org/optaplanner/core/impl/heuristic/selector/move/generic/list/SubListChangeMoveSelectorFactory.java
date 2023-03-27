@@ -82,7 +82,7 @@ public class SubListChangeMoveSelectorFactory<Solution_>
         if (entityDescriptors.size() > 1) {
             throw new IllegalArgumentException("The subListChangeMoveSelector (" + config
                     + ") cannot unfold when there are multiple entities (" + entityDescriptors + ")."
-                    + " Please use one subListChangeMoveSelector per each list planning variable.");
+                    + " Please use one subListChangeMoveSelector per each planning list variable.");
         }
         EntityDescriptor<Solution_> entityDescriptor = entityDescriptors.iterator().next();
 
@@ -103,12 +103,12 @@ public class SubListChangeMoveSelectorFactory<Solution_>
             if (!onlySubListVariableDescriptor.isListVariable()) {
                 throw new IllegalArgumentException("The subListChangeMoveSelector (" + config
                         + ") is configured to use a planning variable (" + onlySubListVariableDescriptor
-                        + "), which is not a list planning variable.");
+                        + "), which is not a planning list variable.");
             }
             if (!onlyDestinationVariableDescriptor.isListVariable()) {
                 throw new IllegalArgumentException("The subListChangeMoveSelector (" + config
                         + ") is configured to use a planning variable (" + onlyDestinationVariableDescriptor
-                        + "), which is not a list planning variable.");
+                        + "), which is not a planning list variable.");
             }
             if (onlySubListVariableDescriptor != onlyDestinationVariableDescriptor) {
                 throw new IllegalArgumentException("The subListSelector's valueSelector ("
@@ -131,11 +131,11 @@ public class SubListChangeMoveSelectorFactory<Solution_>
         }
         if (variableDescriptorList.isEmpty()) {
             throw new IllegalArgumentException("The subListChangeMoveSelector (" + config
-                    + ") cannot unfold because there are no list planning variables.");
+                    + ") cannot unfold because there are no planning list variables.");
         }
         if (variableDescriptorList.size() > 1) {
             throw new IllegalArgumentException("The subListChangeMoveSelector (" + config
-                    + ") cannot unfold because there are multiple list planning variables.");
+                    + ") cannot unfold because there are multiple planning list variables.");
         }
         return buildChildMoveSelectorConfig(variableDescriptorList.get(0));
     }

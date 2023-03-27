@@ -93,14 +93,14 @@ public class ListSwapMoveSelectorFactory<Solution_>
                         + ") and secondaryValueSelectorConfig (" + config.getSecondaryValueSelectorConfig()
                         + ")'s variableName ("
                         + (onlySecondaryVariableDescriptor == null ? null : onlySecondaryVariableDescriptor.getVariableName())
-                        + ") must be the same list planning variable.");
+                        + ") must be the same planning list variable.");
             }
         }
         if (onlyVariableDescriptor != null) {
             if (!onlyVariableDescriptor.isListVariable()) {
                 throw new IllegalArgumentException("The listSwapMoveSelector (" + config
                         + ") is configured to use a planning variable (" + onlyVariableDescriptor
-                        + "), which is not a list planning variable."
+                        + "), which is not a planning list variable."
                         + " Either fix your annotations and use a @" + PlanningListVariable.class.getSimpleName()
                         + " on the variable to make it work with listSwapMoveSelector"
                         + " or use a swapMoveSelector instead.");
@@ -115,8 +115,8 @@ public class ListSwapMoveSelectorFactory<Solution_>
                         .collect(Collectors.toList());
         if (variableDescriptorList.isEmpty()) {
             throw new IllegalArgumentException("The listSwapMoveSelector (" + config
-                    + ") cannot unfold because there are no list planning variables for the only entity (" + entityDescriptor
-                    + ") or no list planning variables at all.");
+                    + ") cannot unfold because there are no planning list variables for the only entity (" + entityDescriptor
+                    + ") or no planning list variables at all.");
         }
         return buildUnfoldedMoveSelectorConfig(variableDescriptorList);
     }

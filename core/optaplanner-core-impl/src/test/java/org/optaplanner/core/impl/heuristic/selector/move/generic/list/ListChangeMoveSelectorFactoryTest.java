@@ -90,6 +90,6 @@ class ListChangeMoveSelectorFactoryTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> moveSelectorFactory.buildMoveSelector(heuristicConfigPolicy,
                         SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM))
-                .withMessageContaining("not a list planning variable");
+                .withMessageContaining("not a planning list variable");
     }
 }

@@ -124,7 +124,7 @@ public class ChangeMoveSelectorFactory<Solution_>
     private ListChangeMoveSelectorConfig buildListChangeMoveSelectorConfig(ListVariableDescriptor<?> variableDescriptor,
             boolean inheritFoldedConfig) {
         LOGGER.warn("The changeMoveSelectorConfig ({}) is being used for a list variable."
-                + " This was the only available option when the list planning variable was introduced."
+                + " This was the only available option when the planning list variable was introduced."
                 + " We are keeping this option through the 8.x release stream for backward compatibility reasons"
                 + " but it will be removed in the next major release.\n"
                 + "Please update your solver config to use ListChangeMoveSelectorConfig now.", config);
