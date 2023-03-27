@@ -76,6 +76,10 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
                 .demand(nearbyDistanceMatrixDemand);
     }
 
+    NearbyDistanceMatrixDemand<Solution_, ?, ?> getNearbyDistanceMatrixDemand() {
+        return nearbyDistanceMatrixDemand;
+    }
+
     @Override
     public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);

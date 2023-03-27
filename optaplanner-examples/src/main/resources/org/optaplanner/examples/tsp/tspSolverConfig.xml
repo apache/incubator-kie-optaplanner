@@ -34,7 +34,7 @@
           <nearbySelection>
             <originEntitySelector mimicSelectorRef="entitySelector1"/>
             <nearbyDistanceMeterClass>org.optaplanner.examples.tsp.domain.solver.nearby.VisitNearbyDistanceMeter</nearbyDistanceMeterClass>
-            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+            <parabolicDistributionSizeMaximum>4</parabolicDistributionSizeMaximum>
           </nearbySelection>
         </valueSelector>
       </changeMoveSelector>
