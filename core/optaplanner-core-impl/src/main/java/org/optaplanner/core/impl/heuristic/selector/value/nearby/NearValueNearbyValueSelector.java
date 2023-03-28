@@ -57,6 +57,11 @@ public final class NearValueNearbyValueSelector<Solution_> extends AbstractValue
     }
 
     @Override
+    public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
+        return childValueSelector.getVariableDescriptor();
+    }
+
+    @Override
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
         /*
@@ -102,19 +107,18 @@ public final class NearValueNearbyValueSelector<Solution_> extends AbstractValue
         nearbyDistanceMatrixSupply = null;
     }
 
-    @Override
-    public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
-        return childValueSelector.getVariableDescriptor();
-    }
+    // ************************************************************************
+    // Worker methods
+    // ************************************************************************
 
     @Override
     public boolean isCountable() {
-        return true;
+        return childValueSelector.isCountable();
     }
 
     @Override
     public boolean isNeverEnding() {
-        return randomSelection;
+        return randomSelection || !isCountable();
     }
 
     @Override
