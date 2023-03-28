@@ -17,6 +17,7 @@ ${mvn_cmd} clean install -Dquickly
 project_version=$(${mvn_cmd} help:evaluate -Dexpression=project.version -q -DforceStdout)
 
 # Run the recipe.
+export MAVEN_OPTS="-Xmx4g"
 ${mvn_cmd} rewrite:run \
   -Drewrite.configLocation="${optaplanner_file}" \
   -Drewrite.recipeArtifactCoordinates=org.optaplanner:optaplanner-migration:"$project_version" \
@@ -26,6 +27,7 @@ ${mvn_cmd} rewrite:run \
   -Dquickly \
   -Dmigration \
 
+unset MAVEN_OPTS
 # Remove obsolete spring.factories
 find "${script_dir_path}/../../optaplanner-spring-integration" -type f -name "spring.factories" -exec rm {} \;
 
