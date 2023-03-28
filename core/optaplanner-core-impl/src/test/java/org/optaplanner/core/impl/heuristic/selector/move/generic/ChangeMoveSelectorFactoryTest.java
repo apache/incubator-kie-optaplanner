@@ -119,12 +119,14 @@ class ChangeMoveSelectorFactoryTest {
         SolutionDescriptor<TestdataListSolution> solutionDescriptor = TestdataListSolution.buildSolutionDescriptor();
 
         SelectionCacheType moveSelectorCacheType = SelectionCacheType.PHASE;
+        SelectionOrder moveSelectorSelectionOrder = SelectionOrder.ORIGINAL;
         long selectedCountLimit = 200;
         ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig()
                 .withEntitySelectorConfig(new EntitySelectorConfig(TestdataListEntity.class)
                         .withSorterComparatorClass(DummyEntityComparator.class))
                 .withValueSelectorConfig(new ValueSelectorConfig("valueList"))
                 .withCacheType(moveSelectorCacheType)
+                .withSelectionOrder(moveSelectorSelectionOrder)
                 .withSelectedCountLimit(selectedCountLimit);
 
         ChangeMoveSelectorFactory<TestdataListSolution> changeMoveSelectorFactory =
@@ -139,6 +141,7 @@ class ChangeMoveSelectorFactoryTest {
 
         assertThat(listChangeMoveSelectorConfig.getValueSelectorConfig().getVariableName()).isEqualTo("valueList");
         assertThat(listChangeMoveSelectorConfig.getCacheType()).isEqualTo(moveSelectorCacheType);
+        assertThat(listChangeMoveSelectorConfig.getSelectionOrder()).isEqualTo(moveSelectorSelectionOrder);
         assertThat(listChangeMoveSelectorConfig.getSelectedCountLimit()).isEqualTo(selectedCountLimit);
 
         DestinationSelectorConfig destinationSelectorConfig = listChangeMoveSelectorConfig.getDestinationSelectorConfig();

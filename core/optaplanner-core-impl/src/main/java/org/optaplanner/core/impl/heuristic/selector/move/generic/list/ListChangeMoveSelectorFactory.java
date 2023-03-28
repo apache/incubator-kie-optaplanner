@@ -141,8 +141,12 @@ public class ListChangeMoveSelectorFactory<Solution_>
             throw new IllegalArgumentException("The listChangeMoveSelector (" + config
                     + ") cannot unfold because there are multiple planning list variables.");
         }
-        return buildChildMoveSelectorConfig(variableDescriptorList.get(0), config.getValueSelectorConfig(),
+        ListChangeMoveSelectorConfig listChangeMoveSelectorConfig = buildChildMoveSelectorConfig(
+                variableDescriptorList.get(0),
+                config.getValueSelectorConfig(),
                 config.getDestinationSelectorConfig());
+        listChangeMoveSelectorConfig.inheritFolded(config);
+        return listChangeMoveSelectorConfig;
     }
 
     public static ListChangeMoveSelectorConfig buildChildMoveSelectorConfig(

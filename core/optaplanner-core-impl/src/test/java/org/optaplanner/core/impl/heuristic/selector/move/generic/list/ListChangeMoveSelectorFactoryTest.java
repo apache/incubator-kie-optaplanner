@@ -9,6 +9,7 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.list.DestinationSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.ListChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -45,6 +46,41 @@ class ListChangeMoveSelectorFactoryTest {
                 MoveSelectorFactory.<TestdataListSolution> create(moveSelectorConfig).buildMoveSelector(
                         buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
         assertThat(moveSelector).isInstanceOf(ListChangeMoveSelector.class);
+    }
+
+    @Test
+    void unfoldedConfigInheritsFromFoldedConfig() {
+        SolutionDescriptor<TestdataListSolution> solutionDescriptor = TestdataListSolution.buildSolutionDescriptor();
+
+        SelectionCacheType moveSelectorCacheType = SelectionCacheType.STEP;
+        SelectionOrder moveSelectorSelectionOrder = SelectionOrder.ORIGINAL;
+        long selectedCountLimit = 200;
+
+        ListChangeMoveSelectorConfig moveSelectorConfig = new ListChangeMoveSelectorConfig()
+                .withCacheType(moveSelectorCacheType)
+                .withSelectionOrder(moveSelectorSelectionOrder)
+                .withSelectedCountLimit(selectedCountLimit);
+
+        ListChangeMoveSelectorFactory<TestdataListSolution> moveSelectorFactory =
+                ((ListChangeMoveSelectorFactory<TestdataListSolution>) MoveSelectorFactory
+                        .<TestdataListSolution> create(moveSelectorConfig));
+
+        MoveSelectorConfig<?> unfoldedMoveSelectorConfig =
+                moveSelectorFactory.buildUnfoldedMoveSelectorConfig(buildHeuristicConfigPolicy(solutionDescriptor));
+
+        assertThat(unfoldedMoveSelectorConfig).isInstanceOf(ListChangeMoveSelectorConfig.class);
+        ListChangeMoveSelectorConfig listChangeMoveSelectorConfig = (ListChangeMoveSelectorConfig) unfoldedMoveSelectorConfig;
+
+        assertThat(listChangeMoveSelectorConfig.getValueSelectorConfig().getVariableName()).isEqualTo("valueList");
+        assertThat(listChangeMoveSelectorConfig.getCacheType()).isEqualTo(moveSelectorCacheType);
+        assertThat(listChangeMoveSelectorConfig.getSelectionOrder()).isEqualTo(moveSelectorSelectionOrder);
+        assertThat(listChangeMoveSelectorConfig.getSelectedCountLimit()).isEqualTo(selectedCountLimit);
+
+        DestinationSelectorConfig destinationSelectorConfig = listChangeMoveSelectorConfig.getDestinationSelectorConfig();
+        EntitySelectorConfig entitySelectorConfig = destinationSelectorConfig.getEntitySelectorConfig();
+        assertThat(entitySelectorConfig.getEntityClass()).isEqualTo(TestdataListEntity.class);
+        ValueSelectorConfig valueSelectorConfig = destinationSelectorConfig.getValueSelectorConfig();
+        assertThat(valueSelectorConfig.getVariableName()).isEqualTo("valueList");
     }
 
     @Test
