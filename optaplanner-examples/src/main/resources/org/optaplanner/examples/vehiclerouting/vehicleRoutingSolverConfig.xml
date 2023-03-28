@@ -2,7 +2,7 @@
 <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   <!-- To slowly prove there are no bugs in this code -->
-  <!--<environmentMode>FULL_ASSERT</environmentMode>-->
+  <!-- <environmentMode>FULL_ASSERT</environmentMode> -->
   <!-- To solve faster by saturating multiple CPU cores -->
   <!--<moveThreadCount>AUTO</moveThreadCount>-->
 
@@ -71,7 +71,17 @@
           </nearbySelection>
         </secondarySubListSelector>
       </subListSwapMoveSelector>
-      <kOptListMoveSelector/>
+      <kOptListMoveSelector>
+        <originSelector id="5"/>
+        <valueSelector>
+          <nearbySelection>
+            <originValueSelector mimicSelectorRef="5"/>
+            <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </valueSelector>
+      </kOptListMoveSelector>
     </unionMoveSelector>
     <acceptor>
       <lateAcceptanceSize>200</lateAcceptanceSize>

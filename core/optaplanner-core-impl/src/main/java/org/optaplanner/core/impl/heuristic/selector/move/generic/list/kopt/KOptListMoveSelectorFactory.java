@@ -1,20 +1,23 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningListVariable;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
-import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.list.kopt.KOptListMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelectorFactory;
 
 public final class KOptListMoveSelectorFactory<Solution_>
         extends AbstractMoveSelectorFactory<Solution_, KOptListMoveSelectorConfig> {
@@ -29,14 +32,21 @@ public final class KOptListMoveSelectorFactory<Solution_>
     @Override
     protected MoveSelector<Solution_> buildBaseMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
-        EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
-        EntitySelector<Solution_> entitySelector =
-                EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
-                        .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
+        ValueSelectorConfig originSelectorConfig =
+                Objects.requireNonNullElseGet(config.getOriginSelectorConfig(), ValueSelectorConfig::new);
+        ValueSelectorConfig valueSelectorConfig =
+                Objects.requireNonNullElseGet(config.getValueSelectorConfig(), ValueSelectorConfig::new);
+
+        EntityDescriptor<Solution_> entityDescriptor = getTheOnlyEntityDescriptor(configPolicy.getSolutionDescriptor());
+
+        EntityIndependentValueSelector<Solution_> originSelector =
+                buildEntityIndependentValueSelector(configPolicy, entityDescriptor, originSelectorConfig, minimumCacheType,
+                        SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+        EntityIndependentValueSelector<Solution_> valueSelector =
+                buildEntityIndependentValueSelector(configPolicy, entityDescriptor, valueSelectorConfig, minimumCacheType,
+                        SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         // TODO support coexistence of list and basic variables https://issues.redhat.com/browse/PLANNER-2755
-        GenuineVariableDescriptor<Solution_> variableDescriptor =
-                getTheOnlyVariableDescriptor(entitySelector.getEntityDescriptor());
+        GenuineVariableDescriptor<Solution_> variableDescriptor = getTheOnlyVariableDescriptor(entityDescriptor);
         if (!variableDescriptor.isListVariable()) {
             throw new IllegalArgumentException("The kOptListMoveSelector (" + config
                     + ") can only be used when the domain model has a list variable."
@@ -52,7 +62,60 @@ public final class KOptListMoveSelectorFactory<Solution_>
         if (maximumK < minimumK) {
             throw new IllegalArgumentException("maximumK (" + maximumK + ") must be at least minimumK (" + minimumK + ").");
         }
-        return new KOptListMoveSelector<>(((ListVariableDescriptor<Solution_>) variableDescriptor), entitySelector,
-                minimumK, maximumK);
+
+        List<Integer> pickedKDistributionList = config.getPickedKDistribution();
+        int[] pickedKDistribution = new int[maximumK - minimumK + 1];
+        if (pickedKDistributionList == null) {
+            // Each prior k is 8 times more likely to be picked than the subsequent k
+            int total = 1;
+            for (int i = minimumK; i < maximumK; i++) {
+                total *= 8;
+            }
+            for (int i = 0; i < pickedKDistribution.length - 1; i++) {
+                int remainder = total / 8;
+                pickedKDistribution[i] = total - remainder;
+                total = remainder;
+            }
+            pickedKDistribution[pickedKDistribution.length - 1] = total;
+        } else {
+            if (pickedKDistributionList.size() != pickedKDistribution.length) {
+                throw new IllegalArgumentException(
+                        "The pickedKDistribution (" + pickedKDistributionList + ") has an invalid size; " +
+                                "expected (" + pickedKDistribution.length + ") elements for minimumK (" + minimumK
+                                + ") and maximumK (" + maximumK + ").");
+            }
+
+            for (int relativeDistribution : pickedKDistributionList) {
+                if (relativeDistribution < 0) { // if it 0, you can skip particular k's
+                    throw new IllegalArgumentException("The pickedKDistribution (" + pickedKDistributionList
+                            + ") has an invalid element (" + relativeDistribution + "); " +
+                            "each relative distribution must be non-negative.");
+                }
+            }
+
+            for (int i = 0; i < pickedKDistribution.length; i++) {
+                pickedKDistribution[i] = pickedKDistributionList.get(i);
+            }
+        }
+        return new KOptListMoveSelector<>(((ListVariableDescriptor<Solution_>) variableDescriptor),
+                originSelector, valueSelector, minimumK, maximumK, pickedKDistribution);
+    }
+
+    private EntityIndependentValueSelector<Solution_> buildEntityIndependentValueSelector(
+            HeuristicConfigPolicy<Solution_> configPolicy,
+            EntityDescriptor<Solution_> entityDescriptor,
+            ValueSelectorConfig valueSelectorConfig,
+            SelectionCacheType minimumCacheType,
+            SelectionOrder inheritedSelectionOrder) {
+        ValueSelector<Solution_> valueSelector = ValueSelectorFactory.<Solution_> create(valueSelectorConfig)
+                .buildValueSelector(configPolicy, entityDescriptor, minimumCacheType, inheritedSelectionOrder);
+        if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+            throw new IllegalArgumentException("The kOptListMoveSelector (" + config
+                    + ") for a list variable needs to be based on an "
+                    + EntityIndependentValueSelector.class.getSimpleName() + " (" + valueSelector + ")."
+                    + " Check your valueSelectorConfig.");
+
+        }
+        return (EntityIndependentValueSelector<Solution_>) valueSelector;
     }
 }

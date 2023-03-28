@@ -103,11 +103,19 @@ public final class NearValueNearbyValueSelector<Solution_>
         }
     }
 
+    public Iterator<Object> fixedNearbyOriginIterator(Object origin) {
+        if (!randomSelection) {
+            return new FixedOriginOriginalNearbyValueIterator(nearbyDistanceMatrixSupply, childSelector.getSize(), origin);
+        } else {
+            return new FixedOriginRandomNearbyValueIterator(nearbyDistanceMatrixSupply, nearbyRandom, workingRandom, origin,
+                    childSelector.getSize());
+        }
+    }
+
     @Override
     public Iterator<Object> endingIterator(Object entity) {
         // TODO It should probably use nearby order
         // It must include the origin entity too
         return childSelector.endingIterator(entity);
     }
-
 }
