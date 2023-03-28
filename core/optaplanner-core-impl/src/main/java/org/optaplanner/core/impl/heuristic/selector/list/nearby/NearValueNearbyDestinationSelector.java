@@ -23,7 +23,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.util.MemoizingSupply;
 
-// TODO extends abstract destination selector!
 public final class NearValueNearbyDestinationSelector<Solution_> extends AbstractSelector<Solution_>
         implements DestinationSelector<Solution_> {
 
