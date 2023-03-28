@@ -29,7 +29,6 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
     private final MimicReplayingSubListSelector<Solution_> replayingOriginSubListSelector;
     private final NearbyDistanceMeter<?, ?> nearbyDistanceMeter;
     private final NearbyRandom nearbyRandom;
-    private final boolean randomSelection;
     private final SubListNearbySubListMatrixDemand<Solution_, ?, ?> nearbyDistanceMatrixDemand;
 
     private MemoizingSupply<NearbyDistanceMatrix<Object, Object>> nearbyDistanceMatrixSupply = null;
@@ -50,10 +49,9 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
         this.replayingOriginSubListSelector = (MimicReplayingSubListSelector<Solution_>) originSubListSelector;
         this.nearbyDistanceMeter = nearbyDistanceMeter;
         this.nearbyRandom = nearbyRandom;
-        this.randomSelection = true;
-        if (randomSelection && nearbyRandom == null) {
+        if (nearbyRandom == null) {
             throw new IllegalArgumentException("The subListSelector (" + this
-                    + ") with randomSelection (" + randomSelection + ") has no nearbyRandom (" + nearbyRandom + ").");
+                    + ") requires a nearbyRandom (" + nearbyRandom + ") because it only supports random selection order.");
         }
         this.nearbyDistanceMatrixDemand = new SubListNearbySubListMatrixDemand<>(
                 nearbyDistanceMeter,
@@ -97,12 +95,10 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
         }
 
         int destinationSize = (int) valueCount;
-        if (randomSelection) {
-            // Reduce RAM memory usage by reducing destinationSize if nearbyRandom will never select a higher value
-            int overallSizeMaximum = nearbyRandom.getOverallSizeMaximum();
-            if (destinationSize > overallSizeMaximum) {
-                destinationSize = overallSizeMaximum;
-            }
+        // Reduce RAM memory usage by reducing destinationSize if nearbyRandom will never select a higher value
+        int overallSizeMaximum = nearbyRandom.getOverallSizeMaximum();
+        if (destinationSize > overallSizeMaximum) {
+            destinationSize = overallSizeMaximum;
         }
         return destinationSize;
     }
@@ -127,7 +123,8 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
 
     @Override
     public boolean isNeverEnding() {
-        return randomSelection || !isCountable();
+        // Because it's random.
+        return true;
     }
 
     @Override
@@ -138,12 +135,8 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
     @Override
     public Iterator<SubList> iterator() {
         Iterator<SubList> replayingOriginSubListIterator = replayingOriginSubListSelector.iterator();
-        if (!randomSelection) {
-            throw new IllegalStateException("This selector only supports random selection.");
-        } else {
-            return new RandomSubListNearbySubListIterator(replayingOriginSubListIterator,
-                    childSubListSelector.getValueCount());
-        }
+        return new RandomSubListNearbySubListIterator(replayingOriginSubListIterator,
+                childSubListSelector.getValueCount());
     }
 
     private final class RandomSubListNearbySubListIterator extends SelectionIterator<SubList> {
@@ -254,8 +247,7 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
             return false;
         }
         NearSubListNearbySubListSelector<?> that = (NearSubListNearbySubListSelector<?>) other;
-        return randomSelection == that.randomSelection
-                && Objects.equals(childSubListSelector, that.childSubListSelector)
+        return Objects.equals(childSubListSelector, that.childSubListSelector)
                 && Objects.equals(replayingOriginSubListSelector, that.replayingOriginSubListSelector)
                 && Objects.equals(nearbyDistanceMeter, that.nearbyDistanceMeter)
                 && Objects.equals(nearbyRandom, that.nearbyRandom);
@@ -263,8 +255,7 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
 
     @Override
     public int hashCode() {
-        return Objects.hash(childSubListSelector, replayingOriginSubListSelector, nearbyDistanceMeter, nearbyRandom,
-                randomSelection);
+        return Objects.hash(childSubListSelector, replayingOriginSubListSelector, nearbyDistanceMeter, nearbyRandom);
     }
 
     @Override
