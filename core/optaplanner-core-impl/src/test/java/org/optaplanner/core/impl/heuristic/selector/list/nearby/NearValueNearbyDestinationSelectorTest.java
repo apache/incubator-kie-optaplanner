@@ -55,14 +55,12 @@ class NearValueNearbyDestinationSelectorTest {
         ElementDestinationSelector<TestdataListSolution> childDestinationSelector = new ElementDestinationSelector<>(
                 entitySelector, valueSelector, true);
 
-        TestNearbyRandom nearbyRandom = new TestNearbyRandom();
-
         MimicReplayingValueSelector<TestdataListSolution> mockReplayingValueSelector =
                 mockReplayingValueSelector(valueSelector.getVariableDescriptor(), v3, v3, v3, v3, v3, v3, v3, v3);
 
         NearValueNearbyDestinationSelector<TestdataListSolution> nearbyDestinationSelector =
                 new NearValueNearbyDestinationSelector<>(childDestinationSelector, mockReplayingValueSelector,
-                        new TestDistanceMeter(), nearbyRandom, true);
+                        new TestDistanceMeter(), new TestNearbyRandom(), true);
 
         TestRandom testRandom = new TestRandom(0, 1, 2, 3, 4, 5, 6);
 

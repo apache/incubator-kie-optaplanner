@@ -22,6 +22,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescript
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.list.SubList;
 import org.optaplanner.core.impl.heuristic.selector.list.mimic.MimicReplayingSubListSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
@@ -149,6 +150,16 @@ public class SelectorTestUtils {
         when(valueSelector.getSize(any())).thenReturn((long) valueList.size());
         when(valueSelector.getSize()).thenReturn((long) valueList.size());
         return valueSelector;
+    }
+
+    public static <Solution_> MimicReplayingEntitySelector<Solution_> mockReplayingEntitySelector(
+            EntityDescriptor<Solution_> entityDescriptor, Object... entities) {
+        MimicReplayingEntitySelector<Solution_> entitySelector = mock(MimicReplayingEntitySelector.class);
+        when(entitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
+        final List<Object> entityList = Arrays.asList(entities);
+        when(entitySelector.endingIterator()).thenAnswer(invocation -> entityList.iterator());
+        when(entitySelector.iterator()).thenAnswer(invocation -> entityList.iterator());
+        return entitySelector;
     }
 
     public static <Solution_> MimicReplayingValueSelector<Solution_> mockReplayingValueSelector(

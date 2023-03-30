@@ -79,16 +79,13 @@ class NearValueNearbyValueSelectorTest {
         EntityIndependentValueSelector<TestdataListSolution> valueSelector =
                 mockEntityIndependentValueSelector(getListVariableDescriptor(scoreDirector), v1, v2, v3, v4, v5);
 
-        TestNearbyRandom nearbyRandom = new TestNearbyRandom();
-
         // The replaying selector determines the destination matrix origin.
         MimicReplayingValueSelector<TestdataListSolution> mockReplayingValueSelector =
                 mockReplayingValueSelector(valueSelector.getVariableDescriptor(), v3, v3, v3, v3, v3, v3);
 
         NearValueNearbyValueSelector<TestdataListSolution> nearbyValueSelector =
                 new NearValueNearbyValueSelector<>(valueSelector, mockReplayingValueSelector, new TestDistanceMeter(),
-                        nearbyRandom,
-                        true);
+                        new TestNearbyRandom(), true);
 
         TestRandom testRandom = new TestRandom(3, 2, 1, 4, 0); // nearbyIndices (=> destinations)
 
