@@ -16,9 +16,11 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.util.MemoizingSupply;
 
 /**
+ * Demands a distance matrix where the origins are planning values and nearby destinations are both planning entities and
+ * values.
+ * <p>
  * Calculating {@link NearbyDistanceMatrix} is very expensive,
  * therefore we want to reuse it as much as possible.
- *
  * <p>
  * In cases where the demand represents the same nearby selector (as defined by
  * {@link ListNearbyDistanceMatrixDemand#equals(Object)})
@@ -26,8 +28,8 @@ import org.optaplanner.core.impl.util.MemoizingSupply;
  * with the pre-computed {@link NearbyDistanceMatrix}.
  *
  * @param <Solution_>
- * @param <Origin_>
- * @param <Destination_>
+ * @param <Origin_> planning values
+ * @param <Destination_> mix of planning entities and planning values
  */
 public final class ListNearbyDistanceMatrixDemand<Solution_, Origin_, Destination_>
         implements Demand<MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>>> {
@@ -62,12 +64,16 @@ public final class ListNearbyDistanceMatrixDemand<Solution_, Origin_, Destinatio
                         + ") has a valueSize (" + originSize
                         + ") which is higher than Integer.MAX_VALUE.");
             }
-            // Destinations in the "matrix" need to be entities and values (not ElementRefs!) because that's what
-            // the NearbyDistanceMeter is able to measure.
+            // Destinations: mix of planning entities and values extracted from a destination selector.
+            // Distance "matrix" elements must be user classes (entities and values) because they are exposed
+            // to the user-implemented NearbyDistanceMeter. Therefore, we cannot insert ElementRefs in the matrix.
+            // For this reason, destination selector's endingIterator() returns entities and values produced by
+            // its child selectors.
             Function<Origin_, Iterator<Destination_>> destinationIteratorProvider =
                     origin -> (Iterator<Destination_>) childDestinationSelector.endingIterator();
             NearbyDistanceMatrix<Origin_, Destination_> nearbyDistanceMatrix =
                     new NearbyDistanceMatrix<>(meter, (int) originSize, destinationIteratorProvider, destinationSizeFunction);
+            // Origins: values extracted from a value selector.
             // Replaying selector's ending iterator uses the recording selector's ending iterator. Since list variables
             // use entity independent value selectors, we can pass null here.
             replayingOriginValueSelector.endingIterator(null)
@@ -82,8 +88,8 @@ public final class ListNearbyDistanceMatrixDemand<Solution_, Origin_, Destinatio
      *
      * <ul>
      * <li>Their meter instances are equal.</li>
-     * <li>Their child selectors are equal.</li>
-     * <li>Their replaying origin entity selectors are equal.</li>
+     * <li>Their child destination selectors are equal.</li>
+     * <li>Their replaying origin value selectors are equal.</li>
      * </ul>
      *
      * Otherwise as defined by {@link Object#equals(Object)}.
