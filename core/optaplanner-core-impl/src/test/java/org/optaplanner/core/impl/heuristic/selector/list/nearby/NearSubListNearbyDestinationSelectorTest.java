@@ -8,7 +8,8 @@ import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.ste
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterableSelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingIterableSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
 
 import org.junit.jupiter.api.Test;
@@ -82,8 +83,9 @@ class NearSubListNearbyDestinationSelectorTest {
         SolverScope<TestdataListSolution> solverScope = solvingStarted(nearbyDestinationSelector, scoreDirector);
         AbstractPhaseScope<TestdataListSolution> phaseScopeA = phaseStarted(nearbyDestinationSelector, solverScope);
         AbstractStepScope<TestdataListSolution> stepScopeA1 = stepStarted(nearbyDestinationSelector, phaseScopeA);
-        //                                                              45      50      60      75      10      0       0
-        assertAllCodesOfIterator(nearbyDestinationSelector.iterator(), "A[2]", "A[3]", "A[4]", "B[1]", "A[1]", "A[0]", "B[0]");
+        assertAllCodesOfIterableSelector(nearbyDestinationSelector, entitySelector.getSize() + valueSelector.getSize(),
+                // 45      50      60      75      10      0       0
+                "A[2]", "A[3]", "A[4]", "B[1]", "A[1]", "A[0]", "B[0]");
         nearbyDestinationSelector.stepEnded(stepScopeA1);
         nearbyDestinationSelector.phaseEnded(phaseScopeA);
         nearbyDestinationSelector.solvingEnded(solverScope);
@@ -122,6 +124,7 @@ class NearSubListNearbyDestinationSelectorTest {
                         subList(e1, 1),
                         subList(e1, 1),
                         subList(e1, 1),
+                        subList(e1, 1),
                         subList(e1, 1));
 
         NearSubListNearbyDestinationSelector<TestdataListSolution> nearbyDestinationSelector =
@@ -142,8 +145,9 @@ class NearSubListNearbyDestinationSelectorTest {
         SolverScope<TestdataListSolution> solverScope = solvingStarted(nearbyDestinationSelector, scoreDirector, testRandom);
         AbstractPhaseScope<TestdataListSolution> phaseScopeA = phaseStarted(nearbyDestinationSelector, solverScope);
         AbstractStepScope<TestdataListSolution> stepScopeA1 = stepStarted(nearbyDestinationSelector, phaseScopeA);
-        //                                                              45      50      60      75      10      0       0
-        assertAllCodesOfIterator(nearbyDestinationSelector.iterator(), "A[2]", "A[3]", "A[4]", "B[1]", "A[1]", "A[0]", "B[0]");
+        assertCodesOfNeverEndingIterableSelector(nearbyDestinationSelector, entitySelector.getSize() + valueSelector.getSize(),
+                // 45      50      60      75      10      0       0
+                "A[2]", "A[3]", "A[4]", "B[1]", "A[1]", "A[0]", "B[0]");
         nearbyDestinationSelector.stepEnded(stepScopeA1);
         nearbyDestinationSelector.phaseEnded(phaseScopeA);
         nearbyDestinationSelector.solvingEnded(solverScope);

@@ -8,7 +8,7 @@ import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.ste
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingIterableSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertEmptyNeverEndingIterableSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
 
@@ -57,6 +57,7 @@ class NearSubListNearbySubListSelectorTest {
                 mockReplayingSubListSelector(childSubListSelector.getVariableDescriptor(),
                         subList(e2, 0), // => v5
                         subList(e2, 0),
+                        subList(e2, 0),
                         subList(e2, 0));
 
         NearSubListNearbySubListSelector<TestdataListSolution> nearbySubListSelector =
@@ -81,8 +82,9 @@ class NearSubListNearbySubListSelectorTest {
         SolverScope<TestdataListSolution> solverScope = solvingStarted(nearbySubListSelector, scoreDirector, testRandom);
         AbstractPhaseScope<TestdataListSolution> phaseScopeA = phaseStarted(nearbySubListSelector, solverScope);
         AbstractStepScope<TestdataListSolution> stepScopeA1 = stepStarted(nearbySubListSelector, phaseScopeA);
-        // The SubList's assertable code means Entity[fromIndex+subListLength].
-        assertAllCodesOfIterator(nearbySubListSelector.iterator(), "A[1+1]", "A[1+2]", "A[1+3]");
+        assertCodesOfNeverEndingIterableSelector(nearbySubListSelector, childSubListSelector.getSize(),
+                // The SubList's assertable code means Entity[fromIndex+subListLength].
+                "A[1+1]", "A[1+2]", "A[1+3]");
         nearbySubListSelector.stepEnded(stepScopeA1);
         nearbySubListSelector.phaseEnded(phaseScopeA);
         nearbySubListSelector.solvingEnded(solverScope);
@@ -119,6 +121,7 @@ class NearSubListNearbySubListSelectorTest {
                         subList(e2, 0), // => v5
                         subList(e2, 0),
                         subList(e2, 0),
+                        subList(e2, 0),
                         subList(e2, 0));
 
         NearSubListNearbySubListSelector<TestdataListSolution> nearbySubListSelector =
@@ -144,8 +147,9 @@ class NearSubListNearbySubListSelectorTest {
         SolverScope<TestdataListSolution> solverScope = solvingStarted(nearbySubListSelector, scoreDirector, testRandom);
         AbstractPhaseScope<TestdataListSolution> phaseScopeA = phaseStarted(nearbySubListSelector, solverScope);
         AbstractStepScope<TestdataListSolution> stepScopeA1 = stepStarted(nearbySubListSelector, phaseScopeA);
-        // The SubList's assertable code means Entity[fromIndex+subListLength].
-        assertAllCodesOfIterator(nearbySubListSelector.iterator(), "A[0+2]", "A[0+3]", "A[0+3]", "A[0+2]");
+        assertCodesOfNeverEndingIterableSelector(nearbySubListSelector, childSubListSelector.getSize(),
+                // The SubList's assertable code means Entity[fromIndex+subListLength].
+                "A[0+2]", "A[0+3]", "A[0+3]", "A[0+2]");
         nearbySubListSelector.stepEnded(stepScopeA1);
         nearbySubListSelector.phaseEnded(phaseScopeA);
         nearbySubListSelector.solvingEnded(solverScope);
@@ -176,7 +180,7 @@ class NearSubListNearbySubListSelectorTest {
         // The origin selector determines the destination matrix origin.
         // In this case, the origin is v3 (because B[0]=v3).
         MimicReplayingSubListSelector<TestdataListSolution> mockReplayingSubListSelector =
-                mockReplayingSubListSelector(childSubListSelector.getVariableDescriptor(), subList(e2, 0));
+                mockReplayingSubListSelector(childSubListSelector.getVariableDescriptor(), subList(e2, 0), subList(e2, 0));
 
         NearSubListNearbySubListSelector<TestdataListSolution> nearbySubListSelector =
                 new NearSubListNearbySubListSelector<>(childSubListSelector, mockReplayingSubListSelector,
@@ -196,7 +200,7 @@ class NearSubListNearbySubListSelectorTest {
         SolverScope<TestdataListSolution> solverScope = solvingStarted(nearbySubListSelector, scoreDirector, testRandom);
         AbstractPhaseScope<TestdataListSolution> phaseScopeA = phaseStarted(nearbySubListSelector, solverScope);
         AbstractStepScope<TestdataListSolution> stepScopeA1 = stepStarted(nearbySubListSelector, phaseScopeA);
-        assertAllCodesOfIterator(nearbySubListSelector.iterator(), "A[0+2]");
+        assertCodesOfNeverEndingIterableSelector(nearbySubListSelector, childSubListSelector.getSize(), "A[0+2]");
         nearbySubListSelector.stepEnded(stepScopeA1);
         nearbySubListSelector.phaseEnded(phaseScopeA);
         nearbySubListSelector.solvingEnded(solverScope);

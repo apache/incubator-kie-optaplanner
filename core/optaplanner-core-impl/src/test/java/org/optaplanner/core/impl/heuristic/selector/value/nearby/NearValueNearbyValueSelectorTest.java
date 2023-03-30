@@ -6,7 +6,8 @@ import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.sol
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.stepStarted;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterableSelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingIterableSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
 
 import org.junit.jupiter.api.Test;
@@ -57,7 +58,7 @@ class NearValueNearbyValueSelectorTest {
         SolverScope<TestdataListSolution> solverScope = solvingStarted(nearbyValueSelector, scoreDirector);
         AbstractPhaseScope<TestdataListSolution> phaseScopeA = phaseStarted(nearbyValueSelector, solverScope);
         AbstractStepScope<TestdataListSolution> stepScopeA1 = stepStarted(nearbyValueSelector, phaseScopeA);
-        assertAllCodesOfIterator(nearbyValueSelector.iterator(), "50", "45", "60", "75", "10");
+        assertAllCodesOfIterableSelector(nearbyValueSelector, valueSelector.getSize(), "50", "45", "60", "75", "10");
         nearbyValueSelector.stepEnded(stepScopeA1);
         nearbyValueSelector.phaseEnded(phaseScopeA);
         nearbyValueSelector.solvingEnded(solverScope);
@@ -82,7 +83,7 @@ class NearValueNearbyValueSelectorTest {
 
         // The replaying selector determines the destination matrix origin.
         MimicReplayingValueSelector<TestdataListSolution> mockReplayingValueSelector =
-                mockReplayingValueSelector(valueSelector.getVariableDescriptor(), v3, v3, v3, v3, v3);
+                mockReplayingValueSelector(valueSelector.getVariableDescriptor(), v3, v3, v3, v3, v3, v3);
 
         NearValueNearbyValueSelector<TestdataListSolution> nearbyValueSelector =
                 new NearValueNearbyValueSelector<>(valueSelector, mockReplayingValueSelector, new TestDistanceMeter(),
@@ -101,7 +102,7 @@ class NearValueNearbyValueSelectorTest {
         AbstractPhaseScope<TestdataListSolution> phaseScopeA = phaseStarted(nearbyValueSelector, solverScope);
         AbstractStepScope<TestdataListSolution> stepScopeA1 = stepStarted(nearbyValueSelector, phaseScopeA);
         //                                                        3     2     1     4     0
-        assertAllCodesOfIterator(nearbyValueSelector.iterator(), "75", "60", "45", "10", "50");
+        assertCodesOfNeverEndingIterableSelector(nearbyValueSelector, valueSelector.getSize(), "75", "60", "45", "10", "50");
         nearbyValueSelector.stepEnded(stepScopeA1);
         nearbyValueSelector.phaseEnded(phaseScopeA);
         nearbyValueSelector.solvingEnded(solverScope);

@@ -8,7 +8,8 @@ import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.ste
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.getListVariableDescriptor;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntityIndependentValueSelector;
 import static org.optaplanner.core.impl.testdata.domain.list.TestdataListUtils.mockEntitySelector;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterableSelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingIterableSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
 
 import org.junit.jupiter.api.Test;
@@ -57,7 +58,7 @@ class NearValueNearbyDestinationSelectorTest {
         TestNearbyRandom nearbyRandom = new TestNearbyRandom();
 
         MimicReplayingValueSelector<TestdataListSolution> mockReplayingValueSelector =
-                mockReplayingValueSelector(valueSelector.getVariableDescriptor(), v3, v3, v3, v3, v3, v3, v3);
+                mockReplayingValueSelector(valueSelector.getVariableDescriptor(), v3, v3, v3, v3, v3, v3, v3, v3);
 
         NearValueNearbyDestinationSelector<TestdataListSolution> nearbyDestinationSelector =
                 new NearValueNearbyDestinationSelector<>(childDestinationSelector, mockReplayingValueSelector,
@@ -77,8 +78,9 @@ class NearValueNearbyDestinationSelectorTest {
         SolverScope<TestdataListSolution> solverScope = solvingStarted(nearbyDestinationSelector, scoreDirector, testRandom);
         AbstractPhaseScope<TestdataListSolution> phaseScopeA = phaseStarted(nearbyDestinationSelector, solverScope);
         AbstractStepScope<TestdataListSolution> stepScopeA1 = stepStarted(nearbyDestinationSelector, phaseScopeA);
-        //                                                              50      45      60      75      10      0       0
-        assertAllCodesOfIterator(nearbyDestinationSelector.iterator(), "A[3]", "A[2]", "A[4]", "B[1]", "A[1]", "A[0]", "B[0]");
+        assertCodesOfNeverEndingIterableSelector(nearbyDestinationSelector, entitySelector.getSize() + valueSelector.getSize(),
+                // 50      45      60      75      10      0       0
+                "A[3]", "A[2]", "A[4]", "B[1]", "A[1]", "A[0]", "B[0]");
         nearbyDestinationSelector.stepEnded(stepScopeA1);
         nearbyDestinationSelector.phaseEnded(phaseScopeA);
         nearbyDestinationSelector.solvingEnded(solverScope);
@@ -126,14 +128,16 @@ class NearValueNearbyDestinationSelectorTest {
 
         AbstractStepScope<TestdataListSolution> stepScopeA1 = stepStarted(nearbyDestinationSelector, phaseScopeA);
         valueMimicRecorder.setRecordedValue(v3);
-        //                                                              50      45      60      75      10      0       0
-        assertAllCodesOfIterator(nearbyDestinationSelector.iterator(), "A[3]", "A[2]", "A[4]", "B[1]", "A[1]", "A[0]", "B[0]");
+        assertAllCodesOfIterableSelector(nearbyDestinationSelector, entitySelector.getSize() + valueSelector.getSize(),
+                // 50      45      60      75      10      0       0
+                "A[3]", "A[2]", "A[4]", "B[1]", "A[1]", "A[0]", "B[0]");
         nearbyDestinationSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope<TestdataListSolution> stepScopeA2 = stepStarted(nearbyDestinationSelector, phaseScopeA);
         valueMimicRecorder.setRecordedValue(v5);
-        //                                                              75      60      50      45      10      0       0
-        assertAllCodesOfIterator(nearbyDestinationSelector.iterator(), "B[1]", "A[4]", "A[3]", "A[2]", "A[1]", "A[0]", "B[0]");
+        assertAllCodesOfIterableSelector(nearbyDestinationSelector, entitySelector.getSize() + valueSelector.getSize(),
+                // 75      60      50      45      10      0       0
+                "B[1]", "A[4]", "A[3]", "A[2]", "A[1]", "A[0]", "B[0]");
         nearbyDestinationSelector.stepEnded(stepScopeA2);
 
         nearbyDestinationSelector.phaseEnded(phaseScopeA);
