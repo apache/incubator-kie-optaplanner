@@ -16,9 +16,10 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.util.MemoizingSupply;
 
 /**
+ * Demands a distance matrix where both the origins and nearby destinations are planning values.
+ * <p>
  * Calculating {@link NearbyDistanceMatrix} is very expensive,
  * therefore we want to reuse it as much as possible.
- *
  * <p>
  * In cases where the demand represents the same nearby selector (as defined by
  * {@link ListValueNearbyDistanceMatrixDemand#equals(Object)})
@@ -26,8 +27,8 @@ import org.optaplanner.core.impl.util.MemoizingSupply;
  * with the pre-computed {@link NearbyDistanceMatrix}.
  *
  * @param <Solution_>
- * @param <Origin_>
- * @param <Destination_>
+ * @param <Origin_> planning values
+ * @param <Destination_> planning values
  */
 public final class ListValueNearbyDistanceMatrixDemand<Solution_, Origin_, Destination_>
         implements Demand<MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>>> {
@@ -62,11 +63,13 @@ public final class ListValueNearbyDistanceMatrixDemand<Solution_, Origin_, Desti
                         + ") has a valueSize (" + originSize
                         + ") which is higher than Integer.MAX_VALUE.");
             }
-            // List variables use entity independent value selectors, so we can pass null to the ending iterator.
+            // Destinations: values extracted from a value selector.
+            // List variables use entity independent value selectors, so we can pass null to get and ending iterator.
             Function<Origin_, Iterator<Destination_>> destinationIteratorProvider =
                     origin -> (Iterator<Destination_>) childValueSelector.endingIterator(null);
             NearbyDistanceMatrix<Origin_, Destination_> nearbyDistanceMatrix =
                     new NearbyDistanceMatrix<>(meter, (int) originSize, destinationIteratorProvider, destinationSizeFunction);
+            // Origins: values extracted from a value selector.
             // Replaying selector's ending iterator uses the recording selector's ending iterator. So, again, null is OK here.
             replayingOriginValueSelector.endingIterator(null)
                     .forEachRemaining(origin -> nearbyDistanceMatrix.addAllDestinations((Origin_) origin));
@@ -80,8 +83,8 @@ public final class ListValueNearbyDistanceMatrixDemand<Solution_, Origin_, Desti
      *
      * <ul>
      * <li>Their meter instances are equal.</li>
-     * <li>Their child selectors are equal.</li>
-     * <li>Their replaying origin entity selectors are equal.</li>
+     * <li>Their child value selectors are equal.</li>
+     * <li>Their replaying origin value selectors are equal.</li>
      * </ul>
      *
      * Otherwise as defined by {@link Object#equals(Object)}.

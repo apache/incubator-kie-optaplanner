@@ -16,9 +16,10 @@ import org.optaplanner.core.impl.solver.ClassInstanceCache;
 import org.optaplanner.core.impl.util.MemoizingSupply;
 
 /**
+ * Demands a distance matrix where both the origins and nearby destinations are planning values.
+ * <p>
  * Calculating {@link NearbyDistanceMatrix} is very expensive,
  * therefore we want to reuse it as much as possible.
- *
  * <p>
  * In cases where the demand represents the same nearby selector (as defined by
  * {@link SubListNearbySubListMatrixDemand#equals(Object)})
@@ -26,8 +27,8 @@ import org.optaplanner.core.impl.util.MemoizingSupply;
  * with the pre-computed {@link NearbyDistanceMatrix}.
  *
  * @param <Solution_>
- * @param <Origin_>
- * @param <Destination_>
+ * @param <Origin_> planning values
+ * @param <Destination_> planning values
  */
 public final class SubListNearbySubListMatrixDemand<Solution_, Origin_, Destination_>
         implements Demand<MemoizingSupply<NearbyDistanceMatrix<Origin_, Destination_>>> {
@@ -62,12 +63,16 @@ public final class SubListNearbySubListMatrixDemand<Solution_, Origin_, Destinat
                         + ") has a subListSize (" + originSize
                         + ") which is higher than Integer.MAX_VALUE.");
             }
-            // Destinations in the "matrix" need to be entities and values (not ElementRefs!) because that's what
-            // the NearbyDistanceMeter is able to measure.
+            // Destinations: values extracted from a subList selector.
+            // Distance "matrix" cannot contain subLists because:
+            // 1. Its elements are exposed to the user-implemented NearbyDistanceMeter. SubList is an internal class.
+            // 2. The matrix is static; it's computed once when solving starts and then never changes.
+            //    The subLists available in the solution change with every step.
             Function<Origin_, Iterator<Destination_>> destinationIteratorProvider =
                     origin -> (Iterator<Destination_>) childSubListSelector.endingValueIterator();
             NearbyDistanceMatrix<Origin_, Destination_> nearbyDistanceMatrix =
                     new NearbyDistanceMatrix<>(meter, (int) originSize, destinationIteratorProvider, destinationSizeFunction);
+            // Origins: values extracted from a subList selector.
             replayingOriginSubListSelector.endingValueIterator()
                     .forEachRemaining(origin -> nearbyDistanceMatrix.addAllDestinations((Origin_) origin));
             return nearbyDistanceMatrix;
@@ -76,12 +81,12 @@ public final class SubListNearbySubListMatrixDemand<Solution_, Origin_, Destinat
     }
 
     /**
-     * Two instances of this class are consider equal if and only if:
+     * Two instances of this class are considered equal if and only if:
      *
      * <ul>
      * <li>Their meter instances are equal.</li>
-     * <li>Their child selectors are equal.</li>
-     * <li>Their replaying origin entity selectors are equal.</li>
+     * <li>Their child subList selectors are equal.</li>
+     * <li>Their replaying origin subList selectors are equal.</li>
      * </ul>
      *
      * Otherwise as defined by {@link Object#equals(Object)}.
