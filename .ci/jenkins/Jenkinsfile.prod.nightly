@@ -30,8 +30,6 @@ pipeline {
                     env.PRODUCT_VERSION = "${PRODUCT_VERSION ?: parseVersionFromPom('kiegroup/optaplanner')}"
                     env.DROOLS_PRODUCT_VERSION = "${DROOLS_PRODUCT_VERSION ?: parseVersionFromPom('kiegroup/drools')}"
                 }
-
-                sh 'printenv'
             }
         }
         stage('Install build-chain tool') {
@@ -120,8 +118,17 @@ pipeline {
                             // extract git infos
                             util.storeGitInformation(projectName)
                             env.ALREADY_BUILT_PROJECTS = "${env.ALREADY_BUILT_PROJECTS ?: ''}${projectName};"
+
+                            env["VERSION_${f}"] = maven.mvnGetVersionProperty('project.version')
                         }
                     }
+
+                    // extract Quarkus version
+                    dir("${env.WORKSPACE}/bc/kiegroup_optaplanner") {
+                        env["VERSION_quarkus"] = maven.mvnGetVersionProperty('version.io.quarkus', 'build/optaplanner-build-parent/pom.xml')
+                    }
+                    
+                    sh 'printenv'
                 }
             }
         }
@@ -141,11 +148,11 @@ pipeline {
                         optaplannerQuickstartsSourcesFileUrl,
                         env.ALREADY_BUILT_PROJECTS,
                         [
-                            'rhbop': env.OPTAPLANNER_VERSION,
-                            'optaplanner': env.OPTAPLANNER_VERSION,
-                            'drools': env.DROOLS_VERSION,
-                            'quarkus.bom': env.DROOLS_VERSION,
-                            'platform.quarkus.bom': env.DROOLS_VERSION
+                            'rhbop': env['VERSION_kiegroup_optaplanner'],
+                            'optaplanner': env['VERSION_kiegroup_optaplanner'],
+                            'drools': env['VERSION_kiegroup_drools'],
+                            'quarkus.bom': env['VERSION_quarkus'],
+                            'platform.quarkus.bom': env['VERSION_quarkus']
                         ],
                         gitHashesToCollection(env.GIT_INFORMATION_HASHES)
                     )

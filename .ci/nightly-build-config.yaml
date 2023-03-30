@@ -7,8 +7,6 @@ pre: |
   echo "PME_CMD=${{ env.PME_CMD }}"
   export BUILD_MVN_OPTS="${{ env.BUILD_MVN_OPTS }} -s ${{ env.PME_MAVEN_SETTINGS_XML }}"
   echo "BUILD_MVN_OPTS=${{ env.BUILD_MVN_OPTS }}"
-  export EXTRACT_VERSION="mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout"
-  echo "EXTRACT_VERSION=${{ env.EXTRACT_VERSION }}"
   export ALIGN_QUARKUS="mvn versions:compare-dependencies -DremotePom=io.quarkus:quarkus-bom:${{ env.QUARKUS_VERSION_COMMUNITY }} -DupdatePropertyVersions=true -DupdateDependencies=true -DgenerateBackupPoms=false -s ${{ env.PME_MAVEN_SETTINGS_XML }}"
   echo "ALIGN_QUARKUS=${{ env.ALIGN_QUARKUS }}"
 
@@ -27,21 +25,11 @@ build:
       upstream: |
         ${{ env.PME_CMD }} ${{ env.PME_ALIGNMENT_PARAMS_kiegroup_drools }}
         bash -c "${{ env.ALIGN_QUARKUS }} -pl :drools-build-parent ; set -o pipefail ; ${{ env.PME_BUILD_SCRIPT_kiegroup_drools }} ${{ env.BUILD_MVN_OPTS }} | tee ${{ env.WORKSPACE }}/drools.maven.log"
-      after:
-        upstream: |
-          export DROOLS_VERSION=`${{ env.EXTRACT_VERSION }}`
-          echo "DROOLS_VERSION=${{ env.DROOLS_VERSION }}"
   - project: kiegroup/optaplanner
     build-command:
       current: |
         ${{ env.PME_CMD }} ${{ env.PME_ALIGNMENT_PARAMS_kiegroup_optaplanner }}
         bash -c "set -o pipefail ; ${{ env.PME_BUILD_SCRIPT_kiegroup_optaplanner }} ${{ env.BUILD_MVN_OPTS }} | tee ${{ env.WORKSPACE }}/optaplanner.maven.log"
-      after:
-        current: |
-          export OPTAPLANNER_VERSION=`${{ env.EXTRACT_VERSION }}`
-          echo "OPTAPLANNER_VERSION=${{ env.OPTAPLANNER_VERSION }}"
-          export QUARKUS_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=version.io.quarkus -q -DforceStdout -f build/optaplanner-build-parent/pom.xml`
-          echo "QUARKUS_VERSION=${{ env.QUARKUS_VERSION }}"
   - project: kiegroup/optaplanner-quickstarts
     build-command:
       downstream: |
