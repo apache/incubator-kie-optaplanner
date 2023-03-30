@@ -1,6 +1,6 @@
 version: "2.1"
 
-dependencies: ./project-dependencies-rhbop.yaml
+dependencies: ./nightly-project-dependencies.yaml
 
 pre: |
   export PME_CMD="java -jar ${{ env.PME_CLI_PATH }} -s ${{ env.PME_MAVEN_SETTINGS_XML }} -DallowConfigFilePrecedence=true -DprojectSrcSkip=false"
