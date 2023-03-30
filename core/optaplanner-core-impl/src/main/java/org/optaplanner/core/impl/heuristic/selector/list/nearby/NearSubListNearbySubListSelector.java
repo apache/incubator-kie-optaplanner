@@ -239,6 +239,11 @@ public final class NearSubListNearbySubListSelector<Solution_> extends AbstractS
     }
 
     @Override
+    public long getValueCount() {
+        throw new UnsupportedOperationException("Not used.");
+    }
+
+    @Override
     public boolean equals(Object other) {
         if (this == other) {
             return true;

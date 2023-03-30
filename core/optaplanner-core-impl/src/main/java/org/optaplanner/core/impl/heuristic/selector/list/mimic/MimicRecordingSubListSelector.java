@@ -93,6 +93,11 @@ public class MimicRecordingSubListSelector<Solution_> extends AbstractSelector<S
     }
 
     @Override
+    public long getValueCount() {
+        return childSubListSelector.getValueCount();
+    }
+
+    @Override
     public boolean equals(Object other) {
         if (this == other)
             return true;

@@ -57,7 +57,7 @@ public final class SubListNearbySubListMatrixDemand<Solution_, Origin_, Destinat
                 throw new IllegalStateException("The childSize (" + childSize + ") is higher than Integer.MAX_VALUE.");
             }
 
-            long originSize = replayingOriginSubListSelector.getSize();
+            long originSize = replayingOriginSubListSelector.getValueCount();
             if (originSize > Integer.MAX_VALUE) {
                 throw new IllegalStateException("The originSubListSelector (" + replayingOriginSubListSelector
                         + ") has a subListSize (" + originSize

@@ -96,6 +96,7 @@ public class RandomSubListSelector<Solution_> extends AbstractSelector<Solution_
         return valueSelector.endingIterator(null);
     }
 
+    @Override
     public long getValueCount() {
         return valueSelector.getSize();
     }

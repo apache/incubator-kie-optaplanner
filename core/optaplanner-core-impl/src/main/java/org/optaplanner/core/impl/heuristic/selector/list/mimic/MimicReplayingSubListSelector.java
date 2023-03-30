@@ -77,6 +77,17 @@ public class MimicReplayingSubListSelector<Solution_> extends AbstractSelector<S
     }
 
     @Override
+    public Iterator<Object> endingValueIterator() {
+        // No replaying, because the endingIterator() is used for determining size
+        return subListMimicRecorder.endingValueIterator();
+    }
+
+    @Override
+    public long getValueCount() {
+        return subListMimicRecorder.getValueCount();
+    }
+
+    @Override
     public Iterator<SubList> iterator() {
         return new ReplayingSubListIterator();
     }
@@ -138,12 +149,6 @@ public class MimicReplayingSubListSelector<Solution_> extends AbstractSelector<S
             return "Next replay (" + (recordingCreated ? recording : "?") + ")";
         }
 
-    }
-
-    @Override
-    public Iterator<Object> endingValueIterator() {
-        // No replaying, because the endingIterator() is used for determining size
-        return subListMimicRecorder.endingValueIterator();
     }
 
     @Override

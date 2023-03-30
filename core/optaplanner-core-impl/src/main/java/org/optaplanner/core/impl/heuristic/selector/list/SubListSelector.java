@@ -10,4 +10,6 @@ public interface SubListSelector<Solution_> extends IterableSelector<Solution_, 
     ListVariableDescriptor<Solution_> getVariableDescriptor();
 
     Iterator<Object> endingValueIterator();
+
+    long getValueCount();
 }
