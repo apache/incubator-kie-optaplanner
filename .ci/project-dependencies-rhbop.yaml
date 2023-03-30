@@ -1,6 +1,15 @@
 version: "2.1"
 dependencies:
   - project: kiegroup/drools
+    mapping:
+      dependencies:
+        default:
+          - source: main-integration-quarkus-lts
+            target: main
+      dependant:
+        default:
+          - source: main
+            target: main-integration-quarkus-lts
 
   - project: kiegroup/optaplanner
     dependencies:
@@ -18,6 +27,7 @@ dependencies:
         default:
           - source: main
             target: development
+
   - project: jboss-integration/rhbop-optaplanner
     dependencies:
       - project: kiegroup/optaplanner-quickstarts
