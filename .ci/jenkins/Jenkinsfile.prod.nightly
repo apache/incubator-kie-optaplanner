@@ -59,6 +59,7 @@ pipeline {
                     // export Quarkus community version as QUARKUS_VERSION_COMMUNITY
                     def PME_BUILD_VARIABLES = env.PME_BUILD_VARIABLES.split(';').collect{ it.split('=')}.inject([:]) {map, item -> map << [(item.length == 2 ? item[0] : null): (item.length == 2 ? item[1] : null)]}
                     env.QUARKUS_VERSION_COMMUNITY = PME_BUILD_VARIABLES['quarkusVersionCommunity']
+                    env.QUARKUS_VERSION = PME_BUILD_VARIABLES['quarkusVersion'].replaceAll("\\{\\{.*\\}\\}", env.QUARKUS_VERSION_COMMUNITY)
                 }
             }
         }
@@ -122,11 +123,6 @@ pipeline {
                             env["VERSION_${f}"] = maven.mvnGetVersionProperty('project.version')
                         }
                     }
-
-                    // extract Quarkus version
-                    dir("${env.WORKSPACE}/bc/kiegroup_optaplanner") {
-                        env["VERSION_quarkus"] = maven.mvnGetVersionProperty('version.io.quarkus', 'build/optaplanner-build-parent/pom.xml')
-                    }
                     
                     sh 'printenv'
                 }
@@ -151,8 +147,8 @@ pipeline {
                             'rhbop': env['VERSION_kiegroup_optaplanner'],
                             'optaplanner': env['VERSION_kiegroup_optaplanner'],
                             'drools': env['VERSION_kiegroup_drools'],
-                            'quarkus.bom': env['VERSION_quarkus'],
-                            'platform.quarkus.bom': env['VERSION_quarkus']
+                            'quarkus.bom': env['QUARKUS_VERSION'],
+                            'platform.quarkus.bom': env['QUARKUS_VERSION']
                         ],
                         gitHashesToCollection(env.GIT_INFORMATION_HASHES)
                     )
