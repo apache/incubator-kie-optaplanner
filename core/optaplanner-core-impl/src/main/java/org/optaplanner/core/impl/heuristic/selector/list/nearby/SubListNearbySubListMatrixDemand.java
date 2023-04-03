@@ -33,7 +33,7 @@ import org.optaplanner.core.impl.util.MemoizingSupply;
  * @param <Origin_> planning values
  * @param <Destination_> planning values
  */
-public final class SubListNearbySubListMatrixDemand<Solution_, Origin_, Destination_>
+final class SubListNearbySubListMatrixDemand<Solution_, Origin_, Destination_>
         extends
         AbstractNearbyDistanceMatrixDemand<Origin_, Destination_, RandomSubListSelector<Solution_>, MimicReplayingSubListSelector<Solution_>> {
 

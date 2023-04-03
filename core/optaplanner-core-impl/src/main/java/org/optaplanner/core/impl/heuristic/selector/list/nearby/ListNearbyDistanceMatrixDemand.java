@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingVa
  * @param <Origin_> planning values
  * @param <Destination_> mix of planning entities and planning values
  */
-public final class ListNearbyDistanceMatrixDemand<Solution_, Origin_, Destination_>
+final class ListNearbyDistanceMatrixDemand<Solution_, Origin_, Destination_>
         extends AbstractNearbyDistanceMatrixDemand<Origin_, Destination_, ElementDestinationSelector<Solution_>, MimicReplayingValueSelector<Solution_>> {
 
     private final ToIntFunction<Origin_> destinationSizeFunction;
