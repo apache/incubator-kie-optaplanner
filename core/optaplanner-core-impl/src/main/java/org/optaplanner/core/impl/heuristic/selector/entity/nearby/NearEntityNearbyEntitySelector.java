@@ -7,7 +7,6 @@ import java.util.Objects;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrixDemand;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
@@ -26,7 +25,7 @@ public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEnt
     private final boolean randomSelection;
     // TODO deactivate me when appropriate; consider if this field needs to be included in selector equality
     private final boolean discardNearbyIndexZero = true;
-    private final NearbyDistanceMatrixDemand<Solution_, ?, ?> nearbyDistanceMatrixDemand;
+    private final EntityNearbyDistanceMatrixDemand<Solution_, ?, ?> nearbyDistanceMatrixDemand;
 
     private MemoizingSupply<NearbyDistanceMatrix<Object, Object>> nearbyDistanceMatrixSupply = null;
 
@@ -56,7 +55,7 @@ public final class NearEntityNearbyEntitySelector<Solution_> extends AbstractEnt
                     + ") which is not a superclass of the originEntitySelector's entityClass ("
                     + originEntitySelector.getEntityDescriptor().getEntityClass() + ").");
         }
-        this.nearbyDistanceMatrixDemand = new NearbyDistanceMatrixDemand<>(
+        this.nearbyDistanceMatrixDemand = new EntityNearbyDistanceMatrixDemand<>(
                 nearbyDistanceMeter,
                 nearbyRandom,
                 childEntitySelector,

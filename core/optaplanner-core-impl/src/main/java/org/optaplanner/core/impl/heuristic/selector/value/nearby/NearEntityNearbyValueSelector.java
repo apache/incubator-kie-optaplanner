@@ -1,97 +1,58 @@
 package org.optaplanner.core.impl.heuristic.selector.value.nearby;
 
 import java.util.Iterator;
-import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrixDemand;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbyDistanceMatrixDemand;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.scope.SolverScope;
-import org.optaplanner.core.impl.util.MemoizingSupply;
 
-public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValueSelector<Solution_> {
+public final class NearEntityNearbyValueSelector<Solution_>
+        extends AbstractNearbyValueSelector<Solution_, ValueSelector<Solution_>, EntitySelector<Solution_>> {
 
-    private final ValueSelector<Solution_> childValueSelector;
-    private final EntitySelector<Solution_> replayingOriginEntitySelector;
-    private final NearbyDistanceMeter<?, ?> nearbyDistanceMeter;
-    private final NearbyRandom nearbyRandom;
-    private final boolean randomSelection;
     private final boolean discardNearbyIndexZero;
-    private final NearbyDistanceMatrixDemand<Solution_, ?, ?> nearbyDistanceMatrixDemand;
-
-    private MemoizingSupply<NearbyDistanceMatrix<Object, Object>> nearbyDistanceMatrixSupply = null;
 
     public NearEntityNearbyValueSelector(ValueSelector<Solution_> childValueSelector,
             EntitySelector<Solution_> originEntitySelector, NearbyDistanceMeter<?, ?> nearbyDistanceMeter,
             NearbyRandom nearbyRandom, boolean randomSelection) {
-        this.childValueSelector = childValueSelector;
-        if (!(originEntitySelector instanceof MimicReplayingEntitySelector)) {
-            // In order to select a nearby value, we must first have something to be near by.
-            throw new IllegalStateException("Impossible state: Nearby value selector (" + this +
-                    ") did not receive a replaying entity selector (" + originEntitySelector + ").");
-        }
-        this.replayingOriginEntitySelector = originEntitySelector;
-        this.nearbyDistanceMeter = nearbyDistanceMeter;
-        this.nearbyRandom = nearbyRandom;
-        this.randomSelection = randomSelection;
-        if (randomSelection && nearbyRandom == null) {
-            throw new IllegalArgumentException("The valueSelector (" + this
-                    + ") with randomSelection (" + randomSelection + ") has no nearbyRandom (" + nearbyRandom + ").");
-        }
+        super(childValueSelector, originEntitySelector, nearbyDistanceMeter, nearbyRandom, randomSelection);
         this.discardNearbyIndexZero = childValueSelector.getVariableDescriptor().getVariablePropertyType().isAssignableFrom(
                 originEntitySelector.getEntityDescriptor().getEntityClass());
-        this.nearbyDistanceMatrixDemand = new NearbyDistanceMatrixDemand<>(
-                nearbyDistanceMeter,
-                nearbyRandom,
-                childValueSelector,
-                replayingOriginEntitySelector,
-                this::computeDestinationSize);
-
-        phaseLifecycleSupport.addEventListener(childValueSelector);
-        phaseLifecycleSupport.addEventListener(originEntitySelector);
     }
 
     @Override
     public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
-        return childValueSelector.getVariableDescriptor();
+        return childSelector.getVariableDescriptor();
     }
 
     @Override
-    public void solvingStarted(SolverScope<Solution_> solverScope) {
-        super.solvingStarted(solverScope);
-        /*
-         * Supply will ask questions of the child selector.
-         * However, child selector will only be initialized during phase start.
-         * Yet we still want the very expensive nearby distance matrix to be reused across phases.
-         * Therefore we request the supply here, but actually lazily initialize it during phase start.
-         */
-        nearbyDistanceMatrixSupply = (MemoizingSupply) solverScope.getScoreDirector().getSupplyManager()
-                .demand(nearbyDistanceMatrixDemand);
-    }
-
-    NearbyDistanceMatrixDemand<Solution_, ?, ?> getNearbyDistanceMatrixDemand() {
-        return nearbyDistanceMatrixDemand;
+    protected EntitySelector<Solution_> castReplayingSelector(Object uncastReplayingSelector) {
+        if (!(uncastReplayingSelector instanceof MimicReplayingEntitySelector)) {
+            // In order to select a nearby value, we must first have something to be near by.
+            throw new IllegalStateException("Impossible state: Nearby value selector (" + this +
+                    ") did not receive a replaying entity selector (" + uncastReplayingSelector + ").");
+        }
+        return (EntitySelector<Solution_>) uncastReplayingSelector;
     }
 
     @Override
-    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
-        super.phaseStarted(phaseScope);
-        // Lazily initialize the supply, so that steps can then have uniform performance.
-        nearbyDistanceMatrixSupply.read();
+    protected AbstractNearbyDistanceMatrixDemand<?, ?, ValueSelector<Solution_>, EntitySelector<Solution_>> createDemand() {
+        return new ValueNearbyDistanceMatrixDemand<>(
+                nearbyDistanceMeter,
+                nearbyRandom,
+                childSelector,
+                replayingSelector,
+                this::computeDestinationSize);
     }
 
     private int computeDestinationSize(Object origin) {
-        long childSize = childValueSelector.getSize(origin);
+        long childSize = childSelector.getSize(origin);
         if (childSize > Integer.MAX_VALUE) {
-            throw new IllegalStateException("The childValueSelector (" + childValueSelector
+            throw new IllegalStateException("The childValueSelector (" + childSelector
                     + ") has a valueSize (" + childSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
@@ -109,39 +70,27 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
         return destinationSize;
     }
 
-    @Override
-    public void solvingEnded(SolverScope<Solution_> solverScope) {
-        super.solvingEnded(solverScope);
-        solverScope.getScoreDirector().getSupplyManager().cancel(nearbyDistanceMatrixDemand);
-        nearbyDistanceMatrixSupply = null;
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
     @Override
     public boolean isCountable() {
-        return childValueSelector.isCountable();
-    }
-
-    @Override
-    public boolean isNeverEnding() {
-        return randomSelection || !isCountable();
+        return childSelector.isCountable();
     }
 
     @Override
     public long getSize(Object entity) {
-        return childValueSelector.getSize(entity) - (discardNearbyIndexZero ? 1 : 0);
+        return childSelector.getSize(entity) - (discardNearbyIndexZero ? 1 : 0);
     }
 
     @Override
     public Iterator<Object> iterator(Object entity) {
-        Iterator<Object> replayingOriginEntityIterator = replayingOriginEntitySelector.iterator();
+        Iterator<Object> replayingOriginEntityIterator = replayingSelector.iterator();
         if (!randomSelection) {
-            return new OriginalEntityNearbyValueIterator(replayingOriginEntityIterator, childValueSelector.getSize(entity));
+            return new OriginalEntityNearbyValueIterator(replayingOriginEntityIterator, childSelector.getSize(entity));
         } else {
-            return new RandomEntityNearbyValueIterator(replayingOriginEntityIterator, childValueSelector.getSize(entity));
+            return new RandomEntityNearbyValueIterator(replayingOriginEntityIterator, childSelector.getSize(entity));
         }
     }
 
@@ -149,7 +98,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
     public Iterator<Object> endingIterator(Object entity) {
         // TODO It should probably use nearby order
         // It must include the origin entity too
-        return childValueSelector.endingIterator(entity);
+        return childSelector.endingIterator(entity);
     }
 
     private final class OriginalEntityNearbyValueIterator extends SelectionIterator<Object> {
@@ -240,28 +189,4 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
 
     }
 
-    @Override
-    public boolean equals(Object other) {
-        if (this == other)
-            return true;
-        if (other == null || getClass() != other.getClass())
-            return false;
-        NearEntityNearbyValueSelector<?> that = (NearEntityNearbyValueSelector<?>) other;
-        return randomSelection == that.randomSelection
-                && Objects.equals(childValueSelector, that.childValueSelector)
-                && Objects.equals(replayingOriginEntitySelector, that.replayingOriginEntitySelector)
-                && Objects.equals(nearbyDistanceMeter, that.nearbyDistanceMeter)
-                && Objects.equals(nearbyRandom, that.nearbyRandom);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(childValueSelector, replayingOriginEntitySelector, nearbyDistanceMeter, nearbyRandom,
-                randomSelection);
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" + replayingOriginEntitySelector + ", " + childValueSelector + ")";
-    }
 }
