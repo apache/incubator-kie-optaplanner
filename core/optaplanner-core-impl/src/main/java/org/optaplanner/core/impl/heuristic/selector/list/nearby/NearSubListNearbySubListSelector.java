@@ -19,7 +19,7 @@ import org.optaplanner.core.impl.heuristic.selector.list.mimic.MimicReplayingSub
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public final class NearSubListNearbySubListSelector<Solution_>
-        extends AbstractListNearbySelector<Solution_, RandomSubListSelector<Solution_>, MimicReplayingSubListSelector<Solution_>>
+        extends org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbySelector<Solution_, RandomSubListSelector<Solution_>, MimicReplayingSubListSelector<Solution_>>
         implements SubListSelector<Solution_> {
 
     private SingletonInverseVariableSupply inverseVariableSupply;
@@ -30,11 +30,7 @@ public final class NearSubListNearbySubListSelector<Solution_>
             SubListSelector<Solution_> originSubListSelector,
             NearbyDistanceMeter<?, ?> nearbyDistanceMeter,
             NearbyRandom nearbyRandom) {
-        super(childSubListSelector, originSubListSelector, nearbyDistanceMeter, nearbyRandom);
-        if (nearbyRandom == null) {
-            throw new IllegalArgumentException("The subListSelector (" + this
-                    + ") requires a nearbyRandom (" + nearbyRandom + ") because it only supports random selection order.");
-        }
+        super(childSubListSelector, originSubListSelector, nearbyDistanceMeter, nearbyRandom, true);
     }
 
     @Override
@@ -97,12 +93,6 @@ public final class NearSubListNearbySubListSelector<Solution_>
     @Override
     public boolean isCountable() {
         return childSelector.isCountable();
-    }
-
-    @Override
-    public boolean isNeverEnding() {
-        // Because it's random.
-        return true;
     }
 
     @Override

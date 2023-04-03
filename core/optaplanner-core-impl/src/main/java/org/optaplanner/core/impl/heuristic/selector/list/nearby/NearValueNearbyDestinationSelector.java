@@ -20,10 +20,8 @@ import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingVa
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public final class NearValueNearbyDestinationSelector<Solution_>
-        extends AbstractListNearbySelector<Solution_, ElementDestinationSelector<Solution_>, MimicReplayingValueSelector<Solution_>>
+        extends org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbySelector<Solution_, ElementDestinationSelector<Solution_>, MimicReplayingValueSelector<Solution_>>
         implements DestinationSelector<Solution_> {
-
-    private final boolean randomSelection;
 
     private SingletonInverseVariableSupply inverseVariableSupply;
     private IndexVariableSupply indexVariableSupply;
@@ -33,12 +31,7 @@ public final class NearValueNearbyDestinationSelector<Solution_>
             EntityIndependentValueSelector<Solution_> originValueSelector,
             NearbyDistanceMeter<?, ?> nearbyDistanceMeter,
             NearbyRandom nearbyRandom, boolean randomSelection) {
-        super(childDestinationSelector, originValueSelector, nearbyDistanceMeter, nearbyRandom);
-        this.randomSelection = randomSelection;
-        if (randomSelection && nearbyRandom == null) {
-            throw new IllegalArgumentException("The destinationSelector (" + this
-                    + ") with randomSelection (" + randomSelection + ") has no nearbyRandom (" + nearbyRandom + ").");
-        }
+        super(childDestinationSelector, originValueSelector, nearbyDistanceMeter, nearbyRandom, randomSelection);
     }
 
     @Override
@@ -105,11 +98,6 @@ public final class NearValueNearbyDestinationSelector<Solution_>
     @Override
     public boolean isCountable() {
         return childSelector.isCountable();
-    }
-
-    @Override
-    public boolean isNeverEnding() {
-        return randomSelection || !isCountable();
     }
 
     @Override

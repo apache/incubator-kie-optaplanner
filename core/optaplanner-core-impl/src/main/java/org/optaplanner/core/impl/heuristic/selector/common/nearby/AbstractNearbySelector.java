@@ -1,38 +1,36 @@
-package org.optaplanner.core.impl.heuristic.selector.list.nearby;
+package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
 import java.util.Objects;
 
-import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbyDistanceMatrixDemand;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.util.MemoizingSupply;
 
-abstract class AbstractListNearbySelector<Solution_, ChildSelector_ extends PhaseLifecycleListener<Solution_>, ReplayingSelector_ extends PhaseLifecycleListener<Solution_>>
+public abstract class AbstractNearbySelector<Solution_, ChildSelector_ extends PhaseLifecycleListener<Solution_>, ReplayingSelector_ extends PhaseLifecycleListener<Solution_>>
         extends AbstractSelector<Solution_> {
 
     protected final ChildSelector_ childSelector;
     protected final ReplayingSelector_ replayingSelector;
     protected final NearbyDistanceMeter<?, ?> nearbyDistanceMeter;
     protected final NearbyRandom nearbyRandom;
+    protected final boolean randomSelection;
     private final AbstractNearbyDistanceMatrixDemand<?, ?, ChildSelector_, ReplayingSelector_> nearbyDistanceMatrixDemand;
 
     protected MemoizingSupply<NearbyDistanceMatrix<Object, Object>> nearbyDistanceMatrixSupply = null;
 
-    protected AbstractListNearbySelector(
-            ChildSelector_ childSelector,
-            Object replayingSelector,
-            NearbyDistanceMeter<?, ?> nearbyDistanceMeter,
-            NearbyRandom nearbyRandom) {
+    protected AbstractNearbySelector(ChildSelector_ childSelector, Object replayingSelector,
+            NearbyDistanceMeter<?, ?> nearbyDistanceMeter, NearbyRandom nearbyRandom, boolean randomSelection) {
         this.childSelector = childSelector;
         this.replayingSelector = castReplayingSelector(replayingSelector);
         this.nearbyDistanceMeter = nearbyDistanceMeter;
+        if (randomSelection && nearbyRandom == null) {
+            throw new IllegalArgumentException("The selector (" + this
+                    + ") with randomSelection (" + randomSelection + ") has no nearbyRandom (" + nearbyRandom + ").");
+        }
         this.nearbyRandom = nearbyRandom;
+        this.randomSelection = randomSelection;
         this.nearbyDistanceMatrixDemand = createDemand();
         this.phaseLifecycleSupport.addEventListener(childSelector);
         this.phaseLifecycleSupport.addEventListener(this.replayingSelector);
@@ -42,17 +40,21 @@ abstract class AbstractListNearbySelector<Solution_, ChildSelector_ extends Phas
 
     protected abstract AbstractNearbyDistanceMatrixDemand<?, ?, ChildSelector_, ReplayingSelector_> createDemand();
 
+    public final AbstractNearbyDistanceMatrixDemand<?, ?, ChildSelector_, ReplayingSelector_> getNearbyDistanceMatrixDemand() {
+        return nearbyDistanceMatrixDemand;
+    }
+
     @Override
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
-        SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
         /*
          * Supply will ask questions of the child selector.
          * However, child selector will only be initialized during phase start.
          * Yet we still want the very expensive nearby distance matrix to be reused across phases.
          * Therefore we request the supply here, but actually lazily initialize it during phase start.
          */
-        nearbyDistanceMatrixSupply = (MemoizingSupply) supplyManager.demand(nearbyDistanceMatrixDemand);
+        nearbyDistanceMatrixSupply = (MemoizingSupply) solverScope.getScoreDirector().getSupplyManager()
+                .demand(nearbyDistanceMatrixDemand);
     }
 
     @Override
@@ -69,20 +71,24 @@ abstract class AbstractListNearbySelector<Solution_, ChildSelector_ extends Phas
         nearbyDistanceMatrixSupply = null;
     }
 
+    @Override
+    public final boolean isNeverEnding() {
+        return randomSelection || !isCountable();
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
 
     @Override
     public final boolean equals(Object other) {
-        if (this == other) {
+        if (this == other)
             return true;
-        }
-        if (other == null || getClass() != other.getClass()) {
+        if (other == null || getClass() != other.getClass())
             return false;
-        }
-        AbstractListNearbySelector<?, ?, ?> that = (AbstractListNearbySelector<?, ?, ?>) other;
-        return Objects.equals(childSelector, that.childSelector)
+        AbstractNearbySelector<?, ?, ?> that = (AbstractNearbySelector<?, ?, ?>) other;
+        return randomSelection == that.randomSelection
+                && Objects.equals(childSelector, that.childSelector)
                 && Objects.equals(replayingSelector, that.replayingSelector)
                 && Objects.equals(nearbyDistanceMeter, that.nearbyDistanceMeter)
                 && Objects.equals(nearbyRandom, that.nearbyRandom);
@@ -90,7 +96,8 @@ abstract class AbstractListNearbySelector<Solution_, ChildSelector_ extends Phas
 
     @Override
     public final int hashCode() {
-        return Objects.hash(childSelector, replayingSelector, nearbyDistanceMeter, nearbyRandom);
+        return Objects.hash(childSelector, replayingSelector, nearbyDistanceMeter, nearbyRandom,
+                randomSelection);
     }
 
     @Override
