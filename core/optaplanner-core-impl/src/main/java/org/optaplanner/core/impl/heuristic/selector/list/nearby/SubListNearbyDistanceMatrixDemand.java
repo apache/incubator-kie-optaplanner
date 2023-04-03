@@ -1,12 +1,9 @@
 package org.optaplanner.core.impl.heuristic.selector.list.nearby;
 
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
-import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbyDistanceMatrixDemand;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
@@ -14,8 +11,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistance
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.list.ElementDestinationSelector;
 import org.optaplanner.core.impl.heuristic.selector.list.mimic.MimicReplayingSubListSelector;
-import org.optaplanner.core.impl.solver.ClassInstanceCache;
-import org.optaplanner.core.impl.util.MemoizingSupply;
 
 /**
  * Demands a distance matrix where the origins are planning values and nearby destinations are both planning entities and

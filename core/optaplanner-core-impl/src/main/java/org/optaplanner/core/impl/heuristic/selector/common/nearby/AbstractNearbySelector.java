@@ -2,21 +2,21 @@ package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
 import java.util.Objects;
 
-import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
+import org.optaplanner.core.impl.heuristic.selector.AbstractCacheSupportingSelector;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.util.MemoizingSupply;
 
 public abstract class AbstractNearbySelector<Solution_, ChildSelector_ extends PhaseLifecycleListener<Solution_>, ReplayingSelector_ extends PhaseLifecycleListener<Solution_>>
-        extends AbstractSelector<Solution_> {
+        extends AbstractCacheSupportingSelector<Solution_> {
 
     protected final ChildSelector_ childSelector;
     protected final ReplayingSelector_ replayingSelector;
     protected final NearbyDistanceMeter<?, ?> nearbyDistanceMeter;
     protected final NearbyRandom nearbyRandom;
     protected final boolean randomSelection;
-    private final AbstractNearbyDistanceMatrixDemand<?, ?, ChildSelector_, ReplayingSelector_> nearbyDistanceMatrixDemand;
+    private final AbstractNearbyDistanceMatrixDemand<?, ?, ?, ?> nearbyDistanceMatrixDemand;
 
     protected MemoizingSupply<NearbyDistanceMatrix<Object, Object>> nearbyDistanceMatrixSupply = null;
 
@@ -38,9 +38,9 @@ public abstract class AbstractNearbySelector<Solution_, ChildSelector_ extends P
 
     protected abstract ReplayingSelector_ castReplayingSelector(Object uncastReplayingSelector);
 
-    protected abstract AbstractNearbyDistanceMatrixDemand<?, ?, ChildSelector_, ReplayingSelector_> createDemand();
+    protected abstract AbstractNearbyDistanceMatrixDemand<?, ?, ?, ?> createDemand();
 
-    public final AbstractNearbyDistanceMatrixDemand<?, ?, ChildSelector_, ReplayingSelector_> getNearbyDistanceMatrixDemand() {
+    public final AbstractNearbyDistanceMatrixDemand<?, ?, ?, ?> getNearbyDistanceMatrixDemand() {
         return nearbyDistanceMatrixDemand;
     }
 
@@ -96,8 +96,7 @@ public abstract class AbstractNearbySelector<Solution_, ChildSelector_ extends P
 
     @Override
     public final int hashCode() {
-        return Objects.hash(childSelector, replayingSelector, nearbyDistanceMeter, nearbyRandom,
-                randomSelection);
+        return Objects.hash(randomSelection, childSelector, replayingSelector, nearbyDistanceMeter, nearbyRandom);
     }
 
     @Override

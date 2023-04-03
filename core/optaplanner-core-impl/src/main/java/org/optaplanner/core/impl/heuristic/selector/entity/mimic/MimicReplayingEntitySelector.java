@@ -6,11 +6,13 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.AbstractCacheSupportingSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
-import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
-public class MimicReplayingEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
+public class MimicReplayingEntitySelector<Solution_>
+        extends AbstractCacheSupportingSelector<Solution_>
+        implements org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector<Solution_> {
 
     private final EntityMimicRecorder<Solution_> entityMimicRecorder;
 

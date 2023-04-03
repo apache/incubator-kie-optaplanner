@@ -33,8 +33,8 @@ final class EntityNearbyDistanceMatrixDemand<Solution_, Origin_, Destination_>
     private final ToIntFunction<Origin_> destinationSizeFunction;
 
     public EntityNearbyDistanceMatrixDemand(NearbyDistanceMeter<Origin_, Destination_> meter, NearbyRandom random,
-                                            EntitySelector<Solution_> childSelector, EntitySelector<Solution_> replayingOriginEntitySelector,
-                                            ToIntFunction<Origin_> destinationSizeFunction) {
+            EntitySelector<Solution_> childSelector, EntitySelector<Solution_> replayingOriginEntitySelector,
+            ToIntFunction<Origin_> destinationSizeFunction) {
         super(meter, random, childSelector, replayingOriginEntitySelector);
         this.destinationSizeFunction = destinationSizeFunction;
     }
@@ -54,7 +54,8 @@ final class EntityNearbyDistanceMatrixDemand<Solution_, Origin_, Destination_>
                     + ") which is higher than Integer.MAX_VALUE.");
         }
         // Destinations: entities extracted either from an entity selector.
-        Function<Origin_, Iterator<Destination_>> destinationIteratorProvider = origin -> (Iterator<Destination_>) childSelector.endingIterator();
+        Function<Origin_, Iterator<Destination_>> destinationIteratorProvider =
+                origin -> (Iterator<Destination_>) childSelector.endingIterator();
         NearbyDistanceMatrix<Origin_, Destination_> nearbyDistanceMatrix =
                 new NearbyDistanceMatrix<>(meter, (int) originSize, destinationIteratorProvider, destinationSizeFunction);
         // Origins: entities extracted from an entity selector.

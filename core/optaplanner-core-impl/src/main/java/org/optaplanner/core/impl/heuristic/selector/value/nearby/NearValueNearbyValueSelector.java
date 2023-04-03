@@ -1,20 +1,14 @@
 package org.optaplanner.core.impl.heuristic.selector.value.nearby;
 
 import java.util.Iterator;
-import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbyDistanceMatrixDemand;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
-import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
-import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.scope.SolverScope;
-import org.optaplanner.core.impl.util.MemoizingSupply;
 
 public final class NearValueNearbyValueSelector<Solution_>
         extends
@@ -45,9 +39,7 @@ public final class NearValueNearbyValueSelector<Solution_>
     }
 
     @Override
-    protected
-            AbstractNearbyDistanceMatrixDemand<?, ?, EntityIndependentValueSelector<Solution_>, MimicReplayingValueSelector<Solution_>>
-            createDemand() {
+    protected AbstractNearbyDistanceMatrixDemand<?, ?, ?, ?> createDemand() {
         return new ListValueNearbyDistanceMatrixDemand<>(
                 nearbyDistanceMeter,
                 nearbyRandom,

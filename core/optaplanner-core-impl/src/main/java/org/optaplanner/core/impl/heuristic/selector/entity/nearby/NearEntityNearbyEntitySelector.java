@@ -44,7 +44,7 @@ public final class NearEntityNearbyEntitySelector<Solution_>
     }
 
     @Override
-    protected AbstractNearbyDistanceMatrixDemand<?, ?, EntitySelector<Solution_>, EntitySelector<Solution_>> createDemand() {
+    protected AbstractNearbyDistanceMatrixDemand<?, ?, ?, ?> createDemand() {
         return new EntityNearbyDistanceMatrixDemand<>(
                 nearbyDistanceMeter,
                 nearbyRandom,

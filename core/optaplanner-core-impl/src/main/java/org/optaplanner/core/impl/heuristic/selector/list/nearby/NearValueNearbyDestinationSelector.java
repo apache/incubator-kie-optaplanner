@@ -10,6 +10,7 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListIn
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbyDistanceMatrixDemand;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbySelector;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.list.DestinationSelector;
@@ -20,7 +21,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingVa
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public final class NearValueNearbyDestinationSelector<Solution_>
-        extends org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbySelector<Solution_, ElementDestinationSelector<Solution_>, MimicReplayingValueSelector<Solution_>>
+        extends AbstractNearbySelector<Solution_, ElementDestinationSelector<Solution_>, MimicReplayingValueSelector<Solution_>>
         implements DestinationSelector<Solution_> {
 
     private SingletonInverseVariableSupply inverseVariableSupply;
@@ -45,9 +46,7 @@ public final class NearValueNearbyDestinationSelector<Solution_>
     }
 
     @Override
-    protected
-            AbstractNearbyDistanceMatrixDemand<?, ?, ElementDestinationSelector<Solution_>, MimicReplayingValueSelector<Solution_>>
-            createDemand() {
+    protected AbstractNearbyDistanceMatrixDemand<?, ?, ?, ?> createDemand() {
         return new ListNearbyDistanceMatrixDemand<>(
                 nearbyDistanceMeter,
                 nearbyRandom,

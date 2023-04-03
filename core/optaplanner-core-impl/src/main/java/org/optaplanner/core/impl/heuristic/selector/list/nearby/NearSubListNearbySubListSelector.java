@@ -10,6 +10,7 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListIn
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbyDistanceMatrixDemand;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbySelector;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.list.RandomSubListSelector;
@@ -19,7 +20,7 @@ import org.optaplanner.core.impl.heuristic.selector.list.mimic.MimicReplayingSub
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public final class NearSubListNearbySubListSelector<Solution_>
-        extends org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbySelector<Solution_, RandomSubListSelector<Solution_>, MimicReplayingSubListSelector<Solution_>>
+        extends AbstractNearbySelector<Solution_, RandomSubListSelector<Solution_>, MimicReplayingSubListSelector<Solution_>>
         implements SubListSelector<Solution_> {
 
     private SingletonInverseVariableSupply inverseVariableSupply;
@@ -44,7 +45,7 @@ public final class NearSubListNearbySubListSelector<Solution_>
     }
 
     @Override
-    protected AbstractNearbyDistanceMatrixDemand<?, ?, RandomSubListSelector<Solution_>, MimicReplayingSubListSelector<Solution_>> createDemand() {
+    protected AbstractNearbyDistanceMatrixDemand<?, ?, ?, ?> createDemand() {
         return new SubListNearbySubListMatrixDemand<>(
                 nearbyDistanceMeter,
                 nearbyRandom,

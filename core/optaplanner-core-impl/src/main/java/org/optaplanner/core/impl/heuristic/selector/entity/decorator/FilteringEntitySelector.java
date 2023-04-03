@@ -7,14 +7,16 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.AbstractCacheSupportingSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionListIterator;
-import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
-public final class FilteringEntitySelector<Solution_> extends AbstractEntitySelector<Solution_> {
+public final class FilteringEntitySelector<Solution_>
+        extends AbstractCacheSupportingSelector<Solution_>
+        implements EntitySelector<Solution_> {
 
     private final EntitySelector<Solution_> childEntitySelector;
     private final SelectionFilter<Solution_, Object> selectionFilter;

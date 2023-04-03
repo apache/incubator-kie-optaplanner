@@ -1,6 +1,4 @@
-package org.optaplanner.core.impl.heuristic.selector.entity;
-
-import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
+package org.optaplanner.core.impl.heuristic.selector;
 
 /**
  * It is expected that if two instances share the same properties,
@@ -9,8 +7,7 @@ import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
  *
  * @param <Solution_>
  */
-public abstract class AbstractEntitySelector<Solution_> extends AbstractSelector<Solution_>
-        implements EntitySelector<Solution_> {
+public abstract class AbstractCacheSupportingSelector<Solution_> extends AbstractSelector<Solution_> {
 
     @Override
     public abstract boolean equals(Object other);
