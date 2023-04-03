@@ -6,7 +6,6 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.CompositeSelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
@@ -37,7 +36,7 @@ public class FilteringValueSelector<Solution_>
     protected FilteringValueSelector(ValueSelector<Solution_> childValueSelector,
             List<SelectionFilter<Solution_, Object>> filterList) {
         this.childValueSelector = childValueSelector;
-        this.selectionFilter = CompositeSelectionFilter.of(filterList);
+        this.selectionFilter = SelectionFilter.compose(filterList);
         bailOutEnabled = childValueSelector.isNeverEnding();
         phaseLifecycleSupport.addEventListener(childValueSelector);
     }
