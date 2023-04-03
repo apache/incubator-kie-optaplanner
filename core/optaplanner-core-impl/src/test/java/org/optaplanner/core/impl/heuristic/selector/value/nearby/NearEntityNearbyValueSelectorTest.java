@@ -15,6 +15,8 @@ import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScore
 
 import java.util.Random;
 
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -227,7 +229,7 @@ class NearEntityNearbyValueSelectorTest {
     }
 
     @Test
-    void reuseDistanceMatrix() {
+    void distanceMatrixNotReusedIfDifferentMaximums() {
         final TestdataEntity africa = new TestdataEntity("Africa");
         final TestdataEntity europe = new TestdataEntity("Europe");
         final TestdataEntity oceania = new TestdataEntity("Oceania");
@@ -290,6 +292,7 @@ class NearEntityNearbyValueSelectorTest {
                 childValueSelector, mimicReplayingEntitySelector, meter, TestNearbyRandom.withDistributionSizeMaximum(2), true);
         NearEntityNearbyValueSelector<TestdataSolution> valueSelector2 = new NearEntityNearbyValueSelector<>(
                 childValueSelector, mimicReplayingEntitySelector, meter, TestNearbyRandom.withDistributionSizeMaximum(3), true);
+        Assumptions.assumeFalse(valueSelector2.equals(valueSelector1)); // If equal, the matrix has to be reused.
 
         InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
                 mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
@@ -303,17 +306,16 @@ class NearEntityNearbyValueSelectorTest {
         assertThat(supplyManager.getActiveCount(valueSelector1.getNearbyDistanceMatrixDemand())).isEqualTo(0);
         assertThat(supplyManager.getActiveCount(valueSelector2.getNearbyDistanceMatrixDemand())).isEqualTo(0);
 
-        // solvingStarted() is first called on valueSelector1, which uses lower distributionSizeMaximum. The resulting shared
-        // distance matrix only has 2 destinations for each origin.
+        // solvingStarted() is first called on valueSelector1, which uses lower distributionSizeMaximum.
+        // The resulting shared distance matrix only has 2 destinations for each origin.
         SolverScope<TestdataSolution> solverScope = solvingStarted(valueSelector1, scoreDirector, workingRandom);
         assertThat(supplyManager.getActiveCount(valueSelector1.getNearbyDistanceMatrixDemand())).isEqualTo(1);
-        assertThat(supplyManager.getActiveCount(valueSelector2.getNearbyDistanceMatrixDemand())).isEqualTo(1);
-        // valueSelector2 gets the previously created distance matrix. If it was called first, it would have created
-        // a big enough distance matrix, but now is too late. The matrix has already been created and valueSelector2 has no
-        // chance to increase the destination rows' size to 3.
+        assertThat(supplyManager.getActiveCount(valueSelector2.getNearbyDistanceMatrixDemand())).isEqualTo(0);
+        // solvingStarted() is called on valueSelector2, which uses a different distributionSizeMaximum.
+        // The resulting shared distance matrix has 3 destinations for each origin.
         valueSelector2.solvingStarted(solverScope);
-        assertThat(supplyManager.getActiveCount(valueSelector1.getNearbyDistanceMatrixDemand())).isEqualTo(2);
-        assertThat(supplyManager.getActiveCount(valueSelector2.getNearbyDistanceMatrixDemand())).isEqualTo(2);
+        assertThat(supplyManager.getActiveCount(valueSelector1.getNearbyDistanceMatrixDemand())).isEqualTo(1);
+        assertThat(supplyManager.getActiveCount(valueSelector2.getNearbyDistanceMatrixDemand())).isEqualTo(1);
 
         AbstractPhaseScope<TestdataSolution> phaseScopeA = phaseStarted(valueSelector1, solverScope);
         valueSelector2.phaseStarted(phaseScopeA);

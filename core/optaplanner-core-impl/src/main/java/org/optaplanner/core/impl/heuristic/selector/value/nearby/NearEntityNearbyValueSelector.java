@@ -50,6 +50,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
                 originEntitySelector.getEntityDescriptor().getEntityClass());
         this.nearbyDistanceMatrixDemand = new NearbyDistanceMatrixDemand<>(
                 nearbyDistanceMeter,
+                nearbyRandom,
                 childValueSelector,
                 replayingOriginEntitySelector,
                 this::computeDestinationSize);

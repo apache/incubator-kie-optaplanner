@@ -1,5 +1,6 @@
 package org.optaplanner.core.impl.testutil;
 
+import java.util.Objects;
 import java.util.Random;
 
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
@@ -33,4 +34,20 @@ public class TestNearbyRandom implements NearbyRandom {
     public int getOverallSizeMaximum() {
         return overallSizeMaximum;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        TestNearbyRandom that = (TestNearbyRandom) o;
+        return overallSizeMaximum == that.overallSizeMaximum;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(overallSizeMaximum);
+    }
+
 }
