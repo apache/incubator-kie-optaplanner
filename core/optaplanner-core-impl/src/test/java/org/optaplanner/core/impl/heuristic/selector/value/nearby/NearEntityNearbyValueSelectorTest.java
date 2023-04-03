@@ -15,7 +15,6 @@ import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScore
 
 import java.util.Random;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
