@@ -401,10 +401,8 @@ public class EntityDescriptor<Solution_> {
         selectionFilterList.addAll(declaredPinEntityFilterList);
         if (selectionFilterList.isEmpty()) {
             effectiveMovableEntitySelectionFilter = null;
-        } else if (selectionFilterList.size() == 1) {
-            effectiveMovableEntitySelectionFilter = selectionFilterList.get(0);
         } else {
-            effectiveMovableEntitySelectionFilter = new CompositeSelectionFilter<>(selectionFilterList);
+            effectiveMovableEntitySelectionFilter = CompositeSelectionFilter.of(selectionFilterList);
         }
     }
 

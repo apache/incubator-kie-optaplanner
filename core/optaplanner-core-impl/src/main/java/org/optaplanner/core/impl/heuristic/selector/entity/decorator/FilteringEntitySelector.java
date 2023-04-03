@@ -30,7 +30,7 @@ public final class FilteringEntitySelector<Solution_> extends AbstractEntitySele
             throw new IllegalArgumentException(
                     getClass().getSimpleName() + " must have at least one filter, but got (" + filterList + ").");
         }
-        this.selectionFilter = new CompositeSelectionFilter<>(filterList);
+        this.selectionFilter = CompositeSelectionFilter.of(filterList);
         bailOutEnabled = childEntitySelector.isNeverEnding();
         phaseLifecycleSupport.addEventListener(childEntitySelector);
     }

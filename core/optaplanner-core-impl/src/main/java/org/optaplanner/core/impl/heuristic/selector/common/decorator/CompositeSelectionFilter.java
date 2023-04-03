@@ -1,7 +1,10 @@
 package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -15,15 +18,43 @@ import org.optaplanner.core.api.score.director.ScoreDirector;
  */
 public final class CompositeSelectionFilter<Solution_, T> implements SelectionFilter<Solution_, T> {
 
-    private final List<SelectionFilter<Solution_, T>> selectionFilterList;
+    private static final SelectionFilter NOOP = (scoreDirector, selection) -> true;
 
-    public CompositeSelectionFilter(List<SelectionFilter<Solution_, T>> selectionFilterList) {
-        this.selectionFilterList = selectionFilterList;
+    public static <Solution_, T> SelectionFilter<Solution_, T> of(SelectionFilter<Solution_, T>... filterArray) {
+        return of(Arrays.asList(filterArray));
+    }
+
+    public static <Solution_, T> SelectionFilter<Solution_, T> of(List<SelectionFilter<Solution_, T>> filterList) {
+        // Crack the filter list; decompose composites if necessary.
+        var distinctFilterList = filterList.stream()
+                .flatMap(f -> {
+                    if (f instanceof CompositeSelectionFilter) {
+                        return Arrays.stream(((CompositeSelectionFilter<Solution_, T>) f).selectionFilterArray);
+                    } else {
+                        return Stream.of(f);
+                    }
+                })
+                .distinct()
+                .collect(Collectors.toList());
+        switch (distinctFilterList.size()) {
+            case 0:
+                return NOOP;
+            case 1:
+                return distinctFilterList.get(0);
+            default:
+                return new CompositeSelectionFilter<>(distinctFilterList);
+        }
+    }
+
+    private final SelectionFilter<Solution_, T>[] selectionFilterArray;
+
+    private CompositeSelectionFilter(List<SelectionFilter<Solution_, T>> selectionFilterList) {
+        this.selectionFilterArray = selectionFilterList.toArray(SelectionFilter[]::new);
     }
 
     @Override
     public boolean accept(ScoreDirector<Solution_> scoreDirector, T selection) {
-        for (SelectionFilter<Solution_, T> selectionFilter : selectionFilterList) {
+        for (SelectionFilter<Solution_, T> selectionFilter : selectionFilterArray) {
             if (!selectionFilter.accept(scoreDirector, selection)) {
                 return false;
             }
@@ -38,12 +69,12 @@ public final class CompositeSelectionFilter<Solution_, T> implements SelectionFi
         if (other == null || getClass() != other.getClass())
             return false;
         CompositeSelectionFilter<?, ?> that = (CompositeSelectionFilter<?, ?>) other;
-        return Objects.equals(selectionFilterList, that.selectionFilterList);
+        return Arrays.equals(selectionFilterArray, that.selectionFilterArray);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(selectionFilterList);
+        return Arrays.hashCode(selectionFilterArray);
     }
 
 }
