@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.AbstractEqualityEnabledSelector;
+import org.optaplanner.core.impl.heuristic.selector.AbstractDemandEnabledSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 
 public class MimicRecordingValueSelector<Solution_>
-        extends AbstractEqualityEnabledSelector<Solution_>
+        extends AbstractDemandEnabledSelector<Solution_>
         implements ValueMimicRecorder<Solution_>, EntityIndependentValueSelector<Solution_> {
 
     protected final EntityIndependentValueSelector<Solution_> childValueSelector;

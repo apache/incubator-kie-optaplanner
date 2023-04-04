@@ -10,7 +10,7 @@ import org.optaplanner.core.impl.domain.variable.supply.Demand;
  *
  * @param <Solution_>
  */
-public abstract class AbstractEqualityEnabledSelector<Solution_> extends AbstractSelector<Solution_> {
+public abstract class AbstractDemandEnabledSelector<Solution_> extends AbstractSelector<Solution_> {
 
     @Override
     public abstract boolean equals(Object other);
