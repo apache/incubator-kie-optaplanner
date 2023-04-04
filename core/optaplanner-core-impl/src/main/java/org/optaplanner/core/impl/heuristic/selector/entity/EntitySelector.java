@@ -4,12 +4,13 @@ import java.util.Iterator;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.AbstractCacheSupportingSelector;
 import org.optaplanner.core.impl.heuristic.selector.ListIterableSelector;
 
 /**
  * Selects instances of 1 {@link PlanningEntity} annotated class.
  *
- * @see AbstractEntitySelector
+ * @see AbstractCacheSupportingSelector
  * @see FromSolutionEntitySelector
  */
 public interface EntitySelector<Solution_> extends ListIterableSelector<Solution_, Object> {

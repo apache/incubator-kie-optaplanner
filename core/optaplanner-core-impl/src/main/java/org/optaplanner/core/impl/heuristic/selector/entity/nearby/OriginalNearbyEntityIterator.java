@@ -1,10 +1,10 @@
 package org.optaplanner.core.impl.heuristic.selector.entity.nearby;
 
+import java.util.Iterator;
+
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
 import org.optaplanner.core.impl.util.MemoizingSupply;
-
-import java.util.Iterator;
 
 final class OriginalNearbyEntityIterator extends SelectionIterator<Object> {
 

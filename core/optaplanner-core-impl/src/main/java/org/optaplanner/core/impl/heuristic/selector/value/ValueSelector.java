@@ -5,13 +5,14 @@ import java.util.Iterator;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.AbstractCacheSupportingSelector;
 import org.optaplanner.core.impl.heuristic.selector.IterableSelector;
 import org.optaplanner.core.impl.heuristic.selector.Selector;
 
 /**
  * Selects values from the {@link ValueRangeProvider} for a {@link PlanningVariable} annotated property.
  *
- * @see AbstractValueSelector
+ * @see AbstractCacheSupportingSelector
  */
 public interface ValueSelector<Solution_> extends Selector<Solution_> {
 
