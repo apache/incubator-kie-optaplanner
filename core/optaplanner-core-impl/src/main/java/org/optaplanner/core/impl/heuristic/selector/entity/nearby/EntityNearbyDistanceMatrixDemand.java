@@ -53,7 +53,7 @@ final class EntityNearbyDistanceMatrixDemand<Solution_, Origin_, Destination_>
                     + ") has an entitySize (" + originSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
-        // Destinations: entities extracted either from an entity selector.
+        // Destinations: entities extracted from an entity selector.
         Function<Origin_, Iterator<Destination_>> destinationIteratorProvider =
                 origin -> (Iterator<Destination_>) childSelector.endingIterator();
         NearbyDistanceMatrix<Origin_, Destination_> nearbyDistanceMatrix =
