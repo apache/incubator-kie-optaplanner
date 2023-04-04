@@ -5,11 +5,11 @@ import java.util.Iterator;
 import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.AbstractCacheSupportingSelector;
+import org.optaplanner.core.impl.heuristic.selector.AbstractEqualityEnabledSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 public final class DowncastingValueSelector<Solution_>
-        extends AbstractCacheSupportingSelector<Solution_>
+        extends AbstractEqualityEnabledSelector<Solution_>
         implements ValueSelector<Solution_> {
 
     private final ValueSelector<Solution_> childValueSelector;

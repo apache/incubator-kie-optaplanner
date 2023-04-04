@@ -2,14 +2,14 @@ package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
 import java.util.Objects;
 
-import org.optaplanner.core.impl.heuristic.selector.AbstractCacheSupportingSelector;
+import org.optaplanner.core.impl.heuristic.selector.AbstractEqualityEnabledSelector;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.util.MemoizingSupply;
 
 public abstract class AbstractNearbySelector<Solution_, ChildSelector_ extends PhaseLifecycleListener<Solution_>, ReplayingSelector_ extends PhaseLifecycleListener<Solution_>>
-        extends AbstractCacheSupportingSelector<Solution_> {
+        extends AbstractEqualityEnabledSelector<Solution_> {
 
     protected final ChildSelector_ childSelector;
     protected final ReplayingSelector_ replayingSelector;

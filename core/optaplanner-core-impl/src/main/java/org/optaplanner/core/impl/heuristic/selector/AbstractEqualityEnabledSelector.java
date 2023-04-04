@@ -7,7 +7,7 @@ package org.optaplanner.core.impl.heuristic.selector;
  *
  * @param <Solution_>
  */
-public abstract class AbstractCacheSupportingSelector<Solution_> extends AbstractSelector<Solution_> {
+public abstract class AbstractEqualityEnabledSelector<Solution_> extends AbstractSelector<Solution_> {
 
     @Override
     public abstract boolean equals(Object other);

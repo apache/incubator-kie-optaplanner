@@ -5,13 +5,13 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.AbstractCacheSupportingSelector;
+import org.optaplanner.core.impl.heuristic.selector.AbstractEqualityEnabledSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
 public class MimicReplayingValueSelector<Solution_>
-        extends AbstractCacheSupportingSelector<Solution_>
+        extends AbstractEqualityEnabledSelector<Solution_>
         implements EntityIndependentValueSelector<Solution_> {
 
     protected final ValueMimicRecorder<Solution_> valueMimicRecorder;

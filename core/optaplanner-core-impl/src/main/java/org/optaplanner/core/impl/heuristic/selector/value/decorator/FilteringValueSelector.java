@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.AbstractCacheSupportingSelector;
+import org.optaplanner.core.impl.heuristic.selector.AbstractEqualityEnabledSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
@@ -14,7 +14,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
 public class FilteringValueSelector<Solution_>
-        extends AbstractCacheSupportingSelector<Solution_>
+        extends AbstractEqualityEnabledSelector<Solution_>
         implements ValueSelector<Solution_> {
 
     public static <Solution_> ValueSelector<Solution_> create(ValueSelector<Solution_> valueSelector,

@@ -6,12 +6,12 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.AbstractCacheSupportingSelector;
+import org.optaplanner.core.impl.heuristic.selector.AbstractEqualityEnabledSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 
 public final class SelectedCountLimitEntitySelector<Solution_>
-        extends AbstractCacheSupportingSelector<Solution_>
+        extends AbstractEqualityEnabledSelector<Solution_>
         implements EntitySelector<Solution_> {
 
     private final EntitySelector<Solution_> childEntitySelector;
