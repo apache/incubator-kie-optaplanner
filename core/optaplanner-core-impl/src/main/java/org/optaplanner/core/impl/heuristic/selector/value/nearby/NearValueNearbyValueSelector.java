@@ -3,10 +3,10 @@ package org.optaplanner.core.impl.heuristic.selector.value.nearby;
 import java.util.Iterator;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbyDistanceMatrixDemand;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.RandomNearbyIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
 
@@ -95,9 +95,11 @@ public final class NearValueNearbyValueSelector<Solution_>
     public Iterator<Object> iterator() {
         Iterator<Object> replayingOriginValueIterator = replayingSelector.iterator();
         if (!randomSelection) {
-            return new OriginalNearbyValueIterator(replayingOriginValueIterator, childSelector.getSize());
+            return new OriginalNearbyValueIterator(nearbyDistanceMatrixSupply, replayingOriginValueIterator,
+                    childSelector.getSize(), false);
         } else {
-            return new RandomNearbyValueIterator(replayingOriginValueIterator, childSelector.getSize());
+            return new RandomNearbyIterator(nearbyDistanceMatrixSupply, nearbyRandom, workingRandom,
+                    replayingOriginValueIterator, childSelector.getSize(), false);
         }
     }
 
@@ -106,91 +108,6 @@ public final class NearValueNearbyValueSelector<Solution_>
         // TODO It should probably use nearby order
         // It must include the origin entity too
         return childSelector.endingIterator(entity);
-    }
-
-    private final class OriginalNearbyValueIterator extends SelectionIterator<Object> {
-
-        private final Iterator<Object> replayingOriginValueIterator;
-        private final long childSize;
-
-        private boolean originSelected = false;
-        private boolean originIsNotEmpty;
-        private Object origin;
-
-        private int nextNearbyIndex;
-
-        public OriginalNearbyValueIterator(Iterator<Object> replayingOriginValueIterator, long childSize) {
-            this.replayingOriginValueIterator = replayingOriginValueIterator;
-            this.childSize = childSize;
-            nextNearbyIndex = 0;
-        }
-
-        private void selectOrigin() {
-            if (originSelected) {
-                return;
-            }
-            /*
-             * The origin iterator is guaranteed to be a replaying iterator.
-             * Therefore next() will point to whatever that the related recording iterator was pointing to at the time
-             * when its next() was called.
-             * As a result, origin here will be constant unless next() on the original recording iterator is called
-             * first.
-             */
-            originIsNotEmpty = replayingOriginValueIterator.hasNext();
-            origin = replayingOriginValueIterator.next();
-            originSelected = true;
-        }
-
-        @Override
-        public boolean hasNext() {
-            selectOrigin();
-            return originIsNotEmpty && nextNearbyIndex < childSize;
-        }
-
-        @Override
-        public Object next() {
-            selectOrigin();
-            Object next = nearbyDistanceMatrixSupply.read().getDestination(origin, nextNearbyIndex);
-            nextNearbyIndex++;
-            return next;
-        }
-
-    }
-
-    private final class RandomNearbyValueIterator extends SelectionIterator<Object> {
-
-        private final Iterator<Object> replayingOriginValueIterator;
-        private final int nearbySize;
-
-        public RandomNearbyValueIterator(Iterator<Object> replayingOriginValueIterator, long childSize) {
-            this.replayingOriginValueIterator = replayingOriginValueIterator;
-            if (childSize > Integer.MAX_VALUE) {
-                throw new IllegalStateException("The destinationSelector (" + this
-                        + ") has a destinationSize (" + childSize
-                        + ") which is higher than Integer.MAX_VALUE.");
-            }
-            nearbySize = (int) childSize;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return replayingOriginValueIterator.hasNext() && nearbySize > 0;
-        }
-
-        @Override
-        public Object next() {
-            /*
-             * The origin iterator is guaranteed to be a replaying iterator.
-             * Therefore next() will point to whatever that the related recording iterator was pointing to at the time
-             * when its next() was called.
-             * As a result, origin here will be constant unless next() on the original recording iterator is called
-             * first.
-             */
-            Object origin = replayingOriginValueIterator.next();
-            int nearbyIndex = nearbyRandom.nextInt(workingRandom, nearbySize);
-            return nearbyDistanceMatrixSupply.read().getDestination(origin, nearbyIndex);
-        }
-
     }
 
 }
