@@ -19,12 +19,14 @@ import io.quarkus.test.QuarkusDevModeTest;
 import io.restassured.RestAssured;
 
 public class OptaPlannerDevUITest {
+
     @RegisterExtension
     static final QuarkusDevModeTest config = new QuarkusDevModeTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addPackages(true, "org.optaplanner.quarkus.it.devui"));
 
-    static final String OPTAPLANNER_DEV_UI_BASE_URL = "/q/dev/org.optaplanner.optaplanner-quarkus/";
+    static final String OPTAPLANNER_DEV_UI_BASE_URL =
+            System.getProperty("dev.iu.root", "/q/dev") + "/org.optaplanner.optaplanner-quarkus/";
 
     public static String getPage(String pageName) {
         return OPTAPLANNER_DEV_UI_BASE_URL + pageName;
