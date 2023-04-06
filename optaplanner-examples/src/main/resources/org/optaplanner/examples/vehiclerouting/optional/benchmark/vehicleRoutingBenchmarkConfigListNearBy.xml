@@ -7,6 +7,7 @@
 
   <inheritedSolverBenchmark>
     <solver>
+      <!--<environmentMode>FAST_ASSERT</environmentMode>-->
       <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
       <entityClass>org.optaplanner.examples.vehiclerouting.domain.Vehicle</entityClass>
       <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
@@ -18,12 +19,21 @@
       </scoreDirectorFactory>
 
       <termination>
-        <secondsSpentLimit>30</secondsSpentLimit>
+        <!--        <secondsSpentLimit>1</secondsSpentLimit>-->
+        <minutesSpentLimit>5</minutesSpentLimit>
       </termination>
     </solver>
     <problemBenchmarks>
       <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingFileIO</solutionFileIOClass>
+
       <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n50-k10.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n100-k10.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n500-k20.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n1000-k20.vrp</inputSolutionFile>
+
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
+      <problemStatisticType>STEP_SCORE</problemStatisticType>
+      <problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>
     </problemBenchmarks>
   </inheritedSolverBenchmark>
 
@@ -49,7 +59,7 @@
   </solverBenchmark>
 
   <solverBenchmark>
-    <name>List Variables PARABOLIC_DISTRIBUTION 22</name>
+    <name>List Variables Nearby Selector Parabolic Distribution size 40</name>
     <solver>
       <constructionHeuristic>
       </constructionHeuristic>
@@ -62,7 +72,7 @@
                 <originValueSelector mimicSelectorRef="1"/>
                 <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
                 <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
-                <parabolicDistributionSizeMaximum>22</parabolicDistributionSizeMaximum>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
               </nearbySelection>
             </destinationSelector>
           </listChangeMoveSelector>
@@ -73,7 +83,7 @@
                 <originValueSelector mimicSelectorRef="2"/>
                 <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
                 <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
-                <parabolicDistributionSizeMaximum>22</parabolicDistributionSizeMaximum>
+                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
               </nearbySelection>
             </secondaryValueSelector>
           </listSwapMoveSelector>
@@ -89,128 +99,4 @@
     </solver>
   </solverBenchmark>
 
-  <solverBenchmark>
-    <name>List Variables LINEAR_DISTRIBUTION 22</name>
-    <solver>
-      <constructionHeuristic>
-      </constructionHeuristic>
-      <localSearch>
-        <unionMoveSelector>
-          <listChangeMoveSelector>
-            <valueSelector id="1"/>
-            <destinationSelector>
-              <nearbySelection>
-                <originValueSelector mimicSelectorRef="1"/>
-                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
-                <nearbySelectionDistributionType>LINEAR_DISTRIBUTION</nearbySelectionDistributionType>
-                <linearDistributionSizeMaximum>22</linearDistributionSizeMaximum>
-              </nearbySelection>
-            </destinationSelector>
-          </listChangeMoveSelector>
-          <listSwapMoveSelector>
-            <valueSelector id="2"/>
-            <secondaryValueSelector>
-              <nearbySelection>
-                <originValueSelector mimicSelectorRef="2"/>
-                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
-                <nearbySelectionDistributionType>LINEAR_DISTRIBUTION</nearbySelectionDistributionType>
-                <linearDistributionSizeMaximum>22</linearDistributionSizeMaximum>
-              </nearbySelection>
-            </secondaryValueSelector>
-          </listSwapMoveSelector>
-        </unionMoveSelector>
-        <acceptor>
-          <lateAcceptanceSize>400</lateAcceptanceSize>
-        </acceptor>
-        <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
-          <acceptedCountLimit>1</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-
-  <solverBenchmark>
-    <name>List Variables BLOCK_DISTRIBUTION 22</name>
-    <solver>
-      <constructionHeuristic>
-      </constructionHeuristic>
-      <localSearch>
-        <unionMoveSelector>
-          <listChangeMoveSelector>
-            <valueSelector id="1"/>
-            <destinationSelector>
-              <nearbySelection>
-                <originValueSelector mimicSelectorRef="1"/>
-                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
-                <nearbySelectionDistributionType>BLOCK_DISTRIBUTION</nearbySelectionDistributionType>
-                <blockDistributionSizeMaximum>22</blockDistributionSizeMaximum>
-              </nearbySelection>
-            </destinationSelector>
-          </listChangeMoveSelector>
-          <listSwapMoveSelector>
-            <valueSelector id="2"/>
-            <secondaryValueSelector>
-              <nearbySelection>
-                <originValueSelector mimicSelectorRef="2"/>
-                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
-                <nearbySelectionDistributionType>BLOCK_DISTRIBUTION</nearbySelectionDistributionType>
-                <blockDistributionSizeMaximum>22</blockDistributionSizeMaximum>
-              </nearbySelection>
-            </secondaryValueSelector>
-          </listSwapMoveSelector>
-        </unionMoveSelector>
-        <acceptor>
-          <lateAcceptanceSize>400</lateAcceptanceSize>
-        </acceptor>
-        <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
-          <acceptedCountLimit>1</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-
-  <solverBenchmark>
-    <name>List Variables BETA_DEST 22</name>
-    <solver>
-      <constructionHeuristic>
-      </constructionHeuristic>
-      <localSearch>
-        <unionMoveSelector>
-          <listChangeMoveSelector>
-            <valueSelector id="1"/>
-            <destinationSelector>
-              <nearbySelection>
-                <originValueSelector mimicSelectorRef="1"/>
-                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
-                <nearbySelectionDistributionType>BETA_DISTRIBUTION</nearbySelectionDistributionType>
-                <betaDistributionAlpha>2</betaDistributionAlpha>
-                <betaDistributionBeta>5</betaDistributionBeta>
-              </nearbySelection>
-            </destinationSelector>
-          </listChangeMoveSelector>
-          <listSwapMoveSelector>
-            <valueSelector id="2"/>
-            <secondaryValueSelector>
-              <nearbySelection>
-                <originValueSelector mimicSelectorRef="2"/>
-                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
-                <nearbySelectionDistributionType>BETA_DISTRIBUTION</nearbySelectionDistributionType>
-                <betaDistributionAlpha>2</betaDistributionAlpha>
-                <betaDistributionBeta>5</betaDistributionBeta>
-              </nearbySelection>
-            </secondaryValueSelector>
-          </listSwapMoveSelector>
-        </unionMoveSelector>
-        <acceptor>
-          <lateAcceptanceSize>400</lateAcceptanceSize>
-        </acceptor>
-        <forager>
-          <pickEarlyType>NEVER</pickEarlyType>
-          <acceptedCountLimit>1</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
 </plannerBenchmark>
