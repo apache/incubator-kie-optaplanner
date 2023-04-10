@@ -30,17 +30,13 @@ public class RuinMoveSelectorFactory<Solution_>
         EntitySelectorConfig secondaryEntitySelectorConfig =
                 Objects.requireNonNullElseGet(config.getSecondaryEntitySelectorConfig(), EntitySelectorConfig::new);
 
-        if (config.getSecondaryEntitySelectorConfig() == null) {
-            randomSelection = true;
-        }
-        SelectionOrder rightSelectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
-        SelectionOrder leftSelectionOrder = SelectionOrder.RANDOM;
+        SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
         EntitySelector<Solution_> leftEntitySelector =
                 EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
-                        .buildEntitySelector(configPolicy, minimumCacheType, leftSelectionOrder);
+                        .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
         EntitySelector<Solution_> rightEntitySelector =
                 EntitySelectorFactory.<Solution_> create(secondaryEntitySelectorConfig)
-                        .buildEntitySelector(configPolicy, minimumCacheType, rightSelectionOrder);
+                        .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
         EntityDescriptor<Solution_> entityDescriptor = leftEntitySelector.getEntityDescriptor();
 
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =

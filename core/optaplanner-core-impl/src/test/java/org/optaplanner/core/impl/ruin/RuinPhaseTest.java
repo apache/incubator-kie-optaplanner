@@ -1,11 +1,13 @@
 package org.optaplanner.core.impl.ruin;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.ruin.RuinPhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -21,7 +23,9 @@ public class RuinPhaseTest {
     void defaultRuin() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         RuinPhaseConfig phaseConfig = new RuinPhaseConfig();
-        phaseConfig.setTerminationConfig(new TerminationConfig().withScoreCalculationCountLimit(10L));
+        Assertions.assertThrows(UnsupportedOperationException.class,
+                () -> phaseConfig.setTerminationConfig(new TerminationConfig()));
+        assertNull(phaseConfig.getTerminationConfig());
         solverConfig.setPhaseConfigList(Collections.singletonList(phaseConfig));
 
         TestdataSolution solution = new TestdataSolution("s1");

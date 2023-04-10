@@ -82,35 +82,33 @@
   </localSearch>
 
   <ruin>
-    <ruinMoveSelector>
-      <percentageToRuin>15</percentageToRuin>
-      <entitySelector id="entitySelector4">
-        <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
-      </entitySelector>
-      <secondaryEntitySelector>
-        <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
-        <nearbySelection>
-          <originEntitySelector mimicSelectorRef="entitySelector4"/>
-          <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistance</nearbyDistanceMeterClass>
-        </nearbySelection>
-      </secondaryEntitySelector>
-    </ruinMoveSelector>
+    <percentageToRuin>15</percentageToRuin>
+    <entitySelector id="entitySelector4">
+      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
+    </entitySelector>
+    <secondaryEntitySelector>
+      <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
+      <selectionOrder>ORIGINAL</selectionOrder>
+      <nearbySelection>
+        <originEntitySelector mimicSelectorRef="entitySelector4"/>
+        <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistance</nearbyDistanceMeterClass>
+      </nearbySelection>
+    </secondaryEntitySelector>
   </ruin>
 
 <!--  <ruin>-->
-<!--    <ruinMoveSelector>-->
 <!--      <percentageToRuin>15</percentageToRuin>-->
 <!--      <entitySelector id="entitySelector5">-->
 <!--        <entityClass>org.optaplanner.examples.vehiclerouting.domain.Vehicle</entityClass>-->
 <!--      </entitySelector>-->
 <!--      <secondaryEntitySelector>-->
 <!--        <entityClass>org.optaplanner.examples.vehiclerouting.domain.Vehicle</entityClass>-->
+<!--        <selectionOrder>ORIGINAL</selectionOrder>-->
 <!--        <nearbySelection>-->
 <!--          <originEntitySelector mimicSelectorRef="entitySelector5"/>-->
 <!--          <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.VehicleNearbyDistance</nearbyDistanceMeterClass>-->
 <!--        </nearbySelection>-->
 <!--      </secondaryEntitySelector>-->
-<!--    </ruinMoveSelector>-->
 <!--  </ruin>-->
 
   <constructionHeuristic></constructionHeuristic>

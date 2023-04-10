@@ -18,7 +18,7 @@ class RuinMoveSelectorFactoryTest {
     @Test
     void checkDefaultMoveSelector() {
         SolutionDescriptor solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
-        RuinMoveSelectorConfig moveSelectorConfig = new RuinMoveSelectorConfig();
+        RuinMoveSelectorConfig moveSelectorConfig = new RuinMoveSelectorConfig(null, null, null, 10);
         MoveSelector moveSelector =
                 MoveSelectorFactory.create(moveSelectorConfig).buildMoveSelector(
                         buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);

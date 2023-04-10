@@ -70,7 +70,7 @@ public interface PhaseFactory<Solution_> {
     private static boolean willTerminate(PhaseConfig phaseConfig) {
         if (phaseConfig instanceof ConstructionHeuristicPhaseConfig
                 || phaseConfig instanceof ExhaustiveSearchPhaseConfig
-                || phaseConfig instanceof CustomPhaseConfig) { // Termination guaranteed.
+                || phaseConfig instanceof CustomPhaseConfig || phaseConfig instanceof RuinPhaseConfig) { // Termination guaranteed.
             return true;
         }
         TerminationConfig terminationConfig = phaseConfig.getTerminationConfig();

@@ -80,16 +80,15 @@
   </localSearch>
 
   <ruin>
-    <ruinMoveSelector>
-      <percentageToRuin>15</percentageToRuin>
-      <entitySelector id="entitySelector4"/>
-      <secondaryEntitySelector>
-        <nearbySelection>
-          <originEntitySelector mimicSelectorRef="entitySelector4"/>
-          <nearbyDistanceMeterClass>org.optaplanner.examples.tsp.domain.solver.nearby.VisitNearbyDistanceMeter</nearbyDistanceMeterClass>
-        </nearbySelection>
-      </secondaryEntitySelector>
-    </ruinMoveSelector>
+    <percentageToRuin>15</percentageToRuin>
+    <entitySelector id="entitySelector4"/>
+    <secondaryEntitySelector>
+      <selectionOrder>ORIGINAL</selectionOrder>
+      <nearbySelection>
+        <originEntitySelector mimicSelectorRef="entitySelector4"/>
+        <nearbyDistanceMeterClass>org.optaplanner.examples.tsp.domain.solver.nearby.VisitNearbyDistanceMeter</nearbyDistanceMeterClass>
+      </nearbySelection>
+    </secondaryEntitySelector>
   </ruin>
 
   <constructionHeuristic/>

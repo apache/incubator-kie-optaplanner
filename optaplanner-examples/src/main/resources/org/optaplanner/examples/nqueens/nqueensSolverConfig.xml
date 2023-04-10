@@ -60,15 +60,14 @@
   <!--</customPhase>-->
 
   <ruin>
-    <ruinMoveSelector>
-      <entitySelector id="entitySelector4"/>
-      <secondaryEntitySelector>
-        <nearbySelection>
-          <originEntitySelector mimicSelectorRef="entitySelector4"/>
-          <nearbyDistanceMeterClass>org.optaplanner.examples.nqueens.domain.solver.nearby.QueenNearbyDistance</nearbyDistanceMeterClass>
-        </nearbySelection>
-      </secondaryEntitySelector>
-    </ruinMoveSelector>
+    <entitySelector id="entitySelector4"/>
+    <secondaryEntitySelector>
+      <selectionOrder>ORIGINAL</selectionOrder>
+      <nearbySelection>
+        <originEntitySelector mimicSelectorRef="entitySelector4"/>
+        <nearbyDistanceMeterClass>org.optaplanner.examples.nqueens.domain.solver.nearby.QueenNearbyDistance</nearbyDistanceMeterClass>
+      </nearbySelection>
+    </secondaryEntitySelector>
   </ruin>
 
   <constructionHeuristic/>

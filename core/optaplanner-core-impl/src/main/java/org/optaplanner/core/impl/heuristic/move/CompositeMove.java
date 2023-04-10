@@ -104,7 +104,11 @@ public class CompositeMove<Solution_> implements Move<Solution_> {
 
     @Override
     public void doMoveOnly(ScoreDirector<Solution_> scoreDirector) {
-        Arrays.stream(moves).filter(move -> move.isMoveDoable(scoreDirector)).forEach(move -> move.doMoveOnly(scoreDirector));
+        for (Move<Solution_> move : moves) {
+            if (move.isMoveDoable(scoreDirector)) {
+                move.doMoveOnly(scoreDirector);
+            }
+        }
     }
 
     @Override

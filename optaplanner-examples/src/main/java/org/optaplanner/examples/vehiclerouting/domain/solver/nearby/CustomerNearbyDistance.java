@@ -2,7 +2,6 @@ package org.optaplanner.examples.vehiclerouting.domain.solver.nearby;
 
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
-import org.optaplanner.examples.vehiclerouting.domain.location.Location;
 
 public class CustomerNearbyDistance implements NearbyDistanceMeter<Customer, Customer> {
 

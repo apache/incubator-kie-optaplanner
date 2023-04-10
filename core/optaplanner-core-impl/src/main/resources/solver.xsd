@@ -48,7 +48,7 @@
             <xs:element name="exhaustiveSearch" type="tns:exhaustiveSearchPhaseConfig"/>
                         
             <xs:element name="localSearch" type="tns:localSearchPhaseConfig"/>
-
+                        
             <xs:element name="ruin" type="tns:ruinPhaseConfig"/>
                         
             <xs:element name="noChangePhase" type="tns:noChangePhaseConfig"/>
@@ -1020,40 +1020,6 @@
     </xs:complexContent>
       
   </xs:complexType>
-
-  <xs:complexType name="ruinMoveSelectorConfig">
-    <xs:complexContent>
-
-      <xs:extension base="tns:moveSelectorConfig">
-
-        <xs:sequence>
-
-          <xs:element minOccurs="0" name="percentageToRuin" type="xs:int"/>
-
-          <xs:element name="entitySelector" type="tns:entitySelectorConfig"/>
-
-          <xs:element name="secondaryEntitySelector" type="tns:entitySelectorConfig"/>
-
-          <xs:element minOccurs="0" name="variableNameIncludes">
-
-            <xs:complexType>
-
-              <xs:sequence>
-
-                <xs:element maxOccurs="unbounded" minOccurs="0" name="variableNameInclude" type="xs:string"/>
-
-              </xs:sequence>
-
-            </xs:complexType>
-
-          </xs:element>
-
-        </xs:sequence>
-
-      </xs:extension>
-
-    </xs:complexContent>
-  </xs:complexType>
     
   <xs:complexType name="unionMoveSelectorConfig">
         
@@ -1342,24 +1308,6 @@
     </xs:complexContent>
       
   </xs:complexType>
-
-  <xs:complexType name="ruinPhaseConfig">
-
-    <xs:complexContent>
-
-      <xs:extension base="tns:abstractConfig">
-
-        <xs:sequence>
-
-            <xs:element minOccurs="0" maxOccurs="1" name="ruinMoveSelector" type="tns:ruinMoveSelectorConfig"/>
-
-        </xs:sequence>
-
-      </xs:extension>
-
-    </xs:complexContent>
-
-  </xs:complexType>
     
   <xs:complexType name="localSearchAcceptorConfig">
         
@@ -1430,6 +1378,42 @@
           <xs:element minOccurs="0" name="finalistPodiumType" type="tns:finalistPodiumType"/>
                     
           <xs:element minOccurs="0" name="breakTieRandomly" type="xs:boolean"/>
+                  
+        </xs:sequence>
+              
+      </xs:extension>
+          
+    </xs:complexContent>
+      
+  </xs:complexType>
+    
+  <xs:complexType name="ruinPhaseConfig">
+        
+    <xs:complexContent>
+            
+      <xs:extension base="tns:abstractConfig">
+                
+        <xs:sequence>
+                    
+          <xs:element minOccurs="0" name="percentageToRuin" type="xs:int"/>
+                    
+          <xs:element minOccurs="0" name="entitySelector" type="tns:entitySelectorConfig"/>
+                    
+          <xs:element minOccurs="0" name="secondaryEntitySelector" type="tns:entitySelectorConfig"/>
+                    
+          <xs:element minOccurs="0" name="variableNameIncludes">
+                        
+            <xs:complexType>
+                            
+              <xs:sequence>
+                                
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="variableNameInclude" type="xs:string"/>
+                              
+              </xs:sequence>
+                          
+            </xs:complexType>
+                      
+          </xs:element>
                   
         </xs:sequence>
               

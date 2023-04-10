@@ -19,14 +19,17 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
 
     protected final List<CustomPhaseCommand<Solution_>> customPhaseCommandList;
 
+    private final String phaseTypeString;
+
     private DefaultCustomPhase(Builder<Solution_> builder) {
         super(builder);
-        customPhaseCommandList = builder.customPhaseCommandList;
+        this.customPhaseCommandList = builder.customPhaseCommandList;
+        this.phaseTypeString = builder.phaseTypeString;
     }
 
     @Override
     public String getPhaseTypeString() {
-        return "Custom";
+        return phaseTypeString;
     }
 
     // ************************************************************************
@@ -76,8 +79,9 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
         }
         CustomPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
-            logger.debug("{}    Custom step ({}), time spent ({}), score ({}), {} best score ({}).",
+            logger.debug("{}    {} step ({}), time spent ({}), score ({}), {} best score ({}).",
                     logIndentation,
+                    phaseTypeString,
                     stepScope.getStepIndex(),
                     phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                     stepScope.getScore(),
@@ -89,9 +93,10 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
     public void phaseEnded(CustomPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         phaseScope.endingNow();
-        logger.info("{}Custom phase ({}) ended: time spent ({}), best score ({}),"
+        logger.info("{}{} phase ({}) ended: time spent ({}), best score ({}),"
                 + " score calculation speed ({}/sec), step total ({}).",
                 logIndentation,
+                phaseTypeString,
                 phaseIndex,
                 phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                 phaseScope.getBestScore(),
@@ -103,10 +108,20 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
 
         private final List<CustomPhaseCommand<Solution_>> customPhaseCommandList;
 
+        private final String phaseTypeString;
+
+        public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination,
+                List<CustomPhaseCommand<Solution_>> customPhaseCommandList, String phaseTypeString) {
+            super(phaseIndex, logIndentation, phaseTermination);
+            this.customPhaseCommandList = List.copyOf(customPhaseCommandList);
+            this.phaseTypeString = phaseTypeString;
+        }
+
         public Builder(int phaseIndex, String logIndentation, Termination<Solution_> phaseTermination,
                 List<CustomPhaseCommand<Solution_>> customPhaseCommandList) {
             super(phaseIndex, logIndentation, phaseTermination);
             this.customPhaseCommandList = List.copyOf(customPhaseCommandList);
+            this.phaseTypeString = "Custom";
         }
 
         @Override
