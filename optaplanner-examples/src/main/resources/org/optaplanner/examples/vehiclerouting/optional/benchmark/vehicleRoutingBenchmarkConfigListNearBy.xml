@@ -59,6 +59,86 @@
   </solverBenchmark>
 
   <solverBenchmark>
+    <name>List Variables Nearby Selector Parabolic Distribution size 10</name>
+    <solver>
+      <constructionHeuristic>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <listChangeMoveSelector>
+            <valueSelector id="1"/>
+            <destinationSelector>
+              <nearbySelection>
+                <originValueSelector mimicSelectorRef="1"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                <parabolicDistributionSizeMaximum>10</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </destinationSelector>
+          </listChangeMoveSelector>
+          <listSwapMoveSelector>
+            <valueSelector id="2"/>
+            <secondaryValueSelector>
+              <nearbySelection>
+                <originValueSelector mimicSelectorRef="2"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                <parabolicDistributionSizeMaximum>10</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </secondaryValueSelector>
+          </listSwapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <lateAcceptanceSize>400</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+          <acceptedCountLimit>1</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>List Variables Nearby Selector Parabolic Distribution size 20</name>
+    <solver>
+      <constructionHeuristic>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <listChangeMoveSelector>
+            <valueSelector id="1"/>
+            <destinationSelector>
+              <nearbySelection>
+                <originValueSelector mimicSelectorRef="1"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                <parabolicDistributionSizeMaximum>20</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </destinationSelector>
+          </listChangeMoveSelector>
+          <listSwapMoveSelector>
+            <valueSelector id="2"/>
+            <secondaryValueSelector>
+              <nearbySelection>
+                <originValueSelector mimicSelectorRef="2"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                <parabolicDistributionSizeMaximum>20</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </secondaryValueSelector>
+          </listSwapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <lateAcceptanceSize>400</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+          <acceptedCountLimit>1</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
     <name>List Variables Nearby Selector Parabolic Distribution size 40</name>
     <solver>
       <constructionHeuristic>
@@ -84,6 +164,86 @@
                 <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
                 <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
                 <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </secondaryValueSelector>
+          </listSwapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <lateAcceptanceSize>400</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+          <acceptedCountLimit>1</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>List Variables Nearby Selector Parabolic Distribution size 80</name>
+    <solver>
+      <constructionHeuristic>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <listChangeMoveSelector>
+            <valueSelector id="1"/>
+            <destinationSelector>
+              <nearbySelection>
+                <originValueSelector mimicSelectorRef="1"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                <parabolicDistributionSizeMaximum>80</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </destinationSelector>
+          </listChangeMoveSelector>
+          <listSwapMoveSelector>
+            <valueSelector id="2"/>
+            <secondaryValueSelector>
+              <nearbySelection>
+                <originValueSelector mimicSelectorRef="2"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                <parabolicDistributionSizeMaximum>80</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </secondaryValueSelector>
+          </listSwapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <lateAcceptanceSize>400</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <pickEarlyType>NEVER</pickEarlyType>
+          <acceptedCountLimit>1</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>List Variables Nearby Selector Parabolic Distribution size 160</name>
+    <solver>
+      <constructionHeuristic>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <listChangeMoveSelector>
+            <valueSelector id="1"/>
+            <destinationSelector>
+              <nearbySelection>
+                <originValueSelector mimicSelectorRef="1"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                <parabolicDistributionSizeMaximum>160</parabolicDistributionSizeMaximum>
+              </nearbySelection>
+            </destinationSelector>
+          </listChangeMoveSelector>
+          <listSwapMoveSelector>
+            <valueSelector id="2"/>
+            <secondaryValueSelector>
+              <nearbySelection>
+                <originValueSelector mimicSelectorRef="2"/>
+                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                <parabolicDistributionSizeMaximum>160</parabolicDistributionSizeMaximum>
               </nearbySelection>
             </secondaryValueSelector>
           </listSwapMoveSelector>
