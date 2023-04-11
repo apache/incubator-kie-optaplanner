@@ -1391,7 +1391,7 @@
         
     <xs:complexContent>
             
-      <xs:extension base="tns:abstractConfig">
+      <xs:extension base="tns:phaseConfig">
                 
         <xs:sequence>
                     
