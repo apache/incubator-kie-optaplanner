@@ -20,7 +20,7 @@ recipeList:
       newValue: 2.0.6
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.ch.qos.logback
-      newValue: 1.4
+      newValue: 1.4.6
   - org.openrewrite.maven.ChangePropertyValue:
       key: dev.ui.root
       newValue: /q/dev-v1
