@@ -16,13 +16,13 @@
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 
+  <termination>
+    <minutesSpentLimit>2</minutesSpentLimit>
+  </termination>
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
   </constructionHeuristic>
   <localSearch>
-    <termination>
-      <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
-    </termination>
     <unionMoveSelector>
       <changeMoveSelector>
         <cacheType>STEP</cacheType>
@@ -77,27 +77,5 @@
     <forager>
       <acceptedCountLimit>1</acceptedCountLimit>
     </forager>
-  </localSearch>
-
-  <ruin>
-    <percentageToRuin>15</percentageToRuin>
-    <entitySelector id="entitySelector4"/>
-    <secondaryEntitySelector>
-      <selectionOrder>ORIGINAL</selectionOrder>
-      <nearbySelection>
-        <originEntitySelector mimicSelectorRef="entitySelector4"/>
-        <nearbyDistanceMeterClass>org.optaplanner.examples.tsp.domain.solver.nearby.VisitNearbyDistanceMeter</nearbyDistanceMeterClass>
-      </nearbySelection>
-    </secondaryEntitySelector>
-  </ruin>
-
-  <constructionHeuristic/>
-
-  <localSearch>
-    <termination>
-      <secondsSpentLimit>
-        1
-      </secondsSpentLimit>
-    </termination>
   </localSearch>
 </solver>

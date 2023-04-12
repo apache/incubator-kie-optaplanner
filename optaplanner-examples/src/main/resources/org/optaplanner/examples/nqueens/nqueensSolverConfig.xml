@@ -21,13 +21,13 @@
     <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
 
+  <termination>
+    <bestScoreLimit>0</bestScoreLimit>
+  </termination>
   <constructionHeuristic>
     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
   </constructionHeuristic>
   <localSearch>
-    <termination>
-      <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
-    </termination>
     <changeMoveSelector>
       <selectionOrder>ORIGINAL</selectionOrder>
     </changeMoveSelector>
@@ -58,17 +58,4 @@
   <!--<customPhase>-->
     <!--<customPhaseCommandClass>org.optaplanner.examples.nqueens.optional.solver.solution.CheatingNQueensPhaseCommand</customPhaseCommandClass>-->
   <!--</customPhase>-->
-
-  <ruin>
-    <entitySelector id="entitySelector4"/>
-    <secondaryEntitySelector>
-      <selectionOrder>ORIGINAL</selectionOrder>
-      <nearbySelection>
-        <originEntitySelector mimicSelectorRef="entitySelector4"/>
-        <nearbyDistanceMeterClass>org.optaplanner.examples.nqueens.domain.solver.nearby.QueenNearbyDistance</nearbyDistanceMeterClass>
-      </nearbySelection>
-    </secondaryEntitySelector>
-  </ruin>
-
-  <constructionHeuristic/>
 </solver>

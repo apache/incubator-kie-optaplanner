@@ -16,6 +16,9 @@
       <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.optional.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
+  <termination>
+    <minutesSpentLimit>5</minutesSpentLimit>
+  </termination>
 
   <!--<constructionHeuristic>-->
     <!--<constructionHeuristicType>FIRST_FIT</constructionHeuristicType>-->
@@ -24,33 +27,6 @@
     <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
   </customPhase>
   <localSearch>
-    <termination>
-      <unimprovedSecondsSpentLimit>1</unimprovedSecondsSpentLimit>
-    </termination>
-    <unionMoveSelector>
-      <changeMoveSelector/>
-      <swapMoveSelector/>
-    </unionMoveSelector>
-    <acceptor>
-      <entityTabuSize>7</entityTabuSize>
-      <!--<lateAcceptanceSize>2000</lateAcceptanceSize>-->
-    </acceptor>
-    <forager>
-      <acceptedCountLimit>2000</acceptedCountLimit>
-      <!--<acceptedCountLimit>500</acceptedCountLimit>-->
-    </forager>
-  </localSearch>
-
-  <ruin/>
-
-  <customPhase>
-    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-  </customPhase>
-
-  <localSearch>
-    <termination>
-      <millisecondsSpentLimit>100</millisecondsSpentLimit>
-    </termination>
     <unionMoveSelector>
       <changeMoveSelector/>
       <swapMoveSelector/>
