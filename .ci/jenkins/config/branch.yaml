@@ -42,7 +42,6 @@ environments:
     auto_generation: false
     ids:
     - ecosystem
-
 productized_branch: true
 disable:
   triggers: false
