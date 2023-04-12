@@ -25,8 +25,9 @@ public class OptaPlannerDevUITest {
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addPackages(true, "org.optaplanner.quarkus.it.devui"));
 
+    // Use the Quarkus 3 context root by default as the Quarkus platform does not pass the system property.
     static final String OPTAPLANNER_DEV_UI_BASE_URL =
-            System.getProperty("dev.iu.root", "/q/dev") + "/org.optaplanner.optaplanner-quarkus/";
+            System.getProperty("dev.iu.root", "/q/dev-v1") + "/org.optaplanner.optaplanner-quarkus/";
 
     public static String getPage(String pageName) {
         return OPTAPLANNER_DEV_UI_BASE_URL + pageName;
