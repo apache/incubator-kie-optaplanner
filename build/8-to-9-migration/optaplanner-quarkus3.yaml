@@ -23,7 +23,7 @@ recipeList:
       artifactId: hibernate-core
   - io.quarkus.openrewrite.Quarkus3
   - org.optaplanner.migration.jakarta.JakartaJsonMigrationRecipe
-  - org.optaplanner.migration.jakarta.GraalVmMigrationRecipe
+  #- org.optaplanner.migration.jakarta.GraalVmMigrationRecipe
   - org.openrewrite.maven.ChangePropertyValue:
       key: version.org.springframework
       newValue: 6.0.3
