@@ -174,7 +174,7 @@ public class CompositeRuinMoveSelector<Solution_> extends GenericMoveSelector<So
                 counter++;
 
                 if (counter >= rightSize) {
-                    return noUpcomingSelection();
+                    break;
                 }
             }
 
