@@ -15,7 +15,7 @@ public class VehicleRoutingBenchmarkApp extends CommonBenchmarkApp {
                 new ArgOption("scoreDirector",
                         "org/optaplanner/examples/vehiclerouting/optional/benchmark/vehicleRoutingScoreDirectorBenchmarkConfig.xml"),
                 new ArgOption("moveSelectorListNearBy",
-                        "org/optaplanner/examples/vehiclerouting/optional/benchmark/vehicleRoutingBenchmarkConfigListNearBy.xml"));
+                        "org/optaplanner/examples/vehiclerouting/optional/benchmark/vehicleRoutingBenchmarkConfigListNearby.xml"));
     }
 
 }
