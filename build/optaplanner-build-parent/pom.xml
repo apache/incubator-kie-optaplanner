@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-parent</artifactId>
-    <version>8.37.0-SNAPSHOT</version>
+    <version>8.38.0-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -26,7 +26,7 @@
     <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
     <version.org.apache.logging.log4j>2.20.0</version.org.apache.logging.log4j>
     <version.com.thoughtworks.xstream>1.4.20</version.com.thoughtworks.xstream>
-    <version.io.quarkiverse.operatorsdk>5.1.3</version.io.quarkiverse.operatorsdk>
+    <version.io.quarkiverse.operatorsdk>5.1.4</version.io.quarkiverse.operatorsdk>
     <version.io.quarkus>2.16.6.Final</version.io.quarkus>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
     <version.org.apache.commons.text>1.10.0</version.org.apache.commons.text>
@@ -60,7 +60,7 @@
     -->
     <version.javadoc.plugin>3.5.0</version.javadoc.plugin>
     <version.jaxb2.plugin>2.5.0</version.jaxb2.plugin>
-    <version.pitest.plugin>1.11.7</version.pitest.plugin>
+    <version.pitest.plugin>1.12.0</version.pitest.plugin>
     <version.revapi.plugin>0.15.0</version.revapi.plugin>
     <version.sniffer.plugin>1.23</version.sniffer.plugin>
     <version.surefire.plugin>3.0.0-M8</version.surefire.plugin>
@@ -438,7 +438,7 @@
               <!-- Required to generate the PDF file -->
               <groupId>org.asciidoctor</groupId>
               <artifactId>asciidoctorj-pdf</artifactId>
-              <version>2.3.4</version>
+              <version>2.3.6</version>
             </dependency>
           </dependencies>
         </plugin>
