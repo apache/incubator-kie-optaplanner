@@ -2,8 +2,6 @@ package org.optaplanner.core.impl;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.AbstractConfig;
@@ -13,16 +11,17 @@ import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfi
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
+import org.optaplanner.core.impl.util.DescriptorsDeducer;
 
 public abstract class AbstractFromConfigFactory<Solution_, Config_ extends AbstractConfig<Config_>> {
 
     protected final Config_ config;
+    private final DescriptorsDeducer<Solution_, Config_> descriptorsDeducer;
 
     public AbstractFromConfigFactory(Config_ config) {
         this.config = config;
+        this.descriptorsDeducer = new DescriptorsDeducer<>(config);
     }
 
     public static <Solution_> EntitySelectorConfig getDefaultEntitySelectorConfigForEntity(
@@ -105,38 +104,8 @@ public abstract class AbstractFromConfigFactory<Solution_, Config_ extends Abstr
         return variableDescriptorList.iterator().next();
     }
 
-    private Collection<? extends VariableDescriptor<Solution_>> deduceDescriptors(EntityDescriptor<Solution_> entityDescriptor,
-            List<String> variableNameIncludeList, Collection<? extends VariableDescriptor<Solution_>> variableDescriptorList) {
-        if (variableNameIncludeList == null) {
-            return variableDescriptorList;
-        }
-
-        return variableNameIncludeList.stream()
-                .map(variableNameInclude -> variableDescriptorList.stream()
-                        .filter(variableDescriptor -> variableDescriptor.getVariableName().equals(variableNameInclude))
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException("The config (" + config
-                                + ") has a variableNameInclude (" + variableNameInclude
-                                + ") which does not exist in the entity (" + entityDescriptor.getEntityClass()
-                                + ")'s variableDescriptorList (" + variableDescriptorList + ").")))
-                .collect(Collectors.toList());
-    }
-
     protected List<GenuineVariableDescriptor<Solution_>> deduceVariableDescriptorList(
             EntityDescriptor<Solution_> entityDescriptor, List<String> variableNameIncludeList) {
-        Objects.requireNonNull(entityDescriptor);
-        List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
-                entityDescriptor.getGenuineVariableDescriptorList();
-        return (List<GenuineVariableDescriptor<Solution_>>) deduceDescriptors(entityDescriptor, variableNameIncludeList,
-                variableDescriptorList);
-    }
-
-    protected Collection<ShadowVariableDescriptor<Solution_>> deduceShadowVariableDescriptorList(
-            EntityDescriptor<Solution_> entityDescriptor, List<String> variableNameIncludeList) {
-        Objects.requireNonNull(entityDescriptor);
-        Collection<ShadowVariableDescriptor<Solution_>> variableDescriptorList =
-                entityDescriptor.getShadowVariableDescriptors();
-        return (Collection<ShadowVariableDescriptor<Solution_>>) deduceDescriptors(entityDescriptor, variableNameIncludeList,
-                variableDescriptorList);
+        return descriptorsDeducer.deduceVariableDescriptorList(entityDescriptor, variableNameIncludeList);
     }
 }

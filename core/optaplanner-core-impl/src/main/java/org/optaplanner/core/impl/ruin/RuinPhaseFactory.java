@@ -3,13 +3,10 @@ package org.optaplanner.core.impl.ruin;
 import java.util.Collections;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
-import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
-import org.optaplanner.core.config.heuristic.selector.move.generic.RuinMoveSelectorConfig;
 import org.optaplanner.core.config.ruin.RuinPhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.heuristic.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.MoveSelectorFactory;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.RuinMoveSelectorFactory;
 import org.optaplanner.core.impl.phase.AbstractPhaseFactory;
 import org.optaplanner.core.impl.phase.custom.DefaultCustomPhase;
@@ -44,19 +41,8 @@ public class RuinPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_,
         return ruinPhase;
     }
 
-    protected MoveSelector<Solution_> buildMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy) {
-        MoveSelector<Solution_> moveSelector;
-        SelectionCacheType defaultCacheType = SelectionCacheType.JUST_IN_TIME;
-        SelectionOrder defaultSelectionOrder = SelectionOrder.RANDOM;
-
-        if (phaseConfig.getMoveSelectorConfig() == null) {
-            RuinMoveSelectorConfig ruinMoveSelectorConfig = new RuinMoveSelectorConfig();
-            moveSelector = new RuinMoveSelectorFactory<Solution_>(ruinMoveSelectorConfig)
-                    .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
-        } else {
-            moveSelector = MoveSelectorFactory.<Solution_> create(phaseConfig.getMoveSelectorConfig())
-                    .buildMoveSelector(configPolicy, defaultCacheType, defaultSelectionOrder);
-        }
-        return moveSelector;
+    private MoveSelector<Solution_> buildMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy) {
+        return new RuinMoveSelectorFactory<Solution_>(phaseConfig)
+                .buildRuinMoveSelector(configPolicy, SelectionCacheType.JUST_IN_TIME, true);
     }
 }

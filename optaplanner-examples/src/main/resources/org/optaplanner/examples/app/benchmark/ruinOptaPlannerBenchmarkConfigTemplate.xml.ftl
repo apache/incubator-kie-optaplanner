@@ -356,7 +356,7 @@
         </solver>
     </solverBenchmark>
     <solverBenchmark>
-        <name>TravellingSalesmanPerson ${nameSuffix}</name>
+        <name>TravellingSalesmanProblem ${nameSuffix}</name>
         <problemBenchmarks>
             <solutionFileIOClass>org.optaplanner.examples.tsp.persistence.TspSolutionFileIO</solutionFileIOClass>
             <inputSolutionFile>data/tsp/unsolved/americanRoadTrip-road-km-n50.json</inputSolutionFile>
@@ -8728,7 +8728,7 @@
             </solver>
         </solverBenchmark>
         <solverBenchmark>
-            <name>TravellingSalesmanPerson ${nameSuffix}</name>
+            <name>TravellingSalesmanProblem ${nameSuffix}</name>
             <problemBenchmarks>
                 <solutionFileIOClass>org.optaplanner.examples.tsp.persistence.TspSolutionFileIO</solutionFileIOClass>
                 <inputSolutionFile>data/tsp/unsolved/americanRoadTrip-road-km-n50.json</inputSolutionFile>
@@ -20610,7 +20610,7 @@
             </solver>
         </solverBenchmark>
         <solverBenchmark>
-            <name>TravellingSalesmanPerson ${nameSuffix}</name>
+            <name>TravellingSalesmanProblem ${nameSuffix}</name>
             <problemBenchmarks>
                 <solutionFileIOClass>org.optaplanner.examples.tsp.persistence.TspSolutionFileIO</solutionFileIOClass>
                 <inputSolutionFile>data/tsp/unsolved/americanRoadTrip-road-km-n50.json</inputSolutionFile>
