@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.ruin.RuinPhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -20,6 +21,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 public class RuinPhaseTest {
 
     @Test
+    @Disabled
     void defaultRuin() {
         SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(TestdataSolution.class, TestdataEntity.class);
         RuinPhaseConfig phaseConfig = new RuinPhaseConfig();

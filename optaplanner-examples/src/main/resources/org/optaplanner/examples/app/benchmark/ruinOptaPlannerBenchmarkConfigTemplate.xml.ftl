@@ -2498,9 +2498,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -2568,9 +2565,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -2638,9 +2632,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -2708,9 +2699,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -2778,9 +2766,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -2848,9 +2833,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -2918,9 +2900,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -2988,9 +2967,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -3058,9 +3034,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -3128,9 +3101,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -3198,9 +3168,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -3268,9 +3235,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -3338,9 +3302,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -3408,9 +3369,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -3478,9 +3436,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -3548,9 +3503,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -3618,9 +3570,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -3688,9 +3637,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -3758,9 +3704,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -3828,9 +3771,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -3898,9 +3838,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -3968,9 +3905,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -4038,9 +3972,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -4108,9 +4039,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -4178,9 +4106,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -4248,9 +4173,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -4318,9 +4240,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -4388,9 +4307,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>
@@ -4458,9 +4374,6 @@
                     <entitySelector>
                         <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
                     </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </secondaryEntitySelector>
                 </ruin>
                 <constructionHeuristic>
                     <queuedEntityPlacer>

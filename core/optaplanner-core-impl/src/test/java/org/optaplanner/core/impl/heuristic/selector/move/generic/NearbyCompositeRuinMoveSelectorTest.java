@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.Testdata
 import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.TestdataInverseRelationValue;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-class CompositeRuinMoveSelectorTest {
+class NearbyCompositeRuinMoveSelectorTest {
 
     @Test
     void listRuin() {
@@ -47,8 +47,8 @@ class CompositeRuinMoveSelectorTest {
         when(leftEntitySelector.getSize()).thenReturn(3L);
         EntitySelector<TestdataListSolution> rightEntitySelector = TestdataListUtils.mockEntitySelector(b, c);
 
-        CompositeRuinMoveSelector<TestdataListSolution> moveSelector =
-                new CompositeRuinMoveSelector<>(leftEntitySelector, rightEntitySelector,
+        NearbyCompositeRuinMoveSelector<TestdataListSolution> moveSelector =
+                new NearbyCompositeRuinMoveSelector<>(leftEntitySelector, rightEntitySelector,
                         leftEntitySelector.getEntityDescriptor().getGenuineVariableDescriptorList(),
                         leftEntitySelector.getEntityDescriptor().getShadowVariableDescriptors(), 80);
 
@@ -74,8 +74,8 @@ class CompositeRuinMoveSelectorTest {
         when(leftEntitySelector.getSize()).thenReturn(3L);
         EntitySelector<TestdataSolution> rightEntitySelector = mockEntitySelector(TestdataEntity.buildEntityDescriptor(), b, c);
 
-        CompositeRuinMoveSelector<TestdataSolution> moveSelector =
-                new CompositeRuinMoveSelector<>(leftEntitySelector, rightEntitySelector,
+        NearbyCompositeRuinMoveSelector<TestdataSolution> moveSelector =
+                new NearbyCompositeRuinMoveSelector<>(leftEntitySelector, rightEntitySelector,
                         leftEntitySelector.getEntityDescriptor().getGenuineVariableDescriptorList(),
                         leftEntitySelector.getEntityDescriptor().getShadowVariableDescriptors(), 80);
 
@@ -109,8 +109,8 @@ class CompositeRuinMoveSelectorTest {
         EntitySelector<TestdataInverseRelationSolution> rightEntitySelector =
                 mockEntitySelector(shadowEntityDescriptor, val2, val3);
 
-        CompositeRuinMoveSelector<TestdataInverseRelationSolution> moveSelector =
-                new CompositeRuinMoveSelector<>(leftEntitySelector, rightEntitySelector,
+        NearbyCompositeRuinMoveSelector<TestdataInverseRelationSolution> moveSelector =
+                new NearbyCompositeRuinMoveSelector<>(leftEntitySelector, rightEntitySelector,
                         leftEntitySelector.getEntityDescriptor().getGenuineVariableDescriptorList(),
                         leftEntitySelector.getEntityDescriptor().getShadowVariableDescriptors(), 80);
 
@@ -142,8 +142,8 @@ class CompositeRuinMoveSelectorTest {
         when(leftEntitySelector.getSize()).thenReturn(3L);
         EntitySelector<TestdataListSolution> rightEntitySelector = mockEntitySelector(shadowEntityDescriptor, v3, v4);
 
-        CompositeRuinMoveSelector<TestdataListSolution> moveSelector =
-                new CompositeRuinMoveSelector<>(leftEntitySelector, rightEntitySelector,
+        NearbyCompositeRuinMoveSelector<TestdataListSolution> moveSelector =
+                new NearbyCompositeRuinMoveSelector<>(leftEntitySelector, rightEntitySelector,
                         leftEntitySelector.getEntityDescriptor().getGenuineVariableDescriptorList(),
                         leftEntitySelector.getEntityDescriptor().getShadowVariableDescriptors(), 80);
 
@@ -179,8 +179,8 @@ class CompositeRuinMoveSelectorTest {
         when(leftEntitySelector.getSize()).thenReturn(3L);
         EntitySelector<TestdataChainedSolution> rightEntitySelector = mockEntitySelector(entityDescriptor, a2, a3);
 
-        CompositeRuinMoveSelector<TestdataChainedSolution> moveSelector =
-                new CompositeRuinMoveSelector<>(leftEntitySelector, rightEntitySelector,
+        NearbyCompositeRuinMoveSelector<TestdataChainedSolution> moveSelector =
+                new NearbyCompositeRuinMoveSelector<>(leftEntitySelector, rightEntitySelector,
                         leftEntitySelector.getEntityDescriptor().getGenuineVariableDescriptorList(),
                         leftEntitySelector.getEntityDescriptor().getShadowVariableDescriptors(), 80);
 
@@ -200,9 +200,9 @@ class CompositeRuinMoveSelectorTest {
         EntitySelector<TestdataListSolution> leftEntitySelector = TestdataListUtils.mockEntitySelector();
         EntitySelector<TestdataListSolution> rightEntitySelector = TestdataListUtils.mockEntitySelector();
 
-        assertThat(new CompositeRuinMoveSelector<>(leftEntitySelector, rightEntitySelector,
+        assertThat(new NearbyCompositeRuinMoveSelector<>(leftEntitySelector, rightEntitySelector,
                 leftEntitySelector.getEntityDescriptor().getGenuineVariableDescriptorList(),
                 leftEntitySelector.getEntityDescriptor().getShadowVariableDescriptors(), 80).toString()).matches(
-                        "CompositeRuinMoveSelector\\(Mock for EntitySelector, hashCode: [0-9]+, Mock for EntitySelector, hashCode: [0-9]+\\)");
+                        "NearbyCompositeRuinMoveSelector\\(Mock for EntitySelector, hashCode: [0-9]+, Mock for EntitySelector, hashCode: [0-9]+\\)");
     }
 }

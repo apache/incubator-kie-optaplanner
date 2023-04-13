@@ -30,24 +30,28 @@ public class RuinMoveSelectorFactory<Solution_> {
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig =
                 Objects.requireNonNullElseGet(config.getEntitySelectorConfig(), EntitySelectorConfig::new);
-        EntitySelectorConfig secondaryEntitySelectorConfig =
-                Objects.requireNonNullElseGet(config.getSecondaryEntitySelectorConfig(), EntitySelectorConfig::new);
+        EntitySelectorConfig secondaryEntitySelectorConfig = config.getSecondaryEntitySelectorConfig();
 
         SelectionOrder selectionOrder = SelectionOrder.fromRandomSelectionBoolean(randomSelection);
         EntitySelector<Solution_> leftEntitySelector =
                 EntitySelectorFactory.<Solution_> create(entitySelectorConfig)
                         .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
-        EntitySelector<Solution_> rightEntitySelector =
-                EntitySelectorFactory.<Solution_> create(secondaryEntitySelectorConfig)
-                        .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
         EntityDescriptor<Solution_> entityDescriptor = leftEntitySelector.getEntityDescriptor();
 
         List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
                 descriptorsDeducer.deduceVariableDescriptorList(entityDescriptor, config.getVariableNameIncludeList());
-
         Collection<ShadowVariableDescriptor<Solution_>> shadowVariableDescriptorList =
                 descriptorsDeducer.deduceShadowVariableDescriptorList(entityDescriptor, config.getVariableNameIncludeList());
-        return new CompositeRuinMoveSelector<>(leftEntitySelector, rightEntitySelector, variableDescriptorList,
-                shadowVariableDescriptorList, config.getPercentageToRuin());
+
+        if (secondaryEntitySelectorConfig == null) {
+            return new SimpleCompositeRuinMoveSelector<>(leftEntitySelector, variableDescriptorList,
+                    shadowVariableDescriptorList, config.getPercentageToRuin());
+        } else {
+            EntitySelector<Solution_> rightEntitySelector =
+                    EntitySelectorFactory.<Solution_> create(secondaryEntitySelectorConfig)
+                            .buildEntitySelector(configPolicy, minimumCacheType, selectionOrder);
+            return new NearbyCompositeRuinMoveSelector<>(leftEntitySelector, rightEntitySelector, variableDescriptorList,
+                    shadowVariableDescriptorList, config.getPercentageToRuin());
+        }
     }
 }
