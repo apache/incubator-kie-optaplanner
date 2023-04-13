@@ -1,6 +1,11 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.RandomAccess;
 import java.util.stream.Stream;
 
 import org.optaplanner.core.api.function.TriConsumer;

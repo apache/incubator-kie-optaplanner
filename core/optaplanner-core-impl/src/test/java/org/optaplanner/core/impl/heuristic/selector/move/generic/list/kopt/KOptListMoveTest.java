@@ -3,7 +3,9 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
-import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt.KOptUtils.*;
+import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt.KOptUtils.getMultiEntityBetweenPredicate;
+import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt.KOptUtils.getMultiEntitySuccessorFunction;
+import static org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt.KOptUtils.getSuccessorFunction;
 
 import java.util.List;
 import java.util.function.Function;
