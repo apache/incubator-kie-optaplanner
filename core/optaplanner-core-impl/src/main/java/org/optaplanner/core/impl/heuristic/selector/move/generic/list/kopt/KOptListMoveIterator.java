@@ -71,7 +71,7 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
     protected Move<Solution_> createUpcomingSelection() {
         int locationInDistribution = workingRandom.nextInt(pickedKDistributionSum);
         int indexInDistribution = 0;
-        while (locationInDistribution > pickedKDistribution[indexInDistribution]) {
+        while (locationInDistribution >= pickedKDistribution[indexInDistribution]) {
             locationInDistribution -= pickedKDistribution[indexInDistribution];
             indexInDistribution++;
         }
