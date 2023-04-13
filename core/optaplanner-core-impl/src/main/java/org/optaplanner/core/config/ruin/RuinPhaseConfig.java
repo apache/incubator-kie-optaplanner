@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
-import org.optaplanner.core.config.heuristic.selector.move.generic.*;
+import org.optaplanner.core.config.heuristic.selector.move.generic.RuinMoveSelectorConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -37,6 +37,9 @@ public class RuinPhaseConfig extends PhaseConfig<RuinPhaseConfig> {
     private List<String> variableNameIncludeList = null;
 
     @XmlElement(name = "percentageToRuin")
+    // experimentally chosen value based on benchmarking results.
+    // see ruinOptaplannerBenchmarkConfigTemplate
+    // TODO: update the value once benchmarking results are obtained
     private Integer percentageToRuin = 20;
 
     public void setEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
@@ -80,6 +83,26 @@ public class RuinPhaseConfig extends PhaseConfig<RuinPhaseConfig> {
     // ************************************************************************
     // With methods
     // ************************************************************************
+
+    public RuinPhaseConfig withEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
+        this.entitySelectorConfig = entitySelectorConfig;
+        return this;
+    }
+
+    public RuinPhaseConfig withSecondaryEntitySelectorConfig(EntitySelectorConfig secondaryEntitySelectorConfig) {
+        this.secondaryEntitySelectorConfig = secondaryEntitySelectorConfig;
+        return this;
+    }
+
+    public RuinPhaseConfig withVariableNameIncludeList(List<String> variableNameIncludeList) {
+        this.variableNameIncludeList = variableNameIncludeList;
+        return this;
+    }
+
+    public RuinPhaseConfig withPercentageToRuin(Integer percentageToRuin) {
+        this.percentageToRuin = percentageToRuin;
+        return this;
+    }
 
     @Override
     public RuinPhaseConfig inherit(RuinPhaseConfig inheritedConfig) {

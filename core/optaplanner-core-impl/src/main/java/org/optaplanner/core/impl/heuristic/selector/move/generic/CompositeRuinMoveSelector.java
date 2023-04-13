@@ -2,7 +2,14 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import static org.optaplanner.core.impl.heuristic.move.CompositeMove.buildMove;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
@@ -36,8 +43,10 @@ public class CompositeRuinMoveSelector<Solution_> extends GenericMoveSelector<So
             EntitySelector<Solution_> rightEntitySelector,
             List<GenuineVariableDescriptor<Solution_>> variableDescriptorList,
             Collection<ShadowVariableDescriptor<Solution_>> shadowVariableDescriptors, Integer percentageToBeRuined) {
-        assert 0 < percentageToBeRuined && percentageToBeRuined <= 100
-                : "CompositeRuinMoveSelector: percentage to ruin the solution must be greater than 0 and smaller or equal to 100%";
+        if (percentageToBeRuined <= 0 || percentageToBeRuined > 100) {
+            throw new IllegalArgumentException(
+                    "CompositeRuinMoveSelector: percentage to ruin the solution must be greater than 0 and smaller or equal to 100%");
+        }
         this.leftEntitySelector = leftEntitySelector;
         this.rightEntitySelector = rightEntitySelector;
         this.variableDescriptorList = variableDescriptorList;
@@ -217,6 +226,10 @@ public class CompositeRuinMoveSelector<Solution_> extends GenericMoveSelector<So
                         ListVariableDescriptor<Solution_> listVariableDescriptor =
                                 (ListVariableDescriptor<Solution_>) variableDescriptor;
                         List<Object> listVariable = listVariableDescriptor.getListVariable(entity);
+                        // all list unassign moves depends on each other and actual order of the unassignments,
+                        // but each of the composite moves in the moveList must not rely on the effect of a previous move in the moveList
+                        // to create its undoMove correctly. Therefore, list unassigning backwards, so that indexes of the entities
+                        // to be unassigned are not affected by one of the previous unassignment (they are not moved in the list).
                         for (int sourceIndex = listVariable.size() - 1; sourceIndex >= 0; --sourceIndex) {
                             moves.add(new ListUnassignMove<>(listVariableDescriptor, entity, sourceIndex));
                         }
@@ -250,6 +263,10 @@ public class CompositeRuinMoveSelector<Solution_> extends GenericMoveSelector<So
             }
             Comparator<ListUnassignMove<Solution_>> listUnassignMoveComparator =
                     Comparator.comparing(ListUnassignMove::getSourceIndex);
+            // all list unassign moves depends on each other and actual order of the unassignments,
+            // but each of the composite moves in the moveList must not rely on the effect of a previous move in the moveList
+            // to create its undoMove correctly. Therefore, list unassigning backwards, so that indexes of the entities
+            // to be unassigned are not affected by one of the previous unassignment (they are not moved in the list).
             listUnassignMoves.sort(listUnassignMoveComparator.reversed());
             moves.addAll(listUnassignMoves);
 

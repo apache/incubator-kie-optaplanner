@@ -2,7 +2,8 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.*;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.mockEntitySelector;
+import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.solvingStarted;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingMoveSelector;
 
 import java.util.Arrays;

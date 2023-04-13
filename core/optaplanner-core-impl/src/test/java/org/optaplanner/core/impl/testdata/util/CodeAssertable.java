@@ -9,7 +9,12 @@ import org.optaplanner.core.impl.heuristic.selector.list.SubList;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.SubChainRuinMove;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.list.*;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListAssignMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListChangeMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListSwapMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.ListUnassignMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListChangeMove;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.list.SubListSwapMove;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 
 public interface CodeAssertable {

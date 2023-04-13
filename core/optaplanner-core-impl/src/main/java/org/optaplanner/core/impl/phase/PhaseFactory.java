@@ -37,8 +37,7 @@ public interface PhaseFactory<Solution_> {
             return new DefaultExhaustiveSearchPhaseFactory<>((ExhaustiveSearchPhaseConfig) phaseConfig);
         } else if (NoChangePhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
             return new NoChangePhaseFactory<>((NoChangePhaseConfig) phaseConfig);
-        }
-        if (RuinPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
+        } else if (RuinPhaseConfig.class.isAssignableFrom(phaseConfig.getClass())) {
             return new RuinPhaseFactory<>((RuinPhaseConfig) phaseConfig);
         } else {
             throw new IllegalArgumentException(String.format("Unknown %s type: (%s).",

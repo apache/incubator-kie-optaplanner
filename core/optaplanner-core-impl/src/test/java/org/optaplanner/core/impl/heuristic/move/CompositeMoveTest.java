@@ -1,7 +1,9 @@
 package org.optaplanner.core.impl.heuristic.move;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -15,6 +17,8 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.MockSettings;
+import org.mockito.Mockito;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.director.ScoreDirector;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -67,17 +71,36 @@ class CompositeMoveTest {
     void doMove() {
         InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
                 PlannerTestUtils.mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
-        DummyMove a = mock(DummyMove.class);
+        doNothing().when(scoreDirector).triggerVariableListeners();
+        MockSettings mockSettings = Mockito.withSettings();
+
+        mockSettings.useConstructor("a");
+        DummyMove a = mock(DummyMove.class, mockSettings);
         when(a.isMoveDoable(any())).thenReturn(true);
-        DummyMove b = mock(DummyMove.class);
+
+        mockSettings.useConstructor("b");
+        DummyMove b = mock(DummyMove.class, mockSettings);
         when(b.isMoveDoable(any())).thenReturn(true);
-        DummyMove c = mock(DummyMove.class);
+
+        mockSettings.useConstructor("c");
+        DummyMove c = mock(DummyMove.class, mockSettings);
         when(c.isMoveDoable(any())).thenReturn(true);
+
+        when(a.createUndoMove(scoreDirector)).thenCallRealMethod();
+        when(b.createUndoMove(scoreDirector)).thenCallRealMethod();
+        when(c.createUndoMove(scoreDirector)).thenCallRealMethod();
+
         CompositeMove<TestdataSolution> move = new CompositeMove<>(a, b, c);
-        move.doMove(scoreDirector);
+        CompositeMove<TestdataSolution> undoMove = move.doMove(scoreDirector);
         verify(a, times(1)).doMove(scoreDirector);
         verify(b, times(1)).doMove(scoreDirector);
         verify(c, times(1)).doMove(scoreDirector);
+
+        Move<TestdataSolution>[] undoMoves = undoMove.getMoves();
+        assertEquals(3, undoMoves.length);
+        assertEquals("undo c", ((DummyMove) undoMoves[0]).getCode());
+        assertEquals("undo b", ((DummyMove) undoMoves[1]).getCode());
+        assertEquals("undo a", ((DummyMove) undoMoves[2]).getCode());
     }
 
     @Test

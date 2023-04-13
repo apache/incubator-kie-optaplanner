@@ -1,5 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.entity.nearby;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.mockEntitySelector;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.mockReplayingEntitySelector;
 import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.phaseStarted;
@@ -8,6 +10,8 @@ import static org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils.ste
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingOfEntitySelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockScoreDirector;
+
+import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -24,16 +28,14 @@ import org.optaplanner.core.impl.testutil.TestNearbyRandom;
 import org.optaplanner.core.impl.testutil.TestRandom;
 
 class NearEntityNearbyEntitySelectorTest {
+    private final TestdataEntity morocco = new TestdataEntity("Morocco");
+    private final TestdataEntity spain = new TestdataEntity("Spain");
+    private final TestdataEntity australia = new TestdataEntity("Australia");
+    private final TestdataEntity brazil = new TestdataEntity("Brazil");
 
-    @Test
-    void randomSelection() {
-        final TestdataEntity morocco = new TestdataEntity("Morocco");
-        final TestdataEntity spain = new TestdataEntity("Spain");
-        final TestdataEntity australia = new TestdataEntity("Australia");
-        final TestdataEntity brazil = new TestdataEntity("Brazil");
-
-        EntitySelector<TestdataSolution> childEntitySelector = mockEntitySelector(TestdataEntity.buildEntityDescriptor(),
-                morocco, spain, australia, brazil);
+    private NearEntityNearbyEntitySelector<TestdataSolution> getEntitySelector(
+            EntitySelector<TestdataSolution> childEntitySelector,
+            MimicReplayingEntitySelector<TestdataSolution> mimicReplayingEntitySelector, boolean randomSelection) {
         NearbyDistanceMeter<TestdataEntity, TestdataEntity> meter = (origin, destination) -> {
             if (origin == morocco) {
                 if (destination == morocco) {
@@ -88,12 +90,35 @@ class NearEntityNearbyEntitySelectorTest {
             }
         };
 
+        return new NearEntityNearbyEntitySelector<>(
+                childEntitySelector, mimicReplayingEntitySelector, meter, new TestNearbyRandom(), randomSelection);
+    }
+
+    private void verifyIterator(NearEntityNearbyEntitySelector<TestdataSolution> entitySelector) {
+        Iterator<?> entityIterator = entitySelector.iterator();
+
+        assertTrue(entityIterator.hasNext());
+        TestdataEntity firstEntity = (TestdataEntity) entityIterator.next();
+        assertEquals(spain, firstEntity);
+
+        assertTrue(entityIterator.hasNext());
+        TestdataEntity secondEntity = (TestdataEntity) entityIterator.next();
+        assertEquals(brazil, secondEntity);
+
+        assertTrue(entityIterator.hasNext());
+        TestdataEntity thirdEntity = (TestdataEntity) entityIterator.next();
+        assertEquals(australia, thirdEntity);
+    }
+
+    @Test
+    void randomSelection() {
+        EntitySelector<TestdataSolution> childEntitySelector = mockEntitySelector(TestdataEntity.buildEntityDescriptor(),
+                morocco, spain, australia, brazil);
         MimicReplayingEntitySelector<TestdataSolution> mimicReplayingEntitySelector =
                 // The last entity () is not used, it just makes the selector appear never ending.
                 mockReplayingEntitySelector(TestdataEntity.buildEntityDescriptor(), morocco, spain, australia, brazil, morocco);
-
-        NearEntityNearbyEntitySelector<TestdataSolution> entitySelector = new NearEntityNearbyEntitySelector<>(
-                childEntitySelector, mimicReplayingEntitySelector, meter, new TestNearbyRandom(), true);
+        NearEntityNearbyEntitySelector<TestdataSolution> entitySelector =
+                getEntitySelector(childEntitySelector, mimicReplayingEntitySelector, true);
 
         TestRandom workingRandom = new TestRandom(0, 1, 2, 0);
 
@@ -109,5 +134,41 @@ class NearEntityNearbyEntitySelectorTest {
         entitySelector.solvingEnded(solverScope);
 
         verifyPhaseLifecycle(childEntitySelector, 1, 1, 1);
+    }
+
+    @Test
+    void multipleRandomSelection() {
+        EntitySelector<TestdataSolution> childEntitySelector = mockEntitySelector(TestdataEntity.buildEntityDescriptor(),
+                morocco, spain, australia, brazil);
+        MimicReplayingEntitySelector<TestdataSolution> mimicReplayingEntitySelector =
+                // finite iterator.
+                mockReplayingEntitySelector(TestdataEntity.buildEntityDescriptor(), morocco);
+        NearEntityNearbyEntitySelector<TestdataSolution> entitySelector =
+                getEntitySelector(childEntitySelector, mimicReplayingEntitySelector, true);
+
+        TestRandom workingRandom = new TestRandom(0, 1, 2, 0);
+
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
+                mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
+        solvingStarted(entitySelector, scoreDirector, workingRandom);
+
+        verifyIterator(entitySelector);
+    }
+
+    @Test
+    void multipleOriginalSelection() {
+        EntitySelector<TestdataSolution> childEntitySelector = mockEntitySelector(TestdataEntity.buildEntityDescriptor(),
+                morocco, spain, australia, brazil);
+        MimicReplayingEntitySelector<TestdataSolution> mimicReplayingEntitySelector =
+                // finite iterator.
+                mockReplayingEntitySelector(TestdataEntity.buildEntityDescriptor(), morocco);
+        NearEntityNearbyEntitySelector<TestdataSolution> entitySelector =
+                getEntitySelector(childEntitySelector, mimicReplayingEntitySelector, false);
+
+        InnerScoreDirector<TestdataSolution, SimpleScore> scoreDirector =
+                mockScoreDirector(TestdataSolution.buildSolutionDescriptor());
+        solvingStarted(entitySelector, scoreDirector);
+
+        verifyIterator(entitySelector);
     }
 }

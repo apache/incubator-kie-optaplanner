@@ -23,7 +23,9 @@ public class SubChainRuinMove<Solution_> extends AbstractMove<Solution_> {
 
     public SubChainRuinMove(SubChain subChain, GenuineVariableDescriptor<Solution_> variableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply) {
-        assert variableDescriptor.isChained() : "SubChainRuinMove: variable descriptor must be chained";
+        if (!variableDescriptor.isChained()) {
+            throw new IllegalArgumentException("SubChainRuinMove: variable descriptor must be chained");
+        }
         this.subChain = subChain;
         this.variableDescriptor = variableDescriptor;
         oldTrailingLastEntity = inverseVariableSupply.getInverseSingleton(subChain.getLastEntity());

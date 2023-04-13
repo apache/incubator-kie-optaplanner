@@ -35,6 +35,9 @@ final class OriginalNearbyEntityIterator extends SelectionIterator<Object> {
          * when its next() was called.
          * As a result, origin here will be constant unless next() on the original recording iterator is called
          * first.
+         * If next() on the original recording iterator is not called, origin value from the previous call is stored and used
+         * instead.
+         * It enables to iterate over multiple nearby entities.
          */
         if (replayingOriginEntityIterator.hasNext()) {
             origin = replayingOriginEntityIterator.next();

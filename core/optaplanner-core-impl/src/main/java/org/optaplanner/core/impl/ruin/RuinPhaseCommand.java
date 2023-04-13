@@ -28,6 +28,7 @@ public class RuinPhaseCommand<Solution_> implements CustomPhaseCommand<Solution_
             nextRuinMove.doMoveOnly(scoreDirector);
             scoreDirector.triggerVariableListeners();
         } else {
+            // no more entities to be ruined found - the solution is already fully ruined
             NoChangeMove<Solution_> noChangeMove = new NoChangeMove<>();
             noChangeMove.doMoveOnly(scoreDirector);
         }
