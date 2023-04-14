@@ -31,10 +31,7 @@ class NearbyRuinMoveIterator<Solution_> extends SimpleRuinMoveIterator<Solution_
         Set<Object> entities = new HashSet<>();
         long checkedEntitiesCounter = 0;
         while (entities.isEmpty() && originIterator.hasNext()) {
-            Object originSelection = originIterator.next();
-            if (validateSelectionNotNull(originSelection)) {
-                entities.add(originSelection);
-            }
+            entities.add(originIterator.next());
 
             if (++checkedEntitiesCounter >= numberOfRuinableEntities) {
                 return entities;
@@ -45,11 +42,7 @@ class NearbyRuinMoveIterator<Solution_> extends SimpleRuinMoveIterator<Solution_
         checkedEntitiesCounter = 0;
         while (entities.size() < numberOfEntitiesToBeRuined && rightIterator.hasNext()
                 && checkedEntitiesCounter < numberOfRuinableEntities) {
-            Object nearbySelection = rightIterator.next();
-            if (validateSelectionNotNull(nearbySelection)) {
-                entities.add(nearbySelection);
-            }
-
+            entities.add(rightIterator.next());
             ++checkedEntitiesCounter;
         }
         return entities;

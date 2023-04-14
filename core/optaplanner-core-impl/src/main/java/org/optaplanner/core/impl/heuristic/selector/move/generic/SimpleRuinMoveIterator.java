@@ -50,34 +50,12 @@ class SimpleRuinMoveIterator<Solution_> extends UpcomingSelectionIterator<Move<S
         this.numberOfEntitiesToBeRuined = numberOfEntitiesToBeRuined;
     }
 
-    protected boolean validateSelectionNotNull(Object selectedEntity) {
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
-            if (variableDescriptor.isListVariable()
-                    && ((ListVariableDescriptor<Solution_>) variableDescriptor).getListSize(selectedEntity) > 0) {
-                return true;
-            } else if (variableDescriptor.getValue(selectedEntity) != null) {
-                return true;
-            }
-        }
-
-        for (ShadowVariableDescriptor<Solution_> shadowVariableDescriptor : shadowVariableDescriptors) {
-            if (shadowVariableDescriptor.getValue(selectedEntity) != null) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     protected Set<Object> chooseEntitiesToBeRuined() {
         Set<Object> entities = new HashSet<>();
         long checkedEntitiesCounter = 0;
         while (entities.size() < numberOfEntitiesToBeRuined && originIterator.hasNext()
                 && checkedEntitiesCounter < numberOfRuinableEntities) {
-            Object originSelection = originIterator.next();
-            if (validateSelectionNotNull(originSelection)) {
-                entities.add(originSelection);
-            }
-
+            entities.add(originIterator.next());
             ++checkedEntitiesCounter;
         }
 

@@ -602,9 +602,12 @@ public class EntityDescriptor<Solution_> {
         return true;
     }
 
-    public boolean hasAnyNoNullGenuineAndShadowVariables(Object entity) {
+    public boolean hasAnyNoNullAndNoEmptyGenuineAndShadowVariables(Object entity) {
         for (VariableDescriptor<Solution_> variableDescriptor : effectiveVariableDescriptorMap.values()) {
-            if (variableDescriptor.getValue(entity) != null) {
+            if (variableDescriptor.isGenuineListVariable()
+                    && ((ListVariableDescriptor<Solution_>) variableDescriptor).getListSize(entity) > 0) {
+                return true;
+            } else if (variableDescriptor.getValue(entity) != null) {
                 return true;
             }
         }

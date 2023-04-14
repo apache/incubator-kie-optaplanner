@@ -14,6 +14,6 @@ public class InitializedSelectionFilter<Solution_> implements SelectionFilter<So
 
     @Override
     public boolean accept(ScoreDirector<Solution_> scoreDirector, Object entity) {
-        return entityDescriptor.hasAnyNoNullGenuineAndShadowVariables(entity);
+        return entityDescriptor.hasAnyNoNullAndNoEmptyGenuineAndShadowVariables(entity);
     }
 }
