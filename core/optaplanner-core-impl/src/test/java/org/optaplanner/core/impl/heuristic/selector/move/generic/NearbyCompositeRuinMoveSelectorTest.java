@@ -203,6 +203,6 @@ class NearbyCompositeRuinMoveSelectorTest {
         assertThat(new NearbyCompositeRuinMoveSelector<>(leftEntitySelector, rightEntitySelector,
                 leftEntitySelector.getEntityDescriptor().getGenuineVariableDescriptorList(),
                 leftEntitySelector.getEntityDescriptor().getShadowVariableDescriptors(), 80).toString()).matches(
-                        "NearbyCompositeRuinMoveSelector\\(Mock for EntitySelector, hashCode: [0-9]+, Mock for EntitySelector, hashCode: [0-9]+\\)");
+                        "NearbyCompositeRuinMoveSelector\\(Filtering\\(Mock for EntitySelector, hashCode: [0-9]+\\), Filtering\\(Mock for EntitySelector, hashCode: [0-9]+\\)\\)");
     }
 }

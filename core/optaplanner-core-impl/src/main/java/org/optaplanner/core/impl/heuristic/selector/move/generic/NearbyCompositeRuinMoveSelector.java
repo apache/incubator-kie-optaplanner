@@ -12,14 +12,15 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.FilteringEntitySelector;
 
 public class NearbyCompositeRuinMoveSelector<Solution_> extends SimpleCompositeRuinMoveSelector<Solution_> {
-    private EntitySelector<Solution_> rightEntitySelector;
+    private final FilteringEntitySelector<Solution_> rightEntitySelector;
 
     public NearbyCompositeRuinMoveSelector(EntitySelector<Solution_> leftEntitySelector,
             EntitySelector<Solution_> rightEntitySelector,
             List<GenuineVariableDescriptor<Solution_>> variableDescriptorList,
             Collection<ShadowVariableDescriptor<Solution_>> shadowVariableDescriptors, Integer percentageToBeRuined) {
         super(leftEntitySelector, variableDescriptorList, shadowVariableDescriptors, percentageToBeRuined);
-        this.rightEntitySelector = rightEntitySelector;
+        this.rightEntitySelector =
+                new FilteringEntitySelector<>(rightEntitySelector, Collections.singletonList(initializedFilter));
 
         if (leftEntitySelector != rightEntitySelector) {
             phaseLifecycleSupport.addEventListener(rightEntitySelector);
@@ -37,9 +38,6 @@ public class NearbyCompositeRuinMoveSelector<Solution_> extends SimpleCompositeR
 
     @Override
     public Iterator<Move<Solution_>> iterator() {
-        originEntitySelector =
-                new FilteringEntitySelector<>(originEntitySelector, Collections.singletonList(initializedFilter));
-        rightEntitySelector = new FilteringEntitySelector<>(rightEntitySelector, Collections.singletonList(initializedFilter));
         long numberOfRuinableEntities = getSize();
         return new NearbyRuinMoveIterator<>(originEntitySelector, rightEntitySelector,
                 variableDescriptorList,

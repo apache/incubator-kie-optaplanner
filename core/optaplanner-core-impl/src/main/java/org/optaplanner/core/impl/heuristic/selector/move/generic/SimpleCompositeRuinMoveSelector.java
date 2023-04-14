@@ -18,7 +18,7 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class SimpleCompositeRuinMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
-    protected EntitySelector<Solution_> originEntitySelector;
+    protected final FilteringEntitySelector<Solution_> originEntitySelector;
     protected final List<GenuineVariableDescriptor<Solution_>> variableDescriptorList;
     protected final Collection<ShadowVariableDescriptor<Solution_>> shadowVariableDescriptors;
     protected final Integer percentageToBeRuined;
@@ -35,14 +35,15 @@ public class SimpleCompositeRuinMoveSelector<Solution_> extends GenericMoveSelec
             throw new IllegalArgumentException(
                     "CompositeRuinMoveSelector: percentage to ruin the solution must be greater than 0 and smaller or equal to 100%");
         }
-        this.originEntitySelector = entitySelector;
+        this.initializedFilter = new InitializedSelectionFilter<>(entitySelector.getEntityDescriptor());
+        this.originEntitySelector =
+                new FilteringEntitySelector<>(entitySelector, Collections.singletonList(initializedFilter));
         this.variableDescriptorList = variableDescriptorList;
         this.shadowVariableDescriptors = shadowVariableDescriptors;
         this.percentageToBeRuined = percentageToBeRuined;
         this.chained = this.variableDescriptorList.stream().anyMatch(GenuineVariableDescriptor::isChained);
 
         phaseLifecycleSupport.addEventListener(entitySelector);
-        this.initializedFilter = new InitializedSelectionFilter<>(originEntitySelector.getEntityDescriptor());
     }
 
     // ************************************************************************
@@ -88,8 +89,6 @@ public class SimpleCompositeRuinMoveSelector<Solution_> extends GenericMoveSelec
 
     @Override
     public Iterator<Move<Solution_>> iterator() {
-        originEntitySelector =
-                new FilteringEntitySelector<>(originEntitySelector, Collections.singletonList(initializedFilter));
         long numberOfRuinableEntities = getSize();
         return new SimpleRuinMoveIterator<>(originEntitySelector,
                 variableDescriptorList,
