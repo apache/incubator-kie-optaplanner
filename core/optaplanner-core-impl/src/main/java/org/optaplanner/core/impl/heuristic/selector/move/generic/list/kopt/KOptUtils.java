@@ -2,9 +2,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
 import org.apache.commons.math3.util.CombinatoricsUtils;
@@ -124,54 +122,13 @@ final class KOptUtils {
         };
     }
 
-    @SuppressWarnings("unchecked")
     public static <Node_> Function<Node_, Node_> getMultiEntitySuccessorFunction(
             Node_[] pickedValues,
             ListVariableDescriptor<?> listVariableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply,
             IndexVariableSupply indexVariableSupply) {
-        Map<Object, Integer> entityToEntityIndex = new IdentityHashMap<>();
-        for (int i = 1; i < pickedValues.length; i++) {
-            entityToEntityIndex.computeIfAbsent(inverseVariableSupply.getInverseSingleton(pickedValues[i]),
-                    entity -> entityToEntityIndex.size());
-        }
-        Object[] entities = new Object[entityToEntityIndex.size()];
-        for (Map.Entry<Object, Integer> entry : entityToEntityIndex.entrySet()) {
-            entities[entry.getValue()] = entry.getKey();
-        }
-
-        return (node) -> {
-            Object entity = inverseVariableSupply.getInverseSingleton(node);
-            int entityIndex = entityToEntityIndex.get(entity);
-            List<Node_> valueList = (List<Node_>) listVariableDescriptor.getListVariable(entity);
-            int index = indexVariableSupply.getIndex(node);
-            if (index == valueList.size() - 1) {
-                if (entityIndex < entities.length - 1) {
-                    return (Node_) listVariableDescriptor.getElement(entities[entityIndex + 1], 0);
-                } else {
-                    return (Node_) listVariableDescriptor.getElement(entities[0], 0);
-                }
-            } else {
-                return valueList.get(index + 1);
-            }
-        };
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <Node_> Function<Node_, Node_> getPredecessorFunction(
-            ListVariableDescriptor<?> listVariableDescriptor,
-            SingletonInverseVariableSupply inverseVariableSupply,
-            IndexVariableSupply indexVariableSupply) {
-        return (node) -> {
-            List<Node_> valueList =
-                    (List<Node_>) listVariableDescriptor.getListVariable(inverseVariableSupply.getInverseSingleton(node));
-            int index = indexVariableSupply.getIndex(node);
-            if (index == 0) {
-                return valueList.get(valueList.size() - 1);
-            } else {
-                return valueList.get(index - 1);
-            }
-        };
+        EntityOrderInfo entityOrderInfo = new EntityOrderInfo(pickedValues, inverseVariableSupply, listVariableDescriptor);
+        return node -> entityOrderInfo.successor(node, listVariableDescriptor, indexVariableSupply, inverseVariableSupply);
     }
 
     public static <Node_> TriPredicate<Node_, Node_, Node_> getBetweenPredicate(IndexVariableSupply indexVariableSupply) {
@@ -194,38 +151,8 @@ final class KOptUtils {
             ListVariableDescriptor<?> listVariableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply,
             IndexVariableSupply indexVariableSupply) {
-        Map<Object, Integer> entityToEntityIndex = new IdentityHashMap<>();
-        for (int i = 1; i < pickedValues.length; i++) {
-            entityToEntityIndex.computeIfAbsent(inverseVariableSupply.getInverseSingleton(pickedValues[i]),
-                    entity -> entityToEntityIndex.size());
-        }
-        int[] entityListSizes = new int[entityToEntityIndex.size()];
-        for (Map.Entry<Object, Integer> entry : entityToEntityIndex.entrySet()) {
-            entityListSizes[entry.getValue()] = listVariableDescriptor.getListSize(entry.getKey());
-        }
-
-        int[] offsets = new int[entityListSizes.length];
-        for (int i = 1; i < offsets.length; i++) {
-            offsets[i] = offsets[i - 1] + entityListSizes[i - 1];
-        }
-
-        return (start, middle, end) -> {
-            int startEntityIndex = entityToEntityIndex.get(inverseVariableSupply.getInverseSingleton(start));
-            int middleEntityIndex = entityToEntityIndex.get(inverseVariableSupply.getInverseSingleton(middle));
-            int endEntityIndex = entityToEntityIndex.get(inverseVariableSupply.getInverseSingleton(end));
-
-            int startIndex = indexVariableSupply.getIndex(start) + offsets[startEntityIndex];
-            int middleIndex = indexVariableSupply.getIndex(middle) + offsets[middleEntityIndex];
-            int endIndex = indexVariableSupply.getIndex(end) + offsets[endEntityIndex];
-
-            if (startIndex <= endIndex) {
-                // test middleIndex in [startIndex, endIndex]
-                return startIndex <= middleIndex && middleIndex <= endIndex;
-            } else {
-                // test middleIndex in [0, endIndex] or middleIndex in [startIndex, listSize)
-                return middleIndex >= startIndex || middleIndex <= endIndex;
-            }
-        };
+        EntityOrderInfo entityOrderInfo = new EntityOrderInfo(pickedValues, inverseVariableSupply, listVariableDescriptor);
+        return (start, middle, end) -> entityOrderInfo.between(start, middle, end, indexVariableSupply, inverseVariableSupply);
     }
 
     public static void flipSubarray(int[] array, int fromIndexInclusive, int toIndexExclusive) {

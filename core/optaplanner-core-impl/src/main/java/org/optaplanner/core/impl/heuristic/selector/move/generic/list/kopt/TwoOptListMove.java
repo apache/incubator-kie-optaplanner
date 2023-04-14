@@ -13,23 +13,26 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.util.CollectionUtils;
 
 /**
- * A 2-opt move for list variables, which takes two edges assigned to the same entity and swap their endpoints.
+ * A 2-opt move for list variables, which takes two edges and swap their endpoints.
  * For instance, let [A, B, E, D, C, F, G, H] be the route assigned to an entity.
  * Select (B, E) and (C, F) as the edges to swap. Then the resulting route after this operation would be
  * [A, B, C, D, E, F, G, H]. The edge (B, E) became (B, C), and the edge (C, F) became (E, F)
  * (the first edge end point became the second edge start point and vice-versa). It is used to fix crossings;
  * for instance, it can change:
  * ... -> A B <- ...
- * x
+ * ....... x .......
  * ... <- C D -> ...
  *
  * to
  *
  * ... -> A -> B -> ...
- *
  * ... <- C <- D <- ...
  *
  * Note the sub-path D...B was reversed. The 2-opt works be reversing the path between the two edges being removed.
+ *
+ * When the edges are assigned to different entities, it results in a tail swap.
+ * For instance, let r1 = [A, B, C, D], and r2 = [E, F, G, H]. Doing a
+ * 2-opt on (B, C) + (F, G) will result in r1 = [A, B, G, H] and r2 = [E, F, C, D].
  *
  * @param <Solution_>
  */
