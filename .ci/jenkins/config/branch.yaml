@@ -48,12 +48,11 @@ productized_branch: true
 disable:
   triggers: false
 repositories:
+# optaplanner-website stays in the `main` branch config as the website should be published from there.
 - name: optaplanner
   branch: 9.x
 - name: optaplanner-quickstarts
   branch: development
-- name: optaplanner-website
-  branch: main
 git:
   author:
     name: kiegroup
