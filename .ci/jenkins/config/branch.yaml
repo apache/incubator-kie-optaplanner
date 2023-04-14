@@ -48,15 +48,11 @@ productized_branch: true
 disable:
   triggers: false
 repositories:
+# optaplanner-website stays in the `main` branch config as the website should be published from there.
 - name: optaplanner
   branch: 9.x
-# TODO: enable after migrating the optaweb and quickstarts to OptaPlanner 9  
-#- name: optaweb-vehicle-routing
-#  branch: main
-#- name: optaplanner-quickstarts
-#  branch: development
-#- name: optaplanner-website
-#  branch: main
+- name: optaplanner-quickstarts
+  branch: development
 git:
   author:
     name: kiegroup
