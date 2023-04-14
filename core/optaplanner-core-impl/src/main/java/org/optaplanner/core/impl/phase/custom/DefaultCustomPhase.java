@@ -21,7 +21,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
 
     private final String phaseTypeString;
 
-    private DefaultCustomPhase(Builder<Solution_> builder) {
+    protected DefaultCustomPhase(Builder<Solution_> builder) {
         super(builder);
         this.customPhaseCommandList = builder.customPhaseCommandList;
         this.phaseTypeString = builder.phaseTypeString;

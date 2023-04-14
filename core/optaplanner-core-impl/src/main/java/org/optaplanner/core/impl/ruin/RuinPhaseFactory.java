@@ -1,7 +1,5 @@
 package org.optaplanner.core.impl.ruin;
 
-import java.util.Collections;
-
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.ruin.RuinPhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -24,10 +22,12 @@ public class RuinPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination) {
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
-        RuinPhaseCommand<Solution_> ruinPhaseCommand = new RuinPhaseCommand<>(buildMoveSelector(phaseConfigPolicy));
-        DefaultCustomPhase.Builder<Solution_> builder =
-                new DefaultCustomPhase.Builder<>(phaseIndex, solverConfigPolicy.getLogIndentation(), phaseTermination,
-                        Collections.singletonList(ruinPhaseCommand), "Ruin");
+        MoveSelector<Solution_> moveSelector = buildMoveSelector(phaseConfigPolicy);
+        RuinPhaseCommand<Solution_> ruinPhaseCommand = new RuinPhaseCommand<>(moveSelector);
+        RuinCustomPhase.Builder<Solution_> builder =
+                new RuinCustomPhase.Builder<>(phaseIndex, solverConfigPolicy.getLogIndentation(), phaseTermination,
+                        ruinPhaseCommand, moveSelector);
+
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             builder.setAssertStepScoreFromScratch(true);
@@ -36,9 +36,7 @@ public class RuinPhaseFactory<Solution_> extends AbstractPhaseFactory<Solution_,
             builder.setAssertExpectedStepScore(true);
             builder.setAssertShadowVariablesAreNotStaleAfterStep(true);
         }
-        DefaultCustomPhase<Solution_> ruinPhase = builder.build();
-        ruinPhase.addPhaseLifecycleListener(ruinPhaseCommand);
-        return ruinPhase;
+        return builder.build();
     }
 
     private MoveSelector<Solution_> buildMoveSelector(HeuristicConfigPolicy<Solution_> configPolicy) {
