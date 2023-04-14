@@ -602,6 +602,15 @@ public class EntityDescriptor<Solution_> {
         return true;
     }
 
+    public boolean hasAnyNoNullGenuineAndShadowVariables(Object entity) {
+        for (VariableDescriptor<Solution_> variableDescriptor : effectiveVariableDescriptorMap.values()) {
+            if (variableDescriptor.getValue(entity) != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int countReinitializableVariables(Object entity) {
         int count = 0;
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {

@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -8,9 +9,10 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.decorator.FilteringEntitySelector;
 
 public class NearbyCompositeRuinMoveSelector<Solution_> extends SimpleCompositeRuinMoveSelector<Solution_> {
-    private final EntitySelector<Solution_> rightEntitySelector;
+    private EntitySelector<Solution_> rightEntitySelector;
 
     public NearbyCompositeRuinMoveSelector(EntitySelector<Solution_> leftEntitySelector,
             EntitySelector<Solution_> rightEntitySelector,
@@ -35,6 +37,9 @@ public class NearbyCompositeRuinMoveSelector<Solution_> extends SimpleCompositeR
 
     @Override
     public Iterator<Move<Solution_>> iterator() {
+        originEntitySelector =
+                new FilteringEntitySelector<>(originEntitySelector, Collections.singletonList(initializedFilter));
+        rightEntitySelector = new FilteringEntitySelector<>(rightEntitySelector, Collections.singletonList(initializedFilter));
         long numberOfRuinableEntities = getSize();
         return new NearbyRuinMoveIterator<>(originEntitySelector, rightEntitySelector,
                 variableDescriptorList,

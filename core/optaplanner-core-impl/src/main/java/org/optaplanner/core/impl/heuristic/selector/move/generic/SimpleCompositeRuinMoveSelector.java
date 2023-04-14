@@ -1,6 +1,7 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -12,17 +13,20 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInvers
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.decorator.FilteringEntitySelector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public class SimpleCompositeRuinMoveSelector<Solution_> extends GenericMoveSelector<Solution_> {
 
-    protected final EntitySelector<Solution_> originEntitySelector;
+    protected EntitySelector<Solution_> originEntitySelector;
     protected final List<GenuineVariableDescriptor<Solution_>> variableDescriptorList;
     protected final Collection<ShadowVariableDescriptor<Solution_>> shadowVariableDescriptors;
     protected final Integer percentageToBeRuined;
     protected final HashMap<GenuineVariableDescriptor<Solution_>, SingletonInverseVariableSupply> variableDescriptorToInverseVariableSupply =
             new HashMap<>();
     private final boolean chained;
+
+    protected final InitializedSelectionFilter<Solution_> initializedFilter;
 
     public SimpleCompositeRuinMoveSelector(EntitySelector<Solution_> entitySelector,
             List<GenuineVariableDescriptor<Solution_>> variableDescriptorList,
@@ -38,6 +42,7 @@ public class SimpleCompositeRuinMoveSelector<Solution_> extends GenericMoveSelec
         this.chained = this.variableDescriptorList.stream().anyMatch(GenuineVariableDescriptor::isChained);
 
         phaseLifecycleSupport.addEventListener(entitySelector);
+        this.initializedFilter = new InitializedSelectionFilter<>(originEntitySelector.getEntityDescriptor());
     }
 
     // ************************************************************************
@@ -83,6 +88,8 @@ public class SimpleCompositeRuinMoveSelector<Solution_> extends GenericMoveSelec
 
     @Override
     public Iterator<Move<Solution_>> iterator() {
+        originEntitySelector =
+                new FilteringEntitySelector<>(originEntitySelector, Collections.singletonList(initializedFilter));
         long numberOfRuinableEntities = getSize();
         return new SimpleRuinMoveIterator<>(originEntitySelector,
                 variableDescriptorList,
