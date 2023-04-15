@@ -13,6 +13,7 @@ import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.ruin.RuinCustomPhase;
 import org.optaplanner.core.impl.solver.event.SolverEventSupport;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
@@ -81,9 +82,10 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
         while (!solverTermination.isSolverTerminated(solverScope) && it.hasNext()) {
             Phase<Solution_> phase = it.next();
             phase.solve(solverScope);
-            // If there is a next phase, it starts from the best solution, which might differ from the working solution.
+            // If current phase was not ruin and there is a next phase, it starts from the best solution,
+            // which might differ from the working solution.
             // If there isn't, no need to planning clone the best solution to the working solution.
-            if (it.hasNext()) {
+            if (it.hasNext() && !(phase instanceof RuinCustomPhase)) {
                 solverScope.setWorkingSolutionFromBestSolution();
             }
         }

@@ -74,7 +74,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
     public void stepEnded(CustomStepScope<Solution_> stepScope) {
         super.stepEnded(stepScope);
         boolean bestScoreImproved = stepScope.getBestScoreImproved();
-        if (!bestScoreImproved) {
+        if (bestScoreImproved) {
             solver.getBestSolutionRecaller().updateBestSolutionAndFire(stepScope.getPhaseScope().getSolverScope());
         }
         CustomPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
