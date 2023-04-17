@@ -1,10 +1,12 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 import java.util.RandomAccess;
 import java.util.stream.Stream;
 
@@ -109,7 +111,7 @@ public final class MultipleDelegateList<T> implements List<T>, RandomAccess {
 
     @Override
     public boolean isEmpty() {
-        return totalSize != 0;
+        return totalSize == 0;
     }
 
     @Override
@@ -135,13 +137,18 @@ public final class MultipleDelegateList<T> implements List<T>, RandomAccess {
     @Override
     @SuppressWarnings("unchecked")
     public <T1> T1[] toArray(T1[] t1s) {
-        return (T1[]) Stream.of(delegates).flatMap(Collection::stream).toArray(size -> {
+        T1[] out = Stream.of(delegates).flatMap(Collection::stream).toArray(size -> {
             if (size <= t1s.length) {
                 return t1s;
             } else {
-                return new Object[size];
+                return (T1[]) Array.newInstance(t1s.getClass().getComponentType(), size);
             }
         });
+
+        if (out.length > totalSize) {
+            out[totalSize] = null;
+        }
+        return out;
     }
 
     @Override
@@ -261,6 +268,9 @@ public final class MultipleDelegateList<T> implements List<T>, RandomAccess {
 
         @SuppressWarnings("unchecked")
         List<T>[] out = new List[endDelegateIndex - startDelegateIndex + 1];
+        if (out.length == 0) {
+            return new MultipleDelegateList<>();
+        }
         if (startDelegateIndex == endDelegateIndex) {
             out[0] = delegates[startDelegateIndex].subList(startInclusive, endExclusive);
         } else {
@@ -314,14 +324,35 @@ public final class MultipleDelegateList<T> implements List<T>, RandomAccess {
 
     @Override
     public void clear() {
-        for (List<T> delegate : delegates) {
-            delegate.clear();
-        }
+        throw new UnsupportedOperationException("Cannot remove elements from a multiple delegate list");
     }
 
     @Override
     public String toString() {
         return Arrays.toString(delegates);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof List) {
+            List<?> other = (List<?>) o;
+            if (other.size() != totalSize) {
+                return false;
+            }
+            for (int i = 0; i < totalSize; i++) {
+                if (!Objects.equals(other.get(i), get(i))) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(delegates);
     }
 
     private final static class MultipleDelegateListIterator<T> implements ListIterator<T> {
