@@ -22,7 +22,8 @@ final class RandomNearbyDestinationIterator extends SelectionIterator<ElementRef
     public RandomNearbyDestinationIterator(NearbyDistanceMatrix<Object, Object> nearbyDistanceMatrix,
             NearbyRandom nearbyRandom, Random workingRandom, Iterator<Object> replayingOriginValueIterator,
             Function<Object, ElementRef> elementRefFunction, long childSize) {
-        this(nearbyDistanceMatrix, nearbyRandom, workingRandom, replayingOriginValueIterator, Iterator::next, elementRefFunction, childSize);
+        this(nearbyDistanceMatrix, nearbyRandom, workingRandom, replayingOriginValueIterator, Iterator::next,
+                elementRefFunction, childSize);
     }
 
     public RandomNearbyDestinationIterator(NearbyDistanceMatrix<Object, Object> nearbyDistanceMatrix,
