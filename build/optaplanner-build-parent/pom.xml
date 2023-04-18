@@ -20,7 +20,7 @@
     <!-- Dependencies -->
     <!-- ************************************************************************ -->
     <!-- SNAPSHOT and KIE dependency versions -->
-    <version.org.drools>8.36.0.Final</version.org.drools>
+    <version.org.drools>8.37.0.Final</version.org.drools>
 
     <!-- Normal dependency versions -->
     <version.ch.qos.logback>1.2.9</version.ch.qos.logback>
@@ -37,7 +37,7 @@
     <version.org.jfree.jfreechart>1.5.4</version.org.jfree.jfreechart>
     <version.org.openrewrite.recipe>1.18.1</version.org.openrewrite.recipe>
     <version.org.slf4j>1.7.36</version.org.slf4j><!-- TODO keep in sync with quarkus-bom -->
-    <version.org.springframework>5.3.26</version.org.springframework>
+    <version.org.springframework>5.3.27</version.org.springframework>
     <version.org.springframework.boot>2.7.10</version.org.springframework.boot>
 
     <!-- ************************************************************************ -->
