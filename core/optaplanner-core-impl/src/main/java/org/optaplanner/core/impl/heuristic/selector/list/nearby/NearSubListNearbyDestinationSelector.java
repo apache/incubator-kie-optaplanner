@@ -2,15 +2,8 @@ package org.optaplanner.core.impl.heuristic.selector.list.nearby;
 
 import java.util.Iterator;
 
-import org.optaplanner.core.impl.domain.variable.descriptor.ListVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.index.IndexVariableDemand;
-import org.optaplanner.core.impl.domain.variable.index.IndexVariableSupply;
-import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
-import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonListInverseVariableDemand;
-import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbyDistanceMatrixDemand;
-import org.optaplanner.core.impl.heuristic.selector.common.nearby.AbstractNearbySelector;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.list.DestinationSelector;
@@ -19,21 +12,12 @@ import org.optaplanner.core.impl.heuristic.selector.list.ElementRef;
 import org.optaplanner.core.impl.heuristic.selector.list.SubList;
 import org.optaplanner.core.impl.heuristic.selector.list.SubListSelector;
 import org.optaplanner.core.impl.heuristic.selector.list.mimic.MimicReplayingSubListSelector;
-import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public final class NearSubListNearbyDestinationSelector<Solution_>
-        extends
-        AbstractNearbySelector<Solution_, ElementDestinationSelector<Solution_>, MimicReplayingSubListSelector<Solution_>>
+        extends AbstractNearbyDestinationSelector<Solution_, MimicReplayingSubListSelector<Solution_>>
         implements DestinationSelector<Solution_> {
 
-    private SingletonInverseVariableSupply inverseVariableSupply;
-    private IndexVariableSupply indexVariableSupply;
-
-    public NearSubListNearbyDestinationSelector(
-            ElementDestinationSelector<Solution_> childDestinationSelector,
-            SubListSelector<Solution_> originSubListSelector,
-            NearbyDistanceMeter<?, ?> nearbyDistanceMeter,
-            NearbyRandom nearbyRandom, boolean randomSelection) {
+    public NearSubListNearbyDestinationSelector(ElementDestinationSelector<Solution_> childDestinationSelector, SubListSelector<Solution_> originSubListSelector, NearbyDistanceMeter<?, ?> nearbyDistanceMeter, NearbyRandom nearbyRandom, boolean randomSelection) {
         super(childDestinationSelector, originSubListSelector, nearbyDistanceMeter, nearbyRandom, randomSelection);
     }
 
@@ -57,60 +41,9 @@ public final class NearSubListNearbyDestinationSelector<Solution_>
                 this::computeDestinationSize);
     }
 
-    @Override
-    public void solvingStarted(SolverScope<Solution_> solverScope) {
-        super.solvingStarted(solverScope);
-        SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
-        ListVariableDescriptor<Solution_> listVariableDescriptor = childSelector.getVariableDescriptor();
-        /*
-         * Supply will ask questions of the child selector.
-         * However, child selector will only be initialized during phase start.
-         * Yet we still want the very expensive nearby distance matrix to be reused across phases.
-         * Therefore we request the supply here, but actually lazily initialize it during phase start.
-         */
-        inverseVariableSupply = supplyManager.demand(new SingletonListInverseVariableDemand<>(listVariableDescriptor));
-        indexVariableSupply = supplyManager.demand(new IndexVariableDemand<>(listVariableDescriptor));
-    }
-
-    private int computeDestinationSize(Object origin) {
-        long childSize = childSelector.getSize();
-        if (childSize > Integer.MAX_VALUE) {
-            throw new IllegalStateException("The childDestinationSelector (" + childSelector
-                    + ") has a destinationSize (" + childSize
-                    + ") which is higher than Integer.MAX_VALUE.");
-        }
-
-        int destinationSize = (int) childSize;
-        if (randomSelection) {
-            // Reduce RAM memory usage by reducing destinationSize if nearbyRandom will never select a higher value
-            int overallSizeMaximum = nearbyRandom.getOverallSizeMaximum();
-            if (destinationSize > overallSizeMaximum) {
-                destinationSize = overallSizeMaximum;
-            }
-        }
-        return destinationSize;
-    }
-
-    @Override
-    public void solvingEnded(SolverScope<Solution_> solverScope) {
-        super.solvingEnded(solverScope);
-        inverseVariableSupply = null;
-        indexVariableSupply = null;
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public boolean isCountable() {
-        return childSelector.isCountable();
-    }
-
-    @Override
-    public long getSize() {
-        return childSelector.getSize();
-    }
 
     @Override
     public Iterator<ElementRef> iterator() {
@@ -216,15 +149,6 @@ public final class NearSubListNearbyDestinationSelector<Solution_>
 
     private Object firstElement(SubList subList) {
         return replayingSelector.getVariableDescriptor().getElement(subList.getEntity(), subList.getFromIndex());
-    }
-
-    private ElementRef elementRef(Object next) {
-        if (childSelector.getEntityDescriptor().matchesEntity(next)) {
-            return ElementRef.of(next, 0);
-        }
-        return ElementRef.of(
-                inverseVariableSupply.getInverseSingleton(next),
-                indexVariableSupply.getIndex(next) + 1);
     }
 
 }
