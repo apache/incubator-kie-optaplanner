@@ -5,7 +5,6 @@ import java.util.Objects;
 import org.optaplanner.core.impl.heuristic.selector.AbstractDemandEnabledSelector;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.solver.scope.SolverScope;
 
 public abstract class AbstractNearbySelector<Solution_, ChildSelector_ extends PhaseLifecycleListener<Solution_>, ReplayingSelector_ extends PhaseLifecycleListener<Solution_>>
         extends AbstractDemandEnabledSelector<Solution_> {
@@ -44,11 +43,6 @@ public abstract class AbstractNearbySelector<Solution_, ChildSelector_ extends P
     }
 
     @Override
-    public void solvingStarted(SolverScope<Solution_> solverScope) {
-        super.solvingStarted(solverScope);
-    }
-
-    @Override
     public final void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         // Different phases can not share the matrix; new phase will mean new selector instances.
@@ -62,11 +56,6 @@ public abstract class AbstractNearbySelector<Solution_, ChildSelector_ extends P
         phaseScope.getScoreDirector().getSupplyManager()
                 .cancel(nearbyDistanceMatrixDemand);
         nearbyDistanceMatrix = null;
-    }
-
-    @Override
-    public void solvingEnded(SolverScope<Solution_> solverScope) {
-        super.solvingEnded(solverScope);
     }
 
     @Override
