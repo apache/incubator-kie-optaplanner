@@ -35,12 +35,8 @@ public final class NearSubListNearbyDestinationSelector<Solution_>
 
     @Override
     protected AbstractNearbyDistanceMatrixDemand<?, ?, ?, ?> createDemand() {
-        return new SubListNearbyDistanceMatrixDemand<>(
-                nearbyDistanceMeter,
-                nearbyRandom,
-                childSelector,
-                replayingSelector,
-                this::computeDestinationSize);
+        return new SubListNearbyDistanceMatrixDemand<>(nearbyDistanceMeter, nearbyRandom, childSelector, replayingSelector,
+                origin -> computeDestinationSize());
     }
 
     // ************************************************************************

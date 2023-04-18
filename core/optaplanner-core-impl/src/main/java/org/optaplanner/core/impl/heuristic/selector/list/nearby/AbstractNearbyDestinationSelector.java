@@ -15,7 +15,7 @@ import org.optaplanner.core.impl.heuristic.selector.list.ElementRef;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 
-public abstract class AbstractNearbyDestinationSelector<Solution_, ReplayingSelector_ extends PhaseLifecycleListener<Solution_>>
+abstract class AbstractNearbyDestinationSelector<Solution_, ReplayingSelector_ extends PhaseLifecycleListener<Solution_>>
         extends AbstractNearbySelector<Solution_, ElementDestinationSelector<Solution_>, ReplayingSelector_>
         implements DestinationSelector<Solution_> {
 
@@ -37,7 +37,7 @@ public abstract class AbstractNearbyDestinationSelector<Solution_, ReplayingSele
         indexVariableSupply = supplyManager.demand(new IndexVariableDemand<>(listVariableDescriptor));
     }
 
-    protected int computeDestinationSize(Object origin) {
+    protected int computeDestinationSize() {
         long childSize = childSelector.getSize();
         if (childSize > Integer.MAX_VALUE) {
             throw new IllegalStateException("The childDestinationSelector (" + childSelector

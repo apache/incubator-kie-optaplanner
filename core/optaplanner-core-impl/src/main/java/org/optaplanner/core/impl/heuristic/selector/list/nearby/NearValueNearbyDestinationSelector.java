@@ -34,7 +34,7 @@ public final class NearValueNearbyDestinationSelector<Solution_>
     @Override
     protected AbstractNearbyDistanceMatrixDemand<?, ?, ?, ?> createDemand() {
         return new ListNearbyDistanceMatrixDemand<>(nearbyDistanceMeter, nearbyRandom, childSelector, replayingSelector,
-                this::computeDestinationSize);
+                origin -> computeDestinationSize());
     }
 
     // ************************************************************************
