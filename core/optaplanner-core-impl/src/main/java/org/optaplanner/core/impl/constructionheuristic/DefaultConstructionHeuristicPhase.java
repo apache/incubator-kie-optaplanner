@@ -1,7 +1,6 @@
 package org.optaplanner.core.impl.constructionheuristic;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
@@ -121,10 +120,8 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
 
     public void phaseEnded(ConstructionHeuristicPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
-        // Only update the best solution if the CH made any positive changes.
-        Score score = phaseScope.getScoreDirector().calculateScore();
-        SolverScope<Solution_> solverScope = phaseScope.getSolverScope();
-        if (score.compareTo(solverScope.getBestScore()) > 0) {
+        // Only update the best solution if the CH made any change.
+        if (!phaseScope.getStartingScore().isSolutionInitialized()) {
             solver.getBestSolutionRecaller().updateBestSolutionAndFire(phaseScope.getSolverScope());
         }
         entityPlacer.phaseEnded(phaseScope);

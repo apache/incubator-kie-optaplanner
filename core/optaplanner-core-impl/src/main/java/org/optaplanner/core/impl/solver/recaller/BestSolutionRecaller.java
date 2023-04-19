@@ -66,17 +66,14 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
     }
 
     public void processWorkingSolutionDuringConstructionHeuristicsStep(AbstractStepScope<Solution_> stepScope) {
-        Score score = stepScope.getScore();
         AbstractPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         SolverScope<Solution_> solverScope = phaseScope.getSolverScope();
-        if (score.compareTo(solverScope.getBestScore()) > 0) {
-            stepScope.setBestScoreImproved(true);
-            phaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
-            Solution_ newBestSolution = stepScope.getWorkingSolution();
-            // Construction heuristics don't fire intermediate best solution changed events.
-            // But the best solution and score are updated, so that unimproved* terminations work correctly.
-            updateBestSolutionWithoutFiring(solverScope, stepScope.getScore(), newBestSolution);
-        }
+        stepScope.setBestScoreImproved(true);
+        phaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
+        Solution_ newBestSolution = stepScope.getWorkingSolution();
+        // Construction heuristics don't fire intermediate best solution changed events.
+        // But the best solution and score are updated, so that unimproved* terminations work correctly.
+        updateBestSolutionWithoutFiring(solverScope, stepScope.getScore(), newBestSolution);
     }
 
     public void processWorkingSolutionDuringStep(AbstractStepScope<Solution_> stepScope) {
