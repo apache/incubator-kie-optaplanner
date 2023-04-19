@@ -418,30 +418,30 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     }
 
     private List<PhaseConfig> validatePhaseConfigList(List<PhaseConfig> phaseConfigList) {
-        if (phaseConfigList != null) {
-            int afterFirstRuinIndex = IntStream.range(0, phaseConfigList.size())
-                    .filter(i -> phaseConfigList.get(i) instanceof RuinPhaseConfig)
-                    .findFirst().orElse(phaseConfigList.size()) + 1;
-
-            if (afterFirstRuinIndex < phaseConfigList.size()) {
-                List<PhaseConfig> afterRuinPhases = phaseConfigList.subList(afterFirstRuinIndex, phaseConfigList.size());
-                if (!(afterRuinPhases.get(0) instanceof ConstructionHeuristicPhaseConfig
-                        || afterRuinPhases.get(0) instanceof CustomPhaseConfig
-                        || afterRuinPhases.get(0) instanceof LocalSearchPhaseConfig)) {
-                    throw new IllegalArgumentException("Ruin must be followed by CH, LS or Custom phase");
-                }
-
-                if (afterRuinPhases.size() == 2 && !(afterRuinPhases.get(1) instanceof ConstructionHeuristicPhaseConfig
-                        || afterRuinPhases.get(1) instanceof CustomPhaseConfig
-                        || afterRuinPhases.get(1) instanceof LocalSearchPhaseConfig)) {
-                    throw new IllegalArgumentException("Ruin must end on LS, CH or Custom phase");
-                }
-
-                if (afterRuinPhases.size() > 3) {
-                    throw new IllegalArgumentException("Ruin must not be followed by more than 2 phases");
-                }
-            }
-        }
+//        if (phaseConfigList != null) {
+//            int afterFirstRuinIndex = IntStream.range(0, phaseConfigList.size())
+//                    .filter(i -> phaseConfigList.get(i) instanceof RuinPhaseConfig)
+//                    .findFirst().orElse(phaseConfigList.size()) + 1;
+//
+//            if (afterFirstRuinIndex < phaseConfigList.size()) {
+//                List<PhaseConfig> afterRuinPhases = phaseConfigList.subList(afterFirstRuinIndex, phaseConfigList.size());
+//                if (!(afterRuinPhases.get(0) instanceof ConstructionHeuristicPhaseConfig
+//                        || afterRuinPhases.get(0) instanceof CustomPhaseConfig
+//                        || afterRuinPhases.get(0) instanceof LocalSearchPhaseConfig)) {
+//                    throw new IllegalArgumentException("Ruin must be followed by CH, LS or Custom phase");
+//                }
+//
+//                if (afterRuinPhases.size() == 2 && !(afterRuinPhases.get(1) instanceof ConstructionHeuristicPhaseConfig
+//                        || afterRuinPhases.get(1) instanceof CustomPhaseConfig
+//                        || afterRuinPhases.get(1) instanceof LocalSearchPhaseConfig)) {
+//                    throw new IllegalArgumentException("Ruin must end on LS, CH or Custom phase");
+//                }
+//
+//                if (afterRuinPhases.size() > 3) {
+//                    throw new IllegalArgumentException("Ruin must not be followed by more than 2 phases");
+//                }
+//            }
+//        }
         return phaseConfigList;
     }
 
