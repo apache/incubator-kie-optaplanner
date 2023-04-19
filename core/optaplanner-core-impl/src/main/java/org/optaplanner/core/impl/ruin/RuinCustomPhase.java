@@ -3,6 +3,7 @@ package org.optaplanner.core.impl.ruin;
 import java.util.Collections;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.custom.CustomPhase;
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
@@ -17,8 +18,10 @@ import org.optaplanner.core.impl.solver.termination.Termination;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class RuinCustomPhase<Solution_> extends DefaultCustomPhase<Solution_> {
+public class RuinCustomPhase<Solution_, Score_ extends Score<Score_>> extends DefaultCustomPhase<Solution_> {
 
+    private Solution_ bestSolutionBeforeRuin;
+    private Score_ bestScoreBeforeRuin;
     private final MoveSelector<Solution_> moveSelector;
 
     protected RuinCustomPhase(Builder<Solution_> builder) {
@@ -39,6 +42,8 @@ public class RuinCustomPhase<Solution_> extends DefaultCustomPhase<Solution_> {
     public void phaseStarted(CustomPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         moveSelector.phaseStarted(phaseScope);
+        bestSolutionBeforeRuin = phaseScope.getScoreDirector().cloneWorkingSolution();
+        bestScoreBeforeRuin = (Score_) phaseScope.getScoreDirector().calculateScore();
     }
 
     public void stepStarted(CustomStepScope<Solution_> stepScope) {
@@ -58,6 +63,13 @@ public class RuinCustomPhase<Solution_> extends DefaultCustomPhase<Solution_> {
 
     @Override
     public void solvingEnded(SolverScope<Solution_> solverScope) {
+        if (bestScoreBeforeRuin.compareTo((Score_) solverScope.getBestScore()) > 0) {
+            solverScope.setBestSolution(bestSolutionBeforeRuin);
+            solverScope.setBestScore(bestScoreBeforeRuin);
+            solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
+            solverScope.getScoreDirector().setWorkingSolution(bestSolutionBeforeRuin);
+            solver.getBestSolutionRecaller().updateBestSolutionAndFire(solverScope);
+        }
         super.solvingEnded(solverScope);
         moveSelector.solvingEnded(solverScope);
     }
@@ -73,7 +85,7 @@ public class RuinCustomPhase<Solution_> extends DefaultCustomPhase<Solution_> {
         }
 
         @Override
-        public RuinCustomPhase<Solution_> build() {
+        public RuinCustomPhase<Solution_, ?> build() {
             return new RuinCustomPhase<>(this);
         }
     }
