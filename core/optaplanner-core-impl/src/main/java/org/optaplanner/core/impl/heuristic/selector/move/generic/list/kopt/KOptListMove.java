@@ -110,6 +110,7 @@ final class KOptListMove<Solution_> extends AbstractMove<Solution_> {
         }
 
         combinedList.moveElementsOfDelegates(newEndIndices);
+
         Collections.rotate(combinedList, postShiftAmount);
 
         combinedList.actOnAffectedElements(originalEntities, affectedElementsInfo,
@@ -235,7 +236,6 @@ final class KOptListMove<Solution_> extends AbstractMove<Solution_> {
             for (FlipSublistAction move : equivalent2Opts) {
                 move.doMoveOnGenuineVariables();
             }
-
             combinedList.actOnAffectedElements(originalEntities, affectedElementsInfo,
                     (entity, start, end) -> {
                         innerScoreDirector.afterListVariableChanged(listVariableDescriptor, entity,
