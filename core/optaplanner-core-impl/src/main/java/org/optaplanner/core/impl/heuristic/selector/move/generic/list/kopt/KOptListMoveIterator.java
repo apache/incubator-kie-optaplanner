@@ -127,8 +127,8 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
         }
 
         EntityOrderInfo entityOrderInfo = new EntityOrderInfo(pickedValues, inverseVariableSupply, listVariableDescriptor);
-        pickedValues[2] = workingRandom.nextBoolean() ? getNodePredecessor(entityOrderInfo, pickedValues[1])
-                : getNodeSuccessor(entityOrderInfo, pickedValues[1]);
+        pickedValues[2] = workingRandom.nextBoolean() ? getNodeSuccessor(entityOrderInfo, pickedValues[1])
+                : getNodePredecessor(entityOrderInfo, pickedValues[1]);
 
         if (isNodeEndpointOfList(pickedValues[1]) || isNodeEndpointOfList(pickedValues[2])) {
             return pickKOptMoveRec(getValuesOnSelectedEntitiesIterator(pickedValues), entityOrderInfo, pickedValues, 2, k,

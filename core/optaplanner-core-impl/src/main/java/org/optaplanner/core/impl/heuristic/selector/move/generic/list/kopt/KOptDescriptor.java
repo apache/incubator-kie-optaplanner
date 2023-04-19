@@ -52,7 +52,7 @@ final class KOptDescriptor<Node_> {
      */
     private final int[] addedEdgeToOtherEndpoint;
 
-    private static <Node_> int[] computeInEdgesForSequentialMove(Node_[] removedEdges) {
+    static <Node_> int[] computeInEdgesForSequentialMove(Node_[] removedEdges) {
         int[] out = new int[removedEdges.length];
         int k = (removedEdges.length - 1) >> 1;
 

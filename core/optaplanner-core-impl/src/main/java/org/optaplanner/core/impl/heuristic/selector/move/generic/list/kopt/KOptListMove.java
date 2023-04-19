@@ -68,6 +68,10 @@ final class KOptListMove<Solution_> extends AbstractMove<Solution_> {
         }
     }
 
+    KOptDescriptor<?> getDescriptor() {
+        return descriptor;
+    }
+
     @Override
     protected AbstractMove<Solution_> createUndoMove(ScoreDirector<Solution_> scoreDirector) {
         if (equivalent2Opts.isEmpty()) {
