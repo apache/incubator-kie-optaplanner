@@ -63,7 +63,7 @@ public class RuinCustomPhase<Solution_, Score_ extends Score<Score_>> extends De
 
     @Override
     public void solvingEnded(SolverScope<Solution_> solverScope) {
-        if (bestScoreBeforeRuin.compareTo((Score_) solverScope.getBestScore()) > 0) {
+        if (bestScoreBeforeRuin != null && bestScoreBeforeRuin.compareTo((Score_) solverScope.getBestScore()) > 0) {
             solverScope.setBestSolution(bestSolutionBeforeRuin);
             solverScope.setBestScore(bestScoreBeforeRuin);
             solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
