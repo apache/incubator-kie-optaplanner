@@ -11,11 +11,14 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
@@ -45,6 +48,7 @@ import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.config.solver.random.RandomType;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.constructionheuristic.ConstructionHeuristicPhase;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
@@ -416,8 +420,32 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return phaseConfigList;
     }
 
+    private List<PhaseConfig> validatePhaseConfigList(List<PhaseConfig> phaseConfigList) {
+        if (phaseConfigList != null) {
+            int afterFirstRuinIndex = IntStream.range(0, phaseConfigList.size())
+                            .filter(i -> phaseConfigList.get(i) instanceof RuinPhaseConfig)
+                            .findFirst().orElse(phaseConfigList.size()) + 1;
+
+                    if (afterFirstRuinIndex < phaseConfigList.size()) {
+                        List<PhaseConfig> afterRuinPhases = phaseConfigList.subList(afterFirstRuinIndex, phaseConfigList.size());
+                        if (!(afterRuinPhases.get(0) instanceof ConstructionHeuristicPhaseConfig)) {
+                            throw new IllegalArgumentException("Ruin must be followed by CH phase");
+                        }
+
+                        if (afterRuinPhases.size() == 2 && !(afterRuinPhases.get(1) instanceof ConstructionHeuristicPhaseConfig || afterRuinPhases.get(1) instanceof LocalSearchPhaseConfig)) {
+                            throw new IllegalArgumentException("Ruin must end on LS or CH phase");
+                        }
+
+                        if (afterRuinPhases.size() > 3) {
+                            throw new IllegalArgumentException("Ruin must not be followed by more than 2 phases");
+                        }
+                    }
+        }
+        return phaseConfigList;
+    }
+
     public void setPhaseConfigList(List<PhaseConfig> phaseConfigList) {
-        this.phaseConfigList = phaseConfigList;
+        this.phaseConfigList = validatePhaseConfigList(phaseConfigList);
     }
 
     public MonitoringConfig getMonitoringConfig() {
@@ -563,12 +591,12 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     }
 
     public SolverConfig withPhaseList(List<PhaseConfig> phaseConfigList) {
-        this.phaseConfigList = phaseConfigList;
+        this.phaseConfigList = validatePhaseConfigList(phaseConfigList);
         return this;
     }
 
     public SolverConfig withPhases(PhaseConfig... phaseConfigs) {
-        this.phaseConfigList = Arrays.asList(phaseConfigs);
+        this.phaseConfigList = validatePhaseConfigList(Arrays.asList(phaseConfigs));
         return this;
     }
 
@@ -640,7 +668,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         scoreDirectorFactoryConfig = ConfigUtils.inheritConfig(scoreDirectorFactoryConfig,
                 inheritedConfig.getScoreDirectorFactoryConfig());
         terminationConfig = ConfigUtils.inheritConfig(terminationConfig, inheritedConfig.getTerminationConfig());
-        phaseConfigList = ConfigUtils.inheritMergeableListConfig(phaseConfigList, inheritedConfig.getPhaseConfigList());
+        phaseConfigList = ConfigUtils.inheritMergeableListConfig(phaseConfigList, validatePhaseConfigList(inheritedConfig.getPhaseConfigList()));
         monitoringConfig = ConfigUtils.inheritConfig(monitoringConfig, inheritedConfig.getMonitoringConfig());
         return this;
     }
