@@ -5,7 +5,7 @@
 	<inheritedSolverBenchmark>
 		<solver>
 			<termination>
-				<minutesSpentLimit>5</minutesSpentLimit>
+				<minutesSpentLimit>15</minutesSpentLimit>
 			</termination>
 			<subSingleCount>10</subSingleCount>
 		</solver>
