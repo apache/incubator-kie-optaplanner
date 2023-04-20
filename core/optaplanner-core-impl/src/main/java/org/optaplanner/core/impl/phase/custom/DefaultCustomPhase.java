@@ -51,14 +51,6 @@ final class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> imple
         phaseEnded(phaseScope);
     }
 
-    public void phaseStarted(CustomPhaseScope<Solution_> phaseScope) {
-        super.phaseStarted(phaseScope);
-    }
-
-    public void stepStarted(CustomStepScope<Solution_> stepScope) {
-        super.stepStarted(stepScope);
-    }
-
     private void doStep(CustomStepScope<Solution_> stepScope, CustomPhaseCommand<Solution_> customPhaseCommand) {
         InnerScoreDirector<Solution_, ?> scoreDirector = stepScope.getScoreDirector();
         customPhaseCommand.changeWorkingSolution(scoreDirector);
