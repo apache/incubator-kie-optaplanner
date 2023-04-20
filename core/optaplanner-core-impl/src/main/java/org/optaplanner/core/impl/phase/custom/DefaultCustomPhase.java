@@ -15,9 +15,9 @@ import org.optaplanner.core.impl.solver.termination.Termination;
  *
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> implements CustomPhase<Solution_> {
+final class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> implements CustomPhase<Solution_> {
 
-    protected final List<CustomPhaseCommand<Solution_>> customPhaseCommandList;
+    private final List<CustomPhaseCommand<Solution_>> customPhaseCommandList;
 
     private DefaultCustomPhase(Builder<Solution_> builder) {
         super(builder);
@@ -37,18 +37,16 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
     public void solve(SolverScope<Solution_> solverScope) {
         CustomPhaseScope<Solution_> phaseScope = new CustomPhaseScope<>(solverScope);
         phaseStarted(phaseScope);
-
-        CustomStepScope<Solution_> stepScope = new CustomStepScope<>(phaseScope);
         for (CustomPhaseCommand<Solution_> customPhaseCommand : customPhaseCommandList) {
             solverScope.checkYielding();
             if (phaseTermination.isPhaseTerminated(phaseScope)) {
                 break;
             }
+            CustomStepScope<Solution_> stepScope = new CustomStepScope<>(phaseScope);
             stepStarted(stepScope);
             doStep(stepScope, customPhaseCommand);
             stepEnded(stepScope);
             phaseScope.setLastCompletedStepScope(stepScope);
-            stepScope = new CustomStepScope<>(phaseScope);
         }
         phaseEnded(phaseScope);
     }
@@ -70,10 +68,6 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
 
     public void stepEnded(CustomStepScope<Solution_> stepScope) {
         super.stepEnded(stepScope);
-        boolean bestScoreImproved = stepScope.getBestScoreImproved();
-        if (!bestScoreImproved) {
-            solver.getBestSolutionRecaller().updateBestSolutionAndFire(stepScope.getPhaseScope().getSolverScope());
-        }
         CustomPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
             logger.debug("{}    Custom step ({}), time spent ({}), score ({}), {} best score ({}).",
@@ -81,7 +75,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
                     stepScope.getStepIndex(),
                     phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                     stepScope.getScore(),
-                    bestScoreImproved ? "new" : "   ",
+                    stepScope.getBestScoreImproved() ? "new" : "   ",
                     phaseScope.getBestScore());
         }
     }
@@ -99,7 +93,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
                 phaseScope.getNextStepIndex());
     }
 
-    public static class Builder<Solution_> extends AbstractPhase.Builder<Solution_> {
+    public static final class Builder<Solution_> extends AbstractPhase.Builder<Solution_> {
 
         private final List<CustomPhaseCommand<Solution_>> customPhaseCommandList;
 
