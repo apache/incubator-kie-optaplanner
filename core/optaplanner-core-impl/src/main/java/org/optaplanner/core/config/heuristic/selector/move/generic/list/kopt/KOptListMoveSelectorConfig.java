@@ -1,6 +1,5 @@
 package org.optaplanner.core.config.heuristic.selector.move.generic.list.kopt;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -13,7 +12,6 @@ import org.optaplanner.core.config.util.ConfigUtils;
 @XmlType(propOrder = {
         "minimumK",
         "maximumK",
-        "pickedKDistribution",
         "originSelectorConfig",
         "valueSelectorConfig"
 })
@@ -23,8 +21,6 @@ public class KOptListMoveSelectorConfig extends MoveSelectorConfig<KOptListMoveS
 
     protected Integer minimumK = null;
     protected Integer maximumK = null;
-
-    protected List<Integer> pickedKDistribution;
 
     @XmlElement(name = "originSelector")
     private ValueSelectorConfig originSelectorConfig = null;
@@ -46,14 +42,6 @@ public class KOptListMoveSelectorConfig extends MoveSelectorConfig<KOptListMoveS
 
     public void setMaximumK(Integer maximumK) {
         this.maximumK = maximumK;
-    }
-
-    public List<Integer> getPickedKDistribution() {
-        return pickedKDistribution;
-    }
-
-    public void setPickedKDistribution(List<Integer> pickedKDistribution) {
-        this.pickedKDistribution = pickedKDistribution;
     }
 
     public ValueSelectorConfig getOriginSelectorConfig() {
@@ -86,11 +74,6 @@ public class KOptListMoveSelectorConfig extends MoveSelectorConfig<KOptListMoveS
         return this;
     }
 
-    public KOptListMoveSelectorConfig withPickedKDistribution(List<Integer> pickedKDistribution) {
-        this.pickedKDistribution = pickedKDistribution;
-        return this;
-    }
-
     public KOptListMoveSelectorConfig withOriginSelectorConfig(ValueSelectorConfig originSelectorConfig) {
         this.originSelectorConfig = originSelectorConfig;
         return this;
@@ -110,8 +93,6 @@ public class KOptListMoveSelectorConfig extends MoveSelectorConfig<KOptListMoveS
         super.inherit(inheritedConfig);
         this.minimumK = ConfigUtils.inheritOverwritableProperty(minimumK, inheritedConfig.minimumK);
         this.maximumK = ConfigUtils.inheritOverwritableProperty(maximumK, inheritedConfig.maximumK);
-        this.pickedKDistribution =
-                ConfigUtils.inheritOverwritableProperty(pickedKDistribution, inheritedConfig.pickedKDistribution);
         this.originSelectorConfig = ConfigUtils.inheritConfig(originSelectorConfig, inheritedConfig.originSelectorConfig);
         this.valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.valueSelectorConfig);
         return this;

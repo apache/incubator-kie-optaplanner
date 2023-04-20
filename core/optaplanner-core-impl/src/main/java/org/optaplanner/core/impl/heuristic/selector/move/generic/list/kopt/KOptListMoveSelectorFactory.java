@@ -1,6 +1,5 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.list.kopt;
 
-import java.util.List;
 import java.util.Objects;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
@@ -63,40 +62,18 @@ public final class KOptListMoveSelectorFactory<Solution_>
             throw new IllegalArgumentException("maximumK (" + maximumK + ") must be at least minimumK (" + minimumK + ").");
         }
 
-        List<Integer> pickedKDistributionList = config.getPickedKDistribution();
         int[] pickedKDistribution = new int[maximumK - minimumK + 1];
-        if (pickedKDistributionList == null) {
-            // Each prior k is 8 times more likely to be picked than the subsequent k
-            int total = 1;
-            for (int i = minimumK; i < maximumK; i++) {
-                total *= 8;
-            }
-            for (int i = 0; i < pickedKDistribution.length - 1; i++) {
-                int remainder = total / 8;
-                pickedKDistribution[i] = total - remainder;
-                total = remainder;
-            }
-            pickedKDistribution[pickedKDistribution.length - 1] = total;
-        } else {
-            if (pickedKDistributionList.size() != pickedKDistribution.length) {
-                throw new IllegalArgumentException(
-                        "The pickedKDistribution (" + pickedKDistributionList + ") has an invalid size; " +
-                                "expected (" + pickedKDistribution.length + ") elements for minimumK (" + minimumK
-                                + ") and maximumK (" + maximumK + ").");
-            }
-
-            for (int relativeDistribution : pickedKDistributionList) {
-                if (relativeDistribution < 0) { // if it 0, you can skip particular k's
-                    throw new IllegalArgumentException("The pickedKDistribution (" + pickedKDistributionList
-                            + ") has an invalid element (" + relativeDistribution + "); " +
-                            "each relative distribution must be non-negative.");
-                }
-            }
-
-            for (int i = 0; i < pickedKDistribution.length; i++) {
-                pickedKDistribution[i] = pickedKDistributionList.get(i);
-            }
+        // Each prior k is 8 times more likely to be picked than the subsequent k
+        int total = 1;
+        for (int i = minimumK; i < maximumK; i++) {
+            total *= 8;
         }
+        for (int i = 0; i < pickedKDistribution.length - 1; i++) {
+            int remainder = total / 8;
+            pickedKDistribution[i] = total - remainder;
+            total = remainder;
+        }
+        pickedKDistribution[pickedKDistribution.length - 1] = total;
         return new KOptListMoveSelector<>(((ListVariableDescriptor<Solution_>) variableDescriptor),
                 originSelector, valueSelector, minimumK, maximumK, pickedKDistribution);
     }
