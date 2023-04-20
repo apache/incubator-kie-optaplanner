@@ -20,16 +20,11 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
     private final ListVariableDescriptor<Solution_> listVariableDescriptor;
     private final SingletonInverseVariableSupply inverseVariableSupply;
     private final IndexVariableSupply indexVariableSupply;
-
     private final EntityIndependentValueSelector<Node_> originSelector;
     private final EntityIndependentValueSelector<Node_> valueSelector;
     private final int minK;
-    private final int maxK;
-
     private final int[] pickedKDistribution;
-
     private final int pickedKDistributionSum;
-
     private final int maxCyclesPatchedInInfeasibleMove;
 
     public KOptListMoveIterator(Random workingRandom,
@@ -48,13 +43,12 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
         this.originSelector = originSelector;
         this.valueSelector = valueSelector;
         this.minK = minK;
-        this.maxK = maxK;
         this.pickedKDistribution = pickedKDistribution;
-        int pickedKDistributionSum = 0;
+        int tmpPickedKDistributionSum = 0;
         for (int relativeDistributionAmount : pickedKDistribution) {
-            pickedKDistributionSum += relativeDistributionAmount;
+            tmpPickedKDistributionSum += relativeDistributionAmount;
         }
-        this.pickedKDistributionSum = pickedKDistributionSum;
+        this.pickedKDistributionSum = tmpPickedKDistributionSum;
         this.maxCyclesPatchedInInfeasibleMove = maxK;
     }
 
@@ -103,8 +97,7 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
                 .mapToObj(index -> {
                     Object entity = entityOrderInfo.entities[index];
                     List<Object> listVariable = listVariableDescriptor.getListVariable(entity);
-                    Object out = listVariable.get(workingRandom.nextInt(listVariable.size()));
-                    return out;
+                    return listVariable.get(workingRandom.nextInt(listVariable.size()));
                 }).iterator();
     }
 
@@ -331,7 +324,7 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
         } else if (s4 != s1) {
             addedEdgeToOtherEndpoint[addedEdgeToOtherEndpoint[2 * k + 1] = 2 * (k + patchedCycleCount)] =
                     2 * k + 1;
-            KOptDescriptor<Node_> out = new KOptDescriptor<>(removedEdges, addedEdgeToOtherEndpoint,
+            return new KOptDescriptor<>(removedEdges, addedEdgeToOtherEndpoint,
                     KOptUtils.getMultiEntitySuccessorFunction(removedEdges,
                             listVariableDescriptor,
                             inverseVariableSupply,
@@ -340,7 +333,6 @@ final class KOptListMoveIterator<Solution_, Node_> extends UpcomingSelectionIter
                             listVariableDescriptor,
                             inverseVariableSupply,
                             indexVariableSupply));
-            return out;
         }
         return originalMove;
     }

@@ -72,18 +72,14 @@ public final class MultipleDelegateList<T> implements List<T>, RandomAccess {
         return new MultipleDelegateList<>(out);
     }
 
-    public void actOnAffectedElements(
-            Object[] originalEntities,
-            KOptAffectedElements affectedElementsInfo,
-            TriConsumer<Object, Integer, Integer> action) {
+    public void actOnAffectedElements(Object[] originalEntities, TriConsumer<Object, Integer, Integer> action) {
         for (int i = 0; i < originalEntities.length; i++) {
             action.accept(originalEntities[i], 0, delegateSizes[i]);
         }
     }
 
     public void moveElementsOfDelegates(int[] newDelegateEndIndices) {
-        @SuppressWarnings("unchecked")
-        List<T>[] newDelegateData = (List<T>[]) (new List[delegates.length]);
+        List<T>[] newDelegateData = new List[delegates.length];
 
         int start = 0;
         for (int i = 0; i < newDelegateData.length; i++) {
@@ -355,7 +351,7 @@ public final class MultipleDelegateList<T> implements List<T>, RandomAccess {
         return Arrays.hashCode(delegates);
     }
 
-    private final static class MultipleDelegateListIterator<T> implements ListIterator<T> {
+    private static final class MultipleDelegateListIterator<T> implements ListIterator<T> {
         final MultipleDelegateList<T> parent;
         int currentIndex;
 
