@@ -58,7 +58,7 @@ public class RuinCustomPhase<Solution_, Score_ extends Score<Score_>> extends De
 
     public void phaseEnded(CustomPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
-        moveSelector.phaseStarted(phaseScope);
+        moveSelector.phaseEnded(phaseScope);
     }
 
     @Override
