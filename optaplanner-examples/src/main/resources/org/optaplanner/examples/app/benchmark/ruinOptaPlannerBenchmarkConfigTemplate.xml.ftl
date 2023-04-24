@@ -3,7 +3,7 @@
 	<benchmarkDirectory>local/data/general/template</benchmarkDirectory>
 	<parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
 	<inheritedSolverBenchmark>
-		<subSingleCount>10</subSingleCount>
+		<subSingleCount>5</subSingleCount>
 	</inheritedSolverBenchmark>
 	<!-- with default random ruin of different sizes -->
 	<#list [1, 2, 5, 10, 20, 50] as percentagesToRuin>
@@ -1198,6 +1198,7 @@
                 <ruin>
                     <percentageToRuin>percentagesToRuin</percentageToRuin>
                 </ruin>
+                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
                 <localSearch>
                     <termination>
                         <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
@@ -1224,6 +1225,7 @@
                 <ruin>
                     <percentageToRuin>percentagesToRuin</percentageToRuin>
                 </ruin>
+                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
                 <localSearch>
                     <termination>
                         <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
@@ -1250,6 +1252,7 @@
                 <ruin>
                     <percentageToRuin>percentagesToRuin</percentageToRuin>
                 </ruin>
+                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
                 <localSearch>
                     <termination>
                         <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
@@ -1276,6 +1279,7 @@
                 <ruin>
                     <percentageToRuin>percentagesToRuin</percentageToRuin>
                 </ruin>
+                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
                 <localSearch>
                     <termination>
                         <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
@@ -1302,6 +1306,7 @@
                 <ruin>
                     <percentageToRuin>percentagesToRuin</percentageToRuin>
                 </ruin>
+                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
                 <localSearch>
                     <termination>
                         <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
@@ -3534,6 +3539,7 @@
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
+                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
                 <localSearch>
                     <termination>
                         <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
@@ -3568,6 +3574,7 @@
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
+                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
                 <localSearch>
                     <termination>
                         <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
@@ -3602,6 +3609,7 @@
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
+                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
                 <localSearch>
                     <termination>
                         <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
@@ -3636,6 +3644,7 @@
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
+                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
                 <localSearch>
                     <termination>
                         <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
@@ -3670,6 +3679,7 @@
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
+                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
                 <localSearch>
                     <termination>
                         <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
