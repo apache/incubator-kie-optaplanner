@@ -36,6 +36,8 @@ public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
     AbstractStepScope<Solution_> bestSolutionStepScope = null;
     long bestSolutionChangedTimestamp = Long.MIN_VALUE;
     boolean lastStepImprovedSolution = false;
+
+    Score<?> bestScore = null;
     ScoreDefinition<?> scoreDefinition;
     final Function<Number, Number> scoreLevelNumberConverter;
 
@@ -146,9 +148,12 @@ public class StatisticRegistry<Solution_> extends SimpleMeterRegistry
         if (stepScope.getBestScoreImproved()) {
             // Since best solution metrics are updated in a best solution listener, we need
             // to delay updating it until after the best solution listeners were processed
-            bestSolutionStepScope = stepScope;
-            bestSolutionChangedTimestamp = timestamp;
-            lastStepImprovedSolution = true;
+            if (bestScore == null || ((Score) bestScore).compareTo(stepScope.getScore()) < 0) {
+                bestScore = stepScope.getScore();
+                bestSolutionStepScope = stepScope;
+                bestSolutionChangedTimestamp = timestamp;
+                lastStepImprovedSolution = true;
+            }
         }
     }
 
