@@ -4,6 +4,11 @@
 	<parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
 	<inheritedSolverBenchmark>
 		<subSingleCount>5</subSingleCount>
+        <problemBenchmarks>
+          <problemStatisticType>BEST_SCORE</problemStatisticType>
+          <problemStatisticType>STEP_SCORE</problemStatisticType>
+          <problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>
+        </problemBenchmarks>
 	</inheritedSolverBenchmark>
 	<!-- with default random ruin of different sizes -->
 	<#list [1, 2, 5, 10, 20, 50] as percentagesToRuin>
