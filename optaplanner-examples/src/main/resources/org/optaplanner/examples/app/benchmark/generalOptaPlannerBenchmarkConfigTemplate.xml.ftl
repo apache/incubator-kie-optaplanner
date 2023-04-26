@@ -8,11 +8,6 @@
         <minutesSpentLimit>5</minutesSpentLimit>
       </termination>
     </solver>
-    <problemBenchmarks>
-      <problemStatisticType>BEST_SCORE</problemStatisticType>
-      <problemStatisticType>STEP_SCORE</problemStatisticType>
-      <problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>
-    </problemBenchmarks>
   </inheritedSolverBenchmark>
 
 

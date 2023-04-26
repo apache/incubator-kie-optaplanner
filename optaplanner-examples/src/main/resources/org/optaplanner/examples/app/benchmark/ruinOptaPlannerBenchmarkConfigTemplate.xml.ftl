@@ -3,162 +3,224 @@
 	<benchmarkDirectory>local/data/general/template</benchmarkDirectory>
 	<parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
 	<inheritedSolverBenchmark>
+	    <solver>
+            <environmentMode>PRODUCTION</environmentMode>
+	    </solver>
 		<subSingleCount>5</subSingleCount>
         <problemBenchmarks>
           <problemStatisticType>BEST_SCORE</problemStatisticType>
           <problemStatisticType>STEP_SCORE</problemStatisticType>
-          <problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>
         </problemBenchmarks>
 	</inheritedSolverBenchmark>
+	<!-- without ruin -->
+    <#assign nameSuffix = "without ruin">
+    <solverBenchmark>
+        <name>Machine Reassignment Tabu Search ${nameSuffix}</name>
+        <problemBenchmarks>
+            <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
+            <inputSolutionFile>data/machinereassignment/import/model_a1_5.txt</inputSolutionFile>
+            <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
+            <inputSolutionFile>data/machinereassignment/import/model_b_8.txt</inputSolutionFile>
+        </problemBenchmarks>
+        <solver>
+            <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
+            <entityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</entityClass>
+            <scoreDirectorFactory>
+                <constraintProviderClass>org.optaplanner.examples.machinereassignment.score.MachineReassignmentConstraintProvider</constraintProviderClass>
+            </scoreDirectorFactory>
+            <termination>
+                <unimprovedSecondsSpentLimit>10</unimprovedSecondsSpentLimit>
+            </termination>
+            <customPhase>
+                <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
+            </customPhase>
+            <localSearch>
+                <unionMoveSelector>
+                    <changeMoveSelector/>
+                    <swapMoveSelector/>
+                </unionMoveSelector>
+                <acceptor>
+                    <entityTabuSize>7</entityTabuSize>
+                </acceptor>
+                <forager>
+                    <acceptedCountLimit>2000</acceptedCountLimit>
+                </forager>
+            </localSearch>
+        </solver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>VehicleRouting ${nameSuffix}</name>
+        <problemBenchmarks>
+            <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingFileIO</solutionFileIOClass>
+            <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n100-k10.vrp</inputSolutionFile>
+            <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n500-k20.vrp</inputSolutionFile>
+            <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n2750-k55.vrp</inputSolutionFile>
+        </problemBenchmarks>
+        <solver>
+            <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
+            <entityClass>org.optaplanner.examples.vehiclerouting.domain.Vehicle</entityClass>
+            <entityClass>org.optaplanner.examples.vehiclerouting.domain.Customer</entityClass>
+            <entityClass>org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer</entityClass>
+            <scoreDirectorFactory>
+                <!--<easyScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingEasyScoreCalculator</easyScoreCalculatorClass>-->
+                <constraintProviderClass>org.optaplanner.examples.vehiclerouting.score.VehicleRoutingConstraintProvider</constraintProviderClass>
+                <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+                <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+            </scoreDirectorFactory>
+            <termination>
+                <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
+            </termination>
+            <constructionHeuristic></constructionHeuristic>
+            <localSearch>
+                <unionMoveSelector>
+                    <listChangeMoveSelector>
+                        <valueSelector id="1"/>
+                        <destinationSelector>
+                            <nearbySelection>
+                                <originValueSelector mimicSelectorRef="1"/>
+                                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+                            </nearbySelection>
+                        </destinationSelector>
+                    </listChangeMoveSelector>
+                    <listSwapMoveSelector>
+                        <valueSelector id="2"/>
+                        <secondaryValueSelector>
+                            <nearbySelection>
+                                <originValueSelector mimicSelectorRef="2"/>
+                                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+                            </nearbySelection>
+                        </secondaryValueSelector>
+                    </listSwapMoveSelector>
+                    <subListChangeMoveSelector>
+                        <selectReversingMoveToo>true</selectReversingMoveToo>
+                        <subListSelector id="3"/>
+                        <destinationSelector>
+                            <nearbySelection>
+                                <originSubListSelector mimicSelectorRef="3"/>
+                                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+                            </nearbySelection>
+                        </destinationSelector>
+                    </subListChangeMoveSelector>
+                    <subListSwapMoveSelector>
+                        <selectReversingMoveToo>true</selectReversingMoveToo>
+                        <subListSelector id="4"/>
+                        <secondarySubListSelector>
+                            <nearbySelection>
+                                <originSubListSelector mimicSelectorRef="4"/>
+                                <nearbyDistanceMeterClass>org.optaplanner.examples.vehiclerouting.domain.solver.nearby.CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+                                <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+                                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+                            </nearbySelection>
+                        </secondarySubListSelector>
+                    </subListSwapMoveSelector>
+                    <kOptListMoveSelector/>
+                </unionMoveSelector>
+                <acceptor>
+                    <lateAcceptanceSize>200</lateAcceptanceSize>
+                </acceptor>
+                <forager>
+                    <acceptedCountLimit>1</acceptedCountLimit>
+                </forager>
+            </localSearch>
+        </solver>
+    </solverBenchmark>
+    <solverBenchmark>
+        <name>Traveling Salesman Problem ${nameSuffix}</name>
+        <problemBenchmarks>
+            <solutionFileIOClass>org.optaplanner.examples.tsp.persistence.TspFileIO</solutionFileIOClass>
+            <inputSolutionFile>data/tsp/import/cook/air/st70.tsp</inputSolutionFile>
+            <inputSolutionFile>data/tsp/import/cook/air/pcb442.tsp</inputSolutionFile>
+            <inputSolutionFile>data/tsp/import/cook/air/lu980.tsp</inputSolutionFile>
+        </problemBenchmarks>
+        <solver>
+            <solutionClass>org.optaplanner.examples.tsp.domain.TspSolution</solutionClass>
+            <entityClass>org.optaplanner.examples.tsp.domain.Visit</entityClass>
+            <scoreDirectorFactory>
+                <!--<easyScoreCalculatorClass>org.optaplanner.examples.tsp.optional.score.TspEasyScoreCalculator</easyScoreCalculatorClass>-->
+                <constraintProviderClass>org.optaplanner.examples.tsp.score.TspConstraintProvider</constraintProviderClass>
+                <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.tsp.optional.score.TspIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
+                <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+            </scoreDirectorFactory>
+            <termination>
+                <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
+            </termination>
+            <constructionHeuristic>
+                <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+            </constructionHeuristic>
+            <localSearch>
+                <unionMoveSelector>
+                    <changeMoveSelector>
+                        <cacheType>STEP</cacheType>
+                        <selectionOrder>SHUFFLED</selectionOrder>
+                    </changeMoveSelector>
+                    <changeMoveSelector>
+                        <entitySelector id="entitySelector1"/>
+                        <valueSelector>
+                            <nearbySelection>
+                                <originEntitySelector mimicSelectorRef="entitySelector1"/>
+                                <nearbyDistanceMeterClass>org.optaplanner.examples.tsp.domain.solver.nearby.VisitNearbyDistanceMeter</nearbyDistanceMeterClass>
+                                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+                            </nearbySelection>
+                        </valueSelector>
+                    </changeMoveSelector>
+                    <swapMoveSelector>
+                        <entitySelector id="entitySelector2"/>
+                        <secondaryEntitySelector>
+                            <nearbySelection>
+                                <originEntitySelector mimicSelectorRef="entitySelector2"/>
+                                <nearbyDistanceMeterClass>org.optaplanner.examples.tsp.domain.solver.nearby.VisitNearbyDistanceMeter</nearbyDistanceMeterClass>
+                                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+                            </nearbySelection>
+                        </secondaryEntitySelector>
+                    </swapMoveSelector>
+                    <tailChainSwapMoveSelector>
+                        <entitySelector id="entitySelector3"/>
+                        <valueSelector>
+                            <nearbySelection>
+                                <originEntitySelector mimicSelectorRef="entitySelector3"/>
+                                <nearbyDistanceMeterClass>org.optaplanner.examples.tsp.domain.solver.nearby.VisitNearbyDistanceMeter</nearbyDistanceMeterClass>
+                                <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+                            </nearbySelection>
+                        </valueSelector>
+                    </tailChainSwapMoveSelector>
+                    <subChainChangeMoveSelector>
+                        <subChainSelector>
+                            <maximumSubChainSize>50</maximumSubChainSize>
+                        </subChainSelector>
+                        <selectReversingMoveToo>true</selectReversingMoveToo>
+                    </subChainChangeMoveSelector>
+                    <subChainSwapMoveSelector>
+                        <subChainSelector>
+                            <maximumSubChainSize>50</maximumSubChainSize>
+                        </subChainSelector>
+                        <selectReversingMoveToo>true</selectReversingMoveToo>
+                    </subChainSwapMoveSelector>
+                </unionMoveSelector>
+                <acceptor>
+                    <lateAcceptanceSize>400</lateAcceptanceSize>
+                </acceptor>
+                <forager>
+                    <acceptedCountLimit>1</acceptedCountLimit>
+                </forager>
+            </localSearch>
+        </solver>
+    </solverBenchmark>
 	<!-- with default random ruin of different sizes -->
 	<#list [1, 2, 5, 10, 20, 50] as percentagesToRuin>
         <#assign nameSuffix = "with random ${percentagesToRuin} percent ruin">
         <solverBenchmark>
-            <name>Cloud Balancing Late Acceptance ${nameSuffix}</name>
-            <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceSolutionFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.json</inputSolutionFile>
-                <inputSolutionFile>data/cloudbalancing/unsolved/800computers-2400processes.json</inputSolutionFile>
-                <inputSolutionFile>data/cloudbalancing/unsolved/1600computers-4800processes.json</inputSolutionFile>
-            </problemBenchmarks>
-            <solver>
-                <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
-                <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
-                <scoreDirectorFactory>
-                    <constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>
-                    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
-                </scoreDirectorFactory>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>400</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>400</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>400</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>400</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>400</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>400</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-            </solver>
-        </solverBenchmark>
-        <solverBenchmark>
             <name>Machine Reassignment Tabu Search ${nameSuffix}</name>
             <problemBenchmarks>
                 <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
+                <inputSolutionFile>data/machinereassignment/import/model_a1_5.txt</inputSolutionFile>
                 <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
-                <inputSolutionFile>data/machinereassignment/import/model_b_10.txt</inputSolutionFile>
+                <inputSolutionFile>data/machinereassignment/import/model_b_8.txt</inputSolutionFile>
             </problemBenchmarks>
             <solver>
                 <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
@@ -171,7 +233,7 @@
                 </customPhase>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>10</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
                         <changeMoveSelector/>
@@ -192,7 +254,7 @@
                 </customPhase>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
                         <changeMoveSelector/>
@@ -213,7 +275,7 @@
                 </customPhase>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
                         <changeMoveSelector/>
@@ -234,7 +296,7 @@
                 </customPhase>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
                         <changeMoveSelector/>
@@ -255,7 +317,7 @@
                 </customPhase>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
                         <changeMoveSelector/>
@@ -276,7 +338,7 @@
                 </customPhase>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
                         <changeMoveSelector/>
@@ -287,1052 +349,6 @@
                     </acceptor>
                     <forager>
                         <acceptedCountLimit>2000</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-            </solver>
-        </solverBenchmark>
-        <solverBenchmark>
-            <name>Course Scheduling Late Acceptance ${nameSuffix}</name>
-            <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseSolutionFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/curriculumcourse/unsolved/comp07.json</inputSolutionFile>
-                <inputSolutionFile>data/curriculumcourse/unsolved/comp08.json</inputSolutionFile>
-                <inputSolutionFile>data/curriculumcourse/unsolved/800lectures-32periods-50rooms.json</inputSolutionFile>
-            </problemBenchmarks>
-            <solver>
-                <solutionClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</solutionClass>
-                <entityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</entityClass>
-                <scoreDirectorFactory>
-                    <constraintProviderClass>org.optaplanner.examples.curriculumcourse.score.CurriculumCourseConstraintProvider</constraintProviderClass>
-                </scoreDirectorFactory>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector>
-                            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>600</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector>
-                            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>600</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector>
-                            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>600</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector>
-                            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>600</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector>
-                            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>600</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector>
-                            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>600</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-            </solver>
-        </solverBenchmark>
-        <solverBenchmark>
-            <name>Examination Tabu Search ${nameSuffix}</name>
-            <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.examination.persistence.ExaminationSolutionFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/examination/unsolved/exam_comp_set2.json</inputSolutionFile>
-                <inputSolutionFile>data/examination/unsolved/exam_comp_set3.json</inputSolutionFile>
-                <inputSolutionFile>data/examination/unsolved/exam_comp_set7.json</inputSolutionFile>
-            </problemBenchmarks>
-            <solver>
-                <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>
-                <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-                <entityClass>org.optaplanner.examples.examination.domain.FollowingExam</entityClass>
-                <scoreDirectorFactory>
-                    <constraintProviderClass>org.optaplanner.examples.examination.score.ExaminationConstraintProvider</constraintProviderClass>
-                </scoreDirectorFactory>
-                <constructionHeuristic>
-                    <queuedEntityPlacer>
-                        <entitySelector id="placerEntitySelector">
-                            <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SORTED</selectionOrder>
-                            <sorterManner>DECREASING_DIFFICULTY</sorterManner>
-                        </entitySelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                    <cacheType>PHASE</cacheType>
-                                    <!--<selectionOrder>SORTED</selectionOrder>-->
-                                    <!--<sorterManner>INCREASING_STRENGTH</sorterManner>-->
-                                </valueSelector>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="room">
-                                    <cacheType>PHASE</cacheType>
-                                    <selectionOrder>SORTED</selectionOrder>
-                                    <sorterManner>INCREASING_STRENGTH</sorterManner>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                    </queuedEntityPlacer>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector id="cartesianProductEntitySelector">
-                                    <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                                </entitySelector>
-                                <valueSelector variableName="room"/>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>10</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                    <entitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </entitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <queuedEntityPlacer>
-                        <entitySelector id="placerEntitySelector">
-                            <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SORTED</selectionOrder>
-                            <sorterManner>DECREASING_DIFFICULTY</sorterManner>
-                        </entitySelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                    <cacheType>PHASE</cacheType>
-                                    <!--<selectionOrder>SORTED</selectionOrder>-->
-                                    <!--<sorterManner>INCREASING_STRENGTH</sorterManner>-->
-                                </valueSelector>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="room">
-                                    <cacheType>PHASE</cacheType>
-                                    <selectionOrder>SORTED</selectionOrder>
-                                    <sorterManner>INCREASING_STRENGTH</sorterManner>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                    </queuedEntityPlacer>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector id="cartesianProductEntitySelector">
-                                    <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                                </entitySelector>
-                                <valueSelector variableName="room"/>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>10</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                    <entitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </entitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <queuedEntityPlacer>
-                        <entitySelector id="placerEntitySelector">
-                            <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SORTED</selectionOrder>
-                            <sorterManner>DECREASING_DIFFICULTY</sorterManner>
-                        </entitySelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                    <cacheType>PHASE</cacheType>
-                                    <!--<selectionOrder>SORTED</selectionOrder>-->
-                                    <!--<sorterManner>INCREASING_STRENGTH</sorterManner>-->
-                                </valueSelector>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="room">
-                                    <cacheType>PHASE</cacheType>
-                                    <selectionOrder>SORTED</selectionOrder>
-                                    <sorterManner>INCREASING_STRENGTH</sorterManner>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                    </queuedEntityPlacer>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector id="cartesianProductEntitySelector">
-                                    <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                                </entitySelector>
-                                <valueSelector variableName="room"/>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>10</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                    <entitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </entitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <queuedEntityPlacer>
-                        <entitySelector id="placerEntitySelector">
-                            <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SORTED</selectionOrder>
-                            <sorterManner>DECREASING_DIFFICULTY</sorterManner>
-                        </entitySelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                    <cacheType>PHASE</cacheType>
-                                    <!--<selectionOrder>SORTED</selectionOrder>-->
-                                    <!--<sorterManner>INCREASING_STRENGTH</sorterManner>-->
-                                </valueSelector>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="room">
-                                    <cacheType>PHASE</cacheType>
-                                    <selectionOrder>SORTED</selectionOrder>
-                                    <sorterManner>INCREASING_STRENGTH</sorterManner>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                    </queuedEntityPlacer>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector id="cartesianProductEntitySelector">
-                                    <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                                </entitySelector>
-                                <valueSelector variableName="room"/>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>10</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                    <entitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </entitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <queuedEntityPlacer>
-                        <entitySelector id="placerEntitySelector">
-                            <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SORTED</selectionOrder>
-                            <sorterManner>DECREASING_DIFFICULTY</sorterManner>
-                        </entitySelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                    <cacheType>PHASE</cacheType>
-                                    <!--<selectionOrder>SORTED</selectionOrder>-->
-                                    <!--<sorterManner>INCREASING_STRENGTH</sorterManner>-->
-                                </valueSelector>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="room">
-                                    <cacheType>PHASE</cacheType>
-                                    <selectionOrder>SORTED</selectionOrder>
-                                    <sorterManner>INCREASING_STRENGTH</sorterManner>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                    </queuedEntityPlacer>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector id="cartesianProductEntitySelector">
-                                    <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                                </entitySelector>
-                                <valueSelector variableName="room"/>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>10</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                    <entitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </entitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <queuedEntityPlacer>
-                        <entitySelector id="placerEntitySelector">
-                            <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SORTED</selectionOrder>
-                            <sorterManner>DECREASING_DIFFICULTY</sorterManner>
-                        </entitySelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                    <cacheType>PHASE</cacheType>
-                                    <!--<selectionOrder>SORTED</selectionOrder>-->
-                                    <!--<sorterManner>INCREASING_STRENGTH</sorterManner>-->
-                                </valueSelector>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="room">
-                                    <cacheType>PHASE</cacheType>
-                                    <selectionOrder>SORTED</selectionOrder>
-                                    <sorterManner>INCREASING_STRENGTH</sorterManner>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                    </queuedEntityPlacer>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector id="cartesianProductEntitySelector">
-                                    <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                                </entitySelector>
-                                <valueSelector variableName="room"/>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>10</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-            </solver>
-        </solverBenchmark>
-        <solverBenchmark>
-            <name>Nurse Rostering Tabu Search ${nameSuffix}</name>
-            <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.nurserostering.persistence.NurseRosterSolutionFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/nurserostering/unsolved/medium01.json</inputSolutionFile>
-                <inputSolutionFile>data/nurserostering/unsolved/medium_hint01.json</inputSolutionFile>
-                <inputSolutionFile>data/nurserostering/unsolved/long01.json</inputSolutionFile>
-            </problemBenchmarks>
-            <solver>
-                <solutionClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</solutionClass>
-                <entityClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignment</entityClass>
-                <scoreDirectorFactory>
-                    <constraintProviderClass>org.optaplanner.examples.nurserostering.score.NurseRosteringConstraintProvider</constraintProviderClass>
-                </scoreDirectorFactory>
-                <constructionHeuristic>
-                    <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                        <changeMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </changeMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                        <pillarChangeMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarChangeMoveSelector>
-                        <pillarSwapMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarSwapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>7</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>800</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                        <changeMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </changeMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                        <pillarChangeMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarChangeMoveSelector>
-                        <pillarSwapMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarSwapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>7</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>800</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                        <changeMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </changeMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                        <pillarChangeMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarChangeMoveSelector>
-                        <pillarSwapMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarSwapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>7</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>800</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                        <changeMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </changeMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                        <pillarChangeMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarChangeMoveSelector>
-                        <pillarSwapMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarSwapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>7</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>800</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                        <changeMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </changeMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                        <pillarChangeMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarChangeMoveSelector>
-                        <pillarSwapMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarSwapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>7</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>800</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                        <changeMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </changeMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                        <pillarChangeMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarChangeMoveSelector>
-                        <pillarSwapMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarSwapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>7</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>800</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-            </solver>
-        </solverBenchmark>
-        <solverBenchmark>
-            <name>TravelingTournament Tabu Search ${nameSuffix}</name>
-            <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentSolutionFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.json</inputSolutionFile>
-                <inputSolutionFile>data/travelingtournament/unsolved/2-bra24.json</inputSolutionFile>
-                <inputSolutionFile>data/travelingtournament/unsolved/3-nfl32.json</inputSolutionFile>
-            </problemBenchmarks>
-            <solver>
-                <solutionClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
-                <entityClass>org.optaplanner.examples.travelingtournament.domain.Match</entityClass>
-                <scoreDirectorFactory>
-                    <constraintProviderClass>org.optaplanner.examples.travelingtournament.score.TravelingTournamentConstraintProvider</constraintProviderClass>
-                </scoreDirectorFactory>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <swapMoveSelector>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <swapMoveSelector>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <swapMoveSelector>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <swapMoveSelector>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <swapMoveSelector>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
-                </ruin>
-                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <swapMoveSelector>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
                     </forager>
                 </localSearch>
             </solver>
@@ -1340,10 +356,10 @@
         <solverBenchmark>
             <name>VehicleRouting ${nameSuffix}</name>
             <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingSolutionFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/vehiclerouting/unsolved/cvrp-72customers.json</inputSolutionFile>
-                <inputSolutionFile>data/vehiclerouting/unsolved/cvrptw-100customers-A.json</inputSolutionFile>
-                <inputSolutionFile>data/vehiclerouting/unsolved/cvrptw-400customers.json</inputSolutionFile>
+                <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingFileIO</solutionFileIOClass>
+                <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n100-k10.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n500-k20.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n2750-k55.vrp</inputSolutionFile>
             </problemBenchmarks>
             <solver>
                 <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
@@ -1740,12 +756,12 @@
             </solver>
         </solverBenchmark>
         <solverBenchmark>
-            <name>TravellingSalesmanProblem ${nameSuffix}</name>
+            <name>Traveling Salesman Problem ${nameSuffix}</name>
             <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.tsp.persistence.TspSolutionFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/tsp/unsolved/americanRoadTrip-road-km-n50.json</inputSolutionFile>
-                <inputSolutionFile>data/tsp/unsolved/europe40.json</inputSolutionFile>
-                <inputSolutionFile>data/tsp/unsolved/lu980.json</inputSolutionFile>
+                <solutionFileIOClass>org.optaplanner.examples.tsp.persistence.TspFileIO</solutionFileIOClass>
+                <inputSolutionFile>data/tsp/import/cook/air/st70.tsp</inputSolutionFile>
+                <inputSolutionFile>data/tsp/import/cook/air/pcb442.tsp</inputSolutionFile>
+                <inputSolutionFile>data/tsp/import/cook/air/lu980.tsp</inputSolutionFile>
             </problemBenchmarks>
             <solver>
                 <solutionClass>org.optaplanner.examples.tsp.domain.TspSolution</solutionClass>
@@ -2145,193 +1161,15 @@
                 </localSearch>
             </solver>
         </solverBenchmark>
-        <!-- with nearby original ruin of different sizes --><#assign nameSuffix = "with nearby original ${percentagesToRuin} percent ruin">
-        <solverBenchmark>
-            <name>Cloud Balancing Late Acceptance ${nameSuffix}</name>
-            <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceSolutionFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.json</inputSolutionFile>
-                <inputSolutionFile>data/cloudbalancing/unsolved/800computers-2400processes.json</inputSolutionFile>
-                <inputSolutionFile>data/cloudbalancing/unsolved/1600computers-4800processes.json</inputSolutionFile>
-            </problemBenchmarks>
-            <solver>
-                <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
-                <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
-                <scoreDirectorFactory>
-                    <constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>
-                    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
-                </scoreDirectorFactory>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>400</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>400</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>400</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>400</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>400</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>400</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-            </solver>
-        </solverBenchmark>
+        <!-- with nearby original ruin of different sizes -->
+        <#assign nameSuffix = "with nearby original ${percentagesToRuin} percent ruin">
         <solverBenchmark>
             <name>Machine Reassignment Tabu Search ${nameSuffix}</name>
             <problemBenchmarks>
                 <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
+                <inputSolutionFile>data/machinereassignment/import/model_a1_5.txt</inputSolutionFile>
                 <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
-                <inputSolutionFile>data/machinereassignment/import/model_b_10.txt</inputSolutionFile>
+                <inputSolutionFile>data/machinereassignment/import/model_b_8.txt</inputSolutionFile>
             </problemBenchmarks>
             <solver>
                 <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
@@ -2344,7 +1182,7 @@
                 </customPhase>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>10</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
                         <changeMoveSelector/>
@@ -2373,7 +1211,7 @@
                 </customPhase>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
                         <changeMoveSelector/>
@@ -2402,7 +1240,7 @@
                 </customPhase>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
                         <changeMoveSelector/>
@@ -2431,7 +1269,7 @@
                 </customPhase>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
                         <changeMoveSelector/>
@@ -2460,7 +1298,7 @@
                 </customPhase>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
                         <changeMoveSelector/>
@@ -2489,7 +1327,7 @@
                 </customPhase>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
                         <changeMoveSelector/>
@@ -2500,1212 +1338,6 @@
                     </acceptor>
                     <forager>
                         <acceptedCountLimit>2000</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-            </solver>
-        </solverBenchmark>
-        <solverBenchmark>
-            <name>Course Scheduling Late Acceptance ${nameSuffix}</name>
-            <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseSolutionFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/curriculumcourse/unsolved/comp07.json</inputSolutionFile>
-                <inputSolutionFile>data/curriculumcourse/unsolved/comp08.json</inputSolutionFile>
-                <inputSolutionFile>data/curriculumcourse/unsolved/800lectures-32periods-50rooms.json</inputSolutionFile>
-            </problemBenchmarks>
-            <solver>
-                <solutionClass>org.optaplanner.examples.curriculumcourse.domain.CourseSchedule</solutionClass>
-                <entityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</entityClass>
-                <scoreDirectorFactory>
-                    <constraintProviderClass>org.optaplanner.examples.curriculumcourse.score.CurriculumCourseConstraintProvider</constraintProviderClass>
-                </scoreDirectorFactory>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector>
-                            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>600</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.curriculumcourse.domain.solver.nearby.LectureNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector>
-                            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>600</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.curriculumcourse.domain.solver.nearby.LectureNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector>
-                            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>600</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.curriculumcourse.domain.solver.nearby.LectureNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector>
-                            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>600</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.curriculumcourse.domain.solver.nearby.LectureNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector>
-                            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>600</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.curriculumcourse.domain.solver.nearby.LectureNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector>
-                            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <lateAcceptanceSize>600</lateAcceptanceSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-            </solver>
-        </solverBenchmark>
-        <solverBenchmark>
-            <name>Examination Tabu Search ${nameSuffix}</name>
-            <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.examination.persistence.ExaminationSolutionFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/examination/unsolved/exam_comp_set2.json</inputSolutionFile>
-                <inputSolutionFile>data/examination/unsolved/exam_comp_set3.json</inputSolutionFile>
-                <inputSolutionFile>data/examination/unsolved/exam_comp_set7.json</inputSolutionFile>
-            </problemBenchmarks>
-            <solver>
-                <solutionClass>org.optaplanner.examples.examination.domain.Examination</solutionClass>
-                <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-                <entityClass>org.optaplanner.examples.examination.domain.FollowingExam</entityClass>
-                <scoreDirectorFactory>
-                    <constraintProviderClass>org.optaplanner.examples.examination.score.ExaminationConstraintProvider</constraintProviderClass>
-                </scoreDirectorFactory>
-                <constructionHeuristic>
-                    <queuedEntityPlacer>
-                        <entitySelector id="placerEntitySelector">
-                            <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SORTED</selectionOrder>
-                            <sorterManner>DECREASING_DIFFICULTY</sorterManner>
-                        </entitySelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                    <cacheType>PHASE</cacheType>
-                                    <!--<selectionOrder>SORTED</selectionOrder>-->
-                                    <!--<sorterManner>INCREASING_STRENGTH</sorterManner>-->
-                                </valueSelector>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="room">
-                                    <cacheType>PHASE</cacheType>
-                                    <selectionOrder>SORTED</selectionOrder>
-                                    <sorterManner>INCREASING_STRENGTH</sorterManner>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                    </queuedEntityPlacer>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector id="cartesianProductEntitySelector">
-                                    <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                                </entitySelector>
-                                <valueSelector variableName="room"/>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>10</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector">
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.examination.domain.solver.nearby.ExamNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <queuedEntityPlacer>
-                        <entitySelector id="placerEntitySelector">
-                            <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SORTED</selectionOrder>
-                            <sorterManner>DECREASING_DIFFICULTY</sorterManner>
-                        </entitySelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                    <cacheType>PHASE</cacheType>
-                                    <!--<selectionOrder>SORTED</selectionOrder>-->
-                                    <!--<sorterManner>INCREASING_STRENGTH</sorterManner>-->
-                                </valueSelector>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="room">
-                                    <cacheType>PHASE</cacheType>
-                                    <selectionOrder>SORTED</selectionOrder>
-                                    <sorterManner>INCREASING_STRENGTH</sorterManner>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                    </queuedEntityPlacer>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector id="cartesianProductEntitySelector">
-                                    <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                                </entitySelector>
-                                <valueSelector variableName="room"/>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>10</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector">
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.examination.domain.solver.nearby.ExamNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <queuedEntityPlacer>
-                        <entitySelector id="placerEntitySelector">
-                            <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SORTED</selectionOrder>
-                            <sorterManner>DECREASING_DIFFICULTY</sorterManner>
-                        </entitySelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                    <cacheType>PHASE</cacheType>
-                                    <!--<selectionOrder>SORTED</selectionOrder>-->
-                                    <!--<sorterManner>INCREASING_STRENGTH</sorterManner>-->
-                                </valueSelector>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="room">
-                                    <cacheType>PHASE</cacheType>
-                                    <selectionOrder>SORTED</selectionOrder>
-                                    <sorterManner>INCREASING_STRENGTH</sorterManner>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                    </queuedEntityPlacer>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector id="cartesianProductEntitySelector">
-                                    <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                                </entitySelector>
-                                <valueSelector variableName="room"/>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>10</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector">
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.examination.domain.solver.nearby.ExamNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <queuedEntityPlacer>
-                        <entitySelector id="placerEntitySelector">
-                            <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SORTED</selectionOrder>
-                            <sorterManner>DECREASING_DIFFICULTY</sorterManner>
-                        </entitySelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                    <cacheType>PHASE</cacheType>
-                                    <!--<selectionOrder>SORTED</selectionOrder>-->
-                                    <!--<sorterManner>INCREASING_STRENGTH</sorterManner>-->
-                                </valueSelector>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="room">
-                                    <cacheType>PHASE</cacheType>
-                                    <selectionOrder>SORTED</selectionOrder>
-                                    <sorterManner>INCREASING_STRENGTH</sorterManner>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                    </queuedEntityPlacer>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector id="cartesianProductEntitySelector">
-                                    <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                                </entitySelector>
-                                <valueSelector variableName="room"/>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>10</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector">
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.examination.domain.solver.nearby.ExamNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <queuedEntityPlacer>
-                        <entitySelector id="placerEntitySelector">
-                            <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SORTED</selectionOrder>
-                            <sorterManner>DECREASING_DIFFICULTY</sorterManner>
-                        </entitySelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                    <cacheType>PHASE</cacheType>
-                                    <!--<selectionOrder>SORTED</selectionOrder>-->
-                                    <!--<sorterManner>INCREASING_STRENGTH</sorterManner>-->
-                                </valueSelector>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="room">
-                                    <cacheType>PHASE</cacheType>
-                                    <selectionOrder>SORTED</selectionOrder>
-                                    <sorterManner>INCREASING_STRENGTH</sorterManner>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                    </queuedEntityPlacer>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector id="cartesianProductEntitySelector">
-                                    <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                                </entitySelector>
-                                <valueSelector variableName="room"/>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>10</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector">
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                    </entitySelector>
-                    <secondaryEntitySelector>
-                        <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.examination.domain.solver.nearby.ExamNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <queuedEntityPlacer>
-                        <entitySelector id="placerEntitySelector">
-                            <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SORTED</selectionOrder>
-                            <sorterManner>DECREASING_DIFFICULTY</sorterManner>
-                        </entitySelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                    <cacheType>PHASE</cacheType>
-                                    <!--<selectionOrder>SORTED</selectionOrder>-->
-                                    <!--<sorterManner>INCREASING_STRENGTH</sorterManner>-->
-                                </valueSelector>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="placerEntitySelector"/>
-                                <valueSelector variableName="room">
-                                    <cacheType>PHASE</cacheType>
-                                    <selectionOrder>SORTED</selectionOrder>
-                                    <sorterManner>INCREASING_STRENGTH</sorterManner>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                    </queuedEntityPlacer>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <cartesianProductMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector id="cartesianProductEntitySelector">
-                                    <entityClass>org.optaplanner.examples.examination.domain.Exam</entityClass>
-                                </entitySelector>
-                                <valueSelector variableName="room"/>
-                            </changeMoveSelector>
-                            <changeMoveSelector>
-                                <entitySelector mimicSelectorRef="cartesianProductEntitySelector"/>
-                                <valueSelector variableName="period">
-                                    <downcastEntityClass>org.optaplanner.examples.examination.domain.LeadingExam</downcastEntityClass>
-                                </valueSelector>
-                            </changeMoveSelector>
-                        </cartesianProductMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>10</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-            </solver>
-        </solverBenchmark>
-        <solverBenchmark>
-            <name>Nurse Rostering Tabu Search ${nameSuffix}</name>
-            <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.nurserostering.persistence.NurseRosterSolutionFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/nurserostering/unsolved/medium01.json</inputSolutionFile>
-                <inputSolutionFile>data/nurserostering/unsolved/medium_hint01.json</inputSolutionFile>
-                <inputSolutionFile>data/nurserostering/unsolved/long01.json</inputSolutionFile>
-            </problemBenchmarks>
-            <solver>
-                <solutionClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</solutionClass>
-                <entityClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignment</entityClass>
-                <scoreDirectorFactory>
-                    <constraintProviderClass>org.optaplanner.examples.nurserostering.score.NurseRosteringConstraintProvider</constraintProviderClass>
-                </scoreDirectorFactory>
-                <constructionHeuristic>
-                    <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                        <changeMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </changeMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                        <pillarChangeMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarChangeMoveSelector>
-                        <pillarSwapMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarSwapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>7</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>800</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.nurserostering.domain.solver.nearby.ShiftAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                        <changeMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </changeMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                        <pillarChangeMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarChangeMoveSelector>
-                        <pillarSwapMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarSwapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>7</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>800</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.nurserostering.domain.solver.nearby.ShiftAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                        <changeMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </changeMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                        <pillarChangeMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarChangeMoveSelector>
-                        <pillarSwapMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarSwapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>7</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>800</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.nurserostering.domain.solver.nearby.ShiftAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                        <changeMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </changeMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                        <pillarChangeMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarChangeMoveSelector>
-                        <pillarSwapMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarSwapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>7</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>800</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.nurserostering.domain.solver.nearby.ShiftAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                        <changeMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </changeMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                        <pillarChangeMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarChangeMoveSelector>
-                        <pillarSwapMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarSwapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>7</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>800</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.nurserostering.domain.solver.nearby.ShiftAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic>
-                    <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
-                </constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <moveListFactoryClass>org.optaplanner.examples.nurserostering.solver.move.factory.ShiftAssignmentPillarPartSwapMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                        <changeMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </changeMoveSelector>
-                        <swapMoveSelector>
-                            <entitySelector>
-                                <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                            </entitySelector>
-                        </swapMoveSelector>
-                        <pillarChangeMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarChangeMoveSelector>
-                        <pillarSwapMoveSelector>
-                            <subPillarType>SEQUENCE</subPillarType>
-                            <pillarSelector>
-                                <entitySelector>
-                                    <filterClass>org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter</filterClass>
-                                </entitySelector>
-                            </pillarSelector>
-                        </pillarSwapMoveSelector>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <entityTabuSize>7</entityTabuSize>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>800</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-            </solver>
-        </solverBenchmark>
-        <solverBenchmark>
-            <name>TravelingTournament Tabu Search ${nameSuffix}</name>
-            <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentSolutionFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/travelingtournament/unsolved/1-nl14.json</inputSolutionFile>
-                <inputSolutionFile>data/travelingtournament/unsolved/2-bra24.json</inputSolutionFile>
-                <inputSolutionFile>data/travelingtournament/unsolved/3-nfl32.json</inputSolutionFile>
-            </problemBenchmarks>
-            <solver>
-                <solutionClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
-                <entityClass>org.optaplanner.examples.travelingtournament.domain.Match</entityClass>
-                <scoreDirectorFactory>
-                    <constraintProviderClass>org.optaplanner.examples.travelingtournament.score.TravelingTournamentConstraintProvider</constraintProviderClass>
-                </scoreDirectorFactory>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>60</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <swapMoveSelector>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.travelingtournament.domain.solver.nearby.MatchNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <swapMoveSelector>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.travelingtournament.domain.solver.nearby.MatchNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <swapMoveSelector>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.travelingtournament.domain.solver.nearby.MatchNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <swapMoveSelector>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.travelingtournament.domain.solver.nearby.MatchNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <swapMoveSelector>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
-                    </forager>
-                </localSearch>
-                <ruin>
-                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
-                    <entitySelector id="entitySelector"></entitySelector>
-                    <secondaryEntitySelector>
-                        <selectionOrder>ORIGINAL</selectionOrder>
-                        <nearbySelection>
-                            <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.travelingtournament.domain.solver.nearby.MatchNearbyDistanceMeter</nearbyDistanceMeterClass>
-                        </nearbySelection>
-                    </secondaryEntitySelector>
-                </ruin>
-                <constructionHeuristic><constructionHeuristicType>FIRST_FIT</constructionHeuristicType></constructionHeuristic>
-                <localSearch>
-                    <termination>
-                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
-                    </termination>
-                    <unionMoveSelector>
-                        <swapMoveSelector>
-                            <cacheType>PHASE</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <filterClass>org.optaplanner.examples.travelingtournament.solver.move.factory.InverseMatchSwapMoveFilter</filterClass>
-                        </swapMoveSelector>
-                        <moveListFactory>
-                            <cacheType>STEP</cacheType>
-                            <selectionOrder>SHUFFLED</selectionOrder>
-                            <moveListFactoryClass>org.optaplanner.examples.travelingtournament.solver.move.factory.MatchChainRotationsMoveFactory</moveListFactoryClass>
-                        </moveListFactory>
-                    </unionMoveSelector>
-                    <acceptor>
-                        <simulatedAnnealingStartingTemperature>2hard/10000soft</simulatedAnnealingStartingTemperature>
-                    </acceptor>
-                    <forager>
-                        <acceptedCountLimit>4</acceptedCountLimit>
                     </forager>
                 </localSearch>
             </solver>
@@ -3713,10 +1345,10 @@
         <solverBenchmark>
             <name>VehicleRouting ${nameSuffix}</name>
             <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingSolutionFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/vehiclerouting/unsolved/cvrp-72customers.json</inputSolutionFile>
-                <inputSolutionFile>data/vehiclerouting/unsolved/cvrptw-100customers-A.json</inputSolutionFile>
-                <inputSolutionFile>data/vehiclerouting/unsolved/cvrptw-400customers.json</inputSolutionFile>
+                <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingFileIO</solutionFileIOClass>
+                <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n100-k10.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n500-k20.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n2750-k55.vrp</inputSolutionFile>
             </problemBenchmarks>
             <solver>
                 <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
@@ -4168,12 +1800,12 @@
             </solver>
         </solverBenchmark>
         <solverBenchmark>
-            <name>TravellingSalesmanProblem ${nameSuffix}</name>
+            <name>Traveling Salesman Problem ${nameSuffix}</name>
             <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.tsp.persistence.TspSolutionFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/tsp/unsolved/americanRoadTrip-road-km-n50.json</inputSolutionFile>
-                <inputSolutionFile>data/tsp/unsolved/europe40.json</inputSolutionFile>
-                <inputSolutionFile>data/tsp/unsolved/lu980.json</inputSolutionFile>
+                <solutionFileIOClass>org.optaplanner.examples.tsp.persistence.TspFileIO</solutionFileIOClass>
+                <inputSolutionFile>data/tsp/import/cook/air/st70.tsp</inputSolutionFile>
+                <inputSolutionFile>data/tsp/import/cook/air/pcb442.tsp</inputSolutionFile>
+                <inputSolutionFile>data/tsp/import/cook/air/lu980.tsp</inputSolutionFile>
             </problemBenchmarks>
             <solver>
                 <solutionClass>org.optaplanner.examples.tsp.domain.TspSolution</solutionClass>
