@@ -22,6 +22,8 @@ public class RuinPhaseConfig extends PhaseConfig<RuinPhaseConfig> {
 
     public static final String XML_ELEMENT_NAME = "ruin";
 
+    static Integer defaultPercentageToRuin = 20;
+
     @XmlElement(name = "entitySelector")
     private EntitySelectorConfig entitySelectorConfig = null;
     @XmlElement(name = "secondaryEntitySelector")
@@ -32,10 +34,7 @@ public class RuinPhaseConfig extends PhaseConfig<RuinPhaseConfig> {
     private List<String> variableNameIncludeList = null;
 
     @XmlElement(name = "percentageToRuin")
-    // experimentally chosen value based on benchmarking results.
-    // see ruinOptaplannerBenchmarkConfigTemplate
-    // TODO: update the value once benchmarking results are obtained
-    private Integer percentageToRuin = 20;
+    private Integer percentageToRuin = null;
 
     public void setEntitySelectorConfig(EntitySelectorConfig entitySelectorConfig) {
         this.entitySelectorConfig = entitySelectorConfig;
@@ -50,7 +49,7 @@ public class RuinPhaseConfig extends PhaseConfig<RuinPhaseConfig> {
     }
 
     public Integer getPercentageToRuin() {
-        return percentageToRuin;
+        return percentageToRuin == null ? defaultPercentageToRuin : percentageToRuin;
     }
 
     public EntitySelectorConfig getEntitySelectorConfig() {
