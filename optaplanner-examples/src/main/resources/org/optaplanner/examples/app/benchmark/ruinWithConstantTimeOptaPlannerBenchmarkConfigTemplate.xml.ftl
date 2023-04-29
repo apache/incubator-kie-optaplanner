@@ -4,7 +4,7 @@
     <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
 	<inheritedSolverBenchmark>
 		<solver>
-		    <environmentMode>PRODUCTION</environmentMode>
+		    <environmentMode>NON_REPRODUCIBLE</environmentMode>
 			<termination>
 				<minutesSpentLimit>10</minutesSpentLimit>
 			</termination>

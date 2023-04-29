@@ -4,7 +4,7 @@
 	<parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
 	<inheritedSolverBenchmark>
 	    <solver>
-            <environmentMode>PRODUCTION</environmentMode>
+            <environmentMode>NON_REPRODUCIBLE</environmentMode>
 	    </solver>
 		<subSingleCount>5</subSingleCount>
         <problemBenchmarks>
