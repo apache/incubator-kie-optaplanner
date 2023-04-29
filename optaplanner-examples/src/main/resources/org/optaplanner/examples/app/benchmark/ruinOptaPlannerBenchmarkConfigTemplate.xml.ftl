@@ -247,7 +247,7 @@
                     </forager>
                 </localSearch>
                 <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
+                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
                 <customPhase>
                     <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
@@ -268,7 +268,7 @@
                     </forager>
                 </localSearch>
                 <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
+                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
                 <customPhase>
                     <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
@@ -289,7 +289,7 @@
                     </forager>
                 </localSearch>
                 <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
+                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
                 <customPhase>
                     <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
@@ -310,7 +310,7 @@
                     </forager>
                 </localSearch>
                 <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
+                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
                 <customPhase>
                     <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
@@ -331,7 +331,7 @@
                     </forager>
                 </localSearch>
                 <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
+                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
                 <customPhase>
                     <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
@@ -434,7 +434,7 @@
                     </forager>
                 </localSearch>
                 <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
+                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
                 <constructionHeuristic></constructionHeuristic>
                 <localSearch>
@@ -498,7 +498,7 @@
                     </forager>
                 </localSearch>
                 <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
+                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
                 <constructionHeuristic></constructionHeuristic>
                 <localSearch>
@@ -562,7 +562,7 @@
                     </forager>
                 </localSearch>
                 <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
+                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
                 <constructionHeuristic></constructionHeuristic>
                 <localSearch>
@@ -626,7 +626,7 @@
                     </forager>
                 </localSearch>
                 <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
+                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
                 <constructionHeuristic></constructionHeuristic>
                 <localSearch>
@@ -690,7 +690,7 @@
                     </forager>
                 </localSearch>
                 <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
+                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
                 <constructionHeuristic></constructionHeuristic>
                 <localSearch>
@@ -835,7 +835,7 @@
                     </forager>
                 </localSearch>
                 <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
+                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
                 <constructionHeuristic>
                     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -900,7 +900,7 @@
                     </forager>
                 </localSearch>
                 <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
+                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
                 <constructionHeuristic>
                     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -965,7 +965,7 @@
                     </forager>
                 </localSearch>
                 <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
+                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
                 <constructionHeuristic>
                     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -1030,7 +1030,7 @@
                     </forager>
                 </localSearch>
                 <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
+                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
                 <constructionHeuristic>
                     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -1095,7 +1095,7 @@
                     </forager>
                 </localSearch>
                 <ruin>
-                    <percentageToRuin>percentagesToRuin</percentageToRuin>
+                    <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
                 <constructionHeuristic>
                     <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
