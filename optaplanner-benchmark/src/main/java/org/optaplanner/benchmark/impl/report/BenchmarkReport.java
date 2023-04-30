@@ -43,6 +43,7 @@ import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.ranking.SolverRankingWeightFactory;
 import org.optaplanner.benchmark.impl.result.LoggingLevel;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
@@ -53,6 +54,8 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreStatisticPoint;
+import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.slf4j.Logger;
@@ -227,7 +230,6 @@ public class BenchmarkReport {
         summaryDirectory.mkdir();
         plannerBenchmarkResult.accumulateResults(this);
         fillWarningList();
-        writeBestScoreSummaryChart();
         writeBestScoreScalabilitySummaryChart();
         writeWinningScoreDifferenceSummaryChart();
         writeWorstScoreDifferencePercentageSummaryChart();
@@ -263,6 +265,7 @@ public class BenchmarkReport {
                 }
             }
         }
+        writeBestScoreSummaryChart();
         for (ProblemBenchmarkResult<Object> problemBenchmarkResult : plannerBenchmarkResult
                 .getUnifiedProblemBenchmarkResultList()) {
             if (problemBenchmarkResult.hasAnySuccess()) {
@@ -347,13 +350,31 @@ public class BenchmarkReport {
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 String problemLabel = singleBenchmarkResult.getProblemBenchmarkResult().getName();
                 if (singleBenchmarkResult.hasAllSuccess()) {
+                    List<XYSeries> seriesList = new ArrayList<>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
+                    BestScoreSubSingleStatistic subSingleStatistic = (BestScoreSubSingleStatistic) singleBenchmarkResult
+                            .getSubSingleStatistic(ProblemStatisticType.BEST_SCORE);
+                    List<BestScoreStatisticPoint> points = subSingleStatistic.getPointList();
+                    for (BestScoreStatisticPoint point : points) {
+                        if (!point.getScore().isSolutionInitialized()) {
+                            continue;
+                        }
+                        long timeMillisSpent = point.getTimeMillisSpent();
+                        double[] levelValues = point.getScore().toLevelDoubles();
+                        for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
+                            if (i >= seriesList.size()) {
+                                seriesList.add(new XYSeries(
+                                        singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix()));
+                            }
+                            seriesList.get(i).add(timeMillisSpent, levelValues[i]);
+                        }
+                    }
                     double[] levelValues = singleBenchmarkResult.getAverageScore().toLevelDoubles();
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= datasetList.size()) {
                             datasetList.add(new DefaultCategoryDataset());
                         }
                         if (isFinite(levelValues[i])) {
-                            datasetList.get(i).addValue(levelValues[i], solverLabel, problemLabel);
+                            datasetList.get(i).addValue(seriesList.get(i).getMaxY(), solverLabel, problemLabel);
                         }
                     }
                 }

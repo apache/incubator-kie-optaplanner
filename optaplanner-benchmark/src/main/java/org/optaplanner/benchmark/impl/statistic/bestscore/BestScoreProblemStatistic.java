@@ -89,7 +89,7 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
                         seriesList.add(new XYSeries(
                                 singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix()));
                     }
-                    seriesList.get(i).add(timeMillisSpent, bestScoreLevels[i]);
+                    seriesList.get(i).add(timeMillisSpent, seriesList.get(i).getMaxY());
                 }
                 if (subSingleStatistic.getPointList().size() <= 1) {
                     // Workaround for https://sourceforge.net/tracker/?func=detail&aid=3387330&group_id=15494&atid=115494
