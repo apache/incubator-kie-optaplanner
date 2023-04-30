@@ -22,8 +22,8 @@
         <problemBenchmarks>
             <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
             <inputSolutionFile>data/machinereassignment/import/model_a1_5.txt</inputSolutionFile>
+            <inputSolutionFile>data/machinereassignment/import/model_a2_2.txt</inputSolutionFile>
             <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
-            <inputSolutionFile>data/machinereassignment/import/model_b_8.txt</inputSolutionFile>
         </problemBenchmarks>
         <solver>
             <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
@@ -213,8 +213,8 @@
             <problemBenchmarks>
                 <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
                 <inputSolutionFile>data/machinereassignment/import/model_a1_5.txt</inputSolutionFile>
+                <inputSolutionFile>data/machinereassignment/import/model_a2_2.txt</inputSolutionFile>
                 <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
-                <inputSolutionFile>data/machinereassignment/import/model_b_8.txt</inputSolutionFile>
             </problemBenchmarks>
             <solver>
                 <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
@@ -4753,8 +4753,8 @@
             <problemBenchmarks>
                 <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
                 <inputSolutionFile>data/machinereassignment/import/model_a1_5.txt</inputSolutionFile>
+                <inputSolutionFile>data/machinereassignment/import/model_a2_2.txt</inputSolutionFile>
                 <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
-                <inputSolutionFile>data/machinereassignment/import/model_b_8.txt</inputSolutionFile>
             </problemBenchmarks>
             <solver>
                 <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
