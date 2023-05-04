@@ -56,7 +56,7 @@ pipeline {
             }
         }
         
-        stage('Prepare for post-release) {
+        stage('Prepare for post-release') {
             steps {
                 script {
                     dir(optaplannerRepository) {
