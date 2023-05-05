@@ -18,32 +18,35 @@
 	<!-- without ruin -->
 	<#assign nameSuffix = "without ruin">
     <solverBenchmark>
-        <name>Machine Reassignment Tabu Search ${nameSuffix}</name>
+        <name>Cloud Balancing ${nameSuffix}</name>
         <problemBenchmarks>
-            <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
-            <inputSolutionFile>data/machinereassignment/import/model_a1_5.txt</inputSolutionFile>
-            <inputSolutionFile>data/machinereassignment/import/model_a2_2.txt</inputSolutionFile>
-            <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
+            <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceSolutionFileIO</solutionFileIOClass>
+            <inputSolutionFile>data/cloudbalancing/unsolved/100computers-300processes.json</inputSolutionFile>
+            <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.json</inputSolutionFile>
+            <inputSolutionFile>data/cloudbalancing/unsolved/400computers-1200processes.json</inputSolutionFile>
         </problemBenchmarks>
         <solver>
-            <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
-            <entityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</entityClass>
+            <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+            <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
             <scoreDirectorFactory>
-                <constraintProviderClass>org.optaplanner.examples.machinereassignment.score.MachineReassignmentConstraintProvider</constraintProviderClass>
+                <constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>
+                <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
             </scoreDirectorFactory>
-            <customPhase>
-                <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-            </customPhase>
+            <constructionHeuristic>
+              <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+            </constructionHeuristic>
             <localSearch>
                 <unionMoveSelector>
                     <changeMoveSelector/>
                     <swapMoveSelector/>
+                    <pillarChangeMoveSelector/>
+                    <pillarSwapMoveSelector/>
                 </unionMoveSelector>
                 <acceptor>
                     <entityTabuSize>7</entityTabuSize>
                 </acceptor>
                 <forager>
-                    <acceptedCountLimit>2000</acceptedCountLimit>
+                    <acceptedCountLimit>1000</acceptedCountLimit>
                 </forager>
             </localSearch>
         </solver>
@@ -52,9 +55,9 @@
         <name>VehicleRouting ${nameSuffix}</name>
         <problemBenchmarks>
             <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingFileIO</solutionFileIOClass>
-            <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n100-k10.vrp</inputSolutionFile>
-            <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n500-k20.vrp</inputSolutionFile>
-            <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n2750-k55.vrp</inputSolutionFile>
+            <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Solomon_100_C101.vrp</inputSolutionFile>
+            <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Homberger_0200_C1_2_1.vrp</inputSolutionFile>
+            <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Homberger_0400_C1_4_1.vrp</inputSolutionFile>
         </problemBenchmarks>
         <solver>
             <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
@@ -209,641 +212,702 @@
     <#list [1, 2, 5, 10, 20, 50] as percentagesToRuin>
         <#assign nameSuffix = "with random ${percentagesToRuin} percent ruin">
         <solverBenchmark>
-            <name>Machine Reassignment Tabu Search ${nameSuffix}</name>
+            <name>Cloud Balancing ${nameSuffix}</name>
             <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/machinereassignment/import/model_a1_5.txt</inputSolutionFile>
-                <inputSolutionFile>data/machinereassignment/import/model_a2_2.txt</inputSolutionFile>
-                <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
+                <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceSolutionFileIO</solutionFileIOClass>
+                <inputSolutionFile>data/cloudbalancing/unsolved/100computers-300processes.json</inputSolutionFile>
+                <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.json</inputSolutionFile>
+                <inputSolutionFile>data/cloudbalancing/unsolved/400computers-1200processes.json</inputSolutionFile>
             </problemBenchmarks>
             <solver>
-                <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
-                <entityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</entityClass>
+                <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+                <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
                 <scoreDirectorFactory>
-                    <constraintProviderClass>org.optaplanner.examples.machinereassignment.score.MachineReassignmentConstraintProvider</constraintProviderClass>
+                    <constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>
+                    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
                 </scoreDirectorFactory>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
                     <percentageToRuin>${percentagesToRuin}</percentageToRuin>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
             </solver>
@@ -852,9 +916,9 @@
             <name>VehicleRouting ${nameSuffix}</name>
             <problemBenchmarks>
                 <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n100-k10.vrp</inputSolutionFile>
-                <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n500-k20.vrp</inputSolutionFile>
-                <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n2750-k55.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Solomon_100_C101.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Homberger_0200_C1_2_1.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Homberger_0400_C1_4_1.vrp</inputSolutionFile>
             </problemBenchmarks>
             <solver>
                 <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
@@ -4749,35 +4813,38 @@
     <!-- with nearby original ruin of different sizes -->
         <#assign nameSuffix = "with nearby original ${percentagesToRuin} percent ruin">
         <solverBenchmark>
-            <name>Machine Reassignment Tabu Search ${nameSuffix}</name>
+            <name>Cloud Balancing ${nameSuffix}</name>
             <problemBenchmarks>
-                <solutionFileIOClass>org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/machinereassignment/import/model_a1_5.txt</inputSolutionFile>
-                <inputSolutionFile>data/machinereassignment/import/model_a2_2.txt</inputSolutionFile>
-                <inputSolutionFile>data/machinereassignment/import/model_b_1.txt</inputSolutionFile>
+                <solutionFileIOClass>org.optaplanner.examples.cloudbalancing.persistence.CloudBalanceSolutionFileIO</solutionFileIOClass>
+                <inputSolutionFile>data/cloudbalancing/unsolved/100computers-300processes.json</inputSolutionFile>
+                <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.json</inputSolutionFile>
+                <inputSolutionFile>data/cloudbalancing/unsolved/400computers-1200processes.json</inputSolutionFile>
             </problemBenchmarks>
             <solver>
-                <solutionClass>org.optaplanner.examples.machinereassignment.domain.MachineReassignment</solutionClass>
-                <entityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</entityClass>
+                <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+                <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
                 <scoreDirectorFactory>
-                    <constraintProviderClass>org.optaplanner.examples.machinereassignment.score.MachineReassignmentConstraintProvider</constraintProviderClass>
+                    <constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>
+                    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
                 </scoreDirectorFactory>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>5</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>30</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -4787,26 +4854,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -4816,26 +4885,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -4845,26 +4916,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -4874,26 +4947,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -4903,26 +4978,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -4932,26 +5009,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -4961,26 +5040,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -4990,26 +5071,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5019,26 +5102,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5048,26 +5133,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5077,26 +5164,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5106,26 +5195,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5135,26 +5226,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5164,26 +5257,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5193,26 +5288,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5222,26 +5319,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5251,26 +5350,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5280,26 +5381,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5309,26 +5412,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5338,26 +5443,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5367,26 +5474,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5396,26 +5505,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5425,26 +5536,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5454,26 +5567,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5483,26 +5598,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5512,26 +5629,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5541,26 +5660,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5570,26 +5691,28 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <termination>
-                        <unimprovedSecondsSpentLimit>2</unimprovedSecondsSpentLimit>
+                        <unimprovedSecondsSpentLimit>15</unimprovedSecondsSpentLimit>
                     </termination>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
                 <ruin>
@@ -5599,23 +5722,25 @@
                         <selectionOrder>ORIGINAL</selectionOrder>
                         <nearbySelection>
                             <originEntitySelector mimicSelectorRef="entitySelector"/>
-                            <nearbyDistanceMeterClass>org.optaplanner.examples.machinereassignment.domain.solver.nearby.MrProcessAssignmentNearbyDistanceMeter</nearbyDistanceMeterClass>
+                            <nearbyDistanceMeterClass>org.optaplanner.examples.cloudbalancing.domain.solver.nearby.CloudProcessNearbyDistanceMeter</nearbyDistanceMeterClass>
                         </nearbySelection>
                     </secondaryEntitySelector>
                 </ruin>
-                <customPhase>
-                    <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-                </customPhase>
+                <constructionHeuristic>
+                  <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+                </constructionHeuristic>
                 <localSearch>
                     <unionMoveSelector>
-                        <changeMoveSelector/>
-                        <swapMoveSelector/>
+                      <changeMoveSelector/>
+                      <swapMoveSelector/>
+                      <pillarChangeMoveSelector/>
+                      <pillarSwapMoveSelector/>
                     </unionMoveSelector>
                     <acceptor>
                         <entityTabuSize>7</entityTabuSize>
                     </acceptor>
                     <forager>
-                        <acceptedCountLimit>2000</acceptedCountLimit>
+                        <acceptedCountLimit>1000</acceptedCountLimit>
                     </forager>
                 </localSearch>
             </solver>
@@ -5624,9 +5749,9 @@
             <name>VehicleRouting ${nameSuffix}</name>
             <problemBenchmarks>
                 <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n100-k10.vrp</inputSolutionFile>
-                <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n500-k20.vrp</inputSolutionFile>
-                <inputSolutionFile>data/vehiclerouting/import/belgium/timewindowed/air/belgium-tw-n2750-k55.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Solomon_100_C101.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Homberger_0200_C1_2_1.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Homberger_0400_C1_4_1.vrp</inputSolutionFile>
             </problemBenchmarks>
             <solver>
                 <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
