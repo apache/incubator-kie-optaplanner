@@ -55,9 +55,9 @@
         <name>VehicleRouting ${nameSuffix}</name>
         <problemBenchmarks>
             <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingFileIO</solutionFileIOClass>
-            <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Solomon_100_C101.vrp</inputSolutionFile>
-            <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Homberger_0200_C1_2_1.vrp</inputSolutionFile>
-            <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Homberger_0400_C1_4_1.vrp</inputSolutionFile>
+            <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n50-k10.vrp</inputSolutionFile>
+            <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n100-k10.vrp</inputSolutionFile>
+            <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n500-k20.vrp</inputSolutionFile>
         </problemBenchmarks>
         <solver>
             <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
@@ -916,9 +916,9 @@
             <name>VehicleRouting ${nameSuffix}</name>
             <problemBenchmarks>
                 <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Solomon_100_C101.vrp</inputSolutionFile>
-                <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Homberger_0200_C1_2_1.vrp</inputSolutionFile>
-                <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Homberger_0400_C1_4_1.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n50-k10.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n100-k10.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n500-k20.vrp</inputSolutionFile>
             </problemBenchmarks>
             <solver>
                 <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
@@ -5749,9 +5749,9 @@
             <name>VehicleRouting ${nameSuffix}</name>
             <problemBenchmarks>
                 <solutionFileIOClass>org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingFileIO</solutionFileIOClass>
-                <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Solomon_100_C101.vrp</inputSolutionFile>
-                <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Homberger_0200_C1_2_1.vrp</inputSolutionFile>
-                <inputSolutionFile>data/vehiclerouting/import/vrpweb/timewindowed/air/Homberger_0400_C1_4_1.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n50-k10.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n100-k10.vrp</inputSolutionFile>
+                <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n500-k20.vrp</inputSolutionFile>
             </problemBenchmarks>
             <solver>
                 <solutionClass>org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution</solutionClass>
