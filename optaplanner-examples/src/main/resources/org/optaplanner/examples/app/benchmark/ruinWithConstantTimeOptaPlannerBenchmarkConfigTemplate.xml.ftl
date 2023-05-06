@@ -6,7 +6,7 @@
 		<solver>
 		    <environmentMode>NON_REPRODUCIBLE</environmentMode>
 			<termination>
-				<minutesSpentLimit>10</minutesSpentLimit>
+				<minutesSpentLimit>15</minutesSpentLimit>
 			</termination>
 			<subSingleCount>5</subSingleCount>
 		</solver>
