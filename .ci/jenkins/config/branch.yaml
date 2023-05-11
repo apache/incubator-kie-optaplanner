@@ -46,7 +46,7 @@ environments:
     - ecosystem
 productized_branch: false
 disable:
-  triggers: false
+  triggers: true
 repositories:
 - name: optaplanner
   branch: 9.37.x
