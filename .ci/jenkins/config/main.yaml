@@ -13,30 +13,6 @@ git:
       config_file:
         git:
           branch: 9.x-dsl-config
-  - name: 9.34.x
-    seed:
-      branch: seed-optaplanner-9.34.x
-      config_file:
-        git:
-          branch: optaplanner-9.34.x
-  - name: 9.35.x
-    seed:
-      branch: seed-optaplanner-9.35.x
-      config_file:
-        git:
-          branch: optaplanner-9.35.x
-  - name: 9.36.x
-    seed:
-      branch: seed-optaplanner-9.36.x
-      config_file:
-        git:
-          branch: optaplanner-9.36.x
-  - name: 9.37.x
-    seed:
-      branch: seed-optaplanner-9.37.x
-      config_file:
-        git:
-          branch: optaplanner-9.37.x
   - name: 9.38.x
     seed:
       branch: seed-optaplanner-9.38.x
