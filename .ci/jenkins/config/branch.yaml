@@ -30,6 +30,15 @@ repositories:
   branch: 8.38.x-prod
 - name: optaplanner-website
   branch: 8.38.x-prod
+- name: kie-benchmarks
+  branch: main  
+productized_repositories:
+  - name: optaplanner
+    branch: 8.38.x-prod
+  - name: optaplanner-quickstarts
+    branch: 8.38.x-prod
+  - name: optaplanner-website
+    branch: 8.38.x-prod
 git:
   author:
     name: kiegroup
