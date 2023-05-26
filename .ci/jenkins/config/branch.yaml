@@ -60,7 +60,6 @@ productized_repositories:
   - name: optaplanner
   - name: optaplanner-quickstarts
   - name: optaplanner-website
-  - name: kie-benchmarks
 git:
   author:
     name: kiegroup
