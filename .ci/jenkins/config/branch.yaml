@@ -4,57 +4,32 @@ environments:
       NATIVE: true
       BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
       ADDITIONAL_TIMEOUT: 720
+      BUILD_MVN_OPTS: '-Dproductized  '
     ids:
     - native
-  quarkus-main:
-    enabled: false
-    env_vars:
-      QUARKUS_BRANCH: main
-    ids:
-    - quarkus
+    enabled: true
   quarkus-branch:
     env_vars:
       QUARKUS_BRANCH: '2.16'
+      BUILD_MVN_OPTS: '-Dproductized  '
     ids:
     - quarkus
-  quarkus-lts:
-    pull_request_default_check: false
+    enabled: true
+  default:
+    enabled: true
     env_vars:
-      BUILD_MVN_OPTS: -Dproductized
-      QUARKUS_BRANCH: '2.13'
-    ids:
-    - quarkus
-    - lts
-    - prod
-    enabled: false
-  native-lts:
-    env_vars:
-      NATIVE: true
-      BUILD_MVN_OPTS: -Dproductized
-      BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
-      QUARKUS_BRANCH: '2.13'
-      QUARKUS_NATIVE_BUILDER_IMAGE: mandrel
-      ADDITIONAL_TIMEOUT: 720
-    ids:
-    - native
-    - prod
-    - lts
-    enabled: false
-  ecosystem:
-    auto_generation: false
-    ids:
-    - ecosystem
-productized_branch: false
+      BUILD_MVN_OPTS: '-Dproductized  '
+productized_branch: true
 disable:
-  triggers: false
+  triggers: true
 repositories:
 - name: optaplanner
-  branch: 8.38.x
+  branch: 8.38.x-prod
   is_branch_config_repo: true
 - name: optaplanner-quickstarts
-  branch: 8.38.x
+  branch: 8.38.x-prod
 - name: optaplanner-website
-  branch: 8.38.x
+  branch: 8.38.x-prod
 git:
   author:
     name: kiegroup
@@ -100,3 +75,11 @@ jenkins:
   default_tools:
     jdk: kie-jdk17
     maven: kie-maven-3.8.7
+productized_repositories:
+- name: optaplanner
+  branch: 8.38.x-prod
+  is_branch_config_repo: true
+- name: optaplanner-quickstarts
+  branch: 8.38.x-prod
+generation_config:
+  missing_environment: ignore
