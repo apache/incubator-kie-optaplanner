@@ -1,6 +1,6 @@
 package org.optaplanner.constraint.streams.drools;
 
-import org.drools.core.rule.consequence.InternalMatch;
+import org.drools.core.common.AgendaItem;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.event.rule.RuleEventListener;
 
@@ -8,16 +8,17 @@ public final class OptaPlannerRuleEventListener implements RuleEventListener {
 
     @Override
     public void onUpdateMatch(Match match) {
-        undoPreviousMatch((InternalMatch) match);
+        undoPreviousMatch(match);
     }
 
     @Override
     public void onDeleteMatch(Match match) {
-        undoPreviousMatch((InternalMatch) match);
+        undoPreviousMatch(match);
     }
 
-    public void undoPreviousMatch(InternalMatch match) {
-        Runnable callback = match.getCallback();
+    public void undoPreviousMatch(Match match) {
+        AgendaItem agendaItem = (AgendaItem) match;
+        Runnable callback = agendaItem.getCallback();
         /*
          * Null callbacks can happen and are safe to ignore.
          *
@@ -27,7 +28,7 @@ public final class OptaPlannerRuleEventListener implements RuleEventListener {
          */
         if (callback != null) {
             callback.run();
-            match.setCallback(null);
+            agendaItem.setCallback(null);
         }
     }
 

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.drools.core.rule.consequence.InternalMatch;
+import org.drools.core.common.AgendaItem;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.RuleContext;
@@ -168,7 +168,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
      */
     protected void registerConstraintMatch(RuleContext kcontext, Runnable constraintUndoListener,
             Supplier<Score_> scoreSupplier) {
-        InternalMatch agendaItem = (InternalMatch) kcontext.getMatch();
+        AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
         ConstraintActivationUnMatchListener constraintActivationUnMatchListener = new ConstraintActivationUnMatchListener(
                 constraintUndoListener);
         agendaItem.setCallback(constraintActivationUnMatchListener);
@@ -240,7 +240,7 @@ public abstract class AbstractScoreHolder<Score_ extends Score<Score_>> implemen
 
     protected List<Object> extractJustificationList(RuleContext kcontext) {
         // Unlike kcontext.getMatch().getObjects(), this includes the matches of accumulate and exists
-        InternalMatch activation = (InternalMatch) kcontext.getMatch();
+        AgendaItem activation = (AgendaItem) kcontext.getMatch();
         return new ArrayList<>(activation.getObjectsDeep());
     }
 

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.drools.core.rule.consequence.InternalMatch;
+import org.drools.core.common.AgendaItem;
 import org.junit.jupiter.api.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.RuleContext;
@@ -42,16 +42,16 @@ public abstract class AbstractScoreHolderTest<Score_ extends Score<Score_>> {
         RuleContext kcontext = mock(RuleContext.class);
 
         AtomicReference<Runnable> callbackRef = new AtomicReference<>();
-        InternalMatch match = mock(InternalMatch.class);
-        doReturn(justificationList).when(match).getObjects();
-        doReturn(justificationList).when(match).getObjectsDeep();
-        doAnswer(invocation -> callbackRef.get()).when(match).getCallback();
+        AgendaItem agendaItem = mock(AgendaItem.class);
+        doReturn(justificationList).when(agendaItem).getObjects();
+        doReturn(justificationList).when(agendaItem).getObjectsDeep();
+        doAnswer(invocation -> callbackRef.get()).when(agendaItem).getCallback();
         doAnswer(invocation -> {
             callbackRef.set(invocation.getArgument(0));
             return null;
-        }).when(match).setCallback(any());
+        }).when(agendaItem).setCallback(any());
 
-        when(kcontext.getMatch()).thenReturn(match);
+        when(kcontext.getMatch()).thenReturn(agendaItem);
         when(kcontext.getRule()).thenReturn(rule);
         return kcontext;
     }
@@ -64,11 +64,13 @@ public abstract class AbstractScoreHolderTest<Score_ extends Score<Score_>> {
     }
 
     protected void callOnUpdate(RuleContext ruleContext) {
-        ((InternalMatch) ruleContext.getMatch()).getCallback().run();
+        AgendaItem agendaItem = (AgendaItem) ruleContext.getMatch();
+        agendaItem.getCallback().run();
     }
 
     protected void callOnDelete(RuleContext ruleContext) {
-        ((InternalMatch) ruleContext.getMatch()).getCallback().run();
+        AgendaItem agendaItem = (AgendaItem) ruleContext.getMatch();
+        agendaItem.getCallback().run();
     }
 
     protected ConstraintMatchTotal<Score_> findConstraintMatchTotal(AbstractScoreHolder<Score_> scoreHolder, String ruleName) {
