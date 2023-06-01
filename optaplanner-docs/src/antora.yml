@@ -13,6 +13,6 @@ asciidoc:
     java-version: 11
     maven-version: 3.8.1
     quarkus-version: 2.16.0.Final
-    spring-boot-version: 2.7.7
+    spring-boot-version: 2.7.12
 nav:
   - modules/ROOT/nav.adoc
