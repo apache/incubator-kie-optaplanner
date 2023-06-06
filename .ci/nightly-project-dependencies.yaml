@@ -7,9 +7,9 @@ dependencies:
     mapping:
       dependencies:
         default:
-          - source: main-integration-quarkus-lts
+          - source: 8.37.x
             target: main
       dependant:
         default:
           - source: main
-            target: main-integration-quarkus-lts
+            target: 8.37.x

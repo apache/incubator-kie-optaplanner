@@ -23,6 +23,8 @@ build:
   - project: kiegroup/drools
     build-command:
       upstream: |
+        bash -c "set -o pipefail ; ls .ci/environments/quarkus-lts/patches/* -d | xargs -I {} bash -c 'git apply {}'"
+        bash -c "git --no-pager diff"
         ${{ env.PME_CMD }} ${{ env.PME_ALIGNMENT_PARAMS_kiegroup_drools }}
         bash -c "${{ env.ALIGN_QUARKUS }} -pl :drools-build-parent ; set -o pipefail ; ${{ env.PME_BUILD_SCRIPT_kiegroup_drools }} ${{ env.BUILD_MVN_OPTS }} | tee ${{ env.WORKSPACE }}/drools.maven.log"
   - project: kiegroup/optaplanner
