@@ -7,9 +7,9 @@ dependencies:
     mapping:
       dependencies:
         default:
-          - source: 8.37.x
+          - source: 8.39.x
             target: main
       dependant:
         default:
           - source: main
-            target: 8.37.x
+            target: 8.39.x
