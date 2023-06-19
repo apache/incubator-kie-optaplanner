@@ -57,7 +57,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
       - name: Java and Maven Setup
-        uses: kiegroup/kogito-pipelines/.ci/actions/maven@1.13.x
+        uses: kiegroup/kie-ci/.ci/actions/maven@main
         with:
           java-version: ${{ matrix.java-version }}
           maven-version: ${{ matrix.maven-version }}
