@@ -2,7 +2,7 @@ package org.optaplanner.benchmark.config.statistic;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnum;
 
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
