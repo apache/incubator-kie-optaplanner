@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-quarkus-jsonb-parent</artifactId>
-    <version>9.40.0.Final</version>
+    <version>9.40.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>optaplanner-quarkus-jsonb-deployment</artifactId>
