@@ -25,6 +25,12 @@ git:
       config_file:
         git:
           branch: optaplanner-9.40.x
+  - name: 9.41.x
+    seed:
+      branch: seed-optaplanner-9.41.x
+      config_file:
+        git:
+          branch: optaplanner-9.41.x
   main_branch: 9.x
 seed:
   config_file:
