@@ -26,6 +26,7 @@ environments:
     - quarkus
     - lts
     - prod
+    enabled: false
   native-lts:
     env_vars:
       NATIVE: true
@@ -38,22 +39,22 @@ environments:
     - native
     - prod
     - lts
+    enabled: false
   ecosystem:
     auto_generation: false
     ids:
     - ecosystem
-productized_branch: true
+productized_branch: false
 disable:
   triggers: false
 repositories:
 - name: optaplanner
-  branch: main
+  branch: 8.43.x
+  is_branch_config_repo: true
 - name: optaplanner-quickstarts
-  branch: 8.x
+  branch: 8.43.x
 - name: optaplanner-website
-  branch: main
-- name: kie-benchmarks
-  branch: main
+  branch: 8.43.x
 productized_repositories:
 - name: optaplanner
 - name: optaplanner-quickstarts
