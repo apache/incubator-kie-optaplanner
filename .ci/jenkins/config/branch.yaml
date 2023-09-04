@@ -11,6 +11,7 @@ environments:
       QUARKUS_BRANCH: main
     ids:
     - quarkus
+    enabled: false
   quarkus-branch:
     env_vars:
       QUARKUS_BRANCH: '3.0'
@@ -18,7 +19,6 @@ environments:
     ids:
     - quarkus
   quarkus-lts:
-    # TODO: upgrade with Quarkus 3
     enabled: false
     env_vars:
       BUILD_MVN_OPTS: -Dproductized
@@ -44,15 +44,14 @@ environments:
     auto_generation: false
     ids:
     - ecosystem
-productized_branch: true
+productized_branch: false
 disable:
   triggers: false
 repositories:
-# optaplanner-website stays in the `main` branch config as the website should be published from there.
 - name: optaplanner
-  branch: 9.x
+  branch: 9.44.x
 - name: optaplanner-quickstarts
-  branch: development
+  branch: 9.44.x
 git:
   author:
     name: kiegroup
