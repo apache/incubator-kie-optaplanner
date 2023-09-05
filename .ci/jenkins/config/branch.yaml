@@ -17,47 +17,17 @@ environments:
       QUARKUS_BRANCH: '2.16'
     ids:
     - quarkus
-  quarkus-lts:
-    pull_request_default_check: false
-    env_vars:
-      BUILD_MVN_OPTS: -Dproductized
-      QUARKUS_BRANCH: '2.13'
-    ids:
-    - quarkus
-    - lts
-    - prod
-  native-lts:
-    env_vars:
-      NATIVE: true
-      BUILD_MVN_OPTS: -Dproductized
-      BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
-      QUARKUS_BRANCH: '2.13'
-      QUARKUS_NATIVE_BUILDER_IMAGE: mandrel
-      ADDITIONAL_TIMEOUT: 720
-    ids:
-    - native
-    - prod
-    - lts
   ecosystem:
     auto_generation: false
     ids:
     - ecosystem
-productized_branch: true
 disable:
   triggers: false
 repositories:
 - name: optaplanner
-  branch: main
 - name: optaplanner-quickstarts
-  branch: 8.x
 - name: optaplanner-website
-  branch: main
 - name: kie-benchmarks
-  branch: main
-productized_repositories:
-- name: optaplanner
-- name: optaplanner-quickstarts
-- name: optaplanner-website
 git:
   author:
     name: kiegroup
