@@ -38,7 +38,7 @@ pipeline {
                 script {
                     new MavenCommand(this)
                             // Use the same settings.xml as for the nightly builds, including a maven mirror.
-                            .withSettingsXmlId('kogito_release_settings')
+                            .withSettingsXmlId('kie-release-settings')
                             .inDirectory(optaplannerRepo)
                             .withOptions(['-U', '-e', '-fae', '-ntp'])
                             .withProperty('full')

@@ -47,7 +47,7 @@ buildchain_config:
     repository: optaplanner
     file_path: .ci/buildchain-config.yaml
 maven:
-  settings_file_id: kogito_release_settings
+  settings_file_id: kie-release-settings
   nexus:
     release_url: https://repository.jboss.org/nexus
     release_repository: jboss-releases-repository
@@ -68,6 +68,6 @@ cloud:
 jenkins:
   email_creds_id: OPTAPLANNER_CI_EMAIL
   default_tools:
-    jdk: kie-jdk17
-    maven: kie-maven-3.8.7
-    sonar_jdk: kie-jdk17
+    jdk: jdk_17_latest
+    maven: maven_3.8.6
+    sonar_jdk: jdk_17_latest

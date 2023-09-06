@@ -151,7 +151,7 @@ void checkoutDroolsRepo() {
 
 MavenCommand getMavenCommand(String directory) {
     def mvnCmd = new MavenCommand(this, ['-fae', '-ntp'])
-                .withSettingsXmlId('kogito_release_settings')
+                .withSettingsXmlId('kie-release-settings')
                 .inDirectory(directory)
     if (env.BUILD_MVN_OPTS) {
         mvnCmd.withOptions([ env.BUILD_MVN_OPTS ])
