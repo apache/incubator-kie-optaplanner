@@ -235,9 +235,9 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
                     if (actualImpactType == ScoreImpactType.MIXED) {
                         boolean isImpactPositive = constraintMatchTotal.getScore().compareTo(zeroScore) > 0;
                         boolean isImpactNegative = constraintMatchTotal.getScore().compareTo(zeroScore) < 0;
-                        if (isImpactPositive && scoreImpactType == ScoreImpactType.PENALTY) {
+                        if (isImpactPositive && scoreImpactType == ScoreImpactType.REWARD) {
                             return constraintMatchTotal.getConstraintMatchSet().size();
-                        } else if (isImpactNegative && scoreImpactType == ScoreImpactType.REWARD) {
+                        } else if (isImpactNegative && scoreImpactType == ScoreImpactType.PENALTY) {
                             return constraintMatchTotal.getConstraintMatchSet().size();
                         } else {
                             return 0;
