@@ -8,18 +8,13 @@ quickstartsRepo = 'optaplanner-quickstarts'
 
 pipeline {
     agent {
-        label 'ubuntu'
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
     environment {
-        // DROOLS_BRANCH should be defined directly into the job environment
-
         OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
-
-        MAVEN_OPTS = '-Xms1024m -Xmx4g'
-    }
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
     }
     options {
         timestamps()

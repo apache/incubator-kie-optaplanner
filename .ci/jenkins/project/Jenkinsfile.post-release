@@ -10,12 +10,10 @@ String stableBranchName = 'stable'
 
 pipeline {
     agent {
-        label 'ubuntu'
-    }
-
-    tools {
-        maven env.BUILD_MAVEN_TOOL
-        jdk env.BUILD_JDK_TOOL
+        docker { 
+            image env.AGENT_DOCKER_BUILDER_IMAGE
+            args env.AGENT_DOCKER_BUILDER_ARGS
+        }
     }
 
     options {
@@ -24,13 +22,7 @@ pipeline {
         disableConcurrentBuilds(abortPrevious: true)
     }
 
-    // parameters {
-    // For parameters, check into .jenkins/dsl/jobs.groovy file
-    // }
-
     environment {
-        // Some generated env is also defined into .jenkins/dsl/jobs.groovy file
-
         OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         PR_BRANCH_HASH = "${util.generateHash(10)}"
@@ -48,10 +40,7 @@ pipeline {
 
                     // Verify version is set and if on right release branch
                     assert getProjectVersion()
-
                     assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
-
-                    installGithubCLI()
                 }
             }
         }
@@ -230,15 +219,6 @@ void commitAndForcePushBranch(String repo, String branch) {
         println "[ERROR] Force push branch: ${branch} from repo : ${repo} failed with exception: ${exception}"
         currentBuild.result = 'UNSTABLE'
     }
-}
-
-void installGithubCLI() {
-    sh """
-    wget https://github.com/cli/cli/releases/download/v${env.GITHUB_CLI_VERSION}/gh_${env.GITHUB_CLI_VERSION}_linux_amd64.tar.gz
-    tar xzf gh_${env.GITHUB_CLI_VERSION}_linux_amd64.tar.gz
-    mv gh_${env.GITHUB_CLI_VERSION}_linux_amd64/bin/gh .
-    rm -r gh_${env.GITHUB_CLI_VERSION}_linux_amd64*
-    """
 }
 
 void uploadDistribution(String directory) {
