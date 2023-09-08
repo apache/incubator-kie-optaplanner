@@ -10,10 +10,8 @@ ecosystem:
     - kie-benchmarks.*
 git:
   branches:
-  - name: main
+  - name: apache_migration
     main_branch: true
-    seed:
-      branch: main
 seed:
   config_file:
     git:
@@ -21,7 +19,7 @@ seed:
       author:
         name: kiegroup
         credentials_id: kie-ci5
-      branch: main
+      branch: apache_migration
     path: .ci/jenkins/config/branch.yaml
 jenkins:
-  email_creds_id: OPTAPLANNER_CI_EMAIL
+  email_creds_id: KOGITO_CI_NOTIFICATION_EMAILS

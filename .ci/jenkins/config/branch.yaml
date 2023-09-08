@@ -22,12 +22,14 @@ environments:
     ids:
     - ecosystem
 disable:
-  triggers: false
+  triggers: true # TODO to set back
 repositories:
 - name: optaplanner
 - name: optaplanner-quickstarts
 - name: optaplanner-website
 - name: kie-benchmarks
+  author:
+    name: radtriste # TODO set back. Could not push to kiegroup
 git:
   author:
     name: kiegroup
@@ -49,24 +51,25 @@ buildchain_config:
 maven:
   settings_file_id: kie-release-settings
   nexus:
-    release_url: https://repository.jboss.org/nexus
-    release_repository: jboss-releases-repository
-    staging_profile_url: https://repository.jboss.org/nexus/content/groups/kogito-public/
-    staging_profile_id: 2161b7b8da0080
-    build_promotion_profile_id: ea49ccd6f174
+    release_url: TO_DEFINE
+    release_repository: TO_DEFINE
+    staging_profile_url: TO_DEFINE
+    staging_profile_id: TO_DEFINE
+    build_promotion_profile_id: TO_DEFINE
   artifacts_repository: ''
-  pr_checks:
-    repository:
-      url: https://bxms-qe.rhev-ci-vms.eng.rdu2.redhat.com:8443/nexus/content/repositories/kogito-runtimes-pr-full-testing/
-      creds_id: unpacks-zip-on-qa-nexus
 cloud:
   image:
-    registry_credentials: optaplanner-quay-token
+    registry_credentials: tradisso_registry_token # TODO set to `kogito-quay-token`
     registry: quay.io
-    namespace: optaplanner
+    namespace: tradisso
     latest_git_branch: main
 jenkins:
-  email_creds_id: OPTAPLANNER_CI_EMAIL
+  email_creds_id: KOGITO_CI_NOTIFICATION_EMAILS
+  agent:
+    docker:
+      builder:
+        image: quay.io/kiegroup/kogito-ci-build:latest
+        args: -v /var/run/docker.sock:/var/run/docker.sock --group-add docker --group-add input --group-add render
   default_tools:
     jdk: jdk_17_latest
     maven: maven_3.8.6
