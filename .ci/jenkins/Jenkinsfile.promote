@@ -173,7 +173,7 @@ String getParamOrDeployProperty(String paramKey, String deployPropertyKey) {
 //////////////////////////////////////////////////////////////////////////////
 
 boolean isNotTestingBuild() {
-    return getGitAuthor() == 'kiegroup'
+    return getGitAuthor() == 'apache'
 }
 
 String getProjectVersion() {

@@ -307,7 +307,7 @@ void checkoutRepo(String repo, String dirName = repo) {
     dir(dirName) {
         deleteDir()
         if (params.PR_TARGET_BRANCH) {
-            githubscm.checkoutIfExists(repo, getGitAuthor(), getBuildBranch(), 'kiegroup', getFallbackBranch(repo), true)
+            githubscm.checkoutIfExists(repo, getGitAuthor(), getBuildBranch(), 'apache', getFallbackBranch(repo), true)
         } else {
             checkout(githubscm.resolveRepository(repo, getGitAuthor(), getBuildBranch(), false))
         }
@@ -318,7 +318,7 @@ void checkoutQuickstarts(String dirName = quickstartsRepository) {
     dir(dirName) {
         deleteDir()
         if (params.PR_TARGET_BRANCH) {
-            githubscm.checkoutIfExists(quickstartsRepository, getGitAuthor(), getBuildBranch(), 'kiegroup', getQuickStartsBranch(), true)
+            githubscm.checkoutIfExists(quickstartsRepository, getGitAuthor(), getBuildBranch(), 'apache', getQuickStartsBranch(), true)
         } else {
             checkout(githubscm.resolveRepository(quickstartsRepository, getGitAuthor(), getQuickStartsBranch(), false))
         }
@@ -326,7 +326,7 @@ void checkoutQuickstarts(String dirName = quickstartsRepository) {
 }
 
 String getFallbackBranch(String repo) {
-    def repositoryScm = githubscm.getRepositoryScm(repo, 'kiegroup', params.PR_TARGET_BRANCH)
+    def repositoryScm = githubscm.getRepositoryScm(repo, 'apache', params.PR_TARGET_BRANCH)
     return repositoryScm ? params.PR_TARGET_BRANCH : 'main'
 }
 
@@ -439,7 +439,7 @@ boolean shouldDeployToRepository() {
 }
 
 boolean isNotTestingBuild() {
-    return getGitAuthor() == 'kiegroup'
+    return getGitAuthor() == 'apache'
 }
 
 boolean isRelease() {
