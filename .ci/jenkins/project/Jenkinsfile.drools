@@ -140,7 +140,7 @@ void checkoutOptaplannerQuickstartsRepo() {
 
 void checkoutDroolsRepo() {
     dir(droolsRepo) {
-        checkout(githubscm.resolveRepository(droolsRepo, 'kiegroup', getDroolsBranch(), false))
+        checkout(githubscm.resolveRepository(droolsRepo, 'apache', getDroolsBranch(), false))
     }
 }
 

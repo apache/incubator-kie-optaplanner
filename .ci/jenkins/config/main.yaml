@@ -10,16 +10,16 @@ ecosystem:
     - kie-benchmarks.*
 git:
   branches:
-  - name: apache_migration
+  - name: main
     main_branch: true
 seed:
   config_file:
     git:
       repository: optaplanner
       author:
-        name: kiegroup
+        name: apache
         credentials_id: kie-ci5
-      branch: apache_migration
+      branch: main
     path: .ci/jenkins/config/branch.yaml
 jenkins:
   email_creds_id: KOGITO_CI_NOTIFICATION_EMAILS
