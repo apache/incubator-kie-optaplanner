@@ -25,7 +25,7 @@ default:
         docker system prune -f
 
 build:
-  - project: kiegroup/optaplanner
+  - project: apache/incubator-kie-optaplanner
     build-command:
       before:
         upstream: |

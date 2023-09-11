@@ -3,13 +3,13 @@ version: "2.1"
 dependencies:
   - project: kiegroup/drools
 
-  - project: kiegroup/optaplanner
+  - project: apache/incubator-kie-optaplanner
     dependencies:
       - project: kiegroup/drools
 
   - project: kiegroup/optaplanner-quickstarts
     dependencies:
-      - project: kiegroup/optaplanner
+      - project: apache/incubator-kie-optaplanner
     mapping:
       dependencies:
         default:

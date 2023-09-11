@@ -17,7 +17,7 @@ changes that span multiple kiegroup repositories and depend on each other. -->
 <!-- Example:
 - https://github.com/kiegroup/droolsjbpm-build-bootstrap/pull/1234
 - https://github.com/kiegroup/drools/pull/3000
-- https://github.com/kiegroup/optaplanner/pull/899
+- https://github.com/apache/incubator-kie-optaplanner/pull/899
 - etc.
 -->
 
@@ -106,7 +106,7 @@ How to retest this PR or trigger a specific build:
 
 ### CI Status
 
- You can check OptaPlanner repositories CI status from [Chain Status webpage](https://kiegroup.github.io/optaplanner/).
+ You can check OptaPlanner repositories CI status from [Chain Status webpage](https://apache.github.io/incubator-kie-optaplanner/).
 
 <details>
 <summary>
