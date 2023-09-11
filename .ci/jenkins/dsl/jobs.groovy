@@ -2,10 +2,10 @@
 * This file is describing all the Jenkins jobs in the DSL format (see https://plugins.jenkins.io/job-dsl/)
 * needed by the Kogito pipelines.
 *
-* The main part of Jenkins job generation is defined into the https://github.com/apache/kogito-pipelines repository.
+* The main part of Jenkins job generation is defined into the https://github.com/apache/incubator-kie-kogito-pipelines repository.
 *
 * This file is making use of shared libraries defined in
-* https://github.com/apache/kogito-pipelines/tree/main/dsl/seed/src/main/groovy/org/kie/jenkins/jobdsl.
+* https://github.com/apache/incubator-kie-kogito-pipelines/tree/main/dsl/seed/src/main/groovy/org/kie/jenkins/jobdsl.
 */
 
 import org.kie.jenkins.jobdsl.model.JenkinsFolder
@@ -179,7 +179,7 @@ Map getMultijobPRConfig(JenkinsFolder jobFolder) {
                 ]
             ], [
                 id: 'optaplanner-quickstarts',
-                repository: 'optaplanner-quickstarts',
+                repository: 'incubator-kie-optaplanner-quickstarts',
                 env : [
                     BUILD_MVN_OPTS_CURRENT: '-Dfull',
                     OPTAPLANNER_BUILD_MVN_OPTS_UPSTREAM: '-Dfull',

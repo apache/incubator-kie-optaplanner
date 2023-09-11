@@ -1,9 +1,9 @@
 version: "2.1"
 dependencies:
-  - project: apache/optaplanner
-  - project: apache/optaplanner-quickstarts
+  - project: apache/incubator-kie-optaplanner
+  - project: apache/incubator-kie-optaplanner-quickstarts
     dependencies:
-      - project: apache/optaplanner
+      - project: apache/incubator-kie-optaplanner
     mapping:
       dependencies:
         default:
