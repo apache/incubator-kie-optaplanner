@@ -11,7 +11,7 @@ pipeline {
         timeout(time: 360, unit: 'MINUTES')
     }
     environment {
-        BUILDCHAIN_PROJECT = 'apache/optaplanner'
+        BUILDCHAIN_PROJECT = 'apache/incubator-kie-optaplanner'
         BUILDCHAIN_CONFIG_REPO = 'optaplanner'
         BUILDCHAIN_CONFIG_FILE_PATH = '.ci/buildchain-config.yaml'
 
