@@ -1,0 +1,25 @@
+name: Automatic Mirror Synchronization
+
+on: [push]
+
+jobs:
+  sync-mirror:
+    if: github.repository_owner == 'apache'
+    name: Sync the Kiegroup mirror
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run the mirror sync process using git-sync-mirror
+        uses: addnab/docker-run-action@v3
+        with:
+          image: enteee/git-sync-mirror:latest
+          options: >
+            --rm
+            --env DEBUG=true
+            --env SRC_REPO=${{ github.server_url }}/${{ github.repository }}.git
+            --env DST_REPO=${{ github.server_url }}/kiegroup/optaplanner.git
+            --env SRC_REPO_TOKEN=${{ secrets.GITHUB_TOKEN }}
+            --env DST_REPO_TOKEN=${{ secrets.KIE_PAT }}
+            --env ONCE=true
+          run: |
+            ./bin/git-sync-mirror.sh
