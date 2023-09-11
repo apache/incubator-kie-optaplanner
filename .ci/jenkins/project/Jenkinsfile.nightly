@@ -26,13 +26,7 @@ pipeline {
         timeout(time: 1380, unit: 'MINUTES')
     }
 
-    // parameters {
-    // For parameters, check into ./dsl/jobs.groovy file
-    // }
-
     environment {
-        // Some generated env is also defined into ./dsl/jobs.groovy file
-
         OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         // Use branch name in nightly tag as we may have parallel main and release branch builds
