@@ -82,7 +82,7 @@ pipeline {
             }
         }
 
-        // Not migrated yet
+        // Optaplanner website is not migrated to Apache
         // stage('Update OptaPlanner website') {
         //     steps {
         //         script {
