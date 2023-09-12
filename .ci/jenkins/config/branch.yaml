@@ -24,10 +24,11 @@ environments:
 disable:
   triggers: true # TODO to set back
 repositories:
-- name: optaplanner
-- name: optaplanner-quickstarts
-- name: optaplanner-website
-- name: kie-benchmarks
+- name: incubator-kie-optaplanner
+- name: incubator-kie-optaplanner-quickstarts
+  branch: 8.x
+- name: incubator-kie-optaplanner-website
+- name: incubator-kie-kie-benchmarks
   author:
     name: radtriste # TODO set back. Could not push to kiegroup
 git:
@@ -48,7 +49,7 @@ git:
   jenkins_config_path: .ci/jenkins
 buildchain_config:
   git:
-    repository: optaplanner
+    repository: incubator-kie-optaplanner
     file_path: .ci/buildchain-config.yaml
 maven:
   settings_file_id: kie-release-settings

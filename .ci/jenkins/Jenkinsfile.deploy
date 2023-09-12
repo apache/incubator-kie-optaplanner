@@ -7,8 +7,8 @@ import org.kie.jenkins.MavenStagingHelper
 
 deployProperties = [:]
 
-optaplannerRepository = 'optaplanner'
-quickstartsRepository = 'optaplanner-quickstarts'
+optaplannerRepository = 'incubator-kie-optaplanner'
+quickstartsRepository = 'incubator-kie-optaplanner-quickstarts'
 
 imageUtils = null
 

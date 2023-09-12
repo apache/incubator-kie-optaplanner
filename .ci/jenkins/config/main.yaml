@@ -3,11 +3,12 @@ ecosystem:
   projects:
   - name: optaplanner
     regexs:
+    - incubator-kie-opta.*
     - opta.*
   - name: kie-benchmarks
     ignore_release: true
     regexs:
-    - kie-benchmarks.*
+    - incubator-kie-kie-benchmarks.*
 git:
   branches:
   - name: main
@@ -15,7 +16,7 @@ git:
 seed:
   config_file:
     git:
-      repository: optaplanner
+      repository: incubator-kie-optaplanner
       author:
         name: apache
         credentials_id: kie-ci5
