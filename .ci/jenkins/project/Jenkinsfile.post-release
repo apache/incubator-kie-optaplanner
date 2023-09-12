@@ -82,40 +82,41 @@ pipeline {
             }
         }
 
-        stage('Update OptaPlanner website') {
-            steps {
-                script {
-                    final String websiteRepository = 'optaplanner-website'
-                    String prLink = null
-                    String prBranchName = "${getProjectVersion().toLowerCase()}-${env.PR_BRANCH_HASH}"
-                    dir("$websiteRepository-pr") {
-                        checkoutRepo(websiteRepository, 'main') // there is no other branch
-                        githubscm.createBranch(prBranchName)
+        // Optaplanner website is not migrated to Apache
+        // stage('Update OptaPlanner website') {
+        //     steps {
+        //         script {
+        //             final String websiteRepository = 'optaplanner-website'
+        //             String prLink = null
+        //             String prBranchName = "${getProjectVersion().toLowerCase()}-${env.PR_BRANCH_HASH}"
+        //             dir("$websiteRepository-pr") {
+        //                 checkoutRepo(websiteRepository, 'main') // there is no other branch
+        //                 githubscm.createBranch(prBranchName)
 
-                        // Update versions in links on the website and in the docs.
-                        sh "./build/update-versions.sh ${getProjectVersion()} ${getNextMinorSnapshotVersion(getProjectVersion())}"
+        //                 // Update versions in links on the website and in the docs.
+        //                 sh "./build/update-versions.sh ${getProjectVersion()} ${getNextMinorSnapshotVersion(getProjectVersion())}"
 
-                        // Update the XSDs. OptaPlanner must be cloned and build with the full profile before.
-                        String optaplannerRoot = "${WORKSPACE}/${optaplannerRepository}"
-                        String optaplannerWebsiteModule = 'optaplanner-website-root'
-                        String optaplannerWebsiteXsd = "${optaplannerWebsiteModule}/content/xsd"
-                        String optaplannerWebsiteDocs = 'optaplanner-website-docs'
-                        sh "cp ${optaplannerRoot}/core/optaplanner-core-impl/target/classes/solver.xsd ${optaplannerWebsiteXsd}/solver/solver-${env.OPTAPLANNER_LATEST_STREAM}.xsd"
-                        sh "cp ${optaplannerRoot}/optaplanner-benchmark/target/classes/benchmark.xsd ${optaplannerWebsiteXsd}/benchmark/benchmark-${env.OPTAPLANNER_LATEST_STREAM}.xsd"
+        //                 // Update the XSDs. OptaPlanner must be cloned and build with the full profile before.
+        //                 String optaplannerRoot = "${WORKSPACE}/${optaplannerRepository}"
+        //                 String optaplannerWebsiteModule = 'optaplanner-website-root'
+        //                 String optaplannerWebsiteXsd = "${optaplannerWebsiteModule}/content/xsd"
+        //                 String optaplannerWebsiteDocs = 'optaplanner-website-docs'
+        //                 sh "cp ${optaplannerRoot}/core/optaplanner-core-impl/target/classes/solver.xsd ${optaplannerWebsiteXsd}/solver/solver-${env.OPTAPLANNER_LATEST_STREAM}.xsd"
+        //                 sh "cp ${optaplannerRoot}/optaplanner-benchmark/target/classes/benchmark.xsd ${optaplannerWebsiteXsd}/benchmark/benchmark-${env.OPTAPLANNER_LATEST_STREAM}.xsd"
 
-                        // Add changed files, commit, open and merge PR
-                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}",
-                                { sh "git add $optaplannerWebsiteXsd/\\*.xsd $optaplannerWebsiteModule/data/pom.yml $optaplannerWebsiteDocs/antora-playbook.yml" },
-                                prBranchName, 'main')
-                    }
-                    dir(websiteRepository) {
-                        checkoutRepo(websiteRepository, 'main')
-                        mergeAndPush(prLink, 'main')
-                        githubscm.removeRemoteBranch('origin', prBranchName, getGitAuthorCredsID())
-                    }
-                }
-            }
-        }
+        //                 // Add changed files, commit, open and merge PR
+        //                 prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}",
+        //                         { sh "git add $optaplannerWebsiteXsd/\\*.xsd $optaplannerWebsiteModule/data/pom.yml $optaplannerWebsiteDocs/antora-playbook.yml" },
+        //                         prBranchName, 'main')
+        //             }
+        //             dir(websiteRepository) {
+        //                 checkoutRepo(websiteRepository, 'main')
+        //                 mergeAndPush(prLink, 'main')
+        //                 githubscm.removeRemoteBranch('origin', prBranchName, getGitAuthorCredsID())
+        //             }
+        //         }
+        //     }
+        // }
     }
     post {
         unsuccessful {

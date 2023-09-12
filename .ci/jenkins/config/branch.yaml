@@ -29,8 +29,9 @@ repositories:
 - name: incubator-kie-optaplanner-quickstarts
   job_display_name: optaplanner-quickstarts
   branch: 8.x
-- name: incubator-kie-optaplanner-website
-  job_display_name: optaplanner-website
+# Not migrated to Apache yet
+# - name: incubator-kie-optaplanner-website
+#   job_display_name: optaplanner-website
 - name: incubator-kie-kie-benchmarks
   job_display_name: kie-benchmarks
   author:
