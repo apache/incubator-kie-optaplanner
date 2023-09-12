@@ -4,8 +4,8 @@ import org.jenkinsci.plugins.workflow.libs.Library
 
 import org.kie.jenkins.MavenCommand
 
-String optaplannerRepository = 'optaplanner'
-String quickstartsRepository = 'optaplanner-quickstarts'
+String optaplannerRepository = 'incubator-kie-optaplanner'
+String quickstartsRepository = 'incubator-kie-optaplanner-quickstarts'
 String stableBranchName = 'stable'
 
 pipeline {
