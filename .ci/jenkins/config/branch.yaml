@@ -25,9 +25,13 @@ disable:
   triggers: true # TODO to set back
 repositories:
 - name: incubator-kie-optaplanner
+  job_display_name: optaplanner
 - name: incubator-kie-optaplanner-quickstarts
+  job_display_name: optaplanner-quickstarts
 - name: incubator-kie-optaplanner-website
+  job_display_name: optaplanner-website
 - name: incubator-kie-kie-benchmarks
+  job_display_name: kie-benchmarks
   author:
     name: radtriste # TODO set back. Could not push to kiegroup
 git:
