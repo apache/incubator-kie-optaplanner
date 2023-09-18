@@ -32,8 +32,10 @@ repositories:
 # Not migrated to Apache yet
 # - name: incubator-kie-optaplanner-website
 #   job_display_name: optaplanner-website
-- name: incubator-kie-kie-benchmarks
+- name: incubator-kie-benchmarks
   job_display_name: kie-benchmarks
+  author:
+    name: radtriste # TODO set back. Could not push to kiegroup
 git:
   author:
     name: apache
