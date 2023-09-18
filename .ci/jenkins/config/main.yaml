@@ -8,7 +8,7 @@ ecosystem:
   - name: kie-benchmarks
     ignore_release: true
     regexs:
-    - incubator-kie-kie-benchmarks.*
+    - incubator-kie-benchmarks.*
 git:
   branches:
   - name: apache_migration
