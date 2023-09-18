@@ -6,8 +6,8 @@ import org.kie.jenkins.MavenCommand
 deployProperties = [:]
 pipelineProperties = [:]
 
-String optaplannerRepository = 'optaplanner'
-String quickstartsRepository = 'optaplanner-quickstarts'
+String optaplannerRepository = 'incubator-kie-optaplanner'
+String quickstartsRepository = 'incubator-kie-optaplanner-quickstarts'
 
 imageUtils = null
 
@@ -173,7 +173,7 @@ String getParamOrDeployProperty(String paramKey, String deployPropertyKey) {
 //////////////////////////////////////////////////////////////////////////////
 
 boolean isNotTestingBuild() {
-    return getGitAuthor() == 'kiegroup'
+    return getGitAuthor() == 'apache'
 }
 
 String getProjectVersion() {

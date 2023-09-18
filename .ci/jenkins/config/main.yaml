@@ -3,11 +3,12 @@ ecosystem:
   projects:
   - name: optaplanner
     regexs:
+    - incubator-kie-opta.*
     - opta.*
   - name: kie-benchmarks
     ignore_release: true
     regexs:
-    - kie-benchmarks.*
+    - incubator-kie-kie-benchmarks.*
 git:
   branches:
   - name: apache_migration
@@ -15,10 +16,10 @@ git:
 seed:
   config_file:
     git:
-      repository: optaplanner
+      repository: incubator-kie-optaplanner
       author:
-        name: kiegroup
-        credentials_id: kie-ci5
+        name: apache
+        credentials_id: ASF_Cloudbees_Jenkins_ci-builds
       branch: apache_migration
     path: .ci/jenkins/config/branch.yaml
 jenkins:

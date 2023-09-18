@@ -24,17 +24,23 @@ environments:
 disable:
   triggers: true # TODO to set back
 repositories:
-- name: optaplanner
-- name: optaplanner-quickstarts
-# - name: optaplanner-website // Not migrated yet
-- name: kie-benchmarks
-  author:
-    name: radtriste # TODO set back. Could not push to kiegroup
+- name: incubator-kie-optaplanner
+  job_display_name: optaplanner
+- name: incubator-kie-optaplanner-quickstarts
+  job_display_name: optaplanner-quickstarts
+  branch: 8.x
+# Not migrated to Apache yet
+# - name: incubator-kie-optaplanner-website
+#   job_display_name: optaplanner-website
+- name: incubator-kie-kie-benchmarks
+  job_display_name: kie-benchmarks
 git:
   author:
-    name: kiegroup
-    credentials_id: kie-ci5
-    token_credentials_id: kie-ci5-token
+    name: apache
+    # Taken from https://ci-builds.apache.org/credentials/
+    # Need to be verified
+    credentials_id: 399061d0-5ab5-4142-a186-a52081fef742
+    token_credentials_id: ci-builds
   fork_author:
     name: kie-ci
     credentials_id: kie-ci
@@ -46,7 +52,7 @@ git:
   jenkins_config_path: .ci/jenkins
 buildchain_config:
   git:
-    repository: optaplanner
+    repository: incubator-kie-optaplanner
     file_path: .ci/buildchain-config.yaml
 maven:
   settings_file_id: kie-release-settings

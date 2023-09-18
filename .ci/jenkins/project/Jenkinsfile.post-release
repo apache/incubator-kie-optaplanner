@@ -4,8 +4,8 @@ import org.jenkinsci.plugins.workflow.libs.Library
 
 import org.kie.jenkins.MavenCommand
 
-String optaplannerRepository = 'optaplanner'
-String quickstartsRepository = 'optaplanner-quickstarts'
+String optaplannerRepository = 'incubator-kie-optaplanner'
+String quickstartsRepository = 'incubator-kie-optaplanner-quickstarts'
 String stableBranchName = 'stable'
 
 pipeline {
@@ -82,7 +82,7 @@ pipeline {
             }
         }
 
-        // Not migrated yet
+        // Optaplanner website is not migrated to Apache
         // stage('Update OptaPlanner website') {
         //     steps {
         //         script {
@@ -140,7 +140,7 @@ void sendErrorNotification() {
 //////////////////////////////////////////////////////////////////////////////
 
 boolean isNotTestingBuild() {
-    return getGitAuthor() == 'kiegroup'
+    return getGitAuthor() == 'apache'
 }
 
 String getProjectVersion() {

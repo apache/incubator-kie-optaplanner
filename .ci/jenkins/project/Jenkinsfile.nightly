@@ -1,7 +1,7 @@
 import org.jenkinsci.plugins.workflow.libs.Library
 @Library('jenkins-pipeline-shared-libraries')_
 
-String optaPlannerRepository = 'optaplanner'
+String optaPlannerRepository = 'incubator-kie-optaplanner'
 String optaPlannerMainBranch = 'main'
 String optaPlanner9xBranch = '9.x'
 

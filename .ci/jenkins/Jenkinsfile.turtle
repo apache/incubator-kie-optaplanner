@@ -2,7 +2,7 @@
 
 import org.kie.jenkins.MavenCommand
 
-optaplannerRepo = 'optaplanner'
+optaplannerRepo = 'incubator-kie-optaplanner'
 
 pipeline {
     agent {
