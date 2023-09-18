@@ -34,8 +34,6 @@ repositories:
 #   job_display_name: optaplanner-website
 - name: incubator-kie-kie-benchmarks
   job_display_name: kie-benchmarks
-  author:
-    name: radtriste # TODO set back. Could not push to kiegroup
 git:
   author:
     name: apache
