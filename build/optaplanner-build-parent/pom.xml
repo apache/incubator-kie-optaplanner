@@ -474,8 +474,6 @@
             <author>false</author>
             <failOnError>true</failOnError>
             <failOnWarnings>true</failOnWarnings>
-            <header combine.self="override" />
-            <footer combine.self="override" />
             <quiet>true</quiet>
             <doclint>none</doclint>
             <legacyMode>true</legacyMode>
