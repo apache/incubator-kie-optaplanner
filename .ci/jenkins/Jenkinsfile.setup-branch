@@ -84,7 +84,7 @@ pipeline {
         }
         cleanup {
             script {
-                util.cleanNode('docker')
+                util.cleanNode()
             }
         }
     }
@@ -128,7 +128,6 @@ String getGitAuthorCredsId() {
 
 MavenCommand getMavenCommand() {
     return new MavenCommand(this, ['-fae', '-ntp'])
-                .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
                 .withProperty('full')
 }
 
