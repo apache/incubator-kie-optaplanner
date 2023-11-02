@@ -23,22 +23,18 @@ environments:
     - ecosystem
 disable:
   deploy: true
+  triggers: true
 repositories:
 - name: incubator-kie-optaplanner
   job_display_name: optaplanner
 - name: incubator-kie-optaplanner-quickstarts
   job_display_name: optaplanner-quickstarts
   branch: 8.x
-# Not migrated to Apache yet
-# - name: incubator-kie-optaplanner-website
-#   job_display_name: optaplanner-website
 - name: incubator-kie-benchmarks
   job_display_name: kie-benchmarks
 git:
   author:
     name: apache
-    # Taken from https://ci-builds.apache.org/credentials/
-    # Need to be verified
     credentials_id: 399061d0-5ab5-4142-a186-a52081fef742
     token_credentials_id: ci-builds
   fork_author:
@@ -66,7 +62,7 @@ maven:
   artifacts_repository: ''
 cloud:
   image:
-    registry_credentials: tradisso_registry_token # TODO set to `kogito-quay-token`
+    registry_credentials: tradisso_registry_token
     registry: quay.io
     namespace: tradisso
     latest_git_branch: main
