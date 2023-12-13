@@ -22,6 +22,7 @@
   <properties>
     <java.module.name>org.optaplanner.migration</java.module.name>
     <version.org.antlr>4.9.3</version.org.antlr>
+    <version.org.xerial.snappy>1.1.10.1</version.org.xerial.snappy>
   </properties>
 
   <dependencyManagement>
@@ -36,6 +37,11 @@
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-runtime</artifactId>
         <version>${version.org.antlr}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xerial.snappy</groupId>
+        <artifactId>snappy-java</artifactId>
+        <version>${version.org.xerial.snappy}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
