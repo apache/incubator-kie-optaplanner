@@ -30,7 +30,7 @@ A fast, easy-to-use, open source AI constraint solver for software developers
 
 == Looking for Quickstarts?
 
-OptaPlanner's quickstarts are located in the https://github.com/kiegroup/optaplanner-quickstarts[optaplanner-quickstarts repository].
+OptaPlanner's quickstarts are located in the https://github.com/apache/incubator-kie-optaplanner-quickstarts[optaplanner-quickstarts repository].
 
 == Quick development start
 
