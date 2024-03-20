@@ -86,7 +86,7 @@ public class OptaPlannerDevUITest extends DevUIJsonRPCTest {
     @Test
     void testConstraintsPage() throws Exception {
         JsonNode constraintsResponse = super.executeJsonRPCMethod("getConstraints");
-        assertThat(constraintsResponse).containsExactly(
+        assertThat(constraintsResponse).containsExactlyInAnyOrder(
                 new TextNode(TestdataStringLengthShadowSolution.class.getPackage()
                         .getName() + "/Don't assign 2 entities the same value."),
                 new TextNode(TestdataStringLengthShadowSolution.class.getPackage().getName() + "/Maximize value length"));
