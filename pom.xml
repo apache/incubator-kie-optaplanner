@@ -43,6 +43,10 @@
   </description>
   <url>https://www.optaplanner.org</url>
   <inceptionYear>2006</inceptionYear>
+  <organization>
+    <name>The Apache Software Foundation</name>
+    <url>https://apache.org/</url>
+  </organization>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -51,22 +55,9 @@
     </license>
   </licenses>
 
-  <properties>
-    <!-- TODO: Evaluate if this override is still needed. -->
-    <!-- The property sonar.projectKey is defined in the CI in order not to collide with optawebs. It overrides
-         the default GroupId:ArtifactId to map both main branch and 7.x branches to the same SonarCloud project.
-         As the sonar.moduleKey inherits the value of sonar.projectKey by default, we have to override it too. -->
-    <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
-    <version.rewrite.plugin>4.45.0</version.rewrite.plugin>
-
-    <!-- reproducible build -->
-    <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
-    <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
-  </properties>
-
   <scm>
-    <connection>scm:git:git@github.com:apache/incubator-kie-optaplanner.git</connection>
-    <developerConnection>scm:git:git@github.com:apache/incubator-kie-optaplanner.git</developerConnection>
+    <connection>scm:git:https://github.com/apache/incubator-kie-optaplanner.git</connection>
+    <developerConnection>scm:git:https://github.com/apache/incubator-kie-optaplanner.git</developerConnection>
     <url>https://github.com/apache/incubator-kie-optaplanner</url>
   </scm>
   <issueManagement>
@@ -105,6 +96,19 @@
       <archive>https://lists.apache.org/list.html?commits@kie.apache.org</archive>
     </mailingList>
   </mailingLists>
+
+  <properties>
+    <!-- TODO: Evaluate if this override is still needed. -->
+    <!-- The property sonar.projectKey is defined in the CI in order not to collide with optawebs. It overrides
+         the default GroupId:ArtifactId to map both main branch and 7.x branches to the same SonarCloud project.
+         As the sonar.moduleKey inherits the value of sonar.projectKey by default, we have to override it too. -->
+    <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
+    <version.rewrite.plugin>4.45.0</version.rewrite.plugin>
+
+    <!-- reproducible build -->
+    <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
+    <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
+  </properties>
 
   <modules>
     <module>build/optaplanner-bom</module>
