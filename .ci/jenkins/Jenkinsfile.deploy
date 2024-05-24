@@ -154,6 +154,8 @@ pipeline {
                                     sh ('gpg --list-keys')
                                     sh ("gpg --batch --pinentry-mode=loopback --passphrase \"${SIGNING_KEY_PASSWORD}\" --import signkey.gpg")
                                     sh ('rm $WORKSPACE/signkey.gpg')
+
+                                    mavenCommand.withProperty('gpg.passphrase', SIGNING_KEY_PASSWORD)
                                 }
                             }
                             mavenCommand.withProfiles(['apache-release'])
