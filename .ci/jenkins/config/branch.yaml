@@ -79,9 +79,9 @@ maven:
     creds_id: apache-nexus-kie-deploy-credentials
 cloud:
   image:
-    registry_credentials: tradisso_registry_token # TODO set to `kogito-quay-token`
-    registry: quay.io
-    namespace: tradisso
+    registry_credentials: 'to_be_defined'
+    registry: docker.io
+    namespace: apache
     latest_git_branch: main
 jenkins:
   email_creds_id: OPTAPLANNER_CI_NOTIFICATION_EMAILS
