@@ -69,6 +69,16 @@ pipeline {
                     def buildParams = getDefaultBuildParams()
                     addSkipTestsParam(buildParams)
                     addSkipIntegrationTestsParam(buildParams)
+                    String quickstartsBranch
+                    switch (getBuildBranch()) {
+                        case 'main': quickstartsBranch = '8.x'
+                            break
+                        case '9.x': quickstartsBranch = 'development'
+                            break
+                        default : quickstartsBranch = getBuildBranch()
+                    }
+
+                    addStringParam(buildParams, 'QUICKSTARTS_BUILD_BRANCH_NAME', quickstartsBranch)
 
                     buildJob(OPTAPLANNER_DEPLOY, buildParams)
                 }
@@ -153,7 +163,6 @@ List getDefaultBuildParams() {
     List params = []
     addStringParam(params, 'DISPLAY_NAME', "${env.WEEKLY_TAG}")
     addStringParam(params, 'GIT_CHECKOUT_DATETIME', getCheckoutDatetime())
-    addStringParam(params, 'QUICKSTARTS_BUILD_BRANCH_NAME', getBuildBranch())
     addBooleanParam(params, 'SEND_NOTIFICATION', true)
 
     return params
