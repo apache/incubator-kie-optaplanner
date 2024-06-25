@@ -71,21 +71,4 @@ void pushImage(String image) {
     }
 }
 
-boolean removeQuayTag(String namespace, String imageName, String tag) {
-    String image = "quay.io/${namespace}/${imageName}:${tag}"
-    echo "Removing a temporary image tag ${image}"
-    try {
-        def output = 'false'
-        withCredentials([usernamePassword(credentialsId: getOperatorImageRegistryCredentials(), usernameVariable: 'QUAY_USER', passwordVariable: 'QUAY_TOKEN')]) {
-            output = sh(returnStdout: true, script: "curl -H 'Content-Type: application/json' -H 'Authorization: Bearer ${QUAY_TOKEN}' -X DELETE https://quay.io/api/v1/repository/${namespace}/${imageName}/tag/${tag}").trim()
-            if (output != '') {
-                echo "$output"
-            }
-        }
-        return output == ''
-    } catch (err) {
-        echo "[ERROR] Cannot remove a temporary image tag ${image}."
-    }
-}
-
 return this
