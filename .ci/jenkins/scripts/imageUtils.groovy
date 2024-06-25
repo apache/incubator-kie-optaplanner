@@ -21,18 +21,25 @@ containerEngine = 'docker'
 containerTlsOptions = ''
 
 void loginRegistry() {
-    loginContainerRegistry(getOperatorImageRegistry(), getOperatorImageRegistryCredentials())
+    loginContainerRegistry(getOperatorImageRegistry(), getOperatorImageRegistryUserCredentialsId(), getOperatorImageRegistryTokenCredentialsId())
 }
 
-void loginContainerRegistry(String registry, String credsId) {
-    echo "Using credentials ($credsId) to login to registry ($registry)"
-    withCredentials([usernamePassword(credentialsId: credsId, usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PWD')]) {
-        sh "${containerEngine} login ${containerTlsOptions} -u ${REGISTRY_USER} -p ${REGISTRY_PWD} ${registry}"
+void loginContainerRegistry(String registry, String userCredsId, String tokenCredsId) {
+    withCredentials([string(credentialsId: userCredsId, variable: 'REGISTRY_USER')]) {
+        withCredentials([string(credentialsId: tokenCredsId, variable: 'REGISTRY_TOKEN')]) {
+            sh """
+            echo "${REGISTRY_TOKEN}" | ${containerEngine} login -u "${REGISTRY_USER}" --password-stdin ${registry}
+            """.trim()
+        }
     }
 }
 
-String getOperatorImageRegistryCredentials() {
-    return params.OPERATOR_IMAGE_REGISTRY_CREDENTIALS
+String getOperatorImageRegistryUserCredentialsId() {
+    return params.OPERATOR_IMAGE_REGISTRY_USER_CREDENTIALS_ID
+}
+
+String getOperatorImageRegistryTokenCredentialsId() {
+    return params.OPERATOR_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID
 }
 
 String getOperatorImageRegistry() {
