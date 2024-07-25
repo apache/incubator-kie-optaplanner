@@ -102,7 +102,7 @@ pipeline {
 
         stage('Prepare for PR') {
             when {
-                expression { return isRelease() || isCreatePr() }
+                expression { return isCreatePr() }
             }
             steps {
                 script {
@@ -192,17 +192,12 @@ pipeline {
 
         stage('Create PRs') {
             when {
-                expression { return isRelease() || isCreatePr() }
+                expression { return isCreatePr() }
             }
             steps {
                 script {
                     commitAndCreatePR(optaplannerFolder, optaplannerRepository, getBuildBranch())
                     commitAndCreatePR(quickstartsFolder, quickstartsRepository, getQuickStartsBranch())
-
-                    // Create a new tag
-                    githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
-                    githubscm.tagRepository(getGitTagName())
-                    githubscm.pushRemoteTag('origin', getGitTagName(), getGitAuthorPushCredsId())
                 }
             }
             post {
@@ -213,6 +208,18 @@ pipeline {
                         setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${optaplannerRepository}")
                         setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.ref", getBuildBranch())
                     }
+                }
+            }
+        }
+
+        stage('Commit and Create Tag') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    commitAndCreateTag(optaplannerFolder, getBuildBranch())
+                    commitAndCreateTag(quickstartsFolder, getQuickStartsBranch())
                 }
             }
         }
@@ -332,6 +339,20 @@ String getFallbackBranch(String repo) {
 void prepareForPR(String folder) {
     dir(folder) {
         githubscm.createBranch(getPRBranch())
+    }
+}
+
+void commitAndCreateTag(String folder, String buildBranch) {
+    dir(folder) {
+        def commitMsg = "[${buildBranch}] Update project version to ${getProjectVersion()}"
+        githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
+        githubscm.commitChanges(commitMsg, {
+            githubscm.findAndStageNotIgnoredFiles('pom.xml')
+            githubscm.findAndStageNotIgnoredFiles('build.gradle')
+            githubscm.findAndStageNotIgnoredFiles('antora.yml')
+        })
+        githubscm.tagRepository(getGitTagName())
+        githubscm.pushRemoteTag('origin', getGitTagName(), getGitAuthorPushCredsId())
     }
 }
 
