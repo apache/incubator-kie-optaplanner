@@ -35,7 +35,7 @@ imageUtils = null
 
 pipeline {
     agent {
-        docker { 
+        docker {
             image env.AGENT_DOCKER_BUILDER_IMAGE
             args env.AGENT_DOCKER_BUILDER_ARGS
             label util.avoidFaultyNodes()
@@ -52,7 +52,6 @@ pipeline {
         OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
         PR_BRANCH_HASH = "${util.generateHash(10)}"
-
     }
 
     stages {
@@ -103,7 +102,7 @@ pipeline {
 
         stage('Prepare for PR') {
             when {
-                expression { return isRelease() || isCreatePr() }
+                expression { return isCreatePr() }
             }
             steps {
                 script {
@@ -144,19 +143,15 @@ pipeline {
                            .withProperty('maven.test.failure.ignore', true)
                            .withProperty('operator.image.build')
                            .skipTests(params.SKIP_TESTS)
-                        def Closure mavenRunClosure = {
-                            configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
-                                mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
-                            }
-                        }
+
                         if (isRelease()) {
                             release.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
                             mavenCommand.withProfiles(['apache-release'])
-                            mavenRunClosure()
-                        } else {
-                            mavenRunClosure()
                         }
 
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                            mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
+                        }
                     }
                     if (isRelease()) {
                         updateAntoraYaml(optaplannerFolder)
@@ -176,7 +171,7 @@ pipeline {
         stage('Build Quickstarts') {
             steps {
                 script {
-                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
                         getOptaplannerQuickstartsMavenCommand()
                                 .withProperty('maven.test.failure.ignore', true)
                                 .skipTests(params.SKIP_TESTS)
@@ -197,7 +192,7 @@ pipeline {
 
         stage('Create PRs') {
             when {
-                expression { return isRelease() || isCreatePr() }
+                expression { return isCreatePr() }
             }
             steps {
                 script {
@@ -213,6 +208,18 @@ pipeline {
                         setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.uri", "https://github.com/${getGitAuthor()}/${optaplannerRepository}")
                         setDeployPropertyIfNeeded("${optaplannerRepository}.pr.target.ref", getBuildBranch())
                     }
+                }
+            }
+        }
+
+        stage('Commit and Create Tag') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    commitAndCreateTag(optaplannerFolder, getBuildBranch())
+                    commitAndCreateTag(quickstartsFolder, getQuickStartsBranch())
                 }
             }
         }
@@ -255,7 +262,7 @@ pipeline {
 void sendErrorNotification() {
     if (params.SEND_NOTIFICATION) {
         String additionalInfo = "**[${getBuildBranch()}] Optaplanner - Deploy**"
-        mailer.sendMarkdownTestSummaryNotification("CI failures", [env.OPTAPLANNER_CI_EMAIL_TO], additionalInfo)
+        mailer.sendMarkdownTestSummaryNotification('CI failures', [env.OPTAPLANNER_CI_EMAIL_TO], additionalInfo)
     } else {
         echo 'No notification sent per configuration'
     }
@@ -335,6 +342,20 @@ void prepareForPR(String folder) {
     }
 }
 
+void commitAndCreateTag(String folder, String buildBranch) {
+    dir(folder) {
+        def commitMsg = "[${buildBranch}] Update project version to ${getProjectVersion()}"
+        githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
+        githubscm.commitChanges(commitMsg, {
+            githubscm.findAndStageNotIgnoredFiles('pom.xml')
+            githubscm.findAndStageNotIgnoredFiles('build.gradle')
+            githubscm.findAndStageNotIgnoredFiles('antora.yml')
+        })
+        githubscm.tagRepository(getGitTagName())
+        githubscm.pushRemoteTag('origin', getGitTagName(), getGitAuthorPushCredsId())
+    }
+}
+
 void commitAndCreatePR(String folder, String repo, String buildBranch) {
     dir(folder) {
         def commitMsg = "[${buildBranch}] Update project version to ${getProjectVersion()}"
@@ -385,7 +406,7 @@ MavenCommand getOptaplannerQuickstartsMavenCommand() {
  * Builds the parent modules and the BOM so that project depending on these artifacts can resolve.
  */
 void mavenCleanInstallOptaPlannerParents() {
-    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
         getOptaplannerMavenCommand()
                 .skipTests(true)
                 .withOptions(['-U', '-pl org.optaplanner:optaplanner-build-parent,org.optaplanner:optaplanner-bom', '-am'])
@@ -403,7 +424,7 @@ void runMavenDeploy(MavenCommand mvnCmd, String localDeploymentId = '') {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
 
-    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
+    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
         mvnCmd
           .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
           .skipTests(true)
@@ -532,4 +553,8 @@ String getReleaseGpgSignKeyCredsId() {
 
 String getReleaseGpgSignPassphraseCredsId() {
     return env.RELEASE_GPG_SIGN_PASSPHRASE_CREDS_ID
+}
+
+String getGitTagName() {
+    return params.GIT_TAG_NAME
 }
