@@ -295,7 +295,7 @@ String constructKey(String prefix, String paramId) {
 }
 
 String getDisplayName(version = '') {
-    version = version ?: getOptaPlannerVersion()
+    version = version ?: getReleaseVersion()
     return "Release ${version}"
 }
 
