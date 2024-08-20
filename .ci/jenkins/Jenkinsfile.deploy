@@ -118,10 +118,12 @@ pipeline {
             }
             steps {
                 script {
-                    if (getDroolsVersion()) {
-                        maven.mvnSetVersionProperty(getOptaplannerMavenCommand(), 'version.org.drools', getDroolsVersion())
+                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                        if (getDroolsVersion()) {
+                            maven.mvnSetVersionProperty(getOptaplannerMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE), 'version.org.drools', getDroolsVersion())
+                        }
+                        maven.mvnVersionsSet(getOptaplannerMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE), getProjectVersion(), !isRelease())
                     }
-                    maven.mvnVersionsSet(getOptaplannerMavenCommand(), getProjectVersion(), !isRelease())
                     mavenCleanInstallOptaPlannerParents()
                     updateQuickstartsVersions()
                 }
@@ -273,8 +275,11 @@ List getIntegrationTestProfiles() {
 }
 
 void updateQuickstartsVersions() {
-    maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand(), 'version.org.optaplanner', getProjectVersion())
-    maven.mvnVersionsUpdateParentAndChildModules(getOptaplannerQuickstartsMavenCommand(), getProjectVersion(), !isRelease())
+    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+        maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE), 'version.org.optaplanner', getProjectVersion())
+        maven.mvnVersionsUpdateParentAndChildModules(getOptaplannerQuickstartsMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE), getProjectVersion(), !isRelease())
+    }
+
     gradleVersionsUpdate(quickstartsFolder, getProjectVersion())
 
     if (isRelease()) {
@@ -406,16 +411,12 @@ MavenCommand getOptaplannerQuickstartsMavenCommand() {
  * Builds the parent modules and the BOM so that project depending on these artifacts can resolve.
  */
 void mavenCleanInstallOptaPlannerParents() {
-    withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
-        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
-            getOptaplannerMavenCommand()
-                    .skipTests(true)
-                    .withOptions(['-U', '-pl org.optaplanner:optaplanner-build-parent,org.optaplanner:optaplanner-bom', '-am'])
-                    .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-                    .withProperty('apache.repository.username', "${REPOSITORY_USER}")
-                    .withProperty('apache.repository.password', "${REPOSITORY_TOKEN}")
-                    .run('clean install')
-        }
+    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+        getOptaplannerMavenCommand()
+                .skipTests(true)
+                .withOptions(['-U', '-pl org.optaplanner:optaplanner-build-parent,org.optaplanner:optaplanner-bom', '-am'])
+                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                .run('clean install')
     }
 }
 
