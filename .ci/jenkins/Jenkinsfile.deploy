@@ -118,12 +118,10 @@ pipeline {
             }
             steps {
                 script {
-                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
-                        if (getDroolsVersion()) {
-                            maven.mvnSetVersionProperty(getOptaplannerMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE), 'version.org.drools', getDroolsVersion())
-                        }
-                        maven.mvnVersionsSet(getOptaplannerMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE), getProjectVersion(), !isRelease())
+                    if (getDroolsVersion()) {
+                        maven.mvnSetVersionProperty(getOptaplannerMavenCommand(), 'version.org.drools', getDroolsVersion())
                     }
+                    maven.mvnVersionsSet(getOptaplannerMavenCommand(), getProjectVersion(), !isRelease())
                     mavenCleanInstallOptaPlannerParents()
                     updateQuickstartsVersions()
                 }
@@ -173,12 +171,16 @@ pipeline {
         stage('Build Quickstarts') {
             steps {
                 script {
-                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
-                        getOptaplannerQuickstartsMavenCommand()
+                    withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+                        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+                            getOptaplannerQuickstartsMavenCommand()
                                 .withProperty('maven.test.failure.ignore', true)
                                 .skipTests(params.SKIP_TESTS)
                                 .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                                .withProperty('apache.repository.username', REPOSITORY_USER)
+                                .withProperty('apache.repository.password', REPOSITORY_TOKEN)
                                 .run('clean install')
+                        }
                     }
                 }
             }
@@ -270,14 +272,20 @@ void sendErrorNotification() {
     }
 }
 
-List getIntegrationTestProfiles() {
-    return params.SKIP_INTEGRATION_TESTS ? [] : ['integration-tests']
-}
-
 void updateQuickstartsVersions() {
-    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
-        maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE), 'version.org.optaplanner', getProjectVersion())
-        maven.mvnVersionsUpdateParentAndChildModules(getOptaplannerQuickstartsMavenCommand().withSettingsXmlFile(MAVEN_SETTINGS_FILE), getProjectVersion(), !isRelease())
+    maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand(), 'version.org.optaplanner', getProjectVersion())
+    maven.mvnVersionsUpdateParent(getOptaplannerQuickstartsMavenCommand(), getProjectVersion(), !isRelease())
+
+    withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+            maven.mvnVersionsUpdateChildModules(
+                getOptaplannerQuickstartsMavenCommand()
+                    .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                    .withProperty('apache.repository.username', REPOSITORY_USER)
+                    .withProperty('apache.repository.password', REPOSITORY_TOKEN),
+                !isRelease()
+            )
+        }
     }
 
     gradleVersionsUpdate(quickstartsFolder, getProjectVersion())
@@ -291,6 +299,7 @@ void updateQuickstartsVersions() {
                             'cat', returnStdout: true)
         }
     }
+
     if (isCreatePr()) {
         dir(quickstartsFolder) {
             // TODO: Remove the exclusion after the kubernetes demo is migrated to 9.
@@ -411,34 +420,17 @@ MavenCommand getOptaplannerQuickstartsMavenCommand() {
  * Builds the parent modules and the BOM so that project depending on these artifacts can resolve.
  */
 void mavenCleanInstallOptaPlannerParents() {
-    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
-        getOptaplannerMavenCommand()
+    withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
+        configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
+            getOptaplannerMavenCommand()
                 .skipTests(true)
                 .withOptions(['-U', '-pl org.optaplanner:optaplanner-build-parent,org.optaplanner:optaplanner-bom', '-am'])
                 .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                .withProperty('apache.repository.username', REPOSITORY_USER)
+                .withProperty('apache.repository.password', REPOSITORY_TOKEN)
                 .run('clean install')
+        }
     }
-}
-
-void runMavenDeploy(MavenCommand mvnCmd, String localDeploymentId = '') {
-    mvnCmd = mvnCmd.clone()
-
-    if (localDeploymentId) {
-        mvnCmd.withLocalDeployFolder(getLocalDeploymentFolder(localDeploymentId))
-    } else if (env.MAVEN_DEPLOY_REPOSITORY) {
-        mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
-    }
-
-    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
-        mvnCmd
-          .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-          .skipTests(true)
-          .run('clean deploy')
-    }
-}
-
-String getMavenRepoZipUrl() {
-    return "${params.MAVEN_DEPLOY_REPOSITORY.replaceAll('/content/', '/service/local/').replaceFirst('/*$', '')}/content-compressed"
 }
 
 // Getters and Setters of params/properties

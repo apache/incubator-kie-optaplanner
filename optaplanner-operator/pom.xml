@@ -115,7 +115,8 @@
             <goals>
               <goal>build</goal>
               <goal>generate-code</goal>
-              <goal>generate-code-tests</goal>
+              <!-- Disabled for the Apache 10 release as it was causing errors during the operator build
+              <goal>generate-code-tests</goal>-->
             </goals>
           </execution>
         </executions>
