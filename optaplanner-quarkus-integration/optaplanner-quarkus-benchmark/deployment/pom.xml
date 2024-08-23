@@ -24,7 +24,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-quarkus-benchmark-parent</artifactId>
-    <version>10.0.999-SNAPSHOT</version>
+    <version>10.0.0</version>
   </parent>
 
   <artifactId>optaplanner-quarkus-benchmark-deployment</artifactId>
