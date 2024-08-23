@@ -134,7 +134,7 @@ pipeline {
                     withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
                         def installOrDeploy
                         if (shouldDeployToRepository()) {
-                            installOrDeploy = "deploy -DdeployAtEnd -Dapache.repository.username=${REPOSITORY_USER} -Dapache.repository.password=${REPOSITORY_TOKEN} -DretryFailedDeploymentCount=5"
+                            installOrDeploy = "deploy -DdeployAtEnd -Dapache.repository.username=${REPOSITORY_USER} -Dapache.repository.password=${REPOSITORY_TOKEN} -DretryFailedDeploymentCount=5 -Dquarkus.bootstrap.effective-model-builder"
                         } else {
                             installOrDeploy = 'install'
                         }
@@ -224,22 +224,6 @@ pipeline {
                 script {
                     commitAndCreateTag(optaplannerFolder, getBuildBranch())
                     commitAndCreateTag(quickstartsFolder, getQuickStartsBranch())
-                }
-            }
-        }
-
-        stage('Push a temporary operator image to a registry') {
-            when {
-                expression { return isRelease() }
-            }
-            steps {
-                script {
-                    pushOperatorTemporaryImage()
-
-                    // Store image deployment information
-                    setDeployPropertyIfNeeded('operator.image.name', getOperatorImageName())
-                    setDeployPropertyIfNeeded('operator.image.tag', getOperatorImageTag())
-                    setDeployPropertyIfNeeded('operator.image.temporary_tag', getOperatorImageTemporaryTag())
                 }
             }
         }
@@ -525,19 +509,6 @@ String getOperatorImageName() {
 
 String getOperatorImageTag() {
     return params.OPERATOR_IMAGE_TAG ?: getProjectVersion()
-}
-
-String getOperatorImageTemporaryTag() {
-    return "${getOperatorImageTag()}-temporary"
-}
-
-void pushOperatorTemporaryImage() {
-    String localImage = "${getOperatorImageName()}:latest"
-    String temporaryImageTag = getOperatorImageTemporaryTag()
-    String temporaryImageFullName = imageUtils.getImageFullNameWithRegistry(getOperatorImageRegistry(),
-            getOperatorImageNamespace(), getOperatorImageName(), temporaryImageTag)
-    imageUtils.tagImage(localImage, temporaryImageFullName)
-    imageUtils.pushImage(temporaryImageFullName)
 }
 
 boolean isDeployDisabled() {
