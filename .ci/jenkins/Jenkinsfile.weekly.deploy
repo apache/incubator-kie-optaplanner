@@ -157,7 +157,7 @@ pipeline {
             steps {
                 script {
                     projectVersion = getProjectVersion(false)
-                    dir(optaplannerFolder)) {
+                    dir(optaplannerFolder) {
                         if (githubscm.isThereAnyChanges()) {
                             def commitMsg = "[${getBuildBranch()}] Update version to ${projectVersion}"
                             githubscm.setUserConfigFromCreds(getGitAuthorPushCredsId())
