@@ -181,6 +181,7 @@ pipeline {
                                 .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
                                 .withProperty('apache.repository.username', REPOSITORY_USER)
                                 .withProperty('apache.repository.password', REPOSITORY_TOKEN)
+                                .withProperty('productized')
                                 .run('clean install')
                         }
                     }
