@@ -146,9 +146,7 @@ pipeline {
 
                         if (isRelease()) {
                             releaseUtils.gpgImportKeyFromStringWithoutPassword(getReleaseGpgSignKeyCredsId())
-                            mavenCommand
-                            .withProfiles(['apache-release'])
-                            .withProperty('productized')
+                            mavenCommand.withProfiles(['apache-release'])
                         }
 
                         configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
