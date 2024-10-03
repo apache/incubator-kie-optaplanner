@@ -130,20 +130,6 @@
 
   <profiles>
     <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.optaplanner</groupId>
-          <artifactId>optaplanner-operator</artifactId>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
       <id>productized</id>
       <activation>
         <property>
