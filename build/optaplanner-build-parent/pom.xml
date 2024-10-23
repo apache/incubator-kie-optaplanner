@@ -265,7 +265,7 @@
               <configuration>
                 <rules>
                   <requireManagedDeps implementation="org.commonjava.maven.enforcer.rule.EnforceManagedDepsRule">
-                    <checkProfiles>false</checkProfiles>
+                    <checkProfiles>true</checkProfiles>
                     <failOnViolation>true</failOnViolation>
                   </requireManagedDeps>
                 </rules>
