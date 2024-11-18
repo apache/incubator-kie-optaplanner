@@ -10,7 +10,6 @@ DISCLAIMER-WIP
 **/**example**/**/resources/**
 **/META-INF/services/**
 **/META-INF/beans.xml
-**/licenses/**
 
 ### optaplanner specific excludes
 **/optaplanner-examples/data/**/import/**
