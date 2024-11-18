@@ -17,14 +17,14 @@
 # under the License.
 #
 
-name: Run Apache RAT check
+name: "CI :: Check license headers"
 
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
-  apache-rat-check:
+  check-license-headers:
     runs-on: ubuntu-latest
 
     steps:
