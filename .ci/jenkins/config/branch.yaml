@@ -33,7 +33,7 @@ repositories:
   job_display_name: optaplanner
 - name: incubator-kie-optaplanner-quickstarts
   job_display_name: optaplanner-quickstarts
-  branch: 8.x
+  branch: development
 # Not migrated to Apache yet
 # - name: incubator-kie-optaplanner-website
 #   job_display_name: optaplanner-website
@@ -66,7 +66,11 @@ buildchain_config:
     file_path: .ci/buildchain-config.yaml
     token_credentials_id: kie-ci3-token
 maven:
-  settings_file_id: kie-release-settings
+  settings:
+    nightly:
+      config_file_id: kie-nightly-settings
+    release:
+      config_file_id: kie-release-settings
   nexus:
     release_url: TO_DEFINE
     release_repository: TO_DEFINE
@@ -75,8 +79,12 @@ maven:
     build_promotion_profile_id: TO_DEFINE
   artifacts_repository: ''
   artifacts_upload_repository:
-    url: https://repository.apache.org/content/repositories/snapshots
-    creds_id: apache-nexus-kie-deploy-credentials
+    nightly:
+      url: https://repository.apache.org/content/repositories/snapshots
+      creds_id: apache-nexus-kie-deploy-credentials
+    release:
+      url: https://repository.apache.org/service/local/staging/deploy/maven2
+      creds_id: jenkins-deploy-to-nexus-staging
 cloud:
   image:
     registry_user_credentials_id: DOCKERHUB_USER
@@ -87,8 +95,8 @@ cloud:
 release:
   gpg:
     sign:
-      key-credentials-id: 'asf-release-gpg-signing-key'
-      passphrase-credentials-id: 'asf-release-gpg-signing-key-passphrase'
+      key_credentials_id: GPG_KEY_FILE
+      passphrase_credentials_id: ''
 jenkins:
   email_creds_id: OPTAPLANNER_CI_NOTIFICATION_EMAILS
   agent:
