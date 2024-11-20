@@ -12,6 +12,8 @@ DISCLAIMER-WIP
 **/META-INF/beans.xml
 
 ### optaplanner specific excludes
+**/optaplanner-docs/src/modules/ROOT/images/website/jquery/jquery.min.js
+**/optaplanner-docs/src/modules/ROOT/images/website/jstree/**
 **/optaplanner-examples/data/**/import/**
 **/eclipse.importorder
 **/src/main/resources/org/optaplanner/benchmark/impl/report/twitterbootstrap/css/**
