@@ -7,19 +7,19 @@ environments:
       BUILD_MVN_OPTS_CURRENT: -Dnative -Dquarkus.native.container-build=true
       ADDITIONAL_TIMEOUT: 720
     ids:
-    - native
+      - native
   ecosystem:
     auto_generation: false
     ids:
-    - ecosystem
+      - ecosystem
 repositories:
-- name: incubator-kie-optaplanner
-  job_display_name: optaplanner
-  branch: 10.1.x
-  is_branch_config_repo: true
-- name: incubator-kie-optaplanner-quickstarts
-  job_display_name: optaplanner-quickstarts
-  branch: 10.1.x
+  - name: incubator-kie-optaplanner
+    job_display_name: optaplanner
+    branch: 10.1.x
+    is_branch_config_repo: true
+  - name: incubator-kie-optaplanner-quickstarts
+    job_display_name: optaplanner-quickstarts
+    branch: 10.1.x
 git:
   author:
     name: apache
