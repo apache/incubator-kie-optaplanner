@@ -45,7 +45,6 @@
     <version.ch.qos.logback>1.5.16</version.ch.qos.logback>
     <version.org.apache.logging.log4j>2.22.1</version.org.apache.logging.log4j>
     <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
-    <version.io.quarkiverse.operatorsdk>6.6.7</version.io.quarkiverse.operatorsdk>
     <version.io.quarkus>3.15.3</version.io.quarkus>
     <version.io.netty>4.1.118.Final</version.io.netty>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
@@ -184,12 +183,6 @@
         <groupId>org.apache.openjpa</groupId>
         <artifactId>openjpa</artifactId>
         <version>${version.org.apache.openjpa}</version>
-      </dependency>
-      <!-- optaplanner-operator -->
-      <dependency>
-        <groupId>io.quarkiverse.operatorsdk</groupId>
-        <artifactId>quarkus-operator-sdk</artifactId>
-        <version>${version.io.quarkiverse.operatorsdk}</version>
       </dependency>
 
       <dependency>
