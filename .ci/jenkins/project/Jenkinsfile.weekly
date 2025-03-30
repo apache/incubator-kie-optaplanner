@@ -18,14 +18,11 @@
  */
 
 import org.jenkinsci.plugins.workflow.libs.Library
+
 @Library('jenkins-pipeline-shared-libraries')_
 
-String optaPlannerRepository = 'incubator-kie-optaplanner'
-String optaPlannerMainBranch = 'main'
-String optaPlanner9xBranch = '9.x'
-
 // Deploy jobs
-OPTAPLANNER_DEPLOY = 'optaplanner-deploy'
+OPTAPLANNER_DEPLOY = 'optaplanner.weekly-deploy'
 
 // Map of executed jobs
 // See https://javadoc.jenkins.io/plugin/workflow-support/org/jenkinsci/plugins/workflow/support/steps/build/RunWrapper.html
@@ -48,34 +45,20 @@ pipeline {
     environment {
         OPTAPLANNER_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 
-        // Use branch name in nightly tag as we may have parallel main and release branch builds
-        NIGHTLY_TAG = """${getBuildBranch()}-${sh(
+        // Use branch name in weekly tag as we may have parallel main and release branch builds
+        WEEKLY_TAG = """${getBuildBranch()}-${sh(
                 returnStdout: true,
                 script: 'date -u "+%Y-%m-%d"'
             ).trim()}"""
-    }
+}
 
     stages {
         stage('Initialize') {
             steps {
                 script {
-                    echo "nightly tag is ${env.NIGHTLY_TAG}"
+                    echo "weekly tag is ${env.WEEKLY_TAG}"
 
-                    currentBuild.displayName = env.NIGHTLY_TAG
-                }
-            }
-        }
-
-        // Applies only to the 9.x branch build. The 9.?.x release branches must remain intact.
-        stage('Migrate to 9') {
-            when {
-                expression { return getBuildBranch() == optaPlanner9xBranch }
-            }
-            steps {
-                script {
-                    checkoutNewBranch(optaPlannerRepository, optaPlannerMainBranch, optaPlanner9xBranch)
-                    callMigrationScript(optaPlannerRepository)
-                    forcePushBranch(optaPlannerRepository, optaPlanner9xBranch)
+                    currentBuild.displayName = env.WEEKLY_TAG
                 }
             }
         }
@@ -83,16 +66,10 @@ pipeline {
         stage('Build & Deploy OptaPlanner') {
             steps {
                 script {
-                    def buildParams = getDefaultBuildParams(getBuildBranch())
+                    def buildParams = getDefaultBuildParams()
                     addSkipTestsParam(buildParams)
                     addSkipIntegrationTestsParam(buildParams)
-                    String quickstartsBranch
-                    switch (getBuildBranch()) {
-                        case 'main': quickstartsBranch = 'development'
-                            break
-                        default : quickstartsBranch = getBuildBranch()
-                    }
-
+                    String quickstartsBranch = getBuildBranch() == 'main' ? 'development' : getBuildBranch()
                     addStringParam(buildParams, 'QUICKSTARTS_BUILD_BRANCH_NAME', quickstartsBranch)
 
                     buildJob(OPTAPLANNER_DEPLOY, buildParams)
@@ -109,7 +86,7 @@ pipeline {
         unsuccessful {
             script {
                 if (currentBuild.currentResult != 'UNSTABLE') {
-                    sendPipelineErrorNotification()   
+                    sendPipelineErrorNotification()
                 }
             }
         }
@@ -151,7 +128,7 @@ void addUnstableStage(String jobKey = '') {
 }
 
 void sendPipelineErrorNotification() {
-    String bodyMsg = "Optaplanner nightly job #${BUILD_NUMBER} was: ${currentBuild.currentResult}"
+    String bodyMsg = "Optaplanner weekly job #${BUILD_NUMBER} was: ${currentBuild.currentResult}"
 
     paramsStr = ''
     if (params.SKIP_TESTS) {
@@ -174,10 +151,10 @@ void sendPipelineErrorNotification() {
                 to: env.OPTAPLANNER_CI_EMAIL_TO
 }
 
-List getDefaultBuildParams(String buildBranchName = '', String key = '') {
-    buildBranchName = buildBranchName ?: getBuildBranch()
+List getDefaultBuildParams() {
     List params = []
-    addStringParam(params, 'DISPLAY_NAME', "${key ? "${key}-" : ''}${env.NIGHTLY_TAG}")
+    addStringParam(params, 'DISPLAY_NAME', "${env.WEEKLY_TAG}")
+    addStringParam(params, 'GIT_CHECKOUT_DATETIME', getCheckoutDatetime())
     addBooleanParam(params, 'SEND_NOTIFICATION', true)
 
     return params
@@ -203,36 +180,10 @@ String getBuildBranch() {
     return env.GIT_BRANCH_NAME
 }
 
-String getGitAuthor() {
-    return env.GIT_AUTHOR
+String getCurrentDate() {
+    return sh(returnStdout: true, script: 'date -u "+%Y-%m-%d"').trim()
 }
 
-String getGitAuthorCredsId() {
-    return env.GIT_AUTHOR_CREDS_ID
-}
-
-void checkoutNewBranch(String repo, String originBranch, String newBranch, String dirName = repo) {
-    dir(dirName) {
-        deleteDir()
-        checkout(githubscm.resolveRepository(repo, getGitAuthor(), originBranch, false, getGitAuthorCredsId()))
-        githubscm.createBranch(newBranch)
-    }
-}
-
-void forcePushBranch(String dirName, String branch) {
-    dir(dirName) {
-        withCredentials([usernamePassword(credentialsId: getGitAuthorCredsId(), usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
-            // Please leave the double-quote here. They are mandatory for the shell command to work correctly.
-            sh """
-            git config --local credential.helper \"!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f\"
-            git push origin ${branch} --force
-        """
-        }
-    }
-}
-
-void callMigrationScript(String dirName) {
-    dir(dirName) {
-        sh "./build/8-to-9-migration/migrate.sh"
-    }
+String getCheckoutDatetime() {
+    return getCurrentDate() + ' 02:00' // Cut-off 02:00AM
 }

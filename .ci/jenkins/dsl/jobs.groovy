@@ -49,6 +49,9 @@ createProjectSetupBranchJob()
 // Nightly jobs
 setupProjectNightlyJob()
 
+// Weekly jobs
+setupProjectWeeklyJob()
+
 // Release jobs
 setupProjectReleaseJob()
 setupProjectPostReleaseJob()
@@ -72,7 +75,7 @@ void setupProjectDroolsJob(String droolsBranch) {
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
         NOTIFICATION_JOB_NAME: 'Drools snapshot check',
         DROOLS_BRANCH: droolsBranch,
-        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.NIGHTLY.name),
 
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
     ])
@@ -113,9 +116,24 @@ void setupProjectNightlyJob() {
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
 
-        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.NIGHTLY.name),
         ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
         OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}"
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            booleanParam('SKIP_TESTS', false, 'Skip all tests')
+        }
+    }
+}
+
+void setupProjectWeeklyJob() {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, '0-weekly', JobType.OTHER, "${jenkins_path_project}/Jenkinsfile.weekly", 'Optaplanner Weekly')
+    jobParams.triggers = [cron : '0 5 * * 0']
+    jobParams.env.putAll([
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_BRANCH_NAME: "${GIT_BRANCH}",
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -131,19 +149,14 @@ void setupProjectReleaseJob() {
 
         GIT_BRANCH_NAME: "${GIT_BRANCH}",
         GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
-
-        DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
-        ARTIFACTS_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
-        OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}"
     ])
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('RESTORE_FROM_PREVIOUS_JOB', '', 'URL to a previous stopped release job which needs to be continued')
 
-            stringParam('OPTAPLANNER_VERSION', '', 'Project version of OptaPlanner and its examples to release as Major.minor.micro')
-            stringParam('OPTAPLANNER_RELEASE_BRANCH', '', '(optional) Use to override the release branch name deduced from the OPTAPLANNER_VERSION')
+            stringParam('RELEASE_VERSION', '', 'Project version of OptaPlanner and its examples to release as Major.minor.micro')
 
-            stringParam('DROOLS_VERSION', '', '(optional) Drools version to be set to the project before releasing the artifacts.')
+            stringParam('GIT_TAG_NAME', '', 'Git tag to create. i.e.: 10.0.0-rc1')
 
             booleanParam('SKIP_TESTS', false, 'Skip all tests')
         }
@@ -161,7 +174,7 @@ void setupProjectPostReleaseJob() {
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
         GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
-        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.RELEASE.name),
         MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
 
         GITHUB_CLI_VERSION: '0.11.1',
@@ -225,7 +238,10 @@ setupSpecificBuildChainNightlyJob('native')
 
 // Release jobs
 setupDeployJob(JobType.RELEASE)
-setupPromoteJob(JobType.RELEASE)
+setupPromoteJob()
+
+// Weekly deploy job
+setupWeeklyDeployJob()
 
 if (Utils.isMainBranch(this)) {
     setupOptaPlannerTurtleTestsJob('drools')
@@ -258,7 +274,7 @@ void createSetupBranchJob() {
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
         GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
-        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.NIGHTLY.name),
 
         IS_MAIN_BRANCH: "${Utils.isMainBranch(this)}",
         OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}"
@@ -288,9 +304,12 @@ void setupDeployJob(JobType jobType, String envName = '') {
         PROPERTIES_FILE_NAME: 'deployment.properties',
 
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
-        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, jobType.name),
         OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}",
         DISABLE_DEPLOY: Utils.isDeployDisabled(this),
+
+        RELEASE_GPG_SIGN_KEY_CREDS_ID: Utils.getReleaseGpgSignKeyCredentialsId(this),
+        RELEASE_GPG_SIGN_PASSPHRASE_CREDS_ID: Utils.getReleaseGpgSignPassphraseCredentialsId(this)
     ])
     if (jobType == JobType.PULL_REQUEST) {
         jobParams.env.putAll([
@@ -307,20 +326,12 @@ void setupDeployJob(JobType jobType, String envName = '') {
 
             MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
 
-            MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_URL}",
-            MAVEN_REPO_CREDS_ID: "${MAVEN_ARTIFACTS_UPLOAD_REPOSITORY_CREDS_ID}",
+            MAVEN_DEPLOY_REPOSITORY: Utils.getMavenArtifactsUploadRepositoryUrl(this, jobType.name),
+            MAVEN_REPO_CREDS_ID: Utils.getMavenArtifactsUploadRepositoryCredentialsId(this, jobType.name),
 
             OPERATOR_IMAGE_NAME: 'optaplanner-operator',
             MAX_REGISTRY_RETRIES: 3,
         ])
-        if (jobType == JobType.RELEASE) {
-            jobParams.env.putAll([
-                NEXUS_RELEASE_URL: "${MAVEN_NEXUS_RELEASE_URL}",
-                NEXUS_RELEASE_REPOSITORY_ID: "${MAVEN_NEXUS_RELEASE_REPOSITORY}",
-                NEXUS_STAGING_PROFILE_ID: "${MAVEN_NEXUS_STAGING_PROFILE_ID}",
-                NEXUS_BUILD_PROMOTION_PROFILE_ID: "${MAVEN_NEXUS_BUILD_PROMOTION_PROFILE_ID}",
-            ])
-        }
     }
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
@@ -350,15 +361,18 @@ void setupDeployJob(JobType jobType, String envName = '') {
             stringParam('QUICKSTARTS_BUILD_BRANCH_NAME', Utils.isMainBranch(this) ? 'development' : "${GIT_BRANCH}", 'Base branch for quickstarts. Set if you are not on a multibranch pipeline.')
 
             stringParam('OPERATOR_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images.')
-            stringParam('OPERATOR_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Image registry credentials.')
+            stringParam('OPERATOR_IMAGE_REGISTRY_USER_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_USER_CREDENTIALS_ID}", 'Image registry user credentials id.')
+            stringParam('OPERATOR_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID}", 'Image registry token credentials id.')
             stringParam('OPERATOR_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Operator image namespace to use to deploy image.')
             stringParam('OPERATOR_IMAGE_TAG', '', 'Image tag to use to deploy the operator image. OptaPlanner project version if not set.')
+
+            stringParam('GIT_TAG_NAME', '', 'Optional if not RELEASE. Tag to be created in the repository')
         }
     }
 }
 
-void setupPromoteJob(JobType jobType) {
-    def jobParams = JobParamsUtils.getBasicJobParams(this, 'optaplanner-promote', jobType, "${jenkins_path}/Jenkinsfile.promote", 'Optaplanner Promote')
+void setupPromoteJob() {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'optaplanner-promote', JobType.RELEASE, "${jenkins_path}/Jenkinsfile.promote", 'Optaplanner Promote')
     JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
     jobParams.env.putAll([
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
@@ -368,7 +382,7 @@ void setupPromoteJob(JobType jobType) {
         GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
         GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
 
-        MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.RELEASE.name),
         MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
         MAVEN_DEPLOY_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
 
@@ -393,7 +407,8 @@ void setupPromoteJob(JobType jobType) {
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
 
             stringParam('OPERATOR_IMAGE_REGISTRY', "${CLOUD_IMAGE_REGISTRY}", 'Image registry to use to deploy images.')
-            stringParam('OPERATOR_IMAGE_REGISTRY_CREDENTIALS', "${CLOUD_IMAGE_REGISTRY_CREDENTIALS}", 'Image registry credentials.')
+            stringParam('OPERATOR_IMAGE_REGISTRY_USER_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_USER_CREDENTIALS_ID}", 'Image registry user credentials id.')
+            stringParam('OPERATOR_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID', "${CLOUD_IMAGE_REGISTRY_TOKEN_CREDENTIALS_ID}", 'Image registry token credentials id.')
             stringParam('OPERATOR_IMAGE_NAMESPACE', "${CLOUD_IMAGE_NAMESPACE}", 'Operator image namespace to use to deploy image.')
         }
     }
@@ -406,13 +421,48 @@ void setupOptaPlannerTurtleTestsJob(String constraintStreamImplType) {
     jobParams.env.putAll([
             CONSTRAINT_STREAM_IMPL_TYPE: "${constraintStreamImplType}",
             JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
-            MAVEN_SETTINGS_CONFIG_FILE_ID: "${MAVEN_SETTINGS_FILE_ID}",
+            MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.NIGHTLY.name),
     ])
     jobParams.triggers = [ cron : 'H H * * 5' ] // Run every Friday.
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Git branch to checkout')
             stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Git author or an organization.')
+        }
+    }
+}
+
+void setupWeeklyDeployJob() {
+    def jobParams = JobParamsUtils.getBasicJobParams(this, 'optaplanner.weekly-deploy', JobType.OTHER, "${jenkins_path}/Jenkinsfile.weekly.deploy", 'Optaplanner Weekly Deploy')
+    JobParamsUtils.setupJobParamsAgentDockerBuilderImageConfiguration(this, jobParams)
+    jobParams.env.putAll([
+        PROPERTIES_FILE_NAME: 'deployment.properties',
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+        GIT_AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GIT_AUTHOR_PUSH_CREDS_ID: "${GIT_AUTHOR_PUSH_CREDENTIALS_ID}",
+
+        MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, JobType.NIGHTLY.name),
+        MAVEN_DEPENDENCIES_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+        MAVEN_DEPLOY_REPOSITORY: Utils.getMavenArtifactsUploadRepositoryUrl(this, JobType.NIGHTLY.name),
+        MAVEN_REPO_CREDS_ID: Utils.getMavenArtifactsUploadRepositoryCredentialsId(this, JobType.NIGHTLY.name),
+
+        DISABLE_DEPLOY: Utils.isDeployDisabled(this),
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
+        parameters {
+            stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
+
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+
+            booleanParam('SKIP_TESTS', false, 'Skip tests')
+
+            stringParam('QUICKSTARTS_BUILD_BRANCH_NAME', Utils.isMainBranch(this) ? 'development' : "${GIT_BRANCH}", 'Base branch for quickstarts.')
+
+            stringParam('GIT_CHECKOUT_DATETIME', '', 'Git checkout date and time - (Y-m-d H:i)')
+
+            booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
     }
 }
