@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.optaplanner</groupId>
     <artifactId>optaplanner-parent</artifactId>
-    <version>10.1.999-SNAPSHOT</version>
+    <version>10.1.999-20251221-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -39,7 +39,7 @@
     <!-- Dependencies -->
     <!-- ************************************************************************ -->
     <!-- SNAPSHOT and KIE dependency versions -->
-    <version.org.drools>${project.version}</version.org.drools>
+    <version.org.drools>10.1.999-20251221-SNAPSHOT</version.org.drools>
 
     <!-- Normal dependency versions -->
     <version.ch.qos.logback>1.5.16</version.ch.qos.logback>
