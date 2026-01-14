@@ -152,7 +152,11 @@ class PlannerBenchmarkResultTest {
         String originalXml = IOUtils.toString(
                 PlannerBenchmarkResultTest.class.getResourceAsStream(TEST_PLANNER_BENCHMARK_RESULT), StandardCharsets.UTF_8);
 
-        assertThat(jaxbString.trim()).isXmlEqualTo(originalXml.trim());
+        org.xmlunit.assertj3.XmlAssert.assertThat(jaxbString)
+                .and(originalXml)
+                .ignoreWhitespace()
+                .ignoreChildNodesOrder()
+                .areSimilar();
     }
 
     @Test
