@@ -39,13 +39,13 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
         java-version: [ 17 ]
-        maven-version: [ '3.8.7' ]
+        maven-version: [ '3.9.11' ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
