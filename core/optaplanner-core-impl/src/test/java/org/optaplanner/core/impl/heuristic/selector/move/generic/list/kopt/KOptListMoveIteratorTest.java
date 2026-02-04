@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -225,7 +226,8 @@ public class KOptListMoveIteratorTest {
         Map<Object, Integer> entityToListSize = Arrays.stream(entities)
                 .collect(Collectors.toMap(Function.identity(),
                         entity -> 2,
-                        Integer::sum));
+                        Integer::sum,
+                        LinkedHashMap::new));
         Map<Object, List<Object>> entityToList = new HashMap<>();
         Map<Object, Integer> entityToOffset = new HashMap<>();
 
