@@ -37,8 +37,8 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        java-version: [ 11 ]
-        maven-version: [ '3.8.7' ]
+        java-version: [ 17 ]
+        maven-version: [ '3.9.11' ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     if: github.actor == 'quarkusbot'
@@ -55,13 +55,13 @@ jobs:
           cache-key-prefix: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}
 
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           path: current-repo
           ref: main
 
       - name: Checkout Ecosystem
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           repository: ${{ env.ECOSYSTEM_CI_REPO }}
           ref: main

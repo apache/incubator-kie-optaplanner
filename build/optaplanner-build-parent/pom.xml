@@ -42,7 +42,7 @@
     <version.org.drools>${project.version}</version.org.drools>
 
     <!-- Normal dependency versions -->
-    <version.ch.qos.logback>1.5.19</version.ch.qos.logback>
+    <version.ch.qos.logback>1.5.25</version.ch.qos.logback>
     <version.org.apache.logging.log4j>2.22.1</version.org.apache.logging.log4j>
     <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
     <version.io.quarkiverse.operatorsdk>6.6.7</version.io.quarkiverse.operatorsdk>
@@ -52,7 +52,7 @@
     <version.org.apache.commons.text>1.11.0</version.org.apache.commons.text>
     <version.org.apache.openjpa>4.0.0</version.org.apache.openjpa>
     <version.org.apache.poi>5.4.1</version.org.apache.poi>
-    <version.org.assertj>3.24.2</version.org.assertj>
+    <version.org.assertj>3.27.7</version.org.assertj>
     <version.org.freemarker>2.3.32</version.org.freemarker>
     <version.org.jdom2>2.0.6.1</version.org.jdom2>
     <version.org.jfree.jfreechart>1.5.4</version.org.jfree.jfreechart>
@@ -71,8 +71,8 @@
     <version.assembly.plugin>3.4.2</version.assembly.plugin>
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <version.dependency.plugin>3.5.0</version.dependency.plugin>
-    <version.formatter.plugin>2.23.0</version.formatter.plugin>
-    <version.impsort.plugin>1.9.0</version.impsort.plugin>
+    <version.formatter.plugin>2.29.0</version.formatter.plugin>
+    <version.impsort.plugin>1.13.0</version.impsort.plugin>
     <version.jacoco.plugin>0.8.11</version.jacoco.plugin>
     <!--
       Do not upgrade unless prepared to deal with JPMS issues.
@@ -83,7 +83,7 @@
     <version.revapi.plugin>0.15.0</version.revapi.plugin>
     <version.sniffer.plugin>1.23</version.sniffer.plugin>
     <version.surefire.plugin>3.0.0</version.surefire.plugin>
-    <version.versions.plugin>2.15.0</version.versions.plugin>
+    <version.versions.plugin>2.21.0</version.versions.plugin>
 
     <!-- Plugin configuration properties -->
     <maven.min.version>3.8.1</maven.min.version>
