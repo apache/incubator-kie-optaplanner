@@ -43,7 +43,7 @@
 
     <!-- Normal dependency versions -->
     <version.ch.qos.logback>1.5.25</version.ch.qos.logback>
-    <version.org.apache.logging.log4j>2.22.1</version.org.apache.logging.log4j>
+    <version.org.apache.logging.log4j>2.25.3</version.org.apache.logging.log4j>
     <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
     <version.io.quarkiverse.operatorsdk>6.6.7</version.io.quarkiverse.operatorsdk>
     <version.io.quarkus>3.27.2</version.io.quarkus>
