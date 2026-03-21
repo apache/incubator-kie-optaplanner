@@ -305,8 +305,13 @@ void setupDeployJob(JobType jobType, String envName = '') {
 
         JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
         MAVEN_SETTINGS_CONFIG_FILE_ID: Utils.getMavenSettingsConfigFileId(this, jobType.name),
+        MAVEN_REPO_CREDS_ID: Utils.getMavenArtifactsUploadRepositoryCredentialsId(this, jobType.name),
         OPTAPLANNER_LATEST_STREAM: "${GIT_MAIN_BRANCH}",
         DISABLE_DEPLOY: Utils.isDeployDisabled(this),
+
+        GIT_AUTHOR: Utils.getGitAuthor(this),
+        GIT_AUTHOR_CREDS_ID: Utils.getGitAuthorCredsId(this),
+        GIT_AUTHOR_PUSH_CREDS_ID: Utils.getGitAuthorPushCredsId(this),
 
         RELEASE_GPG_SIGN_KEY_CREDS_ID: Utils.getReleaseGpgSignKeyCredentialsId(this),
         RELEASE_GPG_SIGN_PASSPHRASE_CREDS_ID: Utils.getReleaseGpgSignPassphraseCredentialsId(this)
