@@ -109,22 +109,6 @@ pipeline {
             }
         }
 
-        stage('Upload OptaPlanner documentation') {
-            steps {
-                script {
-                    configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]){
-                        getMavenCommand()
-                                .inDirectory(optaplannerRepository)
-                                .skipTests(true)
-                                .withProperty('full')
-                                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-                                .run('clean install')
-                    }
-                    uploadDistribution(optaplannerRepository)
-                }
-            }
-        }
-
         stage('Push the final OptaPlanner operator image') {
             steps {
                 script {
@@ -248,22 +232,6 @@ void approveAndMergePR(String prLink) {
 void tagLatest() {
     if (getGitTag() != '') {
         githubscm.tagLocalAndRemoteRepository('origin', getGitTag(), getGitAuthorPushCredsId(), env.BUILD_TAG, true)
-    }
-}
-
-void uploadDistribution(String directory) {
-    if (isNotTestingBuild()) {
-        echo "uploadDistribution for ${directory}"
-        dir(directory) {
-            withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
-                    keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
-                // For testing, simulate connection via SSH:
-                // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
-                sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
-            }
-        }
-    } else {
-        echo 'No uploadDistribution due to testing build'
     }
 }
 

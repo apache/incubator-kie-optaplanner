@@ -153,9 +153,6 @@ pipeline {
                             mavenCommand.withSettingsXmlFile(MAVEN_SETTINGS_FILE).run("clean $installOrDeploy")
                         }
                     }
-                    if (isRelease()) {
-                        updateAntoraYaml(optaplannerFolder)
-                    }
                 }
             }
             post {
@@ -510,16 +507,6 @@ String getQuickStartsBranch() {
     return params.QUICKSTARTS_BUILD_BRANCH_NAME
 }
 
-void updateAntoraYaml(String directory) {
-    if (isNotTestingBuild()) {
-        echo "updateAntoraYaml for ${directory}"
-        dir(directory) {
-            sh './build/release/update_antora_yml.sh'
-        }
-    } else {
-        echo 'No updateAntoraYaml due to testing build'
-    }
-}
 
 /* OptaPlanner Operator */
 
