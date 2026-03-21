@@ -277,12 +277,19 @@ void updateQuickstartsVersions() {
 
     withCredentials([usernamePassword(credentialsId: env.MAVEN_REPO_CREDS_ID, usernameVariable: 'REPOSITORY_USER', passwordVariable: 'REPOSITORY_TOKEN')]) {
         configFileProvider([configFile(fileId: env.MAVEN_SETTINGS_CONFIG_FILE_ID, variable: 'MAVEN_SETTINGS_FILE')]) {
-            maven.mvnVersionsUpdateParent(
-                getOptaplannerQuickstartsMavenCommand()
-                    .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
-                    .withProperty('apache.repository.username', REPOSITORY_USER)
-                    .withProperty('apache.repository.password', REPOSITORY_TOKEN),
-                getProjectVersion(), !isRelease(), true)
+            // Use skipResolution to avoid needing to resolve the parent artifact from remote repositories
+            getOptaplannerQuickstartsMavenCommand()
+                .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
+                .withProperty('apache.repository.username', REPOSITORY_USER)
+                .withProperty('apache.repository.password', REPOSITORY_TOKEN)
+                .clone()
+                .withOptions(['-N', '-e'])
+                .withProperty('full')
+                .withProperty('parentVersion', "[${getProjectVersion()}]")
+                .withProperty('allowSnapshots', !isRelease())
+                .withProperty('generateBackupPoms', false)
+                .withProperty('skipResolution', true)
+                .run('versions:update-parent')
             maven.mvnVersionsUpdateChildModules(
                 getOptaplannerQuickstartsMavenCommand()
                     .withSettingsXmlFile(MAVEN_SETTINGS_FILE)
