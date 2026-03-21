@@ -285,7 +285,7 @@ void updateQuickstartsVersions() {
                 .clone()
                 .withOptions(['-N', '-e'])
                 .withProperty('full')
-                .withProperty('parentVersion', "[${getProjectVersion()}]")
+                .withProperty('parentVersion', getProjectVersion())
                 .withProperty('allowSnapshots', !isRelease())
                 .withProperty('generateBackupPoms', false)
                 .withProperty('skipResolution', true)
