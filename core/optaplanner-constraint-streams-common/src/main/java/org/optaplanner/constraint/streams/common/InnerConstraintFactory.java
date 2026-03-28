@@ -73,17 +73,11 @@ public abstract class InnerConstraintFactory<Solution_, Constraint_ extends Cons
     }
 
     @Override
-    public <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass, boolean includingNullVars, boolean noIdJoiner,
-            BiJoiner<A, A>... joiners) {
+    public <A> BiConstraintStream<A, A> forEachUniquePairIncludingNullVars(Class<A> sourceClass, BiJoiner<A, A>... joiners) {
         BiJoinerComber<A, A> joinerComber = BiJoinerComber.comb(joiners);
-        if (!noIdJoiner) {
-            joinerComber.addJoiner(buildLessThanId(sourceClass));
-        }
-
-        return includingNullVars
-                ? ((InnerUniConstraintStream<A>) forEachIncludingNullVars(sourceClass)).join(
-                        forEachIncludingNullVars(sourceClass), joinerComber)
-                : ((InnerUniConstraintStream<A>) forEach(sourceClass)).join(forEach(sourceClass), joinerComber);
+        joinerComber.addJoiner(buildLessThanId(sourceClass));
+        return ((InnerUniConstraintStream<A>) forEachIncludingNullVars(sourceClass)).join(
+                forEachIncludingNullVars(sourceClass), joinerComber);
 
     }
 
