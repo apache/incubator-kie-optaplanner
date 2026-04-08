@@ -45,8 +45,10 @@
     <version.ch.qos.logback>1.5.25</version.ch.qos.logback>
     <version.org.apache.logging.log4j>2.22.1</version.org.apache.logging.log4j>
     <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
-    <version.io.quarkiverse.operatorsdk>6.6.7</version.io.quarkiverse.operatorsdk>
-    <version.io.quarkus>3.27.2</version.io.quarkus>
+    <!-- TODO: REMOVE -->
+   <!-- <version.io.quarkiverse.operatorsdk>6.6.7</version.io.quarkiverse.operatorsdk> -->
+    <!-- OUCH - This is needed due to spread dependency on gizmo -->
+    <version.io.quarkus.gizmo>1.9.0</version.io.quarkus.gizmo>
     <version.org.apache.commons.math3>3.6.1</version.org.apache.commons.math3>
     <version.org.apache.commons.text>1.14.0</version.org.apache.commons.text>
     <version.org.apache.openjpa>4.0.0</version.org.apache.openjpa>
@@ -57,8 +59,9 @@
     <version.org.jfree.jfreechart>1.5.4</version.org.jfree.jfreechart>
     <version.org.openrewrite.recipe>1.19.3</version.org.openrewrite.recipe>
     <version.org.slf4j>2.0.17</version.org.slf4j><!-- TODO keep in sync with quarkus-bom -->
-    <version.org.springframework>6.2.15</version.org.springframework>
-    <version.org.springframework.boot>3.5.10</version.org.springframework.boot>
+    <!-- TODO: REMOVE -->
+    <!--<version.org.springframework>6.2.15</version.org.springframework>
+    <version.org.springframework.boot>3.5.10</version.org.springframework.boot>-->
 
     <!-- ************************************************************************ -->
     <!-- Plugins -->
@@ -77,6 +80,8 @@
       If upgrading, ensure build still passes with the full profile (-Dfull).
     -->
     <version.jaxb2.plugin>3.1.0</version.jaxb2.plugin>
+    <version.org.graal>23.1.2</version.org.graal>
+    <version.ow2.asm>9.8</version.ow2.asm>
     <version.pitest.plugin>1.14.4</version.pitest.plugin>
     <version.revapi.plugin>0.15.0</version.revapi.plugin>
     <version.sniffer.plugin>1.23</version.sniffer.plugin>
@@ -120,13 +125,14 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
+      <!-- TODO: REMOVE -->
+      <!--<dependency>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-bom</artifactId>
         <version>${version.io.quarkus}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
+      </dependency>-->
       <!-- SNAPSHOT and KIE dependencies -->
       <dependency>
         <groupId>org.drools</groupId>
@@ -135,6 +141,41 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-parent</artifactId>
+        <version>${version.org.drools}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>io.quarkus.gizmo</groupId>
+        <artifactId>gizmo</artifactId>
+        <version>${version.io.quarkus.gizmo}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>${version.ow2.asm}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.graalvm.sdk</groupId>
+        <artifactId>graal-sdk</artifactId>
+        <version>${version.org.graal}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.graalvm.polyglot</groupId>
+            <artifactId>polyglot</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.graalvm.sdk</groupId>
+        <artifactId>nativeimage</artifactId>
+        <version>${version.org.graal}</version>
+      </dependency>
+
       <!-- Normal dependencies versions-->
       <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -201,11 +242,12 @@
   <build>
     <pluginManagement>
       <plugins>
-        <plugin>
+        <!-- TODO: REMOVE -->
+        <!--<plugin>
           <groupId>io.quarkus</groupId>
           <artifactId>quarkus-maven-plugin</artifactId>
           <version>${version.io.quarkus}</version>
-        </plugin>
+        </plugin>-->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>

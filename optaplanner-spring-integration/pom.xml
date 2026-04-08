@@ -42,6 +42,11 @@
   </description>
   <url>https://www.optaplanner.org</url>
 
+  <properties>
+    <version.org.springframework>6.2.15</version.org.springframework>
+    <version.org.springframework.boot>3.5.10</version.org.springframework.boot>
+  </properties>
+
   <modules>
     <module>optaplanner-spring-boot-autoconfigure</module>
     <module>optaplanner-spring-boot-starter</module>
