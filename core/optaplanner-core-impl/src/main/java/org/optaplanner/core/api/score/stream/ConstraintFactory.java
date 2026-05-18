@@ -180,6 +180,21 @@ public interface ConstraintFactory {
      */
     <A> BiConstraintStream<A, A> forEachUniquePair(Class<A> sourceClass, BiJoiner<A, A>... joiners);
 
+    /**
+     * this method is identical to {@link #forEachUniquePair(Class, BiJoiner[])},
+     * except that it includes facts with null variables in the result.
+     * <p>
+     * This method causes <i>Unchecked generics array creation for varargs parameter</i> warnings,
+     * but we can't fix it with a {@link SafeVarargs} annotation because it's an interface method.
+     *
+     * @param sourceClass never null
+     * @param joiners never null
+     * @param <A> the type of the matched problem fact or {@link PlanningEntity planning entity}
+     * @return a stream that matches every unique combination of A and another A for which all the
+     *         {@link BiJoiner joiners} are true
+     */
+    <A> BiConstraintStream<A, A> forEachUniquePairIncludingNullVars(Class<A> sourceClass, BiJoiner<A, A>... joiners);
+
     // ************************************************************************
     // from* (deprecated)
     // ************************************************************************
