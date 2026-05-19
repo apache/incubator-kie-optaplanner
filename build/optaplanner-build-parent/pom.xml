@@ -102,7 +102,7 @@
     <!--suppress UnresolvedMavenProperty-->
     <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
     <!-- See https://cwiki.apache.org/confluence/display/MAVEN/Maven+3.x+Compatibility+Notes#Maven3.xCompatibilityNotes-AutomaticPluginVersionResolution-->
-    <version.maven-exec-plugin>3.1.0</version.maven-exec-plugin>
+    <version.maven-exec-plugin>3.6.3</version.maven-exec-plugin>
 
     <schema.filename.benchmark>benchmark-with-import.xsd</schema.filename.benchmark>
     <schema.filename.solver>solver.xsd</schema.filename.solver>
