@@ -17,15 +17,17 @@ specific language governing permissions and limitations
 under the License.
 ////
 
-image::optaplanner-docs/src/modules/ROOT/images/shared/optaPlannerLogo.png[link="https://www.optaplanner.org/",OptaPlanner,150,150,align="center"]
+> **ℹ️ NOTE**
+> 
+> *This repository's source code has moved!*
+>
+> The OptaPlanner codebase has been merged into the https://github.com/apache/incubator-kie-drools[apache/incubator-kie-drools] repository. Please use it for the latest source code, to file issues, and to submit contributions.
+>
+> This repository is archived.
 
-[WARNING]
-====
-*This repository is archived and no longer actively maintained.*
+---
 
-The OptaPlanner codebase has been merged into the https://github.com/apache/incubator-kie-drools[apache/incubator-kie-drools] repository.
-Please use that repository for the latest source code, to file issues, and to submit contributions.
-====
+image::https://raw.githubusercontent.com/apache/incubator-kie-docs/10.2.x/optaplanner-docs/src/modules/ROOT/images/shared/optaPlannerLogo.svg[link="https://www.optaplanner.org/",OptaPlanner,150,150,align="center"]
 
 image:https://img.shields.io/maven-central/v/org.optaplanner/optaplanner-bom?logo=apache-maven&style=for-the-badge["Maven artifact", link="https://ossindex.sonatype.org/component/pkg:maven/org.optaplanner/optaplanner-bom"]
 image:https://img.shields.io/badge/stackoverflow-ask_question-orange.svg?logo=stackoverflow&style=for-the-badge["Stackoverflow", link="https://stackoverflow.com/questions/tagged/optaplanner"]
