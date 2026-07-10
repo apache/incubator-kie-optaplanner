@@ -1,5 +1,6 @@
 .rat-excludes
 .rat-reports
+.asf.yaml
 DISCLAIMER-WIP
 build/optaplanner-ide-config/src/main/resources/eclipse.importorder
 core/optaplanner-core-impl/src/main/resources/solver.xsd
