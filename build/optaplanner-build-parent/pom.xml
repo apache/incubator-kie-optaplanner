@@ -108,7 +108,7 @@
     <schema.filename.solver>solver.xsd</schema.filename.solver>
     <sonar.coverage.exclusions>**/swingui/**/*.java</sonar.coverage.exclusions>
 
-    <version.maven-javadoc-plugin.override>3.6.2</version.maven-javadoc-plugin.override>
+    <version.maven-javadoc-plugin.override>3.12.0</version.maven-javadoc-plugin.override>
   </properties>
 
   <dependencyManagement>
